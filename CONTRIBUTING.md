@@ -1,22 +1,21 @@
 # Contributing to VibesPro
 
-Thank you for helping build the HexDDD × VibePDK merger. This project follows a
-spec-driven, test-first workflow. Every change should reference the appropriate
-specification IDs (PRD, SDS, ADR, TS) and include tests where applicable.
+Thank you for helping build the Vibes Pro project. This project follows a spec-driven, test-first workflow. Every change should reference the appropriate specification IDs (PRD, SDS, ADR, TS) and include tests where applicable.
 
 ## Development Workflow
 
 1. **Set up the environment**
+
    ```bash
    uv sync --dev
    pnpm install
    just setup
    ```
+
 2. **Follow TDD**: RED → GREEN → REFACTOR → REGRESSION.
 3. **Lint & format**: `just lint` and `just format` before opening a PR.
 4. **Run tests**: `just test` validates Python, Node, and template generation.
-5. **Update docs**: Reflect changes in relevant specs and run `docs-build` when
-   documentation changes significantly.
+5. **Update docs**: Reflect changes in relevant specs and run `docs-build` when documentation changes significantly.
 
 ## Commit Guidelines
 
@@ -32,5 +31,4 @@ specification IDs (PRD, SDS, ADR, TS) and include tests where applicable.
 - [ ] Documentation/specs updated to maintain traceability.
 - [ ] Linked issues and specification IDs are referenced.
 
-For detailed tasks, consult the implementation plan in
-`docs/mergekit/IMPLEMENTATION-PLAN.md`.
+For detailed tasks, consult the implementation plan in `docs/mergekit/IMPLEMENTATION-PLAN.md`.
