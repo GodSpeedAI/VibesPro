@@ -1,0 +1,34 @@
+{
+    "name": "Vibes Pro",
+    "version": "0.1.0",
+    "description": "Unified generator-first platform combining HexDDD and VibePDK",
+    "type": "module",
+    "scripts": {
+        "build": "nx run-many --target=build --all",
+        "test": "nx run-many --target=test --all",
+        "lint": "nx run-many --target=lint --all",
+        "dev": "nx run-many --target=serve --all --parallel=5",
+        "generate": "copier copy . ../test-output",
+        "test-generation": "copier copy . ../test-output && cd ../test-output && pnpm install && pnpm build"
+    },
+    "workspaces": [
+        "templates/*",
+        "tools/*"
+    ],
+    "devDependencies": {
+        "@nx/js": "19.8.4",
+        "@nx/node": "19.8.4",
+        "@nx/workspace": "19.8.4",
+        "@typescript-eslint/eslint-plugin": "^7.18.0",
+        "@typescript-eslint/parser": "^7.18.0",
+        "eslint": "^8.57.1",
+        "nx": "19.8.4",
+        "typescript": "^5.9.2",
+        "vitest": "^1.6.1"
+    },
+    "engines": {
+        "node": ">=18.0.0",
+        "pnpm": ">=8.0.0"
+    },
+    "packageManager": "pnpm@9.0.0"
+}

@@ -1,0 +1,11 @@
+project_name: "Test Project"
+project_slug: "test-project"
+author_name: "Test Author"
+author_email: "test@example.com"
+architecture_style: "hexagonal"
+include_ai_workflows: true
+enable_temporal_learning: true
+frontend_framework: "next"
+backend_framework: "fastapi"
+database_type: "postgresql"
+include_supabase: true

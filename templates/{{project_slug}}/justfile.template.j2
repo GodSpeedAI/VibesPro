@@ -1,0 +1,75 @@
+# Justfile for cross-platform task orchestration.
+# Use this file as the single entrypoint for building, validating, testing and deploying.
+
+# Convert a CALM spec to domain YAML
+calm-to-domain target?=domain/domain.yaml src?=architecture/calm/system.calm.json:
+    python tools/transformers/translator.py --from-calm {{ '{{src}}' }} --to-domain {{ '{{target}}' }}
+
+# Convert a domain YAML to CALM
+domain-to-calm target?=architecture/calm/system.calm.json src?=domain/domain.yaml:
+    python tools/transformers/translator.py --from-domain {{ '{{src}}' }} --to-calm {{ '{{target}}' }}
+
+# Validate CALM patterns and controls
+validate-calm:
+    @echo "Validating CALM architecture..."
+    node tools/calm/controls_runner.js
+    @echo "CALM validation complete"
+
+# Generate a new service from the domain model
+generate service name lang='python':
+    @echo "Running Nx service generator for '{{ '{{name}}' }}' with language '{{ '{{lang}}' }}'..."
+    pnpm dlx nx generate service --name={{ '{{name}}' }} --language={{ '{{lang}}' }}
+
+# Lint and format
+lint:
+    pnpm dlx nx format:check && pnpm dlx nx lint
+
+# Run unit and snapshot tests
+test:
+    pnpm dlx nx test
+
+# Alias for test, as snapshot tests are part of the main test suite
+snapshot:
+    @just test
+
+# Build all services
+build:
+    pnpm dlx nx build
+
+# Deploy using canary strategy
+deploy:
+    @echo "Deploying application..."
+    # Example: use Helm/Kustomize or docker-compose to deploy
+    @echo "Deployment complete"
+
+# Rollback to previous version
+rollback:
+    @echo "Rolling back to previous deployment..."
+    # Example: helm rollback or docker-compose down & up previous
+    @echo "Rollback complete"
+
+# Bootstrap developer environment: enable pnpm via Corepack and ensure uv exists
+bootstrap:
+    @echo "[bootstrap] Enabling Corepack and activating pnpm..."
+    corepack enable
+    corepack prepare pnpm@latest --activate
+    @echo "[bootstrap] Verifying pnpm..."
+    pnpm --version
+    @echo "[bootstrap] Verifying uv (Python package manager)..."
+    @command -v uv >/dev/null 2>&1 && uv --version || (echo "uv not found. Install via: curl -LsSf https://astral.sh/uv/install.sh | sh" && exit 1)
+    @echo "[bootstrap] Done. You can now run: 'pnpm dlx nx --version' and Python tools via 'uv'."
+
+default:
+	@echo "Available recipes: plan-techstack [ts=techstack.yaml], sync-techstack [ts=techstack.yaml], sync-techstack-dry [ts=techstack.yaml]"
+
+# Preview changes to the resolved tech stack (diff only)
+plan-techstack ts="techstack.yaml":
+	bash scripts/plan_techstack.sh {{ '{{ts}}' }}
+
+# Apply changes to the resolved tech stack (writes .derived JSON)
+sync-techstack ts="techstack.yaml":
+	bash scripts/sync_techstack.sh {{ '{{ts}}' }}
+
+# Apply (dry-run): no writes, show diff
+sync-techstack-dry ts="techstack.yaml":
+	bash scripts/sync_techstack.sh --dry-run {{ '{{ts}}' }}

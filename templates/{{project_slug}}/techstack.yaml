@@ -1,0 +1,162 @@
+# MECE SaaS Dependencies Framework
+# AI Native PDK Edition
+
+core_application_dependencies:
+  web_frameworks:
+    - fastapi # async Python web framework for REST & GraphQL
+  database_drivers:
+    - supabase-py # client for Postgres + pgvector + RLS
+    - redis-py # Redis client for caching & ephemeral state
+  authentication_authorization:
+    - ory-kratos-client # user auth & identity management
+    - ory-hydra-client # OAuth2 / OIDC flows
+    - supabase-auth # integrated auth provider (alternative to Ory)
+  business_logic_libraries:
+    - dspy # composable agent + reasoning pipelines
+    - litellm # unified LLM provider abstraction
+    - zenml # pipeline & experiment orchestration for AI/ML
+  api_client_libraries:
+    - httpx # async HTTP client for external APIs
+    - pydantic # schema validation + serialization for API models
+
+infrastructure_runtime_dependencies:
+  web_server_asgi:
+    - uvicorn # ASGI web server for FastAPI
+  process_management:
+    - dramatiq # distributed task queue with RabbitMQ broker
+    - dramatiq-chronos # scheduled tasks & cron-like jobs
+  container_runtime:
+    - docker # container runtime
+    - docker-compose # local multi-service orchestration
+  orchestration:
+    - argo-workflows # workflow engine for ML/data pipelines
+    - nx # monorepo orchestration (polyglot services + builds)
+  cloud_provider_sdks:
+    - supabase # Postgres + vector DB + auth APIs
+    - -- # (optional: AWS/GCP SDKs if future cloud needed)
+
+data_layer_dependencies:
+  orm_odm:
+    - sqlmodel # SQLAlchemy + Pydantic ORM/ODM hybrid
+  migration_tools:
+    - alembic # DB migrations
+  caching_libraries:
+    - redis-py # Redis client for caching
+  message_queue_clients:
+    - aio-pika # async RabbitMQ client
+  search_analytics:
+    - pgvector (via Supabase) # vector similarity search
+    - -- # (full-text search could be integrated later)
+
+development_only_dependencies:
+  testing_frameworks:
+    - pytest # Python testing framework
+    - pytest-asyncio # async test support
+    - pytest-cov # coverage reporting
+    - jest # JavaScript testing framework
+    - playwright # browser automation
+  mocking_fixtures:
+    - pytest-mock # mocking in tests
+  code_quality:
+    - husky # git hooks
+    - lint-staged # linting for staged files
+  documentation:
+    - mkdocs-material # documentation site generator
+    - diataxis-docs-template # docs framework structure
+  debugging_tools:
+    - ipdb # interactive Python debugger
+    - rich # better tracebacks + console logging
+
+build_deployment_dependencies:
+  package_managers:
+    - uv # Python package/dependency manager
+    - pnpm # for Nx plugins
+  build_tools:
+    - nx # build + orchestrate polyglot apps
+  ci_cd_libraries:
+    - github-actions # CI/CD workflows
+  environment_management:
+    - just # task runner for local/dev/prod consistency
+    - direnv # load environment configs
+
+monitoring_observability_dependencies:
+  logging:
+    - structlog # structured logging
+  apm_tracing:
+    - opentelemetry-sdk # distributed tracing
+    - docker-otel-lgtm # local observability stack
+  error_tracking:
+    - -- # (can integrate Sentry later)
+  metrics_collection:
+    - prometheus (via LGTM stack) # metrics scraping
+  health_checks:
+    - fastapi-health # lightweight liveness/readiness checks
+
+security_dependencies:
+  vulnerability_scanning:
+    - trivy # container & dependency scanning
+  secrets_management:
+    - doppler (optional) # external secret manager
+    - direnv # local secrets
+  encryption_libraries:
+    - cryptography # Python crypto primitives
+  rate_limiting:
+    - slowapi # FastAPI rate limiting
+  cors_csp:
+    - starlette.middleware.cors # CORS policies
+
+frontend_client_dependencies:
+  ui_frameworks:
+    - react # CopilotKit UI integration
+    - remix # optional SSR/SPA frontend
+  state_management:
+    - react-query # data fetching & caching
+  component_libraries:
+    - shadcn/ui # styled UI components
+    - tailwindcss # utility-first CSS
+  build_bundle_tools:
+    - nx # orchestrates React builds with backend
+  type_systems:
+    - typescript # static typing for frontend
+
+communication_integration_dependencies:
+  email_services:
+    - supabase-email # transactional emails
+  sms_notifications:
+    - --
+  file_storage:
+    - supabase-storage # file storage + RLS
+  payment_processing:
+    - -- # (Stripe/PayPal integration TBD)
+  webhook_handlers:
+    - fastapi-background-tasks # async webhook processing
+
+utility_helper_dependencies:
+  date_time:
+    - pendulum # datetime utilities
+  validation:
+    - pydantic # schema validation
+  serialization:
+    - orjson # fast JSON serialization
+  http_utilities:
+    - httpx # async HTTP client
+  data_processing:
+    - pandas # structured data manipulation (optional)
+    - pyarrow # columnar data + interoperability
+
+implementation_priority:
+  mvp_essential:
+    - core_application_dependencies
+    - data_layer_dependencies
+    - development_only_dependencies
+  production_ready:
+    - monitoring_observability_dependencies
+    - security_dependencies
+    - infrastructure_runtime_dependencies
+  scale_optimize:
+    - build_deployment_dependencies
+    - communication_integration_dependencies
+    - utility_helper_dependencies
+  feature_complete:
+    - frontend_client_dependencies
+    - all remaining categories

@@ -1,0 +1,44 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Tech Stack (v1)",
+    "type": "object",
+    "description": "Permissive schema for techstack.yaml. Top-level categories map to subcategories which map to arrays of package identifiers (strings).",
+    "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+            "oneOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": [
+                            "string",
+                            "object"
+                        ]
+                    }
+                },
+                {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": [
+                            "string",
+                            "array",
+                            "object",
+                            "number",
+                            "boolean",
+                            "null"
+                        ]
+                    }
+                },
+                {
+                    "type": [
+                        "string",
+                        "number",
+                        "boolean",
+                        "null"
+                    ]
+                }
+            ]
+        }
+    },
+    "minProperties": 1
+}

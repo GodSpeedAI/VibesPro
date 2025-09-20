@@ -1,0 +1,28 @@
+/* CALM controls runner (stub). Implements PRD-008 (DevKit) / DEV-PRD-008 (VibePDK). */
+const fs = require('node:fs');
+const path = require('node:path');
+
+function runCalmControls(root = process.cwd()) {
+    // Stub rule: ensure architecture/calm/system.calm.json exists if architecture is present
+    const calmDir = path.join(root, '{{ project_slug }}', 'architecture', 'calm');
+    const system = path.join(calmDir, 'system.calm.json');
+    if (fs.existsSync(path.join(root, '{{ project_slug }}', 'architecture'))) {
+        if (!fs.existsSync(system)) {
+            return { ok: false, findings: [`Missing CALM system file: ${path.relative(root, system)}`] };
+        }
+    }
+    return { ok: true, findings: [] };
+}
+
+if (require.main === module) {
+    const res = runCalmControls();
+    if (!res.ok) {
+        console.error('[calm] FAIL');
+        for (const f of res.findings) console.error(' - ' + f);
+        process.exit(1);
+    } else {
+        console.log('[calm] OK');
+    }
+}
+
+module.exports = { runCalmControls };

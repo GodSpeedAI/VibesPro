@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Service Generator Options",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the service to scaffold"
+    },
+    "language": {
+      "type": "string",
+      "enum": ["python", "typescript"],
+      "default": "python",
+      "description": "Programming language for the service"
+    }
+  },
+  "required": ["name"]
+}

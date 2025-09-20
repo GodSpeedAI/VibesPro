@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    {
+      "id": "auth",
+      "description": "User authentication service"
+    },
+    {
+      "id": "chat",
+      "description": "Real-time chat service"
+    }
+  ],
+  "relationships": [
+    {
+      "source": "auth",
+      "target": "chat",
+      "type": "authenticated_by"
+    }
+  ],
+  "controls": [],
+  "patterns": []
+}

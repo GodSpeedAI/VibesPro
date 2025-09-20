@@ -1,0 +1,87 @@
+# HexDDD-VibePDK Merger Template Configuration
+  _templates_suffix: .j2
+  _envops:
+    block_start_string: "{%"
+    block_end_string: "%}"
+    variable_start_string: "{{"
+    variable_end_string: "}}"
+    comment_start_string: "{#"
+    comment_end_string: "#}"
+
+  # Project Configuration
+  project_name:
+    type: str
+    help: "Name of your project (human-readable)"
+    validator: "{% if not project_name %}Project name is required{% endif %}"
+
+  project_slug:
+    type: str
+    help: "Project slug (kebab-case, used for directories)"
+    default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
+    validator: "{% if not project_slug.replace('-', '').isalnum() %}Invalid project slug{% endif %}"
+
+  author_name:
+    type: str
+    help: "Author's full name"
+    default: "Developer"
+
+  author_email:
+    type: str
+    help: "Author's email address"
+    default: "developer@example.com"
+    validator: "{% if '@' not in author_email %}Invalid email format{% endif %}"
+
+  # Architecture Configuration
+  architecture_style:
+    type: str
+    help: "Primary architecture pattern"
+    choices:
+      - hexagonal
+      - layered
+      - microservices
+    default: hexagonal
+
+  include_ai_workflows:
+    type: bool
+    help: "Include AI-enhanced development workflows"
+    default: true
+
+  enable_temporal_learning:
+    type: bool
+    help: "Enable temporal specification learning system"
+    default: true
+    when: "{{ include_ai_workflows }}"
+
+  # Technology Stack
+  frontend_framework:
+    type: str
+    help: "Primary frontend framework"
+    choices:
+      - next
+      - remix
+      - expo
+    default: next
+
+  backend_framework:
+    type: str
+    help: "Backend framework"
+    choices:
+      - fastapi
+      - flask
+      - django
+    default: fastapi
+
+  database_type:
+    type: str
+    help: "Primary database type"
+    choices:
+      - postgresql
+      - mysql
+      - sqlite
+    default: postgresql
+
+  include_supabase:
+    type: bool
+    help: "Include Supabase integration"
+    default: true
+    when: "{{ database_type == 'postgresql' }}"

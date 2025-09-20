@@ -1,0 +1,13 @@
+{
+  "$schema": "https://calm.finos.org/schemas/patterns.schema.json",
+  "patterns": [
+    {
+      "id": "rest-api-policy",
+      "description": "All public REST APIs must implement versioning and structured logging.",
+      "controls": [
+        { "type": "versioning", "strategy": "path" },
+        { "type": "logging", "format": "json", "level": "info" }
+      ]
+    }
+  ]
+}

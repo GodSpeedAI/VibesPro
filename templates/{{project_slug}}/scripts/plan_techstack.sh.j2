@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+# Plan techstack changes (diff) without applying. Safe and idempotent.
+set -eu
+TS_PATH="${1:-techstack.yaml}"
+if [ ! -f "$TS_PATH" ]; then
+  echo "Error: techstack file '$TS_PATH' does not exist." >&2
+  exit 1
+fi
+# Pick Python interpreter
+if command -v python3 >/dev/null 2>&1; then PY=python3; elif command -v python >/dev/null 2>&1; then PY=python; else
+  echo "[plan_techstack] Python not available; skipping plan." >&2
+  exit 0
+fi
+# Check PyYAML availability; if missing, skip gracefully (CI envs may lack it)
+if ! "$PY" - <<'PY' >/dev/null 2>&1
+import yaml  # noqa
+PY
+then
+  echo "[plan_techstack] PyYAML not available; skipping plan (install PyYAML to enable)." >&2
+  exit 0
+fi
+"$PY" "{{ project_slug }}/tools/transformers/translator.py" techstack plan "$TS_PATH"

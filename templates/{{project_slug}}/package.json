@@ -1,0 +1,46 @@
+{
+    "name": "vibepdk-repo-tools",
+    "private": true,
+    "version": "0.1.0",
+    "description": "Repo tooling and tests for VibePDK (template root)",
+    "license": "MIT",
+    "scripts": {
+        "test:node": "tsx tools/test/run_node_tests.ts",
+        "spec:matrix": "node tools/spec/matrix.js",
+        "prompt:lint": "for f in .github/prompts/*.prompt.md; do node tools/prompt/lint.js \"$f\" || exit 1; done",
+        "prompt:plan": "for f in .github/prompts/*.prompt.md; do node tools/prompt/plan_preview.js \"$f\" || exit 1; done",
+        "prompt:plan:accurate": "PROMPT_TOKENIZER=accurate for f in .github/prompts/*.prompt.md; do node tools/prompt/plan_preview.js --accurate \"$f\" || exit 1; done",
+        "prompt:lifecycle": "node tools/cli/prompt_lifecycle.js .github/prompts/spec.implement.prompt.md",
+        "lint:md": "markdownlint \"**/*.md\" --config .markdownlint.json",
+        "docs:links": "node tools/docs/link_check.js",
+        "env:audit": "node tools/audit/env_audit.js",
+        "pr:comment": "node tools/ci/pr_comment.js",
+        "lint:shell": "shellcheck scripts/*.sh"
+    },
+    "devDependencies": {
+        "@types/node": "^22.5.4",
+        "@dqbd/tiktoken": "^1.0.15",
+        "@nx/devkit": "19.8.4",
+        "nx": "19.8.4",
+        "tsx": "^4.16.2",
+        "typescript": "^5.5.4",
+        "markdownlint-cli": "^0.36.0",
+        "markdownlint": "^0.36.0",
+        "husky": "^8.0.0",
+        "lint-staged": "^14.0.0",
+        "shellcheck": "^4.1.0"
+    },
+    "pnpm": {
+        "overrides": {
+            "@nrwl/devkit": "19.8.4"
+        }
+    },
+    "lint-staged": {
+        "**/*.md": [
+            "markdownlint --config .markdownlint.json"
+        ],
+        ".github/prompts/*.prompt.md": [
+            "node tools/prompt/lint.js"
+        ]
+    }
+}

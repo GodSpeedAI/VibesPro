@@ -1,0 +1,28 @@
+services:
+  - name: auth
+    description: User authentication service
+    entities:
+      - name: User
+        fields:
+          - name: id
+            type: uuid
+          - name: email
+            type: string
+          - name: password_hash
+            type: string
+  - name: chat
+    description: Real-time chat service
+    entities:
+      - name: Message
+        fields:
+          - name: id
+            type: uuid
+          - name: user_id
+            type: uuid
+          - name: text
+            type: string
+
+relationships:
+  - from: auth
+    to: chat
+    type: authenticated_by

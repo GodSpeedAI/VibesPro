@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+# Apply techstack changes (write resolved JSON). Safe and idempotent.
+set -eu
+DRY="false"
+TS_PATH="${1:-techstack.yaml}"
+if [ "${1:-}" = "--dry-run" ]; then
+  DRY="true"
+  TS_PATH="${2:-techstack.yaml}"
+fi
+if [ ! -f "$TS_PATH" ]; then
+  echo "Error: techstack file '$TS_PATH' does not exist." >&2
+  exit 1
+fi
+# Pick Python interpreter
+if command -v python3 >/dev/null 2>&1; then PY=python3; elif command -v python >/dev/null 2>&1; then PY=python; else
+  echo "[sync_techstack] Python not available; skipping apply." >&2
+  exit 0
+fi
+# Check PyYAML availability; if missing, skip gracefully (CI envs may lack it)
+if ! "$PY" - <<'PY' >/dev/null 2>&1
+import yaml  # noqa
+PY
+then
+  echo "[sync_techstack] PyYAML not available; skipping apply (install PyYAML to enable)." >&2
+  exit 0
+fi
+if [ "$DRY" = "true" ]; then
+  "$PY" "{{ project_slug }}/tools/transformers/translator.py" techstack apply --dry-run "$TS_PATH"
+else
+  "$PY" "{{ project_slug }}/tools/transformers/translator.py" techstack apply "$TS_PATH"
+fi
