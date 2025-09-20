@@ -3,7 +3,6 @@ import { promisify } from 'util';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { rimraf } from 'rimraf';
 
 const execAsync = promisify(exec);
 
@@ -11,12 +10,13 @@ export interface GeneratorResult {
   files: string[];
   success: boolean;
   outputPath: string;
+  errorMessage?: string;
 }
 
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..', '..');
 const TEST_OUTPUT_ROOT = path.join(os.tmpdir(), 'vibespro-generator-tests');
 
-const BASE_CONTEXT = {
+const BASE_CONTEXT: Record<string, any> = {
   project_name: 'Test Project',
   project_slug: 'test-project',
   author_name: 'Test Author',
@@ -28,20 +28,37 @@ const BASE_CONTEXT = {
   backend_framework: 'fastapi',
   database_type: 'postgresql',
   include_supabase: false,
+  app_name: 'primary-app',
+  domains: [],
 };
 
 function serializeValue(key: string, value: any): string {
   if (Array.isArray(value)) {
-    const serialized = value.map((item) => `  - "${item}"`).join('\n');
+    if (value.length === 0) {
+      return `${key}: []`;
+    }
+
+    const serialized = value.map((item) => `  - "${String(item)}"`).join('\n');
     return `${key}:\n${serialized}`;
   }
 
-  if (typeof value === 'boolean' || value === null) {
+  if (value === null) {
+    return `${key}: null`;
+  }
+
+  if (typeof value === 'boolean' || typeof value === 'number') {
     return `${key}: ${value}`;
   }
 
-  if (typeof value === 'number') {
-    return `${key}: ${value}`;
+  if (typeof value === 'object' && value !== undefined) {
+    const nested = Object.entries(value)
+      .map(([childKey, childValue]) => `  ${childKey}: ${JSON.stringify(childValue)}`)
+      .join('\n');
+    return `${key}:\n${nested}`;
+  }
+
+  if (value === undefined) {
+    return '';
   }
 
   return `${key}: "${String(value)}"`;
@@ -50,6 +67,7 @@ function serializeValue(key: string, value: any): string {
 function buildYaml(options: Record<string, any>): string {
   return Object.entries(options)
     .map(([key, value]) => serializeValue(key, value))
+    .filter(Boolean)
     .join('\n');
 }
 
@@ -67,11 +85,32 @@ export async function runGenerator(
   const outputPath = path.join(TEST_OUTPUT_ROOT, `${generatorType}-${timestamp}`);
   const dataFilePath = path.join(TEST_OUTPUT_ROOT, `answers-${generatorType}-${timestamp}.yml`);
 
-  const context = {
+  const context: Record<string, any> = {
     ...BASE_CONTEXT,
     project_slug: `${BASE_CONTEXT.project_slug}-${timestamp}`,
+    generator_type: generatorType,
     ...overrides,
   };
+
+  if (overrides.name && !context.app_name) {
+    context.app_name = overrides.name;
+  }
+
+  if (overrides.framework && !context.frontend_framework) {
+    context.frontend_framework = overrides.framework;
+  }
+
+  if (overrides.framework && !context.app_framework) {
+    context.app_framework = overrides.framework;
+  }
+
+  if (overrides.app_domains && !context.app_domains) {
+    context.app_domains = overrides.app_domains;
+  }
+
+  if (overrides.domains !== undefined) {
+    context.domains = Array.isArray(overrides.domains) ? overrides.domains : [overrides.domains];
+  }
 
   const yamlData = buildYaml(context);
   await fs.promises.writeFile(dataFilePath, yamlData, 'utf-8');
@@ -82,16 +121,40 @@ export async function runGenerator(
     COPIER_SILENT: '1',
   };
 
+  const copierCommand = process.env.COPIER_COMMAND ?? "copier";
+  const command = `${copierCommand} copy "${PROJECT_ROOT}" "${outputPath}" --data-file "${dataFilePath}" --force --defaults`;
+
+  let success = true;
+  let errorMessage: string | undefined;
+
   try {
-    await execAsync(
-      `copier copy ${PROJECT_ROOT} ${outputPath} --data-file ${dataFilePath} --force --defaults`,
-      { env }
-    );
+    await execAsync(command, { env, maxBuffer: 1024 * 1024 * 20 });
   } catch (error) {
+    success = false;
+    const execError = error as { stderr?: string; stdout?: string; message?: string } | undefined;
+    if (execError?.stderr) {
+      errorMessage = execError.stderr.trim();
+      process.stderr.write(`${errorMessage}
+`);
+    } else if (execError?.message) {
+      errorMessage = execError.message;
+      process.stderr.write(`${errorMessage}
+`);
+    } else {
+      errorMessage = 'Generator execution failed';
+      process.stderr.write(`${errorMessage}
+`);
+    }
+  } finally {
+    await fs.promises.rm(dataFilePath, { force: true });
+  }
+
+  if (!success) {
     return {
       files: [],
       success: false,
       outputPath,
+      errorMessage,
     };
   }
 
@@ -125,7 +188,7 @@ export async function cleanupGeneratorOutputs(): Promise<void> {
   try {
     const entries = await fs.promises.readdir(TEST_OUTPUT_ROOT);
     for (const entry of entries) {
-      await rimraf(path.join(TEST_OUTPUT_ROOT, entry));
+      await fs.promises.rm(path.join(TEST_OUTPUT_ROOT, entry), { recursive: true, force: true });
     }
   } catch (error: any) {
     if (error && error.code !== 'ENOENT') {

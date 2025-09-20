@@ -1,0 +1,46 @@
+{% if include_value_objects -%}
+// Generated UserId Value Object for {{ domain_name | capitalize }} Domain
+// Bounded Context: {{ bounded_context }}
+
+export interface IUserId {
+  readonly value: string;
+}
+
+export class UserId implements IUserId {
+  constructor(public readonly value: string) {
+    this.validate();
+  }
+
+  private validate(): void {
+    if (!this.value) {
+      throw new Error('UserId cannot be empty');
+    }
+    if (this.value.length < 1 || this.value.length > 50) {
+      throw new Error('UserId must be between 1 and 50 characters');
+    }
+    // UUID format validation (optional)
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidPattern.test(this.value)) {
+      throw new Error('UserId must be a valid UUID format');
+    }
+  }
+
+  equals(other: UserId): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+
+  static generate(): UserId {
+    // Simple UUID v4 generation for demonstration
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+    return new UserId(uuid);
+  }
+}
+{% endif -%}

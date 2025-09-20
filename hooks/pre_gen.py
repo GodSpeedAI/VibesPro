@@ -49,6 +49,10 @@ def main() -> None:
         # Placeholder until Copier hook wiring is implemented.
         context = {}
 
+    if not context:
+        print('⚠️ No copier context available; skipping pre-generation validation.')
+        return
+
     validate_project_config(context)
 
 

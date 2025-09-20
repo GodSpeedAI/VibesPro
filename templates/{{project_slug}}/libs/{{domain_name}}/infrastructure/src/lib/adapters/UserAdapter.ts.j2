@@ -1,0 +1,147 @@
+{% if include_repositories -%}
+// Generated UserAdapter for {{ domain_name | capitalize }} Domain
+// Bounded Context: {{ bounded_context }}
+
+import { User, UserId } from '../../domain/src/lib/entities/User';
+
+// Data Transfer Objects (DTOs) for external API communication
+export interface UserDTO {
+  id: string;
+  email: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateUserDTO {
+  email: string;
+  name: string;
+}
+
+export interface UpdateUserDTO {
+  email?: string;
+  name?: string;
+}
+
+// Adapter for converting between domain entities and DTOs
+export class UserAdapter {
+  static toDTO(user: User): UserDTO {
+    return {
+      id: user.id.value,
+      email: user.email,
+      name: user.name,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString()
+    };
+  }
+
+  static fromDTO(dto: UserDTO): User {
+    return new User(
+      new UserId(dto.id),
+      dto.email,
+      dto.name,
+      new Date(dto.createdAt),
+      new Date(dto.updatedAt)
+    );
+  }
+
+  static toDTOArray(users: User[]): UserDTO[] {
+    return users.map(user => this.toDTO(user));
+  }
+
+  static fromDTOArray(dtos: UserDTO[]): User[] {
+    return dtos.map(dto => this.fromDTO(dto));
+  }
+
+  static createUserFromDTO(dto: CreateUserDTO): User {
+    const now = new Date();
+    const userId = UserId.generate();
+
+    return new User(
+      userId,
+      dto.email,
+      dto.name,
+      now,
+      now
+    );
+  }
+
+  static validateCreateUserDTO(dto: CreateUserDTO): string[] {
+    const errors: string[] = [];
+
+    if (!dto.email || !dto.email.includes('@')) {
+      errors.push('Valid email is required');
+    }
+
+    if (!dto.name || dto.name.trim().length === 0) {
+      errors.push('Name is required');
+    }
+
+    if (dto.name && dto.name.length > 255) {
+      errors.push('Name cannot exceed 255 characters');
+    }
+
+    return errors;
+  }
+
+  static validateUpdateUserDTO(dto: UpdateUserDTO): string[] {
+    const errors: string[] = [];
+
+    if (dto.email !== undefined && (!dto.email || !dto.email.includes('@'))) {
+      errors.push('Valid email is required');
+    }
+
+    if (dto.name !== undefined && (!dto.name || dto.name.trim().length === 0)) {
+      errors.push('Name cannot be empty');
+    }
+
+    if (dto.name && dto.name.length > 255) {
+      errors.push('Name cannot exceed 255 characters');
+    }
+
+    return errors;
+  }
+}
+
+{% if frontend_framework == 'next' -%}
+// Next.js API Route Handler
+export class UserAPIHandler {
+  constructor(private userRepository: any) {}
+
+  async handleCreateUser(req: any, res: any): Promise<void> {
+    try {
+      const dto: CreateUserDTO = req.body;
+      const errors = UserAdapter.validateCreateUserDTO(dto);
+
+      if (errors.length > 0) {
+        res.status(400).json({ errors });
+        return;
+      }
+
+      const user = UserAdapter.createUserFromDTO(dto);
+      await this.userRepository.save(user);
+
+      res.status(201).json(UserAdapter.toDTO(user));
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  async handleGetUser(req: any, res: any): Promise<void> {
+    try {
+      const { id } = req.query;
+      const user = await this.userRepository.findById(new UserId(id));
+
+      if (!user) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+      }
+
+      res.status(200).json(UserAdapter.toDTO(user));
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+}
+{% endif -%}
+{% endif -%}

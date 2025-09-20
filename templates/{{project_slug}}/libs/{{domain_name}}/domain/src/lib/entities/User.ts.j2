@@ -1,0 +1,80 @@
+{% if include_domain_entities -%}
+// Generated User Entity for {{ domain_name | capitalize }} Domain
+// Bounded Context: {{ bounded_context }}
+
+export interface IUserId {
+  readonly value: string;
+}
+
+export class UserId implements IUserId {
+  constructor(public readonly value: string) {
+    if (!value) {
+      throw new Error('User ID cannot be empty');
+    }
+  }
+
+  equals(other: UserId): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
+
+export interface IUserProps {
+  readonly id: UserId;
+  readonly email: string;
+  readonly name: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+}
+
+export class User implements IUserProps {
+  constructor(
+    public readonly id: UserId,
+    public readonly email: string,
+    public readonly name: string,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date
+  ) {
+    this.validate();
+  }
+
+  private validate(): void {
+    if (!this.email || !this.email.includes('@')) {
+      throw new Error('Invalid email format');
+    }
+    if (!this.name || this.name.trim().length === 0) {
+      throw new Error('User name cannot be empty');
+    }
+    if (this.name.length > 255) {
+      throw new Error('User name cannot exceed 255 characters');
+    }
+  }
+
+  updateName(newName: string): User {
+    return new User(
+      this.id,
+      this.email,
+      newName,
+      this.createdAt,
+      new Date()
+    );
+  }
+
+  updateEmail(newEmail: string): User {
+    return new User(
+      this.id,
+      newEmail,
+      this.name,
+      this.createdAt,
+      new Date()
+    );
+  }
+
+  equals(other: User): boolean {
+    return this.id.equals(other.id);
+  }
+}
+{% endif -%}

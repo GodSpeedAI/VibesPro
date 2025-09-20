@@ -1,0 +1,40 @@
+{% if include_repositories -%}
+// Generated UserRepository Port for {{ domain_name | capitalize }} Domain
+// Bounded Context: {{ bounded_context }}
+
+import { User, UserId } from '../../domain/src/lib/entities/User';
+
+export interface IUserRepository {
+  save(user: User): Promise<void>;
+  findById(id: UserId): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
+  findAll(): Promise<User[]>;
+  delete(id: UserId): Promise<void>;
+  update(user: User): Promise<void>;
+  exists(id: UserId): Promise<boolean>;
+}
+
+export interface IUserRepositoryFilters {
+  email?: string;
+  name?: string;
+  createdAfter?: Date;
+  createdBefore?: Date;
+  limit?: number;
+  offset?: number;
+}
+
+export interface IPaginatedResult<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
+
+export interface IAdvancedUserRepository extends IUserRepository {
+  findWithFilters(filters: IUserRepositoryFilters): Promise<IPaginatedResult<User>>;
+  count(): Promise<number>;
+  findByEmailPattern(pattern: string): Promise<User[]>;
+}
+{% endif -%}
