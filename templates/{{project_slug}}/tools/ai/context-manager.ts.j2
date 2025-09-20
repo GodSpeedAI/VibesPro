@@ -1,0 +1,110 @@
+/**
+ * AI Context Manager - Optimizes context selection within token budgets
+ *
+ * Based on TS-MERGE-007 specification from the Implementation Plan
+ */
+
+interface TokenBudget {
+  maxTokens: number;
+  reservedTokens: number;
+  availableTokens?: number;
+}
+
+interface ContextSource {
+  readonly id: string;
+  readonly priority: number;
+  readonly tokenCost: number;
+  readonly relevanceScore: number;
+  getContent(): Promise<string>;
+}
+
+interface OptimalContext {
+  content: string;
+  tokenCount: number;
+  relevanceScore: number;
+  sources: string[];
+}
+
+/**
+ * Manages AI context selection and optimization for development workflows
+ */
+export class AIContextManager {
+  constructor(
+    private readonly budgetConfig: TokenBudget,
+    private readonly sources: readonly ContextSource[] = []
+  ) {
+    this.budgetConfig.availableTokens =
+      this.budgetConfig.maxTokens - this.budgetConfig.reservedTokens;
+  }
+
+  /**
+   * Get optimal context for a given query within token budget
+   */
+  async getOptimalContext(query: string): Promise<OptimalContext> {
+    // Sort sources by relevance and priority
+    const sortedSources = this.sources
+      .filter(source => this.isRelevant(source, query))
+      .sort((a, b) => {
+        // Prioritize by relevance score, then by priority
+        const relevanceDiff = b.relevanceScore - a.relevanceScore;
+        if (Math.abs(relevanceDiff) > 0.1) return relevanceDiff;
+        return b.priority - a.priority;
+      });
+
+    const selectedSources: ContextSource[] = [];
+    let totalTokens = 0;
+    let totalRelevance = 0;
+
+    // Greedy selection within budget
+    for (const source of sortedSources) {
+      if (totalTokens + source.tokenCost <= (this.budgetConfig.availableTokens || 0)) {
+        selectedSources.push(source);
+        totalTokens += source.tokenCost;
+        totalRelevance += source.relevanceScore;
+      }
+    }
+
+    // Combine content from selected sources
+    const contentParts = await Promise.all(
+      selectedSources.map(source => source.getContent())
+    );
+
+    return {
+      content: contentParts.join('\n\n---\n\n'),
+      tokenCount: totalTokens,
+      relevanceScore: totalRelevance / selectedSources.length,
+      sources: selectedSources.map(s => s.id)
+    };
+  }
+
+  /**
+   * Check if a source is relevant to the query
+   */
+  private isRelevant(source: ContextSource, query: string): boolean {
+    // Simple keyword matching - could be enhanced with embeddings
+    const queryLower = query.toLowerCase();
+    const sourceId = source.id.toLowerCase();
+
+    // Check for architectural patterns
+    const architecturalTerms = ['domain', 'entity', 'repository', 'service', 'hexagonal'];
+    const hasArchTerms = architecturalTerms.some(term =>
+      queryLower.includes(term) && sourceId.includes(term)
+    );
+
+    return source.relevanceScore > 0.3 || hasArchTerms;
+  }
+
+  /**
+   * Add a new context source
+   */
+  addSource(source: ContextSource): void {
+    (this.sources as ContextSource[]).push(source);
+  }
+
+  /**
+   * Get current budget status
+   */
+  getBudgetStatus(): TokenBudget {
+    return { ...this.budgetConfig };
+  }
+}

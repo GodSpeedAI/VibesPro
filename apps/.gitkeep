@@ -1,0 +1,24 @@
+# Applications Directory
+
+This directory contains application layer implementations that use the domain libraries.
+
+## Structure
+
+- `frontend/` - Frontend applications (Next.js, Remix, etc.)
+- `backend/` - Backend services and APIs
+- `mobile/` - Mobile applications (React Native, Expo)
+- `desktop/` - Desktop applications (Electron, Tauri)
+
+## Generated Applications
+
+Applications are generated using the Copier templates:
+
+```bash
+# Generate Next.js application
+copier copy templates/apps/nextjs-app ./apps/my-app
+
+# Generate FastAPI backend
+copier copy templates/apps/fastapi-api ./apps/api
+```
+
+Each application follows hexagonal architecture principles and integrates with domain libraries from `/libs/`.

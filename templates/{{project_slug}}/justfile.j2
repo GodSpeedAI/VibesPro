@@ -1,181 +1,103 @@
+set shell := ["bash", "-uc"]
+
 default:
-	@echo "Available recipes: plan-techstack [ts=techstack.yaml], sync-techstack [ts=techstack.yaml], sync-techstack-dry [ts=techstack.yaml]"
+	@just --list
 
-# Preview changes to the resolved tech stack (diff only)
-plan-techstack ts="techstack.yaml":
-	bash scripts/plan_techstack.sh {{ '{{ts}}' }}
+# --- Environment Setup ---
+setup: setup-node setup-python
+	@echo "✅ Development environment ready"
 
-# Apply changes to the resolved tech stack (writes .derived JSON)
-sync-techstack ts="techstack.yaml":
-	bash scripts/sync_techstack.sh {{ '{{ts}}' }}
+setup-node:
+	@echo "🔧 Preparing Node.js toolchain..."
+	corepack enable
+	pnpm install
 
-# Apply (dry-run): no writes, show diff
-sync-techstack-dry ts="techstack.yaml":
-	bash scripts/sync_techstack.sh --dry-run {{ '{{ts}}' }}
+setup-python:
+	@echo "🐍 Syncing Python environment..."
+	uv sync --dev
 
-# Linting and Testing
-lint-shell:
-	pnpm lint:shell
+# --- Build Orchestration ---
+build TARGET="": (_detect_build_strategy TARGET)
 
-# Lint prompts for compliance with standards
-prompt-lint:
-	pnpm prompt:lint
+_detect_build_strategy TARGET:
+	#!/usr/bin/env bash
+	if [ -z "{{ '{{TARGET}}' }}" ]; then
+		if [ -f "nx.json" ]; then
+			echo "🏗️  Building with Nx..."
+			just build-nx
+		else
+			echo "🏗️  Building directly..."
+			just build-direct
+		fi
+	else
+		just build-target "{{ '{{TARGET}}' }}"
+	fi
 
-# Generate traceability matrix for specifications
+build-direct:
+	uv run python -m build
+	pnpm run build
+
+build-nx:
+	nx run-many --target=build --all --parallel=3
+
+build-target TARGET:
+	nx run {{ '{{TARGET}}' }}:build
+
+# --- Test Orchestration ---
+test TARGET="": (_detect_test_strategy TARGET)
+
+_detect_test_strategy TARGET:
+	#!/usr/bin/env bash
+	if [ -z "{{ '{{TARGET}}' }}" ]; then
+		if [ -f "nx.json" ]; then
+			just test-nx
+		else
+			just test-direct
+		fi
+	else
+		just test-target "{{ '{{TARGET}}' }}"
+	fi
+
+test-direct:
+	uv run pytest
+	pnpm test
+
+test-nx:
+	nx run-many --target=test --all --parallel=3
+
+test-target TARGET:
+	nx run {{ '{{TARGET}}' }}:test
+
+# --- Code Quality ---
+lint:
+	pnpm run lint
+	uv run mypy .
+
+format:
+	pnpm run format
+	uv run black .
+	uv run isort .
+
+# --- Maintenance ---
+clean:
+	nx reset
+	rm -rf node_modules/.cache
+	rm -rf .nx
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+
+clean-all: clean
+	@echo "🧹 Deep cleaning dependencies..."
+	rm -rf node_modules
+	rm -rf .venv
+	rm -rf pnpm-lock.yaml
+	rm -rf uv.lock
+
+# --- Developer Experience ---
+dev:
+	nx run-many --target=serve --all --parallel=5
+
 spec-matrix:
 	pnpm spec:matrix
 
-# --- Spec-Driven Workflow Recipes ---
-
-# Scaffold a feature specification
-spec-feature THREAD="":
-	@if [ -z "{{ '{{THREAD}}' }}" ]; then \
-		echo "Usage: just spec-feature THREAD=<feature-slug>"; \
-		echo "Example: just spec-feature THREAD=test-feature"; \
-		exit 1; \
-	fi
-	@mkdir -p "docs/specs/{{ '{{THREAD}}' }}"
-	@echo "---" > "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "thread: {{ '{{THREAD}}' }}" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "matrix_ids: []" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "# Feature Specification" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "## What" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "## Why" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/spec.md"
-	@echo "Created feature specification for thread: {{ '{{THREAD}}' }}"
-
-# Generate detailed implementation plan from feature spec
-spec-plan THREAD="" FAMILY="":
-	@if [ -z "{{ '{{THREAD}}' }}" ]; then \
-		echo "Usage: just spec-plan THREAD=<feature-slug> FAMILY=<adr|prd|sds|ts|task>"; \
-		echo "Example: just spec-plan THREAD=test-feature FAMILY=prd"; \
-		exit 1; \
-	fi
-	@if ! echo "{{ '{{FAMILY}}' }}" | grep -qE "^(adr|prd|sds|ts|task)$$"; then \
-		echo "Error: FAMILY must be one of: adr, prd, sds, ts, task"; \
-		exit 1; \
-	fi
-	@mkdir -p "docs/specs/{{ '{{THREAD}}' }}"
-	@echo "---" > "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "thread: {{ '{{THREAD}}' }}" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "matrix_ids: []" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "# $(echo {{ '{{FAMILY}}' }} | tr '[:lower:]' '[:upper:]') Implementation Plan" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "## TDD Cycles" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "## File Changes" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "## Validation Steps" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/plan.{{ '{{FAMILY}}' }}.md"
-	@echo "Created $(echo {{ '{{FAMILY}}' }} | tr '[:lower:]' '[:upper:]') implementation plan for thread: {{ '{{THREAD}}' }}"
-
-# Create numbered list of discrete, executable tasks from the plan
-spec-tasks THREAD="":
-	@if [ -z "{{ '{{THREAD}}' }}" ]; then \
-		echo "Usage: just spec-tasks THREAD=<feature-slug>"; \
-		echo "Example: just spec-tasks THREAD=test-feature"; \
-		exit 1; \
-	fi
-	@mkdir -p "docs/specs/{{ '{{THREAD}}' }}"
-	@echo "---" > "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "thread: {{ '{{THREAD}}' }}" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "matrix_ids: []" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "# Tasks" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "## Tasks" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "1. [ ] Define the scope and objectives" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "2. [ ] Identify key stakeholders and requirements" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "3. [ ] Create implementation plan" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "4. [ ] Execute tasks using TDD" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "5. [ ] Validate and test the implementation" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "" >> "docs/specs/{{ '{{THREAD}}' }}/tasks.md"
-	@echo "Created task list for thread: {{ '{{THREAD}}' }}"
-
-# --- AI-assisted workflows (additive, namespaced) ---
-
-
-# Bundle AI context for Copilot chat modes
-ai-context-bundle:
-	bash scripts/bundle-context.sh docs/ai_context_bundle
-
-# TDD phases
-
-# New naming (tdd.*) — legacy ai-* retained for familiarity in messages
-tdd-red:
-	@echo "Red Phase: write failing tests from specs."
-	@echo "Open chat mode: tdd.red and reference docs/ai_context_bundle."
-
-tdd-green:
-	@echo "Green Phase: implement minimal code to pass tests."
-	@echo "Open chat mode: tdd.green and reference docs/ai_context_bundle."
-
-tdd-refactor:
-	@echo "Refactor Phase: improve design while keeping tests green."
-	@echo "Open chat mode: tdd.refactor and reference docs/ai_context_bundle."
-
-# Debug phases
-debug-start:
-	@echo "Debug Start: normalize bug report and plan reproduction."
-	@echo "Open chat mode: debug.start and reference docs/ai_context_bundle."
-
-debug-repro:
-	@echo "Debug Repro: write failing test to reproduce the issue."
-	@echo "Open chat mode: debug.repro and reference docs/ai_context_bundle."
-
-debug-isolate:
-	@echo "Debug Isolate: narrow root cause using diffs/instrumentation."
-	@echo "Open chat mode: debug.isolate and reference docs/ai_context_bundle."
-
-debug-fix:
-	@echo "Debug Fix: apply minimal change to make tests pass."
-	@echo "Open chat mode: debug.fix and reference docs/ai_context_bundle."
-
-debug-refactor:
-	@echo "Debug Refactor: clean up the fix and remove instrumentation."
-	@echo "Open chat mode: debug.refactor and reference docs/ai_context_bundle."
-
-debug-regress:
-	@echo "Debug Regress: run full regression to ensure stability."
-	@echo "Open chat mode: debug.regress and reference docs/ai_context_bundle."
-
-# Validate with existing repo tooling (safe-noop if pnpm/Nx absent)
-ai-validate:
-	@if command -v pnpm > /dev/null 2>&1; then \
-		if [ -f package.json ] && grep -q '"lint"' package.json; then \
-			pnpm run lint || true; \
-		else \
-			echo "No 'lint' script found in package.json. Skipping lint."; \
-		fi; \
-		if [ -f package.json ] && grep -q '"typecheck"' package.json; then \
-			pnpm run typecheck || true; \
-		else \
-			echo "No 'typecheck' script found in package.json. Skipping typecheck."; \
-		fi; \
-		if pnpm exec nx --version > /dev/null 2>&1; then \
-			pnpm exec nx run-many --target=test --all || true; \
-		else \
-			echo "Nx not available or no projects to test."; \
-		fi; \
-	else \
-		echo "pnpm not found. Skipping lint/typecheck/test."; \
-	fi
-
-# Thin wrapper for Nx generate (prints guidance if pnpm missing)
-ai-scaffold name="":
-	@if [ -z "{{ '{{name}}' }}" ]; then \
-		echo "Usage: just ai:scaffold name=<generator>"; \
-		echo "Example: just ai:scaffold name=@nx/js:lib"; \
-	else \
-		if command -v pnpm > /dev/null 2>&1; then \
-			echo "Running: pnpm exec nx g {{ '{{name}}' }}"; \
-			pnpm exec nx g {{ '{{name}}' }}; \
-		else \
-			echo "pnpm not found. Please run: pnpm exec nx g {{ '{{name}}' }}"; \
-		fi; \
-	fi
+prompt-lint:
+	pnpm prompt:lint

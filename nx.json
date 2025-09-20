@@ -63,5 +63,21 @@
         "version": {
             "preVersionCommand": "pnpm build"
         }
+    },
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "@nx/workspace/tasks-runners/default",
+            "options": {
+                "cacheableOperations": [
+                    "build",
+                    "test",
+                    "lint"
+                ],
+                "parallel": 3
+            }
+        }
+    },
+    "affected": {
+        "defaultBase": "main"
     }
 }

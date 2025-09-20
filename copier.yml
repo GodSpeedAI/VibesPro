@@ -85,3 +85,40 @@
     help: "Include Supabase integration"
     default: true
     when: "{{ database_type == 'postgresql' }}"
+
+  # Domain-Driven Design Configuration (for MERGE-TASK-003)
+  domain_name:
+    type: str
+    help: "Domain name (kebab-case)"
+    default: "{{ project_slug }}"
+    validator: "{% if not domain_name.replace('-', '').isalnum() %}Invalid domain name{% endif %}"
+
+  bounded_context:
+    type: str
+    help: "Bounded context for DDD"
+    default: "{{ domain_name }}"
+
+  include_domain_entities:
+    type: bool
+    help: "Generate domain entities"
+    default: true
+
+  include_value_objects:
+    type: bool
+    help: "Generate value objects"
+    default: true
+
+  include_domain_events:
+    type: bool
+    help: "Generate domain events"
+    default: true
+
+  include_use_cases:
+    type: bool
+    help: "Generate application use cases"
+    default: true
+
+  include_repositories:
+    type: bool
+    help: "Generate repository interfaces and implementations"
+    default: true

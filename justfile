@@ -1,161 +1,203 @@
 # Vibes Pro Build System
-  set shell := ["bash", "-uc"]
+set shell := ["bash", "-uc"]
 
-  # Default task shows available commands
-  default:
-      @just --list
+default:
+	@just --list
 
-  # Environment setup
-  setup: setup-node setup-python setup-tools
-      @echo "✅ Development environment ready"
+# --- Environment Setup ---
+setup: setup-node setup-python setup-tools
+	@echo "✅ Development environment ready"
 
-  setup-node:
-      @echo "🔧 Setting up Node.js environment..."
-      corepack enable
-      pnpm install
+setup-node:
+	@echo "🔧 Setting up Node.js environment..."
+	corepack enable
+	pnpm install
 
-  setup-python:
-      @echo "🔧 Setting up Python environment..."
-      uv sync --dev
+setup-python:
+	@echo "🔧 Setting up Python environment..."
+	uv sync --dev
 
-  setup-tools:
-      @echo "🔧 Setting up development tools..."
-      @if command -v copier >/dev/null 2>&1; then \
-          echo "✅ Copier already installed"; \
-      else \
-          echo "📦 Installing Copier..."; \
-          uv tool install copier; \
-      fi
+setup-tools:
+	@echo "🔧 Setting up development tools..."
+	@if command -v copier >/dev/null 2>&1; then \
+		echo "✅ Copier already installed"; \
+	else \
+		echo "📦 Installing Copier..."; \
+		uv tool install copier; \
+	fi
 
-  # Development tasks
-  dev:
-      @echo "🚀 Starting development servers..."
-      nx run-many --target=serve --all --parallel=5
+# --- Developer Experience ---
+dev:
+	@echo "🚀 Starting development servers..."
+	nx run-many --target=serve --all --parallel=5
 
-  build: _detect_build_strategy
+spec-matrix:
+	pnpm spec:matrix
 
-  _detect_build_strategy:
-      #!/usr/bin/env bash
-      if [ -f "nx.json" ]; then
-          echo "🏗️  Building with Nx..."
-          just build-nx
-      else
-          echo "🏗️  Building directly..."
-          just build-direct
-      fi
+prompt-lint:
+	pnpm prompt:lint
 
-  build-nx:
-      nx run-many --target=build --all --parallel=3
+# --- Build Orchestration ---
+build TARGET="": (_detect_build_strategy TARGET)
 
-  build-direct:
-      uv run python -m build
-      pnpm run build
+_detect_build_strategy TARGET:
+	#!/usr/bin/env bash
+	if [ -z "{{TARGET}}" ]; then
+		if [ -f "nx.json" ]; then
+			echo "🏗️  Building with Nx..."
+			just build-nx
+		else
+			echo "🏗️  Building directly..."
+			just build-direct
+		fi
+	else
+		just build-target "{{TARGET}}"
+	fi
 
-  # Testing
-  test: test-python test-node test-integration
+build-direct:
+	uv run python -m build
+	pnpm run build
 
-  test-python:
-      @echo "🧪 Running Python tests..."
-      uv run pytest
+build-nx:
+	nx run-many --target=build --all --parallel=3
 
-  test-node:
-      @echo "🧪 Running Node.js tests..."
-      pnpm test
+build-target TARGET:
+	nx run {{TARGET}}:build
 
-  test-integration:
-      @echo "🧪 Running integration tests..."
-      just test-generation
+# --- Test Orchestration ---
+test TARGET="": (_detect_test_strategy TARGET)
 
-  test-generation:
-      @echo "🧪 Testing template generation..."
-      rm -rf ../test-output
-      copier copy . ../test-output --data-file tests/fixtures/test-data.yml
-      cd ../test-output && pnpm install && pnpm build
+_detect_test_strategy TARGET:
+	#!/usr/bin/env bash
+	if [ -z "{{TARGET}}" ]; then
+		if [ -f "nx.json" ]; then
+			just test-nx
+		else
+			just test-direct
+		fi
+	else
+		just test-target "{{TARGET}}"
+	fi
 
-  # Code quality
-  lint: lint-python lint-node lint-templates
+test-direct:
+	just test-python
+	just test-node
+	just test-integration
 
-  lint-python:
-      @echo "🔍 Linting Python code..."
-      uv run ruff check .
-      uv run mypy .
+test-nx:
+	nx run-many --target=test --all --parallel=3
 
-  lint-node:
-      @echo "🔍 Linting Node.js code..."
-      pnpm lint
+test-target TARGET:
+	nx run {{TARGET}}:test
 
-  lint-templates:
-      @echo "🔍 Validating templates..."
-      python tools/validate-templates.py
+# --- Language-Specific Test Tasks ---
+test-python:
+	@echo "🧪 Running Python tests..."
+	uv run pytest
 
-  format: format-python format-node
+test-node:
+	@echo "🧪 Running Node.js tests..."
+	pnpm test
 
-  format-python:
-      @echo "✨ Formatting Python code..."
-      uv run black .
-      uv run isort .
+test-integration:
+	@echo "🧪 Running integration tests..."
+	just test-generation
 
-  format-node:
-      @echo "✨ Formatting Node.js code..."
-      pnpm format
+test-generation:
+	@echo "🧪 Testing template generation..."
+	rm -rf ../test-output
+	copier copy . ../test-output --data-file tests/fixtures/test-data.yml
+	cd ../test-output && pnpm install && pnpm build
 
-  # Database and AI tools
-  db-init:
-      @echo "🗄️  Initializing temporal database..."
-      python tools/temporal-db/init.py
+# --- Code Quality ---
+lint:
+	just lint-python
+	just lint-node
+	just lint-templates
 
-  db-backup:
-      @echo "💾 Backing up temporal database..."
-      python tools/temporal-db/backup.py
+lint-python:
+	@echo "🔍 Linting Python code..."
+	uv run ruff check .
+	uv run mypy .
 
-  # Migration tools
-  migrate-hexddd PROJECT_PATH:
-      @echo "🔄 Migrating HexDDD project..."
-      python tools/migration/hexddd-migrator.py {{PROJECT_PATH}}
+lint-node:
+	@echo "🔍 Linting Node.js code..."
+	pnpm lint
 
-  migrate-vibepdk TEMPLATE_PATH:
-      @echo "🔄 Migrating VibePDK template..."
-      python tools/migration/vibepdk-migrator.py {{TEMPLATE_PATH}}
+lint-templates:
+	@echo "🔍 Validating templates..."
+	python tools/validate-templates.py
 
-  # Type generation
-  types-generate:
-      @echo "🏷️  Generating types..."
-      python tools/type-generator/generate.py
+format:
+	just format-python
+	just format-node
 
-  types-validate:
-      @echo "🔍 Validating type consistency..."
-      python tools/type-generator/validate.py
+format-python:
+	@echo "✨ Formatting Python code..."
+	uv run black .
+	uv run isort .
 
-  # Cleanup
-  clean:
-      @echo "🧹 Cleaning build artifacts..."
-      rm -rf node_modules/.cache
-      rm -rf .nx
-      find . -type d -name "__pycache__" -exec rm -rf {} +
-      find . -type d -name ".pytest_cache" -exec rm -rf {} +
-      find . -type d -name "dist" -exec rm -rf {} +
+format-node:
+	@echo "✨ Formatting Node.js code..."
+	pnpm format
 
-  clean-all: clean
-      @echo "🧹 Deep cleaning..."
-      rm -rf node_modules
-      rm -rf .venv
-      rm -rf pnpm-lock.yaml
-      rm -rf uv.lock
+# --- Database and AI Tools ---
+db-init:
+	@echo "🗄️  Initializing temporal database..."
+	python tools/temporal-db/init.py
 
-  # Documentation
-  docs-build:
-      @echo "📚 Building documentation..."
-      python tools/docs/generator.py
+db-backup:
+	@echo "💾 Backing up temporal database..."
+	python tools/temporal-db/backup.py
 
-  docs-serve:
-      @echo "📚 Serving documentation..."
-      python -m http.server 8000 -d docs/build
+# --- Migration Tools ---
+migrate-hexddd PROJECT_PATH:
+	@echo "🔄 Migrating HexDDD project..."
+	python tools/migration/hexddd-migrator.py {{PROJECT_PATH}}
 
-  # AI tools
-  ai-analyze PROJECT_PATH:
-      @echo "🤖 Analyzing project with AI..."
-      python tools/ai/analyzer.py {{PROJECT_PATH}}
+migrate-vibepdk TEMPLATE_PATH:
+	@echo "🔄 Migrating VibePDK template..."
+	python tools/migration/vibepdk-migrator.py {{TEMPLATE_PATH}}
 
-  ai-suggest CONTEXT:
-      @echo "🤖 Getting AI suggestions..."
-      python tools/ai/suggester.py "{{CONTEXT}}"
+# --- Type Generation ---
+types-generate:
+	@echo "🏷️  Generating types..."
+	python tools/type-generator/generate.py
+
+types-validate:
+	@echo "🔍 Validating type consistency..."
+	python tools/type-generator/validate.py
+
+# --- Maintenance ---
+clean:
+	@echo "🧹 Cleaning build artifacts..."
+	rm -rf node_modules/.cache
+	rm -rf .nx
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	find . -type d -name "dist" -exec rm -rf {} +
+
+clean-all: clean
+	@echo "🧹 Deep cleaning..."
+	rm -rf node_modules
+	rm -rf .venv
+	rm -rf pnpm-lock.yaml
+	rm -rf uv.lock
+
+# --- Documentation ---
+docs-build:
+	@echo "📚 Building documentation..."
+	python tools/docs/generator.py
+
+docs-serve:
+	@echo "📚 Serving documentation..."
+	python -m http.server 8000 -d docs/build
+
+# --- AI Utilities ---
+ai-analyze PROJECT_PATH:
+	@echo "🤖 Analyzing project with AI..."
+	python tools/ai/analyzer.py {{PROJECT_PATH}}
+
+ai-suggest CONTEXT:
+	@echo "🤖 Getting AI suggestions..."
+	python tools/ai/suggester.py "{{CONTEXT}}"

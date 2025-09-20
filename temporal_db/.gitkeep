@@ -1,0 +1,2 @@
+# This file ensures the temporal_db directory is tracked by git
+# Database files will be created here at runtime
