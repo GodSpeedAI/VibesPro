@@ -1,4 +1,5 @@
-from typing import Protocol, TypeVar, Callable, Awaitable
+from collections.abc import Awaitable, Callable
+from typing import Protocol, TypeVar
 
 T = TypeVar('T')
 

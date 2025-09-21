@@ -6,13 +6,12 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict
-
+from typing import Any
 
 REQUIRED_ARCHITECTURES = {"hexagonal", "layered", "microservices"}
 
 
-def validate_project_config(context: Dict[str, Any]) -> None:
+def validate_project_config(context: dict[str, Any]) -> None:
     """Validate the Copier context before generation begins."""
 
     project_slug = context.get("project_slug", "")
@@ -42,7 +41,7 @@ def main() -> None:
     print("🔧 Running pre-generation validation...")
 
     context_path = Path.cwd() / "copier_answers.json"
-    context: Dict[str, Any]
+    context: dict[str, Any]
     if context_path.exists():
         context = json.loads(context_path.read_text())
     else:

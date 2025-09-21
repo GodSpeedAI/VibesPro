@@ -1,7 +1,9 @@
-from typing import Protocol, Type, Callable
+from collections.abc import Callable
+from typing import Protocol
+
 
 class IEventBus(Protocol):
     def publish(self, event: object) -> None:
         ...
-    def subscribe(self, event_type: Type, handler: Callable) -> None:
+    def subscribe(self, event_type: type, handler: Callable) -> None:
         ...

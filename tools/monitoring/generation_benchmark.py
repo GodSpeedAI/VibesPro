@@ -7,7 +7,6 @@ import json
 import subprocess
 import time
 from pathlib import Path
-from typing import Any
 
 DATA_FILE = Path("tests/fixtures/test-data.yml")
 OUTPUT_DIR = Path(".monitoring/test-output")

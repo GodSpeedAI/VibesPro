@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+src/vibes_pro.egg-info/PKG-INFO
+src/vibes_pro.egg-info/SOURCES.txt
+src/vibes_pro.egg-info/dependency_links.txt
+src/vibes_pro.egg-info/requires.txt
+src/vibes_pro.egg-info/top_level.txt

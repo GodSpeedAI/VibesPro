@@ -1,9 +1,11 @@
-from typing import Type, Callable, Dict, List
+from collections.abc import Callable
+
 from my_test_domain.domain.ports import IEventBus
+
 
 class EventBusInMemoryAdapter(IEventBus):
     def __init__(self) -> None:
-        self._handlers: Dict[Type, List[Callable]] = {}
+        self._handlers: dict[type, list[Callable]] = {}
 
     def publish(self, event: object) -> None:
         event_type = type(event)
@@ -11,7 +13,7 @@ class EventBusInMemoryAdapter(IEventBus):
             for handler in self._handlers[event_type]:
                 handler(event)
 
-    def subscribe(self, event_type: Type, handler: Callable) -> None:
+    def subscribe(self, event_type: type, handler: Callable) -> None:
         if event_type not in self._handlers:
             self._handlers[event_type] = []
         self._handlers[event_type].append(handler)

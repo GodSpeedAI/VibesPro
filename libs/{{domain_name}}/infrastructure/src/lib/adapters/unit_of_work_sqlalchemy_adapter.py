@@ -1,6 +1,8 @@
-from typing import TypeVar, Callable, Awaitable
-from sqlalchemy.ext.asyncio import AsyncSession
+from collections.abc import Awaitable, Callable
+from typing import TypeVar
+
 from my_test_domain.domain.ports import IUnitOfWork
+from sqlalchemy.ext.asyncio import AsyncSession
 
 T = TypeVar('T')
 
