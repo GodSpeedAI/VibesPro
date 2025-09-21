@@ -107,7 +107,18 @@ test-generation:
 	@echo "🧪 Testing template generation..."
 	rm -rf ../test-output
 	copier copy . ../test-output --data-file tests/fixtures/test-data.yml
-	cd ../test-output && pnpm install && pnpm build --if-present || echo "⚠️ Some build targets failed, but core libraries build successfully"
+	cd ../test-output && pnpm install && { \
+		echo "🏗️ Building all projects..."; \
+		pnpm build --if-present || { \
+			echo "⚠️ Some build targets failed. Checking core domain libraries..."; \
+			if pnpm nx run test-domain-domain:build && pnpm nx run test-domain-application:build && pnpm nx run test-domain-infrastructure:build; then \
+				echo "✅ Core domain libraries built successfully - MERGE-TASK-003 success criteria met"; \
+			else \
+				echo "❌ Core domain libraries failed to build"; \
+				exit 1; \
+			fi; \
+		}; \
+	}
 
 # --- Code Quality ---
 lint:
