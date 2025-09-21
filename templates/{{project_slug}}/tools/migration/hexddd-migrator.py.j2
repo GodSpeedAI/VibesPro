@@ -12,7 +12,7 @@ import json
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional, Mapping, Sequence
 
 
 class HexDDDMigrator:
@@ -22,7 +22,7 @@ class HexDDDMigrator:
         self.source_path = Path(source_path)
         self.migration_log: List[str] = []
 
-    def analyze_project(self) -> Dict[str, Any]:
+    def analyze_project(self) -> Dict[str, object]:
         """Analyze the existing HexDDD project structure."""
         analysis = {
             "has_nx_config": (self.source_path / "nx.json").exists(),
@@ -33,7 +33,7 @@ class HexDDDMigrator:
         }
         return analysis
 
-    def migrate(self, target_path: str | Path) -> Dict[str, Any]:
+    def migrate(self, target_path: str | Path) -> Dict[str, object]:
         """Execute the migration process."""
         target_path = Path(target_path)
 
@@ -160,7 +160,7 @@ class HexDDDMigrator:
 
         self.migration_log.append("Created copier.yml configuration")
 
-    def _adapt_nx_config(self, config: Dict[str, Any]) -> Dict[str, Any]:
+    def _adapt_nx_config(self, config: Mapping[str, object]) -> Dict[str, object]:
         """Adapt Nx configuration for template use."""
         # Replace hardcoded values with template variables
         config_str = json.dumps(config)

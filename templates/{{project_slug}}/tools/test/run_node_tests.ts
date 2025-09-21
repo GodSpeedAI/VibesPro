@@ -57,7 +57,15 @@ async function main() {
         console.log(`${status} ${path.relative(ROOT, f)} (${r.ms} ms)`);
         if (!r.ok) {
             // eslint-disable-next-line no-console
-            console.error((r as any).error?.stack || (r as any).error);
+            const maybeError = (r as unknown) as { error?: unknown };
+            const err = maybeError.error;
+            if (err && typeof err === 'object') {
+                const errRec = err as Record<string, unknown>;
+                const stack = errRec['stack'] as string | undefined;
+                console.error(stack ?? String(err));
+            } else {
+                console.error(String(err));
+            }
         }
     }
     const failed = results.filter(r => !r.ok);

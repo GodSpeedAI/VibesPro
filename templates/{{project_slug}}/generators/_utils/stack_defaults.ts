@@ -17,7 +17,7 @@ const frameworkToLanguage: Record<string, ServiceDefaults['language']> = {
  * Derive generator defaults from resolved tech stack (deterministic, minimal).
  * Pure function; safe to use in dry-runs and planning.
  */
-export function deriveServiceDefaults(stack: any | null): ServiceDefaults {
+export function deriveServiceDefaults(stack: unknown | null): ServiceDefaults {
     const defaults: ServiceDefaults = {
         language: 'python',
         backendFramework: 'none',
@@ -26,7 +26,8 @@ export function deriveServiceDefaults(stack: any | null): ServiceDefaults {
 
     const core = getCategory(stack, 'core_application_dependencies');
     if (core && typeof core === 'object') {
-        const webFrameworks = (core as any).web_frameworks;
+        const coreRec = core as Record<string, unknown>;
+        const webFrameworks = coreRec['web_frameworks'];
         if (Array.isArray(webFrameworks)) {
             const lower = webFrameworks.map(String).map((s) => s.toLowerCase());
             for (const fw of lower) {

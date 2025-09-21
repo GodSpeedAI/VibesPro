@@ -21,8 +21,6 @@ def generate_types(target: Path) -> None:
     type_generator_dir = target / "tools" / "type-generator"
     schema_path = target / "temporal_db" / "schema.json"
     ts_output_dir = target / "libs" / "shared" / "database-types"
-    py_output_dir = target / "libs" / "backend" / "type_utils"
-
     # Ensure a schema file exists to avoid errors
     if not schema_path.exists():
         print(f"   → Schema file not found at {schema_path}, creating a dummy file.")
@@ -36,7 +34,11 @@ def generate_types(target: Path) -> None:
         str(schema_path),
         "--output-dir",
         str(ts_output_dir),
-        # Note: Python generation is implicitly handled by the tool based on schema
+    ]
+
+    # Note: The type-generator CLI produces TypeScript artifacts only.
+    # It does not generate Python types — run the project's Python type-generation
+    # step separately if Python artifacts are required (e.g. `just types-generate`).
     ]
     run(cmd, cwd=type_generator_dir)
 

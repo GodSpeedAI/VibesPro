@@ -31,5 +31,5 @@ export interface UtilOptions {
    */
   type?: "internal" | "buildable" | "publishable";
   
-  [k: string]: any;
+  [k: string]: unknown;
 }

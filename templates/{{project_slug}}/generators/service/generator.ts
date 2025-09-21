@@ -8,21 +8,25 @@ interface ServiceSchema {
   language?: 'python' | 'typescript';
 }
 
-function normalizeOptions(schema: any): ServiceSchema {
-  const name = names(schema.name).fileName;
+function normalizeOptions(schema: unknown): ServiceSchema {
+  // Narrow the incoming schema to the expected shape at runtime
+  const s = (schema && typeof schema === 'object') ? (schema as Record<string, unknown>) : {};
+  const rawName = typeof s.name === 'string' ? s.name : 'untitled';
+  const name = names(rawName).fileName;
+
   return {
-    ...schema,
     name,
+    language: (s.language === 'python' || s.language === 'typescript') ? (s.language as 'python' | 'typescript') : undefined,
   };
 }
 
-export default async function (tree: Tree, schema: any) {
+export default async function (tree: Tree, schema: unknown) {
   const options = normalizeOptions(schema);
 
   // Optional: seed defaults from resolved tech stack (if present)
   try {
     const root = tree.root;
-    const stack = loadResolvedStack(root);
+  const stack = loadResolvedStack(root);
     // Feature flag: only use derived defaults when explicitly enabled
     if (process.env.VIBEPDK_USE_STACK_DEFAULTS === '1') {
       const defaults = deriveServiceDefaults(stack);
@@ -30,7 +34,11 @@ export default async function (tree: Tree, schema: any) {
     }
   } catch (e) {
     // Best-effort only; never fail generator on missing stack, but log a warning.
-    console.warn(`Could not derive defaults from tech stack: ${e.message}`);
+    if (e instanceof Error) {
+      console.warn(`Could not derive defaults from tech stack: ${e.message}`);
+    } else {
+      console.warn(`Could not derive defaults from tech stack: ${String(e)}`);
+    }
   }
 
   // Ensure language has a default value to satisfy TypeScript

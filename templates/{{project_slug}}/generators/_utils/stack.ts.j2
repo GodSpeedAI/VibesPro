@@ -6,7 +6,7 @@ import { join } from 'node:path';
  * - Default path: {{ project_slug }}/tools/transformers/.derived/techstack.resolved.json
  * - Override via env: VIBEPDK_TECHSTACK_RESOLVED
  */
-export function loadResolvedStack(root: string): any | null {
+export function loadResolvedStack(root: string): unknown | null {
     const override = process.env.VIBEPDK_TECHSTACK_RESOLVED;
     const p = override || join(root, '{{ project_slug }}', 'tools', 'transformers', '.derived', 'techstack.resolved.json');
     if (!existsSync(p)) return null;
@@ -19,9 +19,11 @@ export function loadResolvedStack(root: string): any | null {
 }
 
 /** Get a simple helper to fetch a category subtree safely. */
-export function getCategory(stack: any | null, name: string): any | null {
+export function getCategory(stack: unknown | null, name: string): unknown | null {
     if (!stack || typeof stack !== 'object') return null;
-    const cats = (stack as any).categories;
+    const stackRec = stack as Record<string, unknown>;
+    const cats = stackRec['categories'];
     if (!cats || typeof cats !== 'object') return null;
-    return (cats as any)[name] ?? null;
+    const catsRec = cats as Record<string, unknown>;
+    return (catsRec[name] as unknown) ?? null;
 }

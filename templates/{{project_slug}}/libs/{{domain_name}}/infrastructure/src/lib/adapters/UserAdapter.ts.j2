@@ -3,6 +3,9 @@
 // Bounded Context: {{ bounded_context }}
 
 import { User, UserId } from '../../domain/src/lib/entities/User';
+import { IAdvancedUserRepository } from '../../application/src/lib/ports/UserRepository';
+// Next types for API handlers
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 // Data Transfer Objects (DTOs) for external API communication
 export interface UserDTO {
@@ -66,10 +69,16 @@ export class UserAdapter {
     );
   }
 
+  // More comprehensive email validation using regex
+  private static isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   static validateCreateUserDTO(dto: CreateUserDTO): string[] {
     const errors: string[] = [];
 
-    if (!dto.email || !dto.email.includes('@')) {
+    if (!dto.email || !this.isValidEmail(dto.email)) {
       errors.push('Valid email is required');
     }
 
@@ -87,7 +96,7 @@ export class UserAdapter {
   static validateUpdateUserDTO(dto: UpdateUserDTO): string[] {
     const errors: string[] = [];
 
-    if (dto.email !== undefined && (!dto.email || !dto.email.includes('@'))) {
+    if (dto.email !== undefined && (!dto.email || !this.isValidEmail(dto.email))) {
       errors.push('Valid email is required');
     }
 
@@ -101,14 +110,15 @@ export class UserAdapter {
 
     return errors;
   }
+
 }
 
 {% if frontend_framework == 'next' -%}
 // Next.js API Route Handler
 export class UserAPIHandler {
-  constructor(private userRepository: any) {}
+  constructor(private readonly userRepository: IAdvancedUserRepository) {}
 
-  async handleCreateUser(req: any, res: any): Promise<void> {
+  async handleCreateUser(req: NextApiRequest, res: NextApiResponse): Promise<void> {
     try {
       const dto: CreateUserDTO = req.body;
       const errors = UserAdapter.validateCreateUserDTO(dto);
@@ -127,10 +137,21 @@ export class UserAPIHandler {
     }
   }
 
-  async handleGetUser(req: any, res: any): Promise<void> {
+  async handleGetUser(req: NextApiRequest, res: NextApiResponse): Promise<void> {
     try {
-      const { id } = req.query;
-      const user = await this.userRepository.findById(new UserId(id));
+      const rawId = req.query.id;
+
+      if (Array.isArray(rawId)) {
+        res.status(400).json({ error: 'Invalid id parameter' });
+        return;
+      }
+
+      if (!rawId || typeof rawId !== 'string') {
+        res.status(400).json({ error: 'Missing id parameter' });
+        return;
+      }
+
+      const user = await this.userRepository.findById(new UserId(rawId));
 
       if (!user) {
         res.status(404).json({ error: 'User not found' });

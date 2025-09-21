@@ -16,7 +16,7 @@ export interface GeneratorResult {
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..', '..');
 const TEST_OUTPUT_ROOT = path.join(os.tmpdir(), 'vibespro-generator-tests');
 
-const BASE_CONTEXT: Record<string, any> = {
+const BASE_CONTEXT: Record<string, unknown> = {
   project_name: 'Test Project',
   project_slug: 'test-project',
   author_name: 'Test Author',
@@ -32,7 +32,7 @@ const BASE_CONTEXT: Record<string, any> = {
   domains: [],
 };
 
-function serializeValue(key: string, value: any): string {
+function serializeValue(key: string, value: unknown): string {
   if (Array.isArray(value)) {
     if (value.length === 0) {
       return `${key}: []`;
@@ -64,7 +64,7 @@ function serializeValue(key: string, value: any): string {
   return `${key}: "${String(value)}"`;
 }
 
-function buildYaml(options: Record<string, any>): string {
+function buildYaml(options: Record<string, unknown>): string {
   return Object.entries(options)
     .map(([key, value]) => serializeValue(key, value))
     .filter(Boolean)
@@ -77,7 +77,7 @@ async function ensureTestRoot(): Promise<void> {
 
 export async function runGenerator(
   generatorType: string,
-  overrides: Record<string, any>
+  overrides: Record<string, unknown>
 ): Promise<GeneratorResult> {
   await ensureTestRoot();
 
@@ -85,7 +85,7 @@ export async function runGenerator(
   const outputPath = path.join(TEST_OUTPUT_ROOT, `${generatorType}-${timestamp}`);
   const dataFilePath = path.join(TEST_OUTPUT_ROOT, `answers-${generatorType}-${timestamp}.yml`);
 
-  const context: Record<string, any> = {
+  const context: Record<string, unknown> = {
     ...BASE_CONTEXT,
     project_slug: `${BASE_CONTEXT.project_slug}-${timestamp}`,
     generator_type: generatorType,
@@ -129,7 +129,7 @@ export async function runGenerator(
 
   try {
     await execAsync(command, { env, maxBuffer: 1024 * 1024 * 20 });
-  } catch (error) {
+  } catch (error: unknown) {
     success = false;
     const execError = error as { stderr?: string; stdout?: string; message?: string } | undefined;
     if (execError?.stderr) {
@@ -138,6 +138,10 @@ export async function runGenerator(
 `);
     } else if (execError?.message) {
       errorMessage = execError.message;
+      process.stderr.write(`${errorMessage}
+`);
+    } else if (typeof error === 'string') {
+      errorMessage = error;
       process.stderr.write(`${errorMessage}
 `);
     } else {
@@ -190,9 +194,10 @@ export async function cleanupGeneratorOutputs(): Promise<void> {
     for (const entry of entries) {
       await fs.promises.rm(path.join(TEST_OUTPUT_ROOT, entry), { recursive: true, force: true });
     }
-  } catch (error: any) {
-    if (error && error.code !== 'ENOENT') {
-      throw error;
+  } catch (error: unknown) {
+    const err = error as { code?: string } | undefined;
+    if (err && err.code !== 'ENOENT') {
+      throw error as Error;
     }
   }
 }

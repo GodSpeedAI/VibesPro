@@ -28,7 +28,8 @@ export function verifyTypeParity(tsType: string, pyType: string): boolean {
     string: ['str', 'uuid', 'datetime', 'date', 'time', 'bytes'],
     number: ['int', 'float'],
     boolean: ['bool'],
-    unknown: ['dict', 'any'],
+    // Map loosely typed TypeScript 'unknown' to Python dict-like types. Avoid mapping to 'any'.
+    unknown: ['dict'],
     null: ['none']
   };
 

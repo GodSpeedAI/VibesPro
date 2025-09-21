@@ -1,6 +1,23 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 
+interface ColumnDef {
+  type: string;
+  nullable?: boolean;
+  is_array?: boolean;
+  [k: string]: unknown;
+}
+
+interface TableDef {
+  columns?: Record<string, ColumnDef>;
+  [k: string]: unknown;
+}
+
+interface DbSchema {
+  tables?: Record<string, TableDef>;
+  [k: string]: unknown;
+}
+
 export class DbToTypeScript {
   generate(schemaPath: string, outputDir?: string): Record<string, Record<string, string>> {
     const schema = this._parseSchema(schemaPath);
@@ -13,12 +30,12 @@ export class DbToTypeScript {
     return types;
   }
 
-  private _parseSchema(schemaPath: string): any {
+  private _parseSchema(schemaPath: string): DbSchema {
     const content = readFileSync(schemaPath, 'utf-8');
-    return JSON.parse(content);
+    return JSON.parse(content) as DbSchema;
   }
 
-  private _generateTypes(schema: any): Record<string, Record<string, string>> {
+  private _generateTypes(schema: DbSchema): Record<string, Record<string, string>> {
     const types: Record<string, Record<string, string>> = {};
 
     // Utility function to convert table names to PascalCase
@@ -30,12 +47,17 @@ export class DbToTypeScript {
         .join('');
     }
 
-    for (const [tableName, tableDef] of Object.entries(schema.tables)) {
+    if (!schema.tables || typeof schema.tables !== 'object') return types;
+
+    for (const [tableName, tableDefRaw] of Object.entries(schema.tables)) {
       const className = toPascalCase(tableName);
       const fields: Record<string, string> = {};
 
-      for (const [colName, colDef] of Object.entries((tableDef as any).columns)) {
-        const columnDef = colDef as any;
+      const tableDef = (tableDefRaw as TableDef) || {};
+      const columns = tableDef.columns ?? {};
+
+      for (const [colName, colDefRaw] of Object.entries(columns)) {
+        const columnDef = colDefRaw as ColumnDef;
         const tsType = this.mapPostgresToTypeScript(
           columnDef.type,
           columnDef.nullable || false,

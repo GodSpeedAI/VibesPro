@@ -1,17 +1,21 @@
 import { formatFiles, Tree } from '@nx/devkit';
 import { updateDepConst } from '../utils/update-dep-const';
 
-export default async function (tree: Tree, schema: any) {
-  updateDepConst(tree, (depConst) => {
-    const jokerIndex = depConst.findIndex(
-      (entry: any) =>
-        entry['sourceTag'] &&
-        entry['sourceTag'] === '*' &&
-        entry['onlyDependOnLibsWithTags'] &&
-        Array.isArray(entry['onlyDependOnLibsWithTags']) &&
-        entry['onlyDependOnLibsWithTags'].length > 0 &&
-        entry['onlyDependOnLibsWithTags'][0] === '*'
-    );
+export default async function (tree: Tree, schema?: Record<string, unknown>) {
+    updateDepConst(tree, (depConst) => {
+    const jokerIndex = depConst.findIndex((entry) => {
+      const e = entry as unknown;
+      if (typeof e !== 'object' || e === null) return false;
+      const rec = e as Record<string, unknown>;
+      return (
+        !!rec['sourceTag'] &&
+        rec['sourceTag'] === '*' &&
+        !!rec['onlyDependOnLibsWithTags'] &&
+        Array.isArray(rec['onlyDependOnLibsWithTags']) &&
+        (rec['onlyDependOnLibsWithTags'] as unknown[]).length > 0 &&
+        (rec['onlyDependOnLibsWithTags'] as unknown[])[0] === '*'
+      );
+    });
 
     if (jokerIndex !== -1) {
       depConst.splice(jokerIndex, 1);

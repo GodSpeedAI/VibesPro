@@ -1,4 +1,4 @@
-export interface IEventBus {
-  publish(event: any): void;
-  subscribe(event: any, handler: any): void;
+export interface IEventBus<T = unknown> {
+  publish(event: T): void;
+  subscribe(event: { name?: string } | { constructor?: { name: string } }, handler: (event: T) => void): void;
 }

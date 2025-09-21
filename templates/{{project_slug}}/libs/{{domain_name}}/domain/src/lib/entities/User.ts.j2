@@ -2,25 +2,7 @@
 // Generated User Entity for {{ domain_name | capitalize }} Domain
 // Bounded Context: {{ bounded_context }}
 
-export interface IUserId {
-  readonly value: string;
-}
-
-export class UserId implements IUserId {
-  constructor(public readonly value: string) {
-    if (!value) {
-      throw new Error('User ID cannot be empty');
-    }
-  }
-
-  equals(other: UserId): boolean {
-    return this.value === other.value;
-  }
-
-  toString(): string {
-    return this.value;
-  }
-}
+import { UserId } from '../value-objects/UserId';
 
 export interface IUserProps {
   readonly id: UserId;
@@ -42,7 +24,7 @@ export class User implements IUserProps {
   }
 
   private validate(): void {
-    if (!this.email || !this.email.includes('@')) {
+    if (!this.email || !User.isValidEmail(this.email)) {
       throw new Error('Invalid email format');
     }
     if (!this.name || this.name.trim().length === 0) {
@@ -51,6 +33,12 @@ export class User implements IUserProps {
     if (this.name.length > 255) {
       throw new Error('User name cannot exceed 255 characters');
     }
+  }
+
+  private static isValidEmail(email: string): boolean {
+    // RFC 5322 simplified email regex (practical)
+    const emailRegex = /^[\w.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    return emailRegex.test(email);
   }
 
   updateName(newName: string): User {

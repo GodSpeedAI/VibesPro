@@ -1,6 +1,23 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 
+export interface ColumnDef {
+  type: string;
+  nullable?: boolean;
+  is_array?: boolean;
+  [k: string]: unknown;
+}
+
+export interface TableDef {
+  columns: Record<string, ColumnDef>;
+  [k: string]: unknown;
+}
+
+export interface Schema {
+  tables: Record<string, TableDef>;
+  [k: string]: unknown;
+}
+
 export class DbToTypeScript {
   generate(schemaPath: string, outputDir?: string): Record<string, Record<string, string>> {
     const schema = this._parseSchema(schemaPath);
@@ -13,24 +30,40 @@ export class DbToTypeScript {
     return types;
   }
 
-  private _parseSchema(schemaPath: string): any {
+  private _parseSchema(schemaPath: string): Schema {
     const content = readFileSync(schemaPath, 'utf-8');
-    return JSON.parse(content);
+    const parsed = JSON.parse(content);
+
+    // Basic runtime validation to ensure we have the expected shape.
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error(`Invalid schema file: expected an object at root (${schemaPath})`);
+    }
+
+    const root = parsed as Record<string, unknown>;
+    const tables = root.tables;
+    if (!tables || typeof tables !== 'object' || Array.isArray(tables)) {
+      throw new Error(`Invalid schema file: missing or malformed 'tables' object (${schemaPath})`);
+    }
+
+    return parsed as Schema;
   }
 
-  private _generateTypes(schema: any): Record<string, Record<string, string>> {
+  private _generateTypes(schema: Schema): Record<string, Record<string, string>> {
     const types: Record<string, Record<string, string>> = {};
 
-    for (const [tableName, tableDef] of Object.entries(schema.tables)) {
+    // Guard in case schema.tables is missing or not an object
+    const tables = schema && typeof schema === 'object' ? (schema as Schema).tables : {} as Record<string, TableDef>;
+    for (const [tableName, tableDef] of Object.entries(tables || {})) {
       const className = tableName.charAt(0).toUpperCase() + tableName.slice(1);
       const fields: Record<string, string> = {};
 
-      for (const [colName, colDef] of Object.entries((tableDef as any).columns)) {
-        const columnDef = colDef as any;
+      const columns = tableDef && typeof tableDef === 'object' ? (tableDef as TableDef).columns : {} as Record<string, ColumnDef>;
+      for (const [colName, colDef] of Object.entries(columns || {})) {
+        const columnDef = colDef as ColumnDef;
         const tsType = this.mapPostgresToTypeScript(
-          columnDef.type,
-          columnDef.nullable || false,
-          columnDef.is_array || false
+          String(columnDef.type ?? ''),
+          Boolean(columnDef.nullable),
+          Boolean(columnDef.is_array)
         );
         fields[colName] = tsType;
       }

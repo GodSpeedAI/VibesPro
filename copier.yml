@@ -143,7 +143,7 @@ app_domains:
   type: str
   help: "Comma-separated list of domain names to integrate with the application"
   default: "{{ domain_name }}"
-  validator: "{% if app_domains and not app_domains.replace(',', '').replace('-', '').replace(' ', '').isalnum() %}Invalid domain names{% endif %}"
+  validator: "{% set _invalid = false %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn == '' or ' ' in dn or dn != dn.lower() or not dn.replace('-', '').isalnum() %}{% set _invalid = true %}{% break %}{% endif %}{% endfor %}{% if _invalid %}Invalid domain names{% endif %}"
 
 include_api_client:
   type: bool
