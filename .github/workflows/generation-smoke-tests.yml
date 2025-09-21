@@ -52,8 +52,8 @@ jobs:
       - name: Build + Typecheck generated project
         run: |
           cd "$RENDERED_DIR" || exit 1
-          pnpm run build --if-present || true
-          pnpm run typecheck --if-present || true
+          pnpm run build --if-present || echo "⚠️ Some build targets failed"
+          pnpm run typecheck --if-present || echo "⚠️ Some typecheck targets failed"
 
       - name: Run tests in generated project
         run: |

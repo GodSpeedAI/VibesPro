@@ -1,0 +1,33 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "{{ project_slug }}-type-generator-tools",
+  "projectType": "library",
+  "sourceRoot": "tools/type-generator/src",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/tools/type-generator",
+        "main": "tools/type-generator/src/index.ts",
+        "tsConfig": "tools/type-generator/tsconfig.lib.json",
+        "assets": ["tools/type-generator/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["tools/type-generator/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "tools/type-generator/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

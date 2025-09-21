@@ -2,11 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  {% if app_framework == 'next' and app_router_style == 'app' %}
-  experimental: {
-    appDir: true,
-  },
-  {% endif %}
   {% if include_supabase %}
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
