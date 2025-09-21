@@ -39,9 +39,9 @@ jobs:
         run: |
           TARGET_DIR=$(mktemp -d)
           echo "Rendering into $TARGET_DIR"
-          copier copy ./templates/{{project_slug}} $TARGET_DIR --data-file tests/fixtures/test-data.yml --force
+          copier copy . "$TARGET_DIR" --data-file tests/fixtures/test-data.yml --force
           echo "RENDERED_DIR=$TARGET_DIR" >> $GITHUB_ENV
-          echo "Rendered files:" && ls -la $TARGET_DIR | sed -n '1,120p'
+          echo "Rendered files:" && ls -la "$TARGET_DIR" | sed -n '1,120p'
 
       - name: Install generated project dependencies
         run: |
