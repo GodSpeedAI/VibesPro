@@ -35,21 +35,37 @@ program
     const tsFiles = require('fs').readdirSync(tsDir).filter(file => file.endsWith('.ts'));
     const tsTypes = {};
 
+    const ts = require('typescript');
     tsFiles.forEach(file => {
-      const content = readFileSync(join(tsDir, file), 'utf-8');
-      const interfaceMatch = content.match(/export interface (\w+) {([^}]*)}/);
-      if (interfaceMatch) {
-        const className = interfaceMatch[1];
-        const fields = {};
-        const fieldLines = interfaceMatch[2].trim().split('\n');
-        fieldLines.forEach(line => {
-          const fieldMatch = line.trim().match(/(\w+):\s*(.+);/);
-          if (fieldMatch) {
-            fields[fieldMatch[1]] = fieldMatch[2].trim();
-          }
-        });
-        tsTypes[className] = fields;
+      const filePath = join(tsDir, file);
+      const sourceFile = ts.createSourceFile(
+        filePath,
+        require('fs').readFileSync(filePath, 'utf-8'),
+        ts.ScriptTarget.Latest,
+        true
+      );
+
+      function visit(node) {
+        if (
+          ts.isInterfaceDeclaration(node) &&
+          node.modifiers &&
+          node.modifiers.some(mod => mod.kind === ts.SyntaxKind.ExportKeyword)
+        ) {
+          const className = node.name.text;
+          const fields = {};
+          node.members.forEach(member => {
+            if (ts.isPropertySignature(member) && member.name && member.type) {
+              const fieldName = member.name.getText(sourceFile);
+              const fieldType = member.type.getText(sourceFile);
+              fields[fieldName] = fieldType;
+            }
+          });
+          tsTypes[className] = fields;
+        }
+        ts.forEachChild(node, visit);
       }
+
+      visit(sourceFile);
     });
 
     // Read Python files
