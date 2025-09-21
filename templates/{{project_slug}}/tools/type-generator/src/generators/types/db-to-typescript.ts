@@ -21,8 +21,17 @@ export class DbToTypeScript {
   private _generateTypes(schema: any): Record<string, Record<string, string>> {
     const types: Record<string, Record<string, string>> = {};
 
+    // Utility function to convert table names to PascalCase
+    function toPascalCase(name: string): string {
+      return name
+        .replace(/[_-]+/g, ' ')
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('');
+    }
+
     for (const [tableName, tableDef] of Object.entries(schema.tables)) {
-      const className = tableName.charAt(0).toUpperCase() + tableName.slice(1);
+      const className = toPascalCase(tableName);
       const fields: Record<string, string> = {};
 
       for (const [colName, colDef] of Object.entries((tableDef as any).columns)) {
