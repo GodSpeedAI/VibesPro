@@ -101,7 +101,12 @@ export class DbToTypeScript {
       bytea: 'string',
     };
 
-    let baseType = typeMap[postgresType.toLowerCase()] || 'unknown';
+    const lowerType = postgresType.toLowerCase();
+    let baseType = typeMap[lowerType];
+    if (!baseType) {
+      baseType = 'unknown';
+      console.warn(`[db-to-typescript] Unmapped Postgres type encountered: '${postgresType}'. Defaulting to 'unknown'.`);
+    }
 
     if (isArray) {
       baseType = `${baseType}[]`;
