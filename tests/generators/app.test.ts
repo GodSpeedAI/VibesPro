@@ -1,10 +1,10 @@
 // Test file: tests/generators/app.test.ts
 // Test for MERGE-TASK-004: Application Generator Template
 
-import { describe, it, expect, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import { runGenerator, cleanupGeneratorOutputs } from './utils';
+import { afterEach, describe, expect, it } from 'vitest';
+import { cleanupGeneratorOutputs, runGenerator } from './utils';
 
 // Helper function to verify API client content
 async function verifyApiClientContent(filePath: string, expectedDomains: string[]): Promise<void> {
@@ -27,7 +27,7 @@ async function verifyConfigContent(filePath: string, expectedContent: string[]):
   }
 }
 
-// Helper function to verify page content  
+// Helper function to verify page content
 async function verifyPageContent(filePath: string, shouldIncludeExample: boolean, shouldIncludeSupabase = false): Promise<void> {
   if (fs.existsSync(filePath)) {
     const contents = await fs.promises.readFile(filePath, 'utf-8');
@@ -136,7 +136,7 @@ describe('Application Generator', () => {
       expect(result.files).toContain('apps/remix-with-example/app/routes/index.tsx');
       expect(result.files).toContain('apps/remix-with-example/app/lib/api-client.ts');
 
-      // Check API client domain integration  
+      // Check API client domain integration
       const remixExampleApiClientPath = path.join(result.outputPath, 'apps/remix-with-example/app/lib/api-client.ts');
       await verifyApiClientContent(remixExampleApiClientPath, ['user-management', 'billing']);
 
@@ -160,7 +160,7 @@ describe('Application Generator', () => {
       expect(result.files).toContain('apps/mobile-app/lib/api-client.ts');
       expect(result.files).toContain('apps/mobile-app/app.json');
 
-      // Check Expo configuration - get the actual project slug from the result 
+      // Check Expo configuration - get the actual project slug from the result
       const expoAppJsonPath = path.join(result.outputPath, 'apps/mobile-app/app.json');
       if (fs.existsSync(expoAppJsonPath)) {
         const contents = await fs.promises.readFile(expoAppJsonPath, 'utf-8');
@@ -201,6 +201,15 @@ describe('Application Generator', () => {
       // Check App.tsx has example integration and Supabase
       const expoExampleAppTsxPath = path.join(result.outputPath, 'apps/expo-with-example/App.tsx');
       await verifyPageContent(expoExampleAppTsxPath, true, true);
+
+      // Verify Expo-specific content checks
+      const expoApiClientPath = path.join(result.outputPath, 'apps/expo-with-example/lib/api-client.ts');
+      if (fs.existsSync(expoApiClientPath)) {
+        const expoContents = await fs.promises.readFile(expoApiClientPath, 'utf-8');
+        expect(expoContents).toContain('user-management');
+        expect(expoContents).toContain('billing');
+        expect(expoContents).toContain('DomainName');
+      }
     }, 30000);
   });
 
