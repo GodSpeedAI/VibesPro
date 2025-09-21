@@ -1,6 +1,6 @@
-import { Tree, formatFiles, installPackagesTask, generateFiles, names } from '@nx/devkit';
+import { Tree, formatFiles, generateFiles, installPackagesTask, names } from '@nx/devkit';
 import * as path from 'path';
-import { getCategory, loadResolvedStack } from '../_utils/stack';
+import { loadResolvedStack } from '../_utils/stack';
 import { deriveServiceDefaults } from '../_utils/stack_defaults';
 
 interface ServiceSchema {
@@ -26,7 +26,7 @@ export default async function (tree: Tree, schema: unknown) {
   // Optional: seed defaults from resolved tech stack (if present)
   try {
     const root = tree.root;
-  const stack = loadResolvedStack(root);
+    const stack = loadResolvedStack(root);
     // Feature flag: only use derived defaults when explicitly enabled
     if (process.env.VIBEPDK_USE_STACK_DEFAULTS === '1') {
       const defaults = deriveServiceDefaults(stack);

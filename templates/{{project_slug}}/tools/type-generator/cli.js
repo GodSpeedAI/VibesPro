@@ -111,8 +111,8 @@ program
 
     pyFiles.forEach(file => {
       const safeFileName = path.basename(file);
-  const filePath = join(safePyDir, safeFileName);
-  const content = safeReadFileSync(filePath);
+      const filePath = join(safePyDir, safeFileName);
+      const content = safeReadFileSync(filePath);
       pyFileContents[safeFileName] = content;
       const classMatch = content.match(/class (\w+):\s*""".*?"""\s*((?:\s*\w+:\s*[^\n]+\s*)*)/);
       if (classMatch) {
@@ -219,18 +219,18 @@ program
               delete pyClass[fieldName];
               console.log(`🛠  Auto-fixed field name in ${className}: ${fieldName} -> ${camelCaseName}`);
             }
-          try {
-            fs.writeFileSync(pyFilePath, content, 'utf-8');
-            pyFileContents[key] = content;
-            pyClass[camelCaseName] = pyType;
-            delete pyClass[fieldName];
-            console.log(`🛠  Auto-fixed field name in ${className}: ${fieldName} -> ${camelCaseName}`);
-            // This specific mismatch was auto-fixed
-            hasErrors = false;
-          } catch (err) {
-            console.error(`❌ Failed to write file "${pyFilePath}": ${err.message}`);
-            process.exit(1);
-          }
+            try {
+              fs.writeFileSync(pyFilePath, content, 'utf-8');
+              pyFileContents[key] = content;
+              pyClass[camelCaseName] = pyType;
+              delete pyClass[fieldName];
+              console.log(`🛠  Auto-fixed field name in ${className}: ${fieldName} -> ${camelCaseName}`);
+              // This specific mismatch was auto-fixed
+              hasErrors = false;
+            } catch (err) {
+              console.error(`❌ Failed to write file "${pyFilePath}": ${err.message}`);
+              process.exit(1);
+            }
           }
         }
       });

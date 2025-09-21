@@ -104,7 +104,7 @@ describe('Merged Project Structure', () => {
         const fs = await import('node:fs');
         const yaml = await import('js-yaml');
 
-    const copierConfig = yaml.load(fs.readFileSync('copier.yml', 'utf8')) as Record<string, unknown>;
+        const copierConfig = yaml.load(fs.readFileSync('copier.yml', 'utf8')) as Record<string, unknown>;
 
         // Check for required fields from MERGE-TASK-001 specification
         expect(copierConfig['project_name']).toBeDefined();

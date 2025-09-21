@@ -60,11 +60,11 @@ export function updateDepConst(
       }) as Record<string, unknown> | undefined;
     }
 
-  if (!checkRuleExists(filePath, rule, rules)) return;
+    if (!checkRuleExists(filePath, rule, rules)) return;
 
-  const rulesRec = rules as Record<string, unknown>;
-  const ruleEntry = (rulesRec['rules'] as Record<string, unknown>)[rule] as unknown;
-  const depConst = ((ruleEntry as unknown[])?.[1] as unknown as Record<string, unknown>)['depConstraints'] as Array<object>;
+    const rulesRec = rules as Record<string, unknown>;
+    const ruleEntry = (rulesRec['rules'] as Record<string, unknown>)[rule] as unknown;
+    const depConst = ((ruleEntry as unknown[])?.[1] as unknown as Record<string, unknown>)['depConstraints'] as Array<object>;
     update(depConst);
     newText = JSON.stringify(json, undefined, 2);
 
@@ -87,7 +87,7 @@ function trim(str: string) {
   }
 
   if (str.endsWith(']')) {
-    str = str.substring(0, str.length-1);
+    str = str.substring(0, str.length - 1);
   }
   return str.trim();
 }

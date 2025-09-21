@@ -5,10 +5,10 @@ const sample = `PRD-001 DEV-PRD-010 ADR-002 DEV-SDS-003`;
 const res = ids.extractIdsFromText(sample, 's.md');
 type IdRecord = { id: string };
 const hasId = (x: unknown, id: string) => {
-	if (x && typeof x === 'object' && 'id' in x) {
-		return (x as IdRecord).id === id;
-	}
-	return false;
+    if (x && typeof x === 'object' && 'id' in x) {
+        return (x as IdRecord).id === id;
+    }
+    return false;
 };
 
 assert.ok(res.find((x: unknown) => hasId(x, 'PRD-001')));

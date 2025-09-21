@@ -2,7 +2,7 @@ import { formatFiles, Tree } from '@nx/devkit';
 import { updateDepConst } from '../utils/update-dep-const';
 
 export default async function (tree: Tree, schema?: Record<string, unknown>) {
-    updateDepConst(tree, (depConst) => {
+  updateDepConst(tree, (depConst) => {
     const jokerIndex = depConst.findIndex((entry) => {
       const e = entry as unknown;
       if (typeof e !== 'object' || e === null) return false;
@@ -58,5 +58,5 @@ export default async function (tree: Tree, schema?: Record<string, unknown>) {
     });
   });
 
-    await formatFiles(tree);
+  await formatFiles(tree);
 }

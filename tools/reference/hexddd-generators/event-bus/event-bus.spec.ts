@@ -1,5 +1,5 @@
-import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import { Tree } from '@nx/devkit';
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import { hexDomainGenerator } from '../hex-domain/generator';
 import { eventBusGenerator } from './generator';
 
@@ -28,9 +28,9 @@ describe('eventBusGenerator (TypeScript)', () => {
     const eventBusInterfacePath = `libs/${domainName}/domain/src/lib/ports/event-bus.port.ts`;
     const content = tree.read(eventBusInterfacePath).toString();
 
-  expect(content).toContain(`export interface IEventBus<T = unknown> {`);
-  expect(content).toContain(`publish(event: T): void;`);
-  expect(content).toContain(`subscribe(eventType: { name?: string } | { constructor?: { name: string } }, handler: (event: T) => void): void;`);
+    expect(content).toContain(`export interface IEventBus<T = unknown> {`);
+    expect(content).toContain(`publish(event: T): void;`);
+    expect(content).toContain(`subscribe(eventType: { name?: string } | { constructor?: { name: string } }, handler: (event: T) => void): void;`);
     expect(content).toContain(`}`);
   });
 
@@ -40,23 +40,23 @@ describe('eventBusGenerator (TypeScript)', () => {
     const inMemoryAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/event-bus.in-memory.adapter.ts`;
     const content = tree.read(inMemoryAdapterPath).toString();
 
-  expect(content).toContain(`import { IEventBus } from '@${domainName}/domain';`);
-  expect(content).toContain(`export class EventBusInMemoryAdapter implements IEventBus<unknown> {`);
-  expect(content).toContain(`private handlers: Map<string, Array<(event: unknown) => void>> = new Map();`);
-  expect(content).toContain(`publish(event: unknown): void {`);
-  expect(content).toContain(`const eventName = _getEventName(event);`);
-  expect(content).toContain(`const eventHandlers = this.handlers.get(eventName);`);
-  expect(content).toContain(`if (eventHandlers) {`);
-  expect(content).toContain(`eventHandlers.forEach((handler) => handler(event));`);
-  expect(content).toContain(`}`);
-  expect(content).toContain(`}`);
-  expect(content).toContain(`subscribe(eventType: { name?: string } | { constructor?: { name: string } }, handler: (event: unknown) => void): void {`);
-  expect(content).toContain(`const eventName = _getEventName(eventType);`);
-  expect(content).toContain(`if (!this.handlers.has(eventName)) {`);
-  expect(content).toContain(`this.handlers.set(eventName, []);`);
-  expect(content).toContain(`}`);
-  expect(content).toContain(`this.handlers.get(eventName)!.push(handler);`);
-  expect(content).toContain(`}`);
-  expect(content).toContain(`}`);
+    expect(content).toContain(`import { IEventBus } from '@${domainName}/domain';`);
+    expect(content).toContain(`export class EventBusInMemoryAdapter implements IEventBus<unknown> {`);
+    expect(content).toContain(`private handlers: Map<string, Array<(event: unknown) => void>> = new Map();`);
+    expect(content).toContain(`publish(event: unknown): void {`);
+    expect(content).toContain(`const eventName = _getEventName(event);`);
+    expect(content).toContain(`const eventHandlers = this.handlers.get(eventName);`);
+    expect(content).toContain(`if (eventHandlers) {`);
+    expect(content).toContain(`eventHandlers.forEach((handler) => handler(event));`);
+    expect(content).toContain(`}`);
+    expect(content).toContain(`}`);
+    expect(content).toContain(`subscribe(eventType: { name?: string } | { constructor?: { name: string } }, handler: (event: unknown) => void): void {`);
+    expect(content).toContain(`const eventName = _getEventName(eventType);`);
+    expect(content).toContain(`if (!this.handlers.has(eventName)) {`);
+    expect(content).toContain(`this.handlers.set(eventName, []);`);
+    expect(content).toContain(`}`);
+    expect(content).toContain(`this.handlers.get(eventName)!.push(handler);`);
+    expect(content).toContain(`}`);
+    expect(content).toContain(`}`);
   });
 });
