@@ -39,7 +39,6 @@ def generate_types(target: Path) -> None:
     # Note: The type-generator CLI produces TypeScript artifacts only.
     # It does not generate Python types — run the project's Python type-generation
     # step separately if Python artifacts are required (e.g. `just types-generate`).
-    ]
     run(cmd, cwd=type_generator_dir)
 
 

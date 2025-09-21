@@ -1,0 +1,113 @@
+{% if app_framework == 'expo' %}
+import React from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.title}>Welcome to {{ app_name }}</Text>
+        <Text style={styles.subtitle}>This is an Expo application.</Text>
+
+        {% if include_supabase -%}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Supabase Integration</Text>
+          <Text style={styles.text}>
+            This app is configured to work with Supabase for backend services.
+          </Text>
+        </View>
+        {% endif -%}
+
+        {% if include_example_page -%}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Example Domain Integration</Text>
+          <Text style={styles.text}>
+            This example demonstrates integration with domain models:
+          </Text>
+
+          <View style={styles.subsection}>
+            <Text style={styles.subsectionTitle}>ExampleEntity Usage</Text>
+            <Text style={styles.text}>
+              Here's how you would typically use domain entities in your Expo app:
+            </Text>
+            <Text style={styles.code}>
+              const entity = new ExampleEntity({"{"}
+              {"\n"}  id: '123',
+              {"\n"}  name: 'Sample Entity'
+              {"\n"}{"}"});
+            </Text>
+          </View>
+
+          {% if app_domains -%}
+          <View style={styles.subsection}>
+            <Text style={styles.subsectionTitle}>Available Domains</Text>
+            {% for domain in (app_domains.split(',') if app_domains else ['core']) -%}
+            <Text style={styles.listItem}>• {{domain.strip()}}</Text>
+            {% endfor -%}
+          </View>
+          {% endif -%}
+        </View>
+        {% endif -%}
+      </ScrollView>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 20,
+  },
+  section: {
+    marginTop: 20,
+    width: '100%',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subsection: {
+    marginTop: 15,
+  },
+  subsectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  text: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 10,
+  },
+  code: {
+    fontSize: 12,
+    fontFamily: 'monospace',
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  listItem: {
+    fontSize: 14,
+    marginBottom: 5,
+  },
+});
+{% endif %}

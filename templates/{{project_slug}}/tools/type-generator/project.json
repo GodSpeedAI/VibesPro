@@ -1,7 +1,0 @@
-{
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "{{ project_slug }}-type-generator-tools",
-  "projectType": "library",
-  "sourceRoot": "tools/type-generator/src",
-  "targets": {}
-}

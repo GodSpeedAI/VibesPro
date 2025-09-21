@@ -1,8 +1,0 @@
-packages:
-  - 'apps/*'
-  - 'libs/*'
-  - 'tools/*'
-  - 'tests/*'
-
-onlyBuiltDependencies:
-  - esbuild

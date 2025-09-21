@@ -1,10 +1,8 @@
-import { exec } from 'child_process';
+import type { SpawnOptions } from 'child_process';
+import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
 
 export interface GeneratorResult {
   files: string[];
@@ -13,7 +11,7 @@ export interface GeneratorResult {
   errorMessage?: string;
 }
 
-const PROJECT_ROOT = path.resolve(__dirname, '..', '..', '..');
+const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 const TEST_OUTPUT_ROOT = path.join(os.tmpdir(), 'vibespro-generator-tests');
 
 const BASE_CONTEXT: Record<string, unknown> = {
@@ -24,7 +22,7 @@ const BASE_CONTEXT: Record<string, unknown> = {
   architecture_style: 'hexagonal',
   include_ai_workflows: false,
   enable_temporal_learning: false,
-  frontend_framework: 'next',
+  app_framework: 'next',
   backend_framework: 'fastapi',
   database_type: 'postgresql',
   include_supabase: false,
@@ -32,7 +30,93 @@ const BASE_CONTEXT: Record<string, unknown> = {
   domains: [],
 };
 
-function serializeValue(key: string, value: unknown): string {
+interface CommandError extends Error {
+  stdout?: string;
+  stderr?: string;
+  code?: number | null;
+}
+
+async function runCommand(
+  command: string,
+  args: string[],
+  options: SpawnOptions
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      ...options,
+    });
+
+    const MAX_CAPTURE = 1024 * 1024; // cap captured output to 1MB per stream
+    let stdout = '';
+    let stderr = '';
+
+    const appendChunk = (buffer: string, chunk: Buffer): string => {
+      if (buffer.length >= MAX_CAPTURE) {
+        return buffer;
+      }
+      const remaining = MAX_CAPTURE - buffer.length;
+      return buffer + chunk.toString('utf-8', 0, remaining);
+    };
+
+    child.stdout?.on('data', (chunk: Buffer) => {
+      stdout = appendChunk(stdout, chunk);
+    });
+
+    child.stderr?.on('data', (chunk: Buffer) => {
+      stderr = appendChunk(stderr, chunk);
+    });
+
+    child.on('error', reject);
+
+    child.on('close', (code: number | null) => {
+      if (code === 0) {
+        resolve();
+        return;
+      }
+
+      const error = new Error(
+        stderr.trim() ||
+        stdout.trim() ||
+        `Command failed: ${command} ${args.join(' ')} (exit code ${code ?? -1})`
+      ) as CommandError;
+
+      error.stderr = stderr;
+      error.stdout = stdout;
+      error.code = code;
+      reject(error);
+    });
+  });
+}
+
+function extractCommandError(error: unknown): string {
+  if (!error) {
+    return 'Generator execution failed';
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  if (error instanceof Error) {
+    const commandError = error as CommandError;
+    const stderr = commandError.stderr?.trim();
+    if (stderr) {
+      return stderr;
+    }
+
+    const stdout = commandError.stdout?.trim();
+    if (stdout) {
+      return stdout;
+    }
+
+    return commandError.message || 'Generator execution failed';
+  }
+
+  return 'Generator execution failed';
+}
+
+export function serializeValue(key: string, value: unknown): string {
   if (Array.isArray(value)) {
     if (value.length === 0) {
       return `${key}: []`;
@@ -58,13 +142,13 @@ function serializeValue(key: string, value: unknown): string {
   }
 
   if (value === undefined) {
-    return '';
+    return `${key}: null`;
   }
 
   return `${key}: "${String(value)}"`;
 }
 
-function buildYaml(options: Record<string, unknown>): string {
+export function buildYaml(options: Record<string, unknown>): string {
   return Object.entries(options)
     .map(([key, value]) => serializeValue(key, value))
     .filter(Boolean)
@@ -92,20 +176,21 @@ export async function runGenerator(
     ...overrides,
   };
 
-  if (overrides.name && !context.app_name) {
+  // Always use the 'name' field if provided, overriding the default app_name
+  if (overrides.name) {
     context.app_name = overrides.name;
   }
 
-  if (overrides.framework && !context.frontend_framework) {
-    context.frontend_framework = overrides.framework;
+  const requestedFramework = (overrides.app_framework ?? overrides.framework) as string | undefined;
+  if (requestedFramework) {
+    context.app_framework = requestedFramework;
   }
 
-  if (overrides.framework && !context.app_framework) {
-    context.app_framework = overrides.framework;
-  }
-
-  if (overrides.app_domains && !context.app_domains) {
-    context.app_domains = overrides.app_domains;
+  if (overrides.app_domains !== undefined) {
+    // Convert array to comma-separated string for Copier validator
+    context.app_domains = Array.isArray(overrides.app_domains)
+      ? overrides.app_domains.join(',')
+      : overrides.app_domains;
   }
 
   if (overrides.domains !== undefined) {
@@ -119,41 +204,31 @@ export async function runGenerator(
     ...process.env,
     COPIER_SKIP_PROJECT_SETUP: '1',
     COPIER_SILENT: '1',
-  };
+  } as NodeJS.ProcessEnv;
 
-  const copierCommand = process.env.COPIER_COMMAND ?? "copier";
-  const command = `${copierCommand} copy "${PROJECT_ROOT}" "${outputPath}" --data-file "${dataFilePath}" --force --defaults`;
+  const copierCommand = process.env.COPIER_COMMAND ?? 'copier';
+  const args = [
+    'copy',
+    PROJECT_ROOT,
+    outputPath,
+    '--data-file',
+    dataFilePath,
+    '--force',
+    '--defaults',
+  ];
 
-  let success = true;
   let errorMessage: string | undefined;
 
   try {
-    await execAsync(command, { env, maxBuffer: 1024 * 1024 * 20 });
+    await runCommand(copierCommand, args, { env });
   } catch (error: unknown) {
-    success = false;
-    const execError = error as { stderr?: string; stdout?: string; message?: string } | undefined;
-    if (execError?.stderr) {
-      errorMessage = execError.stderr.trim();
-      process.stderr.write(`${errorMessage}
-`);
-    } else if (execError?.message) {
-      errorMessage = execError.message;
-      process.stderr.write(`${errorMessage}
-`);
-    } else if (typeof error === 'string') {
-      errorMessage = error;
-      process.stderr.write(`${errorMessage}
-`);
-    } else {
-      errorMessage = 'Generator execution failed';
-      process.stderr.write(`${errorMessage}
-`);
-    }
+    errorMessage = extractCommandError(error);
+    process.stderr.write(`${errorMessage}\n`);
   } finally {
     await fs.promises.rm(dataFilePath, { force: true });
   }
 
-  if (!success) {
+  if (errorMessage) {
     return {
       files: [],
       success: false,
@@ -201,4 +276,3 @@ export async function cleanupGeneratorOutputs(): Promise<void> {
     }
   }
 }
-

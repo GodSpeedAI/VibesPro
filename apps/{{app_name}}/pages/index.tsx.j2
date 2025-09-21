@@ -1,0 +1,43 @@
+{% if app_framework == 'next' %}
+import React from 'react';
+
+const HomePage = () => {
+  return (
+    <div>
+      <h1>Welcome to {{ app_name }}</h1>
+      <p>This is a Next.js application.</p>
+      {% if include_example_page -%}
+
+      <section>
+        <h2>Example Domain Integration</h2>
+        <p>This example demonstrates integration with domain models:</p>
+
+        <div>
+          <h3>ExampleEntity Usage</h3>
+          <p>Here's how you would typically use domain entities in your pages:</p>
+          <pre>
+{`const entity = new ExampleEntity({
+  id: '123',
+  name: 'Sample Entity'
+});`}
+          </pre>
+        </div>
+
+        {% if app_domains -%}
+        <div>
+          <h3>Available Domains</h3>
+          <ul>
+            {% for domain in app_domains.split(',') -%}
+            <li>{{domain.strip()}}</li>
+            {% endfor -%}
+          </ul>
+        </div>
+        {% endif -%}
+      </section>
+      {% endif -%}
+    </div>
+  );
+};
+
+export default HomePage;
+{% endif %}

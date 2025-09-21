@@ -53,9 +53,9 @@ enable_temporal_learning:
   when: "{{ include_ai_workflows }}"
 
 # Technology Stack
-frontend_framework:
+app_framework:
   type: str
-  help: "Primary frontend framework"
+  help: "Primary frontend application framework"
   choices:
     - next
     - remix
@@ -130,20 +130,11 @@ include_repositories:
   default: true
 
 # Application Generator Configuration (for MERGE-TASK-004)
-app_framework:
-  type: str
-  help: "Frontend application framework"
-  choices:
-    - next
-    - remix
-    - expo
-  default: "{{ frontend_framework }}"
-
 app_domains:
   type: str
   help: "Comma-separated list of domain names to integrate with the application"
   default: "{{ domain_name }}"
-  validator: "{% set _invalid = false %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn == '' or ' ' in dn or dn != dn.lower() or not dn.replace('-', '').isalnum() %}{% set _invalid = true %}{% break %}{% endif %}{% endfor %}{% if _invalid %}Invalid domain names{% endif %}"
+  validator: "{% if app_domains %}{% set _errors = [] %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn == '' or ' ' in dn or dn != dn.lower() or not dn.replace('-', '').isalnum() %}{% set _ = _errors.append(dn) %}{% endif %}{% endfor %}{% if _errors %}Invalid domain names: {{ _errors | join(', ') }}{% endif %}{% endif %}"
 
 include_api_client:
   type: bool

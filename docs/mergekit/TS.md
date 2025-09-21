@@ -107,7 +107,7 @@ architecture_type:
   default: hybrid
   help: "Choose the architectural pattern"
 
-frontend_frameworks:
+app_frameworks:
   type: str
   choices:
     - next

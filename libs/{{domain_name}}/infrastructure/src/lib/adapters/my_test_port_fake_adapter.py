@@ -1,4 +1,4 @@
-from my-test-domain.domain.ports import IMyTestPort
+from my_test_domain.domain.ports import IMyTestPort
 
 class MyTestPortFakeAdapter(IMyTestPort):
     # Implement methods here

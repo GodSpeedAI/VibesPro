@@ -1,4 +1,8 @@
 packages:
-    - 'templates/*'
-    - 'tools/*'
-    - 'tests/*'
+  - "apps/*"
+  - "libs/*"
+  - "tools/*"
+  - "tests/*"
+
+onlyBuiltDependencies:
+  - esbuild

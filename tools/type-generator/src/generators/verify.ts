@@ -28,7 +28,8 @@ export function verifyTypeParity(tsType: string, pyType: string): boolean {
     string: ['str', 'uuid', 'datetime', 'date', 'time', 'bytes'],
     number: ['int', 'float'],
     boolean: ['bool'],
-    unknown: ['dict', 'any'],
+    // Map loosely typed TypeScript 'unknown' to Python dict-like types. Avoid mapping to 'any'.
+    unknown: ['dict'],
     null: ['none']
   };
 
@@ -46,13 +47,24 @@ export function verifyTypeParity(tsType: string, pyType: string): boolean {
     return verifyTypeParity(tsBase, pyBase);
   }
 
-  // Check for union types (simplified)
+  // Check for union types (enhanced)
   if (normalizedTsType.includes('|') && normalizedPyType.includes('union[')) {
-    // For simplicity, we'll just check if both sides have similar structure
-    // This could be enhanced with more sophisticated parsing
-    const tsTypes = normalizedTsType.split('|');
-    const pyTypes = normalizedPyType.replace('union[', '').replace(']', '').split(',');
-    return tsTypes.length === pyTypes.length;
+    // Parse and normalize TypeScript union types
+    const tsTypes = normalizedTsType.split('|').map(t => t.trim().toLowerCase());
+    // Parse and normalize Python union types
+    const pyTypes = normalizedPyType.replace('union[', '').replace(']', '').split(',').map(t => t.trim().toLowerCase());
+
+    // Compare sets for equality
+    if (tsTypes.length !== pyTypes.length) {
+      return false;
+    }
+    // Check that every tsType exists in pyTypes and vice versa
+    const tsSet = new Set(tsTypes);
+    const pySet = new Set(pyTypes);
+    if (tsTypes.every(t => pySet.has(t)) && pyTypes.every(t => tsSet.has(t))) {
+      return true;
+    }
+    return false;
   }
 
   return false;

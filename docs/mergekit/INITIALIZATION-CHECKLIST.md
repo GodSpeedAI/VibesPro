@@ -176,9 +176,9 @@
     when: "{{ include_ai_workflows }}"
 
   # Technology Stack
-  frontend_framework:
+  app_framework:
     type: str
-    help: "Primary frontend framework"
+    help: "Primary frontend application framework"
     choices:
       - next
       - remix
@@ -805,7 +805,7 @@
   architecture_style: "hexagonal"
   include_ai_workflows: true
   enable_temporal_learning: true
-  frontend_framework: "next"
+  app_framework: "next"
   backend_framework: "fastapi"
   database_type: "postgresql"
   include_supabase: true

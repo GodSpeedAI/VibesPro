@@ -1,5 +1,5 @@
 from typing import Type, Callable, Dict, List
-from my-test-domain.domain.ports import IEventBus
+from my_test_domain.domain.ports import IEventBus
 
 class EventBusInMemoryAdapter(IEventBus):
     def __init__(self) -> None:

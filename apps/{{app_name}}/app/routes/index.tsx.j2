@@ -1,0 +1,48 @@
+{% if app_framework == 'remix' %}
+import type { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "{{ app_name }}" },
+    { name: "description", content: "Welcome to {{ app_name }}!" },
+  ];
+};
+
+export default function Index() {
+  return (
+    <div style={{"{{ fontFamily: \"system-ui, sans-serif\", lineHeight: \"1.8\" }}"}}>
+      <h1>Welcome to {{ app_name }}</h1>
+      <p>This is a Remix application.</p>
+      {% if include_example_page -%}
+
+      <section>
+        <h2>Example Domain Integration</h2>
+        <p>This example demonstrates integration with domain models:</p>
+
+        <div>
+          <h3>ExampleEntity Usage</h3>
+          <p>Here's how you would typically use domain entities in your routes:</p>
+          <pre>
+{`const entity = new ExampleEntity({
+  id: '123',
+  name: 'Sample Entity'
+});`}
+          </pre>
+        </div>
+
+        {% if app_domains -%}
+        <div>
+          <h3>Available Domains</h3>
+          <ul>
+            {% for domain in (app_domains.split(',') if app_domains else ['core']) -%}
+            <li>{{domain.strip()}}</li>
+            {% endfor -%}
+          </ul>
+        </div>
+        {% endif -%}
+      </section>
+      {% endif -%}
+    </div>
+  );
+}
+{% endif %}
