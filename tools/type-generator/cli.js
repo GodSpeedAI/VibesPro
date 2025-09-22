@@ -10,7 +10,28 @@ const ts = require('typescript');
 const { DbToTypeScript } = require('./dist/generators/types/db-to-typescript');
 const { verifyTypeParity } = require('./dist/generators/verify');
 
-const WORKSPACE_ROOT = path.resolve(process.cwd());
+const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
+const SAFE_PATH_SEGMENT_REGEX = /^[a-zA-Z0-9_.@\- ]+$/;
+
+function findWorkspaceRoot(startDir) {
+  let currentDir = path.resolve(startDir);
+  const { root } = path.parse(currentDir);
+
+  while (true) {
+    const isWorkspaceRoot = WORKSPACE_MARKERS.some(marker => fs.existsSync(path.join(currentDir, marker)));
+    if (isWorkspaceRoot) {
+      return currentDir;
+    }
+
+    if (currentDir === root) {
+      return path.resolve(startDir);
+    }
+
+    currentDir = path.dirname(currentDir);
+  }
+}
+
+const WORKSPACE_ROOT = findWorkspaceRoot(process.cwd());
 const PY_PARSER_PATH = path.join(os.tmpdir(), 'vibespro_py_class_parser.py');
 const PY_PARSER_SOURCE = `
 import ast
@@ -57,23 +78,64 @@ function ensurePyParserScript() {
 }
 
 function assertWorkspacePath(input, label) {
-  const inputStr = String(input);
+  const inputStr = String(input ?? '');
+  const trimmed = inputStr.trim();
 
-  // Basic input validation - prevent empty or malicious strings
-  if (!inputStr || inputStr.trim() === '') {
+  if (!trimmed) {
     throw new Error(`${label} cannot be empty`);
   }
 
-  // Check for path traversal attempts
-  if (inputStr.includes('..') || inputStr.includes('~') || inputStr.startsWith('/')) {
-    throw new Error(`${label} contains invalid path characters: ${inputStr}`);
+  if (trimmed.includes('\0')) {
+    throw new Error(`${label} contains invalid characters`);
   }
 
-  const resolved = path.resolve(inputStr);
+  if (trimmed.startsWith('~')) {
+    throw new Error(`${label} cannot start with '~': ${trimmed}`);
+  }
+
+  const normalizedForValidation = trimmed.replace(/\\/g, '/');
+  const segments = normalizedForValidation.split('/');
+  const sanitizedSegments = [];
+  let drivePrefix = '';
+
+  for (const rawSegment of segments) {
+    if (!rawSegment || rawSegment === '.') {
+      continue;
+    }
+
+    if (/^[a-zA-Z]:$/.test(rawSegment) && drivePrefix === '') {
+      drivePrefix = `${rawSegment}${path.sep}`;
+      continue;
+    }
+
+    if (rawSegment === '..') {
+      throw new Error(`${label} cannot contain '..': ${trimmed}`);
+    }
+
+    if (!SAFE_PATH_SEGMENT_REGEX.test(rawSegment)) {
+      throw new Error(`${label} contains invalid path segment '${rawSegment}'`);
+    }
+
+    sanitizedSegments.push(rawSegment);
+  }
+
+  const sanitizedRelative = sanitizedSegments.join(path.sep);
+
+  const resolved = path.isAbsolute(trimmed)
+    ? path.resolve(drivePrefix || path.sep, sanitizedRelative)
+    : path.resolve(WORKSPACE_ROOT, sanitizedRelative);
+
   const relative = path.relative(WORKSPACE_ROOT, resolved);
 
   if (relative.startsWith('..') || path.isAbsolute(relative)) {
     throw new Error(`${label} must be inside the workspace: ${resolved}`);
+  }
+
+  const relativeSegments = relative.split(path.sep).filter(Boolean);
+  for (const segment of relativeSegments) {
+    if (!SAFE_PATH_SEGMENT_REGEX.test(segment)) {
+      throw new Error(`${label} resolves to a path with invalid segment '${segment}'`);
+    }
   }
 
   return resolved;
@@ -85,17 +147,23 @@ function ensureDirectoryExists(dirPath, label) {
     if (!fs.existsSync(resolved)) {
       throw new Error(`${label} does not exist: ${resolved}`);
     }
-    const stats = fs.statSync(resolved);
-    if (!stats.isDirectory()) {
-      throw new Error(`${label} is not a directory: ${resolved}`);
-    }
-    // Additional security check - ensure it's not a symlink to outside workspace
+
+    const stats = fs.lstatSync(resolved);
+    let effectiveStats = stats;
+
     if (stats.isSymbolicLink()) {
       const realPath = fs.realpathSync(resolved);
       const relativeRealPath = path.relative(WORKSPACE_ROOT, realPath);
       if (relativeRealPath.startsWith('..') || path.isAbsolute(relativeRealPath)) {
         throw new Error(`${label} is a symlink pointing outside the workspace: ${resolved}`);
       }
+
+      effectiveStats = fs.statSync(realPath);
+      if (!effectiveStats.isDirectory()) {
+        throw new Error(`${label} symlink does not resolve to a directory: ${resolved}`);
+      }
+    } else if (!stats.isDirectory()) {
+      throw new Error(`${label} is not a directory: ${resolved}`);
     }
   } catch (error) {
     if (error.code === 'ENOENT') {
@@ -112,22 +180,27 @@ function ensureFileExists(filePath, label) {
     if (!fs.existsSync(resolved)) {
       throw new Error(`${label} does not exist: ${resolved}`);
     }
-    const stats = fs.statSync(resolved);
-    if (!stats.isFile()) {
-      throw new Error(`${label} is not a file: ${resolved}`);
-    }
-    // Additional security check - ensure it's not a symlink to outside workspace
+    const stats = fs.lstatSync(resolved);
+    let effectiveStats = stats;
+
     if (stats.isSymbolicLink()) {
       const realPath = fs.realpathSync(resolved);
       const relativeRealPath = path.relative(WORKSPACE_ROOT, realPath);
       if (relativeRealPath.startsWith('..') || path.isAbsolute(relativeRealPath)) {
         throw new Error(`${label} is a symlink pointing outside the workspace: ${resolved}`);
       }
+
+      effectiveStats = fs.statSync(realPath);
+      if (!effectiveStats.isFile()) {
+        throw new Error(`${label} symlink does not resolve to a file: ${resolved}`);
+      }
+    } else if (!stats.isFile()) {
+      throw new Error(`${label} is not a file: ${resolved}`);
     }
-    // Check file size to prevent reading extremely large files
+
     const maxSize = 10 * 1024 * 1024; // 10MB
-    if (stats.size > maxSize) {
-      throw new Error(`${label} is too large (${stats.size} bytes). Maximum allowed size is ${maxSize} bytes: ${resolved}`);
+    if (effectiveStats.size > maxSize) {
+      throw new Error(`${label} is too large (${effectiveStats.size} bytes). Maximum allowed size is ${maxSize} bytes: ${resolved}`);
     }
   } catch (error) {
     if (error.code === 'ENOENT') {
@@ -139,7 +212,7 @@ function ensureFileExists(filePath, label) {
 }
 
 function safeReadFileSync(filePath, encoding = 'utf-8') {
-  const resolved = ensureFileExists(filePath, 'file');
+  const resolved = ensureFileExists(filePath, 'file path');
   try {
     return fs.readFileSync(resolved, encoding);
   } catch (error) {
@@ -315,7 +388,7 @@ program
   .option('-o, --output-dir <dir>', 'output directory for generated types')
   .action((schemaPath, options) => {
     try {
-      const generator = new DbToTypeScript();
+      const generator = new DbToTypeScript(WORKSPACE_ROOT);
       const resolvedSchema = assertWorkspacePath(schemaPath, 'schema path');
       const resolvedOutputDir = options.outputDir
         ? assertWorkspacePath(options.outputDir, 'output directory')

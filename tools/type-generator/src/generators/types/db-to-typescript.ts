@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { isAbsolute, join, relative, resolve } from 'path';
+import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'fs';
+import { isAbsolute, join, parse, relative, resolve, sep } from 'path';
 
 interface ColumnDef {
   type: string;
@@ -18,10 +18,103 @@ interface DbSchema {
   [k: string]: unknown;
 }
 
-const WORKSPACE_ROOT = process.cwd();
+const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
+const SAFE_PATH_SEGMENT_REGEX = /^[a-zA-Z0-9_.@\- ]+$/;
+
+function findWorkspaceRoot(startDir: string): string {
+  let currentDir = resolve(startDir);
+  const { root } = parse(currentDir);
+
+  while (true) {
+    const isWorkspaceRoot = WORKSPACE_MARKERS.some(marker => existsSync(join(currentDir, marker)));
+    if (isWorkspaceRoot) {
+      return currentDir;
+    }
+
+    if (currentDir === root) {
+      return resolve(startDir);
+    }
+
+    currentDir = resolve(currentDir, '..');
+  }
+}
+
+function resolveWithinWorkspace(workspaceRoot: string, targetPath: string, description: string): string {
+  if (!targetPath || typeof targetPath !== 'string') {
+    throw new Error(`${description} must be a non-empty string`);
+  }
+
+  const trimmed = targetPath.trim();
+  if (!trimmed) {
+    throw new Error(`${description} must be a non-empty string`);
+  }
+
+  if (trimmed.includes('\0')) {
+    throw new Error(`${description} contains invalid characters`);
+  }
+
+  if (trimmed.startsWith('~')) {
+    throw new Error(`${description} cannot start with '~': ${trimmed}`);
+  }
+
+  const normalizedForValidation = trimmed.replace(/\\/g, '/');
+  const segments = normalizedForValidation.split('/');
+  const sanitizedSegments: string[] = [];
+  let drivePrefix = '';
+
+  for (const rawSegment of segments) {
+    if (!rawSegment || rawSegment === '.') {
+      continue;
+    }
+
+    if (/^[a-zA-Z]:$/.test(rawSegment) && drivePrefix === '') {
+      drivePrefix = `${rawSegment}${sep}`;
+      continue;
+    }
+
+    if (rawSegment === '..') {
+      throw new Error(`${description} cannot contain '..': ${trimmed}`);
+    }
+
+    if (!SAFE_PATH_SEGMENT_REGEX.test(rawSegment)) {
+      throw new Error(`${description} contains invalid path segment '${rawSegment}'`);
+    }
+
+    sanitizedSegments.push(rawSegment);
+  }
+
+  const sanitizedRelative = sanitizedSegments.join(sep);
+  const resolvedCandidate = isAbsolute(trimmed)
+    ? resolve(drivePrefix || sep, sanitizedRelative)
+    : resolve(workspaceRoot, sanitizedRelative);
+
+  const relativePath = relative(workspaceRoot, resolvedCandidate);
+  if (relativePath.startsWith('..') || isAbsolute(relativePath)) {
+    throw new Error(`${description} must be inside the workspace: ${resolvedCandidate}`);
+  }
+
+  const relativeSegments = relativePath.split(sep).filter(Boolean);
+  for (const segment of relativeSegments) {
+    if (!SAFE_PATH_SEGMENT_REGEX.test(segment)) {
+      throw new Error(`${description} resolves to a path with invalid segment '${segment}'`);
+    }
+  }
+
+  return resolvedCandidate;
+}
+
+const WORKSPACE_ROOT = findWorkspaceRoot(process.cwd());
 
 export class DbToTypeScript {
-  constructor(private readonly workspaceRoot: string = WORKSPACE_ROOT) {}
+  private readonly workspaceRoot: string;
+
+  constructor(workspaceRoot: string = WORKSPACE_ROOT) {
+    const resolvedRoot = resolve(workspaceRoot);
+    if (!isAbsolute(resolvedRoot)) {
+      throw new Error('Workspace root must be an absolute path');
+    }
+    this.workspaceRoot = resolvedRoot;
+  }
 
   generate(schemaPath: string, outputDir?: string): Record<string, Record<string, string>> {
     const schema = this._parseSchema(schemaPath);
@@ -38,13 +131,8 @@ export class DbToTypeScript {
   private _parseSchema(schemaPath: string): DbSchema {
     const resolvedSchemaPath = this._resolveWorkspacePath(schemaPath, 'Schema path');
 
-    // Basic input validation
-    if (!schemaPath || typeof schemaPath !== 'string') {
-      throw new Error('Schema path must be a non-empty string');
-    }
-
     // Check file size to prevent reading extremely large files
-    const stats = require('fs').statSync(resolvedSchemaPath);
+    const stats = statSync(resolvedSchemaPath);
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (stats.size > maxSize) {
       throw new Error(`Schema file is too large (${stats.size} bytes). Maximum allowed size is ${maxSize} bytes: ${resolvedSchemaPath}`);
@@ -59,14 +147,7 @@ export class DbToTypeScript {
   }
 
   private _resolveWorkspacePath(targetPath: string, description: string): string {
-    const resolvedPath = resolve(targetPath);
-    const relativePath = relative(this.workspaceRoot, resolvedPath);
-
-    if (relativePath.startsWith('..') || isAbsolute(relativePath)) {
-      throw new Error(`${description} must be inside the workspace: ${resolvedPath}`);
-    }
-
-    return resolvedPath;
+    return resolveWithinWorkspace(this.workspaceRoot, targetPath, description);
   }
 
   private _generateTypes(schema: DbSchema): Record<string, Record<string, string>> {
@@ -119,18 +200,22 @@ export class DbToTypeScript {
       mkdirSync(resolvedOutputDir, { recursive: true });
     }
 
-    const stats = require('fs').statSync(resolvedOutputDir);
-    if (!stats.isDirectory()) {
-      throw new Error(`Output path is not a directory: ${resolvedOutputDir}`);
-    }
+    const stats = lstatSync(resolvedOutputDir);
+    let effectiveStats = stats;
 
-    // Additional security check - ensure it's not a symlink to outside workspace
     if (stats.isSymbolicLink()) {
-      const realPath = require('fs').realpathSync(resolvedOutputDir);
+      const realPath = realpathSync(resolvedOutputDir);
       const relativeRealPath = relative(this.workspaceRoot, realPath);
       if (relativeRealPath.startsWith('..') || isAbsolute(relativeRealPath)) {
         throw new Error(`Output directory is a symlink pointing outside the workspace: ${resolvedOutputDir}`);
       }
+
+      effectiveStats = statSync(realPath);
+      if (!effectiveStats.isDirectory()) {
+        throw new Error(`Output directory symlink does not resolve to a directory: ${resolvedOutputDir}`);
+      }
+    } else if (!stats.isDirectory()) {
+      throw new Error(`Output path is not a directory: ${resolvedOutputDir}`);
     }
 
     // Validate types structure
@@ -160,7 +245,10 @@ export class DbToTypeScript {
       }
 
       const filename = `${className.toLowerCase()}.ts`;
-      const filepath = this._resolveWorkspacePath(join(outputDir, filename), `${className} type file`);
+
+      const relativeOutputDir = relative(this.workspaceRoot, resolvedOutputDir);
+      const relativeTarget = relativeOutputDir ? join(relativeOutputDir, filename) : filename;
+      const filepath = this._resolveWorkspacePath(relativeTarget, `${className} type file`);
 
       // Validate filename to prevent path traversal
       if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
