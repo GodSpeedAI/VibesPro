@@ -9,22 +9,81 @@ const ts = require('typescript');
 
 const { DbToTypeScript } = require('./dist/generators/types/db-to-typescript');
 const { verifyTypeParity } = require('./dist/generators/verify');
-const { isPathSafe, resolvePathWithinWorkspace, sanitizePathInput } = require('./utils/pathSecurity');
+const {
+  isPathSafe,
+  resolvePathWithinWorkspace,
+  sanitizePathInput,
+} = require('./utils/pathSecurity');
 
 const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
+WORKSPACE_MARKERS.forEach(marker => {
+  if (typeof marker !== 'string' || !marker.trim()) {
+    throw new Error('Workspace marker entries must be non-empty strings');
+  }
+  if (marker.includes('/') || marker.includes('\\')) {
+    throw new Error(`Workspace marker may not contain path separators: ${marker}`);
+  }
+});
 
 function findWorkspaceRoot(startDir) {
-  let currentDir = path.resolve(startDir);
+  const sanitizedStartDir = sanitizePathInput(startDir, 'workspace search path');
+  const normalizedStartDir = path.normalize(sanitizedStartDir);
+  const hasTraversal = normalizedStartDir
+    .split(/[\\/]+/)
+    .filter(Boolean)
+    .some(segment => segment === '..');
+
+  if (hasTraversal) {
+    throw new Error('Workspace search path may not contain parent directory traversals');
+  }
+
+  const absoluteStartDir = path.resolve(sanitizedStartDir);
+  let realStartDir;
+
+  try {
+    realStartDir = fs.realpathSync(absoluteStartDir);
+  } catch (error) {
+    throw new Error(`Unable to resolve workspace search path: ${absoluteStartDir}`);
+  }
+
+  let startStats;
+  try {
+    startStats = fs.lstatSync(realStartDir);
+  } catch (error) {
+    throw new Error(`Workspace search path does not exist: ${realStartDir}`);
+  }
+
+  if (!startStats.isDirectory()) {
+    throw new Error(`Workspace search path must be a directory: ${realStartDir}`);
+  }
+
+  let currentDir = realStartDir;
   const { root } = path.parse(currentDir);
+  const visited = new Set();
 
   while (true) {
-    const isWorkspaceRoot = WORKSPACE_MARKERS.some(marker => fs.existsSync(path.join(currentDir, marker)));
+    if (visited.has(currentDir)) {
+      throw new Error(`Cyclical directory resolution detected while locating workspace root from: ${realStartDir}`);
+    }
+    visited.add(currentDir);
+
+    const isWorkspaceRoot = WORKSPACE_MARKERS.some(marker => {
+      const markerPath = path.join(currentDir, marker);
+      try {
+        return fs.existsSync(markerPath);
+      } catch (error) {
+        if (error && error.code === 'ENOENT') {
+          return false;
+        }
+        throw error;
+      }
+    });
     if (isWorkspaceRoot) {
       return currentDir;
     }
 
     if (currentDir === root) {
-      return path.resolve(startDir);
+      return realStartDir;
     }
 
     currentDir = path.dirname(currentDir);
