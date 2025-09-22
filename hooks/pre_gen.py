@@ -57,7 +57,9 @@ def normalize_identifier(name: str) -> str:
 
 def is_valid_identifier(name: str) -> bool:
     """Return True if name matches the Android identifier rule ^[a-z][a-z0-9_]*$"""
-    return bool(re.match(r"^[a-z][a-z0-9_]*$", name))
+    if not name:
+        return False
+    return bool(re.fullmatch(r"[a-z][a-z0-9_]*", name))
 
 
 def main() -> None:
