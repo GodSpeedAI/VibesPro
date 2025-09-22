@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 
 const SAFE_PATH_SEGMENT_REGEX = /^[a-zA-Z0-9_.@\- ]+$/;
@@ -38,15 +39,40 @@ function isPathSafe(inputPath) {
   return segments.every(segment => SAFE_PATH_SEGMENT_REGEX.test(segment));
 }
 
+function resolveRealPath(targetPath) {
+  const candidate = path.resolve(targetPath);
+  try {
+    return fs.realpathSync(candidate);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return candidate;
+    }
+    throw error;
+  }
+}
+
 function buildAllowedRoots(workspace, allowedRoots = []) {
-  const absoluteWorkspace = path.resolve(workspace);
-  const roots = new Set([absoluteWorkspace]);
+  const roots = new Set();
+  const normalizedWorkspace = resolveRealPath(workspace);
+  roots.add(normalizedWorkspace);
 
   for (const root of allowedRoots) {
     if (typeof root !== 'string' || !root.trim()) {
       continue;
     }
-    roots.add(path.resolve(absoluteWorkspace, root));
+
+    const sanitizedRoot = sanitizePathInput(root, 'allowed root');
+    if (!isPathSafe(sanitizedRoot)) {
+      throw new Error(`allowed root contains invalid path characters: ${root}`);
+    }
+
+    const normalized = path.normalize(sanitizedRoot);
+    const absolute = path.isAbsolute(normalized)
+      ? normalized
+      : path.resolve(normalizedWorkspace, normalized);
+
+    const resolvedRoot = resolveRealPath(absolute);
+    roots.add(resolvedRoot);
   }
 
   return [...roots];
@@ -54,12 +80,17 @@ function buildAllowedRoots(workspace, allowedRoots = []) {
 
 function ensureWithinWorkspace(resolvedPath, workspace, options = {}) {
   const allowedRoots = buildAllowedRoots(workspace, options.allowedRoots);
-  const normalizedPath = path.resolve(resolvedPath);
+  const normalizedPath = resolveRealPath(resolvedPath);
 
   return allowedRoots.some(root => {
-    const normalizedRoot = path.resolve(root);
-    const rootWithSep = normalizedRoot.endsWith(path.sep) ? normalizedRoot : `${normalizedRoot}${path.sep}`;
-    return normalizedPath === normalizedRoot || normalizedPath.startsWith(rootWithSep);
+    const normalizedRoot = resolveRealPath(root);
+    const rootWithSep = normalizedRoot.endsWith(path.sep)
+      ? normalizedRoot
+      : `${normalizedRoot}${path.sep}`;
+    return (
+      normalizedPath === normalizedRoot ||
+      normalizedPath.startsWith(rootWithSep)
+    );
   });
 }
 
@@ -71,9 +102,18 @@ function resolvePathWithinWorkspace(inputPath, workspace, description, options =
   }
 
   const normalized = path.normalize(sanitizedInput);
-  const resolvedPath = path.resolve(workspace, normalized);
+  if (normalized.startsWith('..')) {
+    throw new Error(`${description} may not traverse outside the workspace: ${inputPath}`);
+  }
 
-  if (!ensureWithinWorkspace(resolvedPath, workspace, options)) {
+  const workspaceRoot = resolveRealPath(workspace);
+  const absolute = path.isAbsolute(normalized)
+    ? normalized
+    : path.resolve(workspaceRoot, normalized);
+
+  const resolvedPath = resolveRealPath(absolute);
+
+  if (!ensureWithinWorkspace(resolvedPath, workspaceRoot, options)) {
     throw new Error(`${description} path is outside the workspace: ${inputPath}`);
   }
 

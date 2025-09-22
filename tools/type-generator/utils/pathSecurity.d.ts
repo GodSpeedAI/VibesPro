@@ -1,22 +1,24 @@
-export interface WorkspaceGuardOptions {
-  allowedRoots?: string[];
-}
+export declare const SAFE_PATH_SEGMENT_REGEX: RegExp;
 
-export function sanitizePathInput(input: unknown, label: string): string;
+export declare function sanitizePathInput(input: unknown, label: string): string;
 
-export function isPathSafe(inputPath: string): boolean;
+export declare function isPathSafe(inputPath: unknown): inputPath is string;
 
-export function ensureWithinWorkspace(
+export declare function ensureWithinWorkspace(
   resolvedPath: string,
   workspace: string,
-  options?: WorkspaceGuardOptions
+  options?: {
+    allowedRoots?: string[];
+  }
 ): boolean;
 
-export function resolvePathWithinWorkspace(
+export declare function resolvePathWithinWorkspace(
   inputPath: string,
   workspace: string,
   description: string,
-  options?: WorkspaceGuardOptions
+  options?: {
+    allowedRoots?: string[];
+  }
 ): string;
 
-export function assertFilenameSafe(filename: string, label?: string): void;
+export declare function assertFilenameSafe(filename: string, label?: string): void;

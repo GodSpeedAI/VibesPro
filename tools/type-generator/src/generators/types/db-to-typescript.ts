@@ -54,7 +54,15 @@ export class DbToTypeScript {
     if (!isAbsolute(resolvedRoot)) {
       throw new Error('Workspace root must be an absolute path');
     }
-    this.workspaceRoot = resolvedRoot;
+    if (!existsSync(resolvedRoot)) {
+      throw new Error(`Workspace root path does not exist: ${resolvedRoot}`);
+    }
+    const canonicalRoot = realpathSync(resolvedRoot);
+    const { root } = parse(canonicalRoot);
+    if (canonicalRoot === root) {
+      throw new Error('Workspace root cannot be the filesystem root directory.');
+    }
+    this.workspaceRoot = canonicalRoot;
   }
 
   generate(schemaPath: string, outputDir?: string): Record<string, Record<string, string>> {
@@ -82,14 +90,23 @@ export class DbToTypeScript {
   private _parseSchema(schemaPath: string): DbSchema {
     const resolvedSchemaPath = this._resolveWorkspacePath(schemaPath, 'Schema path');
 
-    // Check file size to prevent reading extremely large files
-    const stats = statSync(resolvedSchemaPath);
-    const maxSize = 10 * 1024 * 1024; // 10MB
-    if (stats.size > maxSize) {
-      throw new Error(`Schema file is too large (${stats.size} bytes). Maximum allowed size is ${maxSize} bytes: ${resolvedSchemaPath}`);
+    if (!existsSync(resolvedSchemaPath)) {
+      throw new Error(`Schema file not found: ${resolvedSchemaPath}`);
+    }
+    const realSchemaPath = realpathSync(resolvedSchemaPath);
+    const relativePath = relative(this.workspaceRoot, realSchemaPath);
+    if (relativePath.startsWith('..') || isAbsolute(relativePath)) {
+      throw new Error(`Schema path resolves to a location outside the workspace: ${schemaPath}`);
     }
 
-    const content = readFileSync(resolvedSchemaPath, 'utf-8');
+    // Check file size to prevent reading extremely large files
+    const stats = statSync(realSchemaPath);
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (stats.size > maxSize) {
+      throw new Error(`Schema file is too large (${stats.size} bytes). Maximum allowed size is ${maxSize} bytes: ${realSchemaPath}`);
+    }
+
+    const content = readFileSync(realSchemaPath, 'utf-8');
     try {
       return JSON.parse(content) as DbSchema;
     } catch (error) {
