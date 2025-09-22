@@ -1,0 +1,125 @@
+---
+mode: "agent"
+model: GPT-5 (Preview)
+tools: [
+    "codebase",
+    "search",
+    "ref_search_documentation",
+    "get-library-docs",
+    "ask_question"
+  ]
+description: "Create a detailed, spec-driven plan to adopt and integrate superior features from the spec-kit-main framework into the {{ project_slug }} framework, ensuring no technical debt and adherence to strict safety and naming conventions."
+---
+
+# Spec-Driven Feature Adoption Plan — spec-kit-main → {{ project_slug }}
+
+inputs:
+
+- ai_framework_repo: "{{ project_slug }}"
+- spec_kit_repo: "spec-kit-main"
+- constraints:
+  - python: "3.12 (uv only; no pip)"
+  - node: "Node 24; Corepack enabled; pnpm"
+  - naming_taxonomy: "<domain>.<task>[.<phase>].<kind>.md with frontmatter"
+  - safety_posture: "no auto-approve; no unsolicited .vscode edits"
+  - typing: "strict types (Python/TS), no Any"
+outputs:
+- "Adoption & Integration Specification (single markdown doc)"
+- "Gap matrix (features: keep/adopt/skip with rationale)"
+- "Phased migration plan with risks and acceptance criteria"
+
+Objective
+
+- Deeply analyze both frameworks (AI-Assisted, Spec-Driven Development Framework in `{{ project_slug }}` and `spec-kit-main`), identify superior features in `spec-kit-main`, and produce a zero-tech-debt specification to adopt and integrate those features into `{{ project_slug }}`.
+
+Scope
+
+- In-scope: prompts, chat modes, instructions, traceability tooling, context bundling, testing and hooks, docs/process, scripts and Just/Nx/pnpm workflows, model config.
+- Out-of-scope: unrelated product features, non-AI developer workflows, provider-specific proprietary actions.
+
+Sources to Review (non-exhaustive)
+
+- {{ project_slug }} repository:
+  - `.github/copilot-instructions.md`, `.github/instructions/**`
+  - `.github/prompts/**`, `.github/chatmodes/**`
+  - `tools/spec/**`, `scripts/**`, `justfile`, `techstack.yaml`
+  - `hooks/**`, `tests/**`, `copier.yml`, docs under `docs/**`
+- spec-kit-main:
+  - Corresponding prompts/modes/instructions, spec utilities, generators, validation, CI, docs.
+
+Constraints and Guardrails
+
+- Use uv for Python (no pip). Target Python 3.12.
+- Node 24 with Corepack-enabled pnpm for any Node workflows.
+- Apply strict typing and modern features (Python/TS) without introducing Any.
+- Conform to naming taxonomy: `<domain>.<task>[.<phase>].<kind>.md` and required frontmatter fields.
+- Maintain safety posture: no chat.tools.autoApprove; no unsolicited `.vscode` setting changes.
+- No technical debt: prefer incremental, reversible changes; keep side effects explicit.
+- Explain key steps succinctly; avoid verbose hidden reasoning.
+
+Deliverables (produce a single markdown spec with the following sections)
+
+1. Executive Summary
+   - One-paragraph summary of adoption decisions and expected impact.
+2. Assumptions and Constraints
+   - Environment, tooling, repository layout expectations, and safety constraints.
+3. Comparative Analysis (High-Level)
+   - For each relevant capability (prompts, modes, instructions, traceability, context bundling, tooling, CI, docs):
+     - Current in `{{ project_slug }}`
+     - Available in `spec-kit-main`
+     - Verdict: Keep / Adopt / Merge / Skip
+     - Rationale (concise, outcome-focused)
+4. Gap Matrix
+   - List superior `spec-kit-main` features not present or weaker in `{{ project_slug }}`.
+   - For each: description, value, complexity, dependencies, risks.
+5. Adoption Decisions
+   - For each feature to adopt/merge:
+     - Decision statement
+     - Benefits and trade-offs
+     - Alignment with naming taxonomy and frontmatter requirements
+6. Integration Design
+   - File-level changes (prompts/modes/instructions) using the naming taxonomy and required frontmatter.
+   - Tooling updates (e.g., prompt linter validations for domain/task/phase).
+   - Model selection centralization (e.g., models.json/yaml) and reference usage.
+   - Traceability updates (spec IDs, matrix generation impacts).
+   - Scripts/just tasks and CI impacts. Note the spec-kit CLI commands should be replaced with `just` tasks or pnpm scripts as relevant.
+   - Testing strategy (pytest/pytest-cookies; Node tests if applicable).
+7. Migration Plan (Phased, Low-Risk)
+   - Phase 1: Add metadata/frontmatter and linter enforcement (no renames).
+   - Phase 2: Introduce new filenames; keep stubs/redirects; update references.
+   - Phase 3: Cleanup stubs and finalize docs.
+   - Rollback considerations.
+8. Risks and Mitigations
+   - Token budget drift, naming fragmentation, CI breakage, developer ergonomics.
+9. Acceptance Criteria
+   - Linter enforces frontmatter fields across prompts/modes/instructions.
+   - CI green with uv tests; pnpm integration test passes with Corepack enabled.
+   - No auto-approve tooling; no `.vscode` edits.
+   - Traceability matrix reflects adopted features and IDs.
+10. Open Questions
+
+- Call out required decisions or missing inputs.
+
+Method
+
+- Step 1: Inventory and read relevant files in both repos; summarize at a high level.
+- Step 2: Identify superior `spec-kit-main` features with concrete benefits (maintainability, safety, discoverability).
+- Step 3: Propose minimal-change integration paths that meet constraints and avoid tech debt.
+- Step 4: Draft the spec using the structure above; provide file-level references without committing to code changes.
+- Step 5: List crisp, answerable questions if information is missing; do not assume.
+
+Output Format
+
+- Produce a single markdown specification using the sections above.
+- Use concise prose and bullet lists; include small tables only where they clarify decisions.
+- Do not output code changes; focus on the plan/spec. If code change examples aid clarity, keep them brief and clearly marked as examples.
+- Save the spec as `docs/update/speckit-adoption-plan.md`.
+
+Check Your Work
+
+- Are naming taxonomy and frontmatter requirements applied to proposed prompt/mode changes?
+- Does the plan keep uv-only Python and Corepack/pnpm constraints intact?
+- Are safety and testability preserved or improved?
+- Is there a clear migration path with acceptance criteria?
+
+If any critical information is missing (e.g., concrete features present in `spec-kit-main`, specific folder structure differences), ask precise questions before finalizing.

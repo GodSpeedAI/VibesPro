@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "ai-context-tools",
+  "projectType": "library",
+  "sourceRoot": "tools/ai/src",
+  "targets": {
+    "build": {
+      "executor": "@nx/workspace:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "pnpm --dir tools/ai tsc -p tsconfig.json"
+      }
+    },
+    "test": {
+      "executor": "@nx/workspace:run-commands",
+      "options": {
+        "command": "pnpm --dir tools/ai vitest run --config vitest.config.ts"
+      }
+    }
+  },
+  "tags": ["scope:tools", "type:ai"]
+}
