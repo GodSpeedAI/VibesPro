@@ -8,7 +8,7 @@
 
 This implementation plan provides a comprehensive, phased approach to merging HexDDD and VibePDK into a unified generator-first platform. The plan prioritizes **stability** over speed, emphasizes **generator development**, and includes complete **migration paths** for existing projects.
 
-**Key Principles**:
+## Key Principles
 
 - MECE (Mutually Exclusive, Collectively Exhaustive) task breakdown
 - TDD cycles (RED → GREEN → REFACTOR → REGRESSION) for all functional changes
@@ -39,17 +39,17 @@ graph TD
 
 ## Phase Implementation Plan
 
-### MERGE-PHASE-001: Foundation Infrastructure
+### [x] MERGE-PHASE-001: Foundation Infrastructure
 
-**Duration**: 2-3 days
-**Dependencies**: None
-**Parallel Agents**: 2 agents recommended
+- **Duration**: 2-3 days
+- **Dependencies**: None
+- **Parallel Agents**: 2 agents recommended
 
-#### MERGE-TASK-001: Project Structure Setup
+#### [x] MERGE-TASK-001: Project Structure Setup
 
-**Traceability**: ADR-MERGE-001, SDS-MERGE-001
-**Agent Assignment**: Agent A
-**Estimated Time**: 4 hours
+- **Traceability**: ADR-MERGE-001, SDS-MERGE-001
+- **Agent Assignment**: Agent A
+- **Estimated Time**: 4 hours
 
 **RED (Failing Test)**:
 
@@ -69,47 +69,47 @@ describe('Merged Project Structure', () => {
 
 1. **Copy base structure from VibePDK**:
 
-   ```bash
-   # Source: /home/sprime01/projects/VibePDK/
-   # Copy: cookiecutter.json → copier.yml (convert format)
-   # Copy: {{ project_slug }}/ → templates/
-   # Copy: hooks/ → hooks/ (adapt for Copier)
-   ```
+    ```bash
+    # Source: /home/sprime01/projects/VibePDK/
+    # Copy: cookiecutter.json → copier.yml (convert format)
+    # Copy: {{ project_slug }}/ → templates/
+    # Copy: hooks/ → hooks/ (adapt for Copier)
+    ```
 
 2. **Create merged project root**:
 
-   ```bash
-   mkdir -p /tmp/merged-project/{templates,hooks,tests,docs,tools}
-   ```
+    ```bash
+    mkdir -p /tmp/merged-project/{templates,hooks,tests,docs,tools}
+    ```
 
 3. **Convert cookiecutter.json to copier.yml**:
 
-   ```yaml
-   # copier.yml - Source: VibePDK/cookiecutter.json
-   project_name:
-     type: str
-     help: "Name of the project"
-     validator: "{% if not project_name %}Required field{% endif %}"
+    ```yaml
+    # copier.yml - Source: VibePDK/cookiecutter.json
+    project_name:
+      type: str
+      help: "Name of the project"
+      validator: "{% if not project_name %}Required field{% endif %}"
 
-   author_name:
-     type: str
-     help: "Author's name"
-     default: "Unknown Author"
+    author_name:
+      type: str
+      help: "Author's name"
+      default: "Unknown Author"
 
-   include_ai_workflows:
-     type: bool
-     help: "Include AI-enhanced development workflows"
-     default: true
+    include_ai_workflows:
+      type: bool
+      help: "Include AI-enhanced development workflows"
+      default: true
 
-   architecture_style:
-     type: str
-     help: "Primary architecture pattern"
-     choices:
-       - hexagonal
-       - layered
-       - microservices
-     default: hexagonal
-   ```
+    architecture_style:
+      type: str
+      help: "Primary architecture pattern"
+      choices:
+        - hexagonal
+        - layered
+        - microservices
+      default: hexagonal
+    ```
 
 **REFACTOR**:
 
@@ -125,11 +125,11 @@ describe('Merged Project Structure', () => {
 
 ---
 
-#### MERGE-TASK-002: Build System Foundation
+#### [x] MERGE-TASK-002: Build System Foundation
 
-**Traceability**: ADR-MERGE-007, TS-MERGE-004
-**Agent Assignment**: Agent B (Parallel with MERGE-TASK-001)
-**Estimated Time**: 4 hours
+- **Traceability**: ADR-MERGE-007, TS-MERGE-004
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-001)
+- **Estimated Time**: 4 hours
 
 **RED (Failing Test)**:
 
@@ -148,36 +148,36 @@ describe('Hybrid Build System', () => {
 
 1. **Copy justfile foundation from VibePDK**:
 
-   ```bash
-   # Source: /home/sprime01/projects/VibePDK/{{ project_slug }}/justfile
-   # Adapt for merged context with HexDDD patterns
-   ```
+    ```bash
+    # Source: /home/sprime01/projects/VibePDK/{{ project_slug }}/justfile
+    # Adapt for merged context with HexDDD patterns
+    ```
 
 2. **Integrate Nx configuration from HexDDD**:
 
-   ```bash
-   # Source: /home/sprime01/projects/HexDDD/nx.json
-   # Copy: nx.json, workspace.json patterns
-   # Adapt: project configurations for generator context
-   ```
+    ```bash
+    # Source: /home/sprime01/projects/HexDDD/nx.json
+    # Copy: nx.json, workspace.json patterns
+    # Adapt: project configurations for generator context
+    ```
 
 3. **Create hybrid justfile**:
 
-   ```bash
-   # templates/justfile
-   set shell := ["bash", "-uc"]
+    ```bash
+    # templates/justfile
+    set shell := ["bash", "-uc"]
 
-   # Auto-detect build strategy
-   default: (_detect_build_system)
+    # Auto-detect build strategy
+    default: (_detect_build_system)
 
-   _detect_build_system:
+    _detect_build_system:
        #!/usr/bin/env bash
        if [ -f "nx.json" ]; then
-           just build-nx
+          just build-nx
        else
-           just build-direct
+          just build-direct
        fi
-   ```
+    ```
 
 **REFACTOR**:
 
@@ -192,99 +192,40 @@ describe('Hybrid Build System', () => {
 - Validate cross-platform compatibility
 
 ---
-######## Phase 1 Complete ########
 
-### MERGE-PHASE-002: Core Generator Development
+### Progress (Updated September 22, 2025)
 
-**Duration**: 4-5 days
-**Dependencies**: MERGE-PHASE-001
-**Parallel Agents**: 3 agents recommended
+**COMPLETED TASKS (✅)**:
 
-#### MERGE-TASK-003: Domain Generator Template
+- **MERGE-TASK-001: Project Structure Setup** — Evidence: `copier.yml` at repo root; `hooks/pre_gen.py`, `hooks/post_gen.py`; populated `templates/{{project_slug}}/` directory.
+- **MERGE-TASK-002: Build System Foundation** — Evidence: `justfile`, `nx.json`, `package.json`, `pnpm-workspace.yaml` present at project root.
+- **MERGE-TASK-003: Domain Generator Template** — Evidence: domain generator scaffolding and files under `templates/{{project_slug}}/generators/` and `templates/{{project_slug}}/libs/{{domain_name}}/domain/`.
+- **MERGE-TASK-004: Application Generator Template** — Evidence: service generator at `templates/{{project_slug}}/generators/service/generator.ts` and language-specific templates under `generators/service/files/`.
+- **MERGE-TASK-005: Type System Integration** — Evidence: `tools/type-generator/` with generator source and fixtures (`tools/type-generator/src/generators/types/*`, `tools/type-generator/test-fixtures/`).
 
-**Traceability**: PRD-MERGE-002, TS-MERGE-001
-**Agent Assignment**: Agent A
-**Estimated Time**: 6 hours
+**PARTIALLY COMPLETED TASKS (🟡)**:
 
-**RED (Failing Test)**:
+- **MERGE-TASK-008: HexDDD Project Migration** — Evidence: migration scripts present at `tools/migration/hexddd-migrator.py` but implementation is skeletal.
+- **MERGE-TASK-009: VibePDK Template Migration** — Evidence: `tools/migration/convert_cookiecutter_to_copier.py` and `tools/migration/vibepdk-migrator.py` exist but need completion.
 
-```typescript
-// Test file: tests/generators/domain.test.ts
-describe('Domain Generator', () => {
-  it('should generate complete DDD domain structure', async () => {
-    const result = await runGenerator('domain', {
-      name: 'user-management',
-      bounded_context: 'identity'
-    });
+**MISSING TASKS (❌)**:
 
-    expect(result.files).toContain('libs/user-management/domain/entities/User.ts');
-    expect(result.files).toContain('libs/user-management/application/use-cases/CreateUser.ts');
-    expect(result.files).toContain('libs/user-management/infrastructure/repositories/UserRepository.ts');
-  });
-});
-```
+- **MERGE-TASK-006: Temporal Database Integration** — Missing: No `tools/temporal-db/` implementation, Rust code is placeholder.
+- **MERGE-TASK-007: AI Context Management** — Missing: No `tools/ai/` directory or AIContextManager implementation.
+- **MERGE-TASK-010: Integration Testing Suite** — Missing: `tests/e2e/` is empty, no comprehensive integration tests.
+- **MERGE-TASK-011: Documentation Generation** — Missing: No automated documentation generation tools.
+- **MERGE-TASK-012: Performance Validation** — Missing: No performance monitoring or benchmark suite.
 
-**GREEN (Minimal Implementation)**:
+### [x] MERGE-PHASE-002: Core Generator Development
 
-1. **Extract HexDDD domain generator patterns**:
+- **Duration**: 4-5 days
+- **Dependencies**: MERGE-PHASE-001
+- **Parallel Agents**: 3 agents recommended
 
-   ```bash
-   # Source: /home/sprime01/projects/HexDDD/libs/ddd/src/generators/domain/
-   # Copy: files/, schema.json, index.ts
-   # Adapt: Convert to Copier template format
-   ```
+#### [x] MERGE-TASK-004: Application Generator Template
 
-2. **Create Copier domain template**:
-
-   ```bash
-   # templates/libs/{{ domain_name }}/
-   ├── domain/
-   │   ├── entities/
-   │   │   └── {{ domain_name | capitalize }}.ts.j2
-   │   ├── value-objects/
-   │   └── events/
-   ├── application/
-   │   ├── use-cases/
-   │   └── ports/
-   └── infrastructure/
-       ├── repositories/
-       └── adapters/
-   ```
-
-3. **Template variable configuration**:
-
-   ```yaml
-   # In copier.yml, add domain-specific questions
-   domain_name:
-     type: str
-     help: "Domain name (kebab-case)"
-     validator: "{% if not domain_name.replace('-', '').isalnum() %}Invalid domain name{% endif %}"
-
-   bounded_context:
-     type: str
-     help: "Bounded context for DDD"
-     default: "{{ domain_name }}"
-   ```
-
-**REFACTOR**:
-
-- Add validation for DDD patterns
-- Implement entity relationship generation
-- Add port/adapter scaffolding
-
-**REGRESSION**:
-
-- Generate test domains and verify structure
-- Test entity/value object templates
-- Validate imports and dependencies
-
----
-
-#### MERGE-TASK-004: Application Generator Template
-
-**Traceability**: PRD-MERGE-003, TS-MERGE-002
-**Agent Assignment**: Agent B (Parallel with MERGE-TASK-003)
-**Estimated Time**: 6 hours
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-003)
+- **Estimated Time**: 6 hours
 
 **RED (Failing Test)**:
 
@@ -308,31 +249,31 @@ describe('Application Generator', () => {
 
 1. **Extract HexDDD app generators**:
 
-   ```bash
-   # Source: /home/sprime01/projects/HexDDD/libs/ddd/src/generators/web-app/
-   # Copy: Next.js, Remix, Expo templates
-   # Adapt: Convert to unified Copier format
-   ```
+    ```bash
+    # Source: /home/sprime01/projects/HexDDD/libs/ddd/src/generators/web-app/
+    # Copy: Next.js, Remix, Expo templates
+    # Adapt: Convert to unified Copier format
+    ```
 
 2. **Create framework-agnostic templates**:
 
-   ```bash
-   # templates/apps/{{ app_name }}/
-   {% if framework == 'next' %}
-   # Copy from HexDDD Next.js template
-   {% elif framework == 'remix' %}
-   # Copy from HexDDD Remix template
-   {% elif framework == 'expo' %}
-   # Copy from HexDDD Expo template
-   {% endif %}
-   ```
+    ```bash
+    # templates/apps/{{ app_name }}/
+    {% if framework == 'next' %}
+    # Copy from HexDDD Next.js template
+    {% elif framework == 'remix' %}
+    # Copy from HexDDD Remix template
+    {% elif framework == 'expo' %}
+    # Copy from HexDDD Expo template
+    {% endif %}
+    ```
 
 3. **Unified API client generation**:
 
-   ```bash
-   # Source: /home/sprime01/projects/HexDDD/libs/shared/web/src/api/
-   # Adapt: Create template version with domain integration
-   ```
+    ```bash
+    # Source: /home/sprime01/projects/HexDDD/libs/shared/web/src/api/
+    # Adapt: Create template version with domain integration
+    ```
 
 **REFACTOR**:
 
@@ -348,11 +289,11 @@ describe('Application Generator', () => {
 
 ---
 
-#### MERGE-TASK-005: Type System Integration
+#### [x] MERGE-TASK-005: Type System Integration
 
-**Traceability**: ADR-MERGE-006, TS-MERGE-005
-**Agent Assignment**: Agent C (Parallel with MERGE-TASK-003, MERGE-TASK-004)
-**Estimated Time**: 8 hours
+- **Traceability**: ADR-MERGE-006, TS-MERGE-005
+- **Agent Assignment**: Agent C (Parallel with MERGE-TASK-003, MERGE-TASK-004)
+- **Estimated Time**: 8 hours
 
 **RED (Failing Test)**:
 
@@ -373,29 +314,29 @@ describe('Type System Integration', () => {
 
 1. **Copy HexDDD type generation system**:
 
-   ```bash
-   # Source: /home/sprime01/projects/HexDDD/tools/type-generator/
-   # Copy: Complete type generation toolchain
-   # Adapt: Integrate with Copier template system
-   ```
+    ```bash
+    # Source: /home/sprime01/projects/HexDDD/tools/type-generator/
+    # Copy: Complete type generation toolchain
+    # Adapt: Integrate with Copier template system
+    ```
 
 2. **Create type generation templates**:
 
-   ```bash
-   # templates/libs/shared/database-types/index.ts.j2
-   # templates/libs/backend/type_utils/__init__.py.j2
-   # Hook into post-generation for type sync
-   ```
+    ```bash
+    # templates/libs/shared/database-types/index.ts.j2
+    # templates/libs/backend/type_utils/__init__.py.j2
+    # Hook into post-generation for type sync
+    ```
 
 3. **Database schema integration**:
 
-   ```python
-   # hooks/post_gen.py
-   def generate_types_from_schema():
-       # Integrate HexDDD type generation logic
-       # Generate TypeScript and Python types
-       # Ensure cross-language consistency
-   ```
+    ```python
+    # hooks/post_gen.py
+    def generate_types_from_schema():
+        # Integrate HexDDD type generation logic
+        # Generate TypeScript and Python types
+        # Ensure cross-language consistency
+    ```
 
 **REFACTOR**:
 
@@ -411,17 +352,17 @@ describe('Type System Integration', () => {
 
 ---
 
-### MERGE-PHASE-003: AI-Enhanced Development Integration
+### [ ] MERGE-PHASE-003: AI-Enhanced Development Integration
 
-**Duration**: 3-4 days
-**Dependencies**: MERGE-PHASE-002
-**Parallel Agents**: 2 agents recommended
+- **Duration**: 3-4 days
+- **Dependencies**: MERGE-PHASE-002
+- **Parallel Agents**: 2 agents recommended
 
-#### MERGE-TASK-006: Temporal Database Integration
+#### [ ] MERGE-TASK-006: Temporal Database Integration
 
-**Traceability**: ADR-MERGE-005, TS-MERGE-003
-**Agent Assignment**: Agent A
-**Estimated Time**: 8 hours
+- **Traceability**: ADR-MERGE-005, TS-MERGE-003
+- **Agent Assignment**: Agent A
+- **Estimated Time**: 8 hours
 
 **RED (Failing Test)**:
 
@@ -446,38 +387,38 @@ def test_tsink_integration():
 
 1. **Implement tsink database wrapper**:
 
-   ```python
-   # Based on TS-MERGE-003 specification
-   # templates/tools/temporal-db/repository.py.j2
-   from temporal_db.schema import SpecificationRecord
-   import tsink
+    ```python
+    # Based on TS-MERGE-003 specification
+    # templates/tools/temporal-db/repository.py.j2
+    from temporal_db.schema import SpecificationRecord
+    import tsink
 
-   class TemporalRepository:
-       def __init__(self, db_path: str):
-           self.db_path = db_path
-           # Implementation from TS.md specification
-   ```
+    class TemporalRepository:
+        def __init__(self, db_path: str):
+            self.db_path = db_path
+            # Implementation from TS.md specification
+    ```
 
 2. **Create database initialization**:
 
-   ```bash
-   # hooks/post_gen.py
-   def setup_temporal_database():
-       # Initialize tsink database
-       # Set up time series for specifications
-       # Configure Gorilla compression
-   ```
+    ```bash
+    # hooks/post_gen.py
+    def setup_temporal_database():
+        # Initialize tsink database
+        # Set up time series for specifications
+        # Configure Gorilla compression
+    ```
 
 3. **Add database management commands**:
 
-   ```bash
-   # templates/justfile additions
-   db-init:
-       python tools/temporal-db/init.py
+    ```bash
+    # templates/justfile additions
+    db-init:
+        python tools/temporal-db/init.py
 
-   db-backup:
-       python tools/temporal-db/backup.py
-   ```
+    db-backup:
+        python tools/temporal-db/backup.py
+    ```
 
 **REFACTOR**:
 
@@ -493,11 +434,11 @@ def test_tsink_integration():
 
 ---
 
-#### MERGE-TASK-007: AI Context Management
+#### [ ] MERGE-TASK-007: AI Context Management
 
-**Traceability**: PRD-MERGE-004, TS-MERGE-007
-**Agent Assignment**: Agent B (Parallel with MERGE-TASK-006)
-**Estimated Time**: 6 hours
+- **Traceability**: PRD-MERGE-004, TS-MERGE-007
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-006)
+- **Estimated Time**: 6 hours
 
 **RED (Failing Test)**:
 
@@ -521,28 +462,28 @@ describe('AI Context Manager', () => {
 
 1. **Copy VibePDK AI workflow foundation**:
 
-   ```bash
-   # Source: /home/sprime01/projects/VibePDK/.github/prompts/
-   # Copy: AI workflow patterns and prompt templates
-   # Adapt: Integrate with HexDDD architectural patterns
-   ```
+    ```bash
+    # Source: /home/sprime01/projects/VibePDK/.github/prompts/
+    # Copy: AI workflow patterns and prompt templates
+    # Adapt: Integrate with HexDDD architectural patterns
+    ```
 
 2. **Implement context manager from TS specification**:
 
-   ```typescript
-   // templates/tools/ai/context-manager.ts.j2
-   // Implementation based on TS-MERGE-007
-   export class AIContextManager {
-     // Copy implementation from TS.md
-   }
-   ```
+    ```typescript
+    // templates/tools/ai/context-manager.ts.j2
+    // Implementation based on TS-MERGE-007
+    export class AIContextManager {
+      // Copy implementation from TS.md
+    }
+    ```
 
 3. **Create AI-enhanced generators**:
 
-   ```bash
-   # templates/.github/workflows/ai-generate.yml.j2
-   # Integration of VibePDK AI workflows with HexDDD generators
-   ```
+    ```bash
+    # templates/.github/workflows/ai-generate.yml.j2
+    # Integration of VibePDK AI workflows with HexDDD generators
+    ```
 
 **REFACTOR**:
 
@@ -558,17 +499,17 @@ describe('AI Context Manager', () => {
 
 ---
 
-### MERGE-PHASE-004: Migration Tools and Compatibility
+### [ ] MERGE-PHASE-004: Migration Tools and Compatibility
 
-**Duration**: 3-4 days
-**Dependencies**: MERGE-PHASE-002
-**Parallel Agents**: 2 agents recommended
+- **Duration**: 3-4 days
+- **Dependencies**: MERGE-PHASE-002
+- **Parallel Agents**: 2 agents recommended
 
-#### MERGE-TASK-008: HexDDD Project Migration
+#### [ ] MERGE-TASK-008: HexDDD Project Migration
 
-**Traceability**: PRD-MERGE-008, SDS-MERGE-007
-**Agent Assignment**: Agent A
-**Estimated Time**: 10 hours
+- **Traceability**: PRD-MERGE-008, SDS-MERGE-007
+- **Agent Assignment**: Agent A
+- **Estimated Time**: 10 hours
 
 **RED (Failing Test)**:
 
@@ -590,32 +531,32 @@ describe('HexDDD Migration', () => {
 
 1. **Create migration analysis tool**:
 
-   ```python
-   # tools/migration/hexddd-analyzer.py
-   def analyze_hexddd_project(project_path):
-       # Scan existing HexDDD project structure
-       # Identify generators, configurations, custom code
-       # Create migration plan
-   ```
+    ```python
+    # tools/migration/hexddd-analyzer.py
+    def analyze_hexddd_project(project_path):
+        # Scan existing HexDDD project structure
+        # Identify generators, configurations, custom code
+        # Create migration plan
+    ```
 
 2. **Implement project structure converter**:
 
-   ```python
-   # tools/migration/hexddd-migrator.py
-   def migrate_hexddd_project(source_path, target_path):
-       # Convert Nx generators to Copier templates
-       # Preserve custom domain implementations
-       # Update build configurations
-   ```
+    ```python
+    # tools/migration/hexddd-migrator.py
+    def migrate_hexddd_project(source_path, target_path):
+        # Convert Nx generators to Copier templates
+        # Preserve custom domain implementations
+        # Update build configurations
+    ```
 
 3. **Create migration guide template**:
 
-   ```markdown
-   # templates/MIGRATION-FROM-HEXDDD.md.j2
-   # Step-by-step migration instructions
-   # Automated tool usage
-   # Manual verification steps
-   ```
+    ```markdown
+    # templates/MIGRATION-FROM-HEXDDD.md.j2
+    # Step-by-step migration instructions
+    # Automated tool usage
+    # Manual verification steps
+    ```
 
 **REFACTOR**:
 
@@ -631,11 +572,11 @@ describe('HexDDD Migration', () => {
 
 ---
 
-#### MERGE-TASK-009: VibePDK Template Migration
+#### [ ] MERGE-TASK-009: VibePDK Template Migration
 
-**Traceability**: PRD-MERGE-009, SDS-MERGE-008
-**Agent Assignment**: Agent B (Parallel with MERGE-TASK-008)
-**Estimated Time**: 6 hours
+- **Traceability**: PRD-MERGE-009, SDS-MERGE-008
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-008)
+- **Estimated Time**: 6 hours
 
 **RED (Failing Test)**:
 
@@ -657,34 +598,34 @@ describe('VibePDK Migration', () => {
 
 1. **Create Cookiecutter to Copier converter**:
 
-   ```python
-   # tools/migration/cookiecutter-converter.py
-   def convert_cookiecutter_to_copier(template_path):
-       # Parse cookiecutter.json
-       # Convert to copier.yml format
-       # Migrate Jinja2 templates
-       # Convert hooks from cookiecutter to copier format
-   ```
+    ```python
+    # tools/migration/cookiecutter-converter.py
+    def convert_cookiecutter_to_copier(template_path):
+        # Parse cookiecutter.json
+        # Convert to copier.yml format
+        # Migrate Jinja2 templates
+        # Convert hooks from cookiecutter to copier format
+    ```
 
 2. **Template syntax converter**:
 
-   ```python
-   # tools/migration/template-syntax.py
-   def convert_template_syntax(content):
-       # Convert {{ var }} to {{var}}
-       # Update conditional syntax
-       # Handle loop constructs
-   ```
+    ```python
+    # tools/migration/template-syntax.py
+    def convert_template_syntax(content):
+        # Convert {{ var }} to {{var}}
+        # Update conditional syntax
+        # Handle loop constructs
+    ```
 
 3. **Automated conversion workflow**:
 
-   ```bash
-   # tools/migration/convert-vibepdk.sh
-   #!/bin/bash
-   # Automate conversion of VibePDK templates
-   # Validate conversion results
-   # Generate comparison reports
-   ```
+    ```bash
+    # tools/migration/convert-vibepdk.sh
+    #!/bin/bash
+    # Automate conversion of VibePDK templates
+    # Validate conversion results
+    # Generate comparison reports
+    ```
 
 **REFACTOR**:
 
@@ -700,17 +641,17 @@ describe('VibePDK Migration', () => {
 
 ---
 
-### MERGE-PHASE-005: Validation and Documentation
+### [ ] MERGE-PHASE-005: Validation and Documentation
 
-**Duration**: 2-3 days
-**Dependencies**: MERGE-PHASE-003, MERGE-PHASE-004
-**Parallel Agents**: 3 agents recommended
+- **Duration**: 2-3 days
+- **Dependencies**: MERGE-PHASE-003, MERGE-PHASE-004
+- **Parallel Agents**: 3 agents recommended
 
-#### MERGE-TASK-010: Integration Testing Suite
+#### [ ] MERGE-TASK-010: Integration Testing Suite
 
-**Traceability**: PRD-MERGE-010, SDS-MERGE-006
-**Agent Assignment**: Agent A
-**Estimated Time**: 8 hours
+- **Traceability**: PRD-MERGE-010, SDS-MERGE-006
+- **Agent Assignment**: Agent A
+- **Estimated Time**: 8 hours
 
 **RED (Failing Test)**:
 
@@ -731,32 +672,32 @@ describe('End-to-End Integration', () => {
 
 1. **Create comprehensive test suite**:
 
-   ```bash
-   # tests/integration/
-   ├── project-generation.test.ts
-   ├── build-system.test.ts
-   ├── ai-workflows.test.ts
-   ├── migration-tools.test.ts
-   └── performance.test.ts
-   ```
+    ```bash
+    # tests/integration/
+    ├── project-generation.test.ts
+    ├── build-system.test.ts
+    ├── ai-workflows.test.ts
+    ├── migration-tools.test.ts
+    └── performance.test.ts
+    ```
 
 2. **Automated testing pipeline**:
 
-   ```yaml
-   # .github/workflows/integration-tests.yml
-   # Test matrix for different project configurations
-   # Performance benchmarks
-   # Migration validation
-   ```
+    ```yaml
+    # .github/workflows/integration-tests.yml
+    # Test matrix for different project configurations
+    # Performance benchmarks
+    # Migration validation
+    ```
 
 3. **Test data and fixtures**:
 
-   ```bash
-   # tests/fixtures/
-   ├── sample-hexddd-project/
-   ├── sample-vibepdk-template/
-   └── reference-outputs/
-   ```
+    ```bash
+    # tests/fixtures/
+    ├── sample-hexddd-project/
+    ├── sample-vibepdk-template/
+    └── reference-outputs/
+    ```
 
 **REFACTOR**:
 
@@ -772,11 +713,11 @@ describe('End-to-End Integration', () => {
 
 ---
 
-#### MERGE-TASK-011: Documentation Generation
+#### [ ] MERGE-TASK-011: Documentation Generation
 
-**Traceability**: PRD-MERGE-006, ADR-MERGE-008
-**Agent Assignment**: Agent B (Parallel with MERGE-TASK-010)
-**Estimated Time**: 6 hours
+- **Traceability**: PRD-MERGE-006, ADR-MERGE-008
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-010)
+- **Estimated Time**: 6 hours
 
 **RED (Failing Test)**:
 
@@ -796,30 +737,30 @@ describe('Documentation Generation', () => {
 
 1. **Copy VibePDK documentation patterns**:
 
-   ```bash
-   # Source: /home/sprime01/projects/VibePDK/docs/
-   # Adapt: Merge with HexDDD documentation
-   # Create: Unified documentation templates
-   ```
+    ```bash
+    # Source: /home/sprime01/projects/VibePDK/docs/
+    # Adapt: Merge with HexDDD documentation
+    # Create: Unified documentation templates
+    ```
 
 2. **Automated documentation generation**:
 
-   ```bash
-   # templates/tools/docs/generator.py.j2
-   # Generate API documentation
-   # Create architecture diagrams
-   # Build user guides
-   ```
+    ```bash
+    # templates/tools/docs/generator.py.j2
+    # Generate API documentation
+    # Create architecture diagrams
+    # Build user guides
+    ```
 
 3. **Documentation templates**:
 
-   ```markdown
-   # templates/docs/
-   ├── README.md.j2
-   ├── ARCHITECTURE.md.j2
-   ├── API-REFERENCE.md.j2
-   └── MIGRATION-GUIDE.md.j2
-   ```
+    ```markdown
+    # templates/docs/
+    ├── README.md.j2
+    ├── ARCHITECTURE.md.j2
+    ├── API-REFERENCE.md.j2
+    └── MIGRATION-GUIDE.md.j2
+    ```
 
 **REFACTOR**:
 
@@ -835,11 +776,11 @@ describe('Documentation Generation', () => {
 
 ---
 
-#### MERGE-TASK-012: Performance Validation
+#### [ ] MERGE-TASK-012: Performance Validation
 
-**Traceability**: TS-MERGE-008, SDS-MERGE-006
-**Agent Assignment**: Agent C (Parallel with MERGE-TASK-010, MERGE-TASK-011)
-**Estimated Time**: 4 hours
+- **Traceability**: TS-MERGE-008, SDS-MERGE-006
+- **Agent Assignment**: Agent C (Parallel with MERGE-TASK-010, MERGE-TASK-011)
+- **Estimated Time**: 4 hours
 
 **RED (Failing Test)**:
 
@@ -859,32 +800,32 @@ describe('Performance Benchmarks', () => {
 
 1. **Performance monitoring from TS-MERGE-008**:
 
-   ```typescript
-   // tools/performance/monitor.ts
-   // Implementation based on TS specification
-   export class PerformanceMonitor {
-     // Copy implementation from TS.md
-   }
-   ```
+    ```typescript
+    // tools/performance/monitor.ts
+    // Implementation based on TS specification
+    export class PerformanceMonitor {
+      // Copy implementation from TS.md
+    }
+    ```
 
 2. **Benchmark suite**:
 
-   ```bash
-   # tests/performance/
-   ├── generation-benchmarks.ts
-   ├── build-benchmarks.ts
-   ├── ai-performance.ts
-   └── database-benchmarks.ts
-   ```
+    ```bash
+    # tests/performance/
+    ├── generation-benchmarks.ts
+    ├── build-benchmarks.ts
+    ├── ai-performance.ts
+    └── database-benchmarks.ts
+    ```
 
 3. **Performance reporting**:
 
-   ```bash
-   # tools/performance/reporter.py
-   # Generate performance reports
-   # Compare with baseline metrics
-   # Identify performance regressions
-   ```
+    ```bash
+    # tools/performance/reporter.py
+    # Generate performance reports
+    # Compare with baseline metrics
+    # Identify performance regressions
+    ```
 
 **REFACTOR**:
 
@@ -964,6 +905,6 @@ Each task includes rollback steps:
 
 ---
 
-**Plan Version**: 1.0
-**Last Updated**: 2025-09-19
-**Next Review**: Upon completion of MERGE-PHASE-001
+- **Plan Version**: 1.0
+- **Last Updated**: 2025-09-19
+- **Next Review**: Upon completion of MERGE-PHASE-001

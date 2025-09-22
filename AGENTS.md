@@ -1,4 +1,4 @@
-# AGENTS.md - AI Agent Guidelines for HexDDD-VibePDK Merger
+# AGENTS.md - AI Agent Guidelines for Vibes Pro (HexDDD-VibePDK Merger)
 
 This document provides AI agents and autonomous coding systems with essential context, patterns, and operational guidelines for successfully implementing the HexDDD-VibePDK merger project.
 
@@ -24,7 +24,7 @@ This document provides AI agents and autonomous coding systems with essential co
 
 ### 2. Hexagonal Architecture + DDD Enforcement
 
-```
+```TXT
 Domain Layer (Pure Business Logic)
 ├── Entities: Core business objects with identity
 ├── Value Objects: Immutable data structures
@@ -172,7 +172,7 @@ The implementation follows a strict 5-phase approach with autonomous agent coord
 
 **Generated Project Structure**:
 
-```
+```TXT
 generated-project/
 ├── apps/                          # Application interfaces
 │   ├── {{app_name}}/             # Web/mobile/CLI applications
