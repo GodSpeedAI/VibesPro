@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import fs from 'node:fs';
-import { compareSnapshot, writeSnapshot } from '../../tools/test/snapshot';
+import { compareSnapshot, writeSnapshot, getSnapshotPath } from '../../tools/test/snapshot';
 import { deriveServiceDefaults } from '../../generators/_utils/stack_defaults';
 
 // Happy path: fastapi implies python + fastapi + pnpm
@@ -10,7 +10,7 @@ import { deriveServiceDefaults } from '../../generators/_utils/stack_defaults';
     assert.deepStrictEqual(d, { language: 'python', backendFramework: 'fastapi', packageManager: 'pnpm' });
     const name = 'stack_defaults.fastapi';
     const content = JSON.stringify(d);
-    const snapPath = `${process.cwd()}/tests/snapshots/${name}.snap`;
+    const snapPath = getSnapshotPath(name);
     if (!fs.existsSync(snapPath)) {
         writeSnapshot(name, content);
     } else {
@@ -26,7 +26,7 @@ import { deriveServiceDefaults } from '../../generators/_utils/stack_defaults';
     assert.strictEqual(d.backendFramework, 'express');
     const name = 'stack_defaults.express';
     const content = JSON.stringify(d);
-    const snapPath = `${process.cwd()}/tests/snapshots/${name}.snap`;
+    const snapPath = getSnapshotPath(name);
     if (!fs.existsSync(snapPath)) writeSnapshot(name, content);
     else assert.ok(compareSnapshot(name, content), 'Snapshot mismatch for express defaults');
 }
@@ -37,7 +37,7 @@ import { deriveServiceDefaults } from '../../generators/_utils/stack_defaults';
     assert.deepStrictEqual(d, { language: 'python', backendFramework: 'none', packageManager: 'pnpm' });
     const name = 'stack_defaults.empty';
     const content = JSON.stringify(d);
-    const snapPath = `${process.cwd()}/tests/snapshots/${name}.snap`;
+    const snapPath = getSnapshotPath(name);
     if (!fs.existsSync(snapPath)) writeSnapshot(name, content);
     else assert.ok(compareSnapshot(name, content), 'Snapshot mismatch for empty defaults');
 }

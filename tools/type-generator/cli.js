@@ -190,11 +190,14 @@ function parseTypeScriptTypes(tsDir) {
   const resolvedDir = ensureDirectoryExists(tsDir, 'TypeScript directory');
   const entries = fs.readdirSync(resolvedDir, { withFileTypes: true });
   const tsTypes = {};
+  let processedFiles = 0;
 
   entries.forEach(entry => {
     if (!entry.isFile() || !entry.name.endsWith('.ts')) {
       return;
     }
+
+    processedFiles += 1;
 
     const filePath = assertWorkspacePath(path.join(resolvedDir, entry.name), 'TypeScript file');
     const sourceFile = ts.createSourceFile(
@@ -230,7 +233,7 @@ function parseTypeScriptTypes(tsDir) {
     visit(sourceFile);
   });
 
-  return tsTypes;
+  return { tsTypes, processedFiles };
 }
 
 function parsePythonTypes(pyDir) {
@@ -245,13 +248,13 @@ function parsePythonTypes(pyDir) {
   const fileContents = {};
 
   if (pythonFiles.length === 0) {
-    return { pyTypes, classFileMap, fileContents };
+    return { pyTypes, classFileMap, fileContents, processedFiles: 0 };
   }
 
   const parserPath = ensurePyParserScript();
   const result = spawnSync('python3', [parserPath, ...pythonFiles], { encoding: 'utf-8' });
 
-  if (result.error) {
+  if (result.error && result.status !== 0) {
     throw new Error(`Failed to execute Python parser: ${result.error.message}`);
   }
 
@@ -277,7 +280,7 @@ function parsePythonTypes(pyDir) {
     }
   }
 
-  return { pyTypes, classFileMap, fileContents };
+  return { pyTypes, classFileMap, fileContents, processedFiles: pythonFiles.length };
 }
 
 function renamePythonField(className, fromName, toName, pyFilePath, pyClassFields, fileContents) {
@@ -377,10 +380,20 @@ program
         'Python directory'
       );
 
-      const tsTypes = parseTypeScriptTypes(sanitizedTsDir);
-      const { pyTypes, classFileMap, fileContents } = parsePythonTypes(sanitizedPyDir);
+      const { tsTypes, processedFiles: tsFileCount } = parseTypeScriptTypes(sanitizedTsDir);
+      const { pyTypes, classFileMap, fileContents, processedFiles: pyFileCount } = parsePythonTypes(sanitizedPyDir);
 
       let hasErrors = false;
+
+      if (tsFileCount === 0) {
+        console.error('❌ No TypeScript files found');
+        hasErrors = true;
+      }
+
+      if (pyFileCount === 0) {
+        console.error('❌ No Python files found');
+        hasErrors = true;
+      }
 
       for (const [className, tsClass] of Object.entries(tsTypes)) {
         const pyClass = pyTypes[className];
@@ -478,6 +491,7 @@ program
       }
 
       if (hasErrors) {
+        console.error('❌ Type parity check failed');
         process.exit(1);
       }
 
