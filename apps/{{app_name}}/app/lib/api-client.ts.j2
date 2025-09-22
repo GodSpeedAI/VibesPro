@@ -1,29 +1,23 @@
 {% if app_framework == 'remix' %}
-// Shared typed API client
-export async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('NetworkError');
-  return (await res.json()) as T;
-}
+import { BaseApiClient } from './base-api-client';
 
 {% set domain_list = app_domains.split(',') if app_domains else ['core'] -%}
 // Domain-specific API clients
 {% for domain in domain_list -%}
-export class {{domain | replace('-', '') | title}}Api {
-  private basePath = '/api/{{domain}}';
+export class {{domain | replace('-', '') | title}}Api extends BaseApiClient {
+  constructor() {
+    super('/api/{{domain}}');
+  }
 
   async get<T>(path: string): Promise<T> {
-    return fetchJson<T>(`${this.basePath}${path}`);
+    return this.fetchJson<T>(path);
   }
 
   async post<T>(path: string, data: unknown): Promise<T> {
-    const res = await fetch(`${this.basePath}${path}`, {
+    return this.fetchJson<T>(path, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: data,
     });
-    if (!res.ok) throw new Error('NetworkError');
-    return (await res.json()) as T;
   }
 }
 

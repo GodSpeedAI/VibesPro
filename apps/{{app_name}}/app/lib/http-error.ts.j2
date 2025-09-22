@@ -1,0 +1,12 @@
+// HTTP Error class with detailed response information
+export class HttpError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly statusText: string,
+    public readonly body: unknown,
+    message?: string
+  ) {
+    super(message || `HTTP Error ${status}: ${statusText}`);
+    this.name = 'HttpError';
+  }
+}
