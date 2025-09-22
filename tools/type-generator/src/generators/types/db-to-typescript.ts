@@ -1,5 +1,5 @@
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'fs';
-import { isAbsolute, join, parse, relative, resolve } from 'path';
+import { dirname, isAbsolute, join, normalize, parse, relative, resolve } from 'path';
 import {
   assertFilenameSafe,
   isPathSafe,
@@ -26,21 +26,79 @@ interface DbSchema {
 
 const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
 
+WORKSPACE_MARKERS.forEach(marker => {
+  if (typeof marker !== 'string' || !marker.trim()) {
+    throw new Error('Workspace marker entries must be non-empty strings');
+  }
+
+  if (marker.includes('/') || marker.includes('\\')) {
+    throw new Error(`Workspace marker may not contain path separators: ${marker}`);
+  }
+});
+
 function findWorkspaceRoot(startDir: string): string {
-  let currentDir = resolve(startDir);
+  const sanitizedStartDir = sanitizePathInput(startDir, 'workspace search path');
+  const normalizedStartDir = normalize(sanitizedStartDir);
+  const hasTraversal = normalizedStartDir
+    .split(/[\\/]+/)
+    .filter(Boolean)
+    .some(segment => segment === '..');
+
+  if (hasTraversal) {
+    throw new Error('workspace search path may not contain parent directory traversals');
+  }
+
+  const absoluteStartDir = resolve(sanitizedStartDir);
+
+  let realStartDir: string;
+  try {
+    realStartDir = realpathSync(absoluteStartDir);
+  } catch (error) {
+    throw new Error(`Unable to resolve workspace search path: ${absoluteStartDir}`);
+  }
+
+  let startStats;
+  try {
+    startStats = lstatSync(realStartDir);
+  } catch (error) {
+    throw new Error(`Workspace search path does not exist: ${realStartDir}`);
+  }
+
+  if (!startStats.isDirectory()) {
+    throw new Error(`Workspace search path must be a directory: ${realStartDir}`);
+  }
+
+  let currentDir = realStartDir;
   const { root } = parse(currentDir);
+  const visited = new Set<string>();
 
   while (true) {
-    const isWorkspaceRoot = WORKSPACE_MARKERS.some(marker => existsSync(join(currentDir, marker)));
+    if (visited.has(currentDir)) {
+      throw new Error(`Cyclical directory resolution detected while locating workspace root from: ${realStartDir}`);
+    }
+    visited.add(currentDir);
+
+    const isWorkspaceRoot = WORKSPACE_MARKERS.some(marker => {
+      const markerPath = join(currentDir, marker);
+      try {
+        return existsSync(markerPath);
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+          return false;
+        }
+        throw error;
+      }
+    });
+
     if (isWorkspaceRoot) {
       return currentDir;
     }
 
     if (currentDir === root) {
-      return resolve(startDir);
+      return realStartDir;
     }
 
-    currentDir = resolve(currentDir, '..');
+    currentDir = dirname(currentDir);
   }
 }
 
@@ -50,18 +108,39 @@ export class DbToTypeScript {
   private readonly workspaceRoot: string;
 
   constructor(workspaceRoot: string = WORKSPACE_ROOT) {
-    const resolvedRoot = resolve(workspaceRoot);
-    if (!isAbsolute(resolvedRoot)) {
-      throw new Error('Workspace root must be an absolute path');
+    const sanitizedRoot = sanitizePathInput(workspaceRoot, 'Workspace root');
+    const normalizedRoot = normalize(sanitizedRoot);
+    const hasTraversal = normalizedRoot
+      .split(/[\\/]+/)
+      .filter(Boolean)
+      .some(segment => segment === '..');
+
+    if (hasTraversal) {
+      throw new Error('Workspace root may not contain parent directory traversals');
     }
-    if (!existsSync(resolvedRoot)) {
-      throw new Error(`Workspace root path does not exist: ${resolvedRoot}`);
+
+    const absoluteRoot = resolve(sanitizedRoot);
+    let canonicalRoot: string;
+    try {
+      canonicalRoot = realpathSync(absoluteRoot);
+    } catch (error) {
+      throw new Error(`Workspace root path does not exist or is inaccessible: ${absoluteRoot}`);
     }
-    const canonicalRoot = realpathSync(resolvedRoot);
+
+    if (!isAbsolute(canonicalRoot)) {
+      throw new Error('Workspace root must resolve to an absolute path');
+    }
+
+    const stats = lstatSync(canonicalRoot);
+    if (!stats.isDirectory()) {
+      throw new Error(`Workspace root must be a directory: ${canonicalRoot}`);
+    }
+
     const { root } = parse(canonicalRoot);
     if (canonicalRoot === root) {
       throw new Error('Workspace root cannot be the filesystem root directory.');
     }
+
     this.workspaceRoot = canonicalRoot;
   }
 
@@ -168,13 +247,13 @@ export class DbToTypeScript {
 
     const resolvedOutputDir = this._resolveWorkspacePath(outputDir, 'Output directory');
 
-    // Check if output directory exists and is a directory
     if (!existsSync(resolvedOutputDir)) {
       mkdirSync(resolvedOutputDir, { recursive: true });
     }
 
     const stats = lstatSync(resolvedOutputDir);
     let effectiveStats = stats;
+    let canonicalOutputDir = resolvedOutputDir;
 
     if (stats.isSymbolicLink()) {
       const realPath = realpathSync(resolvedOutputDir);
@@ -184,11 +263,20 @@ export class DbToTypeScript {
       }
 
       effectiveStats = statSync(realPath);
+      canonicalOutputDir = realPath;
       if (!effectiveStats.isDirectory()) {
         throw new Error(`Output directory symlink does not resolve to a directory: ${resolvedOutputDir}`);
       }
-    } else if (!stats.isDirectory()) {
-      throw new Error(`Output path is not a directory: ${resolvedOutputDir}`);
+    } else {
+      if (!stats.isDirectory()) {
+        throw new Error(`Output path is not a directory: ${resolvedOutputDir}`);
+      }
+
+      canonicalOutputDir = realpathSync(resolvedOutputDir);
+      const relativeCanonicalPath = relative(this.workspaceRoot, canonicalOutputDir);
+      if (relativeCanonicalPath.startsWith('..') || isAbsolute(relativeCanonicalPath)) {
+        throw new Error(`Output directory resolves outside the workspace: ${resolvedOutputDir}`);
+      }
     }
 
     // Validate types structure
@@ -221,7 +309,7 @@ export class DbToTypeScript {
 
       assertFilenameSafe(filename, `${className} type file name`);
 
-      const filepath = this._resolveWorkspacePath(join(resolvedOutputDir, filename), `${className} type file`);
+      const filepath = this._resolveWorkspacePath(join(canonicalOutputDir, filename), `${className} type file`);
 
       let content = `// Auto-generated TypeScript types for ${className}\n`;
       content += `export interface ${className} {\n`;
