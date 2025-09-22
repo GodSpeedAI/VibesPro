@@ -154,3 +154,21 @@ app_router_style:
     - pages
   default: app
   when: "{{ app_framework == 'next' }}"
+
+_exclude:
+  # Exclude framework-specific configs
+  - "{% if app_framework != 'next' %}apps/{{app_name}}/next.config.js.j2{% endif %}"
+  - "{% if app_framework != 'remix' %}apps/{{app_name}}/remix.config.js.j2{% endif %}"
+  - "{% if app_framework != 'expo' %}apps/{{app_name}}/app.json.j2{% endif %}"
+  - "{% if app_framework != 'expo' %}apps/{{app_name}}/App.tsx.j2{% endif %}"
+
+  # Exclude Next.js specific directories
+  - "{% if app_framework == 'next' and app_router_style == 'app' %}apps/{{app_name}}/pages/**{% endif %}"
+  - "{% if app_framework == 'next' and app_router_style == 'pages' %}apps/{{app_name}}/app/**{% endif %}"
+
+  # Exclude files for frameworks other than Next.js
+  - "{% if app_framework == 'next' %}apps/{{app_name}}/app/routes/**{% endif %}"
+
+  # Exclude files if framework is not Next.js
+  - "{% if app_framework != 'next' %}apps/{{app_name}}/pages/**{% endif %}"
+  - "{% if app_framework != 'next' %}apps/{{app_name}}/app/**{% endif %}"
