@@ -9,9 +9,9 @@ const ts = require('typescript');
 
 const { DbToTypeScript } = require('./dist/generators/types/db-to-typescript');
 const { verifyTypeParity } = require('./dist/generators/verify');
+const { isPathSafe, resolvePathWithinWorkspace, sanitizePathInput } = require('./utils/pathSecurity');
 
 const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
-const SAFE_PATH_SEGMENT_REGEX = /^[a-zA-Z0-9_.@\- ]+$/;
 
 function findWorkspaceRoot(startDir) {
   let currentDir = path.resolve(startDir);
@@ -77,68 +77,14 @@ function ensurePyParserScript() {
   return PY_PARSER_PATH;
 }
 
-function assertWorkspacePath(input, label) {
-  const inputStr = String(input ?? '');
-  const trimmed = inputStr.trim();
+function assertWorkspacePath(inputPath, label) {
+  const sanitized = sanitizePathInput(inputPath, label);
 
-  if (!trimmed) {
-    throw new Error(`${label} cannot be empty`);
+  if (!isPathSafe(sanitized)) {
+    throw new Error(`${label} contains invalid path characters: ${inputPath}`);
   }
 
-  if (trimmed.includes('\0')) {
-    throw new Error(`${label} contains invalid characters`);
-  }
-
-  if (trimmed.startsWith('~')) {
-    throw new Error(`${label} cannot start with '~': ${trimmed}`);
-  }
-
-  const normalizedForValidation = trimmed.replace(/\\/g, '/');
-  const segments = normalizedForValidation.split('/');
-  const sanitizedSegments = [];
-  let drivePrefix = '';
-
-  for (const rawSegment of segments) {
-    if (!rawSegment || rawSegment === '.') {
-      continue;
-    }
-
-    if (/^[a-zA-Z]:$/.test(rawSegment) && drivePrefix === '') {
-      drivePrefix = `${rawSegment}${path.sep}`;
-      continue;
-    }
-
-    if (rawSegment === '..') {
-      throw new Error(`${label} cannot contain '..': ${trimmed}`);
-    }
-
-    if (!SAFE_PATH_SEGMENT_REGEX.test(rawSegment)) {
-      throw new Error(`${label} contains invalid path segment '${rawSegment}'`);
-    }
-
-    sanitizedSegments.push(rawSegment);
-  }
-
-  const sanitizedRelative = sanitizedSegments.join(path.sep);
-
-  const resolved = path.isAbsolute(trimmed)
-    ? path.resolve(drivePrefix || path.sep, sanitizedRelative)
-    : path.resolve(WORKSPACE_ROOT, sanitizedRelative);
-
-  const relative = path.relative(WORKSPACE_ROOT, resolved);
-
-  if (relative.startsWith('..') || path.isAbsolute(relative)) {
-    throw new Error(`${label} must be inside the workspace: ${resolved}`);
-  }
-
-  const relativeSegments = relative.split(path.sep).filter(Boolean);
-  for (const segment of relativeSegments) {
-    if (!SAFE_PATH_SEGMENT_REGEX.test(segment)) {
-      throw new Error(`${label} resolves to a path with invalid segment '${segment}'`);
-    }
-  }
-
-  return resolved;
+  return resolvePathWithinWorkspace(sanitized, WORKSPACE_ROOT, label);
 }
 
 function ensureDirectoryExists(dirPath, label) {
@@ -389,9 +335,19 @@ program
   .action((schemaPath, options) => {
     try {
       const generator = new DbToTypeScript(WORKSPACE_ROOT);
-      const resolvedSchema = assertWorkspacePath(schemaPath, 'schema path');
+      const normalizedSchema = sanitizePathInput(schemaPath, 'schema path');
+      if (!isPathSafe(normalizedSchema)) {
+        throw new Error(`schema path contains invalid path characters: ${schemaPath}`);
+      }
+
+      const resolvedSchema = resolvePathWithinWorkspace(normalizedSchema, WORKSPACE_ROOT, 'schema path');
+
       const resolvedOutputDir = options.outputDir
-        ? assertWorkspacePath(options.outputDir, 'output directory')
+        ? resolvePathWithinWorkspace(
+            sanitizePathInput(options.outputDir, 'output directory'),
+            WORKSPACE_ROOT,
+            'output directory'
+          )
         : undefined;
 
       generator.generate(resolvedSchema, resolvedOutputDir);
@@ -410,8 +366,19 @@ program
   .option('-f, --fix', 'auto-fix simple naming mismatches by renaming Python fields to match TypeScript')
   .action((tsDir, pyDir, options) => {
     try {
-      const tsTypes = parseTypeScriptTypes(tsDir);
-      const { pyTypes, classFileMap, fileContents } = parsePythonTypes(pyDir);
+      const sanitizedTsDir = resolvePathWithinWorkspace(
+        sanitizePathInput(tsDir, 'TypeScript directory'),
+        WORKSPACE_ROOT,
+        'TypeScript directory'
+      );
+      const sanitizedPyDir = resolvePathWithinWorkspace(
+        sanitizePathInput(pyDir, 'Python directory'),
+        WORKSPACE_ROOT,
+        'Python directory'
+      );
+
+      const tsTypes = parseTypeScriptTypes(sanitizedTsDir);
+      const { pyTypes, classFileMap, fileContents } = parsePythonTypes(sanitizedPyDir);
 
       let hasErrors = false;
 

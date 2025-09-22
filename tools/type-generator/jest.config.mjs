@@ -1,4 +1,4 @@
-import jestPreset from '../../jest.preset.js';
+import jestPreset from '../../jest.preset.mjs';
 
 export default {
   ...jestPreset,

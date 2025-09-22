@@ -1,5 +1,11 @@
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'fs';
-import { isAbsolute, join, parse, relative, resolve, sep } from 'path';
+import { isAbsolute, join, parse, relative, resolve } from 'path';
+import {
+  assertFilenameSafe,
+  isPathSafe,
+  resolvePathWithinWorkspace,
+  sanitizePathInput,
+} from '../../../utils/pathSecurity';
 
 interface ColumnDef {
   type: string;
@@ -19,7 +25,6 @@ interface DbSchema {
 }
 
 const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
-const SAFE_PATH_SEGMENT_REGEX = /^[a-zA-Z0-9_.@\- ]+$/;
 
 function findWorkspaceRoot(startDir: string): string {
   let currentDir = resolve(startDir);
@@ -39,70 +44,6 @@ function findWorkspaceRoot(startDir: string): string {
   }
 }
 
-function resolveWithinWorkspace(workspaceRoot: string, targetPath: string, description: string): string {
-  if (!targetPath || typeof targetPath !== 'string') {
-    throw new Error(`${description} must be a non-empty string`);
-  }
-
-  const trimmed = targetPath.trim();
-  if (!trimmed) {
-    throw new Error(`${description} must be a non-empty string`);
-  }
-
-  if (trimmed.includes('\0')) {
-    throw new Error(`${description} contains invalid characters`);
-  }
-
-  if (trimmed.startsWith('~')) {
-    throw new Error(`${description} cannot start with '~': ${trimmed}`);
-  }
-
-  const normalizedForValidation = trimmed.replace(/\\/g, '/');
-  const segments = normalizedForValidation.split('/');
-  const sanitizedSegments: string[] = [];
-  let drivePrefix = '';
-
-  for (const rawSegment of segments) {
-    if (!rawSegment || rawSegment === '.') {
-      continue;
-    }
-
-    if (/^[a-zA-Z]:$/.test(rawSegment) && drivePrefix === '') {
-      drivePrefix = `${rawSegment}${sep}`;
-      continue;
-    }
-
-    if (rawSegment === '..') {
-      throw new Error(`${description} cannot contain '..': ${trimmed}`);
-    }
-
-    if (!SAFE_PATH_SEGMENT_REGEX.test(rawSegment)) {
-      throw new Error(`${description} contains invalid path segment '${rawSegment}'`);
-    }
-
-    sanitizedSegments.push(rawSegment);
-  }
-
-  const sanitizedRelative = sanitizedSegments.join(sep);
-  const resolvedCandidate = isAbsolute(trimmed)
-    ? resolve(drivePrefix || sep, sanitizedRelative)
-    : resolve(workspaceRoot, sanitizedRelative);
-
-  const relativePath = relative(workspaceRoot, resolvedCandidate);
-  if (relativePath.startsWith('..') || isAbsolute(relativePath)) {
-    throw new Error(`${description} must be inside the workspace: ${resolvedCandidate}`);
-  }
-
-  const relativeSegments = relativePath.split(sep).filter(Boolean);
-  for (const segment of relativeSegments) {
-    if (!SAFE_PATH_SEGMENT_REGEX.test(segment)) {
-      throw new Error(`${description} resolves to a path with invalid segment '${segment}'`);
-    }
-  }
-
-  return resolvedCandidate;
-}
-
 const WORKSPACE_ROOT = findWorkspaceRoot(process.cwd());
 
 export class DbToTypeScript {
@@ -117,11 +58,21 @@ export class DbToTypeScript {
   }
 
   generate(schemaPath: string, outputDir?: string): Record<string, Record<string, string>> {
-    const schema = this._parseSchema(schemaPath);
+    const sanitizedSchemaPath = sanitizePathInput(schemaPath, 'Schema path');
+    if (!isPathSafe(sanitizedSchemaPath)) {
+      throw new Error(`Schema path contains invalid path characters: ${schemaPath}`);
+    }
+
+    const schema = this._parseSchema(sanitizedSchemaPath);
     const types = this._generateTypes(schema);
 
     if (outputDir) {
-      const resolvedOutputDir = this._resolveWorkspacePath(outputDir, 'Output directory');
+      const sanitizedOutputDir = sanitizePathInput(outputDir, 'Output directory');
+      if (!isPathSafe(sanitizedOutputDir)) {
+        throw new Error(`Output directory contains invalid path characters: ${outputDir}`);
+      }
+
+      const resolvedOutputDir = this._resolveWorkspacePath(sanitizedOutputDir, 'Output directory');
       this._writeTypesToFiles(types, resolvedOutputDir);
     }
 
@@ -147,7 +98,12 @@ export class DbToTypeScript {
   }
 
   private _resolveWorkspacePath(targetPath: string, description: string): string {
-    return resolveWithinWorkspace(this.workspaceRoot, targetPath, description);
+    const sanitized = sanitizePathInput(targetPath, description);
+    if (!isPathSafe(sanitized)) {
+      throw new Error(`${description} contains invalid path characters: ${targetPath}`);
+    }
+
+    return resolvePathWithinWorkspace(sanitized, this.workspaceRoot, description);
   }
 
   private _generateTypes(schema: DbSchema): Record<string, Record<string, string>> {
@@ -246,14 +202,9 @@ export class DbToTypeScript {
 
       const filename = `${className.toLowerCase()}.ts`;
 
-      const relativeOutputDir = relative(this.workspaceRoot, resolvedOutputDir);
-      const relativeTarget = relativeOutputDir ? join(relativeOutputDir, filename) : filename;
-      const filepath = this._resolveWorkspacePath(relativeTarget, `${className} type file`);
+      assertFilenameSafe(filename, `${className} type file name`);
 
-      // Validate filename to prevent path traversal
-      if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-        throw new Error(`Invalid filename for class ${className}: ${filename}`);
-      }
+      const filepath = this._resolveWorkspacePath(join(resolvedOutputDir, filename), `${className} type file`);
 
       let content = `// Auto-generated TypeScript types for ${className}\n`;
       content += `export interface ${className} {\n`;
