@@ -1,4 +1,4 @@
-from typing import Optional
+
 
 class User:
     """User model"""
@@ -7,4 +7,4 @@ class User:
     email: str
     age: int
     is_active: bool
-    created_at: Optional[str]
+    created_at: str | None

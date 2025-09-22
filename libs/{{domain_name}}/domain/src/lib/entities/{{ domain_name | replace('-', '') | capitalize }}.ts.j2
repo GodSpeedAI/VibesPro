@@ -1,0 +1,64 @@
+{% if include_domain_entities -%}
+// Generated Entity for {{ domain_name | capitalize }} Domain
+// Bounded Context: {{ bounded_context }}
+
+export interface I{{ domain_name | replace('-', '') | capitalize }}Id {
+  readonly value: string;
+}
+
+export class {{ domain_name | replace('-', '') | capitalize }}Id implements I{{ domain_name | replace('-', '') | capitalize }}Id {
+  constructor(public readonly value: string) {
+    if (!value) {
+      throw new Error('{{ domain_name | capitalize }} ID cannot be empty');
+    }
+  }
+
+  equals(other: {{ domain_name | replace('-', '') | capitalize }}Id): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
+
+export interface I{{ domain_name | replace('-', '') | capitalize }}Props {
+  readonly id: {{ domain_name | replace('-', '') | capitalize }}Id;
+  readonly name: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+}
+
+export class {{ domain_name | replace('-', '') | capitalize }} implements I{{ domain_name | replace('-', '') | capitalize }}Props {
+  constructor(
+    public readonly id: {{ domain_name | replace('-', '') | capitalize }}Id,
+    public readonly name: string,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date
+  ) {
+    this.validate();
+  }
+
+  private validate(): void {
+    if (!this.name || this.name.trim().length === 0) {
+      throw new Error('{{ domain_name | capitalize }} name cannot be empty');
+    }
+    if (this.name.length > 255) {
+      throw new Error('{{ domain_name | capitalize }} name cannot exceed 255 characters');
+    }
+  }
+
+  updateName(newName: string): {{ domain_name | replace('-', '') | capitalize }} {
+    return new {{ domain_name | replace('-', '') | capitalize }}(
+      this.id,
+      newName,
+      this.createdAt,
+      new Date()
+    );
+  }
+
+  equals(other: {{ domain_name | replace('-', '') | capitalize }}): boolean {
+    return this.id.equals(other.id);
+  }
+}
+{% endif -%}

@@ -89,9 +89,10 @@ describe('Merged Project Structure', () => {
             expect(existsSync(join(testOutputDir, 'tools'))).toBe(true);
             expect(existsSync(join(testOutputDir, 'temporal_db'))).toBe(true);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             // Expected to fail initially - this is the RED phase
-            console.log('Expected failure during RED phase:', error.message);
+            const e = error as { message?: string } | undefined;
+            console.log('Expected failure during RED phase:', e?.message ?? String(error));
             throw error;
         }
     });
@@ -103,19 +104,22 @@ describe('Merged Project Structure', () => {
         const fs = await import('node:fs');
         const yaml = await import('js-yaml');
 
-        const copierConfig = yaml.load(fs.readFileSync('copier.yml', 'utf8'));
+        const copierConfig = yaml.load(fs.readFileSync('copier.yml', 'utf8')) as Record<string, unknown>;
 
         // Check for required fields from MERGE-TASK-001 specification
-        expect(copierConfig.project_name).toBeDefined();
-        expect(copierConfig.author_name).toBeDefined();
-        expect(copierConfig.include_ai_workflows).toBeDefined();
-        expect(copierConfig.architecture_style).toBeDefined();
+        expect(copierConfig['project_name']).toBeDefined();
+        expect(copierConfig['author_name']).toBeDefined();
+        expect(copierConfig['include_ai_workflows']).toBeDefined();
+        expect(copierConfig['architecture_style']).toBeDefined();
 
-        // Validate architecture choices
-        expect(copierConfig.architecture_style.choices).toContain('hexagonal');
-        expect(copierConfig.architecture_style.choices).toContain('layered');
-        expect(copierConfig.architecture_style.choices).toContain('microservices');
-        expect(copierConfig.architecture_style.default).toBe('hexagonal');
+        // Validate architecture choices safely
+        const arch = copierConfig['architecture_style'] as Record<string, unknown> | undefined;
+        expect(arch).toBeDefined();
+        const choices = arch && Array.isArray(arch['choices']) ? (arch['choices'] as unknown[]).map(String) : [];
+        expect(choices).toContain('hexagonal');
+        expect(choices).toContain('layered');
+        expect(choices).toContain('microservices');
+        expect(String(arch?.['default'])).toBe('hexagonal');
     });
 
     it('should have executable hooks', async () => {

@@ -1,32 +1,34 @@
 export function checkRuleExists(
   filePath: string,
   rule: string,
-  rules: any
+  rules: Record<string, unknown>
 ) {
-  if (!(rules as any)['rules']) {
+  const ruleGroupRaw = (rules as Record<string, unknown>)['rules'];
+  const ruleGroup = (ruleGroupRaw as Record<string, unknown> | undefined) ?? undefined;
+  if (!ruleGroup) {
     console.info(`${filePath}: rules expected`);
     return false;
   }
 
-  if (!(rules as any)['rules'][rule]) {
+  const ruleEntry = (ruleGroup as Record<string, unknown>)[rule];
+  if (!ruleEntry) {
     console.info(`${filePath}: ${rule} expected`);
     return false;
   }
 
-  if ((rules as any)['rules'][rule]['length'] < 2) {
+  if (!Array.isArray(ruleEntry) || ruleEntry.length < 2) {
     console.info(`${filePath}: ${rule}.1 unexpected`);
     return false;
   }
 
-  if (!(rules as any)['rules'][rule][1]['depConstraints']) {
+  const depConstraints = ruleEntry[1]['depConstraints'];
+  if (!depConstraints) {
     console.info(`${filePath}: ${rule}.1.depConstraints expected.`);
     return false;
   }
 
-  if (!Array.isArray((rules as any)['rules'][rule][1]['depConstraints'])) {
-    console.info(
-      `${filePath}: ${rule}.1.depConstraints expected to be an array.`
-    );
+  if (!Array.isArray(depConstraints)) {
+    console.info(`${filePath}: ${rule}.1.depConstraints expected to be an array.`);
     return false;
   }
 

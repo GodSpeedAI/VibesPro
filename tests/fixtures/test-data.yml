@@ -1,11 +1,23 @@
 project_name: "Test Project"
 project_slug: "test-project"
+app_name: "test-app"
 author_name: "Test Author"
 author_email: "test@example.com"
 architecture_style: "hexagonal"
 include_ai_workflows: true
 enable_temporal_learning: true
-frontend_framework: "next"
+app_framework: "next"
 backend_framework: "fastapi"
 database_type: "postgresql"
 include_supabase: true
+domain_name: "test-domain"
+bounded_context: "test-domain"
+include_domain_entities: true
+include_value_objects: true
+include_domain_events: true
+include_use_cases: true
+include_repositories: true
+app_domains: "test-domain"
+include_api_client: true
+include_example_page: true
+app_router_style: "app"

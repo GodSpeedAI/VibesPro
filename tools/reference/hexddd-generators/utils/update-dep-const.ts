@@ -53,14 +53,18 @@ export function updateDepConst(
     let rules = json;
     if (rules['overrides']) {
       const overrides = rules['overrides'];
-      rules = overrides.find(
-        (e: any) => e.rules && e.rules['@nx/enforce-module-boundaries']
-      );
+      rules = overrides.find((e: unknown) => {
+        if (typeof e !== 'object' || e === null) return false;
+        const rec = e as Record<string, unknown>;
+        return !!rec.rules && !!(rec.rules as Record<string, unknown>)['@nx/enforce-module-boundaries'];
+      }) as Record<string, unknown> | undefined;
     }
 
     if (!checkRuleExists(filePath, rule, rules)) return;
 
-    const depConst = rules['rules'][rule][1]['depConstraints'] as Array<object>;
+    const rulesRec = rules as Record<string, unknown>;
+    const ruleEntry = (rulesRec['rules'] as Record<string, unknown>)[rule] as unknown;
+    const depConst = ((ruleEntry as unknown[])?.[1] as unknown as Record<string, unknown>)['depConstraints'] as Array<object>;
     update(depConst);
     newText = JSON.stringify(json, undefined, 2);
 
@@ -83,7 +87,7 @@ function trim(str: string) {
   }
 
   if (str.endsWith(']')) {
-    str = str.substring(0, str.length-1);
+    str = str.substring(0, str.length - 1);
   }
   return str.trim();
 }

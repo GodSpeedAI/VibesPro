@@ -1,0 +1,58 @@
+{% if include_domain_events -%}
+// Generated UserCreated Domain Event for {{ domain_name | capitalize }} Domain
+// Bounded Context: {{ bounded_context }}
+
+export interface IDomainEvent {
+  readonly eventId: string;
+  readonly eventType: string;
+  readonly aggregateId: string;
+  readonly occurredAt: Date;
+  readonly version: number;
+}
+
+export interface IUserCreatedEventData {
+  readonly userId: string;
+  readonly email: string;
+  readonly name: string;
+}
+
+export class UserCreated implements IDomainEvent {
+  public readonly eventType = 'UserCreated';
+  public readonly version = 1;
+
+  constructor(
+    public readonly eventId: string,
+    public readonly aggregateId: string,
+    public readonly occurredAt: Date,
+    public readonly data: IUserCreatedEventData
+  ) {}
+
+  static create(userId: string, email: string, name: string): UserCreated {
+    return new UserCreated(
+      this.generateEventId(),
+      userId,
+      new Date(),
+      { userId, email, name }
+    );
+  }
+
+  private static generateEventId(): string {
+    return 'event_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  equals(other: UserCreated): boolean {
+    return this.eventId === other.eventId;
+  }
+
+  toJSON(): object {
+    return {
+      eventId: this.eventId,
+      eventType: this.eventType,
+      aggregateId: this.aggregateId,
+      occurredAt: this.occurredAt.toISOString(),
+      version: this.version,
+      data: this.data
+    };
+  }
+}
+{% endif -%}

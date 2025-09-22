@@ -1,0 +1,80 @@
+{% if include_use_cases -%}
+// Generated CreateUser Use Case for {{ domain_name | capitalize }} Domain
+// Bounded Context: {{ bounded_context }}
+
+import { User, UserId } from '../../domain/src/lib/entities/User';
+import { UserCreated } from '../../domain/src/lib/events/UserCreated';
+
+export interface ICreateUserRequest {
+  readonly email: string;
+  readonly name: string;
+}
+
+export interface ICreateUserResponse {
+  readonly success: boolean;
+  readonly user?: User;
+  readonly error?: string;
+}
+
+export interface IUserRepository {
+  save(user: User): Promise<void>;
+  findByEmail(email: string): Promise<User | null>;
+  findById(id: UserId): Promise<User | null>;
+}
+
+export interface IEventBus {
+  publish(event: UserCreated): Promise<void>;
+}
+
+export class CreateUser {
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly eventBus: IEventBus
+  ) {}
+
+  async execute(request: ICreateUserRequest): Promise<ICreateUserResponse> {
+    try {
+      // Check if user already exists
+      const existingUser = await this.userRepository.findByEmail(request.email);
+      if (existingUser) {
+        return {
+          success: false,
+          error: 'User with this email already exists'
+        };
+      }
+
+      // Create new user
+      const userId = UserId.generate();
+      const now = new Date();
+      const user = new User(
+        userId,
+        request.email,
+        request.name,
+        now,
+        now
+      );
+
+      // Save user
+      await this.userRepository.save(user);
+
+      // Publish domain event
+      const event = UserCreated.create(
+        userId.value,
+        request.email,
+        request.name
+      );
+      await this.eventBus.publish(event);
+
+      return {
+        success: true,
+        user
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+}
+{% endif -%}

@@ -1,0 +1,150 @@
+{% if include_repositories -%}
+// Generated UserRepository Implementation for {{ domain_name | capitalize }} Domain
+// Bounded Context: {{ bounded_context }}
+
+import { User, UserId } from '../../domain/src/lib/entities/User';
+import { IUserRepository, IUserRepositoryFilters, IPaginatedResult, IAdvancedUserRepository } from '../../application/src/lib/ports/UserRepository';
+
+// Mock in-memory implementation for demonstration
+// In production, this would connect to actual database (PostgreSQL, etc.)
+export class InMemoryUserRepository implements IAdvancedUserRepository {
+  private users: Map<string, User> = new Map();
+
+  async save(user: User): Promise<void> {
+    this.users.set(user.id.value, user);
+  }
+
+  async findById(id: UserId): Promise<User | null> {
+    return this.users.get(id.value) || null;
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    for (const user of this.users.values()) {
+      if (user.email === email) {
+        return user;
+      }
+    }
+    return null;
+  }
+
+  async findAll(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+
+  async delete(id: UserId): Promise<void> {
+    this.users.delete(id.value);
+  }
+
+  async update(user: User): Promise<void> {
+    if (this.users.has(user.id.value)) {
+      this.users.set(user.id.value, user);
+    } else {
+      throw new Error('User not found for update');
+    }
+  }
+
+  async exists(id: UserId): Promise<boolean> {
+    return this.users.has(id.value);
+  }
+
+  async findWithFilters(filters: IUserRepositoryFilters): Promise<IPaginatedResult<User>> {
+    let filteredUsers = Array.from(this.users.values());
+
+    // Apply filters
+    if (filters.email) {
+      filteredUsers = filteredUsers.filter(user => user.email.includes(filters.email!));
+    }
+    if (filters.name) {
+      filteredUsers = filteredUsers.filter(user => user.name.includes(filters.name!));
+    }
+    if (filters.createdAfter) {
+      filteredUsers = filteredUsers.filter(user => user.createdAt >= filters.createdAfter!);
+    }
+    if (filters.createdBefore) {
+      filteredUsers = filteredUsers.filter(user => user.createdAt <= filters.createdBefore!);
+    }
+
+    const total = filteredUsers.length;
+    const limit = filters.limit || 10;
+    const offset = filters.offset || 0;
+    const page = Math.floor(offset / limit) + 1;
+
+    const items = filteredUsers.slice(offset, offset + limit);
+
+    return {
+      items,
+      total,
+      page,
+      pageSize: limit,
+      hasNext: offset + limit < total,
+      hasPrevious: offset > 0
+    };
+  }
+
+  async count(): Promise<number> {
+    return this.users.size;
+  }
+
+  async findByEmailPattern(pattern: string): Promise<User[]> {
+    const regex = new RegExp(pattern, 'i');
+    return Array.from(this.users.values()).filter(user => regex.test(user.email));
+  }
+}
+
+{% if database_type == 'postgresql' -%}
+// PostgreSQL implementation (requires pg library)
+export class PostgreSQLUserRepository implements IAdvancedUserRepository {
+  constructor(private connectionString: string) {}
+
+  async save(user: User): Promise<void> {
+    // Implementation would use pg client to insert/update user
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async findById(id: UserId): Promise<User | null> {
+    // Implementation would query PostgreSQL
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    // Implementation would query PostgreSQL
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async findAll(): Promise<User[]> {
+    // Implementation would query PostgreSQL
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async delete(id: UserId): Promise<void> {
+    // Implementation would delete from PostgreSQL
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async update(user: User): Promise<void> {
+    // Implementation would update in PostgreSQL
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async exists(id: UserId): Promise<boolean> {
+    // Implementation would check existence in PostgreSQL
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async findWithFilters(filters: IUserRepositoryFilters): Promise<IPaginatedResult<User>> {
+    // Implementation would build complex SQL query
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async count(): Promise<number> {
+    // Implementation would count records in PostgreSQL
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+
+  async findByEmailPattern(pattern: string): Promise<User[]> {
+    // Implementation would use PostgreSQL pattern matching
+    throw new Error('PostgreSQL implementation not yet implemented');
+  }
+}
+{% endif -%}
+{% endif -%}

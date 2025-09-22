@@ -1,124 +1,174 @@
 # HexDDD-VibePDK Merger Template Configuration
-  _templates_suffix: .j2
-  _envops:
-    block_start_string: "{%"
-    block_end_string: "%}"
-    variable_start_string: "{{"
-    variable_end_string: "}}"
-    comment_start_string: "{#"
-    comment_end_string: "#}"
+_templates_suffix: .j2
+_envops:
+  block_start_string: "{%"
+  block_end_string: "%}"
+  variable_start_string: "{{"
+  variable_end_string: "}}"
+  comment_start_string: "{#"
+  comment_end_string: "#}"
 
-  # Project Configuration
-  project_name:
-    type: str
-    help: "Name of your project (human-readable)"
-    validator: "{% if not project_name %}Project name is required{% endif %}"
+# Project Configuration
+project_name:
+  type: str
+  help: "Name of your project (human-readable)"
+  validator: "{% if not project_name %}Project name is required{% endif %}"
 
-  project_slug:
-    type: str
-    help: "Project slug (kebab-case, used for directories)"
-    default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
-    validator: "{% if not project_slug.replace('-', '').isalnum() %}Invalid project slug{% endif %}"
+project_slug:
+  type: str
+  help: "Project slug (kebab-case, used for directories)"
+  default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
+  validator: "{% if not project_slug.replace('-', '').isalnum() %}Invalid project slug{% endif %}"
 
-  author_name:
-    type: str
-    help: "Author's full name"
-    default: "Developer"
+author_name:
+  type: str
+  help: "Author's full name"
+  default: "Developer"
 
-  author_email:
-    type: str
-    help: "Author's email address"
-    default: "developer@example.com"
-    validator: "{% if '@' not in author_email %}Invalid email format{% endif %}"
+author_email:
+  type: str
+  help: "Author's email address"
+  default: "developer@example.com"
+  validator: "{% if '@' not in author_email %}Invalid email format{% endif %}"
 
-  # Architecture Configuration
-  architecture_style:
-    type: str
-    help: "Primary architecture pattern"
-    choices:
-      - hexagonal
-      - layered
-      - microservices
-    default: hexagonal
+# Architecture Configuration
+architecture_style:
+  type: str
+  help: "Primary architecture pattern"
+  choices:
+    - hexagonal
+    - layered
+    - microservices
+  default: hexagonal
 
-  include_ai_workflows:
-    type: bool
-    help: "Include AI-enhanced development workflows"
-    default: true
+include_ai_workflows:
+  type: bool
+  help: "Include AI-enhanced development workflows"
+  default: true
 
-  enable_temporal_learning:
-    type: bool
-    help: "Enable temporal specification learning system"
-    default: true
-    when: "{{ include_ai_workflows }}"
+enable_temporal_learning:
+  type: bool
+  help: "Enable temporal specification learning system"
+  default: true
+  when: "{{ include_ai_workflows }}"
 
-  # Technology Stack
-  frontend_framework:
-    type: str
-    help: "Primary frontend framework"
-    choices:
-      - next
-      - remix
-      - expo
-    default: next
+# Technology Stack
+app_framework:
+  type: str
+  help: "Primary frontend application framework"
+  choices:
+    - next
+    - remix
+    - expo
+  default: next
 
-  backend_framework:
-    type: str
-    help: "Backend framework"
-    choices:
-      - fastapi
-      - flask
-      - django
-    default: fastapi
+app_name:
+  type: str
+  help: "Primary application name (kebab-case, used under apps/)"
+  default: "{{ project_slug }}"
+  validator: "{% if not app_name.replace('-', '').isalnum() %}Invalid app name{% endif %}"
 
-  database_type:
-    type: str
-    help: "Primary database type"
-    choices:
-      - postgresql
-      - mysql
-      - sqlite
-    default: postgresql
+backend_framework:
+  type: str
+  help: "Backend framework"
+  choices:
+    - fastapi
+    - flask
+    - django
+  default: fastapi
 
-  include_supabase:
-    type: bool
-    help: "Include Supabase integration"
-    default: true
-    when: "{{ database_type == 'postgresql' }}"
+database_type:
+  type: str
+  help: "Primary database type"
+  choices:
+    - postgresql
+    - mysql
+    - sqlite
+  default: postgresql
 
-  # Domain-Driven Design Configuration (for MERGE-TASK-003)
-  domain_name:
-    type: str
-    help: "Domain name (kebab-case)"
-    default: "{{ project_slug }}"
-    validator: "{% if not domain_name.replace('-', '').isalnum() %}Invalid domain name{% endif %}"
+include_supabase:
+  type: bool
+  help: "Include Supabase integration"
+  default: true
+  when: "{{ database_type == 'postgresql' }}"
 
-  bounded_context:
-    type: str
-    help: "Bounded context for DDD"
-    default: "{{ domain_name }}"
+# Domain-Driven Design Configuration (for MERGE-TASK-003)
+domain_name:
+  type: str
+  help: "Domain name (kebab-case)"
+  default: "{{ project_slug }}"
+  validator: "{% if not domain_name.replace('-', '').isalnum() %}Invalid domain name{% endif %}"
 
-  include_domain_entities:
-    type: bool
-    help: "Generate domain entities"
-    default: true
+bounded_context:
+  type: str
+  help: "Bounded context for DDD"
+  default: "{{ domain_name }}"
 
-  include_value_objects:
-    type: bool
-    help: "Generate value objects"
-    default: true
+include_domain_entities:
+  type: bool
+  help: "Generate domain entities"
+  default: true
 
-  include_domain_events:
-    type: bool
-    help: "Generate domain events"
-    default: true
+include_value_objects:
+  type: bool
+  help: "Generate value objects"
+  default: true
 
-  include_use_cases:
-    type: bool
-    help: "Generate application use cases"
-    default: true
+include_domain_events:
+  type: bool
+  help: "Generate domain events"
+  default: true
 
-  include_repositories:
-    type: bool
-    help: "Generate repository interfaces and implementations"
-    default: true
+include_use_cases:
+  type: bool
+  help: "Generate application use cases"
+  default: true
+
+include_repositories:
+  type: bool
+  help: "Generate repository interfaces and implementations"
+  default: true
+
+# Application Generator Configuration (for MERGE-TASK-004)
+app_domains:
+  type: str
+  help: "Comma-separated list of domain names to integrate with the application"
+  default: "{{ domain_name }}"
+  validator: "{% if app_domains %}{% set _errors = [] %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn == '' or ' ' in dn or dn != dn.lower() or not dn.replace('-', '').isalnum() %}{% set _ = _errors.append(dn) %}{% endif %}{% endfor %}{% if _errors %}Invalid domain names: {{ _errors | join(', ') }}{% endif %}{% endif %}"
+
+include_api_client:
+  type: bool
+  help: "Generate API client for domain integration"
+  default: true
+
+include_example_page:
+  type: bool
+  help: "Include example page demonstrating domain integration"
+  default: true
+
+app_router_style:
+  type: str
+  help: "Next.js router style (ignored for Remix/Expo)"
+  choices:
+    - app
+    - pages
+  default: app
+  when: "{{ app_framework == 'next' }}"
+
+_exclude:
+  # Exclude framework-specific configs
+  - "{% if app_framework != 'next' %}apps/{{app_name}}/next.config.js.j2{% endif %}"
+  - "{% if app_framework != 'remix' %}apps/{{app_name}}/remix.config.js.j2{% endif %}"
+  - "{% if app_framework != 'expo' %}apps/{{app_name}}/app.json.j2{% endif %}"
+  - "{% if app_framework != 'expo' %}apps/{{app_name}}/App.tsx.j2{% endif %}"
+
+  # Exclude Next.js specific directories
+  - "{% if app_framework == 'next' and app_router_style == 'app' %}apps/{{app_name}}/pages/**{% endif %}"
+  - "{% if app_framework == 'next' and app_router_style == 'pages' %}apps/{{app_name}}/app/**{% endif %}"
+
+  # Exclude files for frameworks other than Next.js
+  - "{% if app_framework == 'next' %}apps/{{app_name}}/app/routes/**{% endif %}"
+
+  # Exclude files if framework is not Next.js
+  - "{% if app_framework != 'next' %}apps/{{app_name}}/pages/**{% endif %}"
+  - "{% if app_framework != 'next' %}apps/{{app_name}}/app/**{% endif %}"

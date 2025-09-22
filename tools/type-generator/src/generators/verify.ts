@@ -1,59 +1,167 @@
-export function verifyTypeParity(tsType: string, pyType: string): boolean {
-  // Normalize TypeScript type
-  const normalizedTsType = tsType.replace(/\s+/g, '').toLowerCase();
+const TS_OPTIONAL_TOKENS = new Set(['null', 'undefined']);
 
-  // Normalize Python type
-  const normalizedPyType = pyType.replace(/\s+/g, '').toLowerCase();
+function splitTopLevel(type: string, delimiter: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let current = '';
 
-  // Check if TypeScript type is nullable
-  const isTsNullable = normalizedTsType.includes('|null');
+  const openingBrackets = new Map([
+    ['[', ']'],
+    ['(', ')'],
+    ['{', '}'],
+    ['<', '>'],
+  ]);
+  const closingBrackets = new Map(Array.from(openingBrackets.entries()).map(([open, close]) => [close, open]));
 
-  // Check if Python type is optional
-  const isPyOptional = normalizedPyType.includes('optional[');
+  for (const char of type) {
+    if (openingBrackets.has(char)) {
+      depth += 1;
+    } else if (closingBrackets.has(char)) {
+      depth = Math.max(depth - 1, 0);
+    }
 
-  // If one is nullable/optional and the other is not, they don't match
-  if (isTsNullable !== isPyOptional) {
+    if (char === delimiter && depth === 0) {
+      if (current) {
+        parts.push(current);
+        current = '';
+      }
+      continue;
+    }
+
+    current += char;
+  }
+
+  if (current) {
+    parts.push(current);
+  }
+
+  return parts.filter(Boolean);
+}
+
+function parseTypeScriptTokens(type: string): string[] {
+  return splitTopLevel(type, '|');
+}
+
+function parsePythonTokens(type: string): string[] {
+  if (type.startsWith('optional[')) {
+    const inner = type.slice('optional['.length, -1);
+    return [...parsePythonTokens(inner), 'none'];
+  }
+
+  if (type.startsWith('union[')) {
+    const inner = type.slice('union['.length, -1);
+    return splitTopLevel(inner, ',').flatMap(token => parsePythonTokens(token));
+  }
+
+  const unionParts = splitTopLevel(type, '|');
+  if (unionParts.length > 1) {
+    return unionParts.flatMap(token => parsePythonTokens(token));
+  }
+
+  return [type];
+}
+
+function matchTokenSets(tsTokens: string[], pyTokens: string[]): boolean {
+  if (tsTokens.length !== pyTokens.length) {
     return false;
   }
 
-  // If both are nullable/optional, check the base types
-  if (isTsNullable && isPyOptional) {
-    const tsBase = normalizedTsType.replace('|null', '');
-    const pyBase = normalizedPyType.replace('optional[', '').replace(']', '');
+  const remaining = [...pyTokens];
+
+  for (const tsToken of tsTokens) {
+    let matched = false;
+
+    for (let index = 0; index < remaining.length; index += 1) {
+      const candidate = remaining[index];
+      if (matchSingleType(tsToken, candidate)) {
+        remaining.splice(index, 1);
+        matched = true;
+        break;
+      }
+    }
+
+    if (!matched) {
+      return false;
+    }
+  }
+
+  return remaining.length === 0;
+}
+
+function matchSingleType(tsToken: string, pyToken: string): boolean {
+  if (!tsToken || !pyToken) {
+    return false;
+  }
+
+  if (tsToken === pyToken) {
+    return true;
+  }
+
+  const tsArray = tsToken.endsWith('[]');
+  const pyList = pyToken.startsWith('list[') && pyToken.endsWith(']');
+
+  if (tsArray || pyList) {
+    if (!(tsArray && pyList)) {
+      return false;
+    }
+
+    const tsBase = tsToken.slice(0, -2);
+    const pyBase = pyToken.slice('list['.length, -1);
     return verifyTypeParity(tsBase, pyBase);
   }
 
-  // Mapping between TypeScript and Python types for non-nullable cases
+  if (tsToken.startsWith('{') && tsToken.endsWith('}')) {
+    return matchSingleType('object', pyToken);
+  }
+
   const typeMapping: Record<string, string[]> = {
     string: ['str', 'uuid', 'datetime', 'date', 'time', 'bytes'],
     number: ['int', 'float'],
     boolean: ['bool'],
-    unknown: ['dict', 'any'],
-    null: ['none']
+    unknown: ['dict', 'any', 'object', 'mapping'],
+    object: ['dict', 'mapping'],
   };
 
-  // Check for direct mapping
+  const normalizedMatch = (candidate: string, targets: string[]): boolean =>
+    targets.some(target => candidate === target || candidate.startsWith(`${target}[`));
+
   for (const [tsKey, pyValues] of Object.entries(typeMapping)) {
-    if (normalizedTsType.includes(tsKey) && pyValues.some(pyVal => normalizedPyType.includes(pyVal))) {
+    if (tsToken === tsKey && normalizedMatch(pyToken, pyValues)) {
       return true;
     }
   }
 
-  // Check for array types
-  if (normalizedTsType.includes('[]') && normalizedPyType.includes('list[')) {
-    const tsBase = normalizedTsType.replace('[]', '');
-    const pyBase = normalizedPyType.replace('list[', '').replace(']', '');
-    return verifyTypeParity(tsBase, pyBase);
+  if (tsToken === 'record<string,any>' && pyToken.startsWith('dict[')) {
+    return true;
   }
 
-  // Check for union types (simplified)
-  if (normalizedTsType.includes('|') && normalizedPyType.includes('union[')) {
-    // For simplicity, we'll just check if both sides have similar structure
-    // This could be enhanced with more sophisticated parsing
-    const tsTypes = normalizedTsType.split('|');
-    const pyTypes = normalizedPyType.replace('union[', '').replace(']', '').split(',');
-    return tsTypes.length === pyTypes.length;
+  if (pyToken === 'any' && (tsToken === 'unknown' || tsToken === 'any')) {
+    return true;
   }
 
   return false;
+}
+
+export function verifyTypeParity(tsType: string, pyType: string): boolean {
+  const normalizedTsType = tsType.replace(/\s+/g, '').toLowerCase();
+  const normalizedPyType = pyType.replace(/\s+/g, '').toLowerCase();
+
+  if (!normalizedTsType || !normalizedPyType) {
+    return false;
+  }
+
+  const tsTokens = parseTypeScriptTokens(normalizedTsType);
+  const pyTokens = parsePythonTokens(normalizedPyType);
+
+  const tsHasOptional = tsTokens.some(token => TS_OPTIONAL_TOKENS.has(token));
+  const pyHasOptional = pyTokens.includes('none');
+
+  if (tsHasOptional !== pyHasOptional) {
+    return false;
+  }
+
+  const tsCoreTokens = tsTokens.filter(token => !TS_OPTIONAL_TOKENS.has(token));
+  const pyCoreTokens = pyTokens.filter(token => token !== 'none');
+
+  return matchTokenSets(tsCoreTokens, pyCoreTokens);
 }
