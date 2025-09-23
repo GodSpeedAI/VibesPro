@@ -29,7 +29,7 @@ class ModelType(StrEnum):
 class PromptId:
     """Value object representing a unique prompt identifier."""
     value: UUID = field(default_factory=uuid4)
-    
+
     def __str__(self) -> str:
         return str(self.value)
 
@@ -41,7 +41,7 @@ class TokenCount:
     model: ModelType
     estimated_cost: float
     token_distribution: dict[str, int]
-    
+
     def __post_init__(self) -> None:
         if self.total_tokens < 0:
             raise ValueError("Token count cannot be negative")
@@ -56,9 +56,9 @@ class EffectivenessScore:
     clarity_score: float
     specificity_score: float
     completeness_score: float
-    
+
     def __post_init__(self) -> None:
-        scores = [self.overall_score, self.clarity_score, 
+        scores = [self.overall_score, self.clarity_score,
                  self.specificity_score, self.completeness_score]
         for score in scores:
             if not 0.0 <= score <= 100.0:
@@ -80,7 +80,7 @@ class PromptFeatures:
     readability_score: float
     ambiguity_score: float
     directive_strength: float
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert features to dictionary for ML processing."""
         return {
@@ -110,28 +110,28 @@ class Prompt:
     effectiveness_score: Optional[EffectivenessScore] = None
     optimization_suggestions: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self) -> None:
         if not self.content.strip():
             raise ValueError("Prompt content cannot be empty")
-    
+
     def update_features(self, features: PromptFeatures) -> None:
         """Update the prompt's extracted features."""
         self.features = features
-    
+
     def update_token_count(self, token_count: TokenCount) -> None:
         """Update the prompt's token count information."""
         self.token_count = token_count
-    
+
     def update_effectiveness_score(self, score: EffectivenessScore) -> None:
         """Update the prompt's effectiveness assessment."""
         self.effectiveness_score = score
-    
+
     def add_optimization_suggestion(self, suggestion: str) -> None:
         """Add an optimization suggestion to the prompt."""
         if suggestion.strip() and suggestion not in self.optimization_suggestions:
             self.optimization_suggestions.append(suggestion)
-    
+
     def is_analyzed(self) -> bool:
         """Check if the prompt has been fully analyzed."""
         return all([
@@ -152,7 +152,7 @@ class OptimizationResult:
     alternative_versions: list[str]
     optimization_goal: OptimizationGoal
     confidence_score: float
-    
+
     def __post_init__(self) -> None:
         if not 0.0 <= self.confidence_score <= 1.0:
             raise ValueError("Confidence score must be between 0.0 and 1.0")
@@ -168,20 +168,20 @@ class PromptOptimizationSession:
     started_at: datetime
     completed_at: Optional[datetime] = None
     results: list[OptimizationResult] = field(default_factory=list)
-    
+
     def add_prompt(self, prompt: Prompt) -> None:
         """Add a prompt to the optimization session."""
         if prompt not in self.prompts:
             self.prompts.append(prompt)
-    
+
     def add_result(self, result: OptimizationResult) -> None:
         """Add an optimization result to the session."""
         self.results.append(result)
-    
+
     def complete_session(self) -> None:
         """Mark the optimization session as completed."""
         self.completed_at = datetime.now(timezone.utc)
-    
+
     def is_completed(self) -> bool:
         """Check if the optimization session is completed."""
         return self.completed_at is not None
@@ -195,7 +195,7 @@ class FeedbackRecord:
     response_quality: float  # 0.0 to 10.0
     comments: Optional[str] = None
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    
+
     def __post_init__(self) -> None:
         if not 0.0 <= self.user_satisfaction <= 10.0:
             raise ValueError("User satisfaction must be between 0.0 and 10.0")

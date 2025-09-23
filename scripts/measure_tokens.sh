@@ -46,7 +46,7 @@ EXAMPLES:
 
 The enhanced mode provides:
 • Accurate token counting using tiktoken
-• ML-powered effectiveness analysis 
+• ML-powered effectiveness analysis
 • Prompt optimization suggestions
 • Cost estimation
 • Temporal learning from usage patterns
@@ -72,7 +72,7 @@ check_dependencies() {
 
 legacy_count() {
     local prompt_file="$1"
-    
+
     if [[ ! -f "${prompt_file}" ]]; then
         echo -e "${RED}Error: prompt file '${prompt_file}' does not exist.${NC}" >&2
         exit 1
@@ -108,7 +108,7 @@ enhanced_count() {
                 skip_next=false
                 continue
             fi
-            
+
             if [[ "${arg}" == "--optimize" ]]; then
                 new_args+=("optimize")
             elif [[ "${arg}" == "--goal" ]]; then

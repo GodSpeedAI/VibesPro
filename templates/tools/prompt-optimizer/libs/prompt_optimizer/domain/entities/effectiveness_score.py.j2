@@ -13,11 +13,11 @@ from typing import List, Optional
 class EffectivenessScore:
     """
     Entity representing prompt effectiveness analysis.
-    
+
     Encapsulates ML-generated scores for different aspects of prompt quality
     along with actionable optimization suggestions.
     """
-    
+
     overall_score: float
     clarity_score: float
     conciseness_score: float
@@ -25,7 +25,7 @@ class EffectivenessScore:
     suggestions: List[str]
     confidence: Optional[float] = None
     analysis_metadata: Optional[dict] = None
-    
+
     @classmethod
     def create(
         cls,
@@ -39,7 +39,7 @@ class EffectivenessScore:
     ) -> "EffectivenessScore":
         """
         Factory method to create a new EffectivenessScore entity.
-        
+
         Args:
             overall_score: Overall effectiveness score (0-100)
             clarity_score: Clarity score (0-100)
@@ -48,10 +48,10 @@ class EffectivenessScore:
             suggestions: List of improvement suggestions
             confidence: Confidence in the analysis (0-1)
             analysis_metadata: Optional metadata about the analysis
-            
+
         Returns:
             New EffectivenessScore instance
-            
+
         Raises:
             ValueError: If scores are out of valid range
         """
@@ -60,10 +60,10 @@ class EffectivenessScore:
         for score in scores:
             if not 0 <= score <= 100:
                 raise ValueError(f"Score {score} must be between 0 and 100")
-        
+
         if confidence is not None and not 0 <= confidence <= 1:
             raise ValueError("Confidence must be between 0 and 1")
-        
+
         return cls(
             overall_score=overall_score,
             clarity_score=clarity_score,
@@ -73,20 +73,20 @@ class EffectivenessScore:
             confidence=confidence,
             analysis_metadata=analysis_metadata or {}
         )
-    
+
     def add_suggestion(self, suggestion: str) -> "EffectivenessScore":
         """
         Create a new EffectivenessScore with an additional suggestion.
-        
+
         Args:
             suggestion: New suggestion to add
-            
+
         Returns:
             New EffectivenessScore instance with updated suggestions
         """
         new_suggestions = list(self.suggestions)
         new_suggestions.append(suggestion)
-        
+
         return EffectivenessScore(
             overall_score=self.overall_score,
             clarity_score=self.clarity_score,
@@ -96,17 +96,17 @@ class EffectivenessScore:
             confidence=self.confidence,
             analysis_metadata=self.analysis_metadata
         )
-    
+
     @property
     def is_high_quality(self) -> bool:
         """Check if the prompt is considered high quality."""
         return self.overall_score >= 80
-    
+
     @property
     def needs_improvement(self) -> bool:
         """Check if the prompt needs significant improvement."""
         return self.overall_score < 60
-    
+
     @property
     def weakest_aspect(self) -> str:
         """Identify the aspect with the lowest score."""
@@ -116,7 +116,7 @@ class EffectivenessScore:
             "specificity": self.specificity_score
         }
         return min(scores, key=scores.get)
-    
+
     @property
     def strongest_aspect(self) -> str:
         """Identify the aspect with the highest score."""
@@ -126,19 +126,19 @@ class EffectivenessScore:
             "specificity": self.specificity_score
         }
         return max(scores, key=scores.get)
-    
+
     def compare_overall(self, other: "EffectivenessScore") -> float:
         """
         Compare overall score with another EffectivenessScore.
-        
+
         Args:
             other: Another EffectivenessScore to compare against
-            
+
         Returns:
             Score difference (positive if this is better)
         """
         return self.overall_score - other.overall_score
-    
+
     def __str__(self) -> str:
         """String representation of the effectiveness score."""
         return f"EffectivenessScore(overall={self.overall_score:.1f}, clarity={self.clarity_score:.1f}, conciseness={self.conciseness_score:.1f}, specificity={self.specificity_score:.1f})"

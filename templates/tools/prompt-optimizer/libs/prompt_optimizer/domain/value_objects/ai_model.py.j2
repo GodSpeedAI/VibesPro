@@ -22,69 +22,69 @@ class ModelSpecs:
 class AIModel(Enum):
     """
     Value object representing different AI models with their specifications.
-    
+
     Each model includes pricing information, token limits, and encoding details
     for accurate cost estimation and token counting.
     """
-    
+
     GPT4 = ModelSpecs(
         max_tokens=8192,
         cost_per_1k_tokens=0.03,  # Input cost
         encoding_name="cl100k_base",
         context_window=8192
     )
-    
+
     GPT4_TURBO = ModelSpecs(
         max_tokens=128000,
         cost_per_1k_tokens=0.01,
-        encoding_name="cl100k_base", 
+        encoding_name="cl100k_base",
         context_window=128000
     )
-    
+
     GPT3_5_TURBO = ModelSpecs(
         max_tokens=4096,
         cost_per_1k_tokens=0.0015,
         encoding_name="cl100k_base",
         context_window=4096
     )
-    
+
     CLAUDE_3_OPUS = ModelSpecs(
         max_tokens=200000,
         cost_per_1k_tokens=0.015,
         encoding_name="cl100k_base",  # Approximation
         context_window=200000
     )
-    
+
     CLAUDE_3_SONNET = ModelSpecs(
         max_tokens=200000,
         cost_per_1k_tokens=0.003,
         encoding_name="cl100k_base",  # Approximation
         context_window=200000
     )
-    
+
     CLAUDE_3_HAIKU = ModelSpecs(
         max_tokens=200000,
         cost_per_1k_tokens=0.00025,
         encoding_name="cl100k_base",  # Approximation
         context_window=200000
     )
-    
+
     @classmethod
     def from_string(cls, value: str) -> "AIModel":
         """
         Create AIModel from string value.
-        
+
         Args:
             value: String representation of the model
-            
+
         Returns:
             AIModel enum value
-            
+
         Raises:
             ValueError: If value is not a valid model
         """
         value_normalized = value.lower().replace("-", "_").replace(".", "_").strip()
-        
+
         # Handle common variations
         model_map = {
             "gpt4": cls.GPT4,
@@ -107,22 +107,22 @@ class AIModel(Enum):
             "claude_3_haiku": cls.CLAUDE_3_HAIKU,
             "claude-3-haiku": cls.CLAUDE_3_HAIKU,
         }
-        
+
         if value_normalized in model_map:
             return model_map[value_normalized]
-        
+
         raise ValueError(f"Invalid AI model: {value}. Valid models: {list(model_map.keys())}")
-    
+
     @property
     def specs(self) -> ModelSpecs:
         """Get the model specifications."""
         return self.value
-    
+
     @property
     def cost_per_token(self) -> float:
         """Get the cost per token (not per 1k tokens)."""
         return self.specs.cost_per_1k_tokens / 1000
-    
+
     @property
     def name(self) -> str:
         """Get the human-readable name of the model."""
@@ -135,41 +135,41 @@ class AIModel(Enum):
             self.CLAUDE_3_HAIKU: "Claude 3 Haiku"
         }
         return names[self]
-    
+
     @property
     def is_expensive(self) -> bool:
         """Check if this is considered an expensive model."""
         return self.cost_per_token > 0.00002  # $0.02 per 1k tokens
-    
+
     @property
     def supports_large_context(self) -> bool:
         """Check if this model supports large context windows."""
         return self.specs.context_window > 10000
-    
+
     def estimate_cost(self, token_count: int) -> float:
         """
         Estimate the cost for a given token count.
-        
+
         Args:
             token_count: Number of tokens
-            
+
         Returns:
             Estimated cost in USD
         """
         return token_count * self.cost_per_token
-    
+
     def can_handle_tokens(self, token_count: int) -> bool:
         """
         Check if this model can handle the given token count.
-        
+
         Args:
             token_count: Number of tokens to check
-            
+
         Returns:
             True if the model can handle this many tokens
         """
         return token_count <= self.specs.max_tokens
-    
+
     def __str__(self) -> str:
         """String representation of the AI model."""
         return self.name

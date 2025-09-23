@@ -15,22 +15,22 @@ def validate_configuration():
     """Validate the configuration provided by the user."""
     project_name = "{{ project_name }}"
     package_path = "{{ package_path }}"
-    
+
     # Validate project name
     if not project_name or project_name.strip() == "":
         print("Error: project_name cannot be empty", file=sys.stderr)
         return False
-    
+
     # Validate package path
     if not package_path or package_path.strip() == "":
-        print("Error: package_path cannot be empty", file=sys.stderr)  
+        print("Error: package_path cannot be empty", file=sys.stderr)
         return False
-    
+
     # Check for valid Python package path format
     if not all(part.isidentifier() for part in package_path.split(".")):
         print(f"Error: package_path '{package_path}' is not a valid Python package path", file=sys.stderr)
         return False
-    
+
     return True
 
 
@@ -38,15 +38,15 @@ def check_dependencies():
     """Check if required dependencies are available."""
     required_commands = ["python3", "pip"]
     missing = []
-    
+
     for cmd in required_commands:
         if os.system(f"command -v {cmd} >/dev/null 2>&1") != 0:
             missing.append(cmd)
-    
+
     if missing:
         print(f"Warning: Missing required commands: {', '.join(missing)}")
         print("The generated project may require additional setup")
-    
+
     return True
 
 
@@ -54,63 +54,63 @@ def prepare_environment():
     """Prepare the environment for template generation."""
     # Create any necessary directories or setup
     # This runs before Copier processes the templates
-    
+
     print(f"🚀 Generating prompt optimizer for {{ project_name }}")
-    
+
     {% if include_domain_layer -%}
     print("  ✅ Including domain layer with entities and value objects")
     {%- endif %}
-    
+
     {% if include_application_layer -%}
     print("  ✅ Including application layer with use cases and ports")
     {%- endif %}
-    
+
     {% if include_infrastructure_layer -%}
     print("  ✅ Including infrastructure layer with adapters")
     {%- endif %}
-    
+
     {% if include_cli_tools -%}
     print("  ✅ Including CLI tools for analysis and optimization")
     {%- endif %}
-    
+
     {% if enable_ml_optimization -%}
     print("  🤖 ML-powered optimization enabled")
     {%- endif %}
-    
+
     {% if enable_temporal_learning -%}
     print("  📊 Temporal learning enabled")
     {%- endif %}
-    
+
     {% if database_type == "sled" -%}
     print("  🗄️  Using sled temporal database")
     {%- elif database_type == "sqlite" -%}
-    print("  🗄️  Using SQLite temporal database") 
+    print("  🗄️  Using SQLite temporal database")
     {%- else -%}
     print("  🗄️  Using custom temporal database")
     {%- endif %}
-    
+
     print(f"  🎯 Default AI model: {{ default_ai_model }}")
     print()
-    
+
     return True
 
 
 def main():
     """Main pre-generation hook."""
     print("🔧 Running pre-generation validation...")
-    
+
     if not validate_configuration():
         print("❌ Configuration validation failed")
         sys.exit(1)
-    
+
     if not check_dependencies():
         print("❌ Dependency check failed")
         sys.exit(1)
-    
+
     if not prepare_environment():
         print("❌ Environment preparation failed")
         sys.exit(1)
-    
+
     print("✅ Pre-generation validation completed successfully")
     return True
 

@@ -14,88 +14,88 @@ from ..value_objects.ai_model import AIModel
 class TokenCount:
     """
     Entity representing token count analysis results.
-    
+
     Encapsulates token counting data along with cost estimation
     and model-specific pricing information.
     """
-    
+
     count: int
     model: AIModel
     estimated_cost: float
     breakdown: Optional[dict] = None
-    
+
     @classmethod
     def create(cls, count: int, model: AIModel, breakdown: Optional[dict] = None) -> "TokenCount":
         """
         Factory method to create a new TokenCount entity.
-        
+
         Args:
             count: Number of tokens
             model: AI model used for counting
             breakdown: Optional detailed breakdown
-            
+
         Returns:
             New TokenCount instance
-            
+
         Raises:
             ValueError: If count is negative
         """
         if count < 0:
             raise ValueError("Token count cannot be negative")
-        
+
         # Calculate estimated cost based on model pricing
         estimated_cost = count * model.cost_per_token
-        
+
         return cls(
             count=count,
             model=model,
             estimated_cost=estimated_cost,
             breakdown=breakdown or {}
         )
-    
+
     def add_breakdown_item(self, key: str, value: any) -> "TokenCount":
         """
         Create a new TokenCount with additional breakdown information.
-        
+
         Args:
             key: Breakdown key
             value: Breakdown value
-            
+
         Returns:
             New TokenCount instance with updated breakdown
         """
         new_breakdown = dict(self.breakdown or {})
         new_breakdown[key] = value
-        
+
         return TokenCount(
             count=self.count,
             model=self.model,
             estimated_cost=self.estimated_cost,
             breakdown=new_breakdown
         )
-    
+
     @property
     def cost_per_token(self) -> float:
         """Get the cost per token for this model."""
         return self.model.cost_per_token
-    
+
     @property
     def is_expensive(self) -> bool:
         """Check if this token count represents expensive usage."""
         return self.estimated_cost > 0.10  # $0.10 threshold
-    
+
     def compare_cost(self, other: "TokenCount") -> float:
         """
         Compare cost with another TokenCount.
-        
+
         Args:
             other: Another TokenCount to compare against
-            
+
         Returns:
             Cost difference (positive if this is more expensive)
         """
         return self.estimated_cost - other.estimated_cost
-    
+
     def __str__(self) -> str:
         """String representation of the token count."""
         return f"TokenCount(count={self.count}, model={self.model.value}, cost=${self.estimated_cost:.4f})"

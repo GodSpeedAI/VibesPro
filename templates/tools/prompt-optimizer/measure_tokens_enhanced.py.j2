@@ -33,7 +33,7 @@ except ImportError as e:
 
 class PromptOptimizerCLI:
     """CLI interface for {{ project_name }} prompt optimization system."""
-    
+
     def __init__(self):
         """Initialize the CLI with necessary adapters."""
         if ENHANCED_MODE:
@@ -41,26 +41,26 @@ class PromptOptimizerCLI:
             self.database = SledTemporalDatabaseAdapter(str(project_root / "temporal_db"))
             self.analyze_use_case = AnalyzePromptUseCase(self.token_counter, self.database)
             self.optimize_use_case = OptimizePromptUseCase(self.token_counter, self.database)
-    
+
     def _print_formatted(self, data: Dict[str, Any], format_type: str = "human") -> None:
         """Print data in specified format."""
         if format_type == "json":
             print(json.dumps(data, indent=2, default=str))
         else:
             self._print_human_readable(data)
-    
+
     def _print_human_readable(self, data: Dict[str, Any]) -> None:
         """Print analysis data in human-readable format."""
         print(f"\n🔍 {{ project_name }} - Prompt Analysis Results")
         print("=" * 50)
-        
+
         if "token_count" in data:
             tc = data["token_count"]
             print(f"📊 Token Analysis:")
             print(f"   • Total tokens: {tc.get('total_tokens', 'N/A')}")
             print(f"   • Model: {tc.get('model', 'N/A')}")
             print(f"   • Estimated cost: ${tc.get('estimated_cost', 0.0):.4f}")
-        
+
         if "effectiveness_score" in data:
             es = data["effectiveness_score"]
             print(f"\n🎯 Effectiveness Analysis:")
@@ -68,34 +68,34 @@ class PromptOptimizerCLI:
             print(f"   • Clarity: {es.get('clarity_score', 'N/A')}/100")
             print(f"   • Conciseness: {es.get('conciseness_score', 'N/A')}/100")
             print(f"   • Specificity: {es.get('specificity_score', 'N/A')}/100")
-        
+
         if "optimization_suggestions" in data:
             suggestions = data["optimization_suggestions"]
             if suggestions:
                 print(f"\n💡 Optimization Suggestions:")
                 for i, suggestion in enumerate(suggestions, 1):
                     print(f"   {i}. {suggestion}")
-        
+
         if "optimized_prompt" in data:
             print(f"\n✨ Optimized Prompt:")
             print("-" * 30)
             print(data["optimized_prompt"])
             print("-" * 30)
-        
+
         print()
-    
+
     async def analyze_prompt(self, prompt_text: str, model: str = "gpt-4", format_type: str = "human") -> None:
         """Analyze a prompt and display results."""
         if not ENHANCED_MODE:
             self._fallback_analysis(prompt_text, format_type)
             return
-        
+
         try:
             prompt = Prompt.create(content=prompt_text)
             ai_model = AIModel.from_string(model)
-            
+
             result = await self.analyze_use_case.execute(prompt, ai_model)
-            
+
             analysis_data = {
                 "prompt": prompt_text[:100] + "..." if len(prompt_text) > 100 else prompt_text,
                 "token_count": {
@@ -111,27 +111,27 @@ class PromptOptimizerCLI:
                 },
                 "optimization_suggestions": result.optimization_suggestions
             }
-            
+
             self._print_formatted(analysis_data, format_type)
-            
+
         except Exception as e:
             print(f"Error during analysis: {e}", file=sys.stderr)
             sys.exit(1)
-    
-    async def optimize_prompt(self, prompt_text: str, goal: str = "effectiveness", 
+
+    async def optimize_prompt(self, prompt_text: str, goal: str = "effectiveness",
                             model: str = "gpt-4", format_type: str = "human") -> None:
         """Optimize a prompt and display results."""
         if not ENHANCED_MODE:
             print("Error: Optimization requires enhanced mode dependencies", file=sys.stderr)
             sys.exit(1)
-        
+
         try:
             prompt = Prompt.create(content=prompt_text)
             optimization_goal = OptimizationGoal.from_string(goal)
             ai_model = AIModel.from_string(model)
-            
+
             result = await self.optimize_use_case.execute(prompt, optimization_goal, ai_model)
-            
+
             optimization_data = {
                 "original_prompt": prompt_text,
                 "optimized_prompt": result.optimized_prompt.content,
@@ -147,19 +147,19 @@ class PromptOptimizerCLI:
                     "savings": result.original_analysis.token_count.count - result.optimized_analysis.token_count.count
                 }
             }
-            
+
             self._print_formatted(optimization_data, format_type)
-            
+
         except Exception as e:
             print(f"Error during optimization: {e}", file=sys.stderr)
             sys.exit(1)
-    
+
     def _fallback_analysis(self, prompt_text: str, format_type: str = "human") -> None:
         """Provide basic analysis when enhanced mode is unavailable."""
         word_count = len(prompt_text.split())
         char_count = len(prompt_text)
         estimated_tokens = int(word_count * 4 / 3)  # Rough estimation
-        
+
         fallback_data = {
             "prompt": prompt_text[:100] + "..." if len(prompt_text) > 100 else prompt_text,
             "fallback_analysis": {
@@ -169,7 +169,7 @@ class PromptOptimizerCLI:
                 "note": "Basic analysis - install dependencies for enhanced features"
             }
         }
-        
+
         if format_type == "json":
             print(json.dumps(fallback_data, indent=2))
         else:
@@ -228,24 +228,24 @@ async def main():
     if len(sys.argv) < 2 or "--help" in sys.argv:
         show_help()
         return
-    
+
     # Parse arguments
     prompt_file = sys.argv[1]
     command = "analyze"  # default
     goal = "effectiveness"
     model = "gpt-4"
     format_type = "human"
-    
+
     # Check if prompt file exists
     if not Path(prompt_file).exists():
         print(f"Error: Prompt file '{prompt_file}' does not exist.", file=sys.stderr)
         sys.exit(1)
-    
+
     # Parse command and options
     i = 2
     while i < len(sys.argv):
         arg = sys.argv[i]
-        
+
         if arg in ["analyze", "optimize"]:
             command = arg
         elif arg == "--goal" and i + 1 < len(sys.argv):
@@ -257,9 +257,9 @@ async def main():
         elif arg == "--format" and i + 1 < len(sys.argv):
             format_type = sys.argv[i + 1]
             i += 1
-        
+
         i += 1
-    
+
     # Read prompt file
     try:
         with open(prompt_file, 'r', encoding='utf-8') as f:
@@ -267,10 +267,10 @@ async def main():
     except Exception as e:
         print(f"Error reading prompt file: {e}", file=sys.stderr)
         sys.exit(1)
-    
+
     # Initialize CLI and execute command
     cli = PromptOptimizerCLI()
-    
+
     try:
         if command == "analyze":
             await cli.analyze_prompt(prompt_text, model, format_type)

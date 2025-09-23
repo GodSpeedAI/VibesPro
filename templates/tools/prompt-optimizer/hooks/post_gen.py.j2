@@ -18,7 +18,7 @@ def make_scripts_executable():
         "measure_tokens.sh",
         "scripts/measure_tokens.sh" if Path("scripts").exists() else None
     ]
-    
+
     for script in scripts_to_make_executable:
         if script and Path(script).exists():
             try:
@@ -26,72 +26,72 @@ def make_scripts_executable():
                 print(f"  ✅ Made {script} executable")
             except Exception as e:
                 print(f"  ⚠️  Could not make {script} executable: {e}")
-    
+
     return True
 
 
 def setup_python_environment():
     """Set up Python environment and install dependencies."""
     requirements_file = Path("requirements.txt")
-    
+
     if not requirements_file.exists():
         print("  ⚠️  requirements.txt not found, skipping dependency installation")
         return True
-    
+
     print("  📦 Installing Python dependencies...")
-    
+
     try:
         # Try to install dependencies
         result = subprocess.run([
             sys.executable, "-m", "pip", "install", "-r", "requirements.txt"
         ], capture_output=True, text=True, timeout=300)
-        
+
         if result.returncode == 0:
             print("  ✅ Dependencies installed successfully")
         else:
             print("  ⚠️  Some dependencies may not have installed correctly")
             print(f"     Error: {result.stderr}")
             print("     You may need to install them manually")
-    
+
     except subprocess.TimeoutExpired:
         print("  ⚠️  Dependency installation timed out")
         print("     You may need to install dependencies manually")
     except Exception as e:
         print(f"  ⚠️  Could not install dependencies: {e}")
         print("     You may need to install them manually")
-    
+
     return True
 
 
 def create_database_directory():
     """Create the temporal database directory."""
     db_path = Path("{{ database_path }}")
-    
+
     try:
         db_path.mkdir(parents=True, exist_ok=True)
         print(f"  ✅ Created database directory: {db_path}")
     except Exception as e:
         print(f"  ⚠️  Could not create database directory: {e}")
-    
+
     return True
 
 
 def validate_generated_code():
     """Validate that the generated code is syntactically correct."""
     package_path = Path("{{ package_path.replace('.', '/') }}")
-    
+
     if not package_path.exists():
         print(f"  ⚠️  Package directory {package_path} not found")
         return True
-    
+
     python_files = list(package_path.rglob("*.py"))
-    
+
     if not python_files:
         print("  ⚠️  No Python files found to validate")
         return True
-    
+
     print(f"  🔍 Validating {len(python_files)} Python files...")
-    
+
     syntax_errors = []
     for py_file in python_files:
         try:
@@ -102,7 +102,7 @@ def validate_generated_code():
         except Exception as e:
             # Skip files that might have template syntax or import issues
             pass
-    
+
     if syntax_errors:
         print("  ⚠️  Syntax errors found:")
         for error in syntax_errors:
@@ -117,45 +117,45 @@ def print_usage_instructions():
     """Print usage instructions for the generated prompt optimizer."""
     print("\n🎉 {{ project_name }} Prompt Optimizer generated successfully!")
     print("=" * 60)
-    
+
     print("\n📚 Quick Start:")
     print("1. Install dependencies (if not already done):")
     print("   pip install -r requirements.txt")
-    
+
     {% if include_cli_tools -%}
     print("\n2. Analyze a prompt:")
     print("   ./measure_tokens.sh my_prompt.txt --analyze")
-    
+
     print("\n3. Optimize a prompt:")
     print("   ./measure_tokens.sh my_prompt.txt --optimize --goal clarity")
     {%- endif %}
-    
+
     print("\n4. Use in Python code:")
     print("   from {{ package_path }} import AnalyzePromptUseCase, Prompt")
     print("   # See README.md for detailed examples")
-    
+
     print(f"\n🗄️  Database: {{ database_type }} ({{ database_path }})")
     print(f"🤖 Default Model: {{ default_ai_model }}")
-    
+
     {% if enable_ml_optimization -%}
     print("🧠 ML Optimization: Enabled")
     {%- endif %}
-    
+
     {% if enable_temporal_learning -%}
     print("📊 Temporal Learning: Enabled")
     {%- endif %}
-    
+
     print(f"\n📖 Documentation: README.md")
-    
+
     {% if include_tests -%}
     print(f"🧪 Tests: Run with 'pytest tests/'")
     {%- endif %}
-    
+
     print("\n💡 Tips:")
     print("- Start with small prompts to test the system")
     print("- Use JSON output format for integration with other tools")
     print("- Check the temporal database for learning patterns")
-    
+
     print(f"\nGenerated with VibePro prompt-optimizer template v{{ template_version }}")
     print("🚀 Happy optimizing!")
 
@@ -163,21 +163,21 @@ def print_usage_instructions():
 def main():
     """Main post-generation hook."""
     print("🔧 Running post-generation setup...")
-    
+
     success = True
-    
+
     if not make_scripts_executable():
         success = False
-    
+
     if not create_database_directory():
         success = False
-    
+
     if not setup_python_environment():
         success = False
-        
+
     if not validate_generated_code():
         success = False
-    
+
     if success:
         print("✅ Post-generation setup completed successfully")
         print_usage_instructions()
@@ -185,7 +185,7 @@ def main():
         print("⚠️  Post-generation setup completed with warnings")
         print("   Check the messages above and resolve any issues")
         print_usage_instructions()
-    
+
     return success
 
 

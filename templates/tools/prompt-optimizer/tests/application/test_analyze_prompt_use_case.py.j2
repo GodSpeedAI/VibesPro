@@ -16,14 +16,14 @@ from {{ package_path }}.domain.value_objects.ai_model import AIModel
 
 class TestAnalyzePromptUseCase:
     """Test suite for AnalyzePromptUseCase."""
-    
+
     @pytest.fixture
     def mock_token_counter(self):
         """Mock token counter port."""
         mock = Mock()
         mock.count_tokens = AsyncMock()
         return mock
-    
+
     @pytest.fixture
     def mock_database(self):
         """Mock temporal database port."""
@@ -31,17 +31,17 @@ class TestAnalyzePromptUseCase:
         mock.store_analysis = AsyncMock()
         mock.get_historical_patterns = AsyncMock(return_value=[])
         return mock
-    
+
     @pytest.fixture
     def use_case(self, mock_token_counter, mock_database):
         """Create AnalyzePromptUseCase with mocked dependencies."""
         return AnalyzePromptUseCase(mock_token_counter, mock_database)
-    
+
     @pytest.fixture
     def sample_prompt(self, sample_prompt_content):
         """Create a sample prompt for testing."""
         return Prompt.create(content=sample_prompt_content)
-    
+
     @pytest.fixture
     def sample_token_count(self):
         """Create a sample token count for testing."""
@@ -49,7 +49,7 @@ class TestAnalyzePromptUseCase:
             count=150,
             model=AIModel.GPT4
         )
-    
+
     @pytest.fixture
     def sample_effectiveness_score(self, sample_optimization_suggestions):
         """Create a sample effectiveness score for testing."""
@@ -60,12 +60,12 @@ class TestAnalyzePromptUseCase:
             specificity_score=75.0,
             suggestions=sample_optimization_suggestions
         )
-    
+
     @pytest.mark.asyncio
     async def test_execute_successful_analysis(
-        self, 
-        use_case, 
-        sample_prompt, 
+        self,
+        use_case,
+        sample_prompt,
         sample_token_count,
         sample_effectiveness_score,
         mock_token_counter,
@@ -74,25 +74,25 @@ class TestAnalyzePromptUseCase:
         """Test successful prompt analysis execution."""
         # Arrange
         mock_token_counter.count_tokens.return_value = sample_token_count
-        
+
         # Mock the use case's internal scoring method
         use_case._calculate_effectiveness_score = AsyncMock(return_value=sample_effectiveness_score)
         use_case._generate_optimization_suggestions = AsyncMock(return_value=sample_effectiveness_score.suggestions)
-        
+
         # Act
         result = await use_case.execute(sample_prompt, AIModel.GPT4)
-        
+
         # Assert
         assert result.prompt == sample_prompt
         assert result.token_count == sample_token_count
         assert result.effectiveness_score == sample_effectiveness_score
         assert result.optimization_suggestions == sample_effectiveness_score.suggestions
-        
+
         # Verify dependencies were called correctly
         mock_token_counter.count_tokens.assert_called_once_with(sample_prompt.content, AIModel.GPT4)
         mock_database.store_analysis.assert_called_once()
         mock_database.get_historical_patterns.assert_called_once_with(sample_prompt)
-    
+
     @pytest.mark.asyncio
     async def test_execute_with_token_counting_error(
         self,
@@ -104,14 +104,14 @@ class TestAnalyzePromptUseCase:
         """Test handling of token counting errors."""
         # Arrange
         mock_token_counter.count_tokens.side_effect = Exception("Token counting failed")
-        
+
         # Act & Assert
         with pytest.raises(Exception, match="Token counting failed"):
             await use_case.execute(sample_prompt, AIModel.GPT4)
-        
+
         # Verify database wasn't called if token counting failed
         mock_database.store_analysis.assert_not_called()
-    
+
     @pytest.mark.asyncio
     async def test_execute_with_database_error(
         self,
@@ -128,14 +128,14 @@ class TestAnalyzePromptUseCase:
         use_case._calculate_effectiveness_score = AsyncMock(return_value=sample_effectiveness_score)
         use_case._generate_optimization_suggestions = AsyncMock(return_value=sample_effectiveness_score.suggestions)
         mock_database.store_analysis.side_effect = Exception("Database error")
-        
+
         # Act & Assert - Should not raise exception, but log the error
         result = await use_case.execute(sample_prompt, AIModel.GPT4)
-        
+
         # Analysis should still complete successfully
         assert result.prompt == sample_prompt
         assert result.token_count == sample_token_count
-    
+
     @pytest.mark.asyncio
     async def test_execute_with_different_models(
         self,
@@ -147,12 +147,12 @@ class TestAnalyzePromptUseCase:
         """Test analysis with different AI models."""
         # Arrange
         models_to_test = [AIModel.GPT4, AIModel.GPT3_5_TURBO, AIModel.CLAUDE_3_SONNET]
-        
+
         for model in models_to_test:
             # Create model-specific token count
             token_count = TokenCount.create(count=100, model=model)
             mock_token_counter.count_tokens.return_value = token_count
-            
+
             effectiveness_score = EffectivenessScore.create(
                 overall_score=80.0,
                 clarity_score=85.0,
@@ -162,14 +162,14 @@ class TestAnalyzePromptUseCase:
             )
             use_case._calculate_effectiveness_score = AsyncMock(return_value=effectiveness_score)
             use_case._generate_optimization_suggestions = AsyncMock(return_value=effectiveness_score.suggestions)
-            
+
             # Act
             result = await use_case.execute(sample_prompt, model)
-            
+
             # Assert
             assert result.token_count.model == model
             mock_token_counter.count_tokens.assert_called_with(sample_prompt.content, model)
-    
+
     @pytest.mark.asyncio
     async def test_execute_stores_temporal_data(
         self,
@@ -185,19 +185,19 @@ class TestAnalyzePromptUseCase:
         mock_token_counter.count_tokens.return_value = sample_token_count
         use_case._calculate_effectiveness_score = AsyncMock(return_value=sample_effectiveness_score)
         use_case._generate_optimization_suggestions = AsyncMock(return_value=sample_effectiveness_score.suggestions)
-        
+
         # Act
         await use_case.execute(sample_prompt, AIModel.GPT4)
-        
+
         # Assert
         mock_database.store_analysis.assert_called_once()
         stored_data = mock_database.store_analysis.call_args[0][0]
-        
+
         # Verify the stored data contains expected fields
         assert stored_data.prompt == sample_prompt
         assert stored_data.token_count == sample_token_count
         assert stored_data.effectiveness_score == sample_effectiveness_score
-    
+
     @pytest.mark.asyncio
     async def test_execute_considers_historical_patterns(
         self,
@@ -218,15 +218,15 @@ class TestAnalyzePromptUseCase:
         mock_token_counter.count_tokens.return_value = sample_token_count
         use_case._calculate_effectiveness_score = AsyncMock(return_value=sample_effectiveness_score)
         use_case._generate_optimization_suggestions = AsyncMock(return_value=sample_effectiveness_score.suggestions)
-        
+
         # Act
         result = await use_case.execute(sample_prompt, AIModel.GPT4)
-        
+
         # Assert
         mock_database.get_historical_patterns.assert_called_once_with(sample_prompt)
         # The effectiveness score calculation should have been called with historical context
         use_case._calculate_effectiveness_score.assert_called_once()
-    
+
     @pytest.mark.asyncio
     async def test_effectiveness_score_calculation_boundary_values(
         self,
@@ -254,23 +254,23 @@ class TestAnalyzePromptUseCase:
                 "expected_specificity": "low",
             }
         ]
-        
+
         for test_case in test_cases:
             # Arrange
             prompt = Prompt.create(content=test_case["content"])
             token_count = TokenCount.create(count=50, model=AIModel.GPT4)
             mock_token_counter.count_tokens.return_value = token_count
-            
+
             # Act - Using the real implementation for this test
             use_case._calculate_effectiveness_score = use_case._calculate_effectiveness_score.__wrapped__
             result = await use_case.execute(prompt, AIModel.GPT4)
-            
+
             # Assert based on expected characteristics
             if test_case.get("expected_conciseness") == "high":
                 assert result.effectiveness_score.conciseness_score > 80
             elif test_case.get("expected_conciseness") == "low":
                 assert result.effectiveness_score.conciseness_score < 50
-            
+
             if test_case.get("expected_specificity") == "high":
                 assert result.effectiveness_score.specificity_score > 70
             elif test_case.get("expected_specificity") == "low":

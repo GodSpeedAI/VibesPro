@@ -27,19 +27,19 @@ from prompt_optimizer.infrastructure.temporal_db import (
 
 class PromptOptimizerCLI:
     """CLI interface for the prompt optimization system."""
-    
+
     def __init__(self):
         self.token_counter = TiktokenAdapter()
         self.prompt_repository = InMemoryPromptRepository()
         self.temporal_db = SledTemporalDatabaseAdapter("./data/prompt_optimizer.sled")
         self.ml_model = SimpleMLModelAdapter()
         self.notification = SimpleNotificationAdapter()
-        
+
         # Domain services
         self.feature_extractor = PromptFeatureExtractor()
         self.analyzer = PromptAnalyzer(self.feature_extractor)
         self.optimizer = PromptOptimizer(self.analyzer)
-        
+
         # Use cases
         self.analyze_use_case = AnalyzePromptUseCase(
             self.token_counter,
@@ -48,7 +48,7 @@ class PromptOptimizerCLI:
             self.feature_extractor,
             self.analyzer
         )
-        
+
         self.optimize_use_case = OptimizePromptUseCase(
             self.analyze_use_case,
             self.ml_model,
@@ -56,7 +56,7 @@ class PromptOptimizerCLI:
             self.notification,
             self.optimizer
         )
-    
+
     async def analyze_prompt_file(self, file_path: str, model: str = "gpt-4") -> dict:
         """Analyze a prompt file and return detailed results."""
         try:
@@ -66,21 +66,21 @@ class PromptOptimizerCLI:
             return {"error": f"File '{file_path}' not found"}
         except Exception as e:
             return {"error": f"Error reading file: {e}"}
-        
+
         try:
             model_type = ModelType(model)
         except ValueError:
             model_type = ModelType.GPT_4
-        
+
         command = AnalyzePromptCommand(
             content=content,
             model=model_type,
             store_result=True
         )
-        
+
         try:
             prompt = await self.analyze_use_case.execute(command)
-            
+
             return {
                 "file": file_path,
                 "analysis": {
@@ -102,11 +102,11 @@ class PromptOptimizerCLI:
             }
         except Exception as e:
             return {"error": f"Analysis failed: {e}"}
-    
+
     async def optimize_prompt_file(
-        self, 
-        file_path: str, 
-        goal: str = "effectiveness", 
+        self,
+        file_path: str,
+        goal: str = "effectiveness",
         model: str = "gpt-4"
     ) -> dict:
         """Optimize a prompt file and return the results."""
@@ -117,27 +117,27 @@ class PromptOptimizerCLI:
             return {"error": f"File '{file_path}' not found"}
         except Exception as e:
             return {"error": f"Error reading file: {e}"}
-        
+
         try:
             optimization_goal = OptimizationGoal(goal)
         except ValueError:
             optimization_goal = OptimizationGoal.EFFECTIVENESS
-        
+
         try:
             model_type = ModelType(model)
         except ValueError:
             model_type = ModelType.GPT_4
-        
+
         command = OptimizePromptCommand(
             content=content,
             goal=optimization_goal,
             model=model_type,
             use_ml_suggestions=True
         )
-        
+
         try:
             result = await self.optimize_use_case.execute(command)
-            
+
             return {
                 "file": file_path,
                 "optimization": {
@@ -159,15 +159,15 @@ def format_output(data: dict, format_type: str = "human") -> str:
     """Format output based on the requested format."""
     if format_type == "json":
         return json.dumps(data, indent=2, ensure_ascii=False)
-    
+
     if "error" in data:
         return f"❌ Error: {data['error']}"
-    
+
     if "analysis" in data:
         analysis = data["analysis"]
         token_info = analysis["token_count"]
         effectiveness = analysis["effectiveness"]
-        
+
         output = [
             f"📄 File: {data['file']}",
             "",
@@ -183,7 +183,7 @@ def format_output(data: dict, format_type: str = "human") -> str:
             f"  • Specificity: {effectiveness['specificity']:.1f}/100",
             f"  • Completeness: {effectiveness['completeness']:.1f}/100",
         ]
-        
+
         if analysis.get("suggestions"):
             output.extend([
                 "",
@@ -191,12 +191,12 @@ def format_output(data: dict, format_type: str = "human") -> str:
             ])
             for suggestion in analysis["suggestions"]:
                 output.append(f"  • {suggestion}")
-        
+
         return "\n".join(output)
-    
+
     if "optimization" in data:
         opt = data["optimization"]
-        
+
         output = [
             f"📄 File: {data['file']}",
             f"🎯 Goal: {opt['goal']}",
@@ -211,7 +211,7 @@ def format_output(data: dict, format_type: str = "human") -> str:
             opt['optimized_content'],
             "─" * 50,
         ]
-        
+
         if opt.get("improvements"):
             output.extend([
                 "",
@@ -219,9 +219,9 @@ def format_output(data: dict, format_type: str = "human") -> str:
             ])
             for improvement in opt["improvements"]:
                 output.append(f"  • {improvement}")
-        
+
         return "\n".join(output)
-    
+
     return str(data)
 
 
@@ -234,29 +234,29 @@ async def main():
 Examples:
   # Analyze a prompt file
   python measure_tokens_enhanced.py analyze prompt.txt
-  
+
   # Optimize for clarity
   python measure_tokens_enhanced.py optimize prompt.txt --goal clarity
-  
+
   # Get JSON output
   python measure_tokens_enhanced.py analyze prompt.txt --format json
-  
+
   # Use different model
   python measure_tokens_enhanced.py analyze prompt.txt --model gpt-4-turbo
 """
     )
-    
+
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
-    
+
     # Analyze command
     analyze_parser = subparsers.add_parser("analyze", help="Analyze prompt effectiveness")
     analyze_parser.add_argument("file", help="Prompt file to analyze")
-    analyze_parser.add_argument("--model", default="gpt-4", 
+    analyze_parser.add_argument("--model", default="gpt-4",
                                choices=["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "claude-3-opus", "claude-3-sonnet"],
                                help="Model to use for token counting")
     analyze_parser.add_argument("--format", default="human", choices=["human", "json"],
                                help="Output format")
-    
+
     # Optimize command
     optimize_parser = subparsers.add_parser("optimize", help="Optimize prompt for specific goal")
     optimize_parser.add_argument("file", help="Prompt file to optimize")
@@ -268,15 +268,15 @@ Examples:
                                 help="Model to use for token counting")
     optimize_parser.add_argument("--format", default="human", choices=["human", "json"],
                                 help="Output format")
-    
+
     args = parser.parse_args()
-    
+
     if not args.command:
         parser.print_help()
         return
-    
+
     cli = PromptOptimizerCLI()
-    
+
     try:
         if args.command == "analyze":
             result = await cli.analyze_prompt_file(args.file, args.model)
@@ -285,10 +285,10 @@ Examples:
         else:
             print("Unknown command")
             return
-        
+
         output = format_output(result, args.format)
         print(output)
-        
+
     except KeyboardInterrupt:
         print("\n❌ Operation cancelled")
     except Exception as e:
