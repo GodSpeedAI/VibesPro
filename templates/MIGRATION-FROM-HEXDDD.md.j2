@@ -32,7 +32,7 @@ No generators found in source project.
 - **{{library.name}}**: {{library.custom_files|length}} files
   - Components: {% if library.has_entities %}entities{% endif %}{% if library.has_value_objects %}, value objects{% endif %}{% if library.has_aggregates %}, aggregates{% endif %}{% if library.has_services %}, services{% endif %}
   - Source: `{{library.path}}`
-  - Target: `templates/libs/{{{{domain_name}}}}/`
+  - Target: `templates/libs/{{ domain_name }}/`
 {% else %}
 No domain libraries found in source project.
 {% endfor %}
@@ -81,7 +81,7 @@ The following files contain custom business logic that should be reviewed:
 {% for library in analysis.domain_libraries %}
 #### {{library.name}} Domain
 {% for custom_file in library.custom_files %}
-- `{{custom_file.relative_to(library.path)}}` → `templates/libs/{{{{domain_name}}}}/{{custom_file.relative_to(library.path)}}.j2`
+- `{{custom_file.relative_to(library.path)}}` → `templates/libs/{{ domain_name }}/{{custom_file.relative_to(library.path)}}.j2`
 {% endfor %}
 {% endfor %}
 

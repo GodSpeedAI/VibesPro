@@ -120,11 +120,11 @@ def migrate(
     typer.echo("   ✅ Done.")
 
     # 2. Find and process the template directory
-    source_template_dir = None
-    for item in template_path.iterdir():
-        if item.is_dir() and "{{" in item.name and "cookiecutter" in item.name and "}}" in item.name:
-            source_template_dir = item
-            break
+    source_template_dir = next(
+        (item for item in template_path.iterdir()
+         if item.is_dir() and "{{" in item.name and "cookiecutter" in item.name and "}}" in item.name),
+        None
+    )
 
     if not source_template_dir:
         typer.echo(f"❌ Could not find a template directory (e.g., '{{{{cookiecutter.project_slug}}}}') in {template_path}")
@@ -138,14 +138,14 @@ def migrate(
         # We create a generic `templates` directory to hold the content.
         target_template_dir_resolved = target_path / template_dir_name.replace("cookiecutter.", "").replace(" ", "")
         shutil.copytree(source_template_dir, target_template_dir_resolved)
-        
+
         # Now rename it to a generic name that copier can use.
         # A better approach might be to copy contents directly.
         # Let's copy contents directly.
         shutil.rmtree(target_template_dir_resolved)
 
     typer.echo(f"\n📂 Processing template files from {source_template_dir}...")
-    
+
     # Let's fix the target directory logic.
     # The content of {{cookiecutter.project_slug}} should go into `target_path/{{project_slug}}`
     # Copier expects the template folder to be named `{{_copier_conf.dst_path}}` or similar,
@@ -153,12 +153,12 @@ def migrate(
     # The standard is to have a `{% raw %}{{ project_name }}{% endraw %}` folder.
     # Let's assume the destination is just the root of the target path for now.
     # The user can then point copier to this directory.
-    
+
     # Let's re-evaluate. Copier templates often have a `templates/` subfolder if they are complex.
     # Or they have a `{{project_name}}/` folder.
     # The VibePDK template has a `{{cookiecutter.project_slug}}` folder.
     # The converted template should have a `{{project_slug}}` folder.
-    
+
     final_target_template_dir_name = TEMPLATE_VARIABLE_PATTERN.sub(r"{{ \1 }}", template_dir_name)
     final_target_template_dir = target_path / final_target_template_dir_name
     if not dry_run:
@@ -166,12 +166,12 @@ def migrate(
 
     for path in source_template_dir.rglob("*"):
         relative_path_str = str(path.relative_to(source_template_dir))
-        
+
         # also process directory and file names
         new_relative_path_str = TEMPLATE_VARIABLE_PATTERN.sub(r"{{ \1 }}", relative_path_str)
-        
+
         target_file_path = final_target_template_dir / new_relative_path_str
-        
+
         if not dry_run:
             target_file_path.parent.mkdir(parents=True, exist_ok=True)
 

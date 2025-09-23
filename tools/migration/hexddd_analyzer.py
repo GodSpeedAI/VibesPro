@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Dict, Any
@@ -200,8 +201,9 @@ class HexDDDAnalyzer:
         src_dir = lib_dir / "src"
         if src_dir.exists():
             for file_path in src_dir.rglob("*.ts"):
-                if any(pattern in file_path.name.lower() for pattern in
-                       ['entity', 'aggregate', 'value-object', 'domain-service']):
+                # Use more specific patterns with word boundaries
+                patterns = [r'\.entity\.ts$', r'\.aggregate\.ts$', r'\.value-object\.ts$', r'\.domain-service\.ts$']
+                if any(re.search(pattern, file_path.name, re.IGNORECASE) for pattern in patterns):
                     return True
 
         return False

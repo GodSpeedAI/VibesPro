@@ -2,6 +2,7 @@
 
 import tempfile
 import json
+import shutil
 from pathlib import Path
 from tools.migration.hexddd_analyzer import HexDDDAnalyzer
 from tools.migration.hexddd_migrator import HexDDDMigrator
