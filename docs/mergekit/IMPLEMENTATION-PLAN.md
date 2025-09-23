@@ -352,13 +352,13 @@ describe('Type System Integration', () => {
 
 ---
 
-### [ ] MERGE-PHASE-003: AI-Enhanced Development Integration
+### [x] MERGE-PHASE-003: AI-Enhanced Development Integration
 
 - **Duration**: 3-4 days
 - **Dependencies**: MERGE-PHASE-002
 - **Parallel Agents**: 2 agents recommended
 
-#### [ ] MERGE-TASK-006: Temporal Database Integration
+#### [x] MERGE-TASK-006: Temporal Database Integration
 
 - **Traceability**: ADR-MERGE-005, TS-MERGE-003
 - **Agent Assignment**: Agent A
@@ -434,7 +434,7 @@ def test_tsink_integration():
 
 ---
 
-#### [ ] MERGE-TASK-007: AI Context Management
+#### [x] MERGE-TASK-007: AI Context Management
 
 - **Traceability**: PRD-MERGE-004, TS-MERGE-007
 - **Agent Assignment**: Agent B (Parallel with MERGE-TASK-006)
