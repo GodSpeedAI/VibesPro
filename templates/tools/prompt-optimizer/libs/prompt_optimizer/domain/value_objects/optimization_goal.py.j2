@@ -1,0 +1,91 @@
+"""
+{{ project_name }} Optimization Goal Value Object
+
+Immutable value object representing different optimization objectives
+for prompt optimization processes.
+"""
+
+from enum import Enum
+from typing import Union
+
+
+class OptimizationGoal(Enum):
+    """
+    Value object representing different optimization goals.
+    
+    Each goal focuses on a specific aspect of prompt improvement:
+    - CLARITY: Improve readability and understanding
+    - CONCISENESS: Reduce length while maintaining meaning
+    - EFFECTIVENESS: Maximize overall prompt performance
+    - TOKEN_EFFICIENCY: Minimize token usage for cost optimization
+    """
+    
+    CLARITY = "clarity"
+    CONCISENESS = "conciseness"
+    EFFECTIVENESS = "effectiveness"
+    TOKEN_EFFICIENCY = "token_efficiency"
+    
+    @classmethod
+    def from_string(cls, value: str) -> "OptimizationGoal":
+        """
+        Create OptimizationGoal from string value.
+        
+        Args:
+            value: String representation of the goal
+            
+        Returns:
+            OptimizationGoal enum value
+            
+        Raises:
+            ValueError: If value is not a valid goal
+        """
+        value_lower = value.lower().strip()
+        
+        # Handle common variations
+        goal_map = {
+            "clarity": cls.CLARITY,
+            "clear": cls.CLARITY,
+            "readable": cls.CLARITY,
+            "conciseness": cls.CONCISENESS,
+            "concise": cls.CONCISENESS,
+            "brief": cls.CONCISENESS,
+            "short": cls.CONCISENESS,
+            "effectiveness": cls.EFFECTIVENESS,
+            "effective": cls.EFFECTIVENESS,
+            "performance": cls.EFFECTIVENESS,
+            "token_efficiency": cls.TOKEN_EFFICIENCY,
+            "token-efficiency": cls.TOKEN_EFFICIENCY,
+            "efficiency": cls.TOKEN_EFFICIENCY,
+            "cost": cls.TOKEN_EFFICIENCY,
+        }
+        
+        if value_lower in goal_map:
+            return goal_map[value_lower]
+        
+        raise ValueError(f"Invalid optimization goal: {value}. Valid goals: {list(goal_map.keys())}")
+    
+    @property
+    def description(self) -> str:
+        """Get a human-readable description of the goal."""
+        descriptions = {
+            self.CLARITY: "Improve prompt clarity and readability",
+            self.CONCISENESS: "Reduce prompt length while maintaining meaning",
+            self.EFFECTIVENESS: "Maximize overall prompt effectiveness",
+            self.TOKEN_EFFICIENCY: "Minimize token usage for cost optimization"
+        }
+        return descriptions[self]
+    
+    @property
+    def priority_metrics(self) -> list[str]:
+        """Get the metrics that should be prioritized for this goal."""
+        metrics = {
+            self.CLARITY: ["clarity_score", "readability"],
+            self.CONCISENESS: ["token_count", "word_count", "conciseness_score"],
+            self.EFFECTIVENESS: ["overall_score", "specificity_score"],
+            self.TOKEN_EFFICIENCY: ["token_count", "cost_efficiency"]
+        }
+        return metrics[self]
+    
+    def __str__(self) -> str:
+        """String representation of the optimization goal."""
+        return self.value

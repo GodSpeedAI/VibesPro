@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Enhanced token counter with ML-powered prompt optimization.
-# This script provides both basic and advanced token analysis capabilities.
+# {{ project_name }} - Enhanced Token Counter with ML-Powered Optimization
+# Generated from VibePro prompt-optimizer template
 
 set -euo pipefail
 
@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 
 show_help() {
     cat << EOF
-Enhanced Token Counter with ML-Powered Prompt Optimization
+{{ project_name }} - Enhanced Token Counter with ML-Powered Prompt Optimization
 
 USAGE:
     $0 <prompt-file> [OPTIONS]
@@ -50,7 +50,9 @@ The enhanced mode provides:
 • Prompt optimization suggestions
 • Cost estimation
 • Temporal learning from usage patterns
+• Integration with {{ project_name }} AI context system
 
+Generated with VibePro prompt-optimizer template
 EOF
 }
 
@@ -82,7 +84,7 @@ legacy_count() {
     word_count=$(wc -w < "${prompt_file}")
     char_count=$(wc -c < "${prompt_file}")
 
-    echo -e "${BLUE}[Legacy Mode] Token Analysis for ${prompt_file}:${NC}"
+    echo -e "${BLUE}[{{ project_name }}] Legacy Token Analysis for ${prompt_file}:${NC}"
     echo -e "  📊 Approximate word count: ${GREEN}${word_count}${NC}"
     echo -e "  📊 Character count: ${GREEN}${char_count}${NC}"
     echo -e "  🤖 Estimated tokens (rough): ${GREEN}$((word_count * 4 / 3))${NC}"
@@ -174,7 +176,7 @@ main() {
     if [[ "${use_legacy}" == "true" ]]; then
         legacy_count "${prompt_file}"
     elif check_dependencies; then
-        echo -e "${BLUE}🚀 Using enhanced ML-powered analysis...${NC}"
+        echo -e "${BLUE}🚀 {{ project_name }} - Using enhanced ML-powered analysis...${NC}"
         enhanced_count "${prompt_file}" "${remaining_args[@]}"
     else
         echo -e "${YELLOW}⚠️  Falling back to legacy mode...${NC}"

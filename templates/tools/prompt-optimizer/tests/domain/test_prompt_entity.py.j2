@@ -1,0 +1,212 @@
+"""
+Unit tests for Prompt entity following TDD principles.
+
+Tests cover all business logic, invariants, and edge cases for the core Prompt entity.
+"""
+
+import pytest
+from datetime import datetime
+from {{ package_path }}.domain.entities.prompt import Prompt
+
+
+class TestPromptEntity:
+    """Test suite for Prompt entity."""
+    
+    def test_create_prompt_with_valid_content(self, sample_prompt_content):
+        """Test creating a prompt with valid content."""
+        # Act
+        prompt = Prompt.create(content=sample_prompt_content)
+        
+        # Assert
+        assert prompt.content == sample_prompt_content.strip()
+        assert prompt.id is not None
+        assert len(prompt.id) > 0
+        assert prompt.created_at is not None
+        assert prompt.updated_at is None
+        assert prompt.metadata == {}
+    
+    def test_create_prompt_with_metadata(self, sample_prompt_content):
+        """Test creating a prompt with metadata."""
+        # Arrange
+        metadata = {"source": "test", "version": "1.0"}
+        
+        # Act
+        prompt = Prompt.create(content=sample_prompt_content, metadata=metadata)
+        
+        # Assert
+        assert prompt.metadata == metadata
+    
+    def test_create_prompt_strips_whitespace(self):
+        """Test that prompt creation strips leading/trailing whitespace."""
+        # Arrange
+        content_with_whitespace = "  \n  Test prompt content  \n  "
+        expected_content = "Test prompt content"
+        
+        # Act
+        prompt = Prompt.create(content=content_with_whitespace)
+        
+        # Assert
+        assert prompt.content == expected_content
+    
+    def test_create_prompt_with_empty_content_raises_error(self):
+        """Test that creating a prompt with empty content raises ValueError."""
+        # Arrange
+        empty_contents = ["", "   ", "\n\n", "\t\t"]
+        
+        for empty_content in empty_contents:
+            # Act & Assert
+            with pytest.raises(ValueError, match="Prompt content cannot be empty"):
+                Prompt.create(content=empty_content)
+    
+    def test_create_prompt_with_too_long_content_raises_error(self):
+        """Test that creating a prompt with content too long raises ValueError."""
+        # Arrange
+        very_long_content = "a" * 100001  # Exceeds 100,000 character limit
+        
+        # Act & Assert
+        with pytest.raises(ValueError, match="Prompt content too long"):
+            Prompt.create(content=very_long_content)
+    
+    def test_update_content_creates_new_instance(self, sample_prompt_content):
+        """Test that updating content creates a new immutable instance."""
+        # Arrange
+        original_prompt = Prompt.create(content=sample_prompt_content)
+        new_content = "Updated prompt content"
+        
+        # Act
+        updated_prompt = original_prompt.update_content(new_content)
+        
+        # Assert
+        assert updated_prompt.id == original_prompt.id  # Same ID
+        assert updated_prompt.content == new_content
+        assert updated_prompt.created_at == original_prompt.created_at
+        assert updated_prompt.updated_at is not None
+        assert updated_prompt.updated_at > original_prompt.created_at
+        assert original_prompt.content == sample_prompt_content  # Original unchanged
+    
+    def test_update_content_with_invalid_content_raises_error(self, sample_prompt_content):
+        """Test that updating with invalid content raises ValueError."""
+        # Arrange
+        prompt = Prompt.create(content=sample_prompt_content)
+        
+        # Act & Assert
+        with pytest.raises(ValueError, match="Prompt content cannot be empty"):
+            prompt.update_content("")
+        
+        with pytest.raises(ValueError, match="Prompt content too long"):
+            prompt.update_content("a" * 100001)
+    
+    def test_add_metadata_creates_new_instance(self, sample_prompt_content):
+        """Test that adding metadata creates a new immutable instance."""
+        # Arrange
+        original_prompt = Prompt.create(content=sample_prompt_content)
+        
+        # Act
+        updated_prompt = original_prompt.add_metadata("key", "value")
+        
+        # Assert
+        assert updated_prompt.metadata == {"key": "value"}
+        assert original_prompt.metadata == {}  # Original unchanged
+        assert updated_prompt.id == original_prompt.id
+        assert updated_prompt.content == original_prompt.content
+    
+    def test_add_metadata_preserves_existing_metadata(self, sample_prompt_content):
+        """Test that adding metadata preserves existing metadata."""
+        # Arrange
+        initial_metadata = {"existing": "data"}
+        prompt = Prompt.create(content=sample_prompt_content, metadata=initial_metadata)
+        
+        # Act
+        updated_prompt = prompt.add_metadata("new_key", "new_value")
+        
+        # Assert
+        expected_metadata = {"existing": "data", "new_key": "new_value"}
+        assert updated_prompt.metadata == expected_metadata
+    
+    def test_word_count_property(self):
+        """Test word count calculation."""
+        # Arrange
+        content = "This is a test prompt with seven words"
+        prompt = Prompt.create(content=content)
+        
+        # Act & Assert
+        assert prompt.word_count == 8  # "This", "is", "a", "test", "prompt", "with", "seven", "words"
+    
+    def test_character_count_property(self):
+        """Test character count calculation."""
+        # Arrange
+        content = "Hello"
+        prompt = Prompt.create(content=content)
+        
+        # Act & Assert
+        assert prompt.character_count == 5
+    
+    def test_is_updated_property(self, sample_prompt_content):
+        """Test is_updated property behavior."""
+        # Arrange
+        original_prompt = Prompt.create(content=sample_prompt_content)
+        
+        # Act & Assert
+        assert not original_prompt.is_updated
+        
+        updated_prompt = original_prompt.update_content("New content")
+        assert updated_prompt.is_updated
+    
+    def test_string_representation(self, sample_prompt_content):
+        """Test string representation of prompt."""
+        # Arrange
+        prompt = Prompt.create(content=sample_prompt_content)
+        
+        # Act
+        str_repr = str(prompt)
+        
+        # Assert
+        assert prompt.id[:8] in str_repr
+        assert "Prompt(" in str_repr
+        assert "content=" in str_repr
+    
+    def test_string_representation_truncates_long_content(self):
+        """Test that string representation truncates long content."""
+        # Arrange
+        long_content = "a" * 100
+        prompt = Prompt.create(content=long_content)
+        
+        # Act
+        str_repr = str(prompt)
+        
+        # Assert
+        assert "..." in str_repr
+        assert len(str_repr) < 200  # Should be much shorter than original
+    
+    def test_prompt_immutability(self, sample_prompt_content):
+        """Test that Prompt instances are truly immutable."""
+        # Arrange
+        prompt = Prompt.create(content=sample_prompt_content)
+        
+        # Act & Assert - These should all raise AttributeError due to frozen dataclass
+        with pytest.raises(AttributeError):
+            prompt.content = "modified"
+        
+        with pytest.raises(AttributeError):
+            prompt.id = "new_id"
+        
+        with pytest.raises(AttributeError):
+            prompt.created_at = datetime.utcnow()
+    
+    def test_prompt_equality(self, sample_prompt_content):
+        """Test prompt equality comparison."""
+        # Arrange
+        prompt1 = Prompt.create(content=sample_prompt_content)
+        prompt2 = Prompt.create(content=sample_prompt_content)
+        
+        # Act & Assert
+        assert prompt1 != prompt2  # Different IDs
+        
+        # Create prompt with same ID (artificial test)
+        same_id_prompt = Prompt(
+            id=prompt1.id,
+            content=prompt1.content,
+            created_at=prompt1.created_at,
+            metadata=prompt1.metadata
+        )
+        assert prompt1 == same_id_prompt
