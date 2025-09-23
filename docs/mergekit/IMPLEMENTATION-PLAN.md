@@ -16,7 +16,7 @@ This implementation plan provides a comprehensive, phased approach to merging He
 - Autonomous agent-ready tasks with explicit file references and acceptance criteria
 - Stability-first approach with validation checkpoints
 
-## Dependency Graph Overview
+### Dependency Graph Overview
 
 ```mermaid
 graph TD
