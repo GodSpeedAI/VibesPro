@@ -7,6 +7,9 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
+    branches:
+      - main
+      - dev
   tools:
     eslint:
       enabled: true
