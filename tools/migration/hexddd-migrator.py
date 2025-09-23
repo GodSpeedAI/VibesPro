@@ -68,7 +68,7 @@ def migrate(
 
     except Exception as e:
         typer.echo(f"❌ Unexpected error during migration: {str(e)}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
 
 if __name__ == "__main__":
