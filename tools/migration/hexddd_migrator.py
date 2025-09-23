@@ -381,9 +381,10 @@ If you encounter issues with the migration, please refer to the original project
         if not generators:
             return "None found"
 
-        lines = []
-        for gen in generators:
-            lines.append(f"- **{gen.name}**: {len(gen.template_files)} template files")
+        lines = [
+            f"- **{gen.name}**: {len(gen.template_files)} template files"
+            for gen in generators
+        ]
         return "\n".join(lines)
 
     def _format_domain_libraries_list(self, domain_libraries: List[DomainLibrary]) -> str:
