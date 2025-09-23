@@ -305,7 +305,7 @@ def generate(context: Dict[str, Any], output_dir: Path) -> None:
                 templated_content = self._convert_code_to_template(content, domain_lib.name)
 
                 # Add .j2 extension for Jinja2 templates
-                target_file = target_file.with_suffix(target_file.suffix + ".j2")
+                target_file = target_file.with_suffix(f"{target_file.suffix}.j2")
                 target_file.write_text(templated_content)
 
                 migrated_files.append(f"libs/{{{{domain_name}}}}/{relative_path}.j2")
