@@ -16,6 +16,16 @@ This implementation plan provides a comprehensive, phased approach to merging He
 - Autonomous agent-ready tasks with explicit file references and acceptance criteria
 - Stability-first approach with validation checkpoints
 
+### Mini TOC
+
+- [Executive Summary](#executive-summary)
+- [Key Principles](#key-principles)
+- [Phase Implementation Plan](#phase-implementation-plan)
+- [Parallel Execution Strategy](#parallel-execution-strategy)
+- [Acceptance Criteria](#acceptance-criteria)
+- [Risk Mitigation](#risk-mitigation)
+- [Rollback Procedures](#rollback-procedures)
+
 ### Dependency Graph Overview
 
 ```mermaid
