@@ -93,12 +93,10 @@ class HexDDDAnalyzer:
         if ddd_lib.exists():
             return True
 
-        # Check for domain libraries
-        for lib_dir in libs_dir.iterdir():
-            if lib_dir.is_dir() and self._is_domain_library(lib_dir):
-                return True
-
-        return False
+        return any(
+            lib_dir.is_dir() and self._is_domain_library(lib_dir)
+            for lib_dir in libs_dir.iterdir()
+        )
 
     def _analyze_nx_config(self) -> Optional[Dict[str, Any]]:
         """Analyze nx.json configuration."""
