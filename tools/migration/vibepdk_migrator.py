@@ -44,7 +44,7 @@ def convert_cookiecutter_json_to_copier_yml(
             question["default"] = value
         elif isinstance(value, dict):
             # Handle more complex cookiecutter variables if necessary
-            question.update(value)
+            question |= value
         else:
             question["default"] = str(value)
 
