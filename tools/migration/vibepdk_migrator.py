@@ -74,7 +74,7 @@ def process_template_file(
         or "{%" in new_content
         or "{#" in new_content
     ) and ".j2" not in target_path.suffixes:
-        final_target_path = target_path.with_suffix(target_path.suffix + ".j2")
+        final_target_path = target_path.with_suffix(f"{target_path.suffix}.j2")
 
     if not dry_run:
         final_target_path.parent.mkdir(parents=True, exist_ok=True)
