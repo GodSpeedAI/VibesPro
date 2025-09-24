@@ -1,5 +1,16 @@
 # HexDDD-VibePDK Merger Template Configuration
 _templates_suffix: .j2
+_skip_if_exists:
+  - .gitignore
+  - "*.md"
+_skip:
+  - "tests/"
+  - "coverage/"
+  - "htmlcov/"
+  - "*.pyc"
+  - "__pycache__/"
+  - ".git/"
+  - ".github/workflows/"
 _envops:
   block_start_string: "{%"
   block_end_string: "%}"

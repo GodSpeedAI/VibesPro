@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "projects": {
+        "domain": {
+            "root": "libs/domain",
+            "type": "library",
+            "targets": {
+                "build": {
+                    "executor": "@nrwl/js:tsc"
+                }
+            }
+        }
+    }
+}

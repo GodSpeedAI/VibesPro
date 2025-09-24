@@ -1,0 +1,61 @@
+# {{ project_name }}
+
+{% if architecture_style == "hexagonal" %}
+This project follows hexagonal architecture principles with Domain-Driven Design (DDD).
+
+## Architecture
+
+- `libs/core/domain/` - Pure business logic and entities
+- `libs/core/application/` - Use cases and orchestration
+- `libs/core/infrastructure/` - External dependencies and adapters
+- `libs/core/interface/` - User interfaces and controllers
+{% elif architecture_style == "layered" %}
+This project follows a traditional layered architecture.
+
+## Architecture
+
+- `libs/presentation/` - User interface layer
+- `libs/business/` - Business logic layer
+- `libs/data/` - Data access layer
+- `libs/shared/` - Shared utilities
+{% elif architecture_style == "microservices" %}
+This project follows microservices architecture principles.
+
+## Architecture
+
+- `apps/` - Individual microservices
+- `libs/shared/` - Shared libraries
+- `libs/communication/` - Inter-service communication
+{% endif %}
+
+## Getting Started
+
+1. Install dependencies: `just setup`
+2. Build project: `just build`
+3. Run tests: `just test`
+4. Start development: `just dev`
+
+{% if include_ai_workflows %}
+## AI-Enhanced Features
+
+This project includes AI-enhanced development workflows:
+
+- **Temporal Learning**: Records architectural decisions over time
+- **Context-Aware Suggestions**: Provides intelligent code suggestions
+- **Pattern Recognition**: Learns from development patterns
+
+Initialize AI features: `just setup-ai`
+{% endif %}
+
+## Migration
+
+If migrating from existing projects:
+
+- **From HexDDD**: `just migrate-from-hexddd /path/to/hexddd/project`
+- **From VibePDK**: `just migrate-from-vibepdk /path/to/vibepdk/template`
+
+---
+
+Created by: {{ author_name }}
+Architecture: {{ architecture_style }}
+AI Workflows: {{ include_ai_workflows }}

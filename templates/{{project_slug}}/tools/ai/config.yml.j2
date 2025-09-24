@@ -1,0 +1,50 @@
+{% if include_ai_workflows %}
+# AI Configuration for {{ project_name }}
+
+# Token budget management
+token_budget:
+  max_tokens: 8000
+  reserved_tokens: 2000
+  context_window: 6000
+
+# Context sources and priorities
+context_sources:
+  - id: "domain_models"
+    path: "libs/*/domain/**/*.ts"
+    priority: 10
+    weight: 0.3
+
+  - id: "use_cases"
+    path: "libs/*/application/**/*.ts"
+    priority: 8
+    weight: 0.25
+
+  - id: "interfaces"
+    path: "libs/*/interface/**/*.ts"
+    priority: 6
+    weight: 0.2
+
+  - id: "tests"
+    path: "**/*.test.ts"
+    priority: 4
+    weight: 0.15
+
+  - id: "documentation"
+    path: "**/*.md"
+    priority: 2
+    weight: 0.1
+
+# Pattern recognition settings
+pattern_recognition:
+  enabled: {{ enable_temporal_learning }}
+  learning_threshold: 0.7
+  pattern_cache_size: 1000
+  similarity_threshold: 0.6
+
+# Temporal database settings
+temporal_database:
+  path: "temporal_db/"
+  compression: "gorilla"
+  retention_days: 365
+  backup_frequency: "daily"
+{% endif %}

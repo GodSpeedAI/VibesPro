@@ -1,0 +1,68 @@
+set shell := ["bash", "-uc"]
+
+# Auto-detect build strategy
+default: (_detect_build_system)
+
+# Build all projects
+build:
+    @echo "Building {{ project_name }}..."
+    {% if architecture_style == "hexagonal" %}
+    pnpm nx run-many --target=build --all --parallel=3
+    {% else %}
+    pnpm build
+    {% endif %}
+
+# Test all projects
+test:
+    @echo "Testing {{ project_name }}..."
+    pnpm nx run-many --target=test --all --parallel=3
+
+# Lint all projects
+lint:
+    @echo "Linting {{ project_name }}..."
+    pnpm nx run-many --target=lint --all
+
+# Development server
+dev:
+    @echo "Starting development server for {{ project_name }}..."
+    pnpm nx run-many --target=serve --all --parallel=5
+
+# Setup project
+setup:
+    @echo "Setting up {{ project_name }}..."
+    pnpm install
+    {% if include_ai_workflows %}
+    just setup-ai
+    {% endif %}
+
+{% if include_ai_workflows %}
+# Setup AI workflows
+setup-ai:
+    @echo "Setting up AI workflows..."
+    python tools/temporal-db/init.py
+
+# Initialize temporal database
+db-init:
+    python tools/temporal-db/init.py
+
+# Backup temporal database
+db-backup:
+    python tools/temporal-db/backup.py
+{% endif %}
+
+# Migration commands
+migrate-from-hexddd SOURCE_PATH:
+    @echo "Migrating from HexDDD project..."
+    python tools/migration/hexddd-migrator.py "{{SOURCE_PATH}}" .
+
+migrate-from-vibepdk TEMPLATE_PATH:
+    @echo "Migrating from VibePDK template..."
+    python tools/migration/vibepdk-migrator.py "{{TEMPLATE_PATH}}" .
+
+_detect_build_system:
+   #!/usr/bin/env bash
+   if [ -f "nx.json" ]; then
+      just build
+   else
+      pnpm build
+   fi

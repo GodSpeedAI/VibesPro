@@ -1,0 +1,39 @@
+{% if architecture_style == "hexagonal" %}
+/**
+ * Domain Layer for {{ project_name }}
+ *
+ * Pure business logic with no external dependencies.
+ * Contains entities, value objects, and domain services.
+ */
+
+// Sample domain entity
+export class SampleEntity {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly createdAt: Date = new Date()
+  ) {}
+
+  validate(): boolean {
+    return this.name.length > 0 && this.id.length > 0;
+  }
+
+  isNew(): boolean {
+    const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
+    return this.createdAt > oneMinuteAgo;
+  }
+}
+
+// Sample value object
+export class SampleValue {
+  constructor(public readonly value: string) {
+    if (!value || value.trim().length === 0) {
+      throw new Error('Value cannot be empty');
+    }
+  }
+
+  equals(other: SampleValue): boolean {
+    return this.value === other.value;
+  }
+}
+{% endif %}

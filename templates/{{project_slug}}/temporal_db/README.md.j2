@@ -1,0 +1,34 @@
+{% if include_ai_workflows %}
+# Temporal Database for {{ project_name }}
+
+This directory contains the temporal database files for AI-enhanced development workflows.
+
+## Files
+
+- `specifications.db` - Stores architectural decisions and specifications
+- `patterns.db` - Stores learned development patterns
+- `decisions.db` - Stores decision history and context
+
+## Usage
+
+Initialize the database:
+```bash
+just db-init
+```
+
+Backup the database:
+```bash
+just db-backup
+```
+
+## Database Structure
+
+The temporal database uses time-series storage to track:
+- Architectural Decision Records (ADRs)
+- Product Requirements (PRDs)
+- System Design Specifications (SDS)
+- Technical Specifications (TS)
+- Development patterns and learnings
+
+This enables the AI system to provide context-aware suggestions based on historical decisions and patterns.
+{% endif %}

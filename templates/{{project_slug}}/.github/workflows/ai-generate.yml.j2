@@ -1,0 +1,65 @@
+{% if include_ai_workflows %}
+# AI-enhanced development workflow for {{ project_name }}
+#
+# This workflow provides AI assistance for code generation,
+# architectural guidance, and pattern recognition.
+
+name: AI-Enhanced Development
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_description:
+        description: 'Describe the development task'
+        required: true
+        type: string
+      use_context:
+        description: 'Use temporal context for suggestions'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  ai-generate:
+    name: AI-Assisted Generation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install AI tools
+      run: |
+        pip install -r tools/ai/requirements.txt
+
+    - name: Initialize temporal database
+      run: |
+        python tools/temporal-db/init.py
+
+    - name: Generate AI context
+      id: context
+      run: |
+        python tools/ai/context-manager.py \
+          --task="${{ github.event.inputs.task_description }}" \
+          --use-temporal-context=${{ github.event.inputs.use_context }}
+
+    - name: Generate code suggestions
+      run: |
+        python tools/ai/code-generator.py \
+          --context="${{ steps.context.outputs.context }}" \
+          --output="ai-suggestions.md"
+
+    - name: Create pull request with suggestions
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "AI: ${{ github.event.inputs.task_description }}"
+        title: "AI-Generated: ${{ github.event.inputs.task_description }}"
+        body-path: ai-suggestions.md
+        branch: ai/{{ github.run_id }}
+{% endif %}

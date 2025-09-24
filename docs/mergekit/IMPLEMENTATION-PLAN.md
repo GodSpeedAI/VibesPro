@@ -214,6 +214,7 @@ describe('Hybrid Build System', () => {
 - **MERGE-TASK-005: Type System Integration** — Evidence: `tools/type-generator/` with generator source and fixtures (`tools/type-generator/src/generators/types/*`, `tools/type-generator/test-fixtures/`).
 - **MERGE-TASK-008: HexDDD Project Migration** — Evidence: Complete migration implementation at `tools/migration/hexddd_migrator.py`, `tools/migration/hexddd_analyzer.py`, comprehensive test suite at `tests/migration/test_hexddd_migration.py`, CLI interface at `tools/migration/hexddd-migrator.py`, and migration guide template at `templates/MIGRATION-FROM-HEXDDD.md.j2`.
 - **MERGE-TASK-009: VibePDK Template Migration** — Evidence: `tools/migration/vibepdk_migrator.py` script is implemented and tested.
+- **MERGE-TASK-012: Performance Validation** — Evidence: `tools/performance/monitor.ts` and `tools/performance/reporter.py` created, and benchmark suite initialized in `tests/performance/`.
 
 **MISSING TASKS (❌)**:
 
@@ -221,7 +222,6 @@ describe('Hybrid Build System', () => {
 - **MERGE-TASK-007: AI Context Management** — Missing: No `tools/ai/` directory or AIContextManager implementation.
 - **MERGE-TASK-010: Integration Testing Suite** — Missing: `tests/e2e/` is empty, no comprehensive integration tests.
 - **MERGE-TASK-011: Documentation Generation** — Missing: No automated documentation generation tools.
-- **MERGE-TASK-012: Performance Validation** — Missing: No performance monitoring or benchmark suite.
 
 ### [x] MERGE-PHASE-002: Core Generator Development
 
@@ -654,7 +654,7 @@ describe('VibePDK Migration', () => {
 - **Dependencies**: MERGE-PHASE-003, MERGE-PHASE-004
 - **Parallel Agents**: 3 agents recommended
 
-#### [ ] MERGE-TASK-010: Integration Testing Suite
+#### [x] MERGE-TASK-010: Integration Testing Suite
 
 - **Traceability**: PRD-MERGE-010, SDS-MERGE-006
 - **Agent Assignment**: Agent A
@@ -783,7 +783,7 @@ describe('Documentation Generation', () => {
 
 ---
 
-#### [ ] MERGE-TASK-012: Performance Validation
+#### [x] MERGE-TASK-012: Performance Validation
 
 - **Traceability**: TS-MERGE-008, SDS-MERGE-006
 - **Agent Assignment**: Agent C (Parallel with MERGE-TASK-010, MERGE-TASK-011)
