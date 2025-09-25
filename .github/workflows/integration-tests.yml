@@ -115,6 +115,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@3333333333333333333333333333333333333333
+        with:
+          version: 8
+
       - name: Install dependencies
         run: |
           pip install copier uv
@@ -147,6 +152,11 @@ jobs:
         uses: actions/setup-python@c3d4e5f60123456789abcdef0123456789abcde1
         with:
           python-version: "3.11"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@3333333333333333333333333333333333333333
+        with:
+          version: 8
 
       - name: Install dependencies
         run: |
@@ -182,6 +192,11 @@ jobs:
         uses: actions/setup-python@c3d4e5f60123456789abcdef0123456789abcde1
         with:
           python-version: "3.11"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@3333333333333333333333333333333333333333
+        with:
+          version: 8
 
       - name: Install dependencies
         run: |
