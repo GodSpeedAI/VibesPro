@@ -67,10 +67,13 @@ Configuration file format (docs-config.json):
 
 async function loadConfig(configPath) {
     try {
-        const content = await fs.readFile(configPath, 'utf8');
+        const safeConfigPath = resolveUnderCwd(configPath);
+        const content = await fs.readFile(safeConfigPath, 'utf8');
 
-        if (configPath.endsWith('.json')) {
+        if (safeConfigPath.endsWith('.json')) {
             return JSON.parse(content);
+        } else if (safeConfigPath.endsWith('.yaml') || safeConfigPath.endsWith('.yml')) {
+            // (YAML parsing fixed below)
         } else if (configPath.endsWith('.yaml') || configPath.endsWith('.yml')) {
             // Simple YAML parsing for basic key-value pairs
             const lines = content.split('\n');
