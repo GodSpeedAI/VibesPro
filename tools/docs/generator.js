@@ -46,17 +46,19 @@ export class DocumentationGenerator {
     const missingSection = [];
     const brokenLinks = [];
     const warnings = [];
+    const readmeContent = docs.readme ?? '';
+    const architectureContent = docs.architectureGuide ?? '';
 
-    if (!docs.readme.includes('Getting Started')) {
+    if (!readmeContent.includes('Getting Started')) {
       missingSection.push('Getting Started section in README');
     }
-    if (!docs.readme.includes('## Architecture')) {
+    if (!readmeContent.includes('## Architecture')) {
       missingSection.push('Architecture section in README');
     }
     if (!docs.apiDocs || docs.apiDocs.trim().length === 0) {
       missingSection.push('API Documentation');
     }
-    if (!docs.architectureGuide.includes('Hexagonal Architecture')) {
+    if (!architectureContent.includes('Hexagonal Architecture')) {
       missingSection.push('Hexagonal Architecture explanation');
     }
 
