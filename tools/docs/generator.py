@@ -200,7 +200,8 @@ main();
 const {{ DocumentationGenerator }} = require('./tools/docs/generator');
 
 const docs = {json.dumps(docs)};
-const generator = new DocumentationGenerator('{output_path}');
+const outDir = {json.dumps(str(output_path))};
+const generator = new DocumentationGenerator(outDir);
 
 async function main() {{
     try {{
