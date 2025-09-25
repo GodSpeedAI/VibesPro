@@ -153,11 +153,11 @@ async function generateDocumentation(options) {
 
     // Merge configuration (CLI args > config file > package.json > defaults)
     const context = {
-        projectName: options.projectName || config.projectName || packageJson.name || 'my-project',
-        description: options.description || config.description || packageJson.description || 'A project built with hexagonal architecture',
-        domains: options.domains || config.domains || ['core'],
-        frameworks: options.frameworks || config.frameworks || ['next'],
-        includeAI: options.includeAI || config.includeAI || false,
+        projectName: options.projectName ?? config.projectName ?? packageJson.name ?? 'my-project',
+        description: options.description ?? config.description ?? packageJson.description ?? 'A project built with hexagonal architecture',
+        domains: options.domains ?? config.domains ?? ['core'],
+        frameworks: options.frameworks ?? config.frameworks ?? ['next'],
+        includeAI: options.includeAI ?? config.includeAI ?? false,
         architecture: 'hexagonal' // Fixed for this merger
     };
 
