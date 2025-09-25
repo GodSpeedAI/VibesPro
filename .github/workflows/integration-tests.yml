@@ -27,7 +27,6 @@ jobs:
         architecture: [hexagonal, layered, microservices]
         ai_enabled: [true, false]
         framework: [next, remix, expo]
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

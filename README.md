@@ -46,6 +46,8 @@ VibesPro solves the **architectural complexity gap** that plagues modern softwar
 - **Python 3.12+** installed
 - **Git** for version control
 
+> The quick start workflow below uses the `just` task runner. Install it from [the official instructions](https://github.com/casey/just#installation) if you do not already have it available.
+
 ### 30-Second Install
 
 ```bash
@@ -400,4 +402,3 @@ VibesPro is designed for measurable impact:
 - **📊 Enterprise Scale**: Supports Fortune 500 requirements
 
 Ready to revolutionize your development workflow? [Get started now](#-quick-start) 🚀
-

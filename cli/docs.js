@@ -12,13 +12,30 @@ import fs from 'fs/promises';
 import path from 'path';
 import { DocumentationGenerator } from '../tools/docs/generator.js';
 
-// Restrict paths to the current working directory
+// Restrict paths to the current working directory and sanitize user input
 function resolveUnderCwd(p) {
+    if (typeof p !== 'string' || p.length === 0) {
+        throw new Error('Invalid path');
+    }
+
+    // Disallow null bytes which can be used to bypass path checks
+    if (p.includes('\0')) {
+        throw new Error('Invalid path');
+    }
+
     const resolved = path.resolve(p);
     const cwd = path.resolve(process.cwd());
-    if (!resolved.startsWith(cwd + path.sep) && resolved !== cwd) {
+    const relative = path.relative(cwd, resolved);
+
+    // Relative paths that start with .. escape the project root
+    if (relative === '' || relative === '.') {
+        return resolved;
+    }
+
+    if (relative.split(path.sep)[0] === '..') {
         throw new Error(`Path escapes project root: ${p}`);
     }
+
     return resolved;
 }
 // Command line argument parsing
@@ -107,6 +124,7 @@ async function loadConfig(configPath) {
         }
 
         throw new Error('Unsupported config file format');
+    } catch (error) {
         console.error(`❌ Error loading config from ${configPath}:`, error.message);
         process.exit(1);
     }
@@ -173,7 +191,7 @@ async function generateDocumentation(options) {
         architecture: 'hexagonal' // Fixed for this merger
     };
 
-    const outputDir = options.outputDir || './docs';
+    const outputDir = resolveUnderCwd(options.outputDir || './docs');
 
     console.log(`📂 Output directory: ${outputDir}`);
     console.log(`🏗️  Project: ${context.projectName}`);
@@ -247,7 +265,7 @@ async function generateTemplates(options) {
 async function validateDocumentation(options) {
     console.log('🔍 Validating existing documentation...');
 
-    const docsDir = options.outputDir || './docs';
+    const docsDir = resolveUnderCwd(options.outputDir || './docs');
 
     if (!existsSync(docsDir)) {
         console.error(`❌ Documentation directory not found: ${docsDir}`);

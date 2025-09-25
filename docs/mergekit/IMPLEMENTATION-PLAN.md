@@ -648,7 +648,7 @@ describe('VibePDK Migration', () => {
 
 ---
 
-### [ ] MERGE-PHASE-005: Validation and Documentation
+### [x] MERGE-PHASE-005: Validation and Documentation
 
 - **Duration**: 2-3 days
 - **Dependencies**: MERGE-PHASE-003, MERGE-PHASE-004
@@ -720,7 +720,7 @@ describe('End-to-End Integration', () => {
 
 ---
 
-#### [ ] MERGE-TASK-011: Documentation Generation
+#### [x] MERGE-TASK-011: Documentation Generation
 
 - **Traceability**: PRD-MERGE-006, ADR-MERGE-008
 - **Agent Assignment**: Agent B (Parallel with MERGE-TASK-010)
