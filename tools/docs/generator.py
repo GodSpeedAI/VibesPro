@@ -32,7 +32,8 @@ const fs = require('fs');
 
 const contextFile = {json.dumps(context_file)};
 const context = JSON.parse(fs.readFileSync(contextFile, 'utf8'));
-const generator = new DocumentationGenerator('{output_dir}');
+const outputDir = {json.dumps(str(output_dir))};
+const generator = new DocumentationGenerator(outputDir);
 
 async function main() {{
     try {{
