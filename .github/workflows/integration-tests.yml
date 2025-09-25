@@ -24,39 +24,42 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [hexagonal, layered, microservices]
-        ai_enabled: [true, false]
-        framework: [next, remix, expo]
+      architecture: [hexagonal, layered, microservices]
+      ai_enabled: [true, false]
+      framework: [next, remix, expo]
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+      uses: actions/checkout@0123456789abcdef0123456789abcdef01234567
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-          cache: "pnpm"
+      uses: actions/setup-node@1111111111111111111111111111111111111111
+      with:
+        node-version: "18"
+        cache: "pnpm"
 
       - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      uses: actions/setup-python@2222222222222222222222222222222222222222
+      with:
+        python-version: "3.11"
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
+      uses: pnpm/action-setup@3333333333333333333333333333333333333333
+      with:
+        version: 8
 
       - name: Install dependencies
-        run: pnpm install
+      run: pnpm install
 
       - name: Install Copier
-        run: pip install copier
+      run: pip install copier
 
       - name: Run project generation tests
-        run: pnpm test:integration tests/integration/project-generation.test.ts
-        env:
+      run: pnpm test:integration tests/integration/project-generation.test.ts
+      env:
+        TEST_ARCHITECTURE: ${{ matrix.architecture }}
+        TEST_AI_ENABLED: ${{ matrix.ai_enabled }}
+        TEST_FRAMEWORK: ${{ matrix.framework }}
           TEST_ARCHITECTURE: ${{ matrix.architecture }}
           TEST_AI_ENABLED: ${{ matrix.ai_enabled }}
           TEST_FRAMEWORK: ${{ matrix.framework }}
@@ -68,21 +71,21 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@a1b2c3d4e5f60123456789abcdef0123456789ab
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@b2c3d4e5f60123456789abcdef0123456789abcd
         with:
           node-version: "18"
           cache: "pnpm"
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@c3d4e5f60123456789abcdef0123456789abcde1
         with:
           python-version: "3.11"
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@d4e5f60123456789abcdef0123456789abcdef12
         with:
           version: 8
 
@@ -105,10 +108,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@a1b2c3d4e5f60123456789abcdef0123456789ab
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@c3d4e5f60123456789abcdef0123456789abcde1
         with:
           python-version: "3.11"
 
@@ -132,16 +135,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@a1b2c3d4e5f60123456789abcdef0123456789ab
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@b2c3d4e5f60123456789abcdef0123456789abcd
         with:
           node-version: "18"
           cache: "pnpm"
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@c3d4e5f60123456789abcdef0123456789abcde1
         with:
           python-version: "3.11"
 
@@ -155,7 +158,7 @@ jobs:
         timeout-minutes: 10
 
       - name: Upload performance results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@4444444444444444444444444444444444444444
         if: always()
         with:
           name: performance-results
@@ -167,16 +170,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@a1b2c3d4e5f60123456789abcdef0123456789ab
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@b2c3d4e5f60123456789abcdef0123456789abcd
         with:
           node-version: "18"
           cache: "pnpm"
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@c3d4e5f60123456789abcdef0123456789abcde1
         with:
           python-version: "3.11"
 
