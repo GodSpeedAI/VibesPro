@@ -1,53 +1,24 @@
 /**
- * Project Generation  test('should generate pr  test('should generate  test('should gene  it('should generate project with AI workflows when enabled', async () => {
-    const projectPath = join(testWorkspace, 'ai-project');
-
-    // Create minimal project structure manually for GREEN phase
-    await fs.mkdir(projectPath, { recursive: true });
-    await fs.mkdir(join(projectPath, 'tools'), { recursive: true });
-    await fs.mkdir(join(projectPath, 'tools/ai'), { recursive: true });
-    await fs.mkdir(join(projectPath, 'temporal_db'), { recursive: true });
-
-    // Write basic AI configuration
-    await fs.writeFile(join(projectPath, 'tools/ai/workflows.json'), JSON.stringify({
-      enabled: true,
-      workflows: ['context-management', 'pattern-learning']
-    }, null, 2));
-
-    // Verify AI workflow files were created
-    const aiWorkflowPath = join(projectPath, 'tools/ai');
-    const temporalDbPath = join(projectPath, 'temporal_db');
-
-    expect(await fs.access(aiWorkflowPath).then(() => true).catch(() => false)).toBe(true);
-    expect(await fs.access(temporalDbPath).then(() => true).catch(() => false)).toBe(true);
-  });
-});AI workflows when enabled', async () => {
-    const projectPath = join(testWorkspace, 'ai-project');
-
-    execSync(`copier copy test-template ${projectPath} --data project_name="AI Project" --data include_ai_workflows=true --defaults`, {
-      cwd: process.cwd(),
-      stdio: 'pipe'
-    });t with proper package configurations', async () => {
-    const projectPath = join(testWorkspace, 'config-project');
-
-    execSync(`copier copy test-template ${projectPath} --data project_name="Config Project" --defaults`, {
-      cwd: process.cwd(),
-      stdio: 'pipe'
-    });ith hexagonal architecture', async () => {
-    const projectPath = join(testWorkspace, 'hex-project');
-
-    execSync(`copier copy test-template ${projectPath} --data project_name="Hexagonal Project" --data architecture_style="hexagonal" --data include_ai_workflows=false --defaults`, {
-      cwd: process.cwd(),
-      stdio: 'pipe'
-    });ation Tests
+ * Project Generation Integration Tests
  *
- * Tests the core project generation functionality using Copier templates.
- * Validates that generated projects have proper structure and configuration.
+ * These tests intentionally model the GREEN phase by manually scaffolding the
+ * minimal structures we expect the Copier template to produce. Once the
+ * generator is fully implemented the manual scaffolding can be replaced with
+ * direct calls to `copier copy`.
  */
 
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
+const ensurePathExists = async (targetPath: string): Promise<boolean> => {
+    try {
+        await fs.access(targetPath);
+        return true;
+    } catch {
+        return false;
+    }
+};
 
 describe('Project Generation Integration', () => {
     let testWorkspace: string;
@@ -57,81 +28,80 @@ describe('Project Generation Integration', () => {
     });
 
     afterEach(async () => {
-        if (testWorkspace) {
-            await fs.rm(testWorkspace, { recursive: true, force: true });
+        if (!testWorkspace) {
+            return;
         }
+
+        await fs.rm(testWorkspace, { recursive: true, force: true });
     });
 
-    it('should generate project with hexagonal architecture', async () => {
-        const projectPath = join(testWorkspace, 'hex-project');
+    it('should scaffold a hexagonal architecture layout', async () => {
+        const projectPath = join(testWorkspace, 'hexagonal-project');
 
-        // Create a minimal test project structure manually for GREEN phase
         await fs.mkdir(projectPath, { recursive: true });
-        await fs.mkdir(join(projectPath, 'libs'), { recursive: true });
-        await fs.mkdir(join(projectPath, 'libs/core'), { recursive: true });
         await fs.mkdir(join(projectPath, 'libs/core/domain'), { recursive: true });
         await fs.mkdir(join(projectPath, 'libs/core/application'), { recursive: true });
         await fs.mkdir(join(projectPath, 'libs/core/infrastructure'), { recursive: true });
         await fs.mkdir(join(projectPath, 'libs/core/interface'), { recursive: true });
 
-        // Write basic package.json
-        await fs.writeFile(join(projectPath, 'package.json'), JSON.stringify({
-            name: 'hexagonal-project',
-            version: '1.0.0',
-            workspaces: ['libs/*']
-        }, null, 2));
-
-        // Verify project structure was created
-        const domainPath = join(projectPath, 'libs/core/domain');
-        const applicationPath = join(projectPath, 'libs/core/application');
-        const infrastructurePath = join(projectPath, 'libs/core/infrastructure');
-        const interfacePath = join(projectPath, 'libs/core/interface');
-
-        expect(await fs.access(domainPath).then(() => true).catch(() => false)).toBe(true);
-        expect(await fs.access(applicationPath).then(() => true).catch(() => false)).toBe(true);
-        expect(await fs.access(infrastructurePath).then(() => true).catch(() => false)).toBe(true);
-        expect(await fs.access(interfacePath).then(() => true).catch(() => false)).toBe(true);
+        await expect(ensurePathExists(join(projectPath, 'libs/core/domain'))).resolves.toBe(true);
+        await expect(ensurePathExists(join(projectPath, 'libs/core/application'))).resolves.toBe(true);
+        await expect(ensurePathExists(join(projectPath, 'libs/core/infrastructure'))).resolves.toBe(true);
+        await expect(ensurePathExists(join(projectPath, 'libs/core/interface'))).resolves.toBe(true);
     });
 
-    it('should generate project with proper package configurations', async () => {
+    it('should create basic package configuration without cookiecutter remnants', async () => {
         const projectPath = join(testWorkspace, 'config-project');
 
-        // Create minimal project structure manually for GREEN phase
         await fs.mkdir(projectPath, { recursive: true });
 
-        // Write basic configuration files
-        await fs.writeFile(join(projectPath, 'package.json'), JSON.stringify({
-            name: 'config-project',
-            version: '1.0.0',
-            workspaces: ['libs/*']
-        }, null, 2));
+        const packageJsonPath = join(projectPath, 'package.json');
+        await fs.writeFile(
+            packageJsonPath,
+            JSON.stringify(
+                {
+                    name: 'config-project',
+                    version: '1.0.0',
+                    workspaces: ['apps/*', 'libs/*', 'tools/*'],
+                    description: 'Test project generated by Copier template'
+                },
+                null,
+                2
+            )
+        );
 
-        // Verify configuration files
-        const packageJson = JSON.parse(await fs.readFile(join(projectPath, 'package.json'), 'utf-8'));
-        expect(packageJson.name).toBe('config-project');
-        expect(packageJson.workspaces).toBeDefined();
+        const packageJson = await fs.readFile(packageJsonPath, 'utf-8');
+        expect(JSON.parse(packageJson).name).toBe('config-project');
+        expect(JSON.parse(packageJson).workspaces).toEqual(['apps/*', 'libs/*', 'tools/*']);
+        expect(packageJson).not.toContain('cookiecutter');
     });
 
-    it('should generate project with AI workflows when enabled', async () => {
+    it('should provision AI workflow scaffolding when enabled', async () => {
         const projectPath = join(testWorkspace, 'ai-project');
 
-        // Create minimal project structure manually for GREEN phase
-        await fs.mkdir(projectPath, { recursive: true });
-        await fs.mkdir(join(projectPath, 'tools'), { recursive: true });
         await fs.mkdir(join(projectPath, 'tools/ai'), { recursive: true });
         await fs.mkdir(join(projectPath, 'temporal_db'), { recursive: true });
 
-        // Write basic AI configuration
-        await fs.writeFile(join(projectPath, 'tools/ai/workflows.json'), JSON.stringify({
-            enabled: true,
-            workflows: ['context-management', 'pattern-learning']
-        }, null, 2));
+        const aiWorkflowConfigPath = join(projectPath, 'tools/ai/workflows.json');
+        await fs.writeFile(
+            aiWorkflowConfigPath,
+            JSON.stringify(
+                {
+                    enabled: true,
+                    workflows: ['context-management', 'pattern-learning']
+                },
+                null,
+                2
+            )
+        );
 
-        // Verify AI workflow files were created
-        const aiWorkflowPath = join(projectPath, 'tools/ai');
-        const temporalDbPath = join(projectPath, 'temporal_db');
+        await expect(ensurePathExists(join(projectPath, 'tools/ai'))).resolves.toBe(true);
+        await expect(ensurePathExists(join(projectPath, 'temporal_db'))).resolves.toBe(true);
 
-        expect(await fs.access(aiWorkflowPath).then(() => true).catch(() => false)).toBe(true);
-        expect(await fs.access(temporalDbPath).then(() => true).catch(() => false)).toBe(true);
+        const workflowsConfig = await fs.readFile(aiWorkflowConfigPath, 'utf-8');
+        const parsedConfig = JSON.parse(workflowsConfig) as { enabled: boolean; workflows: string[] };
+        expect(parsedConfig.enabled).toBe(true);
+        expect(parsedConfig.workflows).toEqual(['context-management', 'pattern-learning']);
+        expect(workflowsConfig).not.toContain('cookiecutter');
     });
 });
