@@ -12,6 +12,15 @@ import fs from 'fs/promises';
 import path from 'path';
 import { DocumentationGenerator } from '../tools/docs/generator.js';
 
+// Restrict paths to the current working directory
+function resolveUnderCwd(p) {
+    const resolved = path.resolve(p);
+    const cwd = path.resolve(process.cwd());
+    if (!resolved.startsWith(cwd + path.sep) && resolved !== cwd) {
+        throw new Error(`Path escapes project root: ${p}`);
+    }
+    return resolved;
+}
 // Command line argument parsing
 const args = process.argv.slice(2);
 const command = args[0];
