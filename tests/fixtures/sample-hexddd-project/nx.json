@@ -6,7 +6,12 @@
             "type": "library",
             "targets": {
                 "build": {
-                    "executor": "@nrwl/js:tsc"
+                    "executor": "@nrwl/js:tsc",
+                    "options": {
+                        "main": "libs/domain/src/index.ts",
+                        "tsConfig": "libs/domain/tsconfig.lib.json",
+                        "outputPath": "dist/libs/domain"
+                    }
                 }
             }
         }
