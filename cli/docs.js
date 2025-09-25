@@ -202,18 +202,30 @@ async function generateDocumentation(options) {
     // Generate documentation
     const generator = new DocumentationGenerator(outputDir);
     const docs = await generator.generateDocumentation(context);
+    // Ensure output directory exists
+    await fs.mkdir(outputDir, { recursive: true });
 
-    // Save documentation files
+    // Save documentation files. Only write files that have string content to
+    // avoid attempting to write undefined/null (generators may omit optional
+    // sections like migration guides).
     const files = [
         { name: 'README.md', content: docs.readme },
         { name: 'ARCHITECTURE.md', content: docs.architectureGuide },
-        { name: 'API-REFERENCE.md', content: docs.apiDocs }
+        { name: 'API-REFERENCE.md', content: docs.apiDocs },
+        // keep optional entries here; they will be skipped if undefined
+        { name: 'MIGRATION-GUIDE.md', content: docs.migrationGuide }
     ];
 
-    for (const file of files) {
-        const filePath = path.join(outputDir, file.name);
-        await fs.writeFile(filePath, file.content, 'utf8');
-        console.log(`✅ Generated ${file.name}`);
+    const writableFiles = files.filter(f => typeof f.content === 'string' && f.content.length > 0);
+
+    if (writableFiles.length === 0) {
+        console.log('⚠️  No documentation files to write (all generated sections are empty or undefined).');
+    } else {
+        for (const file of writableFiles) {
+            const filePath = path.join(outputDir, file.name);
+            await fs.writeFile(filePath, file.content, 'utf8');
+            console.log(`✅ Generated ${file.name}`);
+        }
     }
 
     // Validate documentation

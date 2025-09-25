@@ -435,11 +435,13 @@ const {{domains[0]}}s = await client.{{domains[0]}}s.list({
 
 ### Python
 ```python
-from {{project_slug}}_client import {{project_name|title}}Client
+{%- set _module_slug = project_slug | replace('-', '_') -%}
+{%- set _class_base = (project_slug | replace('-', ' ') | replace('_', ' ') | title) | replace(' ', '') -%}
+from {{ _module_slug }}_client import {{ _class_base }}Client
 
-client = {{project_name|title}}Client(
-    base_url='{{base_url}}',
-    api_key='your-api-key'
+client = {{ _class_base }}Client(
+  base_url='{{base_url}}',
+  api_key='your-api-key'
 )
 
 # Create {{domains[0]}}
