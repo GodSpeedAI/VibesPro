@@ -19,6 +19,23 @@ This project implements **Hexagonal Architecture** (Ports and Adapters) with **D
 ├── apps/                     # Interface Layer - User/system interfaces
 │   └── {{app_name}}/        # Specific applications (web, mobile, CLI)
 ├── libs/                     # Business Logic Layers
+{# Ensure `domains` is defined when rendering README templates #}
+{%- if domains is defined -%}
+	{%- if domains is string -%}
+		{%- set _domains = [domains] -%}
+	{%- else -%}
+		{%- set _domains = domains -%}
+	{%- endif -%}
+{%- elif app_domains is defined -%}
+	{%- if app_domains is string -%}
+		{%- set _domains = [app_domains] -%}
+	{%- else -%}
+		{%- set _domains = app_domains -%}
+	{%- endif -%}
+{%- else -%}
+	{%- set _domains = [domain_name] -%}
+{%- endif -%}
+{% set domains = _domains %}
 │   {% for domain in domains -%}
 ├── {{domain}}/              # {{domain|title}} Domain Bounded Context
 │   │   ├── domain/          # Domain Layer - Pure business logic

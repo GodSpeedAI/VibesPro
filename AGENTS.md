@@ -10,7 +10,7 @@ This document provides AI agents and autonomous coding systems with essential co
 
 - Generate production-ready applications following hexagonal architecture + DDD principles
 - Provide AI-enhanced development workflows with temporal learning
-- Support seamless migration from existing HexDDD and VibePDK projects
+- Focus on first-class generation of new projects (migration support deferred)
 - Maintain type safety across TypeScript and Python codebases
 
 ## Core Architectural Principles
@@ -20,7 +20,7 @@ This document provides AI agents and autonomous coding systems with essential co
 - **Primary Output**: Copier templates that generate complete, runnable applications
 - **No Runtime Dependencies**: Generated code should not depend on merger framework
 - **Template Composability**: Individual generators can be combined and customized
-- **Migration Support**: Existing projects can be converted to use new templates
+- **Template Evolution**: Optimize generated scaffolds; legacy project migration is out of scope
 
 ### 2. Hexagonal Architecture + DDD Enforcement
 
@@ -80,7 +80,7 @@ The implementation follows a strict 5-phase approach with autonomous agent coord
 1. **Foundation Phase**: Project structure, build system, Copier setup
 2. **Core Generators**: Domain, application, and type system generators
 3. **AI Integration**: Temporal database, context management, pattern recognition
-4. **Migration Tools**: HexDDD and VibePDK project conversion utilities
+4. **Developer Experience**: Documentation tooling, CLI enhancements, template UX polish
 5. **Validation**: Comprehensive testing, documentation, performance validation
 
 ### Autonomous Agent Coordination
@@ -90,7 +90,7 @@ The implementation follows a strict 5-phase approach with autonomous agent coord
 - Foundation infrastructure setup
 - Domain generator development
 - AI temporal database integration
-- HexDDD migration tooling
+- Documentation generator integration
 - Integration testing coordination
 
 **Agent B (Parallel Development)**:
@@ -98,7 +98,7 @@ The implementation follows a strict 5-phase approach with autonomous agent coord
 - Build system implementation
 - Application generator development
 - AI context management system
-- VibePDK template migration
+- Template library expansion
 - Documentation generation
 
 **Agent C (Support & Optimization)**:
@@ -188,8 +188,7 @@ generated-project/
 │       └── web/                 # Shared web components
 ├── tools/                        # Development and build tools
 │   ├── type-generator/          # Schema-to-type generation
-│   ├── ai/                      # AI context and learning
-│   └── migration/               # Project migration utilities
+│   └── ai/                      # AI context and learning
 └── temporal_db/                 # AI learning database
     ├── specifications.tsinkdb    # Architectural decisions
     └── patterns.tsinkdb         # Learned development patterns
@@ -216,7 +215,7 @@ generated-project/
 - [ ] All tests pass (unit, integration, e2e)
 - [ ] Templates generate compilable code
 - [ ] Type generation produces consistent cross-language types
-- [ ] Migration tools preserve functionality
+- [ ] Documentation generator produces complete outputs
 - [ ] Performance benchmarks met
 - [ ] Documentation updated and accurate
 
@@ -239,14 +238,6 @@ python -c "from jinja2 import Template; Template(open('problematic.j2').read())"
 rm -rf libs/shared/database-types/
 just types-generate
 just types-validate
-```
-
-**Migration Tool Issues**:
-
-```bash
-# Test migration with sample projects
-python tools/migration/hexddd-migrator.py --dry-run /path/to/test/project
-python tools/migration/validate-migration.py /path/to/migrated/project
 ```
 
 **Build System Conflicts**:
@@ -417,7 +408,7 @@ cd /tmp/test-output && just build  # Verify generated project builds
 - Project generation time: < 30 seconds for standard projects
 - Build time for generated projects: < 2 minutes
 - Type generation consistency: 100% cross-language compatibility
-- Migration success rate: 100% for test projects
+- Documentation generation completeness: 100% required sections present
 
 **Code Quality**:
 
@@ -432,7 +423,7 @@ cd /tmp/test-output && just build  # Verify generated project builds
 
 - Time to create new domain: < 5 minutes
 - Time to add new application: < 10 minutes
-- Migration completion time: < 1 hour for typical projects
+- Documentation refresh time: < 10 minutes end-to-end
 - Learning curve: Developers productive within 1 day
 
 **AI Enhancement Value**:
@@ -452,6 +443,6 @@ Key success factors:
 2. **Comprehensive testing** - Maintain TDD discipline throughout development
 3. **Strategic code reuse** - Leverage existing implementations wherever possible
 4. **AI integration depth** - Create meaningful AI enhancements, not superficial features
-5. **Migration pathway clarity** - Ensure users can adopt the new platform incrementally
+5. **Developer experience polish** - Ensure workflows remain fast and intuitive
 
 The autonomous agents working on this project should coordinate effectively, maintain quality standards, and always prioritize the long-term maintainability and extensibility of the platform. The ultimate goal is to create a development platform that makes building high-quality, architecturally sound applications both faster and more enjoyable.

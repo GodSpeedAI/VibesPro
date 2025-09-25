@@ -20,7 +20,6 @@ export interface GeneratedDocs {
     readme: string;
     apiDocs: string;
     architectureGuide: string;
-    migrationGuide: string;
 }
 
 export interface ValidationResult {

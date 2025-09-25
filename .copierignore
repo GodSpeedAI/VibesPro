@@ -3,7 +3,6 @@ VibePDK/
 VibePDK/**
 apps/
 libs/
-tools/migration/
 tools/type-generator/
 tools/ai/
 tests/

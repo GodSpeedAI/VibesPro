@@ -1,93 +1,46 @@
 /**
  * MERGE-TASK-011: Documentation Generator Implementation
- *
- * GREEN Phase: Minimal implementation to make tests pass
  * Traceability: PRD-MERGE-006, ADR-MERGE-008
- *
- * Based on VibePDK documentation patterns merged with HexDDD architecture docs
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import type { GeneratedDocs, ProjectContext, ValidationResult } from './types';
+import { existsSync, mkdirSync } from 'node:fs';
+import type { GeneratedDocs, ProjectContext, ValidationResult } from './types.js';
 
 export class DocumentationGenerator {
-    constructor(private outputDir: string) {
-        // Ensure output directory exists
-        if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
+    constructor(private readonly outputDir: string) {
+        if (!existsSync(outputDir)) {
+            mkdirSync(outputDir, { recursive: true });
         }
     }
 
-    /**
-     * Generate complete documentation suite for a project
-     */
     async generateDocumentation(context: ProjectContext): Promise<GeneratedDocs> {
-        const readme = await this.generateReadme(context);
-        const apiDocs = await this.generateApiDocs(context);
-        const architectureGuide = await this.generateArchitectureGuide(context);
-        const migrationGuide = await this.generateMigrationGuide(context);
+        const readme = this.renderReadme(context);
+        const apiDocs = this.renderApiDocs(context);
+        const architectureGuide = this.renderArchitectureGuide(context);
 
-        return {
-            readme,
-            apiDocs,
-            architectureGuide,
-            migrationGuide
-        };
+        return { readme, apiDocs, architectureGuide };
     }
 
-    /**
-     * Generate and save documentation templates to templates directory
-     */
-    async generateAndSaveTemplates(context: ProjectContext): Promise<void> {
-        const templateDir = path.join(this.outputDir, 'templates', 'docs');
-
-        if (!fs.existsSync(templateDir)) {
-            fs.mkdirSync(templateDir, { recursive: true });
-        }
-
-        // Generate template versions with Jinja2 syntax
-        const readmeTemplate = this.generateReadmeTemplate(context);
-        const archTemplate = this.generateArchitectureTemplate(context);
-        const apiTemplate = this.generateApiTemplate(context);
-        const migrationTemplate = this.generateMigrationTemplate(context);
-
-        fs.writeFileSync(path.join(templateDir, 'README.md.j2'), readmeTemplate);
-        fs.writeFileSync(path.join(templateDir, 'ARCHITECTURE.md.j2'), archTemplate);
-        fs.writeFileSync(path.join(templateDir, 'API-REFERENCE.md.j2'), apiTemplate);
-        fs.writeFileSync(path.join(templateDir, 'MIGRATION-GUIDE.md.j2'), migrationTemplate);
-    }
-
-    /**
-     * Validate generated documentation completeness and quality
-     */
     async validateDocumentation(docs: GeneratedDocs): Promise<ValidationResult> {
         const missingSection: string[] = [];
-        const brokenLinks: string[] = [];
         const warnings: string[] = [];
+        const brokenLinks: string[] = [];
 
-        // Check for required sections in README
         if (!docs.readme.includes('Getting Started')) {
-            missingSection.push('Getting Started section in README');
+            missingSection.push('README → Getting Started');
         }
         if (!docs.readme.includes('## Architecture')) {
-            missingSection.push('Architecture section in README');
+            missingSection.push('README → Architecture overview');
         }
-
-        // Check API documentation
-        if (!docs.apiDocs || docs.apiDocs.trim().length === 0) {
-            missingSection.push('API Documentation');
+        if (!docs.apiDocs.trim()) {
+            missingSection.push('API reference content');
         }
-
-        // Check architecture guide
         if (!docs.architectureGuide.includes('Hexagonal Architecture')) {
-            missingSection.push('Hexagonal Architecture explanation');
+            missingSection.push('Architecture guide → Hexagonal Architecture section');
         }
 
-        // Calculate score
-        const totalChecks = 10;
-        const failedChecks = missingSection.length;
-        const score = Math.max(0, (totalChecks - failedChecks) / totalChecks);
+        const totalChecks = 8;
+        const score = Math.max(0, (totalChecks - missingSection.length) / totalChecks);
 
         return {
             isValid: missingSection.length === 0,
@@ -98,26 +51,43 @@ export class DocumentationGenerator {
         };
     }
 
-    /**
-     * Generate README.md content
-     */
-    private async generateReadme(context: ProjectContext): Promise<string> {
-        const { projectName, description, domains, frameworks, includeAI } = context;
+    private renderReadme(context: ProjectContext): string {
+        const domainList = context.domains.length
+            ? context.domains.map(domain => `- **${formatTitle(domain)}** domain`).join('\n')
+            : '- Define your first bounded context to start building business logic';
 
-        return `# ${projectName}
+        const frameworkList = context.frameworks.length
+            ? context.frameworks.map(item => `- ${formatTitle(item)}`).join('\n')
+            : '- Add preferred frameworks in copier answers to customise this section';
 
-${description}
+        const repoBadge = context.repository
+            ? `[![Repository](https://img.shields.io/badge/repository-${encodeURIComponent(context.projectName)}-blue.svg)](${context.repository})`
+            : '';
+
+        const versionBadge = context.version
+            ? `![Version](https://img.shields.io/badge/version-${encodeURIComponent(context.version)}-brightgreen.svg)`
+            : '';
+
+        const authorLine = context.author ? `Maintained by **${context.author}**.` : '';
+
+        return `# ${context.projectName}
+
+${repoBadge} ${versionBadge}
+
+${context.description}
+
+${authorLine}
 
 ## Getting Started
 
-This project follows **Hexagonal Architecture** principles with **Domain-Driven Design** patterns for maintainable, testable, and scalable applications.
+This project is generated using the Vibes Pro platform which combines **Hexagonal Architecture** with **Domain-Driven Design** and generator-first workflows.
 
 ### Quick Start
 
 \`\`\`bash
 # Clone the repository
 git clone <repository-url>
-cd ${projectName}
+cd ${context.projectName}
 
 # Install dependencies
 just setup
@@ -128,720 +98,188 @@ just dev
 
 ## Architecture
 
-This project implements **Hexagonal Architecture** (also known as Ports and Adapters) with **Domain-Driven Design**:
-
-- **Domain Layer**: Pure business logic and entities
-- **Application Layer**: Use cases and application services
-- **Infrastructure Layer**: External adapters and implementations
-- **Interface Layer**: Controllers, views, and user interfaces
+- **Architecture style**: ${formatTitle(context.architecture)}
+- **Domain strategy**: Bounded contexts with explicit ports and adapters
+- **Type system**: Unified types for TypeScript and Python services
 
 ### Domains
 
-${domains.map(domain => `- **${domain}**: Core business domain`).join('\n')}
+${domainList}
 
 ## Technology Stack
 
-### Frameworks
-${frameworks.map(framework => `- ${framework}`).join('\n')}
+${frameworkList}
 
-${includeAI ? `
-### AI-Enhanced Features
-This project includes AI-enhanced development workflows for:
-- Automated code generation
-- Architecture pattern suggestions
-- Development assistance
+${context.includeAI ? `### AI-Enhanced Workflow
+- Pattern-aware code suggestions via temporal database
+- Automated context capture for architectural decisions
+- Reusable prompts and generators for bounded contexts
 ` : ''}
 
-## Development
-
-### Available Commands
+## Development Commands
 
 \`\`\`bash
-# Setup project
-just setup
-
-# Run development server
-just dev
-
-# Build for production
-just build
-
-# Run tests
-just test
-
-# Generate types
-just types-generate
+just setup          # Install dependencies
+just dev            # Start development mode
+just test           # Run unit and integration tests
+just build          # Build production assets
+just types-generate # Sync database and API types
 \`\`\`
 
-### Project Structure
+## Project Structure
 
 \`\`\`
-${projectName}/
-├── apps/                 # Application interfaces
-${domains.map(domain => `├── libs/${domain}/          # ${domain} domain`).join('\n')}
-├── libs/shared/          # Shared utilities
-├── tools/                # Development tools
-└── docs/                 # Documentation
+${context.projectName}/
+├── apps/                     # Interface adapters and user-facing apps
+├── libs/                     # Domain, application, and infrastructure layers
+├── tools/                    # Generators, AI utilities, and documentation helpers
+├── docs/                     # Project documentation suite
+└── temporal_db/              # Time-series context for AI-assisted workflows
 \`\`\`
-
-## Deployment
-
-See [Deployment Guide](docs/DEPLOYMENT.md) for detailed deployment instructions.
 
 ## Contributing
 
-See [Contributing Guide](CONTRIBUTING.md) for development guidelines and coding standards.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines, coding standards, and review checklists.
 
 ## License
 
-${context.license || 'MIT License'}
+${context.license ?? 'MIT License'}
 `;
     }
 
-    /**
-     * Generate API documentation
-     */
-    private async generateApiDocs(context: ProjectContext): Promise<string> {
-        const { projectName, domains } = context;
+    private renderApiDocs(context: ProjectContext): string {
+        const domainSections = context.domains.length
+            ? context.domains
+                .map(domain => {
+                    const resource = domain.toLowerCase();
+                    const title = formatTitle(domain);
 
-        const domainDocs = domains.map(domain => {
-            return `
-## ${domain.charAt(0).toUpperCase() + domain.slice(1)} Domain API
+                    return `## ${title} API
 
 ### Endpoints
 
-#### GET /api/${domain}
-List all ${domain} entities
+- \`GET /api/${resource}\` — List ${title} resources
+- \`POST /api/${resource}\` — Create a ${title} resource
+- \`GET /api/${resource}/:id\` — Retrieve a specific ${title}
+- \`PUT /api/${resource}/:id\` — Update a ${title}
+- \`DELETE /api/${resource}/:id\` — Archive a ${title}
 
-#### POST /api/${domain}
-Create new ${domain} entity
+### Payloads
 
-#### GET /api/${domain}/:id
-Get specific ${domain} entity
-
-#### PUT /api/${domain}/:id
-Update ${domain} entity
-
-#### DELETE /api/${domain}/:id
-Delete ${domain} entity
-
-### Data Models
-
-See [Type Definitions](../libs/shared/database-types/) for complete data models.
+Use the shared type definitions generated in \`libs/shared/database-types\` for request and response contracts.
 `;
-        }).join('\n');
+                })
+                .join('\n')
+            : '## Domains\n\nDefine at least one bounded context to unlock detailed API documentation.';
 
-        return `# ${projectName} API Reference
+        return `# ${context.projectName} API Reference
 
-This document provides comprehensive API documentation for all domains in the system.
+This document describes the public API surface for the generated project. All endpoints follow the ports-and-adapters paradigm and map directly to application services.
 
 ## Base URL
 
 \`\`\`
-https://api.${projectName.toLowerCase()}.com/v1
+https://api.${context.projectName.toLowerCase()}.example.com/v1
 \`\`\`
 
 ## Authentication
 
-All API endpoints require authentication. Include the authorization header:
+- Bearer token authentication is required for all endpoints.
+- Include \`Authorization: Bearer <token>\` header in requests.
 
-\`\`\`
-Authorization: Bearer <your-token>
-\`\`\`
+## Conventions
 
-${domainDocs}
+- Request and response bodies use camelCase properties.
+- Date/time values are ISO-8601 strings with timezone information.
+- Domain events are emitted asynchronously via the temporal bus.
+
+${domainSections}
 
 ## Error Handling
 
-All API endpoints return consistent error responses:
+All endpoints return a consistent error envelope:
 
 \`\`\`json
 {
   "error": {
-    "code": "ERROR_CODE",
-    "message": "Human readable error message",
+    "code": "RESOURCE_NOT_FOUND",
+    "message": "Human readable explanation",
+    "correlationId": "uuid",
     "details": {}
   }
 }
 \`\`\`
 
-## Rate Limiting
+## Rate Limits
 
-API requests are rate limited to 1000 requests per hour per API key.
+- 1000 requests per hour per client ID by default
+- Configure per-environment limits in \`apps/api-gateway\`
 `;
     }
 
-    /**
-     * Generate architecture guide
-     */
-    private async generateArchitectureGuide(context: ProjectContext): Promise<string> {
-        const { projectName, domains } = context;
+    private renderArchitectureGuide(context: ProjectContext): string {
+        const domainMatrix = context.domains.length
+            ? context.domains
+                .map(domain => `| ${formatTitle(domain)} | libs/${domain}/domain | libs/${domain}/application | libs/${domain}/infrastructure |`)
+                .join('\n')
+            : '| Pending | libs/example/domain | libs/example/application | libs/example/infrastructure |';
 
         return `# Architecture Guide
 
-This document describes the architectural patterns and design decisions for ${projectName}.
+${context.projectName} adopts a strict **Hexagonal Architecture** to separate core business logic from external concerns. This guide explains the structural decisions and how to extend the system safely.
 
-## Hexagonal Architecture
+## Architectural Principles
 
-This project follows **Hexagonal Architecture** (also known as Ports and Adapters pattern) to achieve:
+1. **Domain-Led Design** — Business capabilities drive module boundaries.
+2. **Ports and Adapters** — Application layer defines interfaces; infrastructure layer implements them.
+3. **Generator-First** — All scaffolding is produced via Copier templates for repeatability.
+4. **Temporal Intelligence** — Architectural decisions are recorded in the tsink database for future guidance.
 
-- **Separation of Concerns**: Clear boundaries between business logic and external concerns
-- **Testability**: Easy to unit test business logic in isolation
-- **Flexibility**: Easy to swap out external dependencies
-- **Maintainability**: Changes to external systems don't affect business rules
+## Layer Responsibilities
 
-### Architecture Diagram
+| Layer | Purpose | Allowed Dependencies |
+| ----- | ------- | -------------------- |
+| Domain | Entities, Value Objects, Domain Services | None |
+| Application | Use cases, orchestrations, ports | Domain |
+| Infrastructure | External adapters, persistence, messaging | Application, Domain |
+| Interface | APIs, UI, CLI, Events | Application |
 
-\`\`\`mermaid
-graph TD
-    UI[User Interface] --> App[Application Layer]
-    API[REST API] --> App
-    App --> Domain[Domain Layer]
-    App --> Infra[Infrastructure Layer]
-    Infra --> DB[Database]
-    Infra --> External[External Services]
+## Bounded Contexts
 
-    subgraph "Domain Layer"
-        Domain --> Entities[Entities]
-        Domain --> ValueObjects[Value Objects]
-        Domain --> DomainServices[Domain Services]
-        Domain --> Events[Domain Events]
-    end
+| Domain | Domain Layer | Application Layer | Infrastructure Layer |
+| ------ | ------------ | ----------------- | -------------------- |
+${domainMatrix}
 
-    subgraph "Application Layer"
-        App --> UseCases[Use Cases]
-        App --> Ports[Ports/Interfaces]
-        App --> AppServices[Application Services]
-    end
-\`\`\`
+## Communication Patterns
 
-## Domain-Driven Design
-
-### Bounded Contexts
-
-Each domain represents a bounded context with its own:
-
-${domains.map(domain => `
-#### ${domain.charAt(0).toUpperCase() + domain.slice(1)} Domain
-
-- **Entities**: Core business objects with identity
-- **Value Objects**: Immutable data structures
-- **Domain Services**: Complex business operations
-- **Repository Interfaces**: Data access abstractions
-`).join('\n')}
-
-### Ubiquitous Language
-
-Each domain maintains its own ubiquitous language, ensuring that code reflects the business domain terminology.
-
-## Layer Structure
-
-### 1. Domain Layer (Pure Business Logic)
-
-- **Location**: \`libs/{domain}/domain/\`
-- **Dependencies**: None (pure business logic)
-- **Contains**: Entities, Value Objects, Domain Events, Domain Services
-
-### 2. Application Layer (Use Cases)
-
-- **Location**: \`libs/{domain}/application/\`
-- **Dependencies**: Domain layer only
-- **Contains**: Use Cases, Application Services, Ports (interfaces)
-
-### 3. Infrastructure Layer (External Adapters)
-
-- **Location**: \`libs/{domain}/infrastructure/\`
-- **Dependencies**: Application and Domain layers
-- **Contains**: Repository implementations, External service adapters, Database configurations
-
-### 4. Interface Layer (User/System Interfaces)
-
-- **Location**: \`apps/{app-name}/\`
-- **Dependencies**: Application layer
-- **Contains**: Controllers, Views, CLI commands, Event handlers
-
-## Design Patterns
-
-### Repository Pattern
-Abstracts data access logic with interfaces in the application layer and implementations in infrastructure.
-
-### Command Query Responsibility Segregation (CQRS)
-Separates read and write operations for optimal performance and clarity.
-
-### Event-Driven Architecture
-Uses domain events to maintain loose coupling between bounded contexts.
+- Domain events propagate within the bounded context.
+- Integration events cross context boundaries via the event bus.
+- Queries remain read-optimised; commands encapsulate intent with validation.
 
 ## Testing Strategy
 
-### Unit Tests
-- Test domain entities and value objects in isolation
-- Test use cases with mocked dependencies
-- Focus on business logic correctness
+- Unit tests cover entities, value objects, and domain services.
+- Application tests validate use-case orchestration and port contracts.
+- Integration tests cover adapter wiring and infrastructure concerns.
+- Architecture tests enforce dependency rules using static analysis.
 
-### Integration Tests
-- Test repository implementations with real databases
-- Test API endpoints end-to-end
-- Verify cross-domain event handling
+## Extending the System
 
-### Architecture Tests
-- Verify layer dependencies are correct
-- Ensure domain layer has no external dependencies
-- Validate naming conventions and project structure
-
-## Migration from Legacy Systems
-
-See [Migration Guide](MIGRATION-GUIDE.md) for detailed migration strategies from existing systems.
+1. Create a new domain using the Copier generator.
+2. Define ubiquitous language terms in \`domain/model\`.
+3. Implement application ports before adding infrastructure adapters.
+4. Record new architectural decisions in the temporal database for traceability.
 `;
     }
-
-    /**
-     * Generate migration guide
-     */
-    private async generateMigrationGuide(context: ProjectContext): Promise<string> {
-        return `# Migration Guide
-
-This guide helps you migrate existing projects to the ${context.projectName} architecture.
-
-## From HexDDD Projects
-
-### Automated Migration
-
-Use the automated migration tool:
-
-\`\`\`bash
-# Install migration tools
-pip install -r tools/migration/requirements.txt
-
-# Analyze existing project
-python tools/migration/hexddd-migrator.py analyze /path/to/hexddd/project
-
-# Migrate project
-python tools/migration/hexddd-migrator.py migrate /path/to/hexddd/project /path/to/new/project
-\`\`\`
-
-### Manual Steps
-
-1. **Project Structure**: HexDDD projects should migrate cleanly with minimal changes
-2. **Generators**: Nx generators will be converted to Copier templates
-3. **Build System**: Nx configuration will be preserved and enhanced
-4. **Domain Logic**: Business logic should transfer without changes
-
-## From VibePDK Templates
-
-### Template Conversion
-
-Convert Cookiecutter templates to Copier format:
-
-\`\`\`bash
-# Convert template
-python tools/migration/vibepdk-migrator.py /path/to/cookiecutter/template
-
-# Validate conversion
-copier copy . /tmp/test-output
-\`\`\`
-
-### Key Changes
-
-1. **Template Syntax**: \`{{ var }}\` becomes \`{{var}}\`
-2. **Configuration**: \`cookiecutter.json\` becomes \`copier.yml\`
-3. **Hooks**: Updated to Copier hook format
-4. **AI Workflows**: Enhanced with temporal learning system
-
-## From Legacy Monoliths
-
-### Strategy
-
-1. **Domain Identification**: Identify bounded contexts in existing code
-2. **Incremental Migration**: Migrate domain by domain
-3. **Anti-Corruption Layer**: Create adapters for legacy systems
-4. **Data Migration**: Plan database schema evolution
-
-### Steps
-
-1. **Analysis Phase**
-   - Map existing functionality to domains
-   - Identify data dependencies
-   - Plan migration phases
-
-2. **Domain Extraction**
-   - Extract one domain at a time
-   - Implement hexagonal architecture
-   - Create anti-corruption layers
-
-3. **Integration**
-   - Connect new domains to existing system
-   - Implement event-driven communication
-   - Gradually replace legacy components
-
-## Migration Tools
-
-### Available Tools
-
-- \`hexddd-migrator.py\`: Migrate from HexDDD projects
-- \`vibepdk-migrator.py\`: Convert VibePDK templates
-- \`legacy-analyzer.py\`: Analyze legacy codebases
-- \`domain-extractor.py\`: Extract domains from monoliths
-
-### Validation
-
-After migration, validate the results:
-
-\`\`\`bash
-# Run all tests
-just test
-
-# Validate architecture compliance
-just validate-architecture
-
-# Check performance
-just benchmark
-\`\`\`
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Dependency Conflicts**: Update package.json dependencies
-2. **Import Paths**: Update import statements for new structure
-3. **Configuration**: Update environment variables and configs
-4. **Tests**: Adapt tests for new architecture patterns
-
-### Support
-
-- **Documentation**: Check [Architecture Guide](ARCHITECTURE.md)
-- **Examples**: See [examples/](../examples/) directory
-- **Issues**: Report problems in project repository
-`;
-    }
-
-    /**
-     * Generate Jinja2 template versions
-     */
-    private generateReadmeTemplate(context: ProjectContext): string {
-        return `# {{project_name}}
-
-{{project_description}}
-
-## Getting Started
-
-This project follows **Hexagonal Architecture** principles with **Domain-Driven Design** patterns for maintainable, testable, and scalable applications.
-
-### Quick Start
-
-\`\`\`bash
-# Clone the repository
-git clone <repository-url>
-cd {{project_name}}
-
-# Install dependencies
-just setup
-
-# Start development server
-just dev
-\`\`\`
-
-## Architecture
-
-This project implements **Hexagonal Architecture** (also known as Ports and Adapters) with **Domain-Driven Design**:
-
-- **Domain Layer**: Pure business logic and entities
-- **Application Layer**: Use cases and application services
-- **Infrastructure Layer**: External adapters and implementations
-- **Interface Layer**: Controllers, views, and user interfaces
-
-### Domains
-
-{% for domain in domains %}
-- **{{domain}}**: Core business domain
-{% endfor %}
-
-## Technology Stack
-
-### Frameworks
-{% for framework in frameworks %}
-- {{framework}}
-{% endfor %}
-
-{% if include_ai %}
-### AI-Enhanced Features
-This project includes AI-enhanced development workflows for:
-- Automated code generation
-- Architecture pattern suggestions
-- Development assistance
-{% endif %}
-
-## Development
-
-### Available Commands
-
-\`\`\`bash
-# Setup project
-just setup
-
-# Run development server
-just dev
-
-# Build for production
-just build
-
-# Run tests
-just test
-
-# Generate types
-just types-generate
-\`\`\`
-
-### Project Structure
-
-\`\`\`
-{{project_name}}/
-├── apps/                 # Application interfaces
-{% for domain in domains %}
-├── libs/{{domain}}/      # {{domain}} domain
-{% endfor %}
-├── libs/shared/          # Shared utilities
-├── tools/                # Development tools
-└── docs/                 # Documentation
-\`\`\`
-
-## Deployment
-
-See [Deployment Guide](docs/DEPLOYMENT.md) for detailed deployment instructions.
-
-## Contributing
-
-See [Contributing Guide](CONTRIBUTING.md) for development guidelines and coding standards.
-
-## License
-
-{{license|default('MIT License')}}
-`;
-    }
-
-    private generateArchitectureTemplate(context: ProjectContext): string {
-        return `# Architecture Guide
-
-This document describes the architectural patterns and design decisions for {{project_name}}.
-
-## Hexagonal Architecture
-
-This project follows **Hexagonal Architecture** (also known as Ports and Adapters pattern) to achieve:
-
-- **Separation of Concerns**: Clear boundaries between business logic and external concerns
-- **Testability**: Easy to unit test business logic in isolation
-- **Flexibility**: Easy to swap out external dependencies
-- **Maintainability**: Changes to external systems don't affect business rules
-
-### Architecture Diagram
-
-\`\`\`mermaid
-graph TD
-    UI[User Interface] --> App[Application Layer]
-    API[REST API] --> App
-    App --> Domain[Domain Layer]
-    App --> Infra[Infrastructure Layer]
-    Infra --> DB[Database]
-    Infra --> External[External Services]
-
-    subgraph "Domain Layer"
-        Domain --> Entities[Entities]
-        Domain --> ValueObjects[Value Objects]
-        Domain --> DomainServices[Domain Services]
-        Domain --> Events[Domain Events]
-    end
-
-    subgraph "Application Layer"
-        App --> UseCases[Use Cases]
-        App --> Ports[Ports/Interfaces]
-        App --> AppServices[Application Services]
-    end
-\`\`\`
-
-## Domain-Driven Design
-
-### Bounded Contexts
-
-Each domain represents a bounded context with its own:
-
-{% for domain in domains %}
-#### {{domain|title}} Domain
-
-- **Entities**: Core business objects with identity
-- **Value Objects**: Immutable data structures
-- **Domain Services**: Complex business operations
-- **Repository Interfaces**: Data access abstractions
-
-{% endfor %}
-
-## Layer Structure
-
-### 1. Domain Layer (Pure Business Logic)
-
-- **Location**: \`libs/{domain}/domain/\`
-- **Dependencies**: None (pure business logic)
-- **Contains**: Entities, Value Objects, Domain Events, Domain Services
-
-### 2. Application Layer (Use Cases)
-
-- **Location**: \`libs/{domain}/application/\`
-- **Dependencies**: Domain layer only
-- **Contains**: Use Cases, Application Services, Ports (interfaces)
-
-### 3. Infrastructure Layer (External Adapters)
-
-- **Location**: \`libs/{domain}/infrastructure/\`
-- **Dependencies**: Application and Domain layers
-- **Contains**: Repository implementations, External service adapters, Database configurations
-
-### 4. Interface Layer (User/System Interfaces)
-
-- **Location**: \`apps/{app-name}/\`
-- **Dependencies**: Application layer
-- **Contains**: Controllers, Views, CLI commands, Event handlers
-
-## Testing Strategy
-
-### Unit Tests
-- Test domain entities and value objects in isolation
-- Test use cases with mocked dependencies
-- Focus on business logic correctness
-
-### Integration Tests
-- Test repository implementations with real databases
-- Test API endpoints end-to-end
-- Verify cross-domain event handling
-
-### Architecture Tests
-- Verify layer dependencies are correct
-- Ensure domain layer has no external dependencies
-- Validate naming conventions and project structure
-`;
-    }
-
-    private generateApiTemplate(context: ProjectContext): string {
-        return `# {{project_name}} API Reference
-
-This document provides comprehensive API documentation for all domains in the system.
-
-## Base URL
-
-\`\`\`
-https://api.{{project_name|lower}}.com/v1
-\`\`\`
-
-## Authentication
-
-All API endpoints require authentication. Include the authorization header:
-
-\`\`\`
-Authorization: Bearer <your-token>
-\`\`\`
-
-{% for domain in domains %}
-## {{domain|title}} Domain API
-
-### Endpoints
-
-#### GET /api/{{domain}}
-List all {{domain}} entities
-
-#### POST /api/{{domain}}
-Create new {{domain}} entity
-
-#### GET /api/{{domain}}/:id
-Get specific {{domain}} entity
-
-#### PUT /api/{{domain}}/:id
-Update {{domain}} entity
-
-#### DELETE /api/{{domain}}/:id
-Delete {{domain}} entity
-
-### Data Models
-
-See [Type Definitions](../libs/shared/database-types/) for complete data models.
-
-{% endfor %}
-
-## Error Handling
-
-All API endpoints return consistent error responses:
-
-\`\`\`json
-{
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human readable error message",
-    "details": {}
-  }
 }
-\`\`\`
 
-## Rate Limiting
-
-API requests are rate limited to 1000 requests per hour per API key.
-`;
+function formatTitle(input: string): string {
+    if (!input) {
+        return '';
     }
-
-    private generateMigrationTemplate(context: ProjectContext): string {
-        return `# Migration Guide
-
-This guide helps you migrate existing projects to the {{project_name}} architecture.
-
-## From HexDDD Projects
-
-### Automated Migration
-
-Use the automated migration tool:
-
-\`\`\`bash
-# Install migration tools
-pip install -r tools/migration/requirements.txt
-
-# Analyze existing project
-python tools/migration/hexddd-migrator.py analyze /path/to/hexddd/project
-
-# Migrate project
-python tools/migration/hexddd-migrator.py migrate /path/to/hexddd/project /path/to/new/project
-\`\`\`
-
-## From VibePDK Templates
-
-### Template Conversion
-
-Convert Cookiecutter templates to Copier format:
-
-\`\`\`bash
-# Convert template
-python tools/migration/vibepdk-migrator.py /path/to/cookiecutter/template
-
-# Validate conversion
-copier copy . /tmp/test-output
-\`\`\`
-
-## Migration Tools
-
-### Available Tools
-
-- \`hexddd-migrator.py\`: Migrate from HexDDD projects
-- \`vibepdk-migrator.py\`: Convert VibePDK templates
-- \`legacy-analyzer.py\`: Analyze legacy codebases
-- \`domain-extractor.py\`: Extract domains from monoliths
-
-### Validation
-
-After migration, validate the results:
-
-\`\`\`bash
-# Run all tests
-just test
-
-# Validate architecture compliance
-just validate-architecture
-
-# Check performance
-just benchmark
-\`\`\`
-`;
-    }
+    return input
+        .split(/[-_/\s]+/u)
+        .filter(Boolean)
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
 }

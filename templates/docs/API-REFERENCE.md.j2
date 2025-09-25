@@ -2,6 +2,24 @@
 
 Complete API documentation for all domains and endpoints.
 
+{# Ensure `domains` is defined as a list for templates that iterate over it #}
+{%- if domains is defined -%}
+  {%- if domains is string -%}
+    {%- set _domains = [domains] -%}
+  {%- else -%}
+    {%- set _domains = domains -%}
+  {%- endif -%}
+{%- elif app_domains is defined -%}
+  {%- if app_domains is string -%}
+    {%- set _domains = [app_domains] -%}
+  {%- else -%}
+    {%- set _domains = app_domains -%}
+  {%- endif -%}
+{%- else -%}
+  {%- set _domains = [domain_name] -%}
+{%- endif -%}
+{% set domains = _domains %}
+
 ## Base Configuration
 
 ### Base URL

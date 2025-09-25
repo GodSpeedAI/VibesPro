@@ -50,15 +50,6 @@ db-backup:
     python tools/temporal-db/backup.py
 {% endif %}
 
-# Migration commands
-migrate-from-hexddd SOURCE_PATH:
-    @echo "Migrating from HexDDD project..."
-    python tools/migration/hexddd-migrator.py "{{SOURCE_PATH}}" .
-
-migrate-from-vibepdk TEMPLATE_PATH:
-    @echo "Migrating from VibePDK template..."
-    python tools/migration/vibepdk-migrator.py "{{TEMPLATE_PATH}}" .
-
 _detect_build_system:
    #!/usr/bin/env bash
    if [ -f "nx.json" ]; then

@@ -161,15 +161,6 @@ db-backup:
 	@echo "💾 Backing up temporal database..."
 	python tools/temporal-db/backup.py
 
-# --- Migration Tools ---
-migrate-hexddd PROJECT_PATH:
-	@echo "🔄 Migrating HexDDD project..."
-	python tools/migration/hexddd-migrator.py {{PROJECT_PATH}}
-
-migrate-vibepdk TEMPLATE_PATH:
-	@echo "🔄 Migrating VibePDK template..."
-	python tools/migration/vibepdk-migrator.py {{TEMPLATE_PATH}}
-
 # --- Type Generation ---
 types-generate:
 	@echo "🏷️  Generating types..."

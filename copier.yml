@@ -48,6 +48,17 @@ author_email:
   default: "developer@example.com"
   validator: "{% if '@' not in author_email %}Invalid email format{% endif %}"
 
+# Defaults to avoid template rendering failures when certain context values are not provided
+domains:
+  type: str
+  help: "Comma-separated list of domain names for generated docs and code"
+  default: ""
+
+base_url:
+  type: str
+  help: "Base URL used in generated API examples"
+  default: "http://localhost:8000"
+
 # Architecture Configuration
 architecture_style:
   type: str
