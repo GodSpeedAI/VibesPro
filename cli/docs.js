@@ -73,8 +73,6 @@ async function loadConfig(configPath) {
         if (safeConfigPath.endsWith('.json')) {
             return JSON.parse(content);
         } else if (safeConfigPath.endsWith('.yaml') || safeConfigPath.endsWith('.yml')) {
-            // (YAML parsing fixed below)
-        } else if (configPath.endsWith('.yaml') || configPath.endsWith('.yml')) {
             // Simple YAML parsing for basic key-value pairs
             const lines = content.split('\n');
             const config = {};
@@ -88,7 +86,10 @@ async function loadConfig(configPath) {
 
                         // Parse arrays
                         if (value.startsWith('[') && value.endsWith(']')) {
-                            config[key.trim()] = value.slice(1, -1).split(',').map(s => s.trim().replace(/"/g, ''));
+                            config[key.trim()] = value
+                                .slice(1, -1)
+                                .split(',')
+                                .map(s => s.trim().replace(/"/g, ''));
                         }
                         // Parse booleans
                         else if (value === 'true' || value === 'false') {
@@ -106,7 +107,6 @@ async function loadConfig(configPath) {
         }
 
         throw new Error('Unsupported config file format');
-    } catch (error) {
         console.error(`❌ Error loading config from ${configPath}:`, error.message);
         process.exit(1);
     }
