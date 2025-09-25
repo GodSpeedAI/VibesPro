@@ -231,11 +231,12 @@ async function generateTemplates(options) {
         architecture: 'hexagonal'
     };
     const outputDir = options.outputDir || './templates/docs';
+    const safeOutputDir = resolveUnderCwd(outputDir);
 
-    const generator = new DocumentationGenerator(outputDir);
+    const generator = new DocumentationGenerator(safeOutputDir);
     await generator.generateAndSaveTemplates(context);
 
-    console.log(`\n🎉 Documentation templates generated successfully in ${outputDir}`);
+    console.log(`\n🎉 Documentation templates generated successfully in ${safeOutputDir}`);
     console.log('📝 Template files:');
     console.log('   - README.md.j2');
     console.log('   - ARCHITECTURE.md.j2');
