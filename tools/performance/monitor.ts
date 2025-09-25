@@ -37,7 +37,8 @@ export class PerformanceMonitor {
       const result = await fn();
       endMark = `generation-end-${randomUUID()}`;
       performance.mark(endMark);
-      performance.measure('generationTime', startMark, endMark);
+      const measure = performance.measure('generationTime', startMark, endMark);
+      this.recordMetric(measure.name, measure.duration);
       return result;
     } finally {
       performance.clearMarks(startMark);
@@ -46,6 +47,27 @@ export class PerformanceMonitor {
       }
       performance.clearMeasures('generationTime');
     }
+  }
+
+  async measureBuildTime<T>(fn: () => Promise<T>): Promise<T> {
+    const startMark = `build-start-${randomUUID()}`;
+    performance.mark(startMark);
+    let endMark: string | undefined;
+    try {
+      const result = await fn();
+      endMark = `build-end-${randomUUID()}`;
+      performance.mark(endMark);
+      const measure = performance.measure('buildTime', startMark, endMark);
+      this.recordMetric(measure.name, measure.duration);
+      return result;
+    } finally {
+      performance.clearMarks(startMark);
+      if (endMark) {
+        performance.clearMarks(endMark);
+      }
+      performance.clearMeasures('buildTime');
+    }
+  }
   }
 
   async measureBuildTime<T>(fn: () => Promise<T>): Promise<T> {
