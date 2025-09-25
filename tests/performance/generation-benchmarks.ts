@@ -10,7 +10,14 @@ describe('Generation Performance', () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
     });
 
+    await monitor.measureGenerationTime(async () => {
+      // Placeholder for actual generation logic
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    });
+
+    await new Promise(resolve => setImmediate(resolve));
     const metrics = monitor.getMetrics();
+    expect(metrics.generationTime).toBeGreaterThan(0);
     expect(metrics.generationTime).toBeLessThan(30000);
   });
 });
