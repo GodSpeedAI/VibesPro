@@ -7,15 +7,33 @@
         "skipLibCheck": true,
         "strict": true,
         "baseUrl": ".",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
         "types": [
-            "node"
+            "node",
+            "jest"
         ],
         "allowJs": false,
-        "noEmit": true
+        "noEmit": true,
+        "paths": {
+            "@/*": [
+                "./*"
+            ]
+        }
     },
     "include": [
         "tools/**/*.ts",
         "tests/**/*.ts",
-        "generators/**/*.ts"
+        "generators/**/*.ts",
+        "jest.d.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "coverage",
+        "tmp",
+        "tools/reference/**/*"
     ]
 }

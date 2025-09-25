@@ -3,7 +3,6 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { afterEach, describe, expect, it } from 'vitest';
 import { cleanupGeneratorOutputs, runGenerator } from './utils';
 
 describe('Domain Generator', () => {

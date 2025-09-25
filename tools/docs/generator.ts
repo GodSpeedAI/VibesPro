@@ -7,9 +7,9 @@
  * Based on VibePDK documentation patterns merged with HexDDD architecture docs
  */
 
-const fs = require('fs');
-const path = require('path');
-const { ProjectContext, GeneratedDocs, ValidationResult, TemplateConfig } = require('./types');
+import * as fs from 'fs';
+import * as path from 'path';
+import type { GeneratedDocs, ProjectContext, ValidationResult } from './types';
 
 export class DocumentationGenerator {
     constructor(private outputDir: string) {

@@ -1,6 +1,6 @@
 // tools/performance/monitor.ts
-import { performance, PerformanceObserver } from 'perf_hooks';
 import { randomUUID } from 'node:crypto';
+import { performance, PerformanceObserver } from 'perf_hooks';
 
 interface PerformanceMetrics {
   generationTime: number;
@@ -77,5 +77,4 @@ export class PerformanceMonitor {
     this.metrics.memoryUsage = process.memoryUsage().heapUsed;
     return { ...this.metrics };
   }
-}
 }
