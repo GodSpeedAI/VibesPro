@@ -30,7 +30,8 @@ def run_ts_generator(output_dir: str, context: Dict[str, Any]) -> Dict[str, Any]
 const {{ DocumentationGenerator }} = require('./tools/docs/generator');
 const fs = require('fs');
 
-const context = JSON.parse(fs.readFileSync('{context_file}', 'utf8'));
+const contextFile = {json.dumps(context_file)};
+const context = JSON.parse(fs.readFileSync(contextFile, 'utf8'));
 const generator = new DocumentationGenerator('{output_dir}');
 
 async function main() {{
