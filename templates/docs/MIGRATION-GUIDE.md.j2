@@ -1,0 +1,681 @@
+# Migration Guide
+
+This comprehensive guide helps you migrate existing projects to {{project_name}}'s hexagonal architecture and domain-driven design patterns.
+
+## Overview
+
+{{project_name}} supports migration from several different architectural patterns and project types:
+
+- **HexDDD Projects**: Direct migration with minimal changes
+- **VibePDK/Cookiecutter Templates**: Template format conversion
+- **Legacy Monoliths**: Gradual domain extraction
+- **Microservices**: Consolidation or restructuring
+- **Traditional MVC**: Architectural pattern migration
+
+## From HexDDD Projects
+
+### Compatibility Assessment
+
+HexDDD projects have the highest migration compatibility since {{project_name}} extends the HexDDD architecture patterns.
+
+**Compatibility Matrix**:
+- ✅ **Domain Layer**: 100% compatible
+- ✅ **Application Layer**: 100% compatible
+- ✅ **Infrastructure Layer**: 95% compatible (minor adapter updates)
+- ✅ **Interface Layer**: 90% compatible (framework updates may be needed)
+
+### Automated Migration
+
+#### Prerequisites
+```bash
+# Install migration tools
+pip install -r tools/migration/requirements.txt
+uv sync --group migration
+
+# Verify Python environment
+python --version  # Should be 3.12+
+```
+
+#### Migration Process
+
+**Step 1: Analysis**
+```bash
+# Analyze existing HexDDD project
+python tools/migration/hexddd-migrator.py analyze \
+  --source /path/to/hexddd/project \
+  --output migration-analysis.json
+
+# Review analysis results
+cat migration-analysis.json | jq '.compatibility_score'
+```
+
+**Step 2: Migration Planning**
+```bash
+# Generate migration plan
+python tools/migration/hexddd-migrator.py plan \
+  --source /path/to/hexddd/project \
+  --target /path/to/new/project \
+  --plan migration-plan.json
+
+# Review migration plan
+python tools/migration/hexddd-migrator.py review-plan migration-plan.json
+```
+
+**Step 3: Execute Migration**
+```bash
+# Perform migration
+python tools/migration/hexddd-migrator.py migrate \
+  --source /path/to/hexddd/project \
+  --target /path/to/new/project \
+  --plan migration-plan.json \
+  --dry-run  # Remove for actual migration
+
+# Validate migration results
+python tools/migration/hexddd-migrator.py validate \
+  --target /path/to/new/project
+```
+
+### Manual Migration Steps
+
+#### 1. Project Structure Updates
+
+**Before (HexDDD)**:
+```
+hexddd-project/
+├── apps/web-app/
+├── libs/
+│   ├── ddd/
+│   │   └── src/generators/
+│   └── domain-name/
+└── tools/
+```
+
+**After ({{project_name}})**:
+```
+{{project_slug}}/
+├── apps/{{app_name}}/
+├── libs/
+│   ├── {{domain}}/
+│   │   ├── domain/
+│   │   ├── application/
+│   │   └── infrastructure/
+│   └── shared/
+├── templates/  # New: Copier templates
+└── tools/
+```
+
+#### 2. Generator Conversion
+
+**Convert Nx generators to Copier templates**:
+
+```bash
+# HexDDD generator (before)
+libs/ddd/src/generators/domain/generator.ts
+
+# Copier template (after)
+templates/libs/{{domain_name}}/
+```
+
+Example conversion:
+```typescript
+// Before: Nx generator
+export default async function (tree: Tree, options: DomainGeneratorOptions) {
+  generateFiles(tree, path.join(__dirname, 'files'), options.directory, {
+    ...options,
+    tmpl: ''
+  });
+}
+
+// After: Copier hooks
+def post_gen_hook():
+    # Generate domain structure using Jinja2 templates
+    pass
+```
+
+#### 3. Build System Updates
+
+**Update package.json**:
+```json
+{
+  "scripts": {
+    // Keep existing Nx scripts
+    "build": "nx run-many --target=build",
+    "test": "nx run-many --target=test",
+
+    // Add new just integration
+    "dev": "just dev",
+    "setup": "just setup"
+  }
+}
+```
+
+**Enhance nx.json**:
+```json
+{
+  "extends": "nx/presets/npm.json",
+  "generators": {
+    // Preserve existing generators during transition
+    "@hexddd/ddd:domain": {
+      "architecture": "hexagonal"
+    }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "test", "lint", "types-generate"]
+      }
+    }
+  }
+}
+```
+
+## From VibePDK/Cookiecutter Templates
+
+### Template Conversion Process
+
+#### Prerequisites
+```bash
+# Install template conversion tools
+pip install copier jinja2-cli
+npm install -g @copier/cli
+```
+
+#### Automated Conversion
+
+```bash
+# Convert Cookiecutter template to Copier
+python tools/migration/vibepdk-migrator.py \
+  --source /path/to/cookiecutter/template \
+  --target /path/to/copier/template \
+  --validate
+
+# Test converted template
+copier copy /path/to/copier/template /tmp/test-output \
+  --data project_name="Test Project"
+```
+
+#### Manual Conversion Steps
+
+**1. Configuration File Migration**
+
+```yaml
+# Before: cookiecutter.json
+{
+  "project_name": "My Project",
+  "author_name": "{{ cookiecutter.author_name }}",
+  "include_ai": "y"
+}
+
+# After: copier.yml
+project_name:
+  type: str
+  help: "Name of the project"
+
+author_name:
+  type: str
+  help: "Author's name"
+  default: "Unknown Author"
+
+include_ai:
+  type: bool
+  help: "Include AI-enhanced workflows"
+  default: true
+```
+
+**2. Template Syntax Updates**
+
+```jinja2
+{# Before: Cookiecutter syntax #}
+{{ cookiecutter.project_name }}
+{% if cookiecutter.include_ai == "y" %}
+
+{# After: Copier syntax #}
+{{project_name}}
+{% if include_ai %}
+```
+
+**3. Hooks Migration**
+
+```python
+# Before: hooks/post_gen_project.py (Cookiecutter)
+import os
+import sys
+
+if __name__ == '__main__':
+    if '{{ cookiecutter.include_ai }}' != 'y':
+        # Remove AI-related files
+        pass
+
+# After: hooks/post_gen.py (Copier)
+from pathlib import Path
+
+def main():
+    if not {{include_ai}}:
+        # Remove AI-related files using Copier context
+        pass
+
+if __name__ == '__main__':
+    main()
+```
+
+### Integration with Hexagonal Architecture
+
+After converting from VibePDK, integrate hexagonal architecture patterns:
+
+**1. Add Domain Structure**
+```bash
+# Add domain templates
+mkdir -p templates/libs/{{domain_name}}/domain
+mkdir -p templates/libs/{{domain_name}}/application
+mkdir -p templates/libs/{{domain_name}}/infrastructure
+
+# Copy domain templates from reference implementation
+cp -r reference/domain-templates/* templates/libs/{{domain_name}}/
+```
+
+**2. Update Application Templates**
+```jinja2
+{# templates/apps/{{app_name}}/src/main.ts.j2 #}
+import { bootstrapApplication } from './bootstrap';
+import { {{domain|title}}ApplicationService } from '../../libs/{{domain}}/application';
+
+async function main() {
+  const app = await bootstrapApplication({
+    // Hexagonal architecture setup
+    services: [{{domain|title}}ApplicationService]
+  });
+
+  await app.start();
+}
+```
+
+## From Legacy Monoliths
+
+### Strategy: Domain-Driven Decomposition
+
+#### Phase 1: Domain Identification
+
+**1. Analyze Existing Codebase**
+```bash
+# Use domain analyzer tool
+python tools/migration/legacy-analyzer.py \
+  --source /path/to/legacy/monolith \
+  --output domain-analysis.json
+
+# Identify bounded contexts
+python tools/migration/domain-identifier.py \
+  --analysis domain-analysis.json \
+  --output identified-domains.json
+```
+
+**2. Map Business Capabilities**
+```bash
+# Create domain mapping
+python tools/migration/capability-mapper.py \
+  --source /path/to/legacy/monolith \
+  --domains identified-domains.json \
+  --output capability-map.json
+```
+
+#### Phase 2: Incremental Extraction
+
+**1. Create Anti-Corruption Layer**
+```typescript
+// Create adapter for legacy system
+export class LegacySystemAdapter implements ExternalLegacyPort {
+  constructor(private legacyClient: LegacyClient) {}
+
+  async getLegacyData(id: string): Promise<DomainEntity> {
+    const legacyData = await this.legacyClient.getData(id);
+
+    // Transform legacy data to domain entity
+    return new DomainEntity({
+      id: new EntityId(legacyData.legacy_id),
+      name: legacyData.legacy_name,
+      // ... map other fields
+    });
+  }
+}
+```
+
+**2. Extract First Domain**
+```bash
+# Extract domain using template
+copier copy templates/libs/{{domain_name}} extracted-domains/user-management \
+  --data domain_name=user-management \
+  --data entities=["User", "Profile", "Permission"]
+
+# Implement domain logic
+cd extracted-domains/user-management
+just setup
+just test
+```
+
+**3. Integrate with Legacy System**
+```typescript
+// Gradual replacement strategy
+export class HybridUserService {
+  constructor(
+    private newDomainService: UserDomainService,
+    private legacyAdapter: LegacyUserAdapter,
+    private featureFlags: FeatureFlags
+  ) {}
+
+  async getUser(id: string): Promise<User> {
+    if (await this.featureFlags.isEnabled('NEW_USER_SERVICE')) {
+      return this.newDomainService.getUser(id);
+    } else {
+      return this.legacyAdapter.getUser(id);
+    }
+  }
+}
+```
+
+#### Phase 3: Data Migration
+
+**1. Schema Evolution**
+```sql
+-- Create new tables alongside legacy tables
+CREATE TABLE users_v2 (
+  id UUID PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  -- New domain-driven fields
+  domain_events JSONB,
+  version INTEGER DEFAULT 1
+);
+
+-- Data migration script
+INSERT INTO users_v2 (id, name, email, created_at)
+SELECT
+  uuid_generate_v4(),
+  legacy_username,
+  legacy_email,
+  legacy_created_date
+FROM legacy_users
+WHERE migrated = false;
+```
+
+**2. Event-Driven Synchronization**
+```typescript
+// Keep legacy and new systems in sync during transition
+export class DataSynchronizationService {
+  constructor(
+    private eventBus: EventBus,
+    private legacyAdapter: LegacyAdapter
+  ) {}
+
+  @EventHandler(UserCreatedEvent)
+  async handleUserCreated(event: UserCreatedEvent) {
+    // Sync to legacy system
+    await this.legacyAdapter.createUser({
+      legacy_username: event.user.name,
+      legacy_email: event.user.email
+    });
+  }
+}
+```
+
+## From Microservices Architecture
+
+### Consolidation Strategy
+
+#### Assess Current Architecture
+```bash
+# Analyze microservices dependencies
+python tools/migration/microservices-analyzer.py \
+  --services-dir /path/to/microservices \
+  --output services-analysis.json
+
+# Identify domain boundaries
+python tools/migration/service-domain-mapper.py \
+  --analysis services-analysis.json \
+  --output domain-mapping.json
+```
+
+#### Migration Approaches
+
+**1. Service Consolidation**
+```yaml
+# Before: Multiple microservices
+user-service/
+order-service/
+payment-service/
+notification-service/
+
+# After: Domain-based consolidation
+libs/
+├── user-management/     # Was: user-service
+├── order-management/    # Was: order-service + payment integration
+└── communication/       # Was: notification-service
+```
+
+**2. Shared Infrastructure Migration**
+```typescript
+// Before: Service-specific infrastructure
+user-service/src/database/
+order-service/src/database/
+payment-service/src/database/
+
+// After: Shared infrastructure layer
+libs/shared/infrastructure/
+├── database/
+├── messaging/
+└── monitoring/
+```
+
+**3. API Gateway Integration**
+```typescript
+// Maintain external API compatibility
+export class ApiGatewayAdapter {
+  constructor(
+    private userService: UserApplicationService,
+    private orderService: OrderApplicationService
+  ) {}
+
+  // Preserve existing API endpoints
+  @Get('/api/users/:id')
+  async getUser(@Param('id') id: string) {
+    return await this.userService.getUser(id);
+  }
+
+  @Get('/api/orders/:id')
+  async getOrder(@Param('id') id: string) {
+    return await this.orderService.getOrder(id);
+  }
+}
+```
+
+## Migration Validation
+
+### Automated Testing
+
+```bash
+# Run comprehensive migration validation
+just validate-migration
+
+# Specific validation checks
+just test-migration-compatibility
+just test-architectural-compliance
+just test-data-integrity
+just test-performance-benchmarks
+```
+
+### Manual Validation Checklist
+
+#### Architecture Compliance
+- [ ] Domain layer has no external dependencies
+- [ ] Application layer only depends on domain layer
+- [ ] Infrastructure layer implements defined ports
+- [ ] Interface layer only accesses application services
+
+#### Functionality Preservation
+- [ ] All existing features work correctly
+- [ ] Performance meets or exceeds baseline
+- [ ] Error handling behaves consistently
+- [ ] Security measures are maintained
+
+#### Code Quality
+- [ ] Unit tests pass with >90% coverage
+- [ ] Integration tests validate cross-domain workflows
+- [ ] Architecture tests enforce design rules
+- [ ] Documentation is updated and accurate
+
+### Rollback Procedures
+
+#### Git-Based Rollback
+```bash
+# Tag before migration
+git tag pre-migration-v1.0
+
+# Rollback if needed
+git reset --hard pre-migration-v1.0
+```
+
+#### Database Rollback
+```sql
+-- Prepare rollback scripts during migration
+-- rollback/001_revert_user_table_changes.sql
+DROP TABLE IF EXISTS users_v2;
+ALTER TABLE legacy_users RENAME TO users;
+```
+
+#### Gradual Rollback
+```typescript
+// Use feature flags for gradual rollback
+export class FeatureFlaggedService {
+  async processRequest(request: Request) {
+    if (await this.flags.isEnabled('USE_LEGACY_PROCESSING')) {
+      return this.legacyProcessor.process(request);
+    } else {
+      return this.newProcessor.process(request);
+    }
+  }
+}
+```
+
+## Migration Tools Reference
+
+### Available Migration Tools
+
+| Tool | Purpose | Usage |
+|------|---------|-------|
+| `hexddd-migrator.py` | HexDDD project migration | `python tools/migration/hexddd-migrator.py migrate <source> <target>` |
+| `vibepdk-migrator.py` | VibePDK template conversion | `python tools/migration/vibepdk-migrator.py <template-path>` |
+| `legacy-analyzer.py` | Legacy codebase analysis | `python tools/migration/legacy-analyzer.py --source <path>` |
+| `domain-extractor.py` | Domain extraction from monolith | `python tools/migration/domain-extractor.py extract <domain>` |
+| `microservices-consolidator.py` | Microservices consolidation | `python tools/migration/microservices-consolidator.py --services <dir>` |
+
+### Tool Configuration
+
+**Migration Configuration File** (`migration.yml`):
+```yaml
+# migration.yml
+migration:
+  source_type: "hexddd"  # hexddd | vibepdk | legacy | microservices
+  target_architecture: "hexagonal"
+
+  domains:
+    - name: "user-management"
+      entities: ["User", "Profile", "Permission"]
+    - name: "order-management"
+      entities: ["Order", "OrderItem", "Payment"]
+
+  preserve:
+    - "existing-api-contracts"
+    - "database-compatibility"
+    - "environment-variables"
+
+  transformations:
+    - type: "naming-convention"
+      from: "snake_case"
+      to: "camelCase"
+    - type: "file-structure"
+      apply: "hexagonal-layout"
+```
+
+## Post-Migration Optimization
+
+### Performance Tuning
+```bash
+# Run performance benchmarks
+just benchmark-pre-migration   # Before migration
+just benchmark-post-migration  # After migration
+just benchmark-compare         # Generate comparison report
+```
+
+### Monitoring Setup
+```typescript
+// Enhanced monitoring for migrated system
+export class MigrationMetrics {
+  @Counter('migration_requests_total')
+  requestsTotal: Counter;
+
+  @Histogram('migration_response_time')
+  responseTime: Histogram;
+
+  @Gauge('migration_success_rate')
+  successRate: Gauge;
+}
+```
+
+### Documentation Updates
+```bash
+# Generate updated documentation
+just docs-generate
+
+# Update architecture diagrams
+just diagrams-update
+
+# Create migration report
+python tools/migration/generate-report.py \
+  --migration-log migration.log \
+  --output migration-report.md
+```
+
+## Support and Troubleshooting
+
+### Common Issues
+
+**Issue**: Module resolution errors after migration
+```bash
+# Solution: Update tsconfig paths
+{
+  "compilerOptions": {
+    "paths": {
+      "@{{project_slug}}/*": ["libs/*/src"],
+      "@{{project_slug}}/shared/*": ["libs/shared/src/*"]
+    }
+  }
+}
+```
+
+**Issue**: Database connection failures
+```bash
+# Solution: Update environment variables
+DATABASE_URL=postgresql://user:pass@localhost:5432/{{project_slug}}
+```
+
+**Issue**: Build failures in CI/CD
+```bash
+# Solution: Update pipeline configuration
+# .github/workflows/ci.yml
+- name: Setup build environment
+  run: |
+    just setup
+    just build
+    just test
+```
+
+### Getting Help
+
+- **Documentation**: [Architecture Guide](ARCHITECTURE.md)
+- **Examples**: Check `examples/` directory for migration examples
+- **Community**: Join discussions in project repository
+- **Support**: Create issues for migration-specific problems
+
+---
+
+This migration guide provides comprehensive support for transitioning to {{project_name}}'s hexagonal architecture. For additional assistance, refer to the project documentation or contact the development team.

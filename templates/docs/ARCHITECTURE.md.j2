@@ -1,0 +1,374 @@
+# Architecture Guide
+
+This document describes the architectural patterns and design decisions for {{project_name}}.
+
+## Hexagonal Architecture
+
+{{project_name}} implements **Hexagonal Architecture** (also known as Ports and Adapters pattern) to achieve maximum flexibility, testability, and maintainability.
+
+### Core Principles
+
+1. **Business Logic Independence**: The core business logic is completely independent of external frameworks, databases, or UI technologies.
+
+2. **Dependency Inversion**: Dependencies point inward toward the business logic, never outward toward infrastructure.
+
+3. **Port and Adapter Pattern**:
+   - **Ports**: Interfaces that define how the business logic communicates with the outside world
+   - **Adapters**: Concrete implementations that connect ports to external systems
+
+4. **Testability**: Business logic can be tested in complete isolation using test doubles.
+
+### Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Interface Layer"
+        UI[Web UI]
+        API[REST API]
+        CLI[CLI Interface]
+        Events[Event Handlers]
+    end
+
+    subgraph "Application Layer"
+        UC[Use Cases]
+        AS[Application Services]
+        Ports[Ports/Interfaces]
+    end
+
+    subgraph "Domain Layer"
+        E[Entities]
+        VO[Value Objects]
+        DS[Domain Services]
+        DE[Domain Events]
+    end
+
+    subgraph "Infrastructure Layer"
+        Repos[Repositories]
+        ExtSvc[External Services]
+        DB[Database]
+        Queue[Message Queue]
+    end
+
+    UI --> UC
+    API --> UC
+    CLI --> UC
+    Events --> UC
+
+    UC --> E
+    UC --> DS
+    UC --> Ports
+
+    Ports --> Repos
+    Ports --> ExtSvc
+
+    Repos --> DB
+    ExtSvc --> Queue
+
+    E --> VO
+    E --> DE
+    DS --> E
+```
+
+## Domain-Driven Design
+
+### Bounded Contexts
+
+Each domain represents a bounded context with clear boundaries and its own ubiquitous language:
+
+{% for domain in domains %}
+#### {{domain|title}} Domain
+
+**Location**: `libs/{{domain}}/`
+
+**Responsibility**: Core {{domain}} business logic and rules
+
+**Key Components**:
+- **Entities**: Business objects with identity and lifecycle
+- **Value Objects**: Immutable objects that represent concepts
+- **Domain Services**: Operations that don't belong to a single entity
+- **Domain Events**: Notifications of significant business occurrences
+- **Aggregates**: Consistency boundaries for related entities
+
+**Ubiquitous Language**: Terms and concepts specific to the {{domain}} domain that are used consistently in code, documentation, and business discussions.
+
+{% endfor %}
+
+## Layer Structure
+
+### 1. Domain Layer (`libs/{domain}/domain/`)
+
+**Purpose**: Contains pure business logic with no external dependencies.
+
+**Components**:
+- **Entities**: Business objects with unique identity
+  ```typescript
+  export class {{domains[0]|title}}Entity {
+    constructor(
+      private readonly id: {{domains[0]|title}}Id,
+      private name: string,
+      private readonly createdAt: Date
+    ) {}
+
+    // Business methods only
+    updateName(newName: string): void {
+      if (!newName || newName.length === 0) {
+        throw new Error('Name cannot be empty');
+      }
+      this.name = newName;
+    }
+  }
+  ```
+
+- **Value Objects**: Immutable data structures
+  ```typescript
+  export class {{domains[0]|title}}Id {
+    constructor(private readonly value: string) {
+      if (!value || value.length < 3) {
+        throw new Error('Invalid {{domains[0]}} ID');
+      }
+    }
+
+    getValue(): string {
+      return this.value;
+    }
+
+    equals(other: {{domains[0]|title}}Id): boolean {
+      return this.value === other.value;
+    }
+  }
+  ```
+
+- **Domain Services**: Complex business operations
+  ```typescript
+  export class {{domains[0]|title}}DomainService {
+    calculateBusinessMetric(entities: {{domains[0]|title}}Entity[]): number {
+      // Complex business calculation
+      return entities.reduce((sum, entity) => sum + entity.getWeight(), 0);
+    }
+  }
+  ```
+
+- **Domain Events**: Business-significant occurrences
+  ```typescript
+  export class {{domains[0]|title}}CreatedEvent {
+    constructor(
+      public readonly {{domains[0]}}Id: string,
+      public readonly occurredAt: Date = new Date()
+    ) {}
+  }
+  ```
+
+### 2. Application Layer (`libs/{domain}/application/`)
+
+**Purpose**: Orchestrates business operations and defines interfaces for external dependencies.
+
+**Components**:
+- **Use Cases**: Application-specific business flows
+  ```typescript
+  export class Create{{domains[0]|title}}UseCase {
+    constructor(
+      private readonly {{domains[0]}}Repository: {{domains[0]|title}}Repository,
+      private readonly eventBus: EventBus
+    ) {}
+
+    async execute(command: Create{{domains[0]|title}}Command): Promise<{{domains[0]|title}}Entity> {
+      const {{domains[0]}} = new {{domains[0]|title}}Entity(/* ... */);
+
+      await this.{{domains[0]}}Repository.save({{domains[0]}});
+      await this.eventBus.publish(new {{domains[0]|title}}CreatedEvent({{domains[0]}}.getId()));
+
+      return {{domains[0]}};
+    }
+  }
+  ```
+
+- **Ports (Interfaces)**: Define contracts for external dependencies
+  ```typescript
+  export interface {{domains[0]|title}}Repository {
+    save({{domains[0]}}: {{domains[0]|title}}Entity): Promise<void>;
+    findById(id: {{domains[0]|title}}Id): Promise<{{domains[0]|title}}Entity | null>;
+    findAll(): Promise<{{domains[0]|title}}Entity[]>;
+  }
+  ```
+
+- **Application Services**: Coordinate multiple use cases
+  ```typescript
+  export class {{domains[0]|title}}ApplicationService {
+    constructor(
+      private readonly create{{domains[0]|title}}: Create{{domains[0]|title}}UseCase,
+      private readonly find{{domains[0]|title}}: Find{{domains[0]|title}}UseCase
+    ) {}
+
+    async handle{{domains[0]|title}}Workflow(input: WorkflowInput): Promise<WorkflowResult> {
+      // Coordinate multiple use cases
+    }
+  }
+  ```
+
+### 3. Infrastructure Layer (`libs/{domain}/infrastructure/`)
+
+**Purpose**: Implements ports using external technologies.
+
+**Components**:
+- **Repository Implementations**: Data persistence
+  ```typescript
+  export class Postgres{{domains[0]|title}}Repository implements {{domains[0]|title}}Repository {
+    constructor(private readonly db: Database) {}
+
+    async save({{domains[0]}}: {{domains[0]|title}}Entity): Promise<void> {
+      // PostgreSQL-specific implementation
+      await this.db.query(
+        'INSERT INTO {{domains[0]}}s (id, name) VALUES ($1, $2)',
+        [{{domains[0]}}.getId(), {{domains[0]}}.getName()]
+      );
+    }
+  }
+  ```
+
+- **External Service Adapters**: Third-party integrations
+  ```typescript
+  export class EmailNotificationAdapter implements NotificationPort {
+    async send(notification: Notification): Promise<void> {
+      // Email service integration
+    }
+  }
+  ```
+
+### 4. Interface Layer (`apps/{app-name}/`)
+
+**Purpose**: Handles user and system interfaces.
+
+**Components**:
+- **Controllers**: HTTP API endpoints
+  ```typescript
+  @Controller('/{{domains[0]}}s')
+  export class {{domains[0]|title}}Controller {
+    constructor(
+      private readonly {{domains[0]}}Service: {{domains[0]|title}}ApplicationService
+    ) {}
+
+    @Post()
+    async create(@Body() dto: Create{{domains[0]|title}}Dto) {
+      return await this.{{domains[0]}}Service.create(dto);
+    }
+  }
+  ```
+
+- **Views**: User interface components
+- **Event Handlers**: External event processing
+
+## Design Patterns
+
+### Repository Pattern
+Abstracts data access behind interfaces, allowing the domain layer to remain unaware of persistence details.
+
+### Command Query Responsibility Segregation (CQRS)
+Separates read and write operations for optimal performance and clarity.
+
+### Event-Driven Architecture
+Uses domain events to maintain loose coupling between bounded contexts.
+
+### Dependency Injection
+Manages dependencies and enables easy testing with mock implementations.
+
+## Testing Strategy
+
+### Test Pyramid
+
+```
+        E2E Tests
+    ┌─────────────────┐
+   │  API/UI Tests    │  ← Few, slow, expensive
+  ├───────────────────┤
+ │ Integration Tests  │  ← Some, moderate cost
+├─────────────────────┤
+│   Unit Tests       │  ← Many, fast, cheap
+└─────────────────────┘
+```
+
+### Unit Tests (80% of tests)
+- **Domain Entities**: Test business logic in isolation
+- **Value Objects**: Test validation and equality
+- **Domain Services**: Test complex business operations
+- **Use Cases**: Test with mocked dependencies
+
+Example:
+```typescript
+describe('{{domains[0]|title}}Entity', () => {
+  it('should update name when valid', () => {
+    const {{domains[0]}} = new {{domains[0]|title}}Entity(/*...*/);
+
+    {{domains[0]}}.updateName('New Name');
+
+    expect({{domains[0]}}.getName()).toBe('New Name');
+  });
+});
+```
+
+### Integration Tests (15% of tests)
+- **Repository Implementations**: Test with real databases
+- **External Service Adapters**: Test with external services
+- **Use Case Integration**: Test complete flows
+
+### End-to-End Tests (5% of tests)
+- **API Endpoints**: Test HTTP interfaces
+- **User Workflows**: Test complete user journeys
+- **Cross-Domain Operations**: Test domain interactions
+
+## Architecture Validation
+
+### Dependency Rules
+1. **Domain layer** must have no external dependencies
+2. **Application layer** can only depend on domain layer
+3. **Infrastructure layer** can depend on application and domain layers
+4. **Interface layer** can depend on application layer only
+
+### Architecture Tests
+```typescript
+describe('Architecture Rules', () => {
+  it('domain layer should not depend on infrastructure', () => {
+    const result = noDepend()
+      .onLayer('Infrastructure')
+      .fromLayer('Domain');
+
+    expect(result).toHaveNoViolations();
+  });
+});
+```
+
+## Performance Considerations
+
+### Aggregate Size
+Keep aggregates small and focused to avoid performance issues and complex transactions.
+
+### Event Processing
+Use asynchronous event processing to maintain responsiveness and loose coupling.
+
+### Query Optimization
+Implement read models for complex queries to avoid impacting the write model.
+
+## Migration Patterns
+
+### Strangler Fig Pattern
+Gradually replace legacy systems by intercepting calls and routing to new implementation.
+
+### Anti-Corruption Layer
+Create adapters that translate between legacy systems and clean domain models.
+
+### Event Sourcing Migration
+Capture state changes as events to enable gradual migration and audit trails.
+
+## Security Considerations
+
+### Input Validation
+All input validation happens at the interface layer before reaching the domain.
+
+### Authorization
+Business rules enforce authorization at the domain level, not just at the interface.
+
+### Data Protection
+Sensitive data is protected using value objects with encryption/decryption capabilities.
+
+---
+
+This architecture provides a solid foundation for {{project_name}} that can evolve with changing requirements while maintaining clean separation of concerns and high testability.

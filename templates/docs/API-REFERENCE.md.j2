@@ -1,0 +1,521 @@
+# {{project_name}} API Reference
+
+Complete API documentation for all domains and endpoints.
+
+## Base Configuration
+
+### Base URL
+```
+{% if environment == 'production' %}
+https://api.{{project_slug}}.com/v1
+{% elif environment == 'staging' %}
+https://staging-api.{{project_slug}}.com/v1
+{% else %}
+http://localhost:3000/api/v1
+{% endif %}
+```
+
+### Authentication
+
+All API endpoints require authentication via Bearer token:
+
+```http
+Authorization: Bearer <your-jwt-token>
+```
+
+### Content Type
+```http
+Content-Type: application/json
+Accept: application/json
+```
+
+### Rate Limiting
+- **Rate Limit**: 1000 requests per hour per API key
+- **Burst Limit**: 10 requests per second
+- **Headers**: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
+
+## Common Response Format
+
+### Success Response
+```json
+{
+  "data": {
+    // Response data here
+  },
+  "meta": {
+    "timestamp": "2023-01-01T00:00:00Z",
+    "requestId": "uuid"
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human readable error message",
+    "details": {
+      "field": "validation error details"
+    }
+  },
+  "meta": {
+    "timestamp": "2023-01-01T00:00:00Z",
+    "requestId": "uuid"
+  }
+}
+```
+
+### HTTP Status Codes
+| Code | Meaning |
+|------|---------|
+| 200  | OK - Request successful |
+| 201  | Created - Resource created successfully |
+| 204  | No Content - Request successful, no content returned |
+| 400  | Bad Request - Invalid request data |
+| 401  | Unauthorized - Authentication required |
+| 403  | Forbidden - Access denied |
+| 404  | Not Found - Resource not found |
+| 409  | Conflict - Resource conflict |
+| 422  | Unprocessable Entity - Validation failed |
+| 429  | Too Many Requests - Rate limit exceeded |
+| 500  | Internal Server Error - Server error |
+
+{% for domain in domains %}
+## {{domain|title}} Domain API
+
+### Overview
+The {{domain|title}} domain handles all {{domain}}-related operations including CRUD operations, business workflows, and domain-specific queries.
+
+### Base Endpoint
+```
+/api/v1/{{domain}}s
+```
+
+### Data Model
+
+#### {{domain|title}} Entity
+```typescript
+interface {{domain|title}} {
+  id: string;              // Unique identifier
+  name: string;           // Display name
+  description?: string;   // Optional description
+  status: '{{domain}}_status_active' | '{{domain}}_status_inactive';
+  createdAt: string;      // ISO 8601 timestamp
+  updatedAt: string;      // ISO 8601 timestamp
+  version: number;        // Optimistic locking version
+}
+```
+
+#### {{domain|title}} Create Request
+```typescript
+interface Create{{domain|title}}Request {
+  name: string;           // Required, 1-100 characters
+  description?: string;   // Optional, max 500 characters
+  status?: '{{domain}}_status_active' | '{{domain}}_status_inactive'; // Default: active
+}
+```
+
+#### {{domain|title}} Update Request
+```typescript
+interface Update{{domain|title}}Request {
+  name?: string;          // Optional, 1-100 characters
+  description?: string;   // Optional, max 500 characters
+  status?: '{{domain}}_status_active' | '{{domain}}_status_inactive';
+  version: number;        // Required for optimistic locking
+}
+```
+
+### Endpoints
+
+#### List {{domain|title}}s
+```http
+GET /api/v1/{{domain}}s
+```
+
+**Query Parameters**:
+- `page` (number, optional): Page number (default: 1)
+- `limit` (number, optional): Items per page (default: 20, max: 100)
+- `sort` (string, optional): Sort field (default: 'createdAt')
+- `order` (string, optional): Sort order ('asc' | 'desc', default: 'desc')
+- `status` (string, optional): Filter by status
+- `search` (string, optional): Search in name and description
+
+**Example Request**:
+```bash
+curl -H "Authorization: Bearer <token>" \
+  "{{base_url}}/api/v1/{{domain}}s?page=1&limit=10&status={{domain}}_status_active"
+```
+
+**Example Response**:
+```json
+{
+  "data": [
+    {
+      "id": "{{domain}}_123",
+      "name": "Sample {{domain|title}}",
+      "description": "A sample {{domain}} entity",
+      "status": "{{domain}}_status_active",
+      "createdAt": "2023-01-01T00:00:00Z",
+      "updatedAt": "2023-01-01T00:00:00Z",
+      "version": 1
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1
+    },
+    "timestamp": "2023-01-01T00:00:00Z",
+    "requestId": "req_123"
+  }
+}
+```
+
+#### Create {{domain|title}}
+```http
+POST /api/v1/{{domain}}s
+```
+
+**Request Body**:
+```json
+{
+  "name": "New {{domain|title}}",
+  "description": "Description of the new {{domain}}",
+  "status": "{{domain}}_status_active"
+}
+```
+
+**Example Response** (201 Created):
+```json
+{
+  "data": {
+    "id": "{{domain}}_456",
+    "name": "New {{domain|title}}",
+    "description": "Description of the new {{domain}}",
+    "status": "{{domain}}_status_active",
+    "createdAt": "2023-01-01T00:00:00Z",
+    "updatedAt": "2023-01-01T00:00:00Z",
+    "version": 1
+  },
+  "meta": {
+    "timestamp": "2023-01-01T00:00:00Z",
+    "requestId": "req_124"
+  }
+}
+```
+
+#### Get {{domain|title}} by ID
+```http
+GET /api/v1/{{domain}}s/{id}
+```
+
+**Path Parameters**:
+- `id` (string, required): {{domain|title}} ID
+
+**Example Response** (200 OK):
+```json
+{
+  "data": {
+    "id": "{{domain}}_123",
+    "name": "Sample {{domain|title}}",
+    "description": "A sample {{domain}} entity",
+    "status": "{{domain}}_status_active",
+    "createdAt": "2023-01-01T00:00:00Z",
+    "updatedAt": "2023-01-01T00:00:00Z",
+    "version": 1
+  },
+  "meta": {
+    "timestamp": "2023-01-01T00:00:00Z",
+    "requestId": "req_125"
+  }
+}
+```
+
+#### Update {{domain|title}}
+```http
+PUT /api/v1/{{domain}}s/{id}
+```
+
+**Path Parameters**:
+- `id` (string, required): {{domain|title}} ID
+
+**Request Body**:
+```json
+{
+  "name": "Updated {{domain|title}}",
+  "description": "Updated description",
+  "status": "{{domain}}_status_inactive",
+  "version": 1
+}
+```
+
+**Example Response** (200 OK):
+```json
+{
+  "data": {
+    "id": "{{domain}}_123",
+    "name": "Updated {{domain|title}}",
+    "description": "Updated description",
+    "status": "{{domain}}_status_inactive",
+    "createdAt": "2023-01-01T00:00:00Z",
+    "updatedAt": "2023-01-01T01:00:00Z",
+    "version": 2
+  },
+  "meta": {
+    "timestamp": "2023-01-01T01:00:00Z",
+    "requestId": "req_126"
+  }
+}
+```
+
+#### Delete {{domain|title}}
+```http
+DELETE /api/v1/{{domain}}s/{id}
+```
+
+**Path Parameters**:
+- `id` (string, required): {{domain|title}} ID
+
+**Example Response** (204 No Content)
+
+### {{domain|title}} Domain Events
+
+The {{domain|title}} domain publishes the following events:
+
+#### {{domain|title}}Created
+```json
+{
+  "eventType": "{{domain}}.created",
+  "eventId": "evt_123",
+  "timestamp": "2023-01-01T00:00:00Z",
+  "data": {
+    "{{domain}}Id": "{{domain}}_123",
+    "name": "Sample {{domain|title}}"
+  }
+}
+```
+
+#### {{domain|title}}Updated
+```json
+{
+  "eventType": "{{domain}}.updated",
+  "eventId": "evt_124",
+  "timestamp": "2023-01-01T01:00:00Z",
+  "data": {
+    "{{domain}}Id": "{{domain}}_123",
+    "changes": ["name", "status"],
+    "previousVersion": 1,
+    "currentVersion": 2
+  }
+}
+```
+
+#### {{domain|title}}Deleted
+```json
+{
+  "eventType": "{{domain}}.deleted",
+  "eventId": "evt_125",
+  "timestamp": "2023-01-01T02:00:00Z",
+  "data": {
+    "{{domain}}Id": "{{domain}}_123"
+  }
+}
+```
+
+{% endfor %}
+
+## Health Check & Monitoring
+
+### Health Check
+```http
+GET /api/health
+```
+
+**Response** (200 OK):
+```json
+{
+  "status": "healthy",
+  "version": "1.0.0",
+  "timestamp": "2023-01-01T00:00:00Z",
+  "dependencies": {
+    "database": "healthy",
+    "redis": "healthy",
+    "external_service": "healthy"
+  }
+}
+```
+
+### Metrics
+```http
+GET /api/metrics
+```
+
+**Response** (200 OK):
+```json
+{
+  "requests_total": 12345,
+  "requests_per_second": 25.5,
+  "response_time_avg": 150,
+  "error_rate": 0.01
+}
+```
+
+## WebSocket Events
+
+### Connection
+```javascript
+const ws = new WebSocket('{{ws_url|default("ws://localhost:3001")}}');
+
+// Authenticate
+ws.send(JSON.stringify({
+  type: 'auth',
+  token: 'your-jwt-token'
+}));
+```
+
+### Subscribing to Domain Events
+```javascript
+// Subscribe to all events for a domain
+ws.send(JSON.stringify({
+  type: 'subscribe',
+  channel: '{{domains[0]}}.events'
+}));
+
+// Subscribe to specific entity events
+ws.send(JSON.stringify({
+  type: 'subscribe',
+  channel: '{{domains[0]}}.{{domains[0]}}_123.events'
+}));
+```
+
+## SDK Examples
+
+### JavaScript/TypeScript
+```typescript
+import { {{project_name|title}}ApiClient } from '@{{project_slug}}/api-client';
+
+const client = new {{project_name|title}}ApiClient({
+  baseUrl: '{{base_url}}',
+  apiKey: 'your-api-key'
+});
+
+// Create {{domains[0]}}
+const {{domains[0]}} = await client.{{domains[0]}}s.create({
+  name: 'New {{domains[0]|title}}',
+  description: 'Created via SDK'
+});
+
+// List {{domains[0]}}s
+const {{domains[0]}}s = await client.{{domains[0]}}s.list({
+  page: 1,
+  limit: 10
+});
+```
+
+### Python
+```python
+from {{project_slug}}_client import {{project_name|title}}Client
+
+client = {{project_name|title}}Client(
+    base_url='{{base_url}}',
+    api_key='your-api-key'
+)
+
+# Create {{domains[0]}}
+{{domains[0]}} = client.{{domains[0]}}s.create({
+    'name': 'New {{domains[0]|title}}',
+    'description': 'Created via Python SDK'
+})
+
+# List {{domains[0]}}s
+{{domains[0]}}s = client.{{domains[0]}}s.list(page=1, limit=10)
+```
+
+### cURL Examples
+
+#### Authentication
+```bash
+# Get access token
+curl -X POST {{base_url}}/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "password": "password"}'
+
+# Use token in subsequent requests
+export API_TOKEN="your-jwt-token"
+```
+
+#### CRUD Operations
+```bash
+# Create
+curl -X POST {{base_url}}/api/v1/{{domains[0]}}s \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Test {{domains[0]|title}}", "status": "{{domains[0]}}_status_active"}'
+
+# Read
+curl -H "Authorization: Bearer $API_TOKEN" \
+  {{base_url}}/api/v1/{{domains[0]}}s/{{domains[0]}}_123
+
+# Update
+curl -X PUT {{base_url}}/api/v1/{{domains[0]}}s/{{domains[0]}}_123 \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Updated {{domains[0]|title}}", "version": 1}'
+
+# Delete
+curl -X DELETE {{base_url}}/api/v1/{{domains[0]}}s/{{domains[0]}}_123 \
+  -H "Authorization: Bearer $API_TOKEN"
+```
+
+## Error Handling
+
+### Common Error Codes
+
+| Code | Description | Resolution |
+|------|-------------|------------|
+| `VALIDATION_ERROR` | Request data validation failed | Check request format and field constraints |
+| `RESOURCE_NOT_FOUND` | Requested resource doesn't exist | Verify resource ID and permissions |
+| `UNAUTHORIZED` | Authentication required or invalid | Provide valid authentication token |
+| `FORBIDDEN` | Access denied for this resource | Check user permissions |
+| `RESOURCE_CONFLICT` | Resource already exists or version mismatch | Handle optimistic locking conflicts |
+| `RATE_LIMIT_EXCEEDED` | Too many requests | Implement exponential backoff |
+| `INTERNAL_ERROR` | Server-side error | Retry request or contact support |
+
+### Validation Errors
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Request validation failed",
+    "details": {
+      "name": "Name is required and must be 1-100 characters",
+      "email": "Must be a valid email address"
+    }
+  }
+}
+```
+
+### Retry Logic
+```typescript
+async function apiCallWithRetry(apiCall: () => Promise<any>, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await apiCall();
+    } catch (error) {
+      if (attempt === maxRetries || !isRetryableError(error)) {
+        throw error;
+      }
+
+      const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+```
+
+---
+
+For additional support or questions about the API, please refer to the [Architecture Guide](ARCHITECTURE.md) or contact the development team.

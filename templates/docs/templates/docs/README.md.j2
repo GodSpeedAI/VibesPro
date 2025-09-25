@@ -1,0 +1,19 @@
+# {{project_name}}
+
+{{project_description}}
+
+## Getting Started
+
+This project follows **Hexagonal Architecture** principles.
+
+{% for domain in domains %}
+- **{{domain}}**: Core business domain
+{% endfor %}
+
+{% if include_ai %}
+### AI-Enhanced Features
+This project includes AI-enhanced development workflows.
+{% endif %}
+
+## License
+{{license|default('MIT License')}}

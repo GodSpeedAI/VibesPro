@@ -1,0 +1,202 @@
+# {{project_name}}
+
+{{project_description|default("A modern application built with hexagonal architecture and domain-driven design.")}}
+
+{% if architecture_style == "hexagonal" %}
+## Architecture
+
+This project implements **Hexagonal Architecture** (Ports and Adapters) with **Domain-Driven Design**:
+
+### Core Principles
+- **Separation of Concerns**: Clear boundaries between business logic and external concerns
+- **Dependency Inversion**: Business logic doesn't depend on external frameworks
+- **Testability**: Pure business logic can be tested in isolation
+- **Flexibility**: Easy to swap external dependencies
+
+### Layer Structure
+```
+{{project_slug}}/
+├── apps/                     # Interface Layer - User/system interfaces
+│   └── {{app_name}}/        # Specific applications (web, mobile, CLI)
+├── libs/                     # Business Logic Layers
+│   {% for domain in domains -%}
+├── {{domain}}/              # {{domain|title}} Domain Bounded Context
+│   │   ├── domain/          # Domain Layer - Pure business logic
+│   │   ├── application/     # Application Layer - Use cases
+│   │   └── infrastructure/  # Infrastructure Layer - External adapters
+│   {% endfor -%}
+└── libs/shared/             # Shared utilities and types
+```
+{% endif %}
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+ with pnpm
+- Python 3.12+ with uv{% if include_database %}
+- PostgreSQL 14+{% endif %}{% if include_ai_workflows %}
+- Rust (for temporal database){% endif %}
+
+### Installation
+
+```bash
+# Clone the repository
+git clone {{repository_url|default('<repository-url>')}}
+cd {{project_slug}}
+
+# Install dependencies
+just setup
+
+# {% if include_database %}Setup database
+just db-setup
+
+# {% endif %}Start development server
+just dev
+```
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `just setup` | Install all dependencies |
+| `just dev` | Start development server |
+| `just build` | Build for production |
+| `just test` | Run all tests |
+| `just test-unit` | Run unit tests only |
+| `just test-integration` | Run integration tests |
+| `just lint` | Run code linting |
+| `just format` | Format code |
+| `just types-generate` | Generate types from schema |{% if include_database %}
+| `just db-migrate` | Run database migrations |
+| `just db-reset` | Reset database |{% endif %}{% if include_ai_workflows %}
+| `just ai-init` | Initialize AI learning system |
+| `just ai-analyze` | Analyze project patterns |{% endif %}
+
+## Development
+
+### Domain Structure
+
+{% for domain in domains %}
+#### {{domain|title}} Domain
+
+**Location**: `libs/{{domain}}/`
+
+- **Domain Layer** (`domain/`): Core business entities, value objects, and domain services
+- **Application Layer** (`application/`): Use cases, application services, and port definitions
+- **Infrastructure Layer** (`infrastructure/`): Repository implementations, external service adapters
+
+**Key Concepts**:
+- Entities: Business objects with identity
+- Value Objects: Immutable data structures
+- Domain Events: Significant business occurrences
+- Use Cases: Application-specific business flows
+- Ports: Interfaces for external dependencies
+- Adapters: Implementations of port interfaces
+
+{% endfor %}
+
+### Testing Strategy
+
+- **Unit Tests**: Test domain logic in isolation
+- **Integration Tests**: Test use cases with real adapters
+- **End-to-End Tests**: Test complete user workflows
+- **Architecture Tests**: Verify layer dependency rules
+
+{% if include_ai_workflows %}
+### AI-Enhanced Development
+
+This project includes AI-enhanced workflows for improved development experience:
+
+#### Temporal Learning System
+- **Purpose**: Records architectural decisions and learns from development patterns
+- **Database**: Uses tsink time-series database for pattern storage
+- **Benefits**: Context-aware suggestions, pattern recognition, decision history
+
+#### Context Management
+- **Token Budget**: Intelligent context selection within token limits
+- **Relevance Scoring**: Prioritizes most relevant context for AI interactions
+- **Pattern Recognition**: Suggests architectural improvements based on learned patterns
+
+#### Usage
+```bash
+# Initialize AI learning system
+just ai-init
+
+# Analyze current project patterns
+just ai-analyze
+
+# Get AI suggestions for architecture decisions
+just ai-suggest "implement user authentication"
+```
+{% endif %}
+
+## Technology Stack
+
+### Core Technologies
+- **Node.js**: Runtime environment with pnpm package management
+- **TypeScript**: Type-safe JavaScript development
+- **Python**: Backend services with uv dependency management{% if include_database %}
+- **PostgreSQL**: Primary database with type-safe queries{% endif %}
+
+### Framework Stack
+{% for framework in frameworks %}
+- **{{framework}}**: {% if framework == "next" %}React framework for web applications{% elif framework == "fastapi" %}Modern Python API framework{% elif framework == "remix" %}Full-stack React framework{% elif framework == "expo" %}React Native for mobile development{% endif %}
+{% endfor %}
+
+### Development Tools
+- **Nx**: Monorepo management and build orchestration
+- **Jest**: Testing framework for TypeScript/JavaScript
+- **pytest**: Testing framework for Python
+- **justfile**: Task automation and build management{% if include_ai_workflows %}
+- **tsink**: Temporal database for AI learning system{% endif %}
+
+## Deployment
+
+### Production Build
+```bash
+# Build all applications
+just build
+
+# Build specific app
+just build-app {{app_name|default('web')}}
+```
+
+### Environment Variables
+```bash
+{% if include_database %}
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/{{project_slug}}
+{% endif %}
+{% if include_ai_workflows %}
+# AI Features
+AI_CONTEXT_MAX_TOKENS=8000
+TEMPORAL_DB_PATH=./temporal_db/
+{% endif %}
+# Application
+NODE_ENV=production
+PORT=3000
+```
+
+### Docker Deployment
+```bash
+# Build Docker image
+docker build -t {{project_slug}} .
+
+# Run container
+docker run -p 3000:3000 {{project_slug}}
+```
+
+## Architecture Documentation
+
+- **[Architecture Guide](docs/ARCHITECTURE.md)**: Detailed architectural patterns and design decisions
+- **[API Reference](docs/API-REFERENCE.md)**: Complete API documentation
+- **[Migration Guide](docs/MIGRATION-GUIDE.md)**: Migration from other architectures
+- **[Contributing Guide](CONTRIBUTING.md)**: Development guidelines and standards
+
+## License
+
+{{license|default("MIT License")}}
+
+---
+
+Built with ❤️ using Hexagonal Architecture and Domain-Driven Design principles.
