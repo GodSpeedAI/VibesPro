@@ -43,10 +43,10 @@ jobs:
       with:
         python-version: "3.11"
 
-      - name: Install pnpm
-      uses: pnpm/action-setup@3333333333333333333333333333333333333333
-      with:
-        version: 8
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
       run: pnpm install
@@ -84,10 +84,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@d4e5f60123456789abcdef0123456789abcdef12
-        with:
-          version: 8
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: pnpm install
@@ -115,10 +115,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@3333333333333333333333333333333333333333
-        with:
-          version: 8
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: |
@@ -153,10 +153,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@3333333333333333333333333333333333333333
-        with:
-          version: 8
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: |
@@ -193,10 +193,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@3333333333333333333333333333333333333333
-        with:
-          version: 8
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: |
