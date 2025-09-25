@@ -6,12 +6,8 @@ describe('Generation Performance', () => {
     const monitor = new PerformanceMonitor();
 
     await monitor.measureGenerationTime(async () => {
-      // Placeholder for actual generation logic
+      // Placeholder for actual generation logic (two phases)
       await new Promise(resolve => setTimeout(resolve, 1000));
-    });
-
-    await monitor.measureGenerationTime(async () => {
-      // Placeholder for actual generation logic
       await new Promise(resolve => setTimeout(resolve, 1000));
     });
 
