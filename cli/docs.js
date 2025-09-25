@@ -211,14 +211,13 @@ async function generateTemplates(options) {
     const packageJson = await loadPackageJson();
 
     const context = {
-        projectName: options.projectName || config.projectName || packageJson.name || 'my-project',
-        description: options.description || config.description || packageJson.description || 'A project built with hexagonal architecture',
-        domains: options.domains || config.domains || ['core'],
-        frameworks: options.frameworks || config.frameworks || ['next'],
-        includeAI: options.includeAI || config.includeAI || false,
+        projectName: options.projectName ?? config.projectName ?? packageJson.name ?? 'my-project',
+        description: options.description ?? config.description ?? packageJson.description ?? 'A project built with hexagonal architecture',
+        domains: options.domains ?? config.domains ?? ['core'],
+        frameworks: options.frameworks ?? config.frameworks ?? ['next'],
+        includeAI: options.includeAI ?? config.includeAI ?? false,
         architecture: 'hexagonal'
     };
-
     const outputDir = options.outputDir || './templates/docs';
 
     const generator = new DocumentationGenerator(outputDir);
