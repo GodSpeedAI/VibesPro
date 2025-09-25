@@ -207,17 +207,17 @@ jobs:
     steps:
       - name: Check test results
         run: |
-          echo "Project Generation: ${{ needs.project-generation.result }}"
-          echo "End-to-End: ${{ needs.end-to-end.result }}"
-          echo "Migration Validation: ${{ needs.migration-validation.result }}"
-          echo "Performance Benchmarks: ${{ needs.performance-benchmarks.result }}"
-          echo "AI Workflows: ${{ needs.ai-workflows.result }}"
+          echo "Project Generation: ${{ needs['project-generation'].result }}"
+          echo "End-to-End: ${{ needs['end-to-end'].result }}"
+          echo "Migration Validation: ${{ needs['migration-validation'].result }}"
+          echo "Performance Benchmarks: ${{ needs['performance-benchmarks'].result }}"
+          echo "AI Workflows: ${{ needs['ai-workflows'].result }}"
 
-          if [[ "${{ needs.project-generation.result }}" == "success" &&
-                "${{ needs.end-to-end.result }}" == "success" &&
-                "${{ needs.migration-validation.result }}" == "success" &&
-                "${{ needs.performance-benchmarks.result }}" == "success" &&
-                "${{ needs.ai-workflows.result }}" == "success" ]]; then
+          if [[ "${{ needs['project-generation'].result }}" == "success" &&
+                "${{ needs['end-to-end'].result }}" == "success" &&
+                "${{ needs['migration-validation'].result }}" == "success" &&
+                "${{ needs['performance-benchmarks'].result }}" == "success" &&
+                "${{ needs['ai-workflows'].result }}" == "success" ]]; then
             echo "✅ All integration tests passed!"
             exit 0
           else
