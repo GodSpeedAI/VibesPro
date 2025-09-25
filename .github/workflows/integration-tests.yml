@@ -9,6 +9,8 @@
 # - Migration scenarios: HexDDD, VibePDK
 
 name: Integration Tests
+permissions:
+  contents: read
 
 on:
   push:
