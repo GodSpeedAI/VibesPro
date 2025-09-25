@@ -174,7 +174,7 @@ CI (blocking unless noted)
 
 ---
 
-## 9. Rollout and Migration
+## 9. Rollout Plan
 
 Step 1: Introduce indexes + hooks (no behavior change to runtime code).
 Step 2: Land CI workflow and make checks advisory for 1–2 PRs, then enforce.

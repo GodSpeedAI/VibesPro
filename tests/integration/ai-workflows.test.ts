@@ -27,9 +27,9 @@ describe('AI Workflows Integration', () => {
         const projectPath = join(testWorkspace, 'ai-project');
 
         // Generate project with AI workflows enabled
-        execSync(`copier copy . ${projectPath} --data project_name="AI Test Project" --data include_ai_workflows=true --defaults`, {
+        execSync(`copier copy . ${projectPath} --data-file tests/fixtures/test-data.yml --data project_name="AI Test Project" --data include_ai_workflows=true --defaults --force`, {
             cwd: process.cwd(),
-            stdio: 'pipe'
+            stdio: 'inherit'
         });
 
         // Verify temporal database directory exists
@@ -44,9 +44,9 @@ describe('AI Workflows Integration', () => {
     it('should have AI context management tools', async () => {
         const projectPath = join(testWorkspace, 'ai-context-project');
 
-        execSync(`copier copy . ${projectPath} --data project_name="AI Context Project" --data include_ai_workflows=true --defaults`, {
+        execSync(`copier copy . ${projectPath} --data-file tests/fixtures/test-data.yml --data project_name="AI Context Project" --data include_ai_workflows=true --defaults --force`, {
             cwd: process.cwd(),
-            stdio: 'pipe'
+            stdio: 'inherit'
         });
 
         // Verify AI context management files
@@ -60,9 +60,9 @@ describe('AI Workflows Integration', () => {
     it('should configure GitHub Actions for AI workflows', async () => {
         const projectPath = join(testWorkspace, 'ai-workflow-project');
 
-        execSync(`copier copy . ${projectPath} --data project_name="AI Workflow Project" --data include_ai_workflows=true --defaults`, {
+        execSync(`copier copy . ${projectPath} --data-file tests/fixtures/test-data.yml --data project_name="AI Workflow Project" --data include_ai_workflows=true --defaults --force`, {
             cwd: process.cwd(),
-            stdio: 'pipe'
+            stdio: 'inherit'
         });
 
         // Verify GitHub Actions workflow files
@@ -80,9 +80,9 @@ describe('AI Workflows Integration', () => {
     it('should skip AI components when disabled', async () => {
         const projectPath = join(testWorkspace, 'no-ai-project');
 
-        execSync(`copier copy . ${projectPath} --data project_name="No AI Project" --data include_ai_workflows=false --defaults`, {
+        execSync(`copier copy . ${projectPath} --data-file tests/fixtures/test-data.yml --data project_name="No AI Project" --data include_ai_workflows=false --defaults --force`, {
             cwd: process.cwd(),
-            stdio: 'pipe'
+            stdio: 'inherit'
         });
 
         // Verify AI components are not generated

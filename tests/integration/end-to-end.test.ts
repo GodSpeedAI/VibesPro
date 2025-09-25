@@ -9,7 +9,6 @@
  * - Build all targets
  * - Run all tests
  * - Verify AI workflows
- * - Test migration tools
  */
 
 import { execSync } from 'node:child_process';
@@ -64,10 +63,6 @@ describe('End-to-End Integration', () => {
         // 4. Verify AI workflows are configured
         const aiWorkflowPath = join(projectPath, '.github/workflows/ai-generate.yml');
         expect(await fs.access(aiWorkflowPath).then(() => true).catch(() => false)).toBe(true);
-
-        // 5. Test migration tools are available
-        const migrationToolPath = join(projectPath, 'tools/migration/hexddd-migrator.py');
-        expect(await fs.access(migrationToolPath).then(() => true).catch(() => false)).toBe(true);
 
     }, 300000); // 5 minute timeout for complete integration test
 });

@@ -529,15 +529,6 @@
       @echo "💾 Backing up temporal database..."
       python tools/temporal-db/backup.py
 
-  # Migration tools
-  migrate-hexddd PROJECT_PATH:
-      @echo "🔄 Migrating HexDDD project..."
-      python tools/migration/hexddd-migrator.py {{PROJECT_PATH}}
-
-  migrate-vibepdk TEMPLATE_PATH:
-      @echo "🔄 Migrating VibePDK template..."
-      python tools/migration/vibepdk-migrator.py {{TEMPLATE_PATH}}
-
   # Type generation
   types-generate:
       @echo "🏷️  Generating types..."
@@ -686,26 +677,7 @@
 
 - [x] **Copy VibePDK template structure**
 
-  ```bash
-  # Copy essential VibePDK files
-  cp -r /home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/* templates/{{project_slug}}/
-
-  # Copy hooks (will need adaptation)
-  cp -r /home/sprime01/projects/VibePDK/hooks/* hooks/
-
-  # Copy documentation patterns
-  cp -r /home/sprime01/projects/VibePDK/docs/* docs/
-  ```
-
-- [x] **Adapt Cookiecutter syntax to Copier**
-
-  ```bash
-  # Normalize Cookiecutter placeholders and add .j2 suffixes where needed
-  python3 tools/migration/convert_cookiecutter_to_copier.py
-
-  # Verify no Cookiecutter markers remain in template assets
-  rg "cookiecutter" templates/{{project_slug}}
-  ```
+  Curate the reusable template assets from VibePDK and place them under `templates/{{project_slug}}/`, preserving hook scripts and documentation that align with the Copier workflow. Exclude any legacy scaffolding that depends on the previous generator format.
 
 ### Step 9: Copy HexDDD Assets
 
@@ -737,82 +709,7 @@
 
 ## Phase 3: Initial Tool Setup
 
-### Step 10: Create Basic Tool Structure
-
-- [x] **Create migration tools skeleton**
-
-  ```bash
-  # HexDDD migrator
-  cat > tools/migration/hexddd-migrator.py << 'EOF'
-  #!/usr/bin/env python3
-  """HexDDD to Merged Project Migration Tool"""
-
-  import typer
-  from pathlib import Path
-
-  app = typer.Typer()
-
-  @app.command()
-  def migrate(
-      source_path: Path = typer.Argument(..., help="Path to HexDDD project"),
-      target_path: Path = typer.Option("./migrated", help="Target directory"),
-      dry_run: bool = typer.Option(False, help="Show what would be done"),
-  ):
-      """Migrate HexDDD project to merged format"""
-      typer.echo(f"Migrating {source_path} to {target_path}")
-      # Implementation in MERGE-TASK-008
-
-  if __name__ == "__main__":
-      app()
-  EOF
-
-  # VibePDK migrator
-  cat > tools/migration/vibepdk-migrator.py << 'EOF'
-  #!/usr/bin/env python3
-  """VibePDK to Merged Project Migration Tool"""
-
-  import typer
-  from pathlib import Path
-
-  app = typer.Typer()
-
-  @app.command()
-  def migrate(
-      template_path: Path = typer.Argument(..., help="Path to VibePDK template"),
-      target_path: Path = typer.Option("./migrated", help="Target directory"),
-      dry_run: bool = typer.Option(False, help="Show what would be done"),
-  ):
-      """Migrate VibePDK template to Copier format"""
-      typer.echo(f"Migrating {template_path} to {target_path}")
-      # Implementation in MERGE-TASK-009
-
-  if __name__ == "__main__":
-      app()
-  EOF
-
-  chmod +x tools/migration/*.py
-  ```
-
-- [x] **Create test fixtures**
-
-  ```bash
-  # Test data for template generation
-  cat > tests/fixtures/test-data.yml << 'EOF'
-  project_name: "Test Project"
-  project_slug: "test-project"
-  author_name: "Test Author"
-  author_email: "test@example.com"
-  architecture_style: "hexagonal"
-  include_ai_workflows: true
-  enable_temporal_learning: true
-  app_framework: "next"
-  backend_framework: "fastapi"
-  database_type: "postgresql"
-  include_supabase: true
-  EOF
-  ```
-
-### Step 11: Create Initial Hooks
+### Step 10: Create Initial Hooks
 
 - [x] **Create pre-generation hook**
 
@@ -934,7 +831,7 @@
 
 ## Phase 4: Initial Validation
 
-### Step 12: Test Basic Setup
+### Step 11: Test Basic Setup
 
 - [x] **Run basic validation**
 

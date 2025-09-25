@@ -44,22 +44,22 @@ jobs:
     - name: Generate AI context
       id: context
       run: |
-        python tools/ai/context-manager.py \
+        {% raw %}python tools/ai/context-manager.py \
           --task="${{ github.event.inputs.task_description }}" \
-          --use-temporal-context=${{ github.event.inputs.use_context }}
+          --use-temporal-context=${{ github.event.inputs.use_context }}{% endraw %}
 
     - name: Generate code suggestions
       run: |
-        python tools/ai/code-generator.py \
+        {% raw %}python tools/ai/code-generator.py \
           --context="${{ steps.context.outputs.context }}" \
-          --output="ai-suggestions.md"
+          --output="ai-suggestions.md"{% endraw %}
 
     - name: Create pull request with suggestions
       uses: peter-evans/create-pull-request@v5
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "AI: ${{ github.event.inputs.task_description }}"
-        title: "AI-Generated: ${{ github.event.inputs.task_description }}"
+        {% raw %}token: ${{ secrets.GITHUB_TOKEN }}{% endraw %}
+        {% raw %}commit-message: "AI: ${{ github.event.inputs.task_description }}"{% endraw %}
+        {% raw %}title: "AI-Generated: ${{ github.event.inputs.task_description }}"{% endraw %}
         body-path: ai-suggestions.md
-        branch: ai/{{ github.run_id }}
+        {% raw %}branch: ai/${{ github.run_id }}{% endraw %}
 {% endif %}

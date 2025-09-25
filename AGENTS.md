@@ -4,7 +4,7 @@ This document provides AI agents and autonomous coding systems with essential co
 
 ## Project Mission Statement
 
-**Objective**: Merge HexDDD (hexagonal architecture + DDD Nx monorepo) and VibePDK (AI-enhanced Cookiecutter template generator) into a unified generator-first platform that combines architectural rigor with AI-enhanced development experiences.
+**Objective**: Merge HexDDD (hexagonal architecture + DDD Nx monorepo) and VibePDK (AI-enhanced template accelerator) into a unified generator-first platform that combines architectural rigor with AI-enhanced development experiences.
 
 **Success Criteria**:
 
@@ -61,7 +61,7 @@ Interface Layer (User/System Interfaces)
 
 **Template System**:
 
-- **Generator**: Copier (modern alternative to Cookiecutter)
+- **Generator**: Copier (single source for project scaffolding)
 - **Templating**: Jinja2 with YAML configuration
 - **Validation**: Pre/post generation hooks for integrity
 

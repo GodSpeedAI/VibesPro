@@ -23,9 +23,8 @@ export class DocumentationGenerator {
     const readme = this.buildReadme(normalizedContext);
     const apiDocs = this.buildApiDocs(normalizedContext);
     const architectureGuide = this.buildArchitectureGuide(normalizedContext);
-    const migrationGuide = this.buildMigrationGuide(normalizedContext);
 
-    return { readme, apiDocs, architectureGuide, migrationGuide };
+    return { readme, apiDocs, architectureGuide };
   }
 
   ensureDirectory(directoryPath) {
@@ -78,12 +77,9 @@ export class DocumentationGenerator {
     const readmeTemplate = this.generateReadmeTemplate(context);
     const archTemplate = this.generateArchitectureTemplate(context);
     const apiTemplate = this.generateApiTemplate(context);
-    const migrationTemplate = this.generateMigrationTemplate(context);
-
     await fs.writeFile(path.join(templateDir, 'README.md.j2'), readmeTemplate);
     await fs.writeFile(path.join(templateDir, 'ARCHITECTURE.md.j2'), archTemplate);
     await fs.writeFile(path.join(templateDir, 'API-REFERENCE.md.j2'), apiTemplate);
-    await fs.writeFile(path.join(templateDir, 'MIGRATION-GUIDE.md.j2'), migrationTemplate);
   }
 
   validateDocumentation(docs) {
@@ -357,81 +353,6 @@ ${boundedContextsSection}## Layer Structure
 `;
   }
 
-  generateMigrationGuide(context) {
-    return this.buildMigrationGuide(this.normalizeContext(context));
-  }
-
-  buildMigrationGuide(context) {
-    const { projectName } = context;
-
-    return `# Migration Guide
-
-This guide helps you migrate existing projects to ${projectName}.
-
-## Migration Steps
-
-### Step 1: Analyze Your Current Project
-
-Before migrating, understand your current architecture:
-- Identify domain boundaries
-- Map existing entities and value objects
-- Catalog external dependencies
-
-### Step 2: Prepare Migration Environment
-
-\`\`\`bash
-# Install migration tools
-pip install -r tools/migration/requirements.txt
-\`\`\`
-
-### Step 3: Run Migration Analysis
-
-\`\`\`bash
-# Analyze existing project
-python tools/migration/hexddd-migrator.py analyze /path/to/current/project
-\`\`\`
-
-## From HexDDD Projects
-
-### Automated Migration
-
-\`\`\`bash
-# Migrate project
-python tools/migration/hexddd-migrator.py migrate /path/to/hexddd/project /path/to/new/project
-\`\`\`
-
-## From VibePDK Templates
-
-### Template Conversion
-
-\`\`\`bash
-# Convert template
-python tools/migration/vibepdk-migrator.py /path/to/cookiecutter/template
-
-# Validate conversion
-copier copy . /tmp/test-output
-\`\`\`
-
-## Migration Tools
-
-- \`hexddd-migrator.py\`: Migrate from HexDDD projects
-- \`vibepdk-migrator.py\`: Convert VibePDK templates
-- \`legacy-analyzer.py\`: Analyze legacy codebases
-
-## Validation
-
-After migration, validate your project:
-
-\`\`\`bash
-# Run tests
-just test
-
-# Validate architecture
-python tools/validation/architecture-checker.py
-\`\`\`
-`;
-  }
-
   generateReadmeTemplate(context) {
     return `# {{project_name}}
 
@@ -483,12 +404,4 @@ This document describes the architectural patterns for {{project_name}}.
 `;
   }
 
-  generateMigrationTemplate(context) {
-    return `# Migration Guide for {{project_name}}
-
-## Migration Tools
-- \`hexddd-migrator.py\`
-- \`vibepdk-migrator.py\`
-`;
-  }
 }

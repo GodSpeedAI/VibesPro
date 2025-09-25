@@ -81,7 +81,7 @@ just dev      # Start development servers
 
 ### 🎯 Generator-First Architecture
 
-- **Copier Templates**: Modern alternative to Cookiecutter with smart updates
+- **Copier Templates**: Unified template engine with smart updates
 - **Conditional Generation**: Framework-specific code (Next.js/Remix/Expo + FastAPI)
 - **Non-Destructive Updates**: Update existing projects without losing customizations
 - **Template Validation**: Pre/post generation hooks ensure code quality

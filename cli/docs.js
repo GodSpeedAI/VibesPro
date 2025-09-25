@@ -207,8 +207,7 @@ async function generateDocumentation(options) {
     const files = [
         { name: 'README.md', content: docs.readme },
         { name: 'ARCHITECTURE.md', content: docs.architectureGuide },
-        { name: 'API-REFERENCE.md', content: docs.apiDocs },
-        { name: 'MIGRATION-GUIDE.md', content: docs.migrationGuide }
+        { name: 'API-REFERENCE.md', content: docs.apiDocs }
     ];
 
     for (const file of files) {
@@ -259,7 +258,6 @@ async function generateTemplates(options) {
     console.log('   - README.md.j2');
     console.log('   - ARCHITECTURE.md.j2');
     console.log('   - API-REFERENCE.md.j2');
-    console.log('   - MIGRATION-GUIDE.md.j2');
 }
 
 async function validateDocumentation(options) {
@@ -273,7 +271,7 @@ async function validateDocumentation(options) {
     }
 
     // Read existing documentation files
-    const files = ['README.md', 'ARCHITECTURE.md', 'API-REFERENCE.md', 'MIGRATION-GUIDE.md'];
+    const files = ['README.md', 'ARCHITECTURE.md', 'API-REFERENCE.md'];
     const docs = {};
 
     for (const filename of files) {
@@ -286,7 +284,6 @@ async function validateDocumentation(options) {
             if (filename === 'README.md') docs.readme = content;
             else if (filename === 'ARCHITECTURE.md') docs.architectureGuide = content;
             else if (filename === 'API-REFERENCE.md') docs.apiDocs = content;
-            else if (filename === 'MIGRATION-GUIDE.md') docs.migrationGuide = content;
 
             console.log(`✅ Found ${filename}`);
         } else {

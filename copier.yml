@@ -11,12 +11,6 @@ _skip:
   - "__pycache__/"
   - ".git/"
   - ".github/workflows/"
-  # Skip legacy Cookiecutter artifacts and example cookiecutter templates
-  - "**/cookiecutter.json"
-  - "**/*cookiecutter*"
-  - "templates/**/sample-vibepdk-template/**"
-  - "tests/fixtures/sample-vibepdk-template/**"
-  - "**/{{cookiecutter*}}"
 _envops:
   block_start_string: "{%"
   block_end_string: "%}"

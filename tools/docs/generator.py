@@ -157,7 +157,6 @@ def main():
         (output_path / 'README.md').write_text(docs['readme'])
         (output_path / 'ARCHITECTURE.md').write_text(docs['architectureGuide'])
         (output_path / 'API-REFERENCE.md').write_text(docs['apiDocs'])
-        (output_path / 'MIGRATION-GUIDE.md').write_text(docs['migrationGuide'])
 
         print(f"✅ Documentation generated successfully in {output_path}")
 
@@ -235,7 +234,6 @@ main();
         print(f"  - README.md: Project overview and getting started")
         print(f"  - ARCHITECTURE.md: Detailed architecture guide")
         print(f"  - API-REFERENCE.md: Complete API documentation")
-        print(f"  - MIGRATION-GUIDE.md: Migration instructions")
 
     except Exception as e:
         print(f"❌ Error generating documentation: {e}")

@@ -65,7 +65,7 @@ def setup_python_environment():
 
 def create_database_directory():
     """Create the temporal database directory."""
-    db_path = Path("{{ database_path }}")
+    db_path = Path("{{ (database_path | default('temporal_db/prompt_optimizer', true)) }}")
 
     try:
         db_path.mkdir(parents=True, exist_ok=True)
@@ -78,7 +78,8 @@ def create_database_directory():
 
 def validate_generated_code():
     """Validate that the generated code is syntactically correct."""
-    package_path = Path("{{ package_path.replace('.', '/') }}")
+    package_expr = "{{ (package_path | default('tools.prompt_optimizer', true)) }}"
+    package_path = Path(package_expr.replace('.', '/'))
 
     if not package_path.exists():
         print(f"  ⚠️  Package directory {package_path} not found")

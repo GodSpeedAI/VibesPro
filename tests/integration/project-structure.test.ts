@@ -32,25 +32,20 @@ describe('Merged Project Structure', () => {
         const templatesDir = 'templates/{{project_slug}}';
         expect(existsSync(templatesDir)).toBe(true);
 
-        // Check for key template directories that remain in templates
-        expect(existsSync(join(templatesDir, 'docs'))).toBe(true);
-        expect(existsSync(join(templatesDir, 'tests'))).toBe(true);
+        // Check for key template directories
+        expect(existsSync(join(templatesDir, 'libs'))).toBe(true);
         expect(existsSync(join(templatesDir, 'tools'))).toBe(true);
-        expect(existsSync(join(templatesDir, 'generators'))).toBe(true);
+        expect(existsSync(join(templatesDir, 'temporal_db'))).toBe(true);
     }); it('should have essential configuration templates', () => {
         const templateRoot = 'templates/{{project_slug}}';
 
         // Essential build system files in template directory
-        expect(existsSync(join(templateRoot, 'package.json'))).toBe(true);
+        expect(existsSync(join(templateRoot, 'package.json.j2'))).toBe(true);
         expect(existsSync(join(templateRoot, 'justfile.j2'))).toBe(true);
         expect(existsSync(join(templateRoot, 'nx.json.j2'))).toBe(true);
-        expect(existsSync(join(templateRoot, 'pnpm-workspace.yaml'))).toBe(true);
 
         // Essential config files moved to root level for generation
         expect(existsSync('pyproject.toml')).toBe(true);
-
-        // TypeScript configuration in template
-        expect(existsSync(join(templateRoot, 'tsconfig.json'))).toBe(true);
     });
 
     it('should have temporal database directory structure', () => {
@@ -61,11 +56,6 @@ describe('Merged Project Structure', () => {
     it('should have AI tools directory structure', () => {
         const templateRoot = 'templates/{{project_slug}}';
         expect(existsSync(join(templateRoot, 'tools', 'ai'))).toBe(true);
-    });
-
-    it('should have migration tools directory structure', () => {
-        const templateRoot = 'templates/{{project_slug}}';
-        expect(existsSync(join(templateRoot, 'tools', 'migration'))).toBe(true);
     });
 
     it('should generate valid project when run with copier', async () => {

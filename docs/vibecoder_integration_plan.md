@@ -6,7 +6,7 @@ This report analyzes the vibecoder project and the VibePDK project template, the
 
 - Exclude RooCode and Aider entirely (no runtime or docs coupling).
 - Use only VS Code Copilot native features: custom instructions, chat modes, prompt files, tools, MCP.
-- Reuse the template’s existing capabilities: Nx generators/cookiecutter, Justfile automation, CALM, spec‑driven workflows, docs/prompt system.
+- Reuse the template’s existing capabilities: Nx generators, Copier templates, Justfile automation, CALM, spec‑driven workflows, docs/prompt system.
 - Preserve current behavior; integration must be additive, namespaced, and reversible.
 - Avoid duplication and ensure single‑source‑of‑truth for prompts/specs.
 
@@ -33,7 +33,7 @@ Observations
 ### 2.2 VibePDK template ({{ project_slug }})
 - Copilot assets: `.github/copilot-instructions.md`, rich `.github/chatmodes/` and `.github/prompts/`, and `.vscode/mcp.json` (sample server config).
 - Architecture and tech: `architecture/calm/` and `techstack.yaml` (plus tools under `tools/calm` and `tools/prompt`).
-- Code gen: Nx configured (`nx.json`, `package.json`) and cookiecutter at the parent template level.
+- Code gen: Nx configured (`nx.json`, `package.json`) with Copier as the template engine.
 - Automation: `justfile` (techstack planning/sync). VS Code `tasks.json` exists.
 - Docs/specs: extensive `docs/**` including spec indexes and dev plans.
 
@@ -131,7 +131,7 @@ Rollback: Reverting these additive files restores pre‑integration behavior wit
 ## 9) Acceptance criteria (traceable to objectives)
 - ~~No RooCode/Aider references in code, tasks, or docs (Done by design).~~ (Scanned code/tasks: none; mentions remain only in this plan text.)
 - ~~Only Copilot primitives used: prompts, chat modes, `.vscode/mcp.json` (Planned in sections 4.1, 4.4).~~ (Confirmed by implementation.)
-- ~~Reuse Nx/cookiecutter/Justfile/CALM/spec‑driven flows (Sections 4.2–4.5).~~ (Confirmed.)
+- ~~Reuse Nx/Copier/Justfile/CALM/spec‑driven flows (Sections 4.2–4.5).~~ (Confirmed.)
 - ~~Additive, namespaced integration; no replacement or breaking changes (Sections 3, 6).~~ (Only additive files/recipes.)
 - ~~Clear operator guidance: chat modes, Just tasks, and context bundling documented here (Sections 4, 6).~~ (Docs updated.)
 
