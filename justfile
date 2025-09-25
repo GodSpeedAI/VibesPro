@@ -8,45 +8,8 @@ default:
 setup: setup-node setup-python setup-tools
 	@echo "✅ Development environment ready"
 
-setup-docs-generate PROJECT_NAMEdocs-tedocs-tedocs-templates PROJECT_NAME="vibes-pro" OUTPUT_DIR="templates/docs":
-	@echo "📝 Generating documentation templates..."
-	node cli/docs.js templates \
-		--project-name "{{PROJECT_NAME}}" \
-		--domains core,user,billing \
-		--frameworks next,fastapi \
-		--output-dir "{{OUTPUT_DIR}}" \
-		--include-aiPROJECT_NAME="vibes-pro" OUTPUT_DIR="templates/docs":
-	@echo "📝 Generating documentation templates..."
-	node cli/docs.js templates \
-		--project-name "{{PROJECT_NAME}}" \
-		--domains core,user,billing \
-		--frameworks next,fastapi \
-		--output-dir "{{OUTPUT_DIR}}" \
-		--include-aiROJECT_NAME="vibes-pro" OUTPUT_DIR="templates/docs":
-	@echo "📝 Generating documentation templates..."
-	node cli/docs.js templates \
-		--project-name "{{PROJECT_NAME}}" \
-		--domains core,user,billing \
-		--frameworks next,fastapi \
-		--output-dir "{{OUTPUT_DIR}}" \
-		--include-airo":
-	@echo "📚 Generating comprehensive documentation..."
-	node cli/docs.js generate \
-		--project-name "{{PROJECT_NAME}}" \
-		--description "Modern application with hexagonal architecture and domain-driven design" \
-		--domains core,user,billing \
-		--frameworks next,fastapi \
-		--output-dir docs/generated \
-		--include-ai
-
-docs-templates PROJECT_NAME="vibes-pro" OUTPUT_DIR="templates/docs":
-	@echo "� Generating documentation templates..."
-	node cli/docs.js templates \
-		--project-name "{{PROJECT_NAME}}" \
-		--domains core,user,billing \
-		--frameworks next,fastapi \
-		--output-dir "{{OUTPUT_DIR}}" \
-		--include-aiting up Node.js environment..."
+setup-node:
+	@echo "🛠️ Setting up Node.js environment..."
 	corepack enable
 	pnpm install
 
@@ -244,17 +207,16 @@ docs-generate PROJECT_NAME="vibes-pro":
 		--include-ai
 
 docs-templates PROJECT_NAME="vibes-pro" OUTPUT_DIR="templates/docs":
-	@echo "� Generating documentation templates..."
+	@echo "📝 Generating documentation templates..."
 	node cli/docs.js templates \
 		--project-name "{{PROJECT_NAME}}" \
 		--domains core,user,billing \
 		--frameworks next,fastapi \
 		--output-dir "{{OUTPUT_DIR}}" \
-		--include-ai \
-		{{ARGS}}
+		--include-ai
 
 docs-validate:
-	@echo "� Validating documentation..."
+	@echo "🧪 Validating documentation..."
 	node cli/docs.js validate \
 		--output-dir docs/generated
 

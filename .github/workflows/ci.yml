@@ -17,8 +17,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
 
       - name: Enable Corepack and prepare pnpm
         run: |
@@ -28,7 +28,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install uv
         run: pip install uv
@@ -58,4 +58,4 @@ jobs:
         run: |
           just test-generation
         env:
-          UV_NO_SYNC: '1'
+          UV_NO_SYNC: "1"
