@@ -1,5 +1,6 @@
 // tools/performance/monitor.ts
 import { performance, PerformanceObserver } from 'perf_hooks';
+import { randomUUID } from 'node:crypto';
 
 interface PerformanceMetrics {
   generationTime: number;
@@ -29,26 +30,40 @@ export class PerformanceMonitor {
   }
 
   async measureGenerationTime<T>(fn: () => Promise<T>): Promise<T> {
-    performance.mark('generation-start');
+    const startMark = `generation-start-${randomUUID()}`;
+    performance.mark(startMark);
+    let endMark: string | undefined;
     try {
       const result = await fn();
-      performance.mark('generation-end');
-      performance.measure('generationTime', 'generation-start', 'generation-end');
+      endMark = `generation-end-${randomUUID()}`;
+      performance.mark(endMark);
+      performance.measure('generationTime', startMark, endMark);
       return result;
     } finally {
-        //
+      performance.clearMarks(startMark);
+      if (endMark) {
+        performance.clearMarks(endMark);
+      }
+      performance.clearMeasures('generationTime');
     }
   }
 
   async measureBuildTime<T>(fn: () => Promise<T>): Promise<T> {
-    performance.mark('build-start');
+    const startMark = `build-start-${randomUUID()}`;
+    performance.mark(startMark);
+    let endMark: string | undefined;
     try {
       const result = await fn();
-      performance.mark('build-end');
-      performance.measure('buildTime', 'build-start', 'build-end');
+      endMark = `build-end-${randomUUID()}`;
+      performance.mark(endMark);
+      performance.measure('buildTime', startMark, endMark);
       return result;
     } finally {
-        //
+      performance.clearMarks(startMark);
+      if (endMark) {
+        performance.clearMarks(endMark);
+      }
+      performance.clearMeasures('buildTime');
     }
   }
 
@@ -62,4 +77,5 @@ export class PerformanceMonitor {
     this.metrics.memoryUsage = process.memoryUsage().heapUsed;
     return { ...this.metrics };
   }
+}
 }
