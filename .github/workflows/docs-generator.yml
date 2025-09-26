@@ -2,15 +2,15 @@ name: Docs generator CI
 
 on:
   push:
-    branches: [ main, feature/** ]
+    branches: [main, feature/**]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
     inputs:
       run_conversion:
-        description: 'Run pandoc conversion tests (html/docx/epub)'
+        description: "Run pandoc conversion tests (html/docx/epub)"
         required: false
-        default: 'false'
+        default: "false"
 
 jobs:
   test-docs-generator:
@@ -47,7 +47,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest
-
 
       - name: Run docs generator integration test
         run: |
