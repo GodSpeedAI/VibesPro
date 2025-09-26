@@ -32,6 +32,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -42,11 +47,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: pnpm install
@@ -70,6 +70,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -80,11 +85,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: pnpm install
@@ -107,6 +107,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -117,11 +122,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: |
@@ -147,6 +147,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -157,11 +162,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@8 --activate
 
       - name: Install dependencies
         run: |

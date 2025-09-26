@@ -1,11 +1,12 @@
 """Domain entities for prompt optimization following DDD patterns."""
 
 from __future__ import annotations
+
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Optional, Any
-from uuid import UUID, uuid4
+from datetime import UTC, datetime
 from enum import StrEnum
+from typing import Any
+from uuid import UUID, uuid4
 
 
 class OptimizationGoal(StrEnum):
@@ -105,9 +106,9 @@ class Prompt:
     id: PromptId
     content: str
     created_at: datetime
-    features: Optional[PromptFeatures] = None
-    token_count: Optional[TokenCount] = None
-    effectiveness_score: Optional[EffectivenessScore] = None
+    features: PromptFeatures | None = None
+    token_count: TokenCount | None = None
+    effectiveness_score: EffectivenessScore | None = None
     optimization_suggestions: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -166,7 +167,7 @@ class PromptOptimizationSession:
     optimization_goal: OptimizationGoal
     target_model: ModelType
     started_at: datetime
-    completed_at: Optional[datetime] = None
+    completed_at: datetime | None = None
     results: list[OptimizationResult] = field(default_factory=list)
 
     def add_prompt(self, prompt: Prompt) -> None:
@@ -180,7 +181,7 @@ class PromptOptimizationSession:
 
     def complete_session(self) -> None:
         """Mark the optimization session as completed."""
-        self.completed_at = datetime.now(timezone.utc)
+        self.completed_at = datetime.now(UTC)
 
     def is_completed(self) -> bool:
         """Check if the optimization session is completed."""
@@ -193,8 +194,8 @@ class FeedbackRecord:
     result_id: UUID
     user_satisfaction: float  # 0.0 to 10.0
     response_quality: float  # 0.0 to 10.0
-    comments: Optional[str] = None
-    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    comments: str | None = None
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.user_satisfaction <= 10.0:

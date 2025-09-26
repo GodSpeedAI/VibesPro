@@ -1,13 +1,12 @@
 # tools/performance/reporter.py
-import json
-import argparse
-
 from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
+
 
 def generate_report(metrics_file: str | Path, output_file: str | Path) -> None:
     """

@@ -1,13 +1,14 @@
 """Domain services for prompt optimization business logic."""
 
 from __future__ import annotations
+
 import re
-from typing import Optional
-from dataclasses import dataclass
 
 from .entities import (
-    Prompt, PromptFeatures, EffectivenessScore, OptimizationGoal,
-    TokenCount, ModelType, OptimizationResult
+    EffectivenessScore,
+    OptimizationGoal,
+    Prompt,
+    PromptFeatures,
 )
 
 
