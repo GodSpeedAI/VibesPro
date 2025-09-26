@@ -14,16 +14,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "pnpm"
-
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9 --activate
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -40,6 +40,9 @@ jobs:
 
       - name: Install Node dependencies
         run: pnpm install
+
+      - name: Build projects
+        run: pnpm build
 
       - name: Install Python dependencies
         run: uv sync --no-dev

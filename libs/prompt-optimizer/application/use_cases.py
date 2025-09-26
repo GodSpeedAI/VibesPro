@@ -1,19 +1,27 @@
 """Use cases for prompt optimization following hexagonal architecture."""
 
 from __future__ import annotations
+
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 from uuid import uuid4
 
 from ..domain.entities import (
-    Prompt, PromptId, OptimizationGoal, ModelType, OptimizationResult,
-    PromptOptimizationSession, FeedbackRecord
+    FeedbackRecord,
+    ModelType,
+    OptimizationGoal,
+    OptimizationResult,
+    Prompt,
+    PromptId,
+    PromptOptimizationSession,
 )
-from ..domain.services import PromptFeatureExtractor, PromptAnalyzer, PromptOptimizer
+from ..domain.services import PromptAnalyzer, PromptFeatureExtractor, PromptOptimizer
 from .ports import (
-    TokenCounterPort, PromptRepositoryPort, MLModelPort,
-    TemporalDatabasePort, NotificationPort
+    MLModelPort,
+    NotificationPort,
+    PromptRepositoryPort,
+    TemporalDatabasePort,
+    TokenCounterPort,
 )
 
 
@@ -40,7 +48,7 @@ class SubmitFeedbackCommand:
     result_id: str
     user_satisfaction: float
     response_quality: float
-    comments: Optional[str] = None
+    comments: str | None = None
 
 
 class AnalyzePromptUseCase:
@@ -66,7 +74,7 @@ class AnalyzePromptUseCase:
         prompt = Prompt(
             id=PromptId(),
             content=command.content,
-            created_at=datetime.now(timezone.utc)
+            created_at=datetime.now(UTC)
         )
 
         # Extract features
@@ -87,7 +95,7 @@ class AnalyzePromptUseCase:
         if command.store_result:
             await self.prompt_repository.save_prompt(prompt)
             await self.temporal_db.store_prompt_analysis(
-                prompt, datetime.now(timezone.utc)
+                prompt, datetime.now(UTC)
             )
 
         return prompt
@@ -239,7 +247,7 @@ class CreateOptimizationSessionUseCase:
             prompts=[],
             optimization_goal=goal,
             target_model=model,
-            started_at=datetime.now(timezone.utc)
+            started_at=datetime.now(UTC)
         )
 
         # Optimize each prompt
@@ -304,7 +312,7 @@ class GetSimilarPromptsUseCase:
         temp_prompt = Prompt(
             id=PromptId(),
             content=content,
-            created_at=datetime.now(timezone.utc)
+            created_at=datetime.now(UTC)
         )
 
         features = self.feature_extractor.extract_features(temp_prompt)

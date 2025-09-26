@@ -9,19 +9,23 @@ import asyncio
 import json
 import sys
 from pathlib import Path
-from typing import Optional
 
 # Add the prompt optimizer to the path
 sys.path.append(str(Path(__file__).parent.parent / "libs"))
 
-from prompt_optimizer.domain.entities import OptimizationGoal, ModelType
-from prompt_optimizer.domain.services import PromptFeatureExtractor, PromptAnalyzer, PromptOptimizer
 from prompt_optimizer.application.use_cases import (
-    AnalyzePromptUseCase, OptimizePromptUseCase, AnalyzePromptCommand, OptimizePromptCommand
+    AnalyzePromptCommand,
+    AnalyzePromptUseCase,
+    OptimizePromptCommand,
+    OptimizePromptUseCase,
 )
-from prompt_optimizer.infrastructure.adapters import TiktokenAdapter, InMemoryPromptRepository
+from prompt_optimizer.domain.entities import ModelType, OptimizationGoal
+from prompt_optimizer.domain.services import PromptAnalyzer, PromptFeatureExtractor, PromptOptimizer
+from prompt_optimizer.infrastructure.adapters import InMemoryPromptRepository, TiktokenAdapter
 from prompt_optimizer.infrastructure.temporal_db import (
-    SledTemporalDatabaseAdapter, SimpleMLModelAdapter, SimpleNotificationAdapter
+    SimpleMLModelAdapter,
+    SimpleNotificationAdapter,
+    SledTemporalDatabaseAdapter,
 )
 
 
@@ -60,7 +64,7 @@ class PromptOptimizerCLI:
     async def analyze_prompt_file(self, file_path: str, model: str = "gpt-4") -> dict:
         """Analyze a prompt file and return detailed results."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 content = f.read()
         except FileNotFoundError:
             return {"error": f"File '{file_path}' not found"}
@@ -111,7 +115,7 @@ class PromptOptimizerCLI:
     ) -> dict:
         """Optimize a prompt file and return the results."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 content = f.read()
         except FileNotFoundError:
             return {"error": f"File '{file_path}' not found"}

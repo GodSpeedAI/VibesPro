@@ -5,19 +5,18 @@ Traceability: PRD-MERGE-006, ADR-MERGE-008
 """
 
 import argparse
-import sys
 import json
-import asyncio
-from pathlib import Path
-from typing import Dict, Any
-
+import shutil
 
 # Import the TypeScript generator functions via Node.js bridge
 import subprocess
+import sys
 import tempfile
-import shutil
+from pathlib import Path
+from typing import Any
 
-def run_ts_generator(output_dir: str, context: Dict[str, Any]) -> Dict[str, Any]:
+
+def run_ts_generator(output_dir: str, context: dict[str, Any]) -> dict[str, Any]:
     """Run the TypeScript documentation generator via Node.js"""
 
     # Create a temporary file for the context
@@ -264,7 +263,7 @@ main();
                 if validation['isValid']:
                     print(f"✅ Documentation validation passed (score: {validation['score']:.2f})")
                 else:
-                    print(f"❌ Documentation validation failed:")
+                    print("❌ Documentation validation failed:")
                     for section in validation['missingSection']:
                         print(f"  - Missing: {section}")
                     for warning in validation['warnings']:
@@ -273,9 +272,9 @@ main();
                 print(f"❌ Validation failed: {validation_result.stderr}")
 
         print("\n📖 Generated Documentation:")
-        print(f"  - README.md: Project overview and getting started")
-        print(f"  - ARCHITECTURE.md: Detailed architecture guide")
-        print(f"  - API-REFERENCE.md: Complete API documentation")
+        print("  - README.md: Project overview and getting started")
+        print("  - ARCHITECTURE.md: Detailed architecture guide")
+        print("  - API-REFERENCE.md: Complete API documentation")
 
     except Exception as e:
         print(f"❌ Error generating documentation: {e}")
