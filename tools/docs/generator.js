@@ -42,7 +42,14 @@ class DocumentationGenerator {
   }
 
   normalizeContext(context = {}) {
-    const { projectName, description, domains, frameworks, includeAI, license } = context || {};
+    const {
+      projectName,
+      description,
+      domains,
+      frameworks,
+      includeAI,
+      license,
+    } = context ?? {};
 
     const normalizedProjectName = typeof projectName === 'string' && projectName.trim().length > 0 ? projectName : 'Project';
     const normalizedDescription = typeof description === 'string' && description.trim().length > 0 ? description : FALLBACK_DESCRIPTION;
@@ -77,9 +84,9 @@ class DocumentationGenerator {
   }
 
   validateDocumentation(docs) {
-    const readmeContent = (docs && docs.readme) || '';
-    const architectureContent = (docs && docs.architectureGuide) || '';
-    const apiDocsContent = (docs && docs.apiDocs) || '';
+  const readmeContent = docs?.readme ?? '';
+  const architectureContent = docs?.architectureGuide ?? '';
+  const apiDocsContent = docs?.apiDocs ?? '';
 
     const sectionChecks = [
       { condition: readmeContent.includes('Getting Started'), message: 'Getting Started section in README' },
@@ -134,7 +141,7 @@ class DocumentationGenerator {
         .map((domain) => {
           const domainName = domain.charAt(0).toUpperCase() + domain.slice(1);
           const domainSlug = domain.toLowerCase().replace(/\s+/g, '-');
-          return `## ${domainName} Domain API\n\n### Endpoints\n\n- **GET** /api/${domainSlug} - List all ${domainName} entities\n- **POST** /api/${domainSlug} - Create new ${domainName} entity\n- **GET** /api/${domainSlug}/:id - Get specific ${domainName} entity\n- **PUT** /api/${domainSlug}/:id - Update ${domainName} entity\n- **DELETE** /api/${domainSlug}/:id - Delete ${domainName} entity\n\n### Data Models\n\nSee \`libs/shared/database-types/\` for complete data models.\n`;
+          return `## ${domainName} Domain API\n\n### Endpoints\n\n- **GET** /api/${domainSlug} - List all ${domainName} entities\n- **POST** /api/${domainSlug} - Create new ${domainName} entity\n- **GET** /api/${domainSlug}/:id - Get specific ${domainName} entity\n- **PUT** /api/${domainSlug}/:id - Update ${domainName} entity\n- **DELETE** /api/${domainSlug}/:id - Delete ${domainName} entity\n\n### Data Models\n\nSee [Type Definitions](../libs/shared/database-types/) for complete data models.\n`;
         })
         .join('\n')
       : `## Domains\n\nNo domain endpoints defined yet.\n`;
