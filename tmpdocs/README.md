@@ -32,8 +32,8 @@ This project implements **Hexagonal Architecture** with **Domain-Driven Design**
 ## Technology Stack
 
 ### Frameworks
-- next
 
+- next
 ## Development
 
 ```bash
