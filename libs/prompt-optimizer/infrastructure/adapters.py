@@ -1,16 +1,15 @@
 """Adapters for external services following hexagonal architecture."""
 
 from __future__ import annotations
+
 import hashlib
 import json
 from datetime import datetime
-from typing import Optional, Any
+from typing import Any
 from uuid import UUID
 
-from ..application.ports import TokenCounterPort, PromptRepositoryPort
-from ..domain.entities import (
-    Prompt, PromptId, TokenCount, ModelType
-)
+from ..application.ports import PromptRepositoryPort, TokenCounterPort
+from ..domain.entities import ModelType, Prompt, PromptId, TokenCount
 
 
 class TiktokenAdapter(TokenCounterPort):
@@ -125,7 +124,7 @@ class InMemoryPromptRepository(PromptRepositoryPort):
             self._content_hashes[content_hash] = []
         self._content_hashes[content_hash].append(prompt_id_str)
 
-    async def get_prompt(self, prompt_id: PromptId) -> Optional[Prompt]:
+    async def get_prompt(self, prompt_id: PromptId) -> Prompt | None:
         """Retrieve prompt by ID."""
         return self._prompts.get(str(prompt_id))
 
@@ -184,7 +183,7 @@ class FilePromptRepository(PromptRepositoryPort):
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(prompt_data, f, indent=2, ensure_ascii=False)
 
-    async def get_prompt(self, prompt_id: PromptId) -> Optional[Prompt]:
+    async def get_prompt(self, prompt_id: PromptId) -> Prompt | None:
         """Retrieve prompt from JSON file."""
         import os
 
@@ -193,7 +192,7 @@ class FilePromptRepository(PromptRepositoryPort):
             return None
 
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 data = json.load(f)
 
             return self._deserialize_prompt(data)
@@ -217,8 +216,8 @@ class FilePromptRepository(PromptRepositoryPort):
 
     async def get_recent_prompts(self, limit: int = 10) -> list[Prompt]:
         """Get recent prompts from file system."""
-        import os
         import glob
+        import os
 
         pattern = os.path.join(self.storage_path, "*.json")
         files = glob.glob(pattern)
@@ -229,7 +228,7 @@ class FilePromptRepository(PromptRepositoryPort):
         prompts: list[Prompt] = []
         for file_path in files[:limit]:
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, encoding='utf-8') as f:
                     data = json.load(f)
 
                 prompt = self._deserialize_prompt(data)
@@ -245,11 +244,9 @@ class FilePromptRepository(PromptRepositoryPort):
         import os
         os.makedirs(self.storage_path, exist_ok=True)
 
-    def _deserialize_prompt(self, data: dict[str, Any]) -> Optional[Prompt]:
+    def _deserialize_prompt(self, data: dict[str, Any]) -> Prompt | None:
         """Deserialize prompt from JSON data."""
-        from ..domain.entities import (
-            PromptFeatures, TokenCount, EffectivenessScore, ModelType
-        )
+        from ..domain.entities import EffectivenessScore, ModelType, PromptFeatures, TokenCount
 
         try:
             prompt_id = PromptId(UUID(data["id"]))

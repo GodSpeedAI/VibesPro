@@ -19,7 +19,7 @@ This document outlines the phased implementation of the `speckit-integration.md`
   - Update checklist
 
 - [x] **Cycle 3: Spec/Plan/Tasks Templates**
-  - **RED (SDS-003):** Write a failing cookiecutter generation test that checks for the existence of the new `spec.*.md` templates.
+  - **RED (SDS-003):** Write a failing Copier generation test that checks for the existence of the new `spec.*.md` templates.
   - **GREEN (DEV-SDS-003):** Create the following files in `{{ project_slug }}/.github/prompts`:
     - `spec.feature.template.md`
     - `spec.plan.adr.prompt.md`
@@ -29,7 +29,7 @@ This document outlines the phased implementation of the `speckit-integration.md`
     - `spec.plan.task.prompt.md`
     - `spec.tasks.template.md`
   - **REFACTOR:** N/A (file creation).
-  - **REGRESSION:** Run cookiecutter generation tests.
+  - **REGRESSION:** Run Copier generation tests.
   - Update checklist
 
 - [x] **Cycle 4: Linter Frontmatter Checks (`thread`, `matrix_ids`)**

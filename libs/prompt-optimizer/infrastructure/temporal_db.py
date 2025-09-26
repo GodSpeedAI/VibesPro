@@ -1,15 +1,19 @@
 """Temporal database adapters using sled instead of tsink."""
 
 from __future__ import annotations
-import json
-from datetime import datetime, timezone, timedelta
-from typing import Optional, Any
-from uuid import uuid4
 
-from ..application.ports import TemporalDatabasePort, MLModelPort, NotificationPort
+import json
+from datetime import UTC, datetime, timedelta
+from typing import Any
+
+from ..application.ports import MLModelPort, NotificationPort, TemporalDatabasePort
 from ..domain.entities import (
-    Prompt, PromptOptimizationSession, OptimizationGoal,
-    FeedbackRecord, OptimizationResult, ModelType
+    FeedbackRecord,
+    ModelType,
+    OptimizationGoal,
+    OptimizationResult,
+    Prompt,
+    PromptOptimizationSession,
 )
 
 
@@ -165,20 +169,20 @@ class SledTemporalDatabaseAdapter(TemporalDatabasePort):
 
     async def _get_recent_records(self, prefix: str, days: int) -> list[dict[str, Any]]:
         """Get recent records with the given prefix."""
-        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
+        cutoff_date = datetime.now(UTC) - timedelta(days=days)
         records: list[dict[str, Any]] = []
 
         if isinstance(self._db, str):
             # File-based fallback
-            import os
             import glob
+            import os
 
             pattern = os.path.join(self._db, f"{prefix}_*.json")
             files = glob.glob(pattern)
 
             for file_path in files:
                 try:
-                    with open(file_path, 'r', encoding='utf-8') as f:
+                    with open(file_path, encoding='utf-8') as f:
                         record = json.load(f)
 
                     # Check if record is recent enough
@@ -236,12 +240,11 @@ class SledTemporalDatabaseAdapter(TemporalDatabasePort):
 
         return dot_product / (norm1 ** 0.5 * norm2 ** 0.5)
 
-    def _deserialize_prompt_from_record(self, record: dict[str, Any]) -> Optional[Prompt]:
+    def _deserialize_prompt_from_record(self, record: dict[str, Any]) -> Prompt | None:
         """Deserialize a prompt from a database record."""
-        from ..domain.entities import (
-            PromptId, PromptFeatures, TokenCount, EffectivenessScore, ModelType
-        )
         from uuid import UUID
+
+        from ..domain.entities import EffectivenessScore, PromptFeatures, PromptId, TokenCount
 
         try:
             prompt_id = PromptId(UUID(record["id"]))

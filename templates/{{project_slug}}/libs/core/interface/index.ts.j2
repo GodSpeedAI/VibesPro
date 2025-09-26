@@ -1,0 +1,94 @@
+{% if architecture_style == "hexagonal" %}
+/**
+ * Interface Layer for {{ project_name }}
+ *
+ * Controllers and user interface components.
+ * Handles external requests and coordinates with use cases.
+ */
+
+import { SampleUseCase } from '../application';
+import { InMemorySampleRepository } from '../infrastructure';
+
+// HTTP Controller (example)
+export class SampleController {
+  private useCase: SampleUseCase;
+
+  constructor() {
+    // Dependency injection would be handled by a DI container in real applications
+    const repository = new InMemorySampleRepository();
+    this.useCase = new SampleUseCase(repository);
+  }
+
+  async createSample(request: { name: string }): Promise<{ id: string; name: string; createdAt: string }> {
+    try {
+      const entity = await this.useCase.createSample(request.name);
+      return {
+        id: entity.id,
+        name: entity.name,
+        createdAt: entity.createdAt.toISOString()
+      };
+    } catch (error) {
+      throw new Error(`Failed to create sample: ${error.message}`);
+    }
+  }
+
+  async getSample(id: string): Promise<{ id: string; name: string; createdAt: string } | null> {
+    const entity = await this.useCase.getSample(id);
+    if (!entity) {
+      return null;
+    }
+
+    return {
+      id: entity.id,
+      name: entity.name,
+      createdAt: entity.createdAt.toISOString()
+    };
+  }
+}
+
+// CLI Command (example)
+export class SampleCliCommand {
+  private controller: SampleController;
+
+  constructor() {
+    this.controller = new SampleController();
+  }
+
+  async run(args: string[]): Promise<void> {
+    const [command, ...params] = args;
+
+    switch (command) {
+      case 'create':
+        if (params.length < 1) {
+          console.error('Usage: create <name>');
+          return;
+        }
+        const result = await this.controller.createSample({ name: params[0] });
+        console.log(`Created sample: ${JSON.stringify(result, null, 2)}`);
+        break;
+
+      case 'get':
+        if (params.length < 1) {
+          console.error('Usage: get <id>');
+          return;
+        }
+        const sample = await this.controller.getSample(params[0]);
+        if (sample) {
+          console.log(`Sample: ${JSON.stringify(sample, null, 2)}`);
+        } else {
+          console.log('Sample not found');
+        }
+        break;
+
+      default:
+        console.error('Unknown command. Available: create, get');
+    }
+  }
+}
+
+// Export for CLI usage
+if (require.main === module) {
+  const command = new SampleCliCommand();
+  command.run(process.argv.slice(2)).catch(console.error);
+}
+{% endif %}

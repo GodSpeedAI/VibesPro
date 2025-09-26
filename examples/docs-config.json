@@ -1,0 +1,18 @@
+{
+    "projectName": "example-project",
+    "description": "An example project using the documentation generator",
+    "domains": [
+        "user-management",
+        "billing",
+        "notifications",
+        "reporting"
+    ],
+    "frameworks": [
+        "next",
+        "fastapi",
+        "react",
+        "prisma"
+    ],
+    "includeAI": true,
+    "architecture": "hexagonal"
+}

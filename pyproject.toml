@@ -35,6 +35,9 @@ ignore = [
     "E501",  # Line length handled by formatter
     "S603",  # subprocess call with untrusted input (false positive in our controlled context)
     "S607",  # Starting process with partial executable path (acceptable for our use case)
+    "S105",  # Possible hardcoded password (false positives for enum values and punctuation)
+    "S324",  # hashlib.md5 usage (acceptable for content hashing, not cryptographic purposes)
+    "S101",  # Use of assert detected (acceptable in test files)
 ]
 
 [tool.mypy]
@@ -49,5 +52,6 @@ exclude = [
 [dependency-groups]
 dev = [
     "mypy>=1.18.2",
+    "pytest>=8.4.2",
     "ruff>=0.13.1",
 ]

@@ -1,13 +1,20 @@
 """Port interfaces for prompt optimization following hexagonal architecture."""
 
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Optional, Any
 from datetime import datetime
+from typing import Any
 
 from ..domain.entities import (
-    Prompt, PromptId, TokenCount, ModelType, OptimizationResult,
-    OptimizationGoal, FeedbackRecord, PromptOptimizationSession
+    FeedbackRecord,
+    ModelType,
+    OptimizationGoal,
+    OptimizationResult,
+    Prompt,
+    PromptId,
+    PromptOptimizationSession,
+    TokenCount,
 )
 
 
@@ -34,7 +41,7 @@ class PromptRepositoryPort(ABC):
         pass
 
     @abstractmethod
-    async def get_prompt(self, prompt_id: PromptId) -> Optional[Prompt]:
+    async def get_prompt(self, prompt_id: PromptId) -> Prompt | None:
         """Retrieve a prompt by its ID."""
         pass
 

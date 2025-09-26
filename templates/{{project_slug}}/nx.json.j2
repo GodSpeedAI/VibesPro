@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "npmScope": "{{ project_slug }}",
+  "affected": {
+    "defaultBase": "origin/main"
+  },
+  "cli": {
+    "packageManager": "pnpm"
+  },
+  "generators": {
+    "@nx/js:lib": {
+      "buildable": true
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "test": {
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+    },
+    "lint": {
+      "inputs": ["default", "^production", "{workspaceRoot}/.eslintrc.json"]
+    }
+  }
+}

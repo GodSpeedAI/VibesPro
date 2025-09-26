@@ -19,3 +19,7 @@ export function compareSnapshot(name: string, content: string): boolean {
     const existing = fs.readFileSync(p, 'utf8');
     return existing.trimEnd() === content.trimEnd();
 }
+
+export function getSnapshotPath(name: string): string {
+    return snapPath(name);
+}

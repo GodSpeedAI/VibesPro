@@ -1,0 +1,50 @@
+{% if architecture_style == "hexagonal" %}
+/**
+ * Infrastructure Layer for {{ project_name }}
+ *
+ * Adapters for external dependencies.
+ * Implements ports defined in the application layer.
+ */
+
+import { SampleEntity } from '../domain';
+import { SampleRepository } from '../application';
+
+// In-memory adapter (for development/testing)
+export class InMemorySampleRepository implements SampleRepository {
+  private entities: Map<string, SampleEntity> = new Map();
+
+  async save(entity: SampleEntity): Promise<void> {
+    this.entities.set(entity.id, entity);
+  }
+
+  async findById(id: string): Promise<SampleEntity | null> {
+    return this.entities.get(id) || null;
+  }
+
+  async findAll(): Promise<SampleEntity[]> {
+    return Array.from(this.entities.values());
+  }
+}
+
+// Database adapter (example)
+export class DatabaseSampleRepository implements SampleRepository {
+  constructor(private connectionString: string) {}
+
+  async save(entity: SampleEntity): Promise<void> {
+    // Database implementation would go here
+    console.log(`Saving entity ${entity.id} to database`);
+  }
+
+  async findById(id: string): Promise<SampleEntity | null> {
+    // Database query implementation would go here
+    console.log(`Finding entity ${id} in database`);
+    return null;
+  }
+
+  async findAll(): Promise<SampleEntity[]> {
+    // Database query implementation would go here
+    console.log('Finding all entities in database');
+    return [];
+  }
+}
+{% endif %}

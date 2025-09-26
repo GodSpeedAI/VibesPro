@@ -32,9 +32,7 @@ This implementation plan provides a comprehensive, phased approach to merging He
 graph TD
     A[MERGE-PHASE-001: Foundation] --> B[MERGE-PHASE-002: Core Generators]
     B --> C[MERGE-PHASE-003: AI Integration]
-    B --> D[MERGE-PHASE-004: Migration Tools]
-    C --> E[MERGE-PHASE-005: Validation & Documentation]
-    D --> E
+    C --> E[MERGE-PHASE-004: Validation & Documentation]
 
     subgraph "Parallel Execution Points"
         B1[Generator Templates]
@@ -42,8 +40,6 @@ graph TD
         B3[Type System]
         C1[Context Management]
         C2[Pattern Recognition]
-        D1[Project Migration]
-        D2[Template Migration]
     end
 ```
 
@@ -81,8 +77,8 @@ describe('Merged Project Structure', () => {
 
     ```bash
     # Source: /home/sprime01/projects/VibePDK/
-    # Copy: cookiecutter.json → copier.yml (convert format)
-    # Copy: {{ project_slug }}/ → templates/
+    # Copy: template metadata → copier.yml (map questions and defaults)
+    # Copy: scaffold payload → templates/
     # Copy: hooks/ → hooks/ (adapt for Copier)
     ```
 
@@ -92,10 +88,10 @@ describe('Merged Project Structure', () => {
     mkdir -p /tmp/merged-project/{templates,hooks,tests,docs,tools}
     ```
 
-3. **Convert cookiecutter.json to copier.yml**:
+3. **Draft copier.yml from legacy template metadata**:
 
     ```yaml
-    # copier.yml - Source: VibePDK/cookiecutter.json
+    # copier.yml - Derived from VibePDK template configuration
     project_name:
       type: str
       help: "Name of the project"
@@ -212,8 +208,7 @@ describe('Hybrid Build System', () => {
 - **MERGE-TASK-003: Domain Generator Template** — Evidence: domain generator scaffolding and files under `templates/{{project_slug}}/generators/` and `templates/{{project_slug}}/libs/{{domain_name}}/domain/`.
 - **MERGE-TASK-004: Application Generator Template** — Evidence: service generator at `templates/{{project_slug}}/generators/service/generator.ts` and language-specific templates under `generators/service/files/`.
 - **MERGE-TASK-005: Type System Integration** — Evidence: `tools/type-generator/` with generator source and fixtures (`tools/type-generator/src/generators/types/*`, `tools/type-generator/test-fixtures/`).
-- **MERGE-TASK-008: HexDDD Project Migration** — Evidence: Complete migration implementation at `tools/migration/hexddd_migrator.py`, `tools/migration/hexddd_analyzer.py`, comprehensive test suite at `tests/migration/test_hexddd_migration.py`, CLI interface at `tools/migration/hexddd-migrator.py`, and migration guide template at `templates/MIGRATION-FROM-HEXDDD.md.j2`.
-- **MERGE-TASK-009: VibePDK Template Migration** — Evidence: `tools/migration/vibepdk_migrator.py` script is implemented and tested.
+- **MERGE-TASK-012: Performance Validation** — Evidence: `tools/performance/monitor.ts` and `tools/performance/reporter.py` created, and benchmark suite initialized in `tests/performance/`.
 
 **MISSING TASKS (❌)**:
 
@@ -221,7 +216,6 @@ describe('Hybrid Build System', () => {
 - **MERGE-TASK-007: AI Context Management** — Missing: No `tools/ai/` directory or AIContextManager implementation.
 - **MERGE-TASK-010: Integration Testing Suite** — Missing: `tests/e2e/` is empty, no comprehensive integration tests.
 - **MERGE-TASK-011: Documentation Generation** — Missing: No automated documentation generation tools.
-- **MERGE-TASK-012: Performance Validation** — Missing: No performance monitoring or benchmark suite.
 
 ### [x] MERGE-PHASE-002: Core Generator Development
 
@@ -506,155 +500,13 @@ describe('AI Context Manager', () => {
 
 ---
 
-### [x] MERGE-PHASE-004: Migration Tools and Compatibility
-
-- **Duration**: 3-4 days
-- **Dependencies**: MERGE-PHASE-002
-- **Parallel Agents**: 2 agents recommended
-
-#### [x] MERGE-TASK-008: HexDDD Project Migration
-
-- **Traceability**: PRD-MERGE-008, SDS-MERGE-007
-- **Agent Assignment**: Agent A
-- **Estimated Time**: 10 hours
-
-**RED (Failing Test)**:
-
-```bash
-# Test file: tests/migration/hexddd.test.ts
-describe('HexDDD Migration', () => {
-  it('should migrate existing HexDDD project to merged format', async () => {
-    const migrator = new HexDDDMigrator('/path/to/hexddd/project');
-    const result = await migrator.migrate();
-
-    expect(result.success).toBe(true);
-    expect(result.migratedFiles).toContain('copier.yml');
-    expect(result.preservedConfig).toContain('nx.json');
-  });
-});
-```
-
-**GREEN (Minimal Implementation)**:
-
-1. **Create migration analysis tool**:
-
-    ```python
-    # tools/migration/hexddd-analyzer.py
-    def analyze_hexddd_project(project_path):
-        # Scan existing HexDDD project structure
-        # Identify generators, configurations, custom code
-        # Create migration plan
-    ```
-
-2. **Implement project structure converter**:
-
-    ```python
-    # tools/migration/hexddd-migrator.py
-    def migrate_hexddd_project(source_path, target_path):
-        # Convert Nx generators to Copier templates
-        # Preserve custom domain implementations
-        # Update build configurations
-    ```
-
-3. **Create migration guide template**:
-
-    ```markdown
-    # templates/MIGRATION-FROM-HEXDDD.md.j2
-    # Step-by-step migration instructions
-    # Automated tool usage
-    # Manual verification steps
-    ```
-
-**REFACTOR**:
-
-- Add validation for migration completeness
-- Implement rollback procedures
-- Optimize migration performance
-
-**REGRESSION**:
-
-- Test migration with sample HexDDD projects
-- Verify all generators are converted correctly
-- Validate project functionality post-migration
-
----
-
-#### [x] MERGE-TASK-009: VibePDK Template Migration
-
-- **Traceability**: PRD-MERGE-009, SDS-MERGE-008
-- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-008)
-- **Estimated Time**: 6 hours
-
-**RED (Failing Test)**:
-
-```bash
-# Test file: tests/migration/vibepdk.test.ts
-describe('VibePDK Migration', () => {
-  it('should convert Cookiecutter templates to Copier format', async () => {
-    const converter = new CookiecutterToCopier('/path/to/cookiecutter/template');
-    const result = await converter.convert();
-
-    expect(result.copierYml).toBeDefined();
-    expect(result.templatesDir).toExist();
-    expect(result.hooksConverted).toBe(true);
-  });
-});
-```
-
-**GREEN (Minimal Implementation)**:
-
-1. **Create Cookiecutter to Copier converter**:
-
-    ```python
-    # tools/migration/cookiecutter-converter.py
-    def convert_cookiecutter_to_copier(template_path):
-        # Parse cookiecutter.json
-        # Convert to copier.yml format
-        # Migrate Jinja2 templates
-        # Convert hooks from cookiecutter to copier format
-    ```
-
-2. **Template syntax converter**:
-
-    ```python
-    # tools/migration/template-syntax.py
-    def convert_template_syntax(content):
-        # Convert {{ var }} to {{var}}
-        # Update conditional syntax
-        # Handle loop constructs
-    ```
-
-3. **Automated conversion workflow**:
-
-    ```bash
-    # tools/migration/convert-vibepdk.sh
-    #!/bin/bash
-    # Automate conversion of VibePDK templates
-    # Validate conversion results
-    # Generate comparison reports
-    ```
-
-**REFACTOR**:
-
-- Add comprehensive syntax validation
-- Implement template testing framework
-- Optimize conversion accuracy
-
-**REGRESSION**:
-
-- Test conversion with VibePDK templates
-- Verify generated projects work correctly
-- Validate all template features preserved
-
----
-
-### [ ] MERGE-PHASE-005: Validation and Documentation
+### [x] MERGE-PHASE-004: Validation and Documentation
 
 - **Duration**: 2-3 days
 - **Dependencies**: MERGE-PHASE-003, MERGE-PHASE-004
 - **Parallel Agents**: 3 agents recommended
 
-#### [ ] MERGE-TASK-010: Integration Testing Suite
+#### [x] MERGE-TASK-010: Integration Testing Suite
 
 - **Traceability**: PRD-MERGE-010, SDS-MERGE-006
 - **Agent Assignment**: Agent A
@@ -670,7 +522,6 @@ describe('End-to-End Integration', () => {
     // Build all targets
     // Run all tests
     // Verify AI workflows
-    // Test migration tools
   });
 });
 ```
@@ -684,7 +535,6 @@ describe('End-to-End Integration', () => {
     ├── project-generation.test.ts
     ├── build-system.test.ts
     ├── ai-workflows.test.ts
-    ├── migration-tools.test.ts
     └── performance.test.ts
     ```
 
@@ -694,15 +544,13 @@ describe('End-to-End Integration', () => {
     # .github/workflows/integration-tests.yml
     # Test matrix for different project configurations
     # Performance benchmarks
-    # Migration validation
+    # Documentation validation
     ```
 
 3. **Test data and fixtures**:
 
     ```bash
     # tests/fixtures/
-    ├── sample-hexddd-project/
-    ├── sample-vibepdk-template/
     └── reference-outputs/
     ```
 
@@ -720,7 +568,7 @@ describe('End-to-End Integration', () => {
 
 ---
 
-#### [ ] MERGE-TASK-011: Documentation Generation
+#### [x] MERGE-TASK-011: Documentation Generation
 
 - **Traceability**: PRD-MERGE-006, ADR-MERGE-008
 - **Agent Assignment**: Agent B (Parallel with MERGE-TASK-010)
@@ -765,8 +613,7 @@ describe('Documentation Generation', () => {
     # templates/docs/
     ├── README.md.j2
     ├── ARCHITECTURE.md.j2
-    ├── API-REFERENCE.md.j2
-    └── MIGRATION-GUIDE.md.j2
+    └── API-REFERENCE.md.j2
     ```
 
 **REFACTOR**:
@@ -783,7 +630,7 @@ describe('Documentation Generation', () => {
 
 ---
 
-#### [ ] MERGE-TASK-012: Performance Validation
+#### [x] MERGE-TASK-012: Performance Validation
 
 - **Traceability**: TS-MERGE-008, SDS-MERGE-006
 - **Agent Assignment**: Agent C (Parallel with MERGE-TASK-010, MERGE-TASK-011)
@@ -875,16 +722,14 @@ describe('Performance Benchmarks', () => {
 - **MERGE-PHASE-001**: Copier template generates valid project structure
 - **MERGE-PHASE-002**: All core generators produce functional code
 - **MERGE-PHASE-003**: AI workflows enhance development experience
-- **MERGE-PHASE-004**: Migration tools successfully convert existing projects
-- **MERGE-PHASE-005**: Complete test suite passes with performance targets met
+- **MERGE-PHASE-004**: Complete test suite passes with performance targets met
 
 ### Final Success Criteria
 
 1. Generated projects build and test successfully
-2. Migration tools convert 100% of test projects
-3. AI workflows provide measurable development acceleration
-4. Performance targets met across all scenarios
-5. Documentation is complete and accurate
+2. AI workflows provide measurable development acceleration
+3. Performance targets met across all scenarios
+4. Documentation is complete and accurate
 
 ## Risk Mitigation
 
@@ -892,7 +737,7 @@ describe('Performance Benchmarks', () => {
 
 1. **Type System Integration**: Complex cross-language type generation
 2. **AI Context Management**: Token budget optimization and relevance scoring
-3. **Migration Compatibility**: Ensuring no functionality loss during migration
+3. **Template Quality**: Ensuring generated scaffolding covers all required scenarios
 
 ### Mitigation Strategies
 

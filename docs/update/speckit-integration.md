@@ -176,11 +176,11 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
   - Constitution gating ramps: warnings → errors after grace period.
 
 - Testing strategy
-  - Python (uv): cookiecutter render tests include new files.
+  - Python (uv): Copier render tests include new files.
   - Node: unit tests for linter/matrix behaviors.
   - Integration: ensure Corepack/pnpm/Nx available in CI.
 
-## 7) Migration Plan (Phased, Low-Risk)
+## 7) Rollout Plan (Phased, Low-Risk)
 
 - Phase 1: Introduce metadata and linter (warnings only)
   - Add templates + Constitution instructions.

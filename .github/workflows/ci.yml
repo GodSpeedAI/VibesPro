@@ -14,21 +14,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable Corepack and prepare pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+          node-version: "22"
+          cache: "pnpm"
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install uv
         run: pip install uv
@@ -40,6 +40,9 @@ jobs:
 
       - name: Install Node dependencies
         run: pnpm install
+
+      - name: Build projects
+        run: pnpm build
 
       - name: Install Python dependencies
         run: uv sync --no-dev
@@ -58,4 +61,4 @@ jobs:
         run: |
           just test-generation
         env:
-          UV_NO_SYNC: '1'
+          UV_NO_SYNC: "1"

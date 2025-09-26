@@ -1,7 +1,5 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
-import { runGenerator, cleanupGeneratorOutputs, buildYaml, serializeValue } from './utils';
 import fs from 'fs/promises';
-import * as path from 'path';
+import { buildYaml, cleanupGeneratorOutputs, runGenerator, serializeValue } from './utils';
 
 describe('serializeValue', () => {
   it('serializes string values with quotes', () => {
@@ -124,8 +122,8 @@ describe('runGenerator Error Handling', () => {
   it('should handle file system errors during cleanup', async () => {
     // Mock fs.rm to throw an error during cleanup
     const originalRm = fs.rm;
-    const mockRm = vi.fn().mockRejectedValue(new Error('Permission denied'));
-    vi.mocked(fs.rm).mockImplementation(mockRm);
+    const mockRm = jest.fn().mockRejectedValue(new Error('Permission denied'));
+    jest.mocked(fs.rm).mockImplementation(mockRm);
 
     try {
       const result = await runGenerator('app', {
@@ -140,15 +138,15 @@ describe('runGenerator Error Handling', () => {
       expect(result.files.length).toBeGreaterThan(0);
     } finally {
       // Restore original implementation
-      vi.mocked(fs.rm).mockImplementation(originalRm);
+      jest.mocked(fs.rm).mockImplementation(originalRm);
     }
   });
 
   it('should handle YAML file creation errors', async () => {
     // Mock fs.writeFile to throw an error
     const originalWriteFile = fs.writeFile;
-    const mockWriteFile = vi.fn().mockRejectedValue(new Error('Disk full'));
-    vi.mocked(fs.writeFile).mockImplementation(mockWriteFile);
+    const mockWriteFile = jest.fn().mockRejectedValue(new Error('Disk full'));
+    jest.mocked(fs.writeFile).mockImplementation(mockWriteFile);
 
     try {
       const result = await runGenerator('app', {
@@ -162,15 +160,15 @@ describe('runGenerator Error Handling', () => {
       expect(result.errorMessage).toContain('Disk full');
     } finally {
       // Restore original implementation
-      vi.mocked(fs.writeFile).mockImplementation(originalWriteFile);
+      jest.mocked(fs.writeFile).mockImplementation(originalWriteFile);
     }
   });
 
   it('should handle directory creation errors', async () => {
     // Mock fs.mkdir to throw an error
     const originalMkdir = fs.mkdir;
-    const mockMkdir = vi.fn().mockRejectedValue(new Error('Permission denied'));
-    vi.mocked(fs.mkdir).mockImplementation(mockMkdir);
+    const mockMkdir = jest.fn().mockRejectedValue(new Error('Permission denied'));
+    jest.mocked(fs.mkdir).mockImplementation(mockMkdir);
 
     try {
       const result = await runGenerator('app', {
@@ -184,17 +182,17 @@ describe('runGenerator Error Handling', () => {
       expect(result.errorMessage).toContain('Permission denied');
     } finally {
       // Restore original implementation
-      vi.mocked(fs.mkdir).mockImplementation(originalMkdir);
+      jest.mocked(fs.mkdir).mockImplementation(originalMkdir);
     }
   });
 
   it('should handle file collection errors', async () => {
     // Mock fs.readdir to throw an error during file collection
     const originalReaddir = fs.readdir;
-    const mockReaddir = vi.fn()
+    const mockReaddir = jest.fn()
       .mockResolvedValueOnce(['some-file.ts']) // First call succeeds
       .mockRejectedValueOnce(new Error('Permission denied')); // Second call fails
-    vi.mocked(fs.readdir).mockImplementation(mockReaddir);
+    jest.mocked(fs.readdir).mockImplementation(mockReaddir);
 
     try {
       const result = await runGenerator('app', {
@@ -208,7 +206,7 @@ describe('runGenerator Error Handling', () => {
       expect(result.files).toBeDefined();
     } finally {
       // Restore original implementation
-      vi.mocked(fs.readdir).mockImplementation(originalReaddir);
+      jest.mocked(fs.readdir).mockImplementation(originalReaddir);
     }
   });
 });

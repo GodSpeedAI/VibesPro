@@ -1,0 +1,41 @@
+{% if architecture_style == "hexagonal" %}
+/**
+ * Application Layer for {{ project_name }}
+ *
+ * Use cases and orchestration logic.
+ * Defines ports (interfaces) for external dependencies.
+ */
+
+import { SampleEntity } from '../domain';
+
+// Port for external dependencies
+export interface SampleRepository {
+  save(entity: SampleEntity): Promise<void>;
+  findById(id: string): Promise<SampleEntity | null>;
+  findAll(): Promise<SampleEntity[]>;
+}
+
+// Use case implementation
+export class SampleUseCase {
+  constructor(private readonly repository: SampleRepository) {}
+
+  async createSample(name: string): Promise<SampleEntity> {
+    const entity = new SampleEntity(this.generateId(), name);
+
+    if (!entity.validate()) {
+      throw new Error('Invalid entity data');
+    }
+
+    await this.repository.save(entity);
+    return entity;
+  }
+
+  async getSample(id: string): Promise<SampleEntity | null> {
+    return await this.repository.findById(id);
+  }
+
+  private generateId(): string {
+    return `sample-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+}
+{% endif %}

@@ -25,6 +25,7 @@
         "tools/**/*.spec.ts",
         "generators/**/*.test.ts",
         "generators/**/*.spec.ts",
+        "generators/**/*.ts",
         "jest.setup.js",
         "jest.d.ts"
     ],

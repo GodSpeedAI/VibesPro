@@ -9,7 +9,7 @@ setup: setup-node setup-python setup-tools
 	@echo "✅ Development environment ready"
 
 setup-node:
-	@echo "🔧 Setting up Node.js environment..."
+	@echo "🛠️ Setting up Node.js environment..."
 	corepack enable
 	pnpm install
 
@@ -161,15 +161,6 @@ db-backup:
 	@echo "💾 Backing up temporal database..."
 	python tools/temporal-db/backup.py
 
-# --- Migration Tools ---
-migrate-hexddd PROJECT_PATH:
-	@echo "🔄 Migrating HexDDD project..."
-	python tools/migration/hexddd-migrator.py {{PROJECT_PATH}}
-
-migrate-vibepdk TEMPLATE_PATH:
-	@echo "🔄 Migrating VibePDK template..."
-	python tools/migration/vibepdk-migrator.py {{TEMPLATE_PATH}}
-
 # --- Type Generation ---
 types-generate:
 	@echo "🏷️  Generating types..."
@@ -195,14 +186,39 @@ clean-all: clean
 	rm -rf pnpm-lock.yaml
 	rm -rf uv.lock
 
-# --- Documentation ---
-docs-build:
-	@echo "📚 Building documentation..."
-	python tools/docs/generator.py
+# --- Documentation Generation ---
+docs-generate PROJECT_NAME="vibes-pro":
+	@echo "📚 Generating comprehensive documentation..."
+	node cli/docs.js generate \
+		--project-name "{{PROJECT_NAME}}" \
+		--description "Modern application with hexagonal architecture and domain-driven design" \
+		--domains core,user,billing \
+		--frameworks next,fastapi \
+		--output-dir docs/generated \
+		--include-ai
 
-docs-serve:
-	@echo "📚 Serving documentation..."
-	python -m http.server 8000 -d docs/build
+docs-templates PROJECT_NAME="vibes-pro" OUTPUT_DIR="templates/docs":
+	@echo "📝 Generating documentation templates..."
+	node cli/docs.js templates \
+		--project-name "{{PROJECT_NAME}}" \
+		--domains core,user,billing \
+		--frameworks next,fastapi \
+		--output-dir "{{OUTPUT_DIR}}" \
+		--include-ai
+
+docs-validate:
+	@echo "🧪 Validating documentation..."
+	node cli/docs.js validate \
+		--output-dir docs/generated
+
+docs-serve PORT="8000":
+	@echo "📚 Serving documentation on port {{PORT}}..."
+	python -m http.server {{PORT}} -d docs/generated
+
+docs-clean:
+	@echo "🧹 Cleaning generated documentation..."
+	rm -rf docs/generated docs/temp
+	rm -rf docs/temp
 
 # --- AI Utilities ---
 ai-analyze PROJECT_PATH:

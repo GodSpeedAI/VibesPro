@@ -1,5 +1,16 @@
 # HexDDD-VibePDK Merger Template Configuration
 _templates_suffix: .j2
+_skip_if_exists:
+  - .gitignore
+  - "*.md"
+_skip:
+  - "tests/"
+  - "coverage/"
+  - "htmlcov/"
+  - "*.pyc"
+  - "__pycache__/"
+  - ".git/"
+  - ".github/workflows/"
 _envops:
   block_start_string: "{%"
   block_end_string: "%}"
@@ -30,6 +41,17 @@ author_email:
   help: "Author's email address"
   default: "developer@example.com"
   validator: "{% if '@' not in author_email %}Invalid email format{% endif %}"
+
+# Defaults to avoid template rendering failures when certain context values are not provided
+domains:
+  type: str
+  help: "Comma-separated list of domain names for generated docs and code"
+  default: ""
+
+base_url:
+  type: str
+  help: "Base URL used in generated API examples"
+  default: "http://localhost:8000"
 
 # Architecture Configuration
 architecture_style:

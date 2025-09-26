@@ -1,0 +1,95 @@
+{% if include_ai_workflows %}
+/**
+ * AI Context Manager for {{ project_name }}
+ *
+ * Provides intelligent context selection for AI-assisted development.
+ * Integrates with temporal database for learning and pattern recognition.
+ */
+
+interface TokenBudget {
+  maxTokens: number;
+  reservedTokens: number;
+}
+
+interface ContextSource {
+  id: string;
+  priority: number;
+  tokenCost: number;
+  getContent(): Promise<string>;
+}
+
+interface OptimalContext {
+  content: string;
+  tokenCount: number;
+  relevanceScore: number;
+}
+
+export class AIContextManager {
+  private budgetConfig: TokenBudget;
+  private sources: ContextSource[];
+
+  constructor(budgetConfig: TokenBudget, sources: ContextSource[]) {
+    this.budgetConfig = budgetConfig;
+    this.sources = sources;
+  }
+
+  async getOptimalContext(query: string): Promise<OptimalContext> {
+    const availableTokens = this.budgetConfig.maxTokens - this.budgetConfig.reservedTokens;
+
+    // Sort sources by relevance and priority
+    const relevantSources = this.sources
+      .filter(source => this.calculateRelevance(source, query) > 0.3)
+      .sort((a, b) => {
+        const aScore = this.calculateRelevance(a, query) * a.priority;
+        const bScore = this.calculateRelevance(b, query) * b.priority;
+        return bScore - aScore;
+      });
+
+    let totalTokens = 0;
+    let content = '';
+    let relevanceScore = 0;
+
+    for (const source of relevantSources) {
+      if (totalTokens + source.tokenCost <= availableTokens) {
+        const sourceContent = await source.getContent();
+        content += sourceContent + '\n\n';
+        totalTokens += source.tokenCost;
+        relevanceScore += this.calculateRelevance(source, query);
+      }
+    }
+
+    return {
+      content,
+      tokenCount: totalTokens,
+      relevanceScore: relevanceScore / relevantSources.length
+    };
+  }
+
+  private calculateRelevance(source: ContextSource, query: string): number {
+    // Simple relevance calculation - in practice, this would use more sophisticated NLP
+    const queryWords = query.toLowerCase().split(' ');
+    const sourceWords = source.id.toLowerCase().split(' ');
+
+    const commonWords = queryWords.filter(word => sourceWords.includes(word));
+    return commonWords.length / queryWords.length;
+  }
+}
+
+// CLI interface
+if (require.main === module) {
+  const args = process.argv.slice(2);
+  const taskDescription = args.find(arg => arg.startsWith('--task='))?.split('=')[1] || '';
+
+  console.log(`Generating AI context for: ${taskDescription}`);
+
+  const manager = new AIContextManager(
+    { maxTokens: 8000, reservedTokens: 2000 },
+    [] // Sources would be populated from project files
+  );
+
+  manager.getOptimalContext(taskDescription).then(context => {
+    console.log(`Generated context with ${context.tokenCount} tokens`);
+    console.log(`Relevance score: ${context.relevanceScore}`);
+  });
+}
+{% endif %}

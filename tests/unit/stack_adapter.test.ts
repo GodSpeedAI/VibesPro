@@ -1,16 +1,18 @@
-import assert from 'node:assert';
 import { getCategory, loadResolvedStack } from '../../generators/_utils/stack';
 
-// This test now properly imports from the source file.
-// It relies on the test runner (tsx) to handle the TypeScript transpilation.
+describe('Stack Adapter Tests', () => {
+    it('should get category from stack configuration', () => {
+        const stack = { categories: { core_application_dependencies: { web_frameworks: ['fastapi'] } } };
 
-// Test getCategory
-const stack = { categories: { core_application_dependencies: { web_frameworks: ['fastapi'] } } };
-assert.deepStrictEqual(getCategory(stack, 'core_application_dependencies')?.web_frameworks, ['fastapi']);
-assert.strictEqual(getCategory(stack, 'missing'), null);
-assert.strictEqual(getCategory(null, 'core_application_dependencies'), null);
+        const result = getCategory(stack, 'core_application_dependencies');
+        expect(result?.web_frameworks).toEqual(['fastapi']);
+        expect(getCategory(stack, 'missing')).toBeNull();
+        expect(getCategory(null, 'core_application_dependencies')).toBeNull();
+    });
 
-// Test loadResolvedStack (will return null as the file doesnt exist in test context without more setup)
-// A more advanced test could create a temporary file structure.
-const resolved = loadResolvedStack('/tmp/non-existent-project');
-assert.strictEqual(resolved, null);
+    it('should handle loadResolvedStack', () => {
+        // Test loadResolvedStack (will return null as the file doesn't exist in test context)
+        const resolved = loadResolvedStack('/tmp/non-existent-project');
+        expect(resolved).toBeNull();
+    });
+});

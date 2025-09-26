@@ -1,0 +1,24 @@
+{
+  "name": "{{ project_slug }}",
+  "version": "0.1.0",
+  "description": "{{ project_name }}",
+  "type": "module",
+  "scripts": {
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "lint": "nx run-many --target=lint --all",
+    "dev": "nx run-many --target=serve --all --parallel=5"
+  },
+  "workspaces": [
+    "apps/*",
+    "libs/*",
+    "tools/*"
+  ],
+  "devDependencies": {
+    "@nx/js": "^19.8.4",
+    "@nx/node": "^19.8.4",
+    "@nx/workspace": "^19.8.4",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
