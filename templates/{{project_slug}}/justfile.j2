@@ -39,6 +39,12 @@ dev:
         pnpm dev --if-present || pnpm start --if-present
     fi
 
+spec-matrix:
+    pnpm spec:matrix
+
+prompt-lint:
+    pnpm prompt:lint
+
 # Setup project
 setup:
     @echo "Setting up {{ project_name }}..."

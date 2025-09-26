@@ -1,0 +1,69 @@
+name: Spec Guard CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile=false
+      - name: Install just
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+          just --version
+      - name: Generate traceability matrix
+        run: just spec-matrix
+      - name: Lint prompts
+        run: just prompt-lint
+      - name: Lint markdown
+        run: pnpm run lint:md
+      - name: Link check docs
+        run: node tools/docs/link_check.js
+      - name: Plan prompts (budget and accurate tokenizer)
+        run: |
+          for f in .github/prompts/*.prompt.md; do
+            [ -e "$f" ] || continue
+            echo "Planning $f (budget check)..."
+            node tools/prompt/plan_preview.js "$f"
+            echo "Planning $f (accurate tokenizer)..."
+            PROMPT_TOKENIZER=accurate node tools/prompt/plan_preview.js --accurate "$f"
+          done
+      - name: Run unit tests
+        run: pnpm run test:node
+      - name: Environment audit
+        run: pnpm run env:audit
+      - name: Upload environment report
+        uses: actions/upload-artifact@v4
+        with:
+          name: environment-report
+          path: docs/environment_report.md
+      - name: Build PR comment
+        if: github.event_name == 'pull_request'
+        run: pnpm run pr:comment
+      - name: Upsert PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const body = fs.readFileSync(path.join(process.cwd(), '.tmp', 'pr_comment.md'), 'utf8');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            // Find existing comment by marker
+            const marker = '<!-- vibePDK-spec-guard:summary -->';
+            const { data: comments } = await github.rest.issues.listComments({ owner, repo, issue_number, per_page: 100 });
+            const prior = comments.find(c => c.body && c.body.includes(marker));
+            if (prior) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: prior.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
