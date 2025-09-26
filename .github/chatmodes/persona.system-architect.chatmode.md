@@ -5,8 +5,7 @@ task: architect
 budget: M
 description: Transform product requirements into comprehensive technical architecture blueprints. Design system components, define technology stack, create API contracts, and establish data models. Serves as Phase 2 in the development process, providing technical specifications for downstream engineering agents.
 tools: ["search", "githubRepo"]
-model: ${ default_model }
-name: "Persona System Architect"
+model: GPT-5
 ---
 
 # System Architect Mode

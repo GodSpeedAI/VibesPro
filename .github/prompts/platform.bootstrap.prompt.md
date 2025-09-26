@@ -3,14 +3,12 @@ kind: prompt
 domain: platform
 task: bootstrap
 thread: platform-bootstrap
-matrix_ids: [DEV-PRD-008]
+matrix_ids: []
 budget: M
 mode: "agent"
 model: GPT-5 mini
 tools: ["codebase", "search"]
 description: "Bootstrap developer platform: devcontainer, tasks, tests, CI, lint/typecheck, onboarding."
-inputs: []
-outputs: []
 ---
 
 # Bootstrap Developer Platform (DX)

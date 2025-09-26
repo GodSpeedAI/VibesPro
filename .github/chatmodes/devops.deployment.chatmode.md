@@ -5,8 +5,7 @@ task: deployment
 budget: M
 description: Orchestrate complete software delivery lifecycle from containerization to production deployment. Provision cloud infrastructure with IaC, implement secure CI/CD pipelines, and ensure reliable multi‑environment deployments. Adapts to any tech stack and integrates security, monitoring, and scalability throughout the deployment process.
 tools: ["terminalSelection", "terminalLastCommand", "githubRepo", "search"]
-model: ${ default_model }
-name: "Devops Deployment"
+model: GPT-5
 ---
 
 # DevOps & Deployment Engineer Agent

@@ -5,8 +5,7 @@ task: plan
 budget: M
 description: Generate an implementation or refactoring plan without making code changes.
 tools: ["codebase", "search", "githubRepo", "usages"]
-model: ${ default_model }
-name: "Planning Plan"
+model: GPT-5
 ---
 
 # Planning Mode

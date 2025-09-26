@@ -7,7 +7,6 @@ budget: M
 description: "Full-spec context for cross-cutting tasks; use after Lean escalation."
 tools: ['codebase', 'editFiles', 'runInTerminal', 'search', 'runTests', 'problems']
 model: GPT-5 mini (Preview)
-name: "Spec Wide"
 ---
 
 # Mode Guidance

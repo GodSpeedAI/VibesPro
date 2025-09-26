@@ -5,8 +5,7 @@ task: backend
 budget: M
 description: Implement robust, scalable server‑side systems from technical specifications. Build APIs, business logic, and data persistence layers with production‑quality standards. Handles database migrations and schema management as part of feature implementation.
 tools: ["terminalSelection", "terminalLastCommand", "githubRepo", "search"]
-model: ${ default_model }
-name: "Persona Senior Backend"
+model: GPT-5
 ---
 
 # Senior Backend Engineer

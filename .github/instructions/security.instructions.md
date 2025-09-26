@@ -16,24 +16,6 @@ precedence: 10
 - Ensure that tasks defined in `.vscode/tasks.json` do not execute arbitrary commands from untrusted sources. Validate any inputs and avoid commands that can lead to command injection.
 - Use the `security-review.prompt.md` file for security audits. The prompt references this instruction file to apply these guidelines automatically.
 
-## Jinja2 Template Security (XSS Prevention)
-
-When using Jinja2 for template rendering in this FastAPI/Copier project:
-
-- **Always use `autoescape=True`** when creating Jinja2 Environment instances to prevent XSS vulnerabilities through HTML escaping.
-- This applies even for offline template validation tools and documentation generators.
-- Mark intentional Jinja2 usage with `# nosemgrep: python.flask.security.xss.audit.direct-use-of-jinja2` and document why autoescape is enabled.
-- Example secure pattern:
-  ```python
-  from jinja2 import Environment, FileSystemLoader, StrictUndefined
-  env = Environment(
-      loader=FileSystemLoader(template_dir),
-      undefined=StrictUndefined,  # Catch undefined variables
-      autoescape=True             # Prevent XSS via HTML escaping
-  )
-  ```
-- Note: Security scanners may flag Flask-specific rules (e.g., `flask.xss`) for this FastAPI project; these are false positives when autoescape is properly configured.
-
 ## Additional compliance reminders
 
 - Map features and code paths to PRD/SDS security requirements when applicable.

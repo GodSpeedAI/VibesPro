@@ -5,8 +5,7 @@ task: nfr
 budget: M
 description: Define and prioritise non‑functional requirements such as performance, scalability, security, and accessibility.
 tools: ["search", "githubRepo"]
-model: ${ default_model }
-name: "Spec Nfr"
+model: GPT-5
 ---
 
 # Non‑Functional Requirements Mode

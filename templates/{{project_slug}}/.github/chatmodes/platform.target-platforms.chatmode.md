@@ -1,11 +1,12 @@
+---
 kind: chatmode
 domain: platform
 task: target-platforms
 budget: S
 description: Decide on the platforms and technology stacks for your product.
 tools: ["search", "githubRepo"]
-model: ${ default_model }
-name: "Platform Target Platforms"
+model: GPT-5
+---
 
 # Target Platforms Mode
 

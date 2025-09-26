@@ -1,26 +1,11 @@
 ---
 kind: chatmode
 domain: product
-task: Describe target audience segments and personas
-budget: low
-model: ${ default_model }
-name: "Product: Target Audience"
-description: |
-	Summarize user segments, needs, and evidence to prioritize features.
-tools: ["search"]
----
-
-## Use this chatmode to analyze who the product serves.
-
-kind: chatmode
-domain: product
 task: target-audience
 budget: S
 description: Identify and understand the target audience for a product or feature.
 tools: ["search", "githubRepo"]
 model: GPT-5
-name: "Product Target Audience"
-
 ---
 
 # Target Audience Mode

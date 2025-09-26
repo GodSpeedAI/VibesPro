@@ -3,7 +3,7 @@ kind: prompt
 domain: docs
 task: generate
 thread: docs-generate
-matrix_ids: [DEV-PRD-007]
+matrix_ids: []
 budget: M
 mode: "agent"
 model: GPT-5 mini

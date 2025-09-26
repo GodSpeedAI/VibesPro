@@ -5,19 +5,10 @@
   "scripts": {
     "build": "nx run-many --target=build --all",
     "test": "nx run-many --target=test --all",
-    "test:node": "tsx tools/test/run_node_tests.ts",
     "lint": "nx run-many --target=lint --all",
-    "lint:md": "markdownlint \"**/*.md\" --config .markdownlint.json",
-    "lint:shell": "shellcheck scripts/*.sh",
     "dev": "nx run-many --target=serve --all --parallel=5",
     "prompt:lint": "for f in .github/prompts/*.prompt.md; do node tools/prompt/lint.js \"$f\" || exit 1; done",
-    "prompt:plan": "for f in .github/prompts/*.prompt.md; do node tools/prompt/plan_preview.js \"$f\" || exit 1; done",
-    "prompt:plan:accurate": "for f in .github/prompts/*.prompt.md; do PROMPT_TOKENIZER=accurate node tools/prompt/plan_preview.js --accurate \"$f\" || exit 1; done",
-    "prompt:lifecycle": "node tools/cli/prompt_lifecycle.js .github/prompts/spec.implement.prompt.md",
-    "spec:matrix": "node tools/spec/matrix.js",
-    "docs:links": "node tools/docs/link_check.js",
-    "env:audit": "node tools/audit/env_audit.js",
-    "pr:comment": "node tools/ci/pr_comment.js"
+    "spec:matrix": "node tools/spec/matrix.js"
   },
   "workspaces": [
     "apps/*",
@@ -25,15 +16,10 @@
     "tools/*"
   ],
   "devDependencies": {
-    "@dqbd/tiktoken": "^1.0.15",
-    "@nx/devkit": "19.8.4",
     "@nx/js": "^19.8.4",
     "@nx/node": "^19.8.4",
     "@nx/workspace": "^19.8.4",
-    "@types/node": "^22.5.4",
-    "markdownlint-cli": "^0.36.0",
-    "nx": "19.8.4",
-    "tsx": "^4.16.2",
-    "typescript": "^5.5.4"
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   }
 }
