@@ -370,6 +370,20 @@ See **[CONTRIBUTING.md](CONTRIBUTING.md)** for detailed guidelines.
 
 This project is licensed under the **Mozilla Public License 2.0** - see the [LICENSE](LICENSE) file for details.
 
+## Notes: pandoc for multi-format documentation
+
+The documentation generator (`tools/docs/generator.py`) produces Markdown by
+default. If you request non-markdown outputs (html, docx, epub), the script
+will attempt to invoke the `pandoc` binary to convert the generated Markdown
+files. Install `pandoc` on your system if you plan to use these formats.
+
+- Ubuntu/Debian: `sudo apt install pandoc`
+- macOS (Homebrew): `brew install pandoc`
+- Windows: download from <https://pandoc.org/installing.html>
+
+If `pandoc` is not found the generator will fall back to writing the
+original Markdown files and will print a warning.
+
 ### Acknowledgments
 
 - **HexDDD Team**: For the foundational hexagonal architecture patterns

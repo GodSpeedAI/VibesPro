@@ -1,9 +1,9 @@
-# testproj API Reference
+# local-test API Reference
 
 ## Base URL
 
 ```
-https://api.testproj.com/v1
+https://api.local-test.com/v1
 ```
 
 ## Authentication

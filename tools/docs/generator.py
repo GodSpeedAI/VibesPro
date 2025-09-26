@@ -11,9 +11,11 @@ import asyncio
 from pathlib import Path
 from typing import Dict, Any
 
+
 # Import the TypeScript generator functions via Node.js bridge
 import subprocess
 import tempfile
+import shutil
 
 def run_ts_generator(output_dir: str, context: Dict[str, Any]) -> Dict[str, Any]:
     """Run the TypeScript documentation generator via Node.js"""
@@ -120,10 +122,22 @@ def main():
 
     parser.add_argument(
         '--format',
-        choices=['markdown', 'html', 'pdf'],
+        choices=['markdown', 'html', 'docx', 'epub'],
         default='markdown',
-        help='Output format for documentation'
+        help='Output format for documentation (markdown|html|docx|epub). Requires pandoc for non-markdown outputs.'
     )
+
+    parser.epilog = (
+        "Supported output formats: markdown (default), html, docx, epub. "
+        "The TypeScript generator produces Markdown; for non-markdown outputs this "
+        "wrapper will attempt to invoke the `pandoc` binary to convert the generated "
+        "Markdown files. If pandoc is not installed the script will fall back to "
+        "writing Markdown files and print a warning."
+    )
+
+    # Note: The TypeScript generator returns Markdown content. For non-markdown
+    # outputs this Python wrapper will invoke `pandoc` (if available) to
+    # convert the generated Markdown into the requested format.
 
     args = parser.parse_args()
 
@@ -153,12 +167,40 @@ def main():
 
         docs = result['docs']
 
-        # Save generated documentation
-        (output_path / 'README.md').write_text(docs['readme'])
-        (output_path / 'ARCHITECTURE.md').write_text(docs['architectureGuide'])
-        (output_path / 'API-REFERENCE.md').write_text(docs['apiDocs'])
+        # Save generated documentation according to requested format
+        fmt = getattr(args, 'format', 'markdown') if hasattr(args, 'format') else 'markdown'
 
-        print(f"✅ Documentation generated successfully in {output_path}")
+        def write_file(name: str, content: str):
+            # Always write markdown file first
+            md_path = output_path / f"{name}.md"
+            md_path.write_text(content)
+
+            if fmt == 'markdown':
+                return md_path
+
+            # For other formats, prefer pandoc if available
+            pandoc = shutil.which('pandoc')
+            if not pandoc:
+                print(f"⚠️  pandoc not found; falling back to writing markdown for {name}")
+                return md_path
+
+            out_ext = 'html' if fmt == 'html' else fmt
+            out_path = output_path / f"{name}.{out_ext}"
+
+            cmd = [pandoc, str(md_path), '-o', str(out_path)]
+            try:
+                subprocess.run(cmd, check=True)
+                return out_path
+            except subprocess.CalledProcessError as e:
+                print(f"❌ pandoc conversion failed for {md_path}: {e}")
+                return md_path
+
+        # Write the main documentation files
+        write_file('README', docs.get('readme', ''))
+        write_file('ARCHITECTURE', docs.get('architectureGuide', ''))
+        write_file('API-REFERENCE', docs.get('apiDocs', ''))
+
+        print(f"✅ Documentation generated successfully in {output_path} (format: {fmt})")
 
         # Generate templates if requested
         if args.templates_dir:
@@ -230,7 +272,7 @@ main();
             else:
                 print(f"❌ Validation failed: {validation_result.stderr}")
 
-        print("\\n📖 Generated Documentation:")
+        print("\n📖 Generated Documentation:")
         print(f"  - README.md: Project overview and getting started")
         print(f"  - ARCHITECTURE.md: Detailed architecture guide")
         print(f"  - API-REFERENCE.md: Complete API documentation")

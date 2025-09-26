@@ -1,6 +1,6 @@
 # Architecture Guide
 
-This document describes the architectural patterns for testproj.
+This document describes the architectural patterns for local-test.
 
 ## Hexagonal Architecture
 

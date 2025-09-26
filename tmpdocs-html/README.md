@@ -1,4 +1,4 @@
-# testproj
+# local-test
 
 A modern application built with hexagonal architecture
 
@@ -11,7 +11,7 @@ This project follows **Hexagonal Architecture** principles with **Domain-Driven 
 ```bash
 # Clone and setup
 git clone <repository-url>
-cd testproj
+cd local-test
 just setup
 just dev
 ```

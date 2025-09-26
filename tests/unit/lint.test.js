@@ -21,41 +21,34 @@ assert.ok(lintResult.findings.some(finding => finding.includes('Model "Invalid-M
 const invalidInstructionPrompt = path.join(tmp, 'invalid_instruction.prompt.md');
 fs.writeFileSync(invalidInstructionPrompt, `---\nname: test\nmodel: GPT-5 mini\nkind: prompt\ndomain: test\ntask: test\nbudget: S\ninstruction: nonexistent.instructions.md\n---\n# Title\nBody`, 'utf8');
 
-const lintResult2 = lintPromptFile(invalidInstructionPrompt);
-assert.strictEqual(lintResult2.ok, false, 'Linter should fail for invalid instruction reference');
-assert.ok(lintResult2.findings.some(finding => finding.includes('Instruction file "nonexistent.instructions.md" not found')), 'Should have finding for invalid instruction reference');
+test('lint prompt file validations (self-contained)', () => {
+  const lintResult2 = lintPromptFile(invalidInstructionPrompt);
+  expect(lintResult2.ok).toBe(false);
+  expect(lintResult2.findings.some(finding => finding.includes('Instruction file "nonexistent.instructions.md" not found'))).toBe(true);
 
-// Test that linter should warn when spec prompts are missing thread frontmatter
-const specTemplatesDir = path.join(path.dirname(path.dirname(__dirname)), '.github', 'prompts');
-const specTemplateFiles = [
-  'spec.plan.adr.prompt.md',
-  'spec.plan.prd.prompt.md',
-  'spec.plan.sds.prompt.md',
-  'spec.plan.ts.prompt.md',
-  'spec.plan.task.prompt.md'
-];
+  // Create spec-like prompt missing 'thread' and 'matrix_ids'
+  const specMissingThread = path.join(tmp, 'spec_missing_thread.prompt.md');
+  fs.writeFileSync(specMissingThread, `---\nname: spec\nkind: prompt\ndomain: test\ntask: test\nmatrix_ids: SAMPLE-1\n---\n# Title\nBody`, 'utf8');
 
-// Test missing thread field (now treated as error)
-for (const templateFile of specTemplateFiles) {
-  const templatePath = path.join(specTemplatesDir, templateFile);
-  const lintResult = lintPromptFile(templatePath);
-  assert.strictEqual(lintResult.ok, false, `Linter should fail for missing thread field in ${templateFile}`);
-  assert.ok(lintResult.findings.some(finding => finding.includes('Missing frontmatter field: thread')), `Should report missing thread field in ${templateFile}`);
-}
+  const resMissingThread = lintPromptFile(specMissingThread);
+  expect(resMissingThread.ok).toBe(false);
+  expect(resMissingThread.findings.some(f => f.includes('Missing frontmatter field: thread'))).toBe(true);
 
-// Test missing matrix_ids field (now treated as error)
-for (const templateFile of specTemplateFiles) {
-  const templatePath = path.join(specTemplatesDir, templateFile);
-  const lintResult = lintPromptFile(templatePath);
-  assert.strictEqual(lintResult.ok, false, `Linter should fail for missing matrix_ids field in ${templateFile}`);
-  assert.ok(lintResult.findings.some(finding => finding.includes('Missing frontmatter field: matrix_ids')), `Should report missing matrix_ids field in ${templateFile}`);
-}
+  const specMissingMatrix = path.join(tmp, 'spec_missing_matrix.prompt.md');
+  fs.writeFileSync(specMissingMatrix, `---\nname: spec\nkind: prompt\ndomain: test\ntask: test\nthread: example-thread\n---\n# Title\nBody`, 'utf8');
 
-// Cleanup temp files
-try {
-  fs.unlinkSync(invalidModelPrompt);
-  fs.unlinkSync(invalidInstructionPrompt);
-  fs.rmdirSync(tmp);
-} catch (e) {
-  // best effort cleanup
-}
+  const resMissingMatrix = lintPromptFile(specMissingMatrix);
+  expect(resMissingMatrix.ok).toBe(false);
+  expect(resMissingMatrix.findings.some(f => f.includes('Missing frontmatter field: matrix_ids'))).toBe(true);
+
+  // Cleanup temp files
+  try {
+    fs.unlinkSync(invalidModelPrompt);
+    fs.unlinkSync(invalidInstructionPrompt);
+    fs.unlinkSync(specMissingThread);
+    fs.unlinkSync(specMissingMatrix);
+    fs.rmdirSync(tmp);
+  } catch (e) {
+    // best effort cleanup
+  }
+});
