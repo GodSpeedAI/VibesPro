@@ -106,8 +106,8 @@ jobs:
           set -euo pipefail
           PANDOC_URL=https://github.com/jgm/pandoc/releases/download/3.8/pandoc-3.8-linux-amd64.tar.gz
           curl -L "$PANDOC_URL" -o /tmp/pandoc.tar.gz
-          mkdir -p /tmp/pandoc && tar -xzf /tmp/pandoc.tar.gz -C /tmp/pandoc
-          sudo cp /tmp/pandoc/pandoc /usr/local/bin/
+          mkdir -p /tmp/pandoc && tar -xzf /tmp/pandoc.tar.gz -C /tmp/pandoc --strip-components=1
+          sudo cp /tmp/pandoc/bin/pandoc /usr/local/bin/
           sudo chmod +x /usr/local/bin/pandoc
           pandoc --version
 
