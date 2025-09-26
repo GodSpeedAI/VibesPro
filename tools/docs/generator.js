@@ -10,8 +10,14 @@ import path from 'path';
 const DEFAULT_LICENSE = 'MIT License';
 const FALLBACK_DESCRIPTION = 'Project description pending.';
 
-const normalizeArray = value => (Array.isArray(value) ? [...value] : []);
-
+const normalizeArray = value => {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === 'string') return value
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+  return [];
+};
 export class DocumentationGenerator {
   constructor(outputDir) {
     this.outputDir = outputDir;
