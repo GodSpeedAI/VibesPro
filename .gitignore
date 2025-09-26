@@ -68,3 +68,4 @@ pids
 
 # Temporary docs output used by local generator smoke tests
 tmpdocs/
+tmpdocs-html/
