@@ -246,7 +246,7 @@ ${license}
 
 ### Data Models
 
-See [Type Definitions](../libs/shared/database-types/) for complete data models.
+See `libs/shared/database-types/` for complete data models.
 `;
         }).join('\n')
       : `## Domains
