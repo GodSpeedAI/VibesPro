@@ -156,8 +156,18 @@ just ai-suggest "implement user authentication"
 - **PostgreSQL**: Primary database with type-safe queries{% endif %}
 
 ### Framework Stack
+{# Ensure frameworks list exists; derive from app/backend frameworks if needed #}
+{% if frameworks is not defined %}
+  {% set frameworks = [] %}
+  {% if app_framework is defined and app_framework %}
+    {% set frameworks = frameworks + [app_framework] %}
+  {% endif %}
+  {% if backend_framework is defined and backend_framework %}
+    {% set frameworks = frameworks + [backend_framework] %}
+  {% endif %}
+{% endif %}
 {% for framework in frameworks %}
-- **{{framework}}**: {% if framework == "next" %}React framework for web applications{% elif framework == "fastapi" %}Modern Python API framework{% elif framework == "remix" %}Full-stack React framework{% elif framework == "expo" %}React Native for mobile development{% endif %}
+- **{{ framework }}**: {% if framework == "next" %}React framework for web applications{% elif framework == "fastapi" %}Modern Python API framework{% elif framework == "remix" %}Full-stack React framework{% elif framework == "expo" %}React Native for mobile development{% endif %}
 {% endfor %}
 
 ### Development Tools
