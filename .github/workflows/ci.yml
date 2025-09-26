@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -14,38 +21,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Enable Corepack and prepare pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9 --activate
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "20"
           cache: "pnpm"
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python and uv
+        uses: astral-sh/setup-uv@v2
         with:
           python-version: "3.12"
 
-      - name: Install uv
-        run: pip install uv
-
       - name: Install just
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        uses: taiki-e/install-action@v2
+        with:
+          tool: just
 
       - name: Install Node dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Python dependencies
+        run: uv sync --group dev --all-extras --frozen
 
       - name: Build projects
         run: pnpm build
-
-      - name: Install Python dependencies
-        run: uv sync --no-dev
 
       - name: Lint
         run: |
@@ -58,7 +63,6 @@ jobs:
           uv run pytest
 
       - name: Validate template
-        run: |
-          just test-generation
+        run: just test-generation
         env:
           UV_NO_SYNC: "1"
