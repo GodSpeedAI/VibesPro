@@ -1,4 +1,6 @@
 name: Docs generator CI
+permissions:
+  contents: read
 
 on:
   push:
