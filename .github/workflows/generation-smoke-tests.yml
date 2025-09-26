@@ -34,10 +34,13 @@ jobs:
           node-version: "20"
           cache: "pnpm"
 
-      - name: Set up Python and uv
-        uses: astral-sh/setup-uv@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
 
       - name: Render template to temporary dir
         run: |
