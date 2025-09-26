@@ -25,7 +25,16 @@ def generate_report(metrics_file: str | Path, output_file: str | Path) -> None:
         f.write("|--------------------|---------------|---------------|--------|\n")
 
         # Generation Time
-        gen_time_ms = float(metrics.get("generationTime", 0.0))
+        def _as_float(value: Any, *, default: float) -> float:
+            if value is None:
+                return default
+            try:
+                return float(value)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"Expected numeric metric value, got {value!r}") from exc
+
+        # Generation Time
+        gen_time_ms = _as_float(metrics.get("generationTime"), default=0.0)
         gen_time = gen_time_ms / 1000.0
         gen_threshold = 30
         gen_status = "✅" if gen_time < gen_threshold else "❌"
@@ -34,7 +43,7 @@ def generate_report(metrics_file: str | Path, output_file: str | Path) -> None:
         )
 
         # Build Time
-        build_time_ms = float(metrics.get("buildTime", 0.0))
+        build_time_ms = _as_float(metrics.get("buildTime"), default=0.0)
         build_time = build_time_ms / 1000.0
         build_threshold = 120
         build_status = "✅" if build_time < build_threshold else "❌"
@@ -43,7 +52,7 @@ def generate_report(metrics_file: str | Path, output_file: str | Path) -> None:
         )
 
         # Memory Usage
-        mem_usage_bytes = float(metrics.get("memoryUsage", 0.0))
+        mem_usage_bytes = _as_float(metrics.get("memoryUsage"), default=0.0)
         mem_usage = mem_usage_bytes / (1024.0 * 1024.0)
         mem_threshold = 512
         mem_status = "✅" if mem_usage < mem_threshold else "❌"
