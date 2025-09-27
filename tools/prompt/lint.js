@@ -6,6 +6,7 @@
  */
 const fs = require('node:fs');
 const path = require('node:path');
+const { extractFrontmatter, stripQuotes } = require('../utils/frontmatter');
 
 // Constants
 const FILE_EXTENSIONS = {
@@ -30,13 +31,6 @@ const RECOMMENDED_FIELDS = {
 const GITHUB_DIR = path.join(path.dirname(path.dirname(__dirname)), '.github');
 
 // Utility functions
-function stripQuotes(value) {
-  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith('\'') && value.endsWith('\''))) {
-    return value.slice(1, -1);
-  }
-  return value;
-}
-
 function handleFileError(error, filePath, operation) {
   const baseMessage = `[prompt:lint] Warning: ${operation} ${filePath}`;
 
@@ -170,46 +164,7 @@ function classify(file) {
 }
 
 // Frontmatter extraction and parsing
-function extractFrontmatter(text) {
-  if (!text || typeof text !== 'string') {
-    return { raw: null, fields: {} };
-  }
-
-  const m = text.match(/^---\n([\s\S]*?)\n---/m);
-  if (!m) return { raw: null, fields: {} };
-
-  const raw = m[1];
-  const fields = {};
-
-  // Skip empty frontmatter
-  if (!raw || raw.trim().length === 0) {
-    return { raw, fields: {} };
-  }
-
-  // naive YAML: key: value on single line (ignore arrays/objects except simple scalars)
-  for (const line of raw.split(/\r?\n/)) {
-    // Skip empty lines and comments
-    const trimmedLine = line.trim();
-    if (!trimmedLine || trimmedLine.startsWith('#')) {
-      continue;
-    }
-
-    const mm = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*(.+)$/);
-    if (!mm) continue;
-
-    const key = mm[1].trim();
-    let val = mm[2].trim();
-
-    // strip quotes if present
-    val = stripQuotes(val);
-
-    // Validate key and value
-    if (key && key.length > 0 && val !== undefined) {
-      fields[key] = val;
-    }
-  }
-  return { raw, fields };
-}
+// extractFrontmatter and stripQuotes are provided by tools/utils/frontmatter.js
 
 // Validation functions
 function validateInstructionField(fields, findings) {
