@@ -5,7 +5,7 @@ task: analyst
 budget: M
 description: Comprehensive security analysis and vulnerability assessment for applications and infrastructure. Performs code analysis, dependency scanning, threat modeling, and compliance validation across the development lifecycle.
 tools: ["search", "githubRepo"]
-model: GPT-5
+model: GPT-5 mini
 ---
 
 # Security Analyst Agent

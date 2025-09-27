@@ -1,14 +1,24 @@
+```chatmode
 ---
 kind: chatmode
 domain: debug
 task: fix
 budget: S
-model: ${ default_model }
-name: "Debug Fix Mode"
+model: GPT-5 mini
 description: Minimal debug.fix chatmode placeholder
-tools: ["codebase", "search"]
 ---
 
 # Debug Fix Mode
 
 This chatmode is a small placeholder used for TDD/debug workflows.
+
+```
+(---
+kind: chatmode
+domain: debug
+task: fix
+budget: S
+model: GPT-5 mini
+description: Minimal debug.fix chatmode placeholder
+---
+)
