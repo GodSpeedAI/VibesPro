@@ -26,10 +26,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
 
     - name: Setup Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
       with:
         python-version: '3.11'
 
@@ -55,7 +55,7 @@ jobs:
           --output="ai-suggestions.md"{% endraw %}
 
     - name: Create pull request with suggestions
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@4e1beaa7521e8b457b572c090b25bd3db56bf1c5 # v5.0.3
       with:
         {% raw %}token: ${{ secrets.GITHUB_TOKEN }}{% endraw %}
         {% raw %}commit-message: "AI: ${{ github.event.inputs.task_description }}"{% endraw %}
