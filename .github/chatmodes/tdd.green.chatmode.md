@@ -13,6 +13,7 @@ description: TDD green placeholder
 Placeholder for TDD green chatmode.
 
 ```
+
 (---
 kind: chatmode
 domain: tdd
@@ -20,5 +21,7 @@ task: green
 budget: S
 model: GPT-5 mini
 description: TDD green placeholder
+
 ---
+
 )
