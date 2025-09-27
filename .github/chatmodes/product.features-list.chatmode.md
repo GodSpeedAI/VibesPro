@@ -5,7 +5,7 @@ task: features-list
 budget: M
 description: Collaboratively list and prioritise product features in MECE categories.
 tools: ['search', 'githubRepo']
-model: GPT-5
+model: GPT-5 mini
 ---
 
 # Features List Mode
