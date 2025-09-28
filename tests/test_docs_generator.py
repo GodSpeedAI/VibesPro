@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 
-def test_generate_templates_via_python_wrapper(tmp_path):
+def test_generate_templates_via_python_wrapper(tmp_path: Path) -> None:
     """Integration: call tools/docs/generator.py to generate templates using a temp context.
 
     This exercises the code path that creates a temporary JSON context file and
