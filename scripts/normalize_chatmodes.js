@@ -5,131 +5,131 @@ const path = require('path');
 const ROOT = process.cwd();
 
 async function walk(dir, list = []) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  for (const e of entries) {
-    const p = path.join(dir, e.name);
-    if (e.isDirectory()) {
-      await walk(p, list);
-    } else if (e.isFile() && p.endsWith('.chatmode.md')) {
-      list.push(p);
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    for (const e of entries) {
+        const p = path.join(dir, e.name);
+        if (e.isDirectory()) {
+            await walk(p, list);
+        } else if (e.isFile() && p.endsWith('.chatmode.md')) {
+            list.push(p);
+        }
     }
-  }
-  return list;
+    return list;
 }
 
 function titleFromFilename(fn) {
-  const base = path.basename(fn, '.chatmode.md');
-  const parts = base.split(/[._\-]/).filter(Boolean);
-  return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+    const base = path.basename(fn, '.chatmode.md');
+    const parts = base.split(/[._\-]/).filter(Boolean);
+    return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
 }
 
 function defaultToolsForFilename(fn) {
-  const lower = fn.toLowerCase();
-  if (lower.includes('debug')) return ['codebase', 'search', 'runInTerminal', 'runTests'];
-  if (lower.includes('tdd')) return ['codebase', 'search', 'runTests'];
-  if (lower.includes('spec') || lower.includes('specs')) return ['codebase', 'search'];
-  if (lower.includes('persona') || lower.includes('product')) return ['codebase', 'search'];
-  return ['codebase', 'search'];
+    const lower = fn.toLowerCase();
+    if (lower.includes('debug')) return ['codebase', 'search', 'runInTerminal', 'runTests'];
+    if (lower.includes('tdd')) return ['codebase', 'search', 'runTests'];
+    if (lower.includes('spec') || lower.includes('specs')) return ['codebase', 'search'];
+    if (lower.includes('persona') || lower.includes('product')) return ['codebase', 'search'];
+    return ['codebase', 'search'];
 }
 
 function joinToolsArray(arr) {
-  return '[' + arr.map(s => `"${s}"`).join(', ') + ']';
+    return '[' + arr.map(s => `"${s}"`).join(', ') + ']';
 }
 
 async function processFile(file) {
-  let changed = false;
-  let text = await fs.readFile(file, 'utf8');
+    let changed = false;
+    let text = await fs.readFile(file, 'utf8');
 
-  const firstDash = text.indexOf('---');
-  if (firstDash === -1 || firstDash > 200) {
-    return { file, changed: false, reason: 'no-frontmatter' };
-  }
-  const secondDash = text.indexOf('---', firstDash + 3);
-  if (secondDash === -1) return { file, changed: false, reason: 'no-closing-frontmatter' };
-
-  const fmStart = firstDash + 3;
-  const fmContent = text.slice(fmStart, secondDash).trim();
-
-  let rest = text.slice(secondDash + 3);
-  rest = rest.replace(/^\s*```[a-zA-Z0-9_-]*\n?/, '');
-
-  let fmLines = fmContent.split(/\r?\n/).map(l => l.replace(/\r?\n$/, ''));
-
-  const hasName = fmLines.some(l => /^name\s*:/.test(l));
-  const hasTools = fmLines.some(l => /^tools\s*:/.test(l));
-
-  if (!hasName) {
-    const name = titleFromFilename(file);
-    let insertIndex = fmLines.findIndex(l => /^model\s*:/.test(l));
-    if (insertIndex === -1) insertIndex = fmLines.findIndex(l => /^task\s*:/.test(l));
-    if (insertIndex === -1) insertIndex = fmLines.findIndex(l => /^domain\s*:/.test(l));
-    const entry = `name: "${name}"`;
-    if (insertIndex === -1) {
-      fmLines.unshift(entry);
-    } else {
-      fmLines.splice(insertIndex + 1, 0, entry);
+    const firstDash = text.indexOf('---');
+    if (firstDash === -1 || firstDash > 200) {
+        return { file, changed: false, reason: 'no-frontmatter' };
     }
-    changed = true;
-  }
+    const secondDash = text.indexOf('---', firstDash + 3);
+    if (secondDash === -1) return { file, changed: false, reason: 'no-closing-frontmatter' };
 
-  if (!hasTools) {
-    const tools = defaultToolsForFilename(file);
-    let insertIndex = fmLines.findIndex(l => /^name\s*:/.test(l));
-    if (insertIndex === -1) insertIndex = fmLines.findIndex(l => /^model\s*:/.test(l));
-    if (insertIndex === -1) insertIndex = fmLines.findIndex(l => /^task\s*:/.test(l));
-    const entry = `tools: ${joinToolsArray(tools)}`;
-    if (insertIndex === -1) {
-      fmLines.push(entry);
-    } else {
-      fmLines.splice(insertIndex + 1, 0, entry);
+    const fmStart = firstDash + 3;
+    const fmContent = text.slice(fmStart, secondDash).trim();
+
+    let rest = text.slice(secondDash + 3);
+    rest = rest.replace(/^\s*```[a-zA-Z0-9_-]*\n?/, '');
+
+    let fmLines = fmContent.split(/\r?\n/).map(l => l.replace(/\r?\n$/, ''));
+
+    const hasName = fmLines.some(l => /^name\s*:/.test(l));
+    const hasTools = fmLines.some(l => /^tools\s*:/.test(l));
+
+    if (!hasName) {
+        const name = titleFromFilename(file);
+        let insertIndex = fmLines.findIndex(l => /^model\s*:/.test(l));
+        if (insertIndex === -1) insertIndex = fmLines.findIndex(l => /^task\s*:/.test(l));
+        if (insertIndex === -1) insertIndex = fmLines.findIndex(l => /^domain\s*:/.test(l));
+        const entry = `name: "${name}"`;
+        if (insertIndex === -1) {
+            fmLines.unshift(entry);
+        } else {
+            fmLines.splice(insertIndex + 1, 0, entry);
+        }
+        changed = true;
     }
-    changed = true;
-  }
 
-  const normalized = ['---', ...fmLines, '---'].join('\n') + '\n\n';
+    if (!hasTools) {
+        const tools = defaultToolsForFilename(file);
+        let insertIndex = fmLines.findIndex(l => /^name\s*:/.test(l));
+        if (insertIndex === -1) insertIndex = fmLines.findIndex(l => /^model\s*:/.test(l));
+        if (insertIndex === -1) insertIndex = fmLines.findIndex(l => /^task\s*:/.test(l));
+        const entry = `tools: ${joinToolsArray(tools)}`;
+        if (insertIndex === -1) {
+            fmLines.push(entry);
+        } else {
+            fmLines.splice(insertIndex + 1, 0, entry);
+        }
+        changed = true;
+    }
 
-  const secondDashEnd = secondDash + 3;
-  let trailing = text.slice(secondDashEnd);
-  trailing = trailing.replace(/^\s*```[a-zA-Z0-9_-]*\n?/, '');
+    const normalized = ['---', ...fmLines, '---'].join('\n') + '\n\n';
 
-  const newContent = normalized + trailing.trimStart();
+    const secondDashEnd = secondDash + 3;
+    let trailing = text.slice(secondDashEnd);
+    trailing = trailing.replace(/^\s*```[a-zA-Z0-9_-]*\n?/, '');
 
-  if (changed) {
-    await fs.writeFile(file, newContent, 'utf8');
-    return { file, changed: true };
-  }
-  return { file, changed: false };
+    const newContent = normalized + trailing.trimStart();
+
+    if (changed) {
+        await fs.writeFile(file, newContent, 'utf8');
+        return { file, changed: true };
+    }
+    return { file, changed: false };
 }
 
 async function main() {
-  console.log('Scanning for .chatmode.md files...');
-  const all = await walk(ROOT);
-  if (all.length === 0) {
-    console.log('No .chatmode.md files found.');
-    return;
-  }
-
-  let modified = [];
-  let skipped = [];
-  for (const f of all) {
-    try {
-      const r = await processFile(f);
-      if (r.changed) modified.push(f);
-      else skipped.push({ f, reason: r.reason || 'unchanged' });
-    } catch (err) {
-      console.error('ERROR processing', f, err);
+    console.log('Scanning for .chatmode.md files...');
+    const all = await walk(ROOT);
+    if (all.length === 0) {
+        console.log('No .chatmode.md files found.');
+        return;
     }
-  }
 
-  console.log('\nSummary:');
-  console.log('Total chatmodes found:', all.length);
-  console.log('Modified:', modified.length);
-  if (modified.length) modified.forEach(m => console.log('  +', path.relative(ROOT, m)));
-  console.log('Unchanged/Skipped:', skipped.length);
-  if (skipped.length && skipped.length < 50) skipped.forEach(s => console.log('  -', path.relative(ROOT, s.f), s.reason));
+    let modified = [];
+    let skipped = [];
+    for (const f of all) {
+        try {
+            const r = await processFile(f);
+            if (r.changed) modified.push(f);
+            else skipped.push({ f, reason: r.reason || 'unchanged' });
+        } catch (err) {
+            console.error('ERROR processing', f, err);
+        }
+    }
+
+    console.log('\nSummary:');
+    console.log('Total chatmodes found:', all.length);
+    console.log('Modified:', modified.length);
+    if (modified.length) modified.forEach(m => console.log('  +', path.relative(ROOT, m)));
+    console.log('Unchanged/Skipped:', skipped.length);
+    if (skipped.length && skipped.length < 50) skipped.forEach(s => console.log('  -', path.relative(ROOT, s.f), s.reason));
 }
 
 main().catch(err => {
-  console.error('Fatal error', err);
-  process.exit(2);
+    console.error('Fatal error', err);
+    process.exit(2);
 });
