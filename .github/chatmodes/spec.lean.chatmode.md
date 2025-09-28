@@ -7,6 +7,7 @@ budget: M
 description: "Use indexes to locate exact spec items; load only referenced sections (Lean default)."
 tools: ["codebase", "editFiles", "search", "runTests", "problems"]
 model: GPT-5 mini (Preview)
+name: "Spec Lean"
 ---
 
 # Mode Guidance

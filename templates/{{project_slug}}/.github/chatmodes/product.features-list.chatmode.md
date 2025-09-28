@@ -6,6 +6,7 @@ budget: M
 description: Collaboratively list and prioritise product features in MECE categories.
 tools: ['search', 'githubRepo']
 model: GPT-5
+name: "Product Features List"
 ---
 
 # Features List Mode

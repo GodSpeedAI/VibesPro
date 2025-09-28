@@ -6,6 +6,7 @@ budget: M
 description: Define and prioritise non‑functional requirements such as performance, scalability, security, and accessibility.
 tools: ["search", "githubRepo"]
 model: GPT-5 mini
+name: "Spec Nfr"
 ---
 
 # Non‑Functional Requirements Mode

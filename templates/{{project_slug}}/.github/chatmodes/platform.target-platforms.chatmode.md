@@ -6,6 +6,7 @@ budget: S
 description: Decide on the platforms and technology stacks for your product.
 tools: ["search", "githubRepo"]
 model: GPT-5
+name: "Platform Target Platforms"
 ---
 
 # Target Platforms Mode
