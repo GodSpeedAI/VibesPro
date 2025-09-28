@@ -61,7 +61,7 @@ const models = loadModels(modelsPath);
 console.log('Loaded models:', Object.keys(models));
 
 const chatDir = path.join(repoRoot, '.github', 'chatmodes');
-  const files = fs.readdirSync(chatDir).filter(f => f.endsWith('.chatmode.md'));
+const files = fs.readdirSync(chatDir).filter(f => f.endsWith('.chatmode.md'));
 let failed = false;
 for (const f of files) {
   const fp = path.join(chatDir, f);
