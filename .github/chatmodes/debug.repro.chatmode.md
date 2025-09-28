@@ -3,7 +3,7 @@ kind: chatmode
 domain: debug
 task: repro
 budget: S
-model: GPT-5 mini
+model: ${ default_model }
 name: "Debug Repro Mode"
 description: Minimal debug.repro chatmode placeholder
 tools: ["codebase", "search"]

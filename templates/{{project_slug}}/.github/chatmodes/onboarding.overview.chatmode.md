@@ -1,6 +1,19 @@
 ---
 kind: chatmode
 domain: onboarding
+task: Provide a high-level overview and first steps for new contributors
+budget: low
+model: ${ default_model }
+name: "Onboarding Overview"
+description: |
+	Explain the project layout, how to run tests, and useful pointers for first contributions.
+tools: ["codebase", "search"]
+---
+
+Use this chatmode to welcome and orient new contributors.
+---
+kind: chatmode
+domain: onboarding
 task: overview
 budget: S
 name: "Project Onboarding"

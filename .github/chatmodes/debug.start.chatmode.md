@@ -4,7 +4,7 @@ kind: chatmode
 domain: debug
 task: start
 budget: S
-model: GPT-5 mini
+model: ${ default_model }
 name: "Debug Start Mode"
 description: Minimal debug.start chatmode placeholder
 tools: ["codebase", "search"]

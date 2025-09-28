@@ -4,7 +4,7 @@ kind: chatmode
 domain: tdd
 task: green
 budget: S
-model: GPT-5 mini
+model: ${ default_model }
 name: "TDD Green Mode"
 description: TDD green placeholder
 tools: ["codebase", "search", "runTests"]

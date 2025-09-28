@@ -3,7 +3,7 @@ kind: chatmode
 domain: onboarding
 task: overview
 budget: S
-model: GPT-5 mini
+model: ${ default_model }
 name: "Project Onboarding"
 description: "Guide new contributors to specs, guardrails, prompts, and lifecycle commands."
 tools: ["codebase", "search"]

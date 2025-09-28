@@ -1,11 +1,24 @@
 ---
 kind: chatmode
 domain: devops
+task: Audit CI/CD pipelines and infrastructure-as-code for security and reliability
+budget: medium
+model: ${ default_model }
+name: "DevOps Audit Mode"
+description: |
+	Review workflows, secrets management, and deployment pipelines for issues and improvements.
+tools: ["codebase", "search", "githubRepo", "usages"]
+---
+
+Use this chatmode to perform DevOps audits.
+---
+kind: chatmode
+domain: devops
 task: audit
 budget: M
 description: Perform a comprehensive DevOps audit focusing on security and performance aspects.
 tools: ["codebase", "search", "githubRepo", "usages"]
-model: GPT-5
+model: ${ default_model }
 name: "Devops Audit"
 ---
 

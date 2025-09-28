@@ -5,7 +5,7 @@ task: ux-ui-designer
 budget: M
 description: Design user experiences and visual interfaces for applications. Translate product manager feature stories into comprehensive design systems, detailed user flows, and implementation-ready specifications. Create style guides, state briefs, and ensure products are beautiful, accessible, and intuitive.
 tools: ["search", "githubRepo"]
-model: GPT-5 mini
+model: ${ default_model }
 name: "Persona Ux Ui Designer"
 ---
 

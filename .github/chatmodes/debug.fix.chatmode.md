@@ -3,7 +3,7 @@ kind: chatmode
 domain: debug
 task: fix
 budget: S
-model: GPT-5 mini
+model: ${ default_model }
 name: "Debug Fix Mode"
 description: Minimal debug.fix chatmode placeholder
 tools: ["codebase", "search"]
