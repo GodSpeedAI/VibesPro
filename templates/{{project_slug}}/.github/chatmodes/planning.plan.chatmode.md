@@ -1,11 +1,24 @@
 ---
 kind: chatmode
 domain: planning
+task: Help create a lightweight plan and milestones for a feature or sprint
+budget: low
+model: ${ default_model }
+name: "Planning: Feature Plan"
+description: |
+  Outline milestones, scope, and risks for a short planning horizon.
+tools: ["codebase", "search"]
+---
+
+Use this chatmode to draft plans and acceptance criteria.
+---
+kind: chatmode
+domain: planning
 task: plan
 budget: M
 description: Generate an implementation or refactoring plan without making code changes.
 tools: ["codebase", "search", "githubRepo", "usages"]
-model: GPT-5
+model: ${ default_model }
 name: "Planning Plan"
 ---
 

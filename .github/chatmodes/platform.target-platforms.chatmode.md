@@ -5,7 +5,7 @@ task: target-platforms
 budget: S
 description: Decide on the platforms and technology stacks for your product.
 tools: ["search", "githubRepo"]
-model: GPT-5 mini
+model: ${ default_model }
 name: "Platform Target Platforms"
 ---
 

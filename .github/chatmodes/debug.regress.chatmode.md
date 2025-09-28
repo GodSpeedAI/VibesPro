@@ -3,7 +3,7 @@ kind: chatmode
 domain: debug
 task: regress
 budget: S
-model: GPT-5 mini
+model: ${ default_model }
 name: "Debug Regress Mode"
 description: Minimal debug.regress chatmode placeholder
 tools: ["codebase", "search"]

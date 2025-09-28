@@ -5,7 +5,7 @@ task: elevator-pitch
 budget: S
 description: Summarise the core idea of a project into a concise elevator pitch.
 tools: ["search", "githubRepo"]
-model: GPT-5 mini
+model: ${ default_model }
 name: "Product Elevator Pitch"
 ---
 

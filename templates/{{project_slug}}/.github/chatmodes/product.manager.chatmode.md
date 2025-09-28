@@ -5,7 +5,7 @@ task: manager
 budget: M
 description: Transform raw ideas or business goals into structured, actionable product plans. Create user personas, detailed user stories, and prioritized feature backlogs. Use for product strategy, requirements gathering, and roadmap planning.
 tools: ["search", "githubRepo"]
-model: GPT-5
+model: ${ default_model }
 name: "Product Manager"
 ---
 

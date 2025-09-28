@@ -1,11 +1,24 @@
 ---
 kind: chatmode
 domain: devops
+task: Plan and troubleshoot deployments across environments
+budget: medium
+model: ${ default_model }
+name: "DevOps Deployment Mode"
+description: |
+  Assist with deployment strategies, rollback plans, and troubleshooting failed releases.
+tools: ["codebase", "search", "githubRepo"]
+---
+
+Use this chatmode for deployment planning and incident response.
+---
+kind: chatmode
+domain: devops
 task: deployment
 budget: M
 description: Orchestrate complete software delivery lifecycle from containerization to production deployment. Provision cloud infrastructure with IaC, implement secure CI/CD pipelines, and ensure reliable multi‑environment deployments. Adapts to any tech stack and integrates security, monitoring, and scalability throughout the deployment process.
 tools: ["terminalSelection", "terminalLastCommand", "githubRepo", "search"]
-model: GPT-5
+model: ${ default_model }
 name: "Devops Deployment"
 ---
 
