@@ -131,12 +131,12 @@ class DocumentationGenerator {
 
     const domainDocs = domains.length > 0
       ? domains
-          .map((domain) => {
-            const domainName = domain.charAt(0).toUpperCase() + domain.slice(1);
-            const domainSlug = domain.toLowerCase().replace(/\s+/g, '-');
-            return `## ${domainName} Domain API\n\n### Endpoints\n\n- **GET** /api/${domainSlug} - List all ${domainName} entities\n- **POST** /api/${domainSlug} - Create new ${domainName} entity\n- **GET** /api/${domainSlug}/:id - Get specific ${domainName} entity\n- **PUT** /api/${domainSlug}/:id - Update ${domainName} entity\n- **DELETE** /api/${domainSlug}/:id - Delete ${domainName} entity\n\n### Data Models\n\nSee \`libs/shared/database-types/\` for complete data models.\n`;
-          })
-          .join('\n')
+        .map((domain) => {
+          const domainName = domain.charAt(0).toUpperCase() + domain.slice(1);
+          const domainSlug = domain.toLowerCase().replace(/\s+/g, '-');
+          return `## ${domainName} Domain API\n\n### Endpoints\n\n- **GET** /api/${domainSlug} - List all ${domainName} entities\n- **POST** /api/${domainSlug} - Create new ${domainName} entity\n- **GET** /api/${domainSlug}/:id - Get specific ${domainName} entity\n- **PUT** /api/${domainSlug}/:id - Update ${domainName} entity\n- **DELETE** /api/${domainSlug}/:id - Delete ${domainName} entity\n\n### Data Models\n\nSee \`libs/shared/database-types/\` for complete data models.\n`;
+        })
+        .join('\n')
       : `## Domains\n\nNo domain endpoints defined yet.\n`;
 
     return `# ${projectName} API Reference\n\n## Base URL\n\n\`\`\`\nhttps://api.${normalizedProjectSlug}.com/v1\n\`\`\`\n\n## Authentication\n\nAll API endpoints require authentication:\n\n\`\`\`\nAuthorization: Bearer <your-token>\n\`\`\`\n\n${domainDocs}\n\n## Error Handling\n\n\`\`\`json\n{\n  "error": {\n    "code": "ERROR_CODE",\n    "message": "Human readable error message"\n  }\n}\n\`\`\`\n`;
@@ -151,11 +151,11 @@ class DocumentationGenerator {
 
     const domainSections = domains.length > 0
       ? domains
-          .map((domain) => {
-            const domainName = domain.charAt(0).toUpperCase() + domain.slice(1);
-            return `#### ${domainName} Domain\n\n- **Entities**: Core business objects with identity\n- **Value Objects**: Immutable data structures\n- **Domain Services**: Complex business operations\n- **Repository Interfaces**: Data access abstractions\n`;
-          })
-          .join('\n\n')
+        .map((domain) => {
+          const domainName = domain.charAt(0).toUpperCase() + domain.slice(1);
+          return `#### ${domainName} Domain\n\n- **Entities**: Core business objects with identity\n- **Value Objects**: Immutable data structures\n- **Domain Services**: Complex business operations\n- **Repository Interfaces**: Data access abstractions\n`;
+        })
+        .join('\n\n')
       : '';
 
     const boundedContextsSection = domainSections
