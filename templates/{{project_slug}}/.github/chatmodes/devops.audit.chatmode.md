@@ -10,8 +10,8 @@ description: |
 tools: ["codebase", "search", "githubRepo", "usages"]
 ---
 
-Use this chatmode to perform DevOps audits.
----
+## Use this chatmode to perform DevOps audits.
+
 kind: chatmode
 domain: devops
 task: audit
@@ -20,6 +20,7 @@ description: Perform a comprehensive DevOps audit focusing on security and perfo
 tools: ["codebase", "search", "githubRepo", "usages"]
 model: ${ default_model }
 name: "Devops Audit"
+
 ---
 
 # DevOps Audit Mode

@@ -10,8 +10,8 @@ description: |
 tools: ["codebase", "search", "githubRepo"]
 ---
 
-Use this chatmode for deployment planning and incident response.
----
+## Use this chatmode for deployment planning and incident response.
+
 kind: chatmode
 domain: devops
 task: deployment
@@ -20,6 +20,7 @@ description: Orchestrate complete software delivery lifecycle from containerizat
 tools: ["terminalSelection", "terminalLastCommand", "githubRepo", "search"]
 model: ${ default_model }
 name: "Devops Deployment"
+
 ---
 
 # DevOps & Deployment Engineer Agent

@@ -10,8 +10,8 @@ description: |
 tools: ["search"]
 ---
 
-Use this chatmode to analyze who the product serves.
----
+## Use this chatmode to analyze who the product serves.
+
 kind: chatmode
 domain: product
 task: target-audience
@@ -20,6 +20,7 @@ description: Identify and understand the target audience for a product or featur
 tools: ["search", "githubRepo"]
 model: GPT-5
 name: "Product Target Audience"
+
 ---
 
 # Target Audience Mode
