@@ -11,7 +11,6 @@ const SHARED_KEYS = [
   'testPathIgnorePatterns',
   'clearMocks',
   'restoreMocks',
-  'verbose',
 ];
 
 const sharedConfig = SHARED_KEYS.reduce((acc, key) => {

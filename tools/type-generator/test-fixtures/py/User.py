@@ -6,5 +6,5 @@ class User:
     name: str
     email: str
     age: int
-    is_active: bool
-    created_at: str | None
+    isActive: bool
+    createdAt: str | None

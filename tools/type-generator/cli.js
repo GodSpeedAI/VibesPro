@@ -7,8 +7,8 @@ const os = require('os');
 const { spawnSync } = require('child_process');
 const ts = require('typescript');
 
-const { DbToTypeScript } = require('./dist/generators/types/db-to-typescript');
-const { verifyTypeParity } = require('./dist/generators/verify');
+const { DbToTypeScript } = require('./dist/src/generators/types/db-to-typescript');
+const { verifyTypeParity } = require('./dist/src/generators/verify');
 const {
   isPathSafe,
   resolvePathWithinWorkspace,

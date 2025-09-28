@@ -1,11 +1,14 @@
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'fs';
 import { dirname, isAbsolute, join, normalize, parse, relative, resolve } from 'path';
-import {
+
+// Import pathSecurity utilities from the JavaScript file directly
+const pathSecurity = require('../../../../utils/pathSecurity');
+const {
   assertFilenameSafe,
   isPathSafe,
   resolvePathWithinWorkspace,
   sanitizePathInput,
-} from '../../../utils/pathSecurity';
+} = pathSecurity;
 
 interface ColumnDef {
   type: string;
