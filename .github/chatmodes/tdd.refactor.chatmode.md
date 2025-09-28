@@ -5,7 +5,9 @@ domain: tdd
 task: refactor
 budget: S
 model: GPT-5 mini
+name: "TDD Refactor Mode"
 description: TDD refactor placeholder
+tools: ["codebase", "search", "runTests"]
 ---
 
 # TDD Refactor Mode
@@ -20,8 +22,11 @@ domain: tdd
 task: refactor
 budget: S
 model: GPT-5 mini
+name: "TDD Refactor Mode"
 description: TDD refactor placeholder
+tools: ["codebase", "search", "runTests"]
 
 ---
 
 )
+```

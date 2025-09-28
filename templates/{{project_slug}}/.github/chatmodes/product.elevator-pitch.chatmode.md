@@ -6,6 +6,7 @@ budget: S
 description: Summarise the core idea of a project into a concise elevator pitch.
 tools: ["search", "githubRepo"]
 model: GPT-5
+name: "Product Elevator Pitch"
 ---
 
 # Elevator Pitch Mode

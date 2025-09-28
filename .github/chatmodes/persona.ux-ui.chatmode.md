@@ -6,6 +6,7 @@ budget: M
 description: Explore user experience and user interface considerations for your product.
 tools: ["search", "githubRepo"]
 model: GPT-5 mini
+name: "Persona Ux Ui"
 ---
 
 # UX/UI Considerations Mode
