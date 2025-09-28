@@ -11,4 +11,3 @@ tools: ["codebase", "search", "runInTerminal", "runTests"]
 ---
 
 Use this chatmode to localize failures and create minimal repros.
-

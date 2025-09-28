@@ -10,8 +10,8 @@ description: |
 tools: ["codebase", "search"]
 ---
 
-Use this persona to design and prioritize tests.
----
+## Use this persona to design and prioritize tests.
+
 kind: chatmode
 domain: persona
 task: qa
@@ -20,6 +20,7 @@ description: Comprehensive testing specialist that adapts to frontend, backend, 
 tools: ["search", "githubRepo"]
 model: GPT-5
 name: "Persona Qa"
+
 ---
 
 # QA & Test Automation Engineer
