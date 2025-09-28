@@ -6,6 +6,7 @@ budget: S
 description: Define and refine the core problem your software project aims to solve.
 tools: ["search", "githubRepo"]
 model: GPT-5
+name: "Product Problem Statement"
 ---
 
 # Problem Statement Mode

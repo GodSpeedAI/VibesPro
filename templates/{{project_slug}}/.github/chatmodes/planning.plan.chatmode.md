@@ -6,6 +6,7 @@ budget: M
 description: Generate an implementation or refactoring plan without making code changes.
 tools: ["codebase", "search", "githubRepo", "usages"]
 model: GPT-5
+name: "Planning Plan"
 ---
 
 # Planning Mode

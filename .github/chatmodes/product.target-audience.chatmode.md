@@ -6,6 +6,7 @@ budget: S
 description: Identify and understand the target audience for a product or feature.
 tools: ["search", "githubRepo"]
 model: GPT-5 mini
+name: "Product Target Audience"
 ---
 
 # Target Audience Mode

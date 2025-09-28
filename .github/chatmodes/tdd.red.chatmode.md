@@ -5,7 +5,9 @@ domain: tdd
 task: red
 budget: S
 model: GPT-5 mini
+name: "TDD Red Mode"
 description: TDD red placeholder
+tools: ["codebase", "search", "runTests"]
 ---
 
 # TDD Red Mode
@@ -20,8 +22,11 @@ domain: tdd
 task: red
 budget: S
 model: GPT-5 mini
+name: "TDD Red Mode"
 description: TDD red placeholder
+tools: ["codebase", "search", "runTests"]
 
 ---
 
 )
+```
