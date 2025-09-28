@@ -122,11 +122,23 @@ def main():
         if args.templates_dir:
             templates_path = Path(args.templates_dir)
             templates_path.mkdir(parents=True, exist_ok=True)
-            t_result = subprocess.run(['node', str(RUNNER), ':unused_context', str(templates_path), 'templates'], capture_output=True, text=True, cwd=Path(__file__).parent)
-            if t_result.returncode == 0:
-                print(f"✅ Templates generated successfully in {templates_path}")
-            else:
-                print(f"❌ Template generation failed: {t_result.stdout or t_result.stderr}")
+            # Create a real temporary JSON context file so the Node runner can read it
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as cf:
+                json.dump({}, cf)
+                context_file = Path(cf.name).resolve()
+            try:
+                t_result = subprocess.run([
+                    'node', str(RUNNER), str(context_file), str(templates_path), 'templates'
+                ], capture_output=True, text=True, cwd=Path(__file__).parent)
+                if t_result.returncode == 0:
+                    print(f"✅ Templates generated successfully in {templates_path}")
+                else:
+                    print(f"❌ Template generation failed: {t_result.stdout or t_result.stderr}")
+            finally:
+                try:
+                    context_file.unlink()
+                except Exception:
+                    pass
 
         # Validation
         if args.validate:
