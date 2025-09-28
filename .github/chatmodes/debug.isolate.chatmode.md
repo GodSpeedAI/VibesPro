@@ -3,7 +3,7 @@ kind: chatmode
 domain: debug
 task: isolate
 budget: M
-model: GPT-5 mini
+model: ${ default_model }
 name: "Debug Isolate Mode"
 description: Debug isolate mode for narrowing down issues to minimal reproducible cases
 tools: ["codebase", "search", "runInTerminal", "runTests"]
@@ -36,7 +36,7 @@ Run isolate mode when:
 - [ ] `just clean && just setup` - Clean build and setup
 - [ ] `pnpm run nx graph` - Visualize project dependencies
 - [ ] `uv sync --dev` - Ensure Python dependencies are consistent
-- [ ] `copier copy --pretend . /tmp/validation-test` - Validate template generation
+- [ ] `copier --dry-run copy . /tmp/validation-test` - Validate template generation
 - [ ] Run specific unit tests related to the suspected area
 
 ### Key Metrics to Inspect

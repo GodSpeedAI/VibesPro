@@ -4,7 +4,7 @@ kind: chatmode
 domain: tdd
 task: refactor
 budget: S
-model: GPT-5 mini
+model: ${ default_model }
 name: "TDD Refactor Mode"
 description: TDD refactor placeholder
 tools: ["codebase", "search", "runTests"]

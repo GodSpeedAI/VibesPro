@@ -1,7 +1,7 @@
 ---
 kind: chatmode
-domain: debug
-task: repro
+domain: tooling
+task: Reproduce reported issues reliably in local or CI environments
 budget: low
 model: ${ default_model }
 name: "Debug Repro Mode"
