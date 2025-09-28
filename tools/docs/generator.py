@@ -17,7 +17,8 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
+
 
 RUNNER = Path(__file__).parent / 'run_generator.js'
 
@@ -39,19 +40,18 @@ def run_ts_generator(output_dir: str, context: dict[str, Any]) -> dict[str, Any]
         ], capture_output=True, text=True, cwd=Path(__file__).parent)
 
         if result.returncode != 0:
-            raise RuntimeError(result.stdout or result.stderr or 'unknown error')
+            raise Exception(result.stdout or result.stderr or 'unknown error')
 
-        payload: Any = json.loads(result.stdout or '{}')
-        if not isinstance(payload, dict):
-            raise ValueError('Generator returned non-dict payload')
-
-        return cast(dict[str, Any], payload)
+        return json.loads(result.stdout)
 
     finally:
-        Path(context_file).unlink(missing_ok=True)
+        try:
+            Path(context_file).unlink()
+        except Exception:
+            pass
 
 
-def main() -> None:
+def main():
     parser = argparse.ArgumentParser(
         description="Generate comprehensive documentation for hexagonal architecture projects"
     )
@@ -73,7 +73,7 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    context: dict[str, Any] = {
+    context = {
         'projectName': args.project_name,
         'description': args.description,
         'domains': args.domains,
@@ -98,7 +98,7 @@ def main() -> None:
 
         fmt = args.format
 
-        def write_file(name: str, content: str) -> Path:
+        def write_file(name: str, content: str):
             md_path = output_path / f"{name}.md"
             md_path.write_text(content)
             if fmt == 'markdown':
@@ -122,35 +122,24 @@ def main() -> None:
         if args.templates_dir:
             templates_path = Path(args.templates_dir)
             templates_path.mkdir(parents=True, exist_ok=True)
-            # Create a real temporary JSON context file so the Node runner can read it
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as cf:
-                json.dump({}, cf)
-                context_file = Path(cf.name).resolve()
-            try:
-                t_result = subprocess.run([
-                    'node', str(RUNNER), str(context_file), str(templates_path), 'templates'
-                ], capture_output=True, text=True, cwd=Path(__file__).parent)
-                if t_result.returncode == 0:
-                    print(f"✅ Templates generated successfully in {templates_path}")
-                else:
-                    print(f"❌ Template generation failed: {t_result.stdout or t_result.stderr}")
-            finally:
-                context_file.unlink(missing_ok=True)
+            t_result = subprocess.run(['node', str(RUNNER), ':unused_context', str(templates_path), 'templates'], capture_output=True, text=True, cwd=Path(__file__).parent)
+            if t_result.returncode == 0:
+                print(f"✅ Templates generated successfully in {templates_path}")
+            else:
+                print(f"❌ Template generation failed: {t_result.stdout or t_result.stderr}")
 
         # Validation
         if args.validate:
             with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as vf:
                 json.dump({'docs': docs}, vf)
-                validation_file = Path(vf.name)
-            v_result = subprocess.run([
-                'node', str(RUNNER), str(validation_file), str(output_path), 'validate'
-            ], capture_output=True, text=True, cwd=Path(__file__).parent)
-            validation_file.unlink(missing_ok=True)
+                validation_file = vf.name
+            v_result = subprocess.run(['node', str(RUNNER), validation_file, str(output_path), 'validate'], capture_output=True, text=True, cwd=Path(__file__).parent)
+            try:
+                Path(validation_file).unlink()
+            except Exception:
+                pass
             if v_result.returncode == 0:
-                validation_payload: Any = json.loads(v_result.stdout or '{}')
-                if not isinstance(validation_payload, dict):
-                    raise ValueError('Validation payload must be a mapping')
-                validation = cast(dict[str, Any], validation_payload)
+                validation = json.loads(v_result.stdout)
                 if validation.get('isValid'):
                     print(f"✅ Documentation validation passed (score: {validation.get('score', 0):.2f})")
                 else:

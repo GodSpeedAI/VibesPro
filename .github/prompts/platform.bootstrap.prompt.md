@@ -3,7 +3,7 @@ kind: prompt
 domain: platform
 task: bootstrap
 thread: platform-bootstrap
-matrix_ids: []
+matrix_ids: [DEV-PRD-008]
 budget: M
 mode: "agent"
 model: GPT-5 mini
