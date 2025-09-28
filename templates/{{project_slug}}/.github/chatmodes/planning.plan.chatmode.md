@@ -10,8 +10,8 @@ description: |
 tools: ["codebase", "search"]
 ---
 
-Use this chatmode to draft plans and acceptance criteria.
----
+## Use this chatmode to draft plans and acceptance criteria.
+
 kind: chatmode
 domain: planning
 task: plan
@@ -20,6 +20,7 @@ description: Generate an implementation or refactoring plan without making code 
 tools: ["codebase", "search", "githubRepo", "usages"]
 model: ${ default_model }
 name: "Planning Plan"
+
 ---
 
 # Planning Mode
