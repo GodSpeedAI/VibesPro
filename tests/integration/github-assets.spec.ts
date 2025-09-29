@@ -5,41 +5,25 @@
  * Traceability: AI_ADR-001, AI_PRD-001, AI_SDS-001, AI_TS-002
  */
 
-import { execSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const runCopierGeneration = async (): Promise<string> => {
-    const workspace = await fs.mkdtemp(join(tmpdir(), 'vibes-github-assets-'));
-    const command = [
-        'copier',
-        'copy',
-        '.',
-        workspace,
-        '--data-file',
-        'tests/fixtures/test-data.yml',
-        '--defaults',
-        '--force'
-    ].join(' ');
-
-    execSync(command, { cwd: process.cwd(), stdio: 'inherit' });
-    return workspace;
-};
+import { GeneratedWorkspace, generateWorkspace } from '../utils/copier-workspace';
 
 describe('GitHub asset propagation', () => {
-    let generatedWorkspace: string;
+    let generatedWorkspace: GeneratedWorkspace | undefined;
 
     afterEach(async () => {
         if (!generatedWorkspace) {
             return;
         }
 
-        await fs.rm(generatedWorkspace, { recursive: true, force: true });
+        await generatedWorkspace.cleanup();
+        generatedWorkspace = undefined;
     });
 
     it('should include Copilot instructions and governance files', async () => {
-        generatedWorkspace = await runCopierGeneration();
+        generatedWorkspace = await generateWorkspace();
 
         const expectedFiles = [
             '.github/copilot-instructions.md',
@@ -47,12 +31,12 @@ describe('GitHub asset propagation', () => {
         ];
 
         for (const relativePath of expectedFiles) {
-            await expect(fs.access(join(generatedWorkspace, relativePath))).resolves.toBeUndefined();
+            await expect(fs.access(join(generatedWorkspace.path, relativePath))).resolves.toBeUndefined();
         }
     });
 
     it('should include instruction, prompt, and chatmode directories', async () => {
-        generatedWorkspace = await runCopierGeneration();
+        generatedWorkspace = await generateWorkspace();
 
         const expectedDirectories = [
             '.github/instructions',
@@ -61,12 +45,12 @@ describe('GitHub asset propagation', () => {
         ];
 
         for (const relativePath of expectedDirectories) {
-            await expect(fs.access(join(generatedWorkspace, relativePath))).resolves.toBeUndefined();
+            await expect(fs.access(join(generatedWorkspace.path, relativePath))).resolves.toBeUndefined();
         }
     });
 
     it('should provide spec-driven prompt assets', async () => {
-        generatedWorkspace = await runCopierGeneration();
+        generatedWorkspace = await generateWorkspace();
 
         const expectedPrompts = [
             '.github/prompts/spec.feature.template.md',
@@ -74,7 +58,7 @@ describe('GitHub asset propagation', () => {
         ];
 
         for (const promptPath of expectedPrompts) {
-            await expect(fs.access(join(generatedWorkspace, promptPath))).resolves.toBeUndefined();
+            await expect(fs.access(join(generatedWorkspace.path, promptPath))).resolves.toBeUndefined();
         }
     });
 });

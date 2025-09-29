@@ -6,11 +6,12 @@ Temporal Database Backup for {{ project_name }}
 Creates backups of the temporal database for disaster recovery.
 """
 
+import os
 import shutil
-from datetime import datetime
 from pathlib import Path
+from datetime import datetime
 
-def backup_temporal_database() -> None:
+def backup_temporal_database():
     """Create a backup of the temporal database."""
     db_path = Path("temporal_db")
     if not db_path.exists():
