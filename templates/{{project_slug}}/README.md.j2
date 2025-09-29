@@ -47,6 +47,17 @@ This project includes AI-enhanced development workflows:
 Initialize AI features: `just setup-ai`
 {% endif %}
 
+## Documentation
+
+Project documentation lives under `docs/` and is seeded by the generator:
+
+- `docs/README.md` — overview of documentation assets and AI workflow expectations
+- `docs/spec_index.md` — summary of requirements with links back to specs
+- `docs/traceability_matrix.md` — initial coverage table for audit readiness
+- `docs/how-to/ai-onboarding.md` — AI enablement checklist for new contributors
+
+Run `pnpm spec:matrix` after making changes to keep traceability accurate.
+
 ## Migration
 
 If migrating from existing projects:
