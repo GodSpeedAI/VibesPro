@@ -12,19 +12,26 @@ function stripQuotes(value) {
 }
 
 function parseFrontmatterArray(line, fields) {
-    const arrayMatch = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*\[([^\]]*)\]/);
-    if (arrayMatch) {
-        const key = arrayMatch[1].trim();
-        const val = arrayMatch[2].trim();
-        if (key === 'matrix_ids' && val) {
-            fields[key] = val
-                .split(',')
-                .map(item => item.trim().replace(/[\'"]+/g, ''))
-                .filter(item => item);
-        }
+    const arrayMatch = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*\[([^\]]*)\]\s*$/);
+    if (!arrayMatch) {
+        return false;
+    }
+
+    const key = arrayMatch[1].trim();
+    const rawItems = arrayMatch[2].trim();
+
+    if (!rawItems) {
+        fields[key] = [];
         return true;
     }
-    return false;
+
+    const items = rawItems
+        .split(',')
+        .map(item => stripQuotes(item.trim()))
+        .filter(item => item.length > 0);
+
+    fields[key] = items;
+    return true;
 }
 
 function parseFrontmatterSimple(line, fields) {

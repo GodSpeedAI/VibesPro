@@ -17,8 +17,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
-
+from typing import Any, cast
 
 RUNNER = Path(__file__).parent / 'run_generator.js'
 
@@ -40,18 +39,19 @@ def run_ts_generator(output_dir: str, context: dict[str, Any]) -> dict[str, Any]
         ], capture_output=True, text=True, cwd=Path(__file__).parent)
 
         if result.returncode != 0:
-            raise Exception(result.stdout or result.stderr or 'unknown error')
+            raise RuntimeError(result.stdout or result.stderr or 'unknown error')
 
-        return json.loads(result.stdout)
+        payload: Any = json.loads(result.stdout or '{}')
+        if not isinstance(payload, dict):
+            raise ValueError('Generator returned non-dict payload')
+
+        return cast(dict[str, Any], payload)
 
     finally:
-        try:
-            Path(context_file).unlink()
-        except Exception:
-            pass
+        Path(context_file).unlink(missing_ok=True)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate comprehensive documentation for hexagonal architecture projects"
     )
@@ -73,7 +73,7 @@ def main():
 
     args = parser.parse_args()
 
-    context = {
+    context: dict[str, Any] = {
         'projectName': args.project_name,
         'description': args.description,
         'domains': args.domains,
@@ -98,7 +98,7 @@ def main():
 
         fmt = args.format
 
-        def write_file(name: str, content: str):
+        def write_file(name: str, content: str) -> Path:
             md_path = output_path / f"{name}.md"
             md_path.write_text(content)
             if fmt == 'markdown':
@@ -135,23 +135,22 @@ def main():
                 else:
                     print(f"❌ Template generation failed: {t_result.stdout or t_result.stderr}")
             finally:
-                try:
-                    context_file.unlink()
-                except Exception:
-                    pass
+                context_file.unlink(missing_ok=True)
 
         # Validation
         if args.validate:
             with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as vf:
                 json.dump({'docs': docs}, vf)
-                validation_file = vf.name
-            v_result = subprocess.run(['node', str(RUNNER), validation_file, str(output_path), 'validate'], capture_output=True, text=True, cwd=Path(__file__).parent)
-            try:
-                Path(validation_file).unlink()
-            except Exception:
-                pass
+                validation_file = Path(vf.name)
+            v_result = subprocess.run([
+                'node', str(RUNNER), str(validation_file), str(output_path), 'validate'
+            ], capture_output=True, text=True, cwd=Path(__file__).parent)
+            validation_file.unlink(missing_ok=True)
             if v_result.returncode == 0:
-                validation = json.loads(v_result.stdout)
+                validation_payload: Any = json.loads(v_result.stdout or '{}')
+                if not isinstance(validation_payload, dict):
+                    raise ValueError('Validation payload must be a mapping')
+                validation = cast(dict[str, Any], validation_payload)
                 if validation.get('isValid'):
                     print(f"✅ Documentation validation passed (score: {validation.get('score', 0):.2f})")
                 else:
