@@ -6,23 +6,45 @@ Integrates with the VibePro prompt optimization system.
 
 import argparse
 import asyncio
+import importlib.util
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add the prompt optimizer to the path
-sys.path.append(str(Path(__file__).parent.parent / "libs"))
+LIBS_ROOT = Path(__file__).parent.parent / "libs"
+sys.path.append(str(LIBS_ROOT))
 
-from prompt_optimizer.application.use_cases import (
+PROMPT_OPTIMIZER_ROOT = LIBS_ROOT / "prompt-optimizer"
+if PROMPT_OPTIMIZER_ROOT.exists():
+    spec = importlib.util.spec_from_file_location(
+        "prompt_optimizer",
+        PROMPT_OPTIMIZER_ROOT / "__init__.py",
+        submodule_search_locations=[str(PROMPT_OPTIMIZER_ROOT)],
+    )
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        sys.modules["prompt_optimizer"] = module
+        spec.loader.exec_module(module)
+
+from prompt_optimizer.application.use_cases import (  # noqa: E402
     AnalyzePromptCommand,
     AnalyzePromptUseCase,
     OptimizePromptCommand,
     OptimizePromptUseCase,
 )
-from prompt_optimizer.domain.entities import ModelType, OptimizationGoal
-from prompt_optimizer.domain.services import PromptAnalyzer, PromptFeatureExtractor, PromptOptimizer
-from prompt_optimizer.infrastructure.adapters import InMemoryPromptRepository, TiktokenAdapter
-from prompt_optimizer.infrastructure.temporal_db import (
+from prompt_optimizer.domain.entities import ModelType, OptimizationGoal  # noqa: E402
+from prompt_optimizer.domain.services import (  # noqa: E402
+    PromptAnalyzer,
+    PromptFeatureExtractor,
+    PromptOptimizer,
+)
+from prompt_optimizer.infrastructure.adapters import (  # noqa: E402
+    InMemoryPromptRepository,
+    TiktokenAdapter,
+)
+from prompt_optimizer.infrastructure.temporal_db import (  # noqa: E402
     SimpleMLModelAdapter,
     SimpleNotificationAdapter,
     SledTemporalDatabaseAdapter,
@@ -32,7 +54,7 @@ from prompt_optimizer.infrastructure.temporal_db import (
 class PromptOptimizerCLI:
     """CLI interface for the prompt optimization system."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.token_counter = TiktokenAdapter()
         self.prompt_repository = InMemoryPromptRepository()
         self.temporal_db = SledTemporalDatabaseAdapter("./data/prompt_optimizer.sled")
@@ -61,7 +83,7 @@ class PromptOptimizerCLI:
             self.optimizer
         )
 
-    async def analyze_prompt_file(self, file_path: str, model: str = "gpt-4") -> dict:
+    async def analyze_prompt_file(self, file_path: str, model: str = "gpt-4") -> dict[str, Any]:
         """Analyze a prompt file and return detailed results."""
         try:
             with open(file_path, encoding='utf-8') as f:
@@ -112,7 +134,7 @@ class PromptOptimizerCLI:
         file_path: str,
         goal: str = "effectiveness",
         model: str = "gpt-4"
-    ) -> dict:
+    ) -> dict[str, Any]:
         """Optimize a prompt file and return the results."""
         try:
             with open(file_path, encoding='utf-8') as f:
@@ -159,7 +181,7 @@ class PromptOptimizerCLI:
             return {"error": f"Optimization failed: {e}"}
 
 
-def format_output(data: dict, format_type: str = "human") -> str:
+def format_output(data: dict[str, Any], format_type: str = "human") -> str:
     """Format output based on the requested format."""
     if format_type == "json":
         return json.dumps(data, indent=2, ensure_ascii=False)
@@ -172,7 +194,7 @@ def format_output(data: dict, format_type: str = "human") -> str:
         token_info = analysis["token_count"]
         effectiveness = analysis["effectiveness"]
 
-        output = [
+        output: list[str] = [
             f"📄 File: {data['file']}",
             "",
             "🔢 Token Analysis:",
@@ -229,7 +251,7 @@ def format_output(data: dict, format_type: str = "human") -> str:
     return str(data)
 
 
-async def main():
+async def main() -> None:
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
         description="Enhanced token counter with ML-powered prompt optimization",

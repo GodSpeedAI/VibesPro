@@ -6,17 +6,29 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "tools/type-generator/dist",
         "main": "tools/type-generator/src/index.ts",
         "tsConfig": "tools/type-generator/tsconfig.json",
-        "assets": ["tools/type-generator/*.md"]
+        "assets": [
+          "tools/type-generator/*.md"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "self"
+        }
+      ],
       "options": {
         "jestConfig": "tools/type-generator/jest.config.js",
         "passWithNoTests": true

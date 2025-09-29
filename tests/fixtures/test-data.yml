@@ -12,6 +12,8 @@ database_type: "postgresql"
 include_supabase: true
 domain_name: "test-domain"
 bounded_context: "test-domain"
+domains: "test-domain"
+base_url: "http://localhost:8000"
 include_domain_entities: true
 include_value_objects: true
 include_domain_events: true
