@@ -1,6 +1,7 @@
 defaults:
   prompt_model: GPT-5 mini
   chatmode_model: GPT-5 mini (Preview)
+  default_model: GPT-5 mini
 
 notes:
   - Centralize defaults for prompts and chat modes.
