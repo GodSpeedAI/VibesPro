@@ -3,26 +3,20 @@ _templates_suffix: .j2
 _skip_if_exists:
   - .gitignore
   - "*.md"
-_skip:
-  - "tests/"
-  - "coverage/"
-  - "htmlcov/"
-  - "*.pyc"
-  - "__pycache__/"
-  - ".git/"
-_envops:
-  block_start_string: "{%"
-  block_end_string: "%}"
-  variable_start_string: "{{"
-  variable_end_string: "}}"
-  comment_start_string: "{#"
-  comment_end_string: "#}"
-
-# Project Configuration
-project_name:
-  type: str
-  help: "Name of your project (human-readable)"
-  validator: "{% if not project_name %}Project name is required{% endif %}"
+  - "{% if not include_ai_workflows %}tools/ai/**{% endif %}"
+  - "{% if not include_ai_workflows %}tools/ai{% endif %}"
+  - "{% if not include_ai_workflows %}tools/temporal-db/**{% endif %}"
+  - "{% if not include_ai_workflows %}tools/temporal-db{% endif %}"
+  - "{% if not include_ai_workflows %}temporal_db/**{% endif %}"
+  - "{% if not include_ai_workflows %}temporal_db{% endif %}"
+  - "{% if not include_ai_workflows %}.github/workflows/ai-generate.yml.j2{% endif %}"
+  - "{% if not include_ai_workflows %}.github/workflows/ai-generate.yml{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/ai/**{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/ai{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/temporal-db/**{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/temporal-db{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db/**{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db{% endif %}"
 
 project_slug:
   type: str
@@ -193,3 +187,17 @@ _exclude:
   # Exclude files if framework is not Next.js
   - "{% if app_framework != 'next' %}apps/{{app_name}}/pages/**{% endif %}"
   - "{% if app_framework != 'next' %}apps/{{app_name}}/app/**{% endif %}"
+  - "{% if not include_ai_workflows %}tools/ai/**{% endif %}"
+  - "{% if not include_ai_workflows %}tools/ai{% endif %}"
+  - "{% if not include_ai_workflows %}tools/temporal-db/**{% endif %}"
+  - "{% if not include_ai_workflows %}tools/temporal-db{% endif %}"
+  - "{% if not include_ai_workflows %}temporal_db/**{% endif %}"
+  - "{% if not include_ai_workflows %}temporal_db{% endif %}"
+  - "{% if not include_ai_workflows %}.github/workflows/ai-generate.yml.j2{% endif %}"
+  - "{% if not include_ai_workflows %}.github/workflows/ai-generate.yml{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/ai/**{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/ai{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/temporal-db/**{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/temporal-db{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db/**{% endif %}"
+  - "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db{% endif %}"

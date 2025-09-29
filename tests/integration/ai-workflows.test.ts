@@ -5,32 +5,30 @@
  * Validates temporal database integration and context management.
  */
 
-import { execSync } from 'node:child_process';
 import { existsSync, promises as fs } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-describe('AI Workflows Integration', () => {
-    let testWorkspace: string;
+import { GeneratedWorkspace, generateWorkspace } from '../utils/copier-workspace';
 
-    beforeEach(async () => {
-        testWorkspace = await fs.mkdtemp(join(tmpdir(), 'vibes-pro-ai-'));
-    });
+describe('AI Workflows Integration', () => {
+    let workspace: GeneratedWorkspace | undefined;
 
     afterEach(async () => {
-        if (testWorkspace) {
-            await fs.rm(testWorkspace, { recursive: true, force: true });
+        if (workspace) {
+            await workspace.cleanup();
+            workspace = undefined;
         }
     });
 
     it('should initialize temporal database correctly', async () => {
-        const projectPath = join(testWorkspace, 'ai-project');
-
-        // Generate project with AI workflows enabled
-        execSync(`copier copy . ${projectPath} --data-file tests/fixtures/test-data.yml --data project_name="AI Test Project" --data include_ai_workflows=true --defaults --force`, {
-            cwd: process.cwd(),
-            stdio: 'inherit'
+        workspace = await generateWorkspace({
+            answers: {
+                project_name: 'AI Test Project',
+                include_ai_workflows: true
+            }
         });
+
+        const projectPath = workspace.path;
 
         // Verify temporal database directory exists
         const temporalDbPath = join(projectPath, 'temporal_db');
@@ -42,12 +40,14 @@ describe('AI Workflows Integration', () => {
     });
 
     it('should have AI context management tools', async () => {
-        const projectPath = join(testWorkspace, 'ai-context-project');
-
-        execSync(`copier copy . ${projectPath} --data-file tests/fixtures/test-data.yml --data project_name="AI Context Project" --data include_ai_workflows=true --defaults --force`, {
-            cwd: process.cwd(),
-            stdio: 'inherit'
+        workspace = await generateWorkspace({
+            answers: {
+                project_name: 'AI Context Project',
+                include_ai_workflows: true
+            }
         });
+
+        const projectPath = workspace.path;
 
         // Verify AI context management files
         const contextManagerPath = join(projectPath, 'tools/ai/context-manager.ts');
@@ -58,12 +58,14 @@ describe('AI Workflows Integration', () => {
     });
 
     it('should configure GitHub Actions for AI workflows', async () => {
-        const projectPath = join(testWorkspace, 'ai-workflow-project');
-
-        execSync(`copier copy . ${projectPath} --data-file tests/fixtures/test-data.yml --data project_name="AI Workflow Project" --data include_ai_workflows=true --defaults --force`, {
-            cwd: process.cwd(),
-            stdio: 'inherit'
+        workspace = await generateWorkspace({
+            answers: {
+                project_name: 'AI Workflow Project',
+                include_ai_workflows: true
+            }
         });
+
+        const projectPath = workspace.path;
 
         // Verify GitHub Actions workflow files
         const aiWorkflowPath = join(projectPath, '.github/workflows/ai-generate.yml');
@@ -78,12 +80,15 @@ describe('AI Workflows Integration', () => {
     });
 
     it('should skip AI components when disabled', async () => {
-        const projectPath = join(testWorkspace, 'no-ai-project');
-
-        execSync(`copier copy . ${projectPath} --data-file tests/fixtures/test-data.yml --data project_name="No AI Project" --data include_ai_workflows=false --defaults --force`, {
-            cwd: process.cwd(),
-            stdio: 'inherit'
+        workspace = await generateWorkspace({
+            answers: {
+                project_name: 'No AI Project',
+                include_ai_workflows: false,
+                enable_temporal_learning: false
+            }
         });
+
+        const projectPath = workspace.path;
 
         // Verify AI components are not generated
         const temporalDbPath = join(projectPath, 'temporal_db');
