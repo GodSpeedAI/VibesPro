@@ -6,5 +6,5 @@ class User:
     name: str
     email: str
     age: int
-    isActive: bool
-    createdAt: str | None
+    isActive: bool  # noqa: N815 - fixture intentionally uses camelCase
+    createdAt: str | None  # noqa: N815 - fixture intentionally uses camelCase

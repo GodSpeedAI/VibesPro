@@ -47,7 +47,13 @@ exclude = [
     "tests/fixtures/",
     "test-output/",
     ".*\\.j2$",
+    "libs/prompt-optimizer/",
+    "libs/\\{\\{domain_name\\}\\}/",
 ]
+
+[[tool.mypy.overrides]]
+module = ["prompt_optimizer.*", "my_test_domain.*"]
+ignore_missing_imports = true
 
 [dependency-groups]
 dev = [

@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 
-def test_docs_generator_writes_markdown(tmp_path: Path):
+def test_docs_generator_writes_markdown(tmp_path: Path) -> None:
     """Integration test: run the Python docs generator and assert Markdown files exist.
 
     This test exercises the generator end-to-end but uses the default Markdown

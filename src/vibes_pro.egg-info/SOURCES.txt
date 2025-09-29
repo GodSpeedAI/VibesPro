@@ -6,4 +6,5 @@ src/vibes_pro.egg-info/SOURCES.txt
 src/vibes_pro.egg-info/dependency_links.txt
 src/vibes_pro.egg-info/requires.txt
 src/vibes_pro.egg-info/top_level.txt
+tests/test_docs_generator.py
 tests/test_docs_generator_integration.py

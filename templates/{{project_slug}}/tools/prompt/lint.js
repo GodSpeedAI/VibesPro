@@ -7,6 +7,7 @@
  */
 const fs = require('node:fs');
 const path = require('node:path');
+const { extractFrontmatter, stripQuotes } = require('../utils/frontmatter');
 
 const FILE_EXTENSIONS = {
     PROMPT: '.prompt.md',
@@ -28,13 +29,6 @@ const RECOMMENDED_FIELDS = {
 };
 
 const GITHUB_DIR = path.join(path.dirname(path.dirname(__dirname)), '.github');
-
-function stripQuotes(value) {
-    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith('\'') && value.endsWith('\''))) {
-        return value.slice(1, -1);
-    }
-    return value;
-}
 
 function handleFileError(error, filePath, operation) {
     const baseMessage = `[prompt:lint] Warning: ${operation} ${filePath}`;
@@ -150,42 +144,6 @@ function classify(file) {
     if (file.endsWith(FILE_EXTENSIONS.CHATMODE)) return 'chatmode';
     if (file.endsWith(FILE_EXTENSIONS.INSTRUCTIONS)) return 'instructions';
     return 'unknown';
-}
-
-function extractFrontmatter(text) {
-    if (!text || typeof text !== 'string') {
-        return { raw: null, fields: {} };
-    }
-
-    const m = text.match(/^---\n([\s\S]*?)\n---/m);
-    if (!m) return { raw: null, fields: {} };
-
-    const raw = m[1];
-    const fields = {};
-
-    if (!raw || raw.trim().length === 0) {
-        return { raw, fields: {} };
-    }
-
-    for (const line of raw.split(/\r?\n/)) {
-        const trimmedLine = line.trim();
-        if (!trimmedLine || trimmedLine.startsWith('#')) {
-            continue;
-        }
-
-        const mm = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*(.+)$/);
-        if (!mm) continue;
-
-        const key = mm[1].trim();
-        let val = mm[2].trim();
-
-        val = stripQuotes(val);
-
-        if (key && key.length > 0 && val !== undefined) {
-            fields[key] = val;
-        }
-    }
-    return { raw, fields };
 }
 
 function validateInstructionField(fields, findings) {
