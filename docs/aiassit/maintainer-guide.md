@@ -30,15 +30,15 @@ Every change must cite the relevant spec IDs in commits, docs, and tests to sati
 
 PHASE-001 copied the unified Copilot guardrails from VibePDK into the template. Generated projects now include:
 
-- [`.github/copilot-instructions.md`](../../templates/{{cookiecutter.project_slug}}/.github/copilot-instructions.md) detailing how
+- [`.github/copilot-instructions.md`](../../templates/{{project_slug}}/.github/copilot-instructions.md) detailing how
   contributors interact with Copilot, chat modes, and prompts.
-- Modular instruction files inside [`.github/instructions/`](../../templates/{{cookiecutter.project_slug}}/.github/instructions/) that encode
+- Modular instruction files inside [`.github/instructions/`](../../templates/{{project_slug}}/.github/instructions/) that encode
   general guidance, performance tips, security posture, style rules, testing strategy, and commit message policy.
-- Prompt catalog housed in [`.github/prompts/`](../../templates/{{cookiecutter.project_slug}}/.github/prompts/) containing spec-driven workflows
+- Prompt catalog housed in [`.github/prompts/`](../../templates/{{project_slug}}/.github/prompts/) containing spec-driven workflows
   (e.g., bootstrap, implement/change feature, traceability matrix updates, AI doc generation).
-- Chat modes under [`.github/chatmodes/`](../../templates/{{cookiecutter.project_slug}}/.github/chatmodes/) including the spec-wide and spec-lean
+- Chat modes under [`.github/chatmodes/`](../../templates/{{project_slug}}/.github/chatmodes/) including the spec-wide and spec-lean
   personas layered on top of the existing role-based personas.
-- Model defaults defined in [`.github/models.yaml`](../../templates/{{cookiecutter.project_slug}}/.github/models.yaml) aligning Copilot tooling with
+- Model defaults defined in [`.github/models.yaml`](../../templates/{{project_slug}}/.github/models.yaml) aligning Copilot tooling with
   our security and token budget policies.
 
 Do not edit `.vscode/settings.json` automatically. Document any desired changes in this guide and land them through a dedicated
