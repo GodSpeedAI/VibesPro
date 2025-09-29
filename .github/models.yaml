@@ -1,0 +1,8 @@
+defaults:
+  prompt_model: GPT-5 mini
+  chatmode_model: GPT-5 mini
+
+notes:
+  - Centralize defaults for prompts and chat modes.
+  - Individual files may override model; keep this as the single source of truth.
+  - No automatic templating is wired; treat as documentation + convention.

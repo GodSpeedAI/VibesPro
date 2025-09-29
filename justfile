@@ -119,6 +119,7 @@ test-generation:
 			fi; \
 		}; \
 	}
+	pnpm exec jest --runTestsByPath tests/integration/template-smoke.test.ts --runInBand
 
 # --- Code Quality ---
 lint:

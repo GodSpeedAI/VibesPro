@@ -10,7 +10,6 @@ _skip:
   - "*.pyc"
   - "__pycache__/"
   - ".git/"
-  - ".github/workflows/"
 _envops:
   block_start_string: "{%"
   block_end_string: "%}"

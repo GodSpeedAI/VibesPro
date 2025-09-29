@@ -1,0 +1,26 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "@nx-ddd-hex-plugin/type-generator",
+  "projectType": "library",
+  "sourceRoot": "tools/type-generator/src",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "tools/type-generator/dist",
+        "main": "tools/type-generator/src/index.ts",
+        "tsConfig": "tools/type-generator/tsconfig.json",
+        "assets": ["tools/type-generator/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "tools/type-generator/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
