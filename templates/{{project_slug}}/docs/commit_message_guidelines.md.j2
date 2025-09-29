@@ -1,0 +1,32 @@
+---
+matrix_ids:
+  - AI_PRD-002
+  - AI_TS-005
+---
+
+# Commit Message Guidelines
+
+See also: `.github/instructions/commit-msg.instructions.md` for the automation and
+Copilot guardrails enforced across this workspace.
+
+- **Subject line:** ≤ 72 characters, written in imperative mood (e.g., "Add",
+  "Fix", "Refactor").
+- **Body:** Wrap at ~72–100 columns. Summarise the what and why, not just how.
+- **Traceability:** Reference the relevant spec IDs (PRD-xxx, ADR-xxx, SDS-xxx,
+  TS-xxx, DEV-*, AI_*) so matrix generation and commit hooks remain satisfied.
+- **Risks & mitigations:** Call out security, performance, UX, or operational
+  risks together with the mitigation strategy.
+- **Validation:** Mention updated tests, docs, or scripts. Note any deferred
+  follow-ups and provide a mitigation plan.
+
+## Example
+
+```
+feat(domain): add user profile service (PRD-023, ADR-008)
+- Adds service layer + integration tests; documents API changes in docs/specs/TS-010.md
+- Risk: cache stampede on warm start; Mitigation: request coalescing with memo cache
+```
+
+The commit-msg hook and CI workflows in this template will reject commits that lack
+traceable spec IDs. Keeping this guide current ensures contributors understand the
+expectations before they hit those guardrails.
