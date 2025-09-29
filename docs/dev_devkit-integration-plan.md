@@ -4,7 +4,11 @@ Date: 2025-08-25
 
 Links
 - VibePDK DX specs: [DEV PRD](./dev_prd.md), [DEV SDS](./dev_sds.md), [DEV ADR](./dev_adr.md), [DEV Technical Specs](./dev_technical-specifications.md)
-- AI Workflow specs: [AI PRD](./aiassit/AI_PRD.md), [AI SDS](./aiassit/AI_SDS.md), [AI ADR](./aiassit/AI_ADR.md), [AI TS](./aiassit/AI_TS.md)
+- DevKit product specs (requires cloning the DevKit docs repo alongside this project):
+  - PRD: `../../devkit/docs/PRD.md`
+  - SDS: `../../devkit/docs/SDS.md`
+  - ADR: `../../devkit/docs/ADR.md`
+  - Spec Index: `../../devkit/docs/spec_index.md`
 
 ---
 
