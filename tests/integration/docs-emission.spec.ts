@@ -42,12 +42,12 @@ describe('Documentation template emission', () => {
         generatedWorkspace = await runCopierGeneration();
 
         const expectedDocs = [
-            'templates/test-project/docs/README.md',
-            'templates/test-project/docs/spec_index.md',
-            'templates/test-project/docs/dev_spec_index.md',
-            'templates/test-project/docs/traceability_matrix.md',
-            'templates/test-project/docs/commit_message_guidelines.md',
-            'templates/test-project/docs/how-to/ai-onboarding.md'
+            'docs/README.md',
+            'docs/spec_index.md',
+            'docs/dev_spec_index.md',
+            'docs/traceability_matrix.md',
+            'docs/commit_message_guidelines.md',
+            'docs/how-to/ai-onboarding.md'
         ];
 
         for (const docPath of expectedDocs) {
