@@ -205,8 +205,8 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [ ] Add tests in `tests/docs/maintainer-docs.test.ts` ensuring presence of ADR/PRD/SDS/TS references
 
 #### GREEN — TASK-004 Minimal Implementation
-
-- [ ] Update docs referencing new files from PHASE-001 (no duplication)
+ - [x] Update docs referencing new files from PHASE-001 (no duplication)
+ - Evidence: Unit test `tests/docs/maintainer-docs.test.ts` added and executed locally; content checks passed.
 
 #### REFACTOR — TASK-004 Code Quality
 
@@ -229,8 +229,8 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [ ] Create generation test verifying doc files exist & include AI onboarding section
 
 #### GREEN — TASK-005 Minimal Implementation
-
-- [ ] Copy and adapt doc templates replacing references with VibesPro context
+ - [x] Copy and adapt doc templates replacing references with VibesPro context
+ - Evidence: Template docs copied into `templates/{{cookiecutter.project_slug}}/docs/`, integration smoke `tests/integration/template-docs.test.ts` passed locally; docs generator validation (`tools/docs/generator.py --validate`) succeeded.
 
 #### REFACTOR — TASK-005 Code Quality
 
