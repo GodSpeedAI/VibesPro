@@ -1,5 +1,4 @@
-
-```prompt
+````prompt
 ---
 kind: prompt
 domain: docs
@@ -67,12 +66,14 @@ pnpm run prompt:lint
 pnpm test
 just test-generation
 uv run pytest -q
-``` 
+````
 
 What to attach to PR
+
 - List of changed files (automatically shown by GitHub). Additionally include a short text summary and request that the maintainer run the full regression locally. If CI fails, add failing logs as artifacts and create an issue with `CI_Failure_Template.md`.
 
 Acceptance criteria (for you to assert in PR description)
+
 - `templates/{{cookiecutter.project_slug}}/README.md.j2` and at least the four docs templates exist and contain the cookiecutter tokens
 - `tests/docs/maintainer-docs.test.ts` and `tests/integration/template-docs.test.ts` are present and deterministic
 - `docs/aiassit/AI_TDD_PLAN.md` updated marking tasks done with evidence and spec IDs included
@@ -80,8 +81,7 @@ Acceptance criteria (for you to assert in PR description)
 If anything is ambiguous or a required file is missing in the repository, create a PR that explains the gap and proposes a follow-up (do not modify unrelated files).
 
 Security note
+
 - Do not add or change any workspace configuration that could enable automatic tool approval (e.g., do not modify `.vscode/settings.json` or add `chat.tools.autoApprove`).
 
 End of prompt.
-
-
