@@ -5,6 +5,7 @@ const fs = require('node:fs');
 
 const { extractIdsFromText, validateIdFormat } = require('../spec/ids');
 const { buildMatrix, renderMatrixTable } = require('../spec/matrix');
+const { spawnSync } = require('node:child_process');
 
 function testSpecIdsExtraction() {
   const sample = 'References PRD-123 and DEV-PRD-045 with ADR-002 sprinkled in.';
@@ -38,10 +39,28 @@ function testMatrixGeneration() {
   assert.ok(table.includes('PRD-200'));
 }
 
+function testPlanPreviewCliAccurateFlagOrder() {
+  const tmpDir = path.join(process.cwd(), '.tmp', 'node-smoke');
+  const promptPath = path.join(tmpDir, 'prompt.prompt.md');
+  fs.mkdirSync(tmpDir, { recursive: true });
+  fs.writeFileSync(promptPath, 'Test prompt content', 'utf8');
+  const result = spawnSync(process.execPath, [
+    path.join(process.cwd(), 'tools', 'prompt', 'plan_preview.js'),
+    '--accurate',
+    promptPath,
+  ], {
+    env: { ...process.env, PROMPT_TOKENIZER: 'accurate' },
+    encoding: 'utf8',
+  });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  assert.match(result.stdout, /tokenizer=accurate/);
+}
+
 function main() {
   testSpecIdsExtraction();
   testSpecIdValidation();
   testMatrixGeneration();
+  testPlanPreviewCliAccurateFlagOrder();
   console.log('✅ node-smoke tests passed');
 }
 
