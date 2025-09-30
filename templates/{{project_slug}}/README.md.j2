@@ -1,4 +1,17 @@
-# {{ project_name }}
+{% if cookiecutter is defined %}
+{% set project_name_value = cookiecutter.project_name %}
+{% set project_slug_value = cookiecutter.project_slug %}
+{% set author_name_value = cookiecutter.author_name %}
+{% set repo_url_value = cookiecutter.repo_url %}
+{% set year_value = cookiecutter.year %}
+{% else %}
+{% set project_name_value = project_name %}
+{% set project_slug_value = project_slug %}
+{% set author_name_value = author_name %}
+{% set repo_url_value = repo_url if repo_url is defined else '' %}
+{% set year_value = year if year is defined else '' %}
+{% endif %}
+# {{ project_name_value }}
 
 {% if architecture_style == "hexagonal" %}
 This project follows hexagonal architecture principles with Domain-Driven Design (DDD).
@@ -56,6 +69,9 @@ If migrating from existing projects:
 
 ---
 
-Created by: {{ author_name }}
+Created by: {{ author_name_value }}
+Repository: {{ repo_url_value or 'TBD' }}
+Year: {{ year_value or 'TBD' }}
+Project Slug: {{ project_slug_value }}
 Architecture: {{ architecture_style }}
 AI Workflows: {{ include_ai_workflows }}

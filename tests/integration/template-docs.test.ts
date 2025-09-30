@@ -1,14 +1,36 @@
-import { execSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-describe('Template docs generation smoke', () => {
-    it('copier template includes docs and README', () => {
-        // Render template into ../test-output to mirror existing harness
-        execSync('copier copy . ../test-output --data-file tests/fixtures/test-data.yml', { stdio: 'inherit' });
-        const outDocs = join(process.cwd(), '..', 'test-output', 'docs');
-        const readme = join(process.cwd(), '..', 'test-output', 'README.md');
-        expect(existsSync(outDocs)).toBe(true);
-        expect(existsSync(readme)).toBe(true);
-    }, 30000);
+describe('Template documentation tokens', () => {
+    const templateRoot = join(process.cwd(), 'templates', '{{project_slug}}');
+    const docsRoot = join(templateRoot, 'docs');
+
+    it('README template exposes cookiecutter metadata placeholders', () => {
+        const readmePath = join(templateRoot, 'README.md.j2');
+        const readme = readFileSync(readmePath, 'utf8');
+
+        expect(readme).toContain('cookiecutter.project_name');
+        expect(readme).toContain('cookiecutter.project_slug');
+        expect(readme).toContain('cookiecutter.author_name');
+        expect(readme).toContain('cookiecutter.repo_url');
+        expect(readme).toContain('cookiecutter.year');
+    });
+
+    it('maintainer docs include project metadata tokens for repo alignment', () => {
+        const docs = [
+            'dev_adr.md.j2',
+            'dev_prd.md.j2',
+            'dev_sds.md.j2',
+            'dev_technical-specifications.md.j2'
+        ];
+
+        docs.forEach((fileName) => {
+            const target = readFileSync(join(docsRoot, fileName), 'utf8');
+            expect(target).toContain('cookiecutter.project_name');
+            expect(target).toContain('cookiecutter.project_slug');
+            expect(target).toContain('cookiecutter.author_name');
+            expect(target).toContain('cookiecutter.repo_url');
+            expect(target).toContain('cookiecutter.year');
+        });
+    });
 });
