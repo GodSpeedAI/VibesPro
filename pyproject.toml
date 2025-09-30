@@ -55,6 +55,19 @@ exclude = [
 module = ["prompt_optimizer.*", "my_test_domain.*"]
 ignore_missing_imports = true
 
+[tool.pytest.ini_options]
+# Implements: AI_SDS-004, AI_TS-004
+testpaths = ["tests"]
+norecursedirs = [
+    "tmp",
+    "tmpdocs",
+    "tmpdocs-html",
+    "templates",
+    "node_modules",
+    ".venv",
+    "target",
+]
+
 [dependency-groups]
 dev = [
     "mypy>=1.18.2",
