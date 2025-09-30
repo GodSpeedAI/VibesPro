@@ -4,7 +4,8 @@ VibePDK/**
 apps/
 libs/
 tools/type-generator/
-tools/ai/
+tools/ai/node_modules/
+tools/ai/dist/
 tests/
 tests/**
 coverage/
@@ -14,7 +15,6 @@ src/
 mcp/
 generators/
 hooks/__pycache__/
-temporal_db/
 architecture/
 domain/
 scripts/

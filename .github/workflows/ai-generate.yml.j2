@@ -1,0 +1,65 @@
+{% if include_ai_workflows %}
+# AI-enhanced development workflow for {{ project_name }}
+#
+# This workflow provides AI assistance for code generation,
+# architectural guidance, and pattern recognition.
+
+name: AI-Enhanced Development
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_description:
+        description: 'Describe the development task'
+        required: true
+        type: string
+      use_context:
+        description: 'Use temporal context for suggestions'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  ai-generate:
+    name: AI-Assisted Generation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+
+    - name: Setup Python
+      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+      with:
+        python-version: '3.11'
+
+    - name: Install AI tools
+      run: |
+        pip install -r tools/ai/requirements.txt
+
+    - name: Initialize temporal database
+      run: |
+        python tools/temporal-db/init.py
+
+    - name: Generate AI context
+      id: context
+      run: |
+        {% raw %}python tools/ai/context-manager.py \
+          --task="${{ github.event.inputs.task_description }}" \
+          --use-temporal-context=${{ github.event.inputs.use_context }}{% endraw %}
+
+    - name: Generate code suggestions
+      run: |
+        {% raw %}python tools/ai/code-generator.py \
+          --context="${{ steps.context.outputs.context }}" \
+          --output="ai-suggestions.md"{% endraw %}
+
+    - name: Create pull request with suggestions
+      uses: peter-evans/create-pull-request@4e1beaa7521e8b457b572c090b25bd3db56bf1c5 # v5.0.3
+      with:
+        {% raw %}token: ${{ secrets.GITHUB_TOKEN }}{% endraw %}
+        {% raw %}commit-message: "AI: ${{ github.event.inputs.task_description }}"{% endraw %}
+        {% raw %}title: "AI-Generated: ${{ github.event.inputs.task_description }}"{% endraw %}
+        body-path: ai-suggestions.md
+        {% raw %}branch: ai/${{ github.run_id }}{% endraw %}
+{% endif %}

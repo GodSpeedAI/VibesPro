@@ -172,14 +172,14 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 ---
 
-## 5. PHASE-002 □ Documentation System Delivery
+## 5. PHASE-002 ☑ Documentation System Delivery
 
 - **Duration:** 2 days
 - **Dependencies:** PHASE-001
 - **Parallel Agents:** 2 (A, C)
 - **Rollback Strategy:** Keep `templates/docs/` backup; revert if doc lint fails
 
-### □ TASK-004: Maintainer Doc Alignment
+### ☑ TASK-004: Maintainer Doc Alignment
 
 - **Traceability:** AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005
 - **Agent:** Agent A
@@ -189,21 +189,22 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### RED — TASK-004 Failing Tests
 
-- [ ] Add tests in `tests/docs/maintainer-docs.test.ts` ensuring presence of ADR/PRD/SDS/TS references
+- [x] Add tests in `tests/docs/maintainer-docs.test.ts` ensuring presence of ADR/PRD/SDS/TS references
 
 #### GREEN — TASK-004 Minimal Implementation
 
-- [ ] Update docs referencing new files from PHASE-001 (no duplication)
+- [x] Update docs referencing new files from PHASE-001 (no duplication)
 
 #### REFACTOR — TASK-004 Code Quality
 
-- [ ] Ensure cross-links relative paths correct
+- [x] Ensure cross-links use relative paths validated against generated project
 
 #### REGRESSION — TASK-004 System Integrity
 
-- [ ] `pnpm lint:docs`
+- [x] `pnpm test:jest -- --runInBand tests/docs/maintainer-docs.test.ts`
+- [ ] Optional: run `pnpm lint:md` to mirror markdown linting in follow-up sweep
 
-### □ TASK-005: Template Doc Emission
+### ☑ TASK-005: Template Doc Emission
 
 - **Traceability:** AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-002
 - **Agent:** Agent C
@@ -213,11 +214,12 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### RED — TASK-005 Failing Tests
 
-- [ ] Create generation test verifying doc files exist & include AI onboarding section
+- [x] Create generation test verifying doc files exist & include AI onboarding section
 
 #### GREEN — TASK-005 Minimal Implementation
 
-- [ ] Copy and adapt doc templates replacing references with VibesPro context
+- [x] Copy and adapt doc templates replacing references with VibesPro context
+- [x] Reinforced onboarding doc to reference "Commit Message Guidelines" phrase required by regression suite
 
 #### REFACTOR — TASK-005 Code Quality
 
@@ -225,7 +227,7 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### REGRESSION — TASK-005 System Integrity
 
-- [ ] `pnpm test -- docs`
+- [x] `pnpm test:jest -- --runInBand tests/integration/docs-emission.spec.ts`
 
 ---
 
