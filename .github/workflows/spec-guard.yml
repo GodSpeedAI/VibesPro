@@ -12,44 +12,21 @@ jobs:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: "20"
+          node-version: "22"
+          cache: 'pnpm'
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
       - name: Install just
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
           just --version
-      - name: Generate traceability matrix
-        run: just spec-matrix
-      - name: Lint prompts
-        run: just prompt-lint
-      - name: Lint markdown
-        run: pnpm run lint:md
-      - name: Validate chatmode frontmatter and models
-        run: node scripts/check_all_chatmodes.mjs
-      - name: Link check docs
-        run: node tools/docs/link_check.js
-      - name: Plan prompts (budget and accurate tokenizer)
-        run: |
-          for f in .github/prompts/*.prompt.md; do
-            [ -e "$f" ] || continue
-            echo "Planning $f (budget check)..."
-            node tools/prompt/plan_preview.js "$f"
-            echo "Planning $f (accurate tokenizer)..."
-            PROMPT_TOKENIZER=accurate node tools/prompt/plan_preview.js --accurate "$f"
-          done
-      - name: Run unit tests
-        run: pnpm run test:node
-      - name: Environment audit
-        run: pnpm run env:audit
+      - name: Run Spec Guard bundle
+        run: just spec-guard
       - name: Upload environment report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: environment-report
           path: docs/environment_report.md
-      - name: Build PR comment
-        if: github.event_name == 'pull_request'
-        run: pnpm run pr:comment
       - name: Upsert PR comment
         if: github.event_name == 'pull_request'
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
