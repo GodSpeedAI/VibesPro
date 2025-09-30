@@ -15,9 +15,15 @@ jobs:
           node-version: "22"
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
-      - run: corepack enable
-      - run: corepack prepare pnpm@9.0.0 --activate
-      - run: pnpm install --frozen-lockfile
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3.0.0
+        with:
+          version: 9
+          run_install: false
+      - name: Verify pnpm installation
+        run: pnpm --version
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Install just
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
