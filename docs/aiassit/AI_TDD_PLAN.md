@@ -1,5 +1,17 @@
 # AI-Assisted Integration TDD Implementation Plan
 
+## 0. Progress Snapshot (2025-09-30)
+
+- ✅ **Spec Guard CI hardening (AI_ADR-005, AI_PRD-005, AI_SDS-004, AI_TS-003):**
+  - Reordered pnpm and Node setup to match the validated `ci.yml` pipeline and downgraded runners to Node 20 for parity with Nx-supported tooling.
+  - Swapped the manual curl installer for `taiki-e/install-action` and verified `just --version`, eliminating prior permission errors when the workflow wrote to `/usr/local/bin`.
+  - Added explicit `contents: read`, `pull-requests: write`, and `issues: write` permissions so the GitHub Script step can upsert PR comments without failing token scopes.
+  - Local verification: `just spec-guard` now passes end-to-end on the feature branch, confirming the workflow changes remain green.
+- ✅ **Docs generator workflow alignment (AI_ADR-005, AI_PRD-005, AI_SDS-004, AI_TS-004):**
+  - Updated both matrix jobs to Node 20, ensured pnpm is provisioned before caching, and kept the installer parity with Spec Guard to avoid divergent environments.
+  - Confirmed the integration script via `uv run python tools/docs/generator.py --project-name ci-test --output-dir tmpdocs --validate`, matching the workflow’s GREEN expectations.
+- ⏳ **Next focus:** Complete TASK-002/TASK-012 follow-ups (import remaining workflow variants from VibePDK and extend regression coverage) plus re-run deferred checks (`pnpm exec act`, full `pnpm test`).
+
 ## 1. Inputs & Traceability Sources
 
 - **Architectural Decisions:** `AI_ADR.md`
@@ -131,6 +143,7 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 - [x] Copy workflow YAML files and replace `{{cookiecutter.project_slug}}` tokens with template vars
 - [x] Run test harness ensuring detection of new workflows (`pnpm test:jest -- tests/ci/verify-workflows.test.ts --runInBand`)
+- [x] Align existing `spec-guard.yml` and `docs-generator.yml` with Node 20 runners, pnpm-first provisioning, and shared `just` installation to unblock CI (validated via local `just spec-guard` run).
 
 #### REFACTOR — TASK-002 Code Quality
 
