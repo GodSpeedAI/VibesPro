@@ -37,6 +37,18 @@ spec-matrix:
 prompt-lint:
 	pnpm prompt:lint
 
+spec-guard:
+	pnpm spec:matrix
+	pnpm prompt:lint
+	pnpm prompt:plan
+	pnpm prompt:plan:accurate
+	pnpm run lint:md
+	node scripts/check_all_chatmodes.mjs
+	node tools/docs/link_check.js
+	pnpm run test:node
+	pnpm run env:audit
+	pnpm run pr:comment
+
 # --- Build Orchestration ---
 build TARGET="": (_detect_build_strategy TARGET)
 
