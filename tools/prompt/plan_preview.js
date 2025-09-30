@@ -12,17 +12,41 @@ function planPreview(file, mode = 'default', opts = {}) {
 
 if (require.main === module) {
     const args = process.argv.slice(2);
-    const file = args[0];
-    const mode = args[1] && !args[1].startsWith('--') ? args[1] : 'default';
-    const accurate = args.includes('--accurate');
-    const encArg = args.find(a => a.startsWith('--encoding='));
-    const encoding = encArg ? encArg.split('=')[1] : undefined;
+    let file;
+    let mode = 'default';
+    let modeExplicit = false;
+    let accurate = false;
+    let encoding;
+
+    for (const arg of args) {
+        if (arg === '--accurate') {
+            accurate = true;
+            continue;
+        }
+        if (arg.startsWith('--encoding=')) {
+            const [, value] = arg.split('=');
+            encoding = value || undefined;
+            continue;
+        }
+        if (!file) {
+            file = arg;
+            continue;
+        }
+        if (!modeExplicit && !arg.startsWith('--')) {
+            mode = arg;
+            modeExplicit = true;
+            continue;
+        }
+    }
+
     if (!file) {
         console.error('Usage: plan_preview.js <prompt-file> [mode] [--accurate] [--encoding=<name>]');
         process.exit(2);
     }
+
     const res = planPreview(file, mode, { accurate, encoding });
-    const accTag = accurate || (process.env.PROMPT_TOKENIZER||'')==='accurate' ? 'accurate' : 'heuristic';
+    const envAccurate = (process.env.PROMPT_TOKENIZER || '') === 'accurate';
+    const accTag = accurate || envAccurate ? 'accurate' : 'heuristic';
     console.log(`[prompt:plan] tokens=${res.tokens} budget=${res.budget.level} mode=${mode} tokenizer=${accTag}`);
     if (!res.budget.within) process.exit(1);
 }
