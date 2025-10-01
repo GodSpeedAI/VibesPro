@@ -1,22 +1,6 @@
-{% if cookiecutter is defined %}
-{% set project_name_value = cookiecutter.project_name %}
-{% set project_slug_value = cookiecutter.project_slug %}
-{% set author_name_value = cookiecutter.author_name %}
-{% set repo_url_value = cookiecutter.repo_url %}
-{% set year_value = cookiecutter.year %}
-{% else %}
-{% set project_name_value = project_name %}
-{% set project_slug_value = project_slug %}
-{% set author_name_value = author_name %}
-{% set repo_url_value = repo_url if repo_url is defined else '' %}
-{% set year_value = year if year is defined else '' %}
-{% endif %}
-# Developer Architectural Decision Record (DX-focused)
+{% include 'docs/partials/_metadata_header.j2' %}
 
-**Project:** {{ project_name_value }} ({{ project_slug_value }})
-**Maintainer:** {{ author_name_value }}
-**Repository:** {{ repo_url_value or 'TBD' }}
-**Year:** {{ year_value or 'TBD' }}
+# Developer Architectural Decision Record (DX-focused)
 
 Audience: Developers as primary users
 Scope: Decisions shaping the development environment as a product platform

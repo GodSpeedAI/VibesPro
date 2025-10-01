@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 {% if cookiecutter is defined %}
 {% set project_name_value = cookiecutter.project_name %}
 {% set project_slug_value = cookiecutter.project_slug %}
@@ -17,11 +18,11 @@
 **Year:**       {{ year_value }}
 {% endif %}
 # Developer Technical Specifications
+=======
+{% include 'docs/partials/_metadata_header.j2' %}
+>>>>>>> Stashed changes
 
-**Project:** {{ project_name_value }} ({{ project_slug_value }})
-**Maintainer:** {{ author_name_value }}
-**Repository:** {{ repo_url_value or 'TBD' }}
-**Year:** {{ year_value or 'TBD' }}
+# Developer Technical Specifications
 
 Audience: Developers and CI maintainers
 
