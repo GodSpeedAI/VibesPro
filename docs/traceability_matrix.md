@@ -88,7 +88,7 @@ Note: This file is generated/updated by tools/spec/matrix.js. Do not edit manual
 | TASK-008 | docs/aiassit/AI_TDD_PLAN.md<br>docs/mergekit/IMPLEMENTATION-PLAN.md<br>docs/traceability_matrix.md | referenced |  |
 | TASK-009 | docs/aiassit/AI_TDD_PLAN.md<br>docs/mergekit/IMPLEMENTATION-PLAN.md<br>docs/traceability_matrix.md | referenced |  |
 | TASK-010 | docs/aiassit/AI_TDD_PLAN.md<br>docs/mergekit/IMPLEMENTATION-PLAN.md<br>docs/traceability_matrix.md | referenced |  |
-| TASK-011 | docs/aiassit/AI_TDD_PLAN.md<br>docs/mergekit/IMPLEMENTATION-PLAN.md<br>docs/tmp/docgen_log.md<br>docs/traceability_matrix.md | referenced |  |
+| TASK-011 | docs/aiassit/AI_TDD_PLAN.md<br>docs/mergekit/IMPLEMENTATION-PLAN.md<br>docs/traceability_matrix.md | referenced |  |
 | TASK-012 | docs/aiassit/AI_TDD_PLAN.md<br>docs/mergekit/IMPLEMENTATION-PLAN.md<br>docs/traceability_matrix.md | referenced |  |
 | TS-001 | docs/aiassit/AI_TDD_PLAN.md<br>docs/aiassit/AI_TS.md<br>docs/aiassit/AI_traceability.md<br>docs/devkit-prompts-instructions-integration.md<br>docs/speckit_implementation_plan.md<br>docs/traceability_matrix.md | referenced |  |
 | TS-002 | docs/aiassit/AI_TDD_PLAN.md<br>docs/aiassit/AI_TS.md<br>docs/aiassit/AI_traceability.md<br>docs/speckit_implementation_plan.md<br>docs/traceability_matrix.md | referenced |  |
