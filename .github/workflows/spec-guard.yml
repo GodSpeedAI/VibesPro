@@ -36,7 +36,7 @@ jobs:
             echo "Planning $f (budget check)..."
             node tools/prompt/plan_preview.js "$f"
             echo "Planning $f (accurate tokenizer)..."
-            PROMPT_TOKENIZER=accurate node tools/prompt/plan_preview.js --accurate "$f"
+            PROMPT_TOKENIZER=accurate node tools/prompt/plan_preview.js "$f" --accurate
           done
       - name: Run unit tests
         run: pnpm run test:node
