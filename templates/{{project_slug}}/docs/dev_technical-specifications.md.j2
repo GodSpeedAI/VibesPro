@@ -8,8 +8,13 @@
 {% set project_name_value = project_name %}
 {% set project_slug_value = project_slug %}
 {% set author_name_value = author_name %}
-{% set repo_url_value = repo_url if repo_url is defined else '' %}
-{% set year_value = year if year is defined else '' %}
+{% set repo_url_value = repo_url if repo_url is defined else 'TBD' %}
+{% set year_value     = year    if year    is defined else 'TBD' %}
+
+{# … other template content … #}
+
+**Repository:** {{ repo_url_value }}
+**Year:**       {{ year_value }}
 {% endif %}
 # Developer Technical Specifications
 
