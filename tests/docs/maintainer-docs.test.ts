@@ -20,7 +20,7 @@ describe('Maintainer doc templates', () => {
             const contents = readFileSync(target, 'utf8');
             expect(contents.trim().length).toBeGreaterThan(0);
             // Files use the metadata header partial which contains Copier variables
-            expect(contents).toContain("{% include 'docs/partials/_metadata_header.j2' %}");
+            expect(contents).toContain("{% include 'partials/_metadata_header.j2' %}");
         });
 
         // Verify the partial itself contains all required Copier variables

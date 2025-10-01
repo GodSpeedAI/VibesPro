@@ -17,10 +17,11 @@ import argparse
 import os
 import sys
 
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
+
 # nosemgrep: python.flask.security.xss.audit.direct-use-of-jinja2
 # Justification: autoescape=True is explicitly enabled; this is a template validator
 # for a FastAPI project (not Flask), and templates generate documentation/config files.
-from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 ROOT = os.path.join(os.getcwd(), 'templates', '{{project_slug}}')
 
