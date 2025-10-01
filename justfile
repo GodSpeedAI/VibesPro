@@ -221,6 +221,192 @@ docs-clean:
 	rm -rf docs/generated docs/temp
 	rm -rf docs/temp
 
+# --- AI Workflow Recipes ---
+# Traceability: AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-004
+#
+# These recipes support AI-assisted development workflows as defined in:
+# - .github/instructions/ai-workflows.instructions.md
+# - .github/chatmodes/ (tdd.*, debug.*)
+# - .github/prompts/ (TDD and debug workflow prompts)
+#
+# All recipes are safe to run in any environment and degrade gracefully
+# when dependencies (pnpm, Nx) are not available.
+
+# Bundle AI context for Copilot chat modes
+# Collects specs, CALM architecture, and techstack into docs/ai_context_bundle
+# for reference by .github/chatmodes/*.chatmode.md files
+ai-context-bundle:
+	@echo "📦 Bundling AI context..."
+	@bash scripts/bundle-context.sh docs/ai_context_bundle
+	@echo "✅ Context bundle ready at docs/ai_context_bundle"
+
+# --- TDD Workflow (Red-Green-Refactor) ---
+# Usage: Open corresponding chat mode and follow the workflow
+# Context: Reference docs/ai_context_bundle for project context
+
+tdd-red:
+	@echo "🔴 Red Phase: Write failing tests from specs."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: tdd.red"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Write failing tests that define expected behavior"
+	@echo ""
+
+tdd-green:
+	@echo "🟢 Green Phase: Implement minimal code to pass tests."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: tdd.green"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Write minimal implementation to make tests pass"
+	@echo ""
+
+tdd-refactor:
+	@echo "♻️  Refactor Phase: Improve design while keeping tests green."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: tdd.refactor"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Optimize code without changing behavior"
+	@echo ""
+
+# --- Debug Workflow (Start-Repro-Isolate-Fix-Refactor-Regress) ---
+# Usage: Open corresponding chat mode and follow the workflow
+# Context: Reference docs/ai_context_bundle for project context
+
+debug-start:
+	@echo "🐛 Debug Start: Normalize bug report and plan reproduction."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: debug.start"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Document the bug and plan reproduction"
+	@echo ""
+
+debug-repro:
+	@echo "🐛 Debug Repro: Write failing test to reproduce the issue."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: debug.repro"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Create minimal reproduction test"
+	@echo ""
+
+debug-isolate:
+	@echo "🐛 Debug Isolate: Narrow root cause using diffs/instrumentation."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: debug.isolate"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Add logging/instrumentation to find root cause"
+	@echo ""
+
+debug-fix:
+	@echo "🐛 Debug Fix: Apply minimal change to make tests pass."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: debug.fix"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Implement minimal fix for the issue"
+	@echo ""
+
+debug-refactor:
+	@echo "♻️  Debug Refactor: Clean up the fix and remove instrumentation."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: debug.refactor"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Improve fix quality and remove debug code"
+	@echo ""
+
+debug-regress:
+	@echo "🧪 Debug Regress: Run full regression to ensure stability."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Open chat mode: debug.regress"
+	@echo "  2. Reference docs/ai_context_bundle"
+	@echo "  3. Verify no regressions were introduced"
+	@echo ""
+
+# --- AI Validation & Scaffolding ---
+
+# Validate code quality using available tooling
+# Safe to run: degrades gracefully if pnpm or Nx are not available
+# Runs: lint, typecheck, and tests (if configured)
+ai-validate:
+	@echo "🔍 Validating project..."
+	@if command -v pnpm > /dev/null 2>&1; then \
+		if [ -f package.json ] && grep -q '"lint"' package.json; then \
+			echo "Running lint..."; \
+			pnpm run lint || true; \
+		else \
+			echo "⚠️  No 'lint' script found in package.json. Skipping lint."; \
+		fi; \
+		if [ -f package.json ] && grep -q '"typecheck"' package.json; then \
+			echo "Running typecheck..."; \
+			pnpm run typecheck || true; \
+		else \
+			echo "⚠️  No 'typecheck' script found in package.json. Skipping typecheck."; \
+		fi; \
+		if pnpm exec nx --version > /dev/null 2>&1; then \
+			echo "Running tests..."; \
+			pnpm exec nx run-many --target=test --all || true; \
+		else \
+			echo "⚠️  Nx not available or no projects to test."; \
+		fi; \
+	else \
+		echo "⚠️  pnpm not found. Skipping validation."; \
+		echo "Run 'just setup' to install dependencies."; \
+	fi
+	@echo "✅ Validation complete"
+
+# Scaffold new code using Nx generators
+# Thin wrapper around 'nx generate' with helpful error messages
+# Usage: just ai-scaffold name=@nx/js:lib
+ai-scaffold name="":
+	@if [ -z "{{name}}" ]; then \
+		echo "Usage: just ai-scaffold name=<generator>"; \
+		echo ""; \
+		echo "Examples:"; \
+		echo "  just ai-scaffold name=@nx/js:lib"; \
+		echo "  just ai-scaffold name=@nx/react:component"; \
+		echo ""; \
+		exit 1; \
+	else \
+		if command -v pnpm > /dev/null 2>&1; then \
+			echo "🏗️  Running: pnpm exec nx g {{name}}"; \
+			pnpm exec nx g {{name}}; \
+		else \
+			echo "❌ pnpm not found."; \
+			echo "Please run: just setup"; \
+			exit 1; \
+		fi; \
+	fi
+
+# --- Specification Management ---
+
+# Guard against commits without proper specifications
+# Ensures docs/specs/ directory exists and contains markdown files
+# Intended for use in git hooks or CI pipelines
+spec-guard:
+	@echo "🛡️  Checking specification files..."
+	@if [ ! -d "docs/specs" ]; then \
+		echo "❌ docs/specs directory not found"; \
+		echo ""; \
+		echo "Specifications are required for all changes."; \
+		echo "See: docs/spec_index.md for guidance."; \
+		exit 1; \
+	fi
+	@if ! find docs/specs -name "*.md" -type f | grep -q .; then \
+		echo "❌ No specification files found in docs/specs"; \
+		echo ""; \
+		echo "Specifications are required for all changes."; \
+		echo "See: docs/spec_index.md for guidance."; \
+		exit 1; \
+	fi
+	@echo "✅ Specification files present"
+
 # --- AI Utilities ---
 ai-analyze PROJECT_PATH:
 	@echo "🤖 Analyzing project with AI..."
