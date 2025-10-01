@@ -57,7 +57,7 @@ To resolve this structural issue, a significant refactoring is required. The hig
 4.  **Clean up the root directory**, leaving only the files necessary for Cookiecutter itself. — Pending; after docs finalization, retain `cookiecutter.json`, `hooks/`, and template-development files only per plan.
 
 Validation checklist (current state):
-- Template contains: `.github/` (with prompts/instructions/chatmodes and CI), `.husky/`, `.vscode/`, `mcp/`, `scripts/`, `tests/`, `tools/`, `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `techstack.yaml`, `tsconfig.json`, `.envrc.template`, and updated `justfile` (+ backup).
-- Docs: Partial; move listed remaining files to `{{cookiecutter.project_slug}}/docs/`.
+* Template contains: `.github/` (with prompts/instructions/chatmodes and CI), `.husky/`, `.vscode/`, `mcp/`, `scripts/`, `tests/`, `tools/`, `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `techstack.yaml`, `tsconfig.json`, `.envrc.template`, and updated `justfile` (+ backup).
+* Docs: Partial; move listed remaining files to `{{cookiecutter.project_slug}}/docs/`.
 
 This will align the repository with standard Cookiecutter practices and ensure that running the template produces a complete, functional, and feature-rich project as intended.

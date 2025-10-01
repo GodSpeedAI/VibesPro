@@ -1,3 +1,5 @@
+{% set repo_url_value = repo_url if repo_url else 'TBD' %}
+{% set year_value = year if year else 'TBD' %}
 # {{ project_name }}
 
 {% if architecture_style == "hexagonal" %}
@@ -57,5 +59,8 @@ If migrating from existing projects:
 ---
 
 Created by: {{ author_name }}
+Repository: {{ repo_url_value }}
+Year: {{ year_value }}
+Project Slug: {{ project_slug }}
 Architecture: {{ architecture_style }}
 AI Workflows: {{ include_ai_workflows }}

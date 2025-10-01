@@ -192,7 +192,7 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Parallel Agents:** 2 (A, C)
 - **Rollback Strategy:** Keep `templates/docs/` backup; revert if doc lint fails
 
-### □ TASK-004: Maintainer Doc Alignment
+### ☑ TASK-004: Maintainer Doc Alignment
 
 - **Traceability:** AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005
 - **Agent:** Agent A
@@ -202,11 +202,11 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### RED — TASK-004 Failing Tests
 
-- [ ] Add tests in `tests/docs/maintainer-docs.test.ts` ensuring presence of ADR/PRD/SDS/TS references
+- [x] Add tests in `tests/docs/maintainer-docs.test.ts` ensuring presence of ADR/PRD/SDS/TS references
 
 #### GREEN — TASK-004 Minimal Implementation
- - [x] Update docs referencing new files from PHASE-001 (no duplication)
- - Evidence: Unit test `tests/docs/maintainer-docs.test.ts` added and executed locally; content checks passed.
+- [x] Maintainer doc templates converted to `.md.j2` with project metadata alignment.
+- Evidence (AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005): Updated `templates/{{project_slug}}/docs/dev_*.md.j2` plus `tests/docs/maintainer-docs.test.ts`; run pnpm test, pnpm prompt:lint, just test-generation, uv run pytest -q.
 
 #### REFACTOR — TASK-004 Code Quality
 
@@ -216,9 +216,10 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 - [ ] `pnpm lint:docs`
 
-### □ TASK-005: Template Doc Emission
 
-- **Traceability:** AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-002
+### ☑ TASK-005: Template Doc Emission
+
+- **Traceability:** AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005
 - **Agent:** Agent C
 - **Estimated Time:** 4 hours
 - **MECE Boundary:** Only template doc templates (`templates/{{project_slug}}/docs/**`, README)
@@ -226,11 +227,11 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### RED — TASK-005 Failing Tests
 
-- [ ] Create generation test verifying doc files exist & include AI onboarding section
+- [x] Add deterministic integration guard in `tests/integration/template-docs.test.ts` validating metadata tokens.
 
 #### GREEN — TASK-005 Minimal Implementation
- - [x] Copy and adapt doc templates replacing references with VibesPro context
- - Evidence: Template docs copied into `templates/{{cookiecutter.project_slug}}/docs/`, integration smoke `tests/integration/template-docs.test.ts` passed locally; docs generator validation (`tools/docs/generator.py --validate`) succeeded.
+- [x] Converted README and maintainer docs to `.j2` with cookiecutter metadata fallbacks.
+- Evidence (AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005): Updated `templates/{{project_slug}}/README.md.j2` & maintainer docs with metadata tokens plus regression tests (`tests/docs/maintainer-docs.test.ts`, `tests/integration/template-docs.test.ts`); run pnpm test, pnpm prompt:lint, just test-generation, uv run pytest -q.
 
 #### REFACTOR — TASK-005 Code Quality
 
@@ -240,7 +241,6 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 - [ ] `pnpm test -- docs`
 
----
 
 ## 6. PHASE-003 □ Automation & Tooling Enablement
 

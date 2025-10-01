@@ -59,10 +59,11 @@ Interface Layer (User/System Interfaces)
 - **Task Automation**: justfile (cross-platform, intelligent strategy detection)
 - **Monorepo**: Nx (code generation, dependency graph, caching)
 
+
 **Template System**:
 
-- **Generator**: Copier (single source for project scaffolding)
-- **Templating**: Jinja2 with YAML configuration
+- **Generator**: Copier (single source for project scaffolding with direct Jinja2 variable syntax)
+- **Templating**: Jinja2 with YAML configuration (uses Copier's direct variable references, not cookiecutter namespace)
 - **Validation**: Pre/post generation hooks for integrity
 
 **Temporal Learning System**:

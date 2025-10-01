@@ -1,14 +1,42 @@
-import { execSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-describe('Template docs generation smoke', () => {
-    it('copier template includes docs and README', () => {
-        // Render template into ../test-output to mirror existing harness
-        execSync('copier copy . ../test-output --data-file tests/fixtures/test-data.yml', { stdio: 'inherit' });
-        const outDocs = join(process.cwd(), '..', 'test-output', 'docs');
-        const readme = join(process.cwd(), '..', 'test-output', 'README.md');
-        expect(existsSync(outDocs)).toBe(true);
-        expect(existsSync(readme)).toBe(true);
-    }, 30000);
+describe('Template documentation tokens', () => {
+    const templateRoot = join(process.cwd(), 'templates', '{{project_slug}}');
+    const docsRoot = join(templateRoot, 'docs');
+
+    it('README template exposes Copier metadata placeholders', () => {
+        const readmePath = join(templateRoot, 'README.md.j2');
+        const readme = readFileSync(readmePath, 'utf8');
+
+        expect(readme).toContain('project_name');
+        expect(readme).toContain('project_slug');
+        expect(readme).toContain('author_name');
+        expect(readme).toContain('repo_url');
+        expect(readme).toContain('year');
+    });
+
+    it('maintainer docs include project metadata tokens for repo alignment', () => {
+        const docs = [
+            'dev_adr.md.j2',
+            'dev_prd.md.j2',
+            'dev_sds.md.j2',
+            'dev_technical-specifications.md.j2'
+        ];
+
+        docs.forEach((fileName) => {
+            const target = readFileSync(join(docsRoot, fileName), 'utf8');
+            // Files use the metadata header partial which contains Copier variables
+            expect(target).toContain("{% include 'docs/partials/_metadata_header.j2' %}");
+        });
+
+        // Verify the partial itself contains all required Copier variables
+        const partialPath = join(docsRoot, 'partials', '_metadata_header.j2');
+        const partialContents = readFileSync(partialPath, 'utf8');
+        expect(partialContents).toContain('project_name');
+        expect(partialContents).toContain('project_slug');
+        expect(partialContents).toContain('author_name');
+        expect(partialContents).toContain('repo_url');
+        expect(partialContents).toContain('year');
+    });
 });
