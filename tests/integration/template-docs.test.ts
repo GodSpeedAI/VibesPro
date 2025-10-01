@@ -27,7 +27,7 @@ describe('Template documentation tokens', () => {
         docs.forEach((fileName) => {
             const target = readFileSync(join(docsRoot, fileName), 'utf8');
             // Files use the metadata header partial which contains Copier variables
-            expect(target).toContain("{% include 'partials/_metadata_header.j2' %}");
+            expect(target).toContain("{% include 'docs/partials/_metadata_header.j2' %}");
         });
 
         // Verify the partial itself contains all required Copier variables
