@@ -4,11 +4,22 @@ Exit non-zero on any template rendering error. Intended for CI/locally to catch 
 Usage: python tools/check_templates.py
 
 It will render templates with a conservative sample context. Add more keys to SAMPLE_CONTEXT as needed.
+
+Security Note:
+    This script uses Jinja2 with autoescape=True to prevent XSS vulnerabilities.
+    While security scanners may flag direct Jinja2 usage (e.g., Semgrep flask.xss rules),
+    this is a false positive for this FastAPI/Copier template project where:
+    - autoescape=True is explicitly enabled for all Environment instances
+    - Templates are validated offline (not serving user content at runtime)
+    - HTML escaping is appropriate for documentation templates
 """
 import argparse
 import os
 import sys
 
+# nosemgrep: python.flask.security.xss.audit.direct-use-of-jinja2
+# Justification: autoescape=True is explicitly enabled; this is a template validator
+# for a FastAPI project (not Flask), and templates generate documentation/config files.
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 ROOT = os.path.join(os.getcwd(), 'templates', '{{project_slug}}')
@@ -52,6 +63,9 @@ def main():
         return 2
 
     loader = FileSystemLoader(ROOT)
+    # Security: autoescape=True prevents XSS by HTML-escaping variables in templates.
+    # This is critical for any Jinja2 Environment handling user-provided or external data.
+    # StrictUndefined catches template errors (undefined variables) at validation time.
     env = Environment(loader=loader, undefined=StrictUndefined, autoescape=True)
 
     subdir = None if args.all else args.subdir
