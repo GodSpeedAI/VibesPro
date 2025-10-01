@@ -100,26 +100,26 @@ Performance is addressed through the [performance instructions](../.github/instr
 
 ## Tech stack sync (idempotent)
 
-- Source of truth: `techstack.yaml` at repo root (validated by `docs/techstack.schema.json`).
-- Plan/apply:
-	- Preview: `just plan-techstack`
-	- Apply: `just sync-techstack`
-- Prompt-assisted review: `.github/prompts/tool.techstack.sync.prompt.md` reconciles PRD/SDS/ADR/TS with the stack and proposes deterministic updates to cookiecutter/generators.
+* Source of truth: `techstack.yaml` at repo root (validated by `docs/techstack.schema.json`).
+* Plan/apply:
+  * Preview: `just plan-techstack`
+  * Apply: `just sync-techstack`
+* Prompt-assisted review: `.github/prompts/tool.techstack.sync.prompt.md` reconciles PRD/SDS/ADR/TS with the stack and proposes deterministic updates to cookiecutter/generators.
 
 ## Commit messages and traceability
 
 Follow the commit message guidance in:
 
-- Human guide: [docs/commit_message_guidelines.md](./commit_message_guidelines.md)
-- Instruction used by Copilot/tasks: [.github/instructions/commit‑msg.instructions.md](../.github/instructions/commit-msg.instructions.md)
+* Human guide: [docs/commit_message_guidelines.md](./commit_message_guidelines.md)
+* Instruction used by Copilot/tasks: [.github/instructions/commit‑msg.instructions.md](../.github/instructions/commit-msg.instructions.md)
 
 Notes
-- Subject ≤ 72 chars, imperative mood; include spec IDs (PRD‑xxx, ADR‑xxx, SDS‑xxx, DEV‑*) and risks/mitigations.
-- A commit‑msg hook in CI expects a spec ID.
+* Subject ≤ 72 chars, imperative mood; include spec IDs (PRD‑xxx, ADR‑xxx, SDS‑xxx, DEV‑*) and risks/mitigations.
+* A commit‑msg hook in CI expects a spec ID.
 
 Related specs index and matrix:
-- Product/dev indices: [docs/spec_index.md](./spec_index.md), [docs/dev_spec_index.md](./dev_spec_index.md)
-- Traceability matrix: [docs/traceability_matrix.md](./traceability_matrix.md)
+* Product/dev indices: [docs/spec_index.md](./spec_index.md), [docs/dev_spec_index.md](./dev_spec_index.md)
+* Traceability matrix: [docs/traceability_matrix.md](./traceability_matrix.md)
 
 ## Advanced Usage
 
@@ -136,10 +136,10 @@ Related specs index and matrix:
 ## CI overview
 
 The workflow at `.github/workflows/spec-guard.yml` enforces:
-- Prompt lint and plan on all `*.prompt.md`
-- Node unit tests and shell specs (if present)
-- Environment audit artifact upload
-- PR comment upsert with key results
+* Prompt lint and plan on all `*.prompt.md`
+* Node unit tests and shell specs (if present)
+* Environment audit artifact upload
+* PR comment upsert with key results
 
 See also the integration plan: [docs/devkit-prompts-instructions-integration.md](./devkit-prompts-instructions-integration.md).
 
@@ -150,9 +150,9 @@ To use the spec‑driven or onboarding chat modes in VS Code:
 1. Open the Chat view.
 2. Click the mode picker at the top (it shows your current mode).
 3. Choose one of:
-	- Spec‑Driven Mode — `.github/chatmodes/spec.wide.chatmode.md`
-	- Spec‑Driven Lean — `.github/chatmodes/spec.lean.chatmode.md`
-	- Onboarding Mode — `.github/chatmodes/onboarding.chatmode.md`
+  * Spec‑Driven Mode — `.github/chatmodes/spec.wide.chatmode.md`
+  * Spec‑Driven Lean — `.github/chatmodes/spec.lean.chatmode.md`
+  * Onboarding Mode — `.github/chatmodes/onboarding.chatmode.md`
 4. Start chatting. The mode’s instructions, tools, and model are applied automatically.
 
 Tip: Ensure workspace trust is granted so prompts and mode files are discoverable (see Security section). You can switch modes anytime during a conversation.
