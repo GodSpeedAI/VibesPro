@@ -1,28 +1,12 @@
 ```jinja
-{# Render a consistent metadata header. The partial outputs the markdown lines directly
-	using cookiecutter variables when available, otherwise falling back to project_*
-	template variables. Defaults for repo and year are 'TBD'. #}
-{% if cookiecutter is defined %}
-**Project:** {{ cookiecutter.project_name }} ({{ cookiecutter.project_slug }})
-**Maintainer:** {{ cookiecutter.author_name }}
-**Repository:** {{ cookiecutter.repo_url or 'TBD' }}
-**Year:** {{ cookiecutter.year or 'TBD' }}
-{% else %}
+{# Render a consistent metadata header for Copier-generated documentation.
+   Uses Copier variables directly with sensible fallback values. #}
+{% set repo_url_value = repo_url if repo_url else 'TBD' %}
+{% set year_value = year if year else 'TBD' %}
+
 **Project:** {{ project_name }} ({{ project_slug }})
 **Maintainer:** {{ author_name }}
-**Repository:** {{ repo_url if repo_url is defined else 'TBD' }}
-**Year:** {{ year if year is defined else 'TBD' }}
-{% endif %}
-{% if cookiecutter is defined %}
-{% set project_name_value = cookiecutter.project_name %}
-{% set project_slug_value = cookiecutter.project_slug %}
-{% set author_name_value = cookiecutter.author_name %}
-{% set repo_url_value = cookiecutter.repo_url %}
-{% set year_value = cookiecutter.year %}
-{% else %}
-{% set project_name_value = project_name %}
-{% set project_slug_value = project_slug %}
-{% set author_name_value = author_name %}
-{% set repo_url_value = repo_url if repo_url is defined else 'TBD' %}
-{% set year_value = year if year is defined else 'TBD' %}
-{% endif %}
+**Repository:** {{ repo_url_value }}
+**Year:** {{ year_value }}
+
+---

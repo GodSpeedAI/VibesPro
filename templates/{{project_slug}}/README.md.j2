@@ -1,28 +1,6 @@
-{% if cookiecutter is defined %}
-{% set project_name_value = cookiecutter.project_name %}
-{% set project_slug_value = cookiecutter.project_slug %}
-{% set author_name_value = cookiecutter.author_name %}
-{% set repo_url_value = cookiecutter.repo_url %}
-{% set year_value = cookiecutter.year %}
-{% else %}
-{% set project_name_value = project_name %}
-{% set project_slug_value = project_slug %}
-{% set author_name_value = author_name %}
-{# … earlier in the file … #}
-{% set project_name_value = project_name if project_name is defined else '' %}
-{% set project_slug_value = project_slug if project_slug is defined else '' %}
-{% set author_name_value = author_name if author_name is defined else '' %}
--{% set repo_url_value = repo_url if repo_url is defined else '' %}
-{% set repo_url_value = repo_url if repo_url is defined else 'TBD' %}
-{% set year_value = year if year is defined else 'TBD' %}
-
-{# … later in the file around lines 73–74 … #}
--Repository: {{ repo_url_value or 'TBD' }}
-Repository: {{ repo_url_value }}
-Year: {{ year_value }}
-{# … rest of the file … #}
-{% endif %}
-# {{ project_name_value }}
+{% set repo_url_value = repo_url if repo_url else 'TBD' %}
+{% set year_value = year if year else 'TBD' %}
+# {{ project_name }}
 
 {% if architecture_style == "hexagonal" %}
 This project follows hexagonal architecture principles with Domain-Driven Design (DDD).
@@ -80,9 +58,9 @@ If migrating from existing projects:
 
 ---
 
-Created by: {{ author_name_value }}
-Repository: {{ repo_url_value or 'TBD' }}
-Year: {{ year_value or 'TBD' }}
-Project Slug: {{ project_slug_value }}
+Created by: {{ author_name }}
+Repository: {{ repo_url_value }}
+Year: {{ year_value }}
+Project Slug: {{ project_slug }}
 Architecture: {{ architecture_style }}
 AI Workflows: {{ include_ai_workflows }}

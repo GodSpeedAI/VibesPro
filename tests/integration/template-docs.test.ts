@@ -5,15 +5,15 @@ describe('Template documentation tokens', () => {
     const templateRoot = join(process.cwd(), 'templates', '{{project_slug}}');
     const docsRoot = join(templateRoot, 'docs');
 
-    it('README template exposes cookiecutter metadata placeholders', () => {
+    it('README template exposes Copier metadata placeholders', () => {
         const readmePath = join(templateRoot, 'README.md.j2');
         const readme = readFileSync(readmePath, 'utf8');
 
-        expect(readme).toContain('cookiecutter.project_name');
-        expect(readme).toContain('cookiecutter.project_slug');
-        expect(readme).toContain('cookiecutter.author_name');
-        expect(readme).toContain('cookiecutter.repo_url');
-        expect(readme).toContain('cookiecutter.year');
+        expect(readme).toContain('project_name');
+        expect(readme).toContain('project_slug');
+        expect(readme).toContain('author_name');
+        expect(readme).toContain('repo_url');
+        expect(readme).toContain('year');
     });
 
     it('maintainer docs include project metadata tokens for repo alignment', () => {
@@ -26,11 +26,17 @@ describe('Template documentation tokens', () => {
 
         docs.forEach((fileName) => {
             const target = readFileSync(join(docsRoot, fileName), 'utf8');
-            expect(target).toContain('cookiecutter.project_name');
-            expect(target).toContain('cookiecutter.project_slug');
-            expect(target).toContain('cookiecutter.author_name');
-            expect(target).toContain('cookiecutter.repo_url');
-            expect(target).toContain('cookiecutter.year');
+            // Files use the metadata header partial which contains Copier variables
+            expect(target).toContain("{% include 'docs/partials/_metadata_header.j2' %}");
         });
+
+        // Verify the partial itself contains all required Copier variables
+        const partialPath = join(docsRoot, 'partials', '_metadata_header.j2');
+        const partialContents = readFileSync(partialPath, 'utf8');
+        expect(partialContents).toContain('project_name');
+        expect(partialContents).toContain('project_slug');
+        expect(partialContents).toContain('author_name');
+        expect(partialContents).toContain('repo_url');
+        expect(partialContents).toContain('year');
     });
 });

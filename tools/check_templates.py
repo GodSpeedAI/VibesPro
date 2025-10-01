@@ -19,7 +19,7 @@ SAMPLE_CONTEXT = {
     'author_name': 'Acme Maintainer',
     'repo_url': 'https://github.com/example/example-project',
     'year': '2025',
-    # cookiecutter variable not set here; templates should handle both paths
+    # Copier variables used directly; no cookiecutter namespace in this project
 }
 
 

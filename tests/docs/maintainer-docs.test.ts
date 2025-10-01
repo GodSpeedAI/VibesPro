@@ -12,18 +12,25 @@ describe('Maintainer doc templates', () => {
         'dev_technical-specifications.md.j2'
     ];
 
-    it('exposes maintainer docs as non-empty Jinja2 templates with cookiecutter tokens', () => {
+    it('exposes maintainer docs as non-empty Jinja2 templates with Copier variables', () => {
         templateFiles.forEach((fileName) => {
             const target = join(docsRoot, fileName);
             expect(existsSync(target)).toBe(true);
 
             const contents = readFileSync(target, 'utf8');
             expect(contents.trim().length).toBeGreaterThan(0);
-            expect(contents).toContain('cookiecutter.project_name');
-            expect(contents).toContain('cookiecutter.project_slug');
-            expect(contents).toContain('cookiecutter.author_name');
-            expect(contents).toContain('cookiecutter.repo_url');
-            expect(contents).toContain('cookiecutter.year');
+            // Files use the metadata header partial which contains Copier variables
+            expect(contents).toContain("{% include 'docs/partials/_metadata_header.j2' %}");
         });
+
+        // Verify the partial itself contains all required Copier variables
+        const partialPath = join(docsRoot, 'partials', '_metadata_header.j2');
+        expect(existsSync(partialPath)).toBe(true);
+        const partialContents = readFileSync(partialPath, 'utf8');
+        expect(partialContents).toContain('project_name');
+        expect(partialContents).toContain('project_slug');
+        expect(partialContents).toContain('author_name');
+        expect(partialContents).toContain('repo_url');
+        expect(partialContents).toContain('year');
     });
 });
