@@ -22,6 +22,8 @@ describe('Maintainer doc templates', () => {
             expect(contents).toContain('cookiecutter.project_name');
             expect(contents).toContain('cookiecutter.project_slug');
             expect(contents).toContain('cookiecutter.author_name');
+            expect(contents).toContain('cookiecutter.repo_url');
+            expect(contents).toContain('cookiecutter.year');
         });
     });
 });
