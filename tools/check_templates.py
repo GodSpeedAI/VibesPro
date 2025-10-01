@@ -5,9 +5,10 @@ Usage: python tools/check_templates.py
 
 It will render templates with a conservative sample context. Add more keys to SAMPLE_CONTEXT as needed.
 """
-import sys
-import os
 import argparse
+import os
+import sys
+
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 ROOT = os.path.join(os.getcwd(), 'templates', '{{project_slug}}')
@@ -51,12 +52,12 @@ def main():
         return 2
 
     loader = FileSystemLoader(ROOT)
-    env = Environment(loader=loader, undefined=StrictUndefined)
+    env = Environment(loader=loader, undefined=StrictUndefined, autoescape=True)
 
     subdir = None if args.all else args.subdir
     templates = find_templates(ROOT, subdir=subdir)
     if not templates:
-        print('No templates found for check (root=%s, subdir=%s)' % (ROOT, subdir))
+        print(f'No templates found for check (root={ROOT}, subdir={subdir})')
         return 2
 
     # Update sample context with CLI overrides
@@ -74,7 +75,7 @@ def main():
             print('ERROR:', tname, type(e).__name__, '-', e)
 
     if failures:
-        print('\nFAILED: {} templates failed to render.'.format(failures))
+        print(f'\nFAILED: {failures} templates failed to render.')
         return 1
     print('\nAll templates rendered successfully (StrictUndefined)')
     return 0
