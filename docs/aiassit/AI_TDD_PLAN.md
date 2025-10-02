@@ -369,7 +369,7 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [x] Scripts directory created in `templates/{{project_slug}}/scripts/`
 - [ ] Full integration test in generated project deferred (requires template generation fix for `_metadata_header.j2`)
 
-### ☑ TASK-008: Package Script Wiring (Completed 2025-01-01)
+### ☑ TASK-008: Package Script Wiring (Completed 2025-10-01)
 
 - **Traceability:** AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-001
 - **Agent:** Agent C
