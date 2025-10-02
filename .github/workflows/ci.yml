@@ -62,7 +62,8 @@ jobs:
 
       - name: Run tests
         run: |
-          pnpm test -- --runInBand
+          pnpm test:jest -- --runInBand
+          pnpm test:node
           uv run pytest
 
       - name: Validate template
