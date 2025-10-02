@@ -5,7 +5,7 @@
  *
  * Traceability: AI_ADR-005, AI_PRD-005, AI_SDS-004, AI_TS-003, AI_TS-004, AI_TS-005
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
 
@@ -41,41 +41,41 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
     it('should run just test-generation command', () => {
       const ciJob = workflowContent.jobs?.ci;
       expect(ciJob).toBeDefined();
-      
+
       const steps = ciJob.steps || [];
-      const testGenStep = steps.find((step: any) => 
+      const testGenStep = steps.find((step: any) =>
         step.run?.includes('just test-generation') ||
         step.name?.toLowerCase().includes('test generation')
       );
-      
+
       expect(testGenStep).toBeDefined();
     });
 
     it('should run pnpm prompt:lint command', () => {
       const ciJob = workflowContent.jobs?.ci;
       expect(ciJob).toBeDefined();
-      
+
       const steps = ciJob.steps || [];
-      const promptLintStep = steps.find((step: any) => 
+      const promptLintStep = steps.find((step: any) =>
         step.run?.includes('pnpm prompt:lint') ||
         step.run?.includes('just prompt-lint') ||
         step.name?.toLowerCase().includes('lint prompt')
       );
-      
+
       expect(promptLintStep).toBeDefined();
     });
 
     it('should run pnpm spec:matrix command', () => {
       const ciJob = workflowContent.jobs?.ci;
       expect(ciJob).toBeDefined();
-      
+
       const steps = ciJob.steps || [];
-      const specMatrixStep = steps.find((step: any) => 
+      const specMatrixStep = steps.find((step: any) =>
         step.run?.includes('pnpm spec:matrix') ||
         step.run?.includes('just spec-matrix') ||
         step.name?.toLowerCase().includes('traceability matrix')
       );
-      
+
       expect(specMatrixStep).toBeDefined();
     });
   });
@@ -87,7 +87,7 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
     beforeAll(() => {
       const specGuardPath = join(TEMPLATE_WORKFLOWS_DIR, 'spec-guard.yml');
       const nodeTestsPath = join(TEMPLATE_WORKFLOWS_DIR, 'node-tests.yml');
-      
+
       specGuardWorkflow = parse(readFileSync(specGuardPath, 'utf-8'));
       nodeTestsWorkflow = parse(readFileSync(nodeTestsPath, 'utf-8'));
     });
@@ -95,12 +95,12 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
     it('should use setup-node-pnpm composite action in spec-guard workflow', () => {
       const ciJob = specGuardWorkflow.jobs?.ci;
       expect(ciJob).toBeDefined();
-      
-      const setupStep = ciJob.steps?.find((step: any) => 
+
+      const setupStep = ciJob.steps?.find((step: any) =>
         step.uses?.includes('setup-node-pnpm') ||
         step.name?.toLowerCase().includes('setup node')
       );
-      
+
       expect(setupStep).toBeDefined();
       expect(setupStep.uses || setupStep.with).toBeDefined();
     });
@@ -108,12 +108,12 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
     it('should use setup-node-pnpm composite action in node-tests workflow', () => {
       const testJob = nodeTestsWorkflow.jobs?.test;
       expect(testJob).toBeDefined();
-      
-      const setupStep = testJob.steps?.find((step: any) => 
+
+      const setupStep = testJob.steps?.find((step: any) =>
         step.uses?.includes('setup-node-pnpm') ||
         step.name?.toLowerCase().includes('setup node')
       );
-      
+
       expect(setupStep).toBeDefined();
       expect(setupStep.uses || setupStep.with).toBeDefined();
     });
@@ -130,12 +130,12 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
 
     it('should document environment variables in workflow comments', () => {
       // Check for comments documenting key environment variables or workflow purpose
-      const hasComments = 
+      const hasComments =
         specGuardWorkflow.includes('# Environment') ||
         specGuardWorkflow.includes('# Spec Guard') ||
         specGuardWorkflow.includes('# CI') ||
         specGuardWorkflow.includes('# Automation');
-      
+
       expect(hasComments).toBe(true);
     });
   });
@@ -160,7 +160,7 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
       workflows.forEach(({ name, content }) => {
         const jobs = content.jobs || {};
         Object.entries(jobs).forEach(([jobName, job]: [string, any]) => {
-          const setupNodeStep = job.steps?.find((step: any) => 
+          const setupNodeStep = job.steps?.find((step: any) =>
             step.uses?.includes('setup-node')
           );
 
