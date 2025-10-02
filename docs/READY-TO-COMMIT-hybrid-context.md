@@ -37,14 +37,14 @@ Rendered Codebase Context section:
 ======================================================================
 ## Codebase Context
 
-**You are assisting with** A customer support platform with AI-powered 
-ticket routing This application follows hexagonal architecture with 
-domain-driven design, organized around bounded contexts: ticketing, 
-users, ai-suggestions, analytics. The technology stack includes next 
-(frontend), fastapi (backend), postgresql (database), and Redis for 
+**You are assisting with** A customer support platform with AI-powered
+ticket routing This application follows hexagonal architecture with
+domain-driven design, organized around bounded contexts: ticketing,
+users, ai-suggestions, analytics. The technology stack includes next
+(frontend), fastapi (backend), postgresql (database), and Redis for
 caching, OpenAI for AI, SendGrid for emails.
 
-> **💡 Tip**: To refine this description as your project evolves, use 
+> **💡 Tip**: To refine this description as your project evolves, use
 > the project context refinement prompt:
 > `@workspace /project.describe-context.prompt.md`
 ======================================================================

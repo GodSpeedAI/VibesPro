@@ -1,35 +1,35 @@
 ```mermaid
 graph TD
     Start([Developer Generates Project]) --> Copier[Copier Prompts for Context]
-    
+
     Copier --> |project_purpose| Var1[Business Purpose]
     Copier --> |primary_domains| Var2[Bounded Contexts]
     Copier --> |tech_stack_summary| Var3[Tech Stack]
-    
+
     Var1 --> Template[Jinja2 Template Processing]
     Var2 --> Template
     Var3 --> Template
-    
+
     Template --> Generated[Generated Project with<br/>Dynamic Context]
-    
+
     Generated --> PostGen[Post-Gen Hook Message]
     PostGen --> DevWork[Developer Works on Project]
-    
+
     DevWork --> |Project Evolves| Decision{Need to Update<br/>Context?}
-    
+
     Decision --> |No| Continue[Continue Development]
     Decision --> |Yes| Refine[Run Refinement Prompt]
-    
+
     Refine --> Interview[AI Asks Questions]
     Interview --> DevAnswers[Developer Provides Context]
     DevAnswers --> AIGenerates[AI Generates New Description]
     AIGenerates --> Review[Developer Reviews Diff]
     Review --> |Approve| Update[AI Updates<br/>copilot-instructions.md]
     Review --> |Revise| Interview
-    
+
     Update --> Continue
     Continue --> DevWork
-    
+
     style Start fill:#e1f5ff
     style Generated fill:#c8e6c9
     style Update fill:#c8e6c9
@@ -54,10 +54,10 @@ tech_stack_summary: "Redis, OpenAI, SendGrid"
 ```markdown
 ## Codebase Context
 
-**You are assisting with** A customer support platform with AI routing. 
-This application follows hexagonal architecture with domain-driven design, 
-organized around bounded contexts: ticketing, users, ai-suggestions. The 
-technology stack includes next (frontend), fastapi (backend), postgresql 
+**You are assisting with** A customer support platform with AI routing.
+This application follows hexagonal architecture with domain-driven design,
+organized around bounded contexts: ticketing, users, ai-suggestions. The
+technology stack includes next (frontend), fastapi (backend), postgresql
 (database), and Redis, OpenAI, SendGrid.
 ```
 
