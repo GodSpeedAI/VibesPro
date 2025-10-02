@@ -1,0 +1,94 @@
+{% if include_ai_workflows %}
+#!/usr/bin/env python3
+"""Temporal Database Initialization for {{ project_name }}.
+
+Sets up a lightweight file-backed temporal database used by the AI workflows
+to capture specifications, architectural decisions, and learned development
+patterns.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Optional
+
+
+@dataclass(frozen=True, kw_only=True)
+class SpecificationRecord:
+    """Representation of a stored specification or pattern."""
+
+    id: str
+    spec_type: str
+    content: str
+    timestamp: datetime
+    project_context: Optional[str] = None
+
+
+class TemporalRepository:
+    """Simple temporal database wrapper for project specifications."""
+
+    def __init__(self, db_path: str) -> None:
+        self.db_path = Path(db_path)
+        self.db_path.mkdir(parents=True, exist_ok=True)
+
+    def init_database(self) -> None:
+        """Initialize temporal database structure (file placeholders)."""
+        print(f"Initializing temporal database at {self.db_path}")
+
+        for filename in ("specifications.db", "patterns.db", "decisions.db"):
+            (self.db_path / filename).touch(exist_ok=True)
+
+        init_record = SpecificationRecord(
+            id="INIT-001",
+            spec_type="SYSTEM",
+            content=f"Temporal database initialized for {{ project_name }}",
+            timestamp=datetime.utcnow(),
+            project_context="{{ project_name }} - {{ architecture_style }} architecture",
+        )
+
+        self.store_specification(init_record)
+        print("✅ Temporal database initialized successfully")
+
+    def store_specification(self, spec: SpecificationRecord) -> None:
+        """Store a specification record in the temporal database."""
+        spec_file = self.db_path / f"{spec.spec_type.lower()}_{spec.id}.txt"
+        with spec_file.open("w", encoding="utf-8") as handle:
+            handle.write(f"ID: {spec.id}\n")
+            handle.write(f"Type: {spec.spec_type}\n")
+            handle.write(f"Timestamp: {spec.timestamp.isoformat()}\n")
+            handle.write(f"Context: {spec.project_context}\n")
+            handle.write("Content:\n")
+            handle.write(spec.content + "\n")
+
+    def get_latest_specification(self, spec_type: str, identifier: str) -> Optional[SpecificationRecord]:
+        spec_file = self.db_path / f"{spec_type.lower()}_{identifier}.txt"
+        if not spec_file.exists():
+            return None
+
+        with spec_file.open("r", encoding="utf-8") as handle:
+            lines = [line.rstrip("\n") for line in handle.readlines()]
+
+        if len(lines) < 4:
+            return None
+
+        return SpecificationRecord(
+            id=lines[0].split(": ", 1)[1].strip(),
+            spec_type=lines[1].split(": ", 1)[1].strip(),
+            timestamp=datetime.fromisoformat(lines[2].split(": ", 1)[1].strip()),
+            project_context=lines[3].split(": ", 1)[1].strip(),
+            content="\n".join(lines[5:]).strip(),
+        )
+
+
+def main() -> None:
+    db_path = Path("temporal_db")
+    repo = TemporalRepository(str(db_path))
+    repo.init_database()
+    print(f"Temporal database ready at: {db_path.absolute()}")
+
+
+if __name__ == "__main__":
+    main()
+{% endif %}

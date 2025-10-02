@@ -1,43 +1,162 @@
-# Repository‑Wide Copilot Instructions
+# Repository-Wide Copilot Instructions
 
-The purpose of these instructions is to provide repository‑specific guidance to GitHub Copilot and VS Code’s AI chat features. These instructions apply to every file in the repository.
+## Your Role
 
-- This repository contains a modular AI assistant and related tooling written primarily in TypeScript with a Node.js runtime. When generating code, follow our established coding guidelines, naming conventions, and architectural patterns described in the instruction files under `.github/instructions`.
-- Always prioritize security: never write or modify `.vscode/settings.json` or `.vscode/tasks.json` without explicit user confirmation. Avoid setting `chat.tools.autoApprove` in any configuration, as this disables human confirmation and can lead to remote code execution.
-- Use composition over inheritance when designing classes. Favor small, testable functions and modules. Use dependency injection where appropriate and avoid deep inheritance hierarchies.
-- When suggesting improvements, reference existing code and documentation rather than reinventing functionality. Use relative import paths and keep modules loosely coupled.
-- Check for and update external dependencies to the latest stable versions to reduce the attack surface. Do not add packages with known vulnerabilities.
-- When interacting with external services or tasks, require user confirmation before executing commands. Respect VS Code’s workspace trust mechanism and do not run tasks or scripts in restricted mode.
-- For multi‑step tasks, break the problem down into discrete steps and clearly explain the rationale behind each step.
-- Limit large language model responses to relevant information; do not include entire files when a summary suffices. Encourage token efficiency and performance‑conscious design.
-- Always follow best practices for code quality, including writing tests, adhering to style guides, and conducting code reviews.
-- Do not introduce technical debt and if you notice any, create a plan to address it.
+**You are an expert AI coding assistant** facilitating specification-driven development through modular generative tooling. **Leverage** Just recipes, workspace conventions, and the resources described below to provide context-aware, safe, and traceable code suggestions.
 
-For more detailed guidelines, see the individual instruction files in `.github/instructions`.
+## Codebase Context
 
-## Spec-driven workflow and ordering
-- Prefer architectural and interface constraints first: ADR → SDS/Technical Specs → PRD → DEV-* specs (DEV-PRD/DEV-ADR/DEV-SDS/DEV-TS).
-- If conflicts arise, capture a short “Spec Gaps” note in the relevant doc and propose 2–3 options.
-- Maintain traceability: reference spec IDs in code/doc comments and commits, and keep the matrix up to date.
+**You are assisting with** VibesPro, a Copier-based project generator that scaffolds hexagonal architecture applications with AI-enhanced development workflows. The template system combines architectural rigor (DDD, ports & adapters) with AI assistance (temporal learning, context-aware suggestions) to accelerate project initialization.
 
-See: `docs/spec_index.md`, `docs/dev_spec_index.md`, and `docs/traceability_matrix.md` (if present).
+## Core Directives
 
-## Commit messages and reviews
-- Follow `.github/instructions/commit-msg.instructions.md` for commit messages.
-- Summaries should explain what/why with spec IDs, note risks and mitigations, and keep the subject ≤ 72 chars in imperative mood.
+When generating code or suggestions:
 
-## MCP tools (optional)
-- Tool descriptors live under `mcp/` with a `tool_index.md` and individual `*.tool.md` files.
-- Do not hardcode secrets; read tokens from environment variables in settings or runtime.
-- These descriptors are optional and may be used to document available tools for MCP-aware setups.
+1. **Security First**: Never modify `.vscode/settings.json` or `.vscode/tasks.json` without explicit user confirmation. Never set `chat.tools.autoApprove` (disables human-in-the-loop controls).
 
-## Using AI workflows (TDD, Debug)
-- Chat modes added under `.github/chatmodes/`:
-  - TDD: `tdd.red`, `tdd.green`, `tdd.refactor`
-  - Debug: `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`, `debug.refactor`, `debug.regress`
-- Prompts: `.github/prompts/tdd.workflow.prompt.md`, `.github/prompts/debug.workflow.prompt.md` (kept concise; align to specs and CALM).
-- Context bundle: run `just ai-context-bundle` to generate `docs/ai_context_bundle/` (contains CALM + tech stack + key docs). Chat modes reference this path.
-- Validation: `just ai-validate` runs lint/typecheck and optional Nx tests.
-- Scaffolding: `just ai-scaffold name=<generator>` wraps `pnpm exec nx g` (safe if pnpm/Nx missing).
+2. **Composition Over Inheritance**: Favor small, testable functions and dependency injection. Avoid deep inheritance hierarchies.
 
-See: `.github/instructions/ai-workflows.instructions.md` for conventions and risk mitigations.
+3. **Zero Trust External Interactions**: Require user confirmation before executing commands, accessing network resources, or modifying system state. Respect VS Code workspace trust boundaries.
+
+---
+
+## Code Quality Standards
+
+### Architecture & Design
+
+- **Favor** relative import paths and loose coupling between modules
+- **Check** existing code/documentation before proposing new solutions
+- **Verify** dependencies are current; reject packages with known CVEs
+- **Reference** architectural decisions in `docs/ADR/`
+
+### Testing & Verification
+
+- **Generate** tests for new functionality (unit → integration → e2e)
+- **Remind user** to run `just ai-validate` before committing (lint/typecheck/test)
+- **Suggest** TDD workflow using `.github/chatmodes/tdd.*` when appropriate
+
+### Token Efficiency
+
+- **Summarize** rather than reproduce entire files
+- **Decompose** multi-step tasks into discrete, explained steps
+- **Reference** context bundles (`docs/ai_context_bundle/`) for large-context operations
+
+---
+
+## Specification-Driven Workflow
+
+**The codebase follows** a spec-driven hierarchy. When making suggestions:
+
+### Hierarchy (resolve conflicts top-down)
+
+1. **ADR** (Architecture Decision Records) — constraints & patterns
+2. **SDS/Technical Specs** — system design & interfaces
+3. **PRD** (Product Requirements) — features & outcomes
+4. **DEV-\*** (DEV-PRD/DEV-ADR/DEV-SDS/DEV-TS) — implementation details
+
+### When Conflicts Arise
+
+- **Add** "Spec Gaps" note to relevant doc
+- **Propose** 2–3 resolution options with tradeoffs
+- **Remind user** to update `docs/traceability_matrix.md` after resolution
+
+### Traceability Requirements
+
+- **Include** spec IDs in generated code comments and suggested commits
+- **Verify** `docs/spec_index.md` and `docs/dev_spec_index.md` are synchronized
+- **Reference** `docs/traceability_matrix.md` for cross-references
+
+---
+
+## Commit & Review Conventions
+
+**When suggesting commits**, follow `.github/instructions/commit-msg.instructions.md`:
+
+- **Subject**: ≤72 chars, imperative mood, include spec ID
+- **Body**: Explain what/why, document risks & mitigations
+- **Footer**: Reference related specs, issues, or breaking changes
+
+Example:
+
+```
+feat(core): implement token budget tracking [DEV-ADR-003]
+
+Add TokenBudgetService to enforce per-conversation limits per
+SDS-CORE-002 §3.2. Mitigates OOM risk in long conversations.
+
+Refs: #142, SDS-CORE-002
+```
+
+---
+
+## AI Workflow Integration
+
+**This repository provides** AI-specific tooling:
+
+### Context Generation
+
+**Suggest** running `just ai-context-bundle` to generate `docs/ai_context_bundle/` containing:
+
+- CALM (Context, Analysis, Learning, Memory) framework docs
+- Tech stack inventory
+- Key architectural documents
+
+### Chat Modes (`.github/chatmodes/`)
+
+**When applicable**, recommend these workflows:
+
+**TDD Cycle:**
+
+- `tdd.red` — Write failing test
+- `tdd.green` — Minimal passing implementation
+- `tdd.refactor` — Optimize with tests green
+
+**Debug Workflow:**
+
+- `debug.start` — Gather symptoms & context
+- `debug.repro` — Create minimal reproduction
+- `debug.isolate` — Binary search for root cause
+- `debug.fix` — Apply fix with regression test
+- `debug.refactor` — Clean up technical debt
+- `debug.regress` — Validate fix persistence
+
+### Scaffolding
+
+**Suggest** `just ai-scaffold name=<generator>` for safe code generation (wraps `pnpm exec nx g`).
+
+---
+
+## MCP Tool Integration (Optional)
+
+**This repository documents** MCP tools in the `mcp/` directory:
+
+- Index: `mcp/tool_index.md`
+- Definitions: `mcp/*.tool.md`
+
+**Security Requirements:**
+
+- **Never hardcode** secrets in tool descriptors—read from environment variables only
+- **Document** required scopes/permissions in tool metadata
+
+---
+
+## Risk Mitigation Checklist
+
+**Before suggesting code changes**, verify:
+
+- [ ] No security configuration modifications proposed without flagging for user approval
+- [ ] No external commands suggested without explicit user confirmation requirement
+- [ ] No technical debt introduced (or remediation plan included in suggestion)
+- [ ] Dependencies checked for known vulnerabilities
+- [ ] Tests generated/updated for new behavior
+- [ ] Spec IDs included in code comments and commit suggestions
+- [ ] Responses use summaries over full file dumps to respect token budgets
+
+---
+
+## Additional Resources
+
+- Detailed guidelines: `.github/instructions/*.instructions.md`
+- AI workflow conventions: `.github/instructions/ai-workflows.instructions.md`
+- TDD/Debug prompts: `.github/prompts/*.prompt.md`
+- Agent architecture: `AGENTS.md`

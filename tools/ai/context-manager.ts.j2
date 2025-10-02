@@ -1,3 +1,4 @@
+{% if include_ai_workflows %}
 /**
  * AI Context Manager - Optimizes context selection within token budgets
  *
@@ -108,3 +109,4 @@ export class AIContextManager {
     return { ...this.budgetConfig };
   }
 }
+{% endif %}

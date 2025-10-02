@@ -68,7 +68,7 @@ Interface Layer (User/System Interfaces)
 
 **Temporal Learning System**:
 
-- **Database**: tsink (Rust-based time-series, Gorilla compression)
+- **Database**: sled (Rust-based embedded DB)
 - **Purpose**: Store architectural decisions, learn patterns, suggest improvements
 - **Integration**: Native async Python/Node.js bindings
 
@@ -447,3 +447,167 @@ Key success factors:
 5. **Developer experience polish** - Ensure workflows remain fast and intuitive
 
 The autonomous agents working on this project should coordinate effectively, maintain quality standards, and always prioritize the long-term maintainability and extensibility of the platform. The ultimate goal is to create a development platform that makes building high-quality, architecturally sound applications both faster and more enjoyable.
+
+
+# MCP Server Tools Reference
+
+You have access to the following MCP servers. **Use these tools proactively** to provide accurate, efficient, and contextually-aware assistance.
+
+---
+
+## Quick Selection Guide
+
+- **Need API docs?** → Context7 or Ref Tools
+- **Working with Microsoft tech?** → Microsoft Docs MCP
+- **Need to remember project context?** → Memory Tool
+- **Searching for solutions/examples?** → Exa Search
+- **Need deep conceptual understanding?** → DeepWiki
+
+---
+
+## Tool Descriptions
+
+### Context7 (Upstash)
+**Purpose**: Real-time, version-specific code documentation and API references
+
+**Use when:**
+- Verifying exact API signatures or method parameters
+- Working with specific package versions
+- Need to avoid outdated or hallucinated API information
+- Looking for official code examples from package documentation
+
+**Don't use when:**
+- Asking general conceptual questions
+- Working with proprietary/internal APIs
+- Need custom implementation patterns (not covered in official docs)
+
+**Key capabilities**: Package resolution, version-specific docs, official code examples
+
+---
+
+### Ref Tools
+**Purpose**: Token-efficient search and retrieval across technical documentation
+
+**Use when:**
+- Searching across multiple documentation sources simultaneously
+- Need specific sections from lengthy technical docs
+- Looking for comparative information across different APIs
+- Want efficient extraction without loading entire documentation pages
+
+**Don't use when:**
+- Need real-time code execution
+- Require bleeding-edge documentation (< 24 hours old)
+- Working with dynamic/interactive documentation
+
+**Key capabilities**: Cross-documentation search, targeted content extraction, efficient information retrieval
+
+---
+
+### Memory Tool (Mem0)
+**Purpose**: Persistent storage for user preferences, project context, and decisions
+
+**Use when:**
+- Maintaining context across multiple sessions
+- Storing project-specific conventions or patterns
+- Remembering user coding preferences (style, frameworks, etc.)
+- Tracking architectural decisions and their rationale
+- Building cumulative understanding of a codebase
+
+**Don't use when:**
+- Storing credentials or sensitive data (use secure vaults instead)
+- Managing large datasets (use proper databases)
+- Replacing version control systems
+- Storing temporary session data
+
+**Key capabilities**: Context persistence, preference storage, relevance-scored retrieval
+
+---
+
+### Exa Search
+**Purpose**: Advanced web search optimized for technical and programming content
+
+**Use when:**
+- Finding real-world code examples and implementations
+- Searching for community solutions to specific problems
+- Discovering technical blog posts and tutorials
+- Researching emerging technologies or patterns
+- Finding GitHub repositories and open-source projects
+
+**Don't use when:**
+- Searching private repositories
+- Need official/canonical documentation (use Context7 or Ref Tools instead)
+- Looking for company-specific internal docs
+
+**Key capabilities**: Technical web search, code snippet discovery, community content filtering
+
+---
+
+### Microsoft Docs MCP
+**Purpose**: Direct access to official Microsoft documentation
+
+**Use when:**
+- Working with Azure services or Azure SDK
+- Using .NET, C#, or other Microsoft frameworks
+- Developing for Windows platforms
+- Need official Microsoft API references
+- Implementing Microsoft Graph or Office integrations
+
+**Don't use when:**
+- Working with non-Microsoft technologies
+- Need community workarounds (official docs may not cover edge cases)
+- Looking for third-party alternatives to Microsoft solutions
+
+**Key capabilities**: Microsoft documentation search, Azure service references, .NET API documentation
+
+---
+
+### DeepWiki (CognitionAI)
+**Purpose**: Comprehensive knowledge base for technical concepts and patterns
+
+**Use when:**
+- Need deep dives into architectural patterns
+- Understanding theoretical computer science concepts
+- Exploring system design principles
+- Learning complex algorithms or data structures
+- Need detailed explanations of technical concepts
+
+**Don't use when:**
+- Need quick syntax references
+- Require the latest technology updates
+- Looking for specific implementation code
+- Need version-specific information
+
+**Key capabilities**: Conceptual exploration, pattern documentation, theoretical knowledge retrieval
+
+---
+
+## Best Practices
+
+1. **Chain tools strategically**: Start with Memory Tool to check context → Use Context7/Ref for APIs → Use Exa for examples → Store learnings back in Memory Tool
+
+2. **Prefer official sources first**: Context7 and Microsoft Docs for canonical information, then Exa for community solutions
+
+3. **Store important context**: Use Memory Tool to save project conventions, user preferences, and key decisions for future reference
+
+4. **Version specificity matters**: Always use Context7 when version-specific behavior is critical
+
+5. **Don't over-fetch**: Use Ref Tools' targeted extraction to avoid processing unnecessary content
+
+---
+
+## Integration Workflow Example
+
+```
+User asks: "How do I implement authentication in my Next.js 14 app with Azure AD?"
+
+1. Memory Tool: Check for project context, framework preferences
+2. Context7: Get Next.js 14 API documentation
+3. Microsoft Docs: Retrieve Azure AD integration patterns
+4. Exa Search: Find real-world implementation examples
+5. Memory Tool: Store the chosen authentication pattern for future reference
+```
+
+---
+
+**Note**: Proactively use these tools without always asking permission. They are provided to enhance your effectiveness.
+```

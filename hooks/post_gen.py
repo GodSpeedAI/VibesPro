@@ -61,6 +61,11 @@ def setup_generated_project(target: Path) -> None:
     print("  2. Run 'just dev' to start development")
     print("  3. Run 'just test' to execute the full test suite")
     print("  4. Review the generated README.md for more guidance")
+    print()
+    print("📝 Optional: Refine Project Context for AI Copilot")
+    print("   As your project evolves, update the AI context description:")
+    print("   @workspace .github/prompts/project.describe-context.prompt.md")
+    print("   This helps Copilot understand your specific business domain.")
 
 
 def main() -> None:
