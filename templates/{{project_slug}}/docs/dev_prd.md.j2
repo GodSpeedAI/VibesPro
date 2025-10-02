@@ -28,6 +28,36 @@ Source: transcript.md and ideation synthesis
 
 ## DEV-PRD-003 — Persona chat modes (8 roles)
 - Description: As a developer, I want curated chat modes for key roles so that I can get phase-appropriate guidance without re-priming.
+{% include 'docs/partials/_metadata_header.j2' %}
+<!--
+thread: {{ project_slug }}
+matrix_ids: []
+project: {{ project_name }}
+date: {{ year }}
+-->
+
+# Developer Product Requirements Document (DX as the Product)
+
+Audience: Developers as primary users
+Scope: Development environment and workflows as product capabilities
+Source: transcript.md and ideation synthesis
+
+---
+
+## DEV-PRD-001 — Native configuration-only prompt system
+- Description: As a developer, I want to manage prompts/instructions/modes using only native VS Code and GitHub Copilot files so that I can start immediately without extra tools.
+- EARS: When setting up a project, the system shall enable prompts and instructions via repository files without custom DSLs.
+- DX Metrics: Onboarding < 15 min; zero non-native dependencies.
+- Supported by: DEV-ADR-001, DEV-ADR-009
+
+## DEV-PRD-002 — Modular instruction stacking
+- Description: As a developer, I want modular instruction files I can stack per task so that I can tailor behavior quickly.
+- EARS: Given a task, the system shall allow selecting and ordering instruction files.
+- DX Metrics: Time to modify behavior < 5 min; diff size small and isolated.
+- Supported by: DEV-ADR-002, DEV-ADR-006, DEV-ADR-007
+
+## DEV-PRD-003 — Persona chat modes (8 roles)
+- Description: As a developer, I want curated chat modes for key roles so that I can get phase-appropriate guidance without re-priming.
 - EARS: When choosing a persona, the system shall load the corresponding chat mode with synergistic instruction overlays.
 - DX Metrics: Context switching reduced (>20%); mode adoption >80% of interactions.
 - Supported by: DEV-ADR-003, DEV-ADR-006
