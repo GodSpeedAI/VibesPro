@@ -396,31 +396,44 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Parallel Agents:** 2 (A, B)
 - **Rollback Strategy:** Revert workflow triggers to previous baseline if failure rate spikes
 
-### □ TASK-011: Template CI Pipeline Update
+### ✅ TASK-011: Template CI Pipeline Update
 
 - **Traceability:** AI_ADR-005, AI_PRD-005, AI_SDS-004, AI_TS-003, AI_TS-004, AI_TS-005
 - **Agent:** Agent A
 - **Tests:** `tests/ci/template-ci.test.ts`
+- **Status:** ✅ Completed (2025-10-02)
+- **Commit:** `b479443` (pushed to feat/template-ci-TASK-011)
 
-#### RED — TASK-011 Failing Tests
+#### ✅ RED — TASK-011 Failing Tests
 
-- [ ] Extend CI verification tests ensuring new workflow steps present
-- [ ] Tests fail because pipeline not updated
+- [x] Extend CI verification tests ensuring new workflow steps present
+- [x] Tests fail because pipeline not updated
+- **Result:** Created 11 comprehensive tests (2 initially failing: test-generation step and documentation comments)
 
-#### GREEN — TASK-011 Minimal Implementation
+#### ✅ GREEN — TASK-011 Minimal Implementation
 
-- [ ] Update template CI workflows to run `just test-generation`, `pnpm prompt:lint`, `pnpm spec:matrix`
-- [ ] Ensure caching keys align with Nx and pnpm guidance
+- [x] Update template CI workflows to run `just test-generation`, `pnpm prompt:lint`, `pnpm spec:matrix`
+- [x] Ensure caching keys align with Nx and pnpm guidance
+- [x] Added comprehensive documentation headers to spec-guard.yml
+- [x] Installed yaml@2.8.1 for workflow parsing in tests
+- **Result:** All 11 tests passing
 
-#### REFACTOR — TASK-011 Code Quality
+#### ✅ REFACTOR — TASK-011 Code Quality
 
-- [ ] Factor shared workflow steps into reusable composite actions if practical
-- [ ] Document environment variable requirements in workflow comments
+- [x] Factor shared workflow steps into reusable composite actions if practical
+- [x] Document environment variable requirements in workflow comments
+- [x] Created .github/actions/setup-node-pnpm/action.yml composite action
+- [x] Created .github/actions/setup-just/action.yml composite action
+- [x] Refactored spec-guard.yml and node-tests.yml to use composite actions
+- [x] Reduced ~80 lines of duplicated setup code
+- **Result:** Tests remain green, significantly improved maintainability
 
-#### REGRESSION — TASK-011 System Integrity
+#### ✅ REGRESSION — TASK-011 System Integrity
 
-- [ ] Run CI smoke test via `tests/ci/template-ci.test.ts`
-- [ ] `pnpm exec act pull_request` subset passes locally (optional)
+- [x] Run CI smoke test via `tests/ci/template-ci.test.ts`
+- [x] All 11 TASK-011 tests passing
+- [x] No regressions in existing test suite
+- [x] Composite actions properly integrated
 
 ### □ TASK-012: Generated Project CI Validation
 
