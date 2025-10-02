@@ -46,11 +46,8 @@ describe('hexDomainGenerator', () => {
     expect(tree.exists(applicationIndexPath)).toBe(true);
     expect(tree.exists(infrastructureIndexPath)).toBe(true);
 
-    // @ts-expect-error - Legacy generator test
     const domainFile = tree.read(domainIndexPath);
-    // @ts-expect-error - Legacy generator test
     const applicationFile = tree.read(applicationIndexPath);
-    // @ts-expect-error - Legacy generator test
     const infrastructureFile = tree.read(infrastructureIndexPath);
     expect(domainFile).toBeTruthy();
     expect(applicationFile).toBeTruthy();
