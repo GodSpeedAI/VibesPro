@@ -1,6 +1,7 @@
 /**
- * MERGE-TASK-011: Documentation Generator Implementation (CommonJS build)
- * Traceability: PRD-MERGE-006, ADR-MERGE-008
+ * Documentation Generator (CommonJS)
+ * Simplified, CommonJS-compatible implementation exported as module.exports
+ * Traceability: PRD-MERGE-006, ADR-MERGE-008, TASK-009
  */
 
 const { existsSync, mkdirSync } = require('fs');

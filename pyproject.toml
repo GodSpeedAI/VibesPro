@@ -56,9 +56,20 @@ module = ["prompt_optimizer.*", "my_test_domain.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
+# Implements: AI_SDS-004, AI_TS-004
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
-norecursedirs = ["tmp", "tmp/*", "node_modules", ".git", "templates"]
+norecursedirs = [
+    "tmp",
+    "tmp/*",
+    "tmpdocs",
+    "tmpdocs-html",
+    "templates",
+    "node_modules",
+    ".venv",
+    ".git",
+    "target",
+]
 
 [dependency-groups]
 dev = [

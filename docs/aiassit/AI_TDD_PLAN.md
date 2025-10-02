@@ -1,79 +1,5 @@
 # AI-Assisted Integration TDD Implementation Plan
 
-## 0. Progress Snapshot (2025-10-01)
-
-- ✅ **Spec Guard CI hardening (AI_ADR-005, AI_PRD-005, AI_SDS-004, AI_TS-003):**
-  - Reordered pnpm and Node setup to match the validated `ci.yml` pipeline and downgraded runners to Node 20 for parity with Nx-supported tooling.
-  - Swapped the manual curl installer for `taiki-e/install-action` and verified `just --version`, eliminating prior permission errors when the workflow wrote to `/usr/local/bin`.
-  - Added explicit `contents: read`, `pull-requests: write`, and `issues: write` permissions so the GitHub Script step can upsert PR comments without failing token scopes.
-  - Local verification: `just spec-guard` now passes end-to-end on the feature branch, confirming the workflow changes remain green.
-- ✅ **Docs generator workflow alignment (AI_ADR-005, AI_PRD-005, AI_SDS-004, AI_TS-004):**
-  - Updated both matrix jobs to Node 20, ensured pnpm is provisioned before caching, and kept the installer parity with Spec Guard to avoid divergent environments.
-  - Confirmed the integration script via `uv run python tools/docs/generator.py --project-name ci-test --output-dir tmpdocs --validate`, matching the workflow’s GREEN expectations.
-- ✅ **TASK-004 & TASK-005 (Template Maintainer Docs Metadata):** Merged in PR #11
-  - Extended metadata templates for PRODUCT.md, ADR.md, SDS.md, TS.md with Jinja2 partials
-  - All 35 unit tests passing for template rendering with proper frontmatter
-  - Branch `feat/docs-templates-TASK-004-005` merged and cleaned up
-- ✅ **TASK-006 (Justfile Recipes Expansion - AI Workflows):**
-  - **RED Phase:** Created comprehensive failing tests in `tests/unit/just-recipes.test.ts` (7 failures, 5 passes)
-  - **GREEN Phase:** Imported AI workflow recipes from VibePDK:
-    - `ai-context-bundle` - Bundle AI context for Copilot chat modes
-    - `ai-validate` - Validate code quality with lint/typecheck/tests
-    - `ai-scaffold` - Nx generator wrapper with helpful guidance
-    - `spec-guard` - Guard against commits without specifications
-    - TDD recipes: `tdd-red`, `tdd-green`, `tdd-refactor`
-    - Debug recipes: `debug-start`, `debug-repro`, `debug-isolate`, `debug-fix`, `debug-refactor`, `debug-regress`
-  - **REFACTOR Phase:** Added comprehensive documentation, improved user guidance, enhanced error messages
-  - **REGRESSION Phase:** All 12 tests passing, recipes execute successfully
-  - Traceability: AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-004
-- ✅ **PHASE-002 Deferred Items Addressed:**
-  - TASK-001: Verified parameterization approach (project-agnostic by design)
-  - TASK-002: Verified `pnpm lint` runs successfully (no Nx projects configured yet)
-  - TASK-003: Enhanced `tests/utils/generation-smoke.ts` with exported helpers (`runCopierGeneration`, `ensureScriptExists`, `runProjectScript`)
-  - TASK-003: Verified `just test-generation` includes smoke test execution; added `repo_url` to test-data.yml
-  - TASK-004: Verified cross-links in dev_*.md.j2 files (no relative links, all use spec IDs)
-  - TASK-004: Confirmed markdown linting handled by workflow (no lint:docs command needed)
-- ✅ **TASK-007 (Shell Script Import & Adaptation):**
-  - **RED Phase:** Created comprehensive integration tests for bundle-context.sh script (8 tests)
-  - **GREEN Phase:** Fixed script permissions (chmod +x), copied to templates directory
-  - **REFACTOR Phase:** Verified error handling (`set -euo pipefail`), logging, graceful degradation
-  - **REGRESSION Phase:** All 8 tests passing, `just ai-context-bundle` works
-  - Created templates/{{project_slug}}/scripts/ directory with bundle-context.sh
-  - Note: Full generation test deferred due to unrelated template rendering issues
-  - Traceability: AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-001
-- ✅ **TASK-008 (Package Script Wiring):**
-  - **RED Phase:** Created `tests/unit/package-scripts.test.ts` with 16 comprehensive test cases (1 failure: test:node missing)
-  - **GREEN Phase:** Added complete script set to `templates/{{project_slug}}/package.json.j2`:
-    - Test: `test:node`, Lint: `lint:md`, `lint:shell`
-    - Prompt: `prompt:lint`, `prompt:plan`, `prompt:plan:accurate`, `prompt:lifecycle`
-    - Utility: `spec:matrix`, `docs:links`, `env:audit`, `pr:comment`
-  - **GREEN Phase:** Updated devDependencies: `@dqbd/tiktoken`, `tsx`, `markdownlint-cli`, updated Node types to 22.5.4
-  - **REFACTOR Phase:** Organized scripts logically, maintained consistent patterns, validated JSON
-  - **REGRESSION Phase:** All 16 TASK-008 tests passing, all 51 unit tests pass
-  - Traceability: AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-001
-- ✅ **TASK-009 (MCP Descriptor Import):** Completed 2025-10-02
-  - **RED Phase:** Created comprehensive unit tests for MCP descriptor files (13 tests, all failing)
-  - **GREEN Phase:** Copied and adapted MCP descriptors from VibePDK:
-    - `tool_index.md` - Overview of available MCP tools with usage guidelines
-    - `context7.tool.md` - Context7 documentation search tool descriptor
-  - **GREEN Phase:** Enhanced with security best practices, quick start guide, comprehensive tool addition instructions
-  - **REFACTOR Phase:** Added detailed security warnings, environment variable best practices, structured tool addition workflow
-  - **REGRESSION Phase:** All 13 tests passing, markdown lint clean, no regression in existing test suite
-  - Traceability: AI_ADR-002, AI_ADR-004, AI_PRD-004, AI_SDS-003, AI_TS-002
-- ✅ **TASK-010 (Stack-Aware Generator Integration):** Completed 2025-10-02
-  - **RED Phase:** Created comprehensive unit tests for generator utilities (23 tests, all failing)
-  - **GREEN Phase:** Copied and adapted generator files from VibePDK:
-    - `_utils/stack.ts` - Tech stack configuration loading and parsing
-    - `_utils/stack_defaults.ts` - Derive language/framework defaults from stack
-    - `service/generator.ts` - Nx generator for service creation with stack awareness
-    - Template files for Python (FastAPI) and TypeScript (Express) scaffolding
-  - **GREEN Phase:** Adapted environment variables from VIBEPDK to VIBEPRO naming
-  - **REFACTOR Phase:** Enhanced with comprehensive TSDoc documentation, improved error handling, added validation functions
-  - **REGRESSION Phase:** All 23 tests passing, no regressions in 47 unit tests total
-  - Traceability: AI_ADR-004, AI_PRD-004, AI_SDS-003, AI_TS-002, AI_TS-003
-- ✅ **PHASE-004 COMPLETE:** MCP & Generator Integration fully delivered
-- ⏳ **Next focus:** PHASE-005 (CI & Regression Hardening) - TASK-011 onwards
-
 ## 1. Inputs & Traceability Sources
 
 - **Architectural Decisions:** `AI_ADR.md`
@@ -169,7 +95,7 @@ Scenario: "Generated project includes merged Copilot instructions"
 #### REFACTOR — TASK-001 Code Quality
 
 - [x] Deduplicate instruction precedence comments (import review confirmed precedence metadata aligns with VibePDK source)
-- [x] Parameterize project name tokens (`{{project_slug}}` etc.) _(Verified: instructions remain project-agnostic by design, no templating required)_
+- [ ] Parameterize project name tokens (`{{project_slug}}` etc.) _(Deferred: existing instructions remain project-agnostic; revisit if additional templating required)_
 
 #### REGRESSION — TASK-001 System Integrity
 
@@ -205,7 +131,6 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 - [x] Copy workflow YAML files and replace `{{cookiecutter.project_slug}}` tokens with template vars
 - [x] Run test harness ensuring detection of new workflows (`pnpm test:jest -- tests/ci/verify-workflows.test.ts --runInBand`)
-- [x] Align existing `spec-guard.yml` and `docs-generator.yml` with Node 20 runners, pnpm-first provisioning, and shared `just` installation to unblock CI (validated via local `just spec-guard` run).
 
 #### REFACTOR — TASK-002 Code Quality
 
@@ -214,8 +139,8 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### REGRESSION — TASK-002 System Integrity
 
-- [ ] Execute `pnpm exec act -j spec-guard` (or CI dry-run script) _(Deferred to PHASE-005: requires act installation)_
-- [x] `pnpm lint` to ensure workflows referenced scripts exist _(Verified: Nx lint runs successfully, no Nx projects configured yet)_
+- [ ] Execute `pnpm exec act -j spec-guard` (or CI dry-run script) _(Deferred: local `act` runner unavailable in current session)_
+- [ ] `pnpm lint` to ensure workflows referenced scripts exist _(Deferred: tracked for PHASE-005 hardening)_
 
 ### ☑ TASK-003: Generation Smoke Test Harness
 
@@ -233,21 +158,21 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### GREEN — TASK-003 Minimal Implementation
 
-- [x] Extend existing `just test-generation` to run new smoke script _(Verified: test-generation already includes Jest smoke test execution)_
+- [ ] Extend existing `just test-generation` to run new smoke script _(Deferred: smoke harness currently executed via targeted Jest command)_
 - [x] Ensure minimal code added to pass tests after imports from TASK-001/002 (`pnpm test:jest -- tests/integration/template-smoke.test.ts --runInBand`)
 
 #### REFACTOR — TASK-003 Code Quality
 
-- [x] Extract generation helpers into shared utility _(Complete: Enhanced tests/utils/generation-smoke.ts with exported runCopierGeneration, ensureScriptExists, runProjectScript for reuse across integration tests)_
+- [ ] Extract generation helpers into shared utility _(Open follow-up to share logic with other integration tests)_
 
 #### REGRESSION — TASK-003 System Integrity
 
-- [x] `just test-generation` _(Verified: recipe includes smoke test execution, added repo_url to test-data.yml to support non-interactive generation)_
-- [ ] Entire `pnpm test` suite _(Deferred to PHASE-005 regression sweep due to unrelated template failures)_
+- [ ] `just test-generation` _(Deferred pending recipe update)_
+- [ ] Entire `pnpm test` suite _(Deferred to PHASE-005 regression sweep)_
 
 ---
 
-## 5. PHASE-002 □ Documentation System Delivery
+## 5. PHASE-002 ☑ Documentation System Delivery
 
 - **Duration:** 2 days
 - **Dependencies:** PHASE-001
@@ -267,21 +192,21 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [x] Add tests in `tests/docs/maintainer-docs.test.ts` ensuring presence of ADR/PRD/SDS/TS references
 
 #### GREEN — TASK-004 Minimal Implementation
-- [x] Maintainer doc templates converted to `.md.j2` with project metadata alignment.
-- Evidence (AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005): Updated `templates/{{project_slug}}/docs/dev_*.md.j2` plus `tests/docs/maintainer-docs.test.ts`; run pnpm test, pnpm prompt:lint, just test-generation, uv run pytest -q.
+
+- [x] Update docs referencing new files from PHASE-001 (no duplication)
 
 #### REFACTOR — TASK-004 Code Quality
 
-- [x] Ensure cross-links relative paths correct _(Verified: dev_*.md.j2 files contain no relative links; all cross-references use absolute spec IDs)_
+- [x] Ensure cross-links use relative paths validated against generated project
 
 #### REGRESSION — TASK-004 System Integrity
 
-- [x] `pnpm lint:docs` _(Not applicable: No lint:docs command in source or current package.json; markdown linting handled by markdownlint workflow)_
-
+- [x] `pnpm test:jest -- --runInBand tests/docs/maintainer-docs.test.ts`
+- [ ] Optional: run `pnpm lint:md` to mirror markdown linting in follow-up sweep
 
 ### ☑ TASK-005: Template Doc Emission
 
-- **Traceability:** AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005
+- **Traceability:** AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-002
 - **Agent:** Agent C
 - **Estimated Time:** 4 hours
 - **MECE Boundary:** Only template doc templates (`templates/{{project_slug}}/docs/**`, README)
@@ -289,11 +214,12 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### RED — TASK-005 Failing Tests
 
-- [x] Add deterministic integration guard in `tests/integration/template-docs.test.ts` validating metadata tokens.
+- [x] Create generation test verifying doc files exist & include AI onboarding section
 
 #### GREEN — TASK-005 Minimal Implementation
-- [x] Converted README and maintainer docs to `.j2` with cookiecutter metadata fallbacks.
-- Evidence (AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005): Updated `templates/{{project_slug}}/README.md.j2` & maintainer docs with metadata tokens plus regression tests (`tests/docs/maintainer-docs.test.ts`, `tests/integration/template-docs.test.ts`); run pnpm test, pnpm prompt:lint, just test-generation, uv run pytest -q.
+
+- [x] Copy and adapt doc templates replacing references with VibesPro context
+- [x] Reinforced onboarding doc to reference "Commit Message Guidelines" phrase required by regression suite
 
 #### REFACTOR — TASK-005 Code Quality
 
@@ -301,8 +227,9 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 #### REGRESSION — TASK-005 System Integrity
 
-- [ ] `pnpm test -- docs`
+- [x] `pnpm test:jest -- --runInBand tests/integration/docs-emission.spec.ts`
 
+---
 
 ## 6. PHASE-003 □ Automation & Tooling Enablement
 
@@ -311,128 +238,86 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Parallel Agents:** 3
 - **Rollback Strategy:** Keep previous `justfile.j2` & scripts under `scripts/legacy/`
 
-### ☑ TASK-006: Justfile Recipes Expansion
+### □ TASK-006: Justfile Recipes Expansion
 
 - **Traceability:** AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-004
 - **Agent:** Agent A
 - **Source Assets to Copy:** `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/justfile`
 - **Tests:** `tests/unit/just-recipes.test.ts`
-- **Completion Date:** 2025-10-01
-- **Branch:** `feat/phase-002-003-completion`
 
-#### ☑ RED — TASK-006 Failing Tests
+#### RED — TASK-006 Failing Tests
 
-- [x] Author unit tests asserting new `just` recipes are listed via `just --list --unsorted`
-- [x] Ensure tests fail because commands are absent (7 failures achieved)
-- [x] Tests cover: ai-context-bundle, ai-validate, ai-scaffold, spec-guard, tdd-red, tdd-green, tdd-refactor
+- [ ] Author unit tests asserting new `just` recipes are listed via `just --summary --list-json`
+- [ ] Ensure tests fail because commands are absent
 
-#### ☑ GREEN — TASK-006 Minimal Implementation
+#### GREEN — TASK-006 Minimal Implementation
 
-- [x] Copy relevant recipe blocks from VibePDK justfile
-- [x] Add AI workflow recipes: ai-context-bundle, ai-validate, ai-scaffold
-- [x] Add TDD recipes: tdd-red, tdd-green, tdd-refactor
-- [x] Add debug recipes: debug-start, debug-repro, debug-isolate, debug-fix, debug-refactor, debug-regress
-- [x] Add spec-guard recipe for specification enforcement
-- [x] All 12 tests passing
+- [ ] Copy relevant recipe blocks, parameterizing project tokens
+- [ ] Add minimal recipes for `spec-*`, `ai-*`, `tdd-*` without extra logic
 
-#### ☑ REFACTOR — TASK-006 Code Quality
+#### REFACTOR — TASK-006 Code Quality
 
-- [x] Added comprehensive documentation headers with traceability references
-- [x] Enhanced user guidance with helpful error messages and usage examples
-- [x] Improved recipe output with emojis and structured next-step instructions
-- [x] Documented safe degradation when dependencies (pnpm, Nx) are absent
-- [x] Referenced AI workflow instructions and chat mode integration
+- [ ] Deduplicate shared shell command strings via `.alias` entries
+- [ ] Document recipe usage in comments referencing AI_PRD-003
 
-#### ☑ REGRESSION — TASK-006 System Integrity
+#### REGRESSION — TASK-006 System Integrity
 
-- [x] `just --list` succeeds and shows all new recipes
-- [x] `pnpm test:jest -- tests/unit/just-recipes.test.ts` passes (12/12 tests)
-- [x] `just ai-context-bundle` executes successfully
-- [x] `just tdd-red` provides correct user guidance
-- [x] Scripts referenced by recipes exist (`scripts/bundle-context.sh`)
+- [ ] `just --list` succeeds in generated workspace
+- [ ] `pnpm test -- just-recipes.test.ts`
 
-### ☑ TASK-007: Shell Script Import & Adaptation
+### □ TASK-007: Shell Script Import & Adaptation
 
 - **Traceability:** AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-001
 - **Agent:** Agent B
 - **Source Assets to Copy:** `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/scripts/*.sh`
-- **Tests:** `tests/integration/scripts/bundle-context.test.ts`, `tests/integration/scripts/generated-scripts.test.ts`
-- **Completion Date:** 2025-10-01
-- **Branch:** `feat/phase-002-003-completion`
+- **Tests:** `tests/integration/scripts/bundle-context.test.ts`
 
-#### ☑ RED — TASK-007 Failing Tests
+#### RED — TASK-007 Failing Tests
 
-- [x] Write integration tests invoking scripts via Node child process (`bundle-context.test.ts`)
-- [x] Assert script existence, executability, and functionality
-- [x] Test script creates output directory, collects specs, CALM, techstack
-- [x] Test error handling for missing directories
-- [x] Initial test failures: bundle-context.sh not executable (permissions issue)
+- [ ] Write integration tests invoking scripts via `subprocess.run` or Node child process
+- [ ] Assert failure due to missing script files
 
-#### ☑ GREEN — TASK-007 Minimal Implementation
+#### GREEN — TASK-007 Minimal Implementation
 
-- [x] Set execute permissions on bundle-context.sh and other shell scripts
-- [x] Copy bundle-context.sh to `templates/{{project_slug}}/scripts/`
-- [x] Verified scripts maintain `set -euo pipefail` error handling
-- [x] All 8 bundle-context.test.ts tests passing
-- [ ] Full generation test deferred (blocked by unrelated template rendering issues)
+- [ ] Copy scripts into `templates/{{project_slug}}/scripts/`, updating shebangs and path references
+- [ ] Add minimal environment variable guards
 
-#### ☑ REFACTOR — TASK-007 Code Quality
+#### REFACTOR — TASK-007 Code Quality
 
-- [x] Verified logging output includes "Context bundle created" message
-- [x] Confirmed scripts respect `set -euo pipefail` for proper error handling
-- [x] Scripts handle missing source directories gracefully (no failures)
-- [x] Maintain executable permissions (0o755) for shell scripts
+- [ ] Normalize logging output and error handling
+- [ ] Ensure scripts respect `set -euo pipefail`
 
-#### ☑ REGRESSION — TASK-007 System Integrity
+#### REGRESSION — TASK-007 System Integrity
 
-- [x] `just ai-context-bundle` executes successfully in current project
-- [x] `pnpm test:jest -- tests/integration/scripts/bundle-context.test.ts` passes (8/8 tests)
-- [x] Scripts directory created in `templates/{{project_slug}}/scripts/`
-- [ ] Full integration test in generated project deferred (requires template generation fix for `_metadata_header.j2`)
+- [ ] `just ai-bundle` executes in generated project sample
+- [ ] `pnpm test -- bundle-context.test.ts`
 
-### ☑ TASK-008: Package Script Wiring (Completed 2025-10-01)
+### □ TASK-008: Package Script Wiring
 
 - **Traceability:** AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-001
 - **Agent:** Agent C
 - **Source Assets to Copy:** `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/package.json`
 - **Tests:** `tests/unit/package-scripts.test.ts`
 
-#### ☑ RED — TASK-008 Failing Tests
+#### RED — TASK-008 Failing Tests
 
-- [x] Add unit tests reading rendered `package.json` ensuring scripts exist
-- [x] Tests fail because keys missing (1 failure: test:node not found)
-- [x] Created comprehensive test suite with 16 test cases covering:
-  - Current repo script validation (8 tests)
-  - Template package.json structure (6 tests)
-  - Script execution environment (2 tests)
+- [ ] Add unit tests reading rendered `package.json` ensuring scripts exist
+- [ ] Tests fail because keys missing
 
-#### ☑ GREEN — TASK-008 Minimal Implementation
+#### GREEN — TASK-008 Minimal Implementation
 
-- [x] Inject scripts `prompt:lint`, `spec:matrix`, `test:node`, and additional VibePDK scripts
-- [x] Added complete script set from VibePDK template:
-  - Test scripts: `test:node`
-  - Lint scripts: `lint:md`, `lint:shell`
-  - Prompt scripts: `prompt:lint`, `prompt:plan`, `prompt:plan:accurate`, `prompt:lifecycle`
-  - Utility scripts: `spec:matrix`, `docs:links`, `env:audit`, `pr:comment`
-- [x] Localize dependencies under `devDependencies`:
-  - Added `@dqbd/tiktoken`, `tsx`, `markdownlint-cli`
-  - Updated `@types/node` to 22.5.4
-  - Updated `typescript` to 5.5.4
-- [x] All 16 tests passing after implementation
+- [ ] Inject scripts `prompt:lint`, `spec:matrix`, `ai-validate`, `test:node`
+- [ ] Localize dependencies under `devDependencies`
 
-#### ☑ REFACTOR — TASK-008 Code Quality
+#### REFACTOR — TASK-008 Code Quality
 
-- [x] Organized scripts in logical groups (build/test, lint, dev, prompt, spec, docs, env, ci)
-- [x] Maintained consistent command patterns across scripts
-- [x] Verified JSON formatting is valid in template
-- [x] Ensured alignment with VibePDK source patterns
+- [ ] Extract shared command strings to `.npmrc` or `just` variables if applicable
+- [ ] Validate JSON formatting using `pnpm lint:package`
 
-#### ☑ REGRESSION — TASK-008 System Integrity
+#### REGRESSION — TASK-008 System Integrity
 
-- [x] `tests/unit/package-scripts.test.ts` passes (16/16 tests)
-- [x] All unit tests pass (51/51 tests in tests/unit/)
-- [x] No breaking changes introduced to existing functionality
-- [x] Template ready for generation with complete script set
+- [ ] `pnpm run prompt:lint` passes inside generated project fixture
+- [ ] `tests/unit/package-scripts.test.ts` passes
 
 ---
 
@@ -475,44 +360,32 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [x] Unit tests for descriptors stay green
 - **Result:** All 13 tests passing, markdown lint clean, no regression in existing test suite
 
-### ✅ TASK-010: Stack-Aware Generator Integration
+### □ TASK-010: Stack-Aware Generator Integration
 
 - **Traceability:** AI_ADR-004, AI_PRD-004, AI_SDS-003, AI_TS-002, AI_TS-003
 - **Agent:** Agent C
 - **Source Assets to Copy:** `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/generators/`
 - **Tests:** `tests/unit/generators/service-generator.test.ts`
-- **Status:** ✅ Completed (2025-10-02)
-- **Commit:** `c06a5e8` (merged to main)
 
-#### ✅ RED — TASK-010 Failing Tests
+#### RED — TASK-010 Failing Tests
 
-- [x] Build unit tests mocking tech stack JSON to expect generator outputs
-- [x] Tests fail due to missing generator utilities
-- **Result:** Created 23 comprehensive tests covering directory structure, stack utilities, service generator, template files, error handling, and TypeScript compliance (all failing)
+- [ ] Build unit tests mocking tech stack JSON to expect generator outputs
+- [ ] Tests fail due to missing generator utilities
 
-#### ✅ GREEN — TASK-010 Minimal Implementation
+#### GREEN — TASK-010 Minimal Implementation
 
-- [x] Copy generator utilities and adjust import paths for Copier template structure
-- [x] Ensure environment flag `VIBEPRO_USE_STACK_DEFAULTS` toggles defaults
-- [x] Adapted environment variables from VIBEPDK to VIBEPRO naming
-- [x] Created template files for Python (FastAPI) and TypeScript (Express)
-- **Result:** All 23 tests passing
+- [ ] Copy generator utilities and adjust import paths for Copier template structure
+- [ ] Ensure environment flag `VIBEPRO_USE_STACK_DEFAULTS` toggles defaults
 
-#### ✅ REFACTOR — TASK-010 Code Quality
+#### REFACTOR — TASK-010 Code Quality
 
-- [x] Extract shared types to generator utilities (ServiceDefaults interface)
-- [x] Add exhaustive error handling for missing tech stack files
-- [x] Enhanced with comprehensive TSDoc documentation
-- [x] Added validateServiceDefaults() function for configuration validation
-- [x] Improved user-friendly console output with ✓ and ⚠ indicators
-- **Result:** Tests remain green, code quality significantly improved
+- [ ] Extract shared types to `libs/shared/generator-types.ts`
+- [ ] Add exhaustive error handling for missing tech stack files
 
-#### ✅ REGRESSION — TASK-010 System Integrity
+#### REGRESSION — TASK-010 System Integrity
 
-- [x] All 23 TASK-010 tests passing
-- [x] All 47 unit tests pass (no regressions)
-- [x] Generator files properly structured in templates directory
-- [x] Environment variable documentation complete
+- [ ] Run `pnpm test -- generators/service-generator.test.ts`
+- [ ] Execute sample generator command via `just generator-sample`
 
 ---
 
@@ -650,7 +523,7 @@ gantt
 | TASK-007 | AI_ADR-004, AI_PRD-003, AI_SDS-003 | 2 integration | 4 | B | ✅ |
 | TASK-008 | AI_ADR-004, AI_PRD-003, AI_SDS-003 | 2 unit | 2 | C | ✅ |
 | TASK-009 | AI_ADR-002, AI_PRD-004, AI_SDS-003 | 3 unit | 3 | B | ✅ |
-| TASK-010 | AI_ADR-004, AI_PRD-004, AI_SDS-003 | 23 unit | 6 | C | ✅ |
+| TASK-010 | AI_ADR-004, AI_PRD-004, AI_SDS-003 | 3 unit, 1 integration | 4 | C | ✅ |
 | TASK-011 | AI_ADR-005, AI_PRD-005, AI_SDS-004 | 2 integration | 3 | A | ✅ |
 | TASK-012 | AI_ADR-005, AI_PRD-005, AI_SDS-004 | 2 integration | 2 | B | ✅ |
 
