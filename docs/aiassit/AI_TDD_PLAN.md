@@ -422,32 +422,37 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Parallel Agents:** 2 (B, C)
 - **Rollback Strategy:** Add feature flag `ENABLE_VIBEPDK_MCP=false` to disable new features during rollback
 
-### □ TASK-009: MCP Descriptor Import
+### ✅ TASK-009: MCP Descriptor Import
 
 - **Traceability:** AI_ADR-002, AI_ADR-004, AI_PRD-004, AI_SDS-003, AI_TS-002
 - **Agent:** Agent B
 - **Source Assets to Copy:** `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/mcp/`
 - **Tests:** `tests/unit/mcp-descriptor.test.ts`
+- **Status:** ✅ Completed (2025-10-02)
 
-#### RED — TASK-009 Failing Tests
+#### RED — TASK-009 Failing Tests ✅
 
-- [ ] Create unit tests validating descriptor files render with correct placeholders
-- [ ] Assert failure due to missing files in template
+- [x] Create unit tests validating descriptor files render with correct placeholders
+- [x] Assert failure due to missing files in template
+- **Result:** Created 13 comprehensive tests, all failing as expected
 
-#### GREEN — TASK-009 Minimal Implementation
+#### GREEN — TASK-009 Minimal Implementation ✅
 
-- [ ] Copy `tool_index.md` and descriptors, adapting environment variable docs
-- [ ] Introduce template variables for auth guidance
+- [x] Copy `tool_index.md` and descriptors, adapting environment variable docs
+- [x] Introduce template variables for auth guidance
+- **Result:** Copied and adapted 2 files to `templates/{{project_slug}}/mcp/`
 
-#### REFACTOR — TASK-009 Code Quality
+#### REFACTOR — TASK-009 Code Quality ✅
 
-- [ ] Consolidate repeated instructions into partial includes or shared sections
-- [ ] Ensure Markdown lint passes
+- [x] Consolidate repeated instructions into partial includes or shared sections
+- [x] Ensure Markdown lint passes
+- **Result:** Enhanced documentation with security best practices, quick start guide, comprehensive tool addition instructions
 
-#### REGRESSION — TASK-009 System Integrity
+#### REGRESSION — TASK-009 System Integrity ✅
 
-- [ ] `pnpm lint:docs` (for template docs) passes
-- [ ] Unit tests for descriptors stay green
+- [x] `pnpm lint:docs` (for template docs) passes
+- [x] Unit tests for descriptors stay green
+- **Result:** All 13 tests passing, markdown lint clean, no regression in existing test suite
 
 ### □ TASK-010: Stack-Aware Generator Integration
 
