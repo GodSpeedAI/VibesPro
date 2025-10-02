@@ -12,7 +12,7 @@
     "dev": "nx run-many --target=serve --all --parallel=5",
     "prompt:lint": "for f in .github/prompts/*.prompt.md; do node tools/prompt/lint.js \"$f\" || exit 1; done",
     "prompt:plan": "for f in .github/prompts/*.prompt.md; do node tools/prompt/plan_preview.js \"$f\" || exit 1; done",
-    "prompt:plan:accurate": "PROMPT_TOKENIZER=accurate for f in .github/prompts/*.prompt.md; do node tools/prompt/plan_preview.js --accurate \"$f\" || exit 1; done",
+    "prompt:plan:accurate": "for f in .github/prompts/*.prompt.md; do PROMPT_TOKENIZER=accurate node tools/prompt/plan_preview.js --accurate \"$f\" || exit 1; done",
     "prompt:lifecycle": "node tools/cli/prompt_lifecycle.js .github/prompts/spec.implement.prompt.md",
     "spec:matrix": "node tools/spec/matrix.js",
     "docs:links": "node tools/docs/link_check.js",
