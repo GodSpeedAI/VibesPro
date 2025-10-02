@@ -36,7 +36,6 @@ export class AIContextManager {
   async getOptimalContext(query: string): Promise<OptimalContext> {
     const availableTokens = this.budgetConfig.maxTokens - this.budgetConfig.reservedTokens;
 
-    // Sort sources by relevance and priority
     const relevantSources = this.sources
       .filter(source => this.calculateRelevance(source, query) > 0.3)
       .sort((a, b) => {
@@ -61,21 +60,19 @@ export class AIContextManager {
     return {
       content,
       tokenCount: totalTokens,
-      relevanceScore: relevanceScore / relevantSources.length
+      relevanceScore: relevanceScore / (relevantSources.length || 1)
     };
   }
 
   private calculateRelevance(source: ContextSource, query: string): number {
-    // Simple relevance calculation - in practice, this would use more sophisticated NLP
     const queryWords = query.toLowerCase().split(' ');
     const sourceWords = source.id.toLowerCase().split(' ');
 
     const commonWords = queryWords.filter(word => sourceWords.includes(word));
-    return commonWords.length / queryWords.length;
+    return queryWords.length ? commonWords.length / queryWords.length : 0;
   }
 }
 
-// CLI interface
 if (require.main === module) {
   const args = process.argv.slice(2);
   const taskDescription = args.find(arg => arg.startsWith('--task='))?.split('=')[1] || '';
@@ -84,7 +81,7 @@ if (require.main === module) {
 
   const manager = new AIContextManager(
     { maxTokens: 8000, reservedTokens: 2000 },
-    [] // Sources would be populated from project files
+    []
   );
 
   manager.getOptimalContext(taskDescription).then(context => {
