@@ -1,3 +1,14 @@
+{# Render a consistent metadata header for Copier-generated documentation.
+   Uses Copier variables directly with sensible fallback values. #}
+{% set repo_url_value = repo_url if repo_url else 'TBD' %}
+{% set year_value = year if year else 'TBD' %}
+
+**Project:** {{ project_name }} ({{ project_slug }})
+**Maintainer:** {{ author_name }}
+**Repository:** {{ repo_url_value }}
+**Year:** {{ year_value }}
+
+---
 ```jinja
 {# Render a consistent metadata header for Copier-generated documentation.
    Uses Copier variables directly with sensible fallback values. #}
