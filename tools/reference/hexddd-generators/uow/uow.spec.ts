@@ -1,5 +1,5 @@
+import { Tree } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
-import { Tree, names } from '@nx/devkit';
 import { hexDomainGenerator } from '../hex-domain/generator';
 import { uowGenerator } from './generator';
 

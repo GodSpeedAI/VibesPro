@@ -1,5 +1,5 @@
+import { Tree, readProjectConfiguration } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
-import { Tree, readProjectConfiguration, readJson } from '@nx/devkit';
 import { hexDomainGenerator } from './generator';
 import { HexDomainGeneratorSchema } from './schema';
 
