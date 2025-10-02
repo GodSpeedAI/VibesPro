@@ -27,6 +27,7 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
           just --version
+
       - name: Generate traceability matrix
         run: just spec-matrix
       - name: Lint prompts
