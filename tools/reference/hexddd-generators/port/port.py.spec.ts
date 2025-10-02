@@ -1,5 +1,5 @@
-import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import { Tree } from '@nx/devkit';
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import { hexDomainGenerator } from '../hex-domain/generator';
 import { portGenerator } from './generator';
 
@@ -27,7 +27,9 @@ describe('portGenerator (Python)', () => {
     await portGenerator(tree, { name: portName, domain: domainName, language: 'py' });
 
     const portProtocolPath = `libs/${domainName}/domain/src/lib/ports/${portName}_port.py`;
-    const content = tree.read(portProtocolPath).toString();
+    const fileContent = tree.read(portProtocolPath);
+    expect(fileContent).toBeTruthy();
+    const content = fileContent!.toString();
 
     expect(content).toContain(`from typing import Protocol`);
     expect(content).toContain(`class IMyTestPort(Protocol):`);
@@ -39,7 +41,9 @@ describe('portGenerator (Python)', () => {
     await portGenerator(tree, { name: portName, domain: domainName, language: 'py' });
 
     const fakeAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/${portName}_fake_adapter.py`;
-    const content = tree.read(fakeAdapterPath).toString();
+    const fileContent = tree.read(fakeAdapterPath);
+    expect(fileContent).toBeTruthy();
+    const content = fileContent!.toString();
 
     const snakeCaseDomain = domainName.replace(/-/g, '_');
     expect(content).toContain(`from ${snakeCaseDomain}.domain.ports import IMyTestPort`);

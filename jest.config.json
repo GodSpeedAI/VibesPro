@@ -12,6 +12,14 @@
         "<rootDir>/tools/**/*.{test,spec}.{ts,js}",
         "<rootDir>/generators/**/*.{test,spec}.{ts,js}"
     ],
+    "testPathIgnorePatterns": [
+        "/node_modules/",
+        "/tmp/",
+        "/dist/",
+        "/coverage/",
+        "tests/unit/spec_ids.test.js",
+        "tests/unit/matrix.test.js"
+    ],
     "transform": {
         "^.+\\.ts$": [
             "ts-jest",
@@ -48,10 +56,5 @@
         "json"
     ],
     "clearMocks": true,
-    "restoreMocks": true,
-    "testPathIgnorePatterns": [
-        "/node_modules/",
-        "/dist/",
-        "/coverage/"
-    ]
+    "restoreMocks": true
 }

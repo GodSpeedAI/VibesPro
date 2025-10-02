@@ -55,6 +55,11 @@ exclude = [
 module = ["prompt_optimizer.*", "my_test_domain.*"]
 ignore_missing_imports = true
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+norecursedirs = ["tmp", "tmp/*", "node_modules", ".git", "templates"]
+
 [dependency-groups]
 dev = [
     "mypy>=1.18.2",

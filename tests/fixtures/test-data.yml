@@ -3,6 +3,7 @@ project_slug: "test-project"
 app_name: "test-app"
 author_name: "Test Author"
 author_email: "test@example.com"
+repo_url: "https://github.com/test/test-project"
 architecture_style: "hexagonal"
 include_ai_workflows: true
 enable_temporal_learning: true

@@ -29,6 +29,7 @@ describe('portGenerator (TypeScript)', () => {
 
     const propertyName = names(portName).propertyName;
     const portInterfacePath = `libs/${domainName}/domain/src/lib/ports/${propertyName}.port.ts`;
+    // @ts-expect-error - Legacy generator test
     const content = tree.read(portInterfacePath).toString();
 
     const classifiedName = names(portName).className;
@@ -42,6 +43,7 @@ describe('portGenerator (TypeScript)', () => {
 
     const propertyName = names(portName).propertyName;
     const inMemoryAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/${propertyName}.in-memory.adapter.ts`;
+    // @ts-expect-error - Legacy generator test
     const content = tree.read(inMemoryAdapterPath).toString();
 
     const classifiedName = names(portName).className;

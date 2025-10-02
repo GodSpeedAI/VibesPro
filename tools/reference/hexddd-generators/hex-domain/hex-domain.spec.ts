@@ -1,5 +1,5 @@
+import { Tree, readProjectConfiguration } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
-import { Tree, readProjectConfiguration, readJson } from '@nx/devkit';
 import { hexDomainGenerator } from './generator';
 import { HexDomainGeneratorSchema } from './schema';
 
@@ -46,9 +46,15 @@ describe('hexDomainGenerator', () => {
     expect(tree.exists(applicationIndexPath)).toBe(true);
     expect(tree.exists(infrastructureIndexPath)).toBe(true);
 
-    const domainIndexContent = tree.read(domainIndexPath).toString();
-    const applicationIndexContent = tree.read(applicationIndexPath).toString();
-    const infrastructureIndexContent = tree.read(infrastructureIndexPath).toString();
+    const domainFile = tree.read(domainIndexPath);
+    const applicationFile = tree.read(applicationIndexPath);
+    const infrastructureFile = tree.read(infrastructureIndexPath);
+    expect(domainFile).toBeTruthy();
+    expect(applicationFile).toBeTruthy();
+    expect(infrastructureFile).toBeTruthy();
+    const domainIndexContent = domainFile!.toString();
+    const applicationIndexContent = applicationFile!.toString();
+    const infrastructureIndexContent = infrastructureFile!.toString();
 
     expect(domainIndexContent).toContain('// DOMAIN_EXPORTS');
     expect(applicationIndexContent).toContain('// APPLICATION_EXPORTS');

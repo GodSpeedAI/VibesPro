@@ -18,9 +18,8 @@
 
 set -euo pipefail
 
-SCRIPT_FILE="${BASH_SOURCE[0]:-$0}"
-SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_FILE")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+REPO_ROOT=$(dirname "$SCRIPT_DIR")
 
 # Determine output directory (absolute path)
 OUT_ARG="${1:-$REPO_ROOT/docs/ai_context_bundle}"

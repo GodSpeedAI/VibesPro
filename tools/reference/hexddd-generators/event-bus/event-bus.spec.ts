@@ -26,7 +26,9 @@ describe('eventBusGenerator (TypeScript)', () => {
     await eventBusGenerator(tree, { domain: domainName, language: 'ts' });
 
     const eventBusInterfacePath = `libs/${domainName}/domain/src/lib/ports/event-bus.port.ts`;
-    const content = tree.read(eventBusInterfacePath).toString();
+    const fileContent = tree.read(eventBusInterfacePath);
+    expect(fileContent).toBeTruthy();
+    const content = fileContent!.toString();
 
     expect(content).toContain(`export interface IEventBus<T = unknown> {`);
     expect(content).toContain(`publish(event: T): void;`);
@@ -38,7 +40,9 @@ describe('eventBusGenerator (TypeScript)', () => {
     await eventBusGenerator(tree, { domain: domainName, language: 'ts' });
 
     const inMemoryAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/event-bus.in-memory.adapter.ts`;
-    const content = tree.read(inMemoryAdapterPath).toString();
+    const fileContent = tree.read(inMemoryAdapterPath);
+    expect(fileContent).toBeTruthy();
+    const content = fileContent!.toString();
 
     expect(content).toContain(`import { IEventBus } from '@${domainName}/domain';`);
     expect(content).toContain(`export class EventBusInMemoryAdapter implements IEventBus<unknown> {`);
