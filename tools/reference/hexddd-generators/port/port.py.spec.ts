@@ -27,6 +27,7 @@ describe('portGenerator (Python)', () => {
     await portGenerator(tree, { name: portName, domain: domainName, language: 'py' });
 
     const portProtocolPath = `libs/${domainName}/domain/src/lib/ports/${portName}_port.py`;
+    // @ts-expect-error - Legacy generator test
     const content = tree.read(portProtocolPath).toString();
 
     expect(content).toContain(`from typing import Protocol`);
@@ -39,6 +40,7 @@ describe('portGenerator (Python)', () => {
     await portGenerator(tree, { name: portName, domain: domainName, language: 'py' });
 
     const fakeAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/${portName}_fake_adapter.py`;
+    // @ts-expect-error - Legacy generator test
     const content = tree.read(fakeAdapterPath).toString();
 
     const snakeCaseDomain = domainName.replace(/-/g, '_');

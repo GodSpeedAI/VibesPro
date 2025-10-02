@@ -26,7 +26,9 @@ describe('eventBusGenerator (Python)', () => {
     await eventBusGenerator(tree, { domain: domainName, language: 'py' });
 
     const eventBusProtocolPath = `libs/${domainName}/domain/src/lib/ports/event_bus_port.py`;
-    const content = tree.read(eventBusProtocolPath).toString();
+    const fileContent = tree.read(eventBusProtocolPath);
+    expect(fileContent).toBeTruthy();
+    const content = fileContent!.toString();
 
     expect(content).toContain(`from typing import Protocol, Type, Callable`);
     expect(content).toContain(`class IEventBus(Protocol):`);
@@ -40,7 +42,9 @@ describe('eventBusGenerator (Python)', () => {
     await eventBusGenerator(tree, { domain: domainName, language: 'py' });
 
     const inMemoryAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/event_bus_in_memory_adapter.py`;
-    const content = tree.read(inMemoryAdapterPath).toString();
+    const fileContent = tree.read(inMemoryAdapterPath);
+    expect(fileContent).toBeTruthy();
+    const content = fileContent!.toString();
 
     expect(content).toContain(`from typing import Type, Callable, Dict, List`);
     const snakeCaseDomain = domainName.replace(/-/g, '_');

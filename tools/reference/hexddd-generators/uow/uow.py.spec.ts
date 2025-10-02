@@ -26,7 +26,9 @@ describe('uowGenerator (Python)', () => {
     await uowGenerator(tree, { domain: domainName, language: 'py' });
 
     const uowProtocolPath = `libs/${domainName}/domain/src/lib/ports/unit_of_work_port.py`;
-    const content = tree.read(uowProtocolPath).toString();
+    const fileContent = tree.read(uowProtocolPath);
+    expect(fileContent).toBeTruthy();
+    const content = fileContent!.toString();
 
     expect(content).toContain(`from typing import Protocol, TypeVar, Callable, Awaitable`);
     expect(content).toContain(`T = TypeVar('T')`);
@@ -39,7 +41,9 @@ describe('uowGenerator (Python)', () => {
     await uowGenerator(tree, { domain: domainName, language: 'py' });
 
     const sqlalchemyAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/unit_of_work_sqlalchemy_adapter.py`;
-    const content = tree.read(sqlalchemyAdapterPath).toString();
+    const fileContent = tree.read(sqlalchemyAdapterPath);
+    expect(fileContent).toBeTruthy();
+    const content = fileContent!.toString();
 
     expect(content).toContain(`from typing import TypeVar, Callable, Awaitable`);
     expect(content).toContain(`from sqlalchemy.ext.asyncio import AsyncSession`);
