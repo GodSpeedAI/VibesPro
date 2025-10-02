@@ -1,0 +1,29 @@
+# Setup Just Task Runner - Composite Action
+#
+# Installs the Just command runner for CI workflows.
+# Just is used for cross-platform task automation and build orchestration.
+#
+# Outputs:
+#   version: The installed version of just
+#
+# Traceability: AI_ADR-004, AI_SDS-003, AI_TS-004
+
+name: 'Setup Just'
+description: 'Install Just command runner'
+
+outputs:
+  version:
+    description: 'Installed Just version'
+    value: {% raw %}${{ steps.install.outputs.version }}{% endraw %}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install just
+      id: install
+      shell: bash
+      run: |
+        curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+        version=$(just --version | head -n1)
+        echo "version=$version" >> $GITHUB_OUTPUT
+        echo "✅ Installed: $version"

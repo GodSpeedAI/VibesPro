@@ -1,0 +1,47 @@
+# Setup Node.js and pnpm - Composite Action
+#
+# Reusable composite action for setting up Node.js and pnpm consistently across workflows.
+# This ensures all CI jobs use the same Node.js version and pnpm configuration.
+#
+# Inputs:
+#   node-version: Node.js version to install (default: "20")
+#   cache-dependency-path: Optional path to pnpm-lock.yaml for cache key
+#
+# Traceability: AI_ADR-005, AI_SDS-004, AI_TS-004
+
+name: 'Setup Node.js and pnpm'
+description: 'Configure Node.js with pnpm package manager and caching'
+
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '20'
+  cache-dependency-path:
+    description: 'Path to pnpm-lock.yaml for cache key'
+    required: false
+    default: 'pnpm-lock.yaml'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      with:
+        node-version: {% raw %}${{ inputs.node-version }}{% endraw %}
+        cache: 'pnpm'
+        cache-dependency-path: {% raw %}${{ inputs.cache-dependency-path }}{% endraw %}
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3.0.0
+      with:
+        version: 9
+        run_install: false
+
+    - name: Verify pnpm installation
+      shell: bash
+      run: pnpm --version
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
