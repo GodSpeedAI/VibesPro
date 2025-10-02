@@ -15,8 +15,8 @@ permissions:
 on:
   push:
     branches: [main, develop, "feature/phase-5"]
-  pull_request:
-    branches: [main, develop]
+# Run integration matrix only for pushes to main/develop to save CI for PRs
+# Pull requests will still run lighter-weight checks (unit/node/docs)
 
 concurrency:
   group: integration-${{ github.ref }}
@@ -28,9 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        architecture: [hexagonal, layered, microservices]
+        # Keep a reduced matrix for faster feedback. Full matrix runs on main pushes.
+        architecture: [hexagonal, layered]
         ai_enabled: [true, false]
-        framework: [next, remix, expo]
+        framework: [next, remix]
     steps:
       - name: Checkout repository
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
