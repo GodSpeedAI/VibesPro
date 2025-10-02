@@ -11,10 +11,10 @@
  * - Handles missing source files gracefully
  */
 
+import { spawnSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { spawnSync } from 'node:child_process';
 
 describe('bundle-context.sh script', () => {
     let testWorkspace: string;
@@ -51,11 +51,11 @@ describe('bundle-context.sh script', () => {
 
     it('should exist and be executable', async () => {
         const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
-        
+
         try {
             const stats = await fs.stat(scriptPath);
             expect(stats.isFile()).toBe(true);
-            
+
             // Check if file is executable (Unix permissions)
             const isExecutable = (stats.mode & 0o111) !== 0;
             expect(isExecutable).toBe(true);
@@ -66,7 +66,7 @@ describe('bundle-context.sh script', () => {
 
     it('should create output directory when executed', async () => {
         const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
-        
+
         // Copy script to test workspace
         const scriptContent = await fs.readFile(scriptPath, 'utf-8');
         const testScriptPath = join(testWorkspace, 'scripts', 'bundle-context.sh');
@@ -80,11 +80,11 @@ describe('bundle-context.sh script', () => {
         });
 
         expect(result.status).toBe(0);
-        
+
         const outputExists = await fs.stat(bundleOutputDir)
             .then(stats => stats.isDirectory())
             .catch(() => false);
-        
+
         expect(outputExists).toBe(true);
     });
 
@@ -159,7 +159,7 @@ describe('bundle-context.sh script', () => {
         // Create minimal workspace without some directories
         const minimalWorkspace = await fs.mkdtemp(join(tmpdir(), 'minimal-test-'));
         await fs.mkdir(join(minimalWorkspace, 'scripts'), { recursive: true });
-        
+
         const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
         const scriptContent = await fs.readFile(scriptPath, 'utf-8');
         const testScriptPath = join(minimalWorkspace, 'scripts', 'bundle-context.sh');
@@ -188,7 +188,7 @@ describe('bundle-context.sh script', () => {
     it('should respect set -euo pipefail for error handling', async () => {
         const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
         const scriptContent = await fs.readFile(scriptPath, 'utf-8');
-        
+
         // Verify script has proper error handling directives
         expect(scriptContent).toContain('set -euo pipefail');
     });

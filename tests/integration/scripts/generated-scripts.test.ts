@@ -36,7 +36,7 @@ describe('Generated Project Scripts', () => {
         const scriptPath = join(generatedProjectPath, 'scripts', 'bundle-context.sh');
         const stats = await fs.stat(scriptPath);
         expect(stats.isFile()).toBe(true);
-        
+
         // Verify script is executable
         const isExecutable = (stats.mode & 0o111) !== 0;
         expect(isExecutable).toBe(true);
@@ -45,14 +45,14 @@ describe('Generated Project Scripts', () => {
     it('should have valid bash shebang in bundle-context.sh', async () => {
         const scriptPath = join(generatedProjectPath, 'scripts', 'bundle-context.sh');
         const content = await fs.readFile(scriptPath, 'utf-8');
-        
+
         expect(content).toMatch(/^#!\/usr\/bin\/env bash/);
     });
 
     it('should include error handling directives', async () => {
         const scriptPath = join(generatedProjectPath, 'scripts', 'bundle-context.sh');
         const content = await fs.readFile(scriptPath, 'utf-8');
-        
+
         expect(content).toContain('set -euo pipefail');
     });
 });
