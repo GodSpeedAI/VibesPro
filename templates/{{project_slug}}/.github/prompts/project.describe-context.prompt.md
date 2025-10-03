@@ -1,8 +1,13 @@
 ---
-description: "Gather project context to update Copilot instructions"
+kind: prompt
+domain: project
+task: describe-context
+thread: project-setup
+matrix_ids: []
+budget: S
 mode: "chat"
-model: "gpt-4o"
-thread: "project-setup"
+model: GPT-5 mini
+description: "Gather project context to update Copilot instructions"
 instructions:
   - general
   - context
