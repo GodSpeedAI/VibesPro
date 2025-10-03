@@ -40,10 +40,10 @@ graph TD
 
 | Phase | Duration | Parallel Agents | Dependencies | Critical Path | Status |
 | --- | --- | --- | --- | --- | --- |
-| PHASE-001 | 2-3 days | Up to 3 agents (A, B, C) | None | ✅ Yes | ✅ Implementation Complete (Tests blocked by copier.yml) |
-| PHASE-002 | 2 days | 2 agents (A, C) | PHASE-001 | ✅ Yes | ✅ Complete (TASK-004 ✅, TASK-005 ✅ impl) |
-| PHASE-003 | 2-3 days | 3 agents (A, B, C) | PHASE-001 | ✅ Yes | 🔄 Partial (TASK-007 ✅, TASK-006/008 partial) |
-| PHASE-004 | 3 days | 2 agents (B, C) | PHASE-001, PHASE-003 | ✅ Yes | ✅ Complete (Both tasks ✅) |
+| PHASE-001 | 2-3 days | Up to 3 agents (A, B, C) | None | ✅ Yes | ✅ **COMPLETE** (All 3 tasks passing) |
+| PHASE-002 | 2 days | 2 agents (A, C) | PHASE-001 | ✅ Yes | ✅ **COMPLETE** (Both tasks passing) |
+| PHASE-003 | 2-3 days | 3 agents (A, B, C) | PHASE-001 | ✅ Yes | ✅ **COMPLETE** (All 3 tasks passing) |
+| PHASE-004 | 3 days | 2 agents (B, C) | PHASE-001, PHASE-003 | ✅ Yes | ✅ **COMPLETE** (Both tasks passing) |
 | PHASE-005 | 1-2 days | 1-2 agents (A, B) | PHASE-001 → PHASE-004 | ✅ Yes | 🔄 Partial (TASK-011 ✅, TASK-012 pending) |
 
 ---
@@ -63,7 +63,7 @@ graph TD
 - **Parallel Compatibility:** Independent of TASK-002 & TASK-003
 - **Estimated Time:** 4 hours
 - **MECE Boundary:** Copy & reconcile instruction/prompt/chatmode assets only (no workflows)
-- **Status:** ✅ Implementation Complete (Tests require copier.yml fixes)
+- **Status:** ✅ **COMPLETE** - All 3 tests passing (copier.yml variables added)
 - **Source Assets to Copy:**
   - `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/.github/copilot-instructions.md`
   - `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/.github/instructions/`
@@ -92,19 +92,19 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [x] Copy directories from VibePDK into `templates/{{project_slug}}/.github/`
 - [x] Update `templates/{{project_slug}}/.github/copilot-instructions.md.j2` (if templated) merging HexDDD specifics with VibePDK content
 - [x] All assets verified: instructions/, prompts/, chatmodes/, models.yaml present
-- ⚠️ Tests require `primary_domains`, `project_purpose`, `tech_stack_summary` in copier.yml
+- [x] Added missing copier.yml variables: `primary_domains`, `project_purpose`, `tech_stack_summary`
 
 #### ✅ REFACTOR — TASK-001 Code Quality
 
 - [x] Deduplicate instruction precedence comments
 - [x] Assets properly organized in template structure
-- ⚠️ Need to add missing template variables to copier.yml for full test passage
+- [x] Template variables properly configured in copier.yml
 
-#### ⚠️ REGRESSION — TASK-001 System Integrity
+#### ✅ REGRESSION — TASK-001 System Integrity
 
 - [x] Assets copied and verified (instructions, prompts, chatmodes, models.yaml)
-- ⚠️ Integration tests fail on copier generation (missing copier.yml variables)
-- **Blocker:** Add `primary_domains`, `project_purpose`, `tech_stack_summary` to copier.yml
+- [x] Integration tests passing (3/3) ✅
+- [x] Copier generation successful with all required variables
 
 ### ✅ TASK-002: Import & Adapt `.github/workflows`
 
@@ -113,7 +113,7 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Parallel Compatibility:** Independent of TASK-001 (works in parallel), requires coordination with TASK-003 for smoke tests
 - **Estimated Time:** 5 hours
 - **MECE Boundary:** Workflow YAML files and required composite actions only
-- **Status:** ✅ Implementation Complete (Tests require copier.yml fixes)
+- **Status:** ✅ **COMPLETE** - All 2 tests passing (comprehensive copier fix applied)
 - **Source Assets to Copy:**
   - `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/.github/workflows/markdownlint.yml`
   - `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/.github/workflows/node-tests.yml`
@@ -134,20 +134,25 @@ Scenario: "Generated project includes merged Copilot instructions"
 #### ✅ GREEN — TASK-002 Minimal Implementation
 
 - [x] Copy workflow YAML files (markdownlint.yml, node-tests.yml, spec-guard.yml)
-- [x] Workflows verified present in templates/{{project_slug}}/.github/workflows/
-- ⚠️ Tests require copier.yml fixes (same as TASK-001)
+- [x] Rename all workflow files to .j2 extension for copier processing
+- [x] Rename composite action files to .j2 extension
+- [x] Move root `.github/` → `.github-repo/` to prevent template conflicts
+- [x] Configure copier `_subdirectory: "templates/{% raw %}{{project_slug}}{% endraw %}"` using Context7 Copier docs
+- [x] Simplify spec-guard.yml to use `just spec-guard` command
 
 #### ✅ REFACTOR — TASK-002 Code Quality
 
 - [x] Workflow job names align with project conventions
 - [x] No hardcoded secrets or repository-specific references
 - [x] Proper YAML formatting and structure
+- [x] Composite actions (setup-node-pnpm, setup-just) properly referenced
 
-#### ⚠️ REGRESSION — TASK-002 System Integrity
+#### ✅ REGRESSION — TASK-002 System Integrity
 
-- [x] Workflows copied and verified
-- ⚠️ Integration tests blocked by copier generation failures
-- **Same Blocker:** Missing copier.yml template variables
+- [x] Workflows copied and verified in generated projects (2/2 tests passing) ✅
+- [x] Composite actions directory created and action.yml files present
+- [x] Workflows correctly reference composite actions via `uses: ./.github/actions/setup-node-pnpm`
+- [x] Copier generation successful with `_subdirectory` configuration
 
 ### ✅ TASK-003: Generation Smoke Test Harness
 
@@ -156,31 +161,34 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Parallel Compatibility:** Runs with TASK-001/TASK-002; integration sync afterward
 - **Estimated Time:** 4 hours
 - **MECE Boundary:** Only generation smoke test updates (no docs or workflows)
-- **Status:** ✅ Test File Created (Blocked by copier.yml)
+- **Status:** ✅ **COMPLETE** - All 1 test passing (prompt frontmatter fixed)
 - **Source Guidance:** reuse `/home/sprime01/projects/VibePDK/tests/test_cookiecutter_generation.py`
 
 #### ✅ RED — TASK-003 Failing Tests
 
 - [x] Create `tests/integration/template_smoke.test.ts` verifying generated project passes `pnpm prompt:lint` & `pnpm spec:matrix`
 - [x] Test file exists and properly structured
-- ⚠️ Currently fails on copier generation (same blocker as TASK-001/002)
+- [x] Prompt lint validation confirms frontmatter requirements
 
 #### ✅ GREEN — TASK-003 Minimal Implementation
 
 - [x] Smoke test file created and structured
 - [x] Test harness logic implemented
-- ⚠️ Blocked by copier.yml missing variables
+- [x] Fixed missing frontmatter fields in project.describe-context.prompt.md (kind, domain, task, matrix_ids, budget)
+- [x] Fixed missing frontmatter fields in speckit_merge.prompt.md.j2 (kind, domain, task, thread, matrix_ids, budget)
+- [x] Changed models from 'gpt-4o'/'GPT-5 (Preview)' to valid models in models.yaml
 
 #### ✅ REFACTOR — TASK-003 Code Quality
 
 - [x] Test file properly organized
 - [x] Uses shared test utilities where appropriate
+- [x] Prompt files follow consistent frontmatter schema
 
-#### ⚠️ REGRESSION — TASK-003 System Integrity
+#### ✅ REGRESSION — TASK-003 System Integrity
 
-- [x] Test file created
-- ⚠️ Execution blocked by copier generation failures
-- **Same Blocker:** Missing copier.yml template variables
+- [x] Test passing (1/1) ✅
+- [x] All prompt files pass frontmatter validation
+- [x] Both prompt:lint and spec:matrix commands execute successfully
 
 ---
 
@@ -222,27 +230,33 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Agent:** Agent C
 - **Estimated Time:** 4 hours
 - **MECE Boundary:** Only template doc templates (`templates/{{project_slug}}/docs/**`, README)
-- **Status:** ✅ Implementation Complete (Tests blocked by copier.yml)
+- **Status:** ✅ **COMPLETE** - All 2 tests passing (copier paths fixed)
 - **Source Assets:** `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/docs/` and `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/README.md`
 
 #### ✅ RED — TASK-005 Failing Tests
 
 - [x] Create generation test verifying doc files exist & include AI onboarding section
 - [x] Test file properly structured
-- ⚠️ Blocked by copier generation (missing copier.yml variables)
+- [x] Fixed hardcoded 'templates/test-project/' paths after _subdirectory configuration
 
 #### ✅ GREEN — TASK-005 Minimal Implementation
 
 - [x] Copy and adapt doc templates replacing references with VibesPro context
 - [x] Documentation files verified: README.md, commit_message_guidelines.md, dev_* files
 - [x] AI onboarding content integrated
+- [x] Updated test paths to match copier _subdirectory configuration (files at workspace root, not nested)
 
 #### ✅ REFACTOR — TASK-005 Code Quality
 
 - [x] Documentation properly structured and formatted
 - [x] Cross-references use relative paths
+- [x] Test paths align with actual copier generation structure
 
-#### ⚠️ REGRESSION — TASK-005 System Integrity
+#### ✅ REGRESSION — TASK-005 System Integrity
+
+- [x] All tests passing (2/2) ✅
+- [x] Baseline documentation files copy correctly
+- [x] AI onboarding guidance present and properly formatted
 
 - [x] Documentation assets copied and verified
 - ⚠️ Integration tests blocked by copier generation
@@ -257,36 +271,38 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Parallel Agents:** 3
 - **Rollback Strategy:** Keep previous `justfile.j2` & scripts under `scripts/legacy/`
 
-### 🔄 TASK-006: Justfile Recipes Expansion
+### ✅ TASK-006: Justfile Recipes Expansion
 
 - **Traceability:** AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-004
 - **Agent:** Agent A
 - **Source Assets to Copy:** `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/justfile`
 - **Tests:** `tests/unit/just-recipes.test.ts`
-- **Status:** 🔄 Partial Implementation (1/12 tests passing, 11 failing)
+- **Status:** ✅ **COMPLETE** - All 12 tests passing (duplicate recipe removed)
 
 #### ✅ RED — TASK-006 Failing Tests
 
 - [x] Author unit tests asserting new `just` recipes are listed
 - [x] Tests created (12 total) checking for recipe presence
-- [x] Tests correctly failing (11/12) due to missing recipes
+- [x] All tests now passing
 
-#### 🔄 GREEN — TASK-006 Minimal Implementation
+#### ✅ GREEN — TASK-006 Minimal Implementation
 
-- [x] Some recipes present (spec-matrix found)
-- [ ] Missing: clean, setup, test-generation, ai-context-bundle, ai-validate, ai-scaffold, tdd-red, tdd-green, tdd-refactor, prompt-lint, spec-guard
-- **Action Needed:** Copy additional recipes from VibePDK justfile
+- [x] All required recipes present: spec-matrix, clean, setup, test-generation, ai-context-bundle, ai-validate, ai-scaffold, tdd-red, tdd-green, tdd-refactor, prompt-lint, spec-guard
+- [x] Removed duplicate spec-guard recipe definition (line 404 conflicted with line 40)
+- [x] Kept comprehensive CI version at line 40 with all required commands
 
-#### 🔄 REFACTOR — TASK-006 Code Quality
+#### ✅ REFACTOR — TASK-006 Code Quality
 
-- [ ] Add missing recipes
-- [ ] Document recipe usage with comments
-- [ ] Ensure parameterization for template variables
+- [x] All recipes properly defined and functional
+- [x] Recipe usage documented with comments
+- [x] Proper parameterization for template variables
+- [x] No duplicate definitions
 
-#### 🔄 REGRESSION — TASK-006 System Integrity
+#### ✅ REGRESSION — TASK-006 System Integrity
 
-- ⚠️ 11/12 tests failing due to missing recipes
-- **Next Step:** Import additional justfile recipes from VibePDK
+- [x] All 12 tests passing ✅
+- [x] Justfile syntax valid (no errors from `just --list`)
+- [x] All AI workflow recipes accessible
 
 ### ✅ TASK-007: Shell Script Import & Adaptation
 
@@ -320,39 +336,40 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [x] Scripts properly integrated into template
 - **Status:** Fully complete and validated
 
-### 🔄 TASK-008: Package Script Wiring
+### ✅ TASK-008: Package Script Wiring
 
 - **Traceability:** AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-001
 - **Agent:** Agent C
 - **Source Assets to Copy:** `/home/sprime01/projects/VibePDK/{{cookiecutter.project_slug}}/package.json`
 - **Tests:** `tests/unit/package-scripts.test.ts`
-- **Status:** 🔄 Partial (14/16 tests passing, 2 failing)
+- **Status:** ✅ **COMPLETE** - All 16 tests passing (scripts added)
 
 #### ✅ RED — TASK-008 Failing Tests
 
 - [x] Add unit tests reading rendered `package.json` ensuring scripts exist
 - [x] 16 tests created
 - [x] Tests properly checking for script presence
+- [x] All tests now passing
 
-#### 🔄 GREEN — TASK-008 Minimal Implementation
+#### ✅ GREEN — TASK-008 Minimal Implementation
 
 - [x] Scripts `prompt:lint` and `spec:matrix` present and verified
-- [ ] Missing: `test:node` script (1 test failing)
-- [ ] Jinja2 variable syntax test failing (1 test)
-- **Status:** 14/16 tests passing
+- [x] Added `test:node` script to template package.json.j2: "node tools/test/node-smoke.cjs"
+- [x] Added `lint:shell` script to root package.json with shellcheck fallback
+- [x] All 16 tests now passing
 
-#### 🔄 REFACTOR — TASK-008 Code Quality
+#### ✅ REFACTOR — TASK-008 Code Quality
 
 - [x] Scripts properly formatted
 - [x] Dependencies appropriately categorized
-- [ ] Add missing `test:node` script
-- [ ] Verify Jinja2 templating
+- [x] All required scripts present in both root and template
+- [x] Proper error handling (shellcheck fallback if not installed)
 
-#### 🔄 REGRESSION — TASK-008 System Integrity
+#### ✅ REGRESSION — TASK-008 System Integrity
 
-- [x] 14/16 tests passing
-- ⚠️ 2 tests failing (test:node script, Jinja2 syntax)
-- **Next Step:** Add missing test:node script
+- [x] All 16 tests passing ✅
+- [x] Root package.json has all required scripts
+- [x] Template package.json.j2 includes all necessary scripts for generated projects
 
 ---
 
