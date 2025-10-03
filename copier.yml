@@ -41,6 +41,21 @@ domains:
   help: "Comma-separated list of domain names for generated docs and code"
   default: ""
 
+primary_domains:
+  type: str
+  help: "Primary domain contexts (comma-separated)"
+  default: "{{ domains if domains else domain_name }}"
+
+project_purpose:
+  type: str
+  help: "Brief description of project purpose"
+  default: "a modular application"
+
+tech_stack_summary:
+  type: str
+  help: "Additional technology stack details (optional)"
+  default: ""
+
 base_url:
   type: str
   help: "Base URL used in generated API examples"

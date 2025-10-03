@@ -63,7 +63,8 @@ describe('GitHub workflow propagation', () => {
         const specGuardWorkflow = await fs.readFile(join(projectRoot, '.github/workflows/spec-guard.yml'), 'utf-8');
         expect(specGuardWorkflow).toContain('Spec Guard CI');
         expect(specGuardWorkflow).toContain('just spec-guard');
-        expect(specGuardWorkflow).toContain("cache: 'pnpm'");
-        expect(specGuardWorkflow).toContain('node-version: "22"');
+        // Check for composite action usage instead of inline cache setup
+        expect(specGuardWorkflow).toContain('uses: ./.github/actions/setup-node-pnpm');
+        expect(specGuardWorkflow).toContain('node-version: "20"');
     });
 });
