@@ -87,7 +87,7 @@ describe('Generated Project CI Validation', () => {
     });
 
     describe('CI Workflow Alignment', () => {
-        it('should execute spec-guard workflow steps in dry-run mode', async () => {
+        it('should successfully execute spec-guard workflow steps', async () => {
             // Install dependencies first (allow lockfile update for generated projects)
             execSync('pnpm install', {
                 cwd: projectRoot,
