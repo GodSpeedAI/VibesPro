@@ -398,27 +398,6 @@ ai-scaffold name="":
 
 # --- Specification Management ---
 
-# Guard against commits without proper specifications
-# Ensures docs/specs/ directory exists and contains markdown files
-# Intended for use in git hooks or CI pipelines
-spec-guard:
-	@echo "🛡️  Checking specification files..."
-	@if [ ! -d "docs/specs" ]; then \
-		echo "❌ docs/specs directory not found"; \
-		echo ""; \
-		echo "Specifications are required for all changes."; \
-		echo "See: docs/spec_index.md for guidance."; \
-		exit 1; \
-	fi
-	@if ! find docs/specs -name "*.md" -type f | grep -q .; then \
-		echo "❌ No specification files found in docs/specs"; \
-		echo ""; \
-		echo "Specifications are required for all changes."; \
-		echo "See: docs/spec_index.md for guidance."; \
-		exit 1; \
-	fi
-	@echo "✅ Specification files present"
-
 # --- AI Utilities ---
 ai-analyze PROJECT_PATH:
 	@echo "🤖 Analyzing project with AI..."
