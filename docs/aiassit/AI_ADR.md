@@ -49,3 +49,30 @@
   - Limit checks to template repository only (rejected because generated outputs could diverge unnoticed).
   - Rely on manual QA after generation (rejected due to inconsistency and scalability issues).
 - **Consequences:** Longer CI cycles and additional maintenance of workflow scripts, offset by higher confidence in generated project quality.
+
+## AI_ADR-006 — Optional security hardening with TPM-backed encryption at rest
+
+- **Status:** Accepted
+- **Decision:** Provide optional security hardening features via Copier template flags (`enable_security_hardening`), including TPM-backed key sealing, XChaCha20-Poly1305 encryption for the temporal learning database (sled), and defense-in-depth deployment patterns (distroless containers, static binaries, least-privilege execution).
+- **Rationale:** Addresses edge deployment security requirements without imposing mandatory complexity on all projects. Generator-first approach ensures security patterns are consistently applied when needed while maintaining zero overhead for non-hardened projects.
+- **Alternatives Considered:**
+  - **Mandatory security for all projects** (rejected due to unnecessary complexity and performance overhead for development/testing environments).
+  - **External security library** (rejected because it breaks the self-contained generator philosophy and adds runtime dependencies).
+  - **AES-256-GCM instead of XChaCha20-Poly1305** (rejected because XChaCha20's 192-bit nonce reduces misuse risk and performs better on ARM/edge devices without AES-NI).
+  - **OpenSSL/libsodium** (rejected due to large binary size increase and complex dependency management).
+- **Consequences:**
+  - **Positive:** Projects requiring edge security get production-ready encryption with minimal configuration; hardware-bound security via TPM prevents key exfiltration; performance overhead < 10% meets edge constraints.
+  - **Negative:** Adds 3 new template variants to maintain; requires security-specific testing infrastructure; TPM integration complexity for contributors unfamiliar with hardware security.
+  - **Mitigation:** Feature flag ensures opt-in behavior; comprehensive documentation and example configurations provided; fallback to file-based key sealing when TPM unavailable.
+- **Key Design Decisions:**
+  - **Nonce scheme:** 64-bit monotonic counter + 128-bit DB UUID → 192-bit nonce (eliminates random nonce generation dependencies, prevents birthday-bound attacks)
+  - **Key derivation:** HKDF-SHA256 with domain separation (`db-key`, `audit-key`, `transport-key`) enables key rotation and multi-purpose use
+  - **Storage format:** `[nonce || ciphertext]` per record ensures decryption independence from runtime counter state
+  - **Failure mode:** Nonce reuse risk triggers write refusal with critical alert (fail-safe, not fail-open)
+- **Success Metrics:**
+  - Zero plaintext discoverable in filesystem dumps
+  - Encryption overhead < 5% on standard workloads
+  - Binary size increase < 2MB
+  - All crypto dependencies pass `cargo audit` with no HIGH/CRITICAL issues
+
+```

@@ -7,6 +7,8 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+import shutil
+import yaml
 
 
 def run(cmd: list[str], cwd: Path) -> None:
@@ -56,6 +58,35 @@ def setup_generated_project(target: Path) -> None:
     run(["pnpm", "install"], cwd=target)
     run(["uv", "sync", "--dev"], cwd=target)
     run(["just", "build"], cwd=target)
+
+    # Remove security-related template artifacts when security hardening is disabled.
+    # Detection order: environment variable `COPIER_ENABLE_SECURITY_HARDENING` ("1"/"true"/"false"),
+    # then `.copier-answers.yml` or `copier-answers.yml` in the project root if present.
+    def _is_hardening_enabled() -> bool:
+        env_val = os.environ.get("COPIER_ENABLE_SECURITY_HARDENING")
+        if env_val is not None:
+            return str(env_val).lower() in ("1", "true", "yes")
+
+        # Look for copier answers files produced by Copier
+        for fname in (".copier-answers.yml", "copier-answers.yml"):
+            answers = target / fname
+            if answers.exists():
+                try:
+                    data = yaml.safe_load(answers.read_text()) or {}
+                    if isinstance(data, dict) and "enable_security_hardening" in data:
+                        return bool(data.get("enable_security_hardening"))
+                except Exception:
+                    # If parsing fails, fall back to safe default (disabled == False)
+                    return False
+
+        # Default: follow template default (security hardening is opt-in -> disabled)
+        return False
+
+    if not _is_hardening_enabled():
+        sec_dir = target / "libs" / "security"
+        if sec_dir.exists():
+            print("   → Security hardening disabled: removing libs/security from generated project")
+            shutil.rmtree(sec_dir, ignore_errors=True)
 
     print("✅ Project setup completed successfully!")
     print()
