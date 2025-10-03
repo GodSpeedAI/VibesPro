@@ -1,4 +1,5 @@
 # HexDDD-VibePDK Merger Template Configuration
+_subdirectory: "templates/{% raw %}{{project_slug}}{% endraw %}"
 _templates_suffix: .j2
 _skip_if_exists:
   - .gitignore
