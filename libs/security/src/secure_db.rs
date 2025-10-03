@@ -78,12 +78,12 @@ impl SecureDb {
 
         let current = *guard;
         let next = current.checked_add(1).ok_or(SecureDbError::NonceOverflow)?;
-        *guard = next;
 
         let next_bytes = next.to_le_bytes();
         self.db
             .insert(NONCE_COUNTER_KEY, next_bytes.to_vec())
             .map_err(|err| SecureDbError::sled("failed to persist nonce counter", err))?;
+        *guard = next;
 
         let mut nonce_bytes = [0u8; 24];
         nonce_bytes[..8].copy_from_slice(&current.to_le_bytes());
