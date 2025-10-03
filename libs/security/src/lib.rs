@@ -1,3 +1,9 @@
-// Minimal library entry for the security crate.
-// Actual implementation will be added in TASK-013 GREEN phase.
+//! Security primitives for the VibesPro platform.
+//! Currently exposes an encrypted sled wrapper used by AI temporal storage.
+
+pub mod error;
+pub mod key_mgmt;
 pub mod secure_db;
+
+pub use error::{SecureDbError, SecureDbResult};
+pub use secure_db::SecureDb;

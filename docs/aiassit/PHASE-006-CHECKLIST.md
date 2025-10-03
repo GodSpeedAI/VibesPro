@@ -52,36 +52,36 @@
 
 ### GREEN Phase (5-6 hours)
 
-- [ ] **Setup Dependencies**
-  - [ ] Create `libs/security/Cargo.toml`
-  - [ ] Add dependencies: sled, chacha20poly1305, hkdf, sha2, zeroize, anyhow, uuid
+- [x] **Setup Dependencies**
+  - [x] Create `libs/security/Cargo.toml`
+  - [x] Add dependencies: sled, chacha20poly1305, hkdf, sha2, zeroize, anyhow, uuid
 
-- [ ] **Copy Implementation**
-  - [ ] Copy SecureDb from AI_SECURITY_HARDENING.md Section 5.2
-  - [ ] Create `libs/security/src/lib.rs` (re-exports)
-  - [ ] Create `libs/security/src/secure_db.rs` (main implementation)
+- [x] **Copy Implementation**
+  - [x] Copy SecureDb from AI_SECURITY_HARDENING.md Section 5.2
+  - [x] Create `libs/security/src/lib.rs` (re-exports)
+  - [x] Create `libs/security/src/secure_db.rs` (main implementation)
 
-- [ ] **Run Tests**
+- [x] **Run Tests**
   ```bash
   cd libs/security
   cargo test
   ```
-  - [ ] `test_encrypt_decrypt_roundtrip` ✅
-  - [ ] `test_nonce_monotonicity` ✅
-  - [ ] `test_no_plaintext_on_disk` ✅
-  - [ ] `test_wrong_key_fails` ✅
-  - [ ] `test_concurrent_inserts` ✅
+  - [x] `test_encrypt_decrypt_roundtrip` ✅
+  - [x] `test_nonce_monotonicity` ✅
+  - [x] `test_no_plaintext_on_disk` ✅
+  - [x] `test_wrong_key_fails` ✅
+  - [x] `test_concurrent_inserts` ✅
 
 ### REFACTOR Phase (2-3 hours)
 
-- [ ] **Code Quality**
-  - [ ] Extract key derivation to `src/key_mgmt.rs`
-  - [ ] Create custom error types (replace anyhow)
-  - [ ] Add inline documentation
-  - [ ] Run `cargo clippy --all-targets`
-  - [ ] Run `cargo fmt`
+- [x] **Code Quality**
+  - [x] Extract key derivation to `src/key_mgmt.rs`
+  - [x] Create custom error types (replace anyhow)
+  - [x] Add inline documentation
+  - [x] Run `cargo clippy --all-targets`
+  - [x] Run `cargo fmt`
 
-- [ ] **Verify All Tests Still Pass**
+- [x] **Verify All Tests Still Pass**
   ```bash
   cargo test --all-features
   ```
