@@ -1,0 +1,17 @@
+{% if enable_security_hardening %}{# Security crate manifest generated only for hardened projects. #}
+[package]
+name = "security"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chacha20poly1305 = "0.10"
+hkdf = "0.12"
+sha2 = "0.10"
+sled = "0.34"
+uuid = { version = "1", features = ["v4"] }
+zeroize = "1.7"
+
+[dev-dependencies]
+tempfile = "3.9"
+{% endif %}

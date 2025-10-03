@@ -4,8 +4,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const SNAP_DIR = path.join(process.cwd(), 'tests', 'snapshots');
+const SNAP_SUFFIX = '.snapshot.json';
 
-function snapPath(name: string) { return path.join(SNAP_DIR, name + '.snap'); }
+function snapPath(name: string) {
+    return path.join(SNAP_DIR, `${name}${SNAP_SUFFIX}`);
+}
 
 export function writeSnapshot(name: string, content: string): void {
     fs.mkdirSync(SNAP_DIR, { recursive: true });

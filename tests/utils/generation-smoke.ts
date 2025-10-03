@@ -10,6 +10,15 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+type CopierDataValue = string | number | boolean;
+
+interface CopierOptions extends Record<string, CopierDataValue | undefined> {
+    readonly dataFile?: string;
+    readonly useDefaults?: boolean;
+    readonly force?: boolean;
+    readonly skipPostGenSetup?: boolean;
+}
+
 type CommandResult = {
     readonly command: string;
     readonly status: number;
@@ -23,25 +32,66 @@ type SmokeTestResult = {
     readonly specMatrix: CommandResult;
 };
 
-const runCopier = async (targetDir: string): Promise<void> => {
-    const command = [
-        'copier',
-        'copy',
-        '.',
-        targetDir,
-        '--data-file',
-        'tests/fixtures/test-data.yml',
-        '--defaults',
-        '--force'
-    ];
+const runCopier = (targetDir: string, options: CopierOptions = {}): void => {
+    const {
+        dataFile = 'tests/fixtures/test-data.yml',
+        useDefaults = true,
+        force = true,
+        skipPostGenSetup = false
+    } = options;
+
+    const command = ['copier', 'copy', '.', targetDir, '--trust'];
+
+    if (dataFile) {
+        command.push('--data-file', dataFile);
+    }
+
+    if (useDefaults) {
+        command.push('--defaults');
+    }
+
+    if (force) {
+        command.push('--force');
+    }
+
+    const reservedKeys = new Set(['dataFile', 'useDefaults', 'force', 'skipPostGenSetup']);
+    const dataEntries: Array<[string, CopierDataValue]> = [];
+
+    for (const [key, value] of Object.entries(options)) {
+        if (reservedKeys.has(key) || typeof value === 'undefined') {
+            continue;
+        }
+
+        dataEntries.push([key, value as CopierDataValue]);
+    }
+
+    for (const [key, value] of dataEntries) {
+        const renderedValue = typeof value === 'boolean' ? String(value) : `${value}`;
+        command.push('--data', `${key}=${renderedValue}`);
+    }
+
+    const env = { ...process.env };
+    if (skipPostGenSetup) {
+        env.COPIER_SKIP_PROJECT_SETUP = '1';
+    }
+
+    if (typeof options.enable_security_hardening !== 'undefined') {
+        env.COPIER_ENABLE_SECURITY_HARDENING = String(Boolean(options.enable_security_hardening));
+    }
 
     const result = spawnSync(command[0], command.slice(1), {
         cwd: process.cwd(),
-        stdio: 'inherit'
+        encoding: 'utf-8',
+        stdio: 'pipe',
+        env
     });
 
     if (result.status !== 0) {
-        throw new Error(`Copier generation failed with status ${result.status ?? -1}`);
+        const stdout = result.stdout ?? '';
+        const stderr = result.stderr ?? '';
+        throw new Error(
+            `Copier generation failed with status ${result.status ?? -1}\nSTDOUT: ${stdout}\nSTDERR: ${stderr}`
+        );
     }
 };
 
@@ -80,7 +130,7 @@ export const runGenerationSmokeTest = async (): Promise<SmokeTestResult> => {
     const workspaceRoot = await fs.mkdtemp(join(tmpdir(), 'vibes-smoke-'));
 
     try {
-        await runCopier(workspaceRoot);
+        runCopier(workspaceRoot);
 
         const promptsAvailable = await ensureScriptExists(workspaceRoot, 'prompt:lint');
         const specMatrixAvailable = await ensureScriptExists(workspaceRoot, 'spec:matrix');
@@ -100,5 +150,17 @@ export const runGenerationSmokeTest = async (): Promise<SmokeTestResult> => {
         };
     } finally {
         await fs.rm(workspaceRoot, { recursive: true, force: true });
+    }
+};
+
+export const runCopierGeneration = async (options: CopierOptions = {}): Promise<string> => {
+    const workspaceRoot = await fs.mkdtemp(join(tmpdir(), 'vibes-gen-'));
+
+    try {
+        runCopier(workspaceRoot, options);
+        return workspaceRoot;
+    } catch (error) {
+        await fs.rm(workspaceRoot, { recursive: true, force: true });
+        throw error;
     }
 };

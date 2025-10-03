@@ -19,6 +19,9 @@ _skip_if_exists:
   - &AI_TEMPLATE_TEMPORAL_DB_GLOB "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db/**{% endif %}"
   - &AI_TEMPLATE_TEMPORAL_DB_DIR "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db{% endif %}"
 
+_tasks:
+  - ["python3", "hooks/post_gen.py"]
+
 project_slug:
   type: str
   help: "Project slug (kebab-case, used for directories)"

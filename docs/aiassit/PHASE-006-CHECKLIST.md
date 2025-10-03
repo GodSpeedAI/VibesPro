@@ -96,62 +96,86 @@
 
 ### RED Phase (1 hour)
 
-- [ ] **Create Test File**
-  - [ ] Create `tests/integration/security/template_generation_test.ts`
-  - [ ] Copy 4 test cases from AI_SECURITY_HARDENING.md TASK-014 RED section
-  - [ ] Update `tests/utils/generation-smoke.ts` to support security flags
-  - [ ] Verify tests fail (RED state)
+- [x] **Create Test File**
+  - [x] Create `tests/integration/security/template_generation.test.ts`
+  - [x] Copy 4 test cases from AI_SECURITY_HARDENING.md TASK-014 RED section
+  - [x] Update `tests/utils/generation-smoke.ts` to support security flags
+  - [x] Verify tests fail (RED state)
 
 ### GREEN Phase (3-4 hours)
 
-- [ ] **Create Template Structure**
+- [x] **Create Template Structure**
   ```bash
   mkdir -p templates/{{project_slug}}/libs/security/{src,tests}
   ```
 
-- [ ] **Copy and Convert Templates**
-  - [ ] Copy Dockerfile from AI_SECURITY_HARDENING.md Section 5.3
-  - [ ] Add Jinja2 conditionals → `templates/{{project_slug}}/Dockerfile.j2`
-  - [ ] Copy docker-compose.yml from Section 5.3
-  - [ ] Add Jinja2 conditionals → `templates/{{project_slug}}/docker-compose.yml.j2`
-  - [ ] Copy SecureDb Rust code with `.j2` extensions
-    - [ ] `Cargo.toml.j2`
-    - [ ] `src/lib.rs.j2`
-    - [ ] `src/secure_db.rs.j2`
+- [x] **Copy and Convert Templates**
+  - [x] Copy Dockerfile from AI_SECURITY_HARDENING.md Section 5.3
+  - [x] Add Jinja2 conditionals → `templates/{{project_slug}}/Dockerfile.j2`
+  - [x] Copy docker-compose.yml from Section 5.3
+  - [x] Add Jinja2 conditionals → `templates/{{project_slug}}/docker-compose.yml.j2`
+  - [x] Copy SecureDb Rust code with `.j2` extensions
+    - [x] `Cargo.toml.j2`
+    - [x] `src/lib.rs.j2`
+    - [x] `src/secure_db.rs.j2`
 
-- [ ] **Update Generation Hooks**
-  - [ ] Edit `hooks/post_gen.py`
-  - [ ] Add conditional removal logic for security libs when disabled
+- [x] **Update Generation Hooks**
+  - [x] Edit `hooks/post_gen.py`
+  - [x] Add conditional removal logic for security libs when disabled
   ```python
   if not context['enable_security_hardening']:
       shutil.rmtree(project_path / 'libs' / 'security', ignore_errors=True)
   ```
 
-- [ ] **Run Tests**
+- [x] **Run Tests**
   ```bash
-  pnpm test tests/integration/security/template_generation_test.ts
+  pnpm exec jest --config jest.config.json tests/integration/security/template_generation.test.ts --runInBand
   ```
-  - [ ] Test: Generated project includes SecureDb ✅
-  - [ ] Test: Generated project excludes security libs when disabled ✅
-  - [ ] Test: Dockerfile uses distroless and non-root ✅
-  - [ ] Test: docker-compose has security options ✅
+  - [x] Test: Generated project includes SecureDb ✅
+  - [x] Test: Generated project excludes security libs when disabled ✅
+  - [x] Test: Dockerfile uses distroless and non-root ✅
+  - [x] Test: docker-compose has security options ✅
 
 ### REFACTOR Phase (2-3 hours)
 
-- [ ] **Documentation**
-  - [ ] Add comments to Jinja2 conditionals
-  - [ ] Create example `.env.j2` with key generation instructions
-  - [ ] Create `templates/{{project_slug}}/docs/security/ENCRYPTION.md.j2`
+- [x] **Documentation**
+  - [x] Add comments to Jinja2 conditionals
+  - [x] Create example `.env.j2` with key generation instructions
+  - [x] Create `templates/{{project_slug}}/docs/security/ENCRYPTION.md.j2`
 
-- [ ] **Template Validation**
-  - [ ] Validate all `.j2` syntax
+- [x] **Template Validation**
+  - [x] Validate all `.j2` syntax
   ```bash
-  python -c "from jinja2 import Template; Template(open('Dockerfile.j2').read())"
+  python3 - <<'PY'
+  from pathlib import Path
+  from jinja2 import Environment
+
+  files = [
+      "templates/{{project_slug}}/Dockerfile.j2",
+      "templates/{{project_slug}}/docker-compose.yml.j2",
+      "templates/{{project_slug}}/.env.j2",
+      "templates/{{project_slug}}/hooks/post_gen.py.j2",
+      "templates/{{project_slug}}/libs/security/Cargo.toml.j2",
+      "templates/{{project_slug}}/libs/security/src/lib.rs.j2",
+      "templates/{{project_slug}}/libs/security/src/error.rs.j2",
+      "templates/{{project_slug}}/libs/security/src/key_mgmt.rs.j2",
+      "templates/{{project_slug}}/libs/security/src/secure_db.rs.j2",
+      "templates/{{project_slug}}/libs/security/tests/unit.rs.j2",
+      "templates/{{project_slug}}/libs/security/tests/unit/secure_db_test.rs.j2",
+      "templates/{{project_slug}}/docs/security/ENCRYPTION.md.j2",
+  ]
+
+  env = Environment()
+  for file in files:
+      env.parse(Path(file).read_text())
+  PY
   ```
-  - [ ] Test generation with both flag values
+  - [x] Test generation with both flag values
   ```bash
-  copier copy . /tmp/test-secure --data enable_security_hardening=true
-  copier copy . /tmp/test-plain --data enable_security_hardening=false
+  COPIER_SKIP_PROJECT_SETUP=1 COPIER_ENABLE_SECURITY_HARDENING=true copier copy . /tmp/test-secure \
+    --data-file tests/fixtures/test-data.yml --data enable_security_hardening=true --defaults --force --trust
+  COPIER_SKIP_PROJECT_SETUP=1 COPIER_ENABLE_SECURITY_HARDENING=false copier copy . /tmp/test-plain \
+    --data-file tests/fixtures/test-data.yml --data enable_security_hardening=false --defaults --force --trust
   ```
 
 ---
