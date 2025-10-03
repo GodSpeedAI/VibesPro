@@ -35,36 +35,9 @@ jobs:
       - name: Setup Just
         uses: ./.github/actions/setup-just
 
-      - name: Generate traceability matrix
-        run: just spec-matrix
+      - name: Run Spec Guard bundle
+        run: just spec-guard
 
-      - name: Lint prompts
-        run: just prompt-lint
-
-      - name: Lint markdown
-        run: pnpm run lint:md
-
-      - name: Link check docs
-        run: node tools/docs/link_check.js
-
-      - name: Plan prompts (budget and accurate tokenizer)
-        run: |
-          for f in .github/prompts/*.prompt.md; do
-            [ -e "$f" ] || continue
-            echo "Planning $f (budget check)..."
-            node tools/prompt/plan_preview.js "$f"
-            echo "Planning $f (accurate tokenizer)..."
-            PROMPT_TOKENIZER=accurate node tools/prompt/plan_preview.js --accurate "$f"
-          done
-
-      - name: Run unit tests
-        run: pnpm run test:node
-
-      - name: Test template generation
-        run: just test-generation
-
-      - name: Environment audit
-        run: pnpm run env:audit
       - name: Upload environment report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
