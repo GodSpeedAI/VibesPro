@@ -56,6 +56,11 @@ impl SecureDb {
                 None => 0,
             };
 
+        if counter == 0 {
+            db.insert(NONCE_COUNTER_KEY, 0u64.to_le_bytes().to_vec())
+                .map_err(|err| SecureDbError::sled("failed to persist initial nonce counter", err))?;
+        }
+
         Ok(Self {
             db,
             cipher,
