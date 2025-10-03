@@ -140,8 +140,7 @@ describe('Generated Project CI Validation', () => {
             expect(workflowContent).toMatch(/cache:\s*['"]pnpm['"]/);
 
             // Verify pnpm version is specified
-            const hasPnpmVersion = workflowContent.includes('version:') &&
-                (workflowContent.includes('9') || workflowContent.includes('8'));
+            const hasPnpmVersion = /version:\s*['"]?[89]['"]?/.test(workflowContent);
 
             expect(hasPnpmVersion).toBe(true);
         });
