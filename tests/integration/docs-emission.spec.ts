@@ -60,7 +60,7 @@ describe('Documentation template emission', () => {
 
         const onboardingPath = join(
             generatedWorkspace,
-            'templates/test-project/docs/how-to/ai-onboarding.md'
+            'docs/how-to/ai-onboarding.md'
         );
         const onboardingContent = await fs.readFile(onboardingPath, 'utf-8');
         expect(onboardingContent).toContain('# AI Onboarding Guide');
@@ -69,7 +69,7 @@ describe('Documentation template emission', () => {
 
         const docsReadmePath = join(
             generatedWorkspace,
-            'templates/test-project/docs/README.md'
+            'docs/README.md'
         );
         const docsReadmeContent = await fs.readFile(docsReadmePath, 'utf-8');
         expect(docsReadmeContent).toContain('AI-enhanced development workflows');
@@ -78,7 +78,7 @@ describe('Documentation template emission', () => {
 
         const devSpecIndexPath = join(
             generatedWorkspace,
-            'templates/test-project/docs/dev_spec_index.md'
+            'docs/dev_spec_index.md'
         );
         const devSpecIndexContent = await fs.readFile(devSpecIndexPath, 'utf-8');
         expect(devSpecIndexContent).toContain('Developer Specification Index');
@@ -86,7 +86,7 @@ describe('Documentation template emission', () => {
 
         const commitGuidePath = join(
             generatedWorkspace,
-            'templates/test-project/docs/commit_message_guidelines.md'
+            'docs/commit_message_guidelines.md'
         );
         const commitGuideContent = await fs.readFile(commitGuidePath, 'utf-8');
         expect(commitGuideContent).toContain('Commit Message Guidelines');
