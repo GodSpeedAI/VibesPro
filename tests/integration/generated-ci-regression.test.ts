@@ -176,16 +176,21 @@ describe('Generated Project CI Validation', () => {
 
             expect(setupIndex).toBeGreaterThan(-1);
             expect(executionIndex).toBeGreaterThan(setupIndex);
-        });
-
         it('should include annotations for guardrail failures', async () => {
             const workflowPath = join(projectRoot, '.github/workflows/spec-guard.yml');
             const workflowContent = await fs.readFile(workflowPath, 'utf-8');
 
-            // Check for helpful documentation comments
-            const hasDocumentation = /uses: actions\/checkout@.*# v4/.test(workflowContent);
+            // Check for GitHub Actions annotation commands in the workflow
+            const annotationRegex = /::(error|warning|notice)/i;
+            const hasAnnotationCommand = annotationRegex.test(workflowContent);
 
-            expect(hasDocumentation).toBe(true);
+            // Optionally, check for usage of actions that emit annotations, e.g. actions/github-script or run steps with echo "::error"
+            const hasGithubScriptAction = workflowContent.includes('actions/github-script') ||
+                workflowContent.includes('echo "::error') ||
+                workflowContent.includes('echo "::warning') ||
+                workflowContent.includes('echo "::notice');
+
+            expect(hasAnnotationCommand || hasGithubScriptAction).toBe(true);
         });
     });
 
