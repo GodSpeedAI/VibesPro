@@ -124,12 +124,12 @@ describe('Generated Project CI Validation', () => {
 
             // Check if using composite action (TASK-011 approach) or inline setup
             const usesCompositeAction = workflowContent.includes('uses: ./.github/actions/setup-node-pnpm');
-            
+
             if (usesCompositeAction) {
                 // Verify composite action exists and has pnpm setup
                 const actionPath = join(projectRoot, '.github/actions/setup-node-pnpm/action.yml');
                 const actionContent = await fs.readFile(actionPath, 'utf-8');
-                
+
                 expect(actionContent).toMatch(/pnpm\/action-setup/);
                 expect(actionContent).toMatch(/cache:\s*['"]pnpm['"]/);
                 expect(actionContent).toMatch(/version:\s*[89]/);
@@ -138,7 +138,7 @@ describe('Generated Project CI Validation', () => {
                 const hasPnpmSetup = workflowContent.includes('pnpm/action-setup') ||
                     workflowContent.includes('corepack enable');
                 expect(hasPnpmSetup).toBe(true);
-                
+
                 expect(workflowContent).toMatch(/cache:\s*['"]pnpm['"]/);
                 expect(workflowContent).toMatch(/version:\s*['"]?[89]['"]?/);
             }
@@ -156,10 +156,10 @@ describe('Generated Project CI Validation', () => {
             // This test verifies the CI workflow will create and use a lockfile
             const workflowPath = join(projectRoot, '.github/workflows/spec-guard.yml');
             const workflowContent = await fs.readFile(workflowPath, 'utf-8');
-            
+
             // Check if workflow uses frozen-lockfile (either inline or via composite action)
             const usesCompositeAction = workflowContent.includes('uses: ./.github/actions/setup-node-pnpm');
-            
+
             if (usesCompositeAction) {
                 const actionPath = join(projectRoot, '.github/actions/setup-node-pnpm/action.yml');
                 const actionContent = await fs.readFile(actionPath, 'utf-8');
