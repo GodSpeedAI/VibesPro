@@ -184,9 +184,7 @@ describe('Generated Project CI Validation', () => {
             const workflowContent = await fs.readFile(workflowPath, 'utf-8');
 
             // Check for helpful documentation comments
-            const hasDocumentation = workflowContent.includes('#') &&
-                (workflowContent.toLowerCase().includes('spec') ||
-                    workflowContent.toLowerCase().includes('guard'));
+            const hasDocumentation = /uses: actions\/checkout@.*# v4/.test(workflowContent);
 
             expect(hasDocumentation).toBe(true);
         });
