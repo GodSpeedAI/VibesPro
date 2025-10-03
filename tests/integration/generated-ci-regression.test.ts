@@ -176,6 +176,8 @@ describe('Generated Project CI Validation', () => {
 
             expect(setupIndex).toBeGreaterThan(-1);
             expect(executionIndex).toBeGreaterThan(setupIndex);
+        });
+
         it('should include annotations for guardrail failures', async () => {
             const workflowPath = join(projectRoot, '.github/workflows/spec-guard.yml');
             const workflowContent = await fs.readFile(workflowPath, 'utf-8');
