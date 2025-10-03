@@ -493,31 +493,38 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [x] No regressions in existing test suite
 - [x] Composite actions properly integrated
 
-### □ TASK-012: Generated Project CI Validation
+### ✅ TASK-012: Generated Project CI Validation
 
 - **Traceability:** AI_ADR-005, AI_PRD-005, AI_SDS-004, AI_TS-004
 - **Agent:** Agent B
 - **Tests:** `tests/integration/generated-ci-regression.test.ts`
+- **Status:** ✅ **COMPLETE** - All 7 tests passing (comprehensive CI validation)
 
-#### RED — TASK-012 Failing Tests
+#### ✅ RED — TASK-012 Failing Tests
 
-- [ ] Add integration test generating project and executing CI scripts in dry-run mode
-- [ ] Expect failure until workflows updated
+- [x] Add integration test generating project and executing CI scripts in dry-run mode
+- [x] Expect failure until workflows updated
+- [x] Created 7 comprehensive tests covering all CI aspects
 
-#### GREEN — TASK-012 Minimal Implementation
+#### ✅ GREEN — TASK-012 Minimal Implementation
 
-- [ ] Update generated project workflows to align with template changes
-- [ ] Ensure `corepack enable` & pnpm detection logic included
+- [x] Update generated project workflows to align with template changes
+- [x] Ensure `corepack enable` & pnpm detection logic included
+- [x] Added `packageManager: "pnpm@9.0.0"` to root package.json.j2
+- [x] Named checkout step in spec-guard.yml for proper test parsing
+- [x] Fixed traceability file path expectations
 
-#### REFACTOR — TASK-012 Code Quality
+#### ✅ REFACTOR — TASK-012 Code Quality
 
-- [ ] Optimize workflow step ordering for runtime efficiency
-- [ ] Add annotations linking failures to guardrail documentation
+- [x] Optimize workflow step ordering for runtime efficiency
+- [x] Add annotations linking failures to guardrail documentation
+- [x] Comprehensive test coverage across CI validation scenarios
 
-#### REGRESSION — TASK-012 System Integrity
+#### ✅ REGRESSION — TASK-012 System Integrity
 
-- [ ] Run generated project full suite within containerized environment
-- [ ] Confirm `AI_traceability.md` regenerated without deltas
+- [x] Run generated project full suite within containerized environment
+- [x] Confirm `AI_traceability.md` regenerated without deltas
+- [x] All 7 tests passing (100% success rate)
 
 ---
 
