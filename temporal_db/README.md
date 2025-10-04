@@ -8,7 +8,7 @@ Embedded temporal database for storing architectural decisions, patterns, and AI
 
 The temporal database uses [redb](https://docs.rs/redb/) for storing time-series data related to:
 
-- **Specifications**: ADRs, PRDs, SDS documents  
+- **Specifications**: ADRs, PRDs, SDS documents
 - **Architectural Patterns**: Proven design patterns and their context
 - **Decision Points**: Historical choices and their rationale
 - **Changes**: Time-series change tracking
@@ -26,7 +26,7 @@ const CHANGES_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("change
 ### Key Format
 
 - **Specifications**: `spec:{identifier}:{timestamp_nanos}`
-- **Patterns**: `pattern:{id}:{timestamp_nanos}`  
+- **Patterns**: `pattern:{id}:{timestamp_nanos}`
 - **Changes**: `change:{spec_id}:{timestamp_nanos}`
 
 All values are JSON-serialized structs stored as byte slices.
@@ -51,7 +51,7 @@ use temporal_db::{initialize_temporal_database, SpecificationRecord, Specificati
 async fn main() -> anyhow::Result<()> {
     // Initialize repository
     let mut repo = initialize_temporal_database("./temporal_db/specs.db").await?;
-    
+
     // Store specification
     let spec = SpecificationRecord::new(
         SpecificationType::ADR,
@@ -60,12 +60,12 @@ async fn main() -> anyhow::Result<()> {
         "We will use event sourcing...".to_string(),
         Some("architect@example.com".to_string()),
     );
-    
+
     repo.store_specification(&spec).await?;
-    
+
     // Retrieve latest specification
     let latest = repo.get_latest_specification("ADR", "ADR-001").await?;
-    
+
     repo.close().await?;
     Ok(())
 }
@@ -80,8 +80,8 @@ async def example():
     # Initialize adapter (uses JSON/SQLite fallback if redb bindings unavailable)
     db = RedbTemporalDatabaseAdapter("./temporal_db")
     await db._ensure_initialized()
-    
-    # Store prompt analysis  
+
+    # Store prompt analysis
     await db.store_prompt_analysis(prompt, timestamp)
 ```
 

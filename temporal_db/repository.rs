@@ -29,7 +29,7 @@ impl TemporalRepository {
         // Initialize redb database
         let db = Database::create(&self.db_path)
             .context("Failed to open redb database")?;
-        
+
         // Create tables if they don't exist
         {
             let write_txn = db.begin_write()?;
@@ -40,7 +40,7 @@ impl TemporalRepository {
             }
             write_txn.commit()?;
         }
-        
+
         self.db = Some(db);
         Ok(())
     }
@@ -80,7 +80,7 @@ impl TemporalRepository {
             change_table.insert(change_key.as_str(), change_value.as_slice())?;
         }
         write_txn.commit()?;
-        
+
         Ok(())
     }
 
@@ -94,7 +94,7 @@ impl TemporalRepository {
 
         let read_txn = db.begin_read()?;
         let spec_table = read_txn.open_table(SPECIFICATIONS_TABLE)?;
-        
+
         // Scan for specifications with the given identifier
         let spec_prefix = format!("spec:{}", identifier);
         let mut latest_spec: Option<SpecificationRecord> = None;
@@ -138,7 +138,7 @@ impl TemporalRepository {
             pattern_table.insert(pattern_key.as_str(), pattern_value.as_slice())?;
         }
         write_txn.commit()?;
-        
+
         Ok(())
     }
 
@@ -153,7 +153,7 @@ impl TemporalRepository {
 
         let read_txn = db.begin_read()?;
         let pattern_table = read_txn.open_table(PATTERNS_TABLE)?;
-        
+
         let mut patterns = Vec::new();
 
         // Scan all patterns (simplified implementation)
@@ -184,12 +184,12 @@ impl TemporalRepository {
         for result in range {
             let (key, value) = result?;
             let key_str = key.value();
-            
+
             // Only process change: entries
             if !key_str.starts_with("change:") {
                 continue;
             }
-            
+
             let change: SpecificationChange = serde_json::from_slice(value.value())?;
 
             if matches!(change.change_type, ChangeType::Decision) {
@@ -262,7 +262,7 @@ impl TemporalRepository {
             change_table.insert(change_key.as_str(), change_value.as_slice())?;
         }
         write_txn.commit()?;
-        
+
         Ok(())
     }
 

@@ -59,7 +59,7 @@ Migrate the temporal database (`temporal_db/`) from sled to redb to maintain con
   - `temporal_db/repository.rs` - Core TemporalRepository using sled
   - `temporal_db/schema.rs` - Data structures
   - `temporal_db/python/` - Python bindings (uses SledTemporalDatabaseAdapter)
-  
+
 - Key sled usage patterns identified:
   - Implicit transactions: `db.insert()`, `db.scan_prefix()`
   - Key prefixes for namespace separation: `spec:`, `pattern:`, `change:`
@@ -171,16 +171,16 @@ write_txn.commit()?;
 
 ```rust
 // Define tables for temporal database
-const SPECIFICATIONS_TABLE: TableDefinition<&str, &[u8]> = 
+const SPECIFICATIONS_TABLE: TableDefinition<&str, &[u8]> =
     TableDefinition::new("specifications");
 
-const PATTERNS_TABLE: TableDefinition<&str, &[u8]> = 
+const PATTERNS_TABLE: TableDefinition<&str, &[u8]> =
     TableDefinition::new("patterns");
 
-const CHANGES_TABLE: TableDefinition<&str, &[u8]> = 
+const CHANGES_TABLE: TableDefinition<&str, &[u8]> =
     TableDefinition::new("changes");
 
-const DECISIONS_TABLE: TableDefinition<&str, &[u8]> = 
+const DECISIONS_TABLE: TableDefinition<&str, &[u8]> =
     TableDefinition::new("decisions");
 ```
 
