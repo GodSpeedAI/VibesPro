@@ -65,9 +65,8 @@ EOF
 if [ -f "target/release/vibes-pro-plain" ]; then
     PLAIN_SIZE=$(stat -f%z "target/release/vibes-pro-plain" 2>/dev/null || stat -c%s "target/release/vibes-pro-plain")
 elif [ ! -v PLAIN_SIZE ]; then
-    # Fallback: estimate based on sled dependency size
-    echo "⚠️  Using conservative estimate for baseline"
-    PLAIN_SIZE=$(echo "$SECURE_SIZE * 0.6" | bc | cut -d. -f1)
+    echo "❌ Unable to determine baseline (plain) binary size. Please build 'vibes-pro-plain' for accurate comparison."
+    exit 1
 fi
 
 # Calculate difference
