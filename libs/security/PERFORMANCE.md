@@ -60,12 +60,12 @@ The overhead comes from:
 
 ### redb Migration + In-Memory Counter (v0.2.0)
 
-**Problem:** 
+**Problem:**
 - sled is unmaintained (perpetual beta since 2020)
 - Per-operation transaction overhead in redb worse than sled
 - Needed to eliminate counter persistence overhead entirely
 
-**Solution:** 
+**Solution:**
 1. Migrate from sled to redb (stable, actively maintained, pure Rust)
 2. Keep nonce counter in memory, only persist on flush()
 3. Use explicit transactions effectively
