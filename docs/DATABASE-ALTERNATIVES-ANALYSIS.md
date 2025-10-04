@@ -1,7 +1,7 @@
 # Embedded Database Alternatives Analysis
 
-**Date:** 2025-10-04  
-**Context:** SecureDb has ~800-950% performance overhead. Evaluating alternatives.  
+**Date:** 2025-10-04
+**Context:** SecureDb has ~800-950% performance overhead. Evaluating alternatives.
 **Current:** Sled with XChaCha20-Poly1305 encryption wrapper
 
 ## Executive Summary
@@ -11,7 +11,7 @@
 - **Real Impact:** 1,000 ops = 90ms (vs 9ms plain) | 100,000 ops = 9s (vs 0.9s plain)
 - **Bottleneck Breakdown:**
   - 60-70%: Encryption/decryption operations
-  - 10-15%: Nonce counter persistence  
+  - 10-15%: Nonce counter persistence
   - 15-20%: Memory allocations
   - 5-10%: Sled database overhead
 
@@ -37,13 +37,13 @@
 
 **Why redb is the best choice:**
 
-✅ **Pure Rust** - No C++ dependencies, better integration  
-✅ **Stable** - v2.2+, actively maintained  
-✅ **B-tree architecture** - Lower overhead than LSM  
-✅ **Simple API** - Similar to sled, easy migration  
-✅ **ACID compliant** - Full transaction support  
-✅ **Zero-copy reads** - Better performance potential  
-✅ **Embedded** - Single file database  
+✅ **Pure Rust** - No C++ dependencies, better integration
+✅ **Stable** - v2.2+, actively maintained
+✅ **B-tree architecture** - Lower overhead than LSM
+✅ **Simple API** - Similar to sled, easy migration
+✅ **ACID compliant** - Full transaction support
+✅ **Zero-copy reads** - Better performance potential
+✅ **Embedded** - Single file database
 
 **Performance Characteristics:**
 ```rust
@@ -82,17 +82,17 @@ pub struct SecureDb {
 ### 2. RocksDB (ALTERNATIVE)
 
 **Pros:**
-✅ **Battle-tested** - Used by Facebook, LinkedIn, etc.  
-✅ **Excellent performance** - Optimized LSM implementation  
-✅ **Production-proven** - Handles TB+ datasets  
-✅ **Rich features** - Column families, merge operators  
-✅ **Active development** - Regular updates  
+✅ **Battle-tested** - Used by Facebook, LinkedIn, etc.
+✅ **Excellent performance** - Optimized LSM implementation
+✅ **Production-proven** - Handles TB+ datasets
+✅ **Rich features** - Column families, merge operators
+✅ **Active development** - Regular updates
 
 **Cons:**
-❌ **C++ dependency** - Requires system libraries  
-❌ **Larger binary** - ~2-3MB overhead  
-❌ **Complex API** - Steeper learning curve  
-❌ **Write amplification** - LSM architecture trade-off  
+❌ **C++ dependency** - Requires system libraries
+❌ **Larger binary** - ~2-3MB overhead
+❌ **Complex API** - Steeper learning curve
+❌ **Write amplification** - LSM architecture trade-off
 
 **When to Choose:**
 - Need to scale beyond 100GB
@@ -110,10 +110,10 @@ pub struct SecureDb {
 ### 3. Sled (CURRENT - NOT RECOMMENDED)
 
 **Why to Migrate Away:**
-❌ **Unmaintained** - Author moved to other projects  
-❌ **Beta status** - Never reached 1.0  
-❌ **Known issues** - [List of open issues](https://github.com/spacejam/sled/issues)  
-❌ **LSM overhead** - Compaction, write amplification  
+❌ **Unmaintained** - Author moved to other projects
+❌ **Beta status** - Never reached 1.0
+❌ **Known issues** - [List of open issues](https://github.com/spacejam/sled/issues)
+❌ **LSM overhead** - Compaction, write amplification
 
 **Current State:**
 - 8.7k stars but development stalled
@@ -125,14 +125,14 @@ pub struct SecureDb {
 ### 4. fjall (NEWER OPTION)
 
 **Pros:**
-✅ **Pure Rust**  
-✅ **Post-1.0** (v1.0+ released)  
-✅ **Active development**  
-✅ **LSM-tree** - Good for write-heavy  
+✅ **Pure Rust**
+✅ **Post-1.0** (v1.0+ released)
+✅ **Active development**
+✅ **LSM-tree** - Good for write-heavy
 
 **Cons:**
-⚠️ **Newer** - Less battle-tested  
-⚠️ **Smaller community** - Fewer resources  
+⚠️ **Newer** - Less battle-tested
+⚠️ **Smaller community** - Fewer resources
 
 **When to Consider:**
 - Want pure Rust
@@ -144,9 +144,9 @@ pub struct SecureDb {
 ### 5. LMDB (NOT RECOMMENDED FOR YOUR USE CASE)
 
 **Why NOT:**
-❌ **Pathological performance** with >10M keys  
-❌ **Memory-mapped I/O** - Can cause issues  
-❌ **CoW B-tree** - Write amplification  
+❌ **Pathological performance** with >10M keys
+❌ **Memory-mapped I/O** - Can cause issues
+❌ **CoW B-tree** - Write amplification
 
 **Only Use If:**
 - Very small dataset (<1M keys)
@@ -232,14 +232,14 @@ The ~800% overhead is NOT primarily from sled. It's from:
 ### Option A: Database-Level Encryption (PostgreSQL, MySQL)
 
 **Pros:**
-✅ Built-in encryption (TDE - Transparent Data Encryption)  
-✅ Much lower overhead (~10-20%)  
-✅ Production-proven  
+✅ Built-in encryption (TDE - Transparent Data Encryption)
+✅ Much lower overhead (~10-20%)
+✅ Production-proven
 
 **Cons:**
-❌ Requires external database server  
-❌ More complex deployment  
-❌ Not embedded  
+❌ Requires external database server
+❌ More complex deployment
+❌ Not embedded
 
 **Use When:**
 - Can accept client-server architecture
@@ -251,14 +251,14 @@ The ~800% overhead is NOT primarily from sled. It's from:
 ### Option B: Filesystem Encryption (LUKS, dm-crypt)
 
 **Pros:**
-✅ OS-level encryption  
-✅ Very low overhead (~5-15%)  
-✅ Transparent to application  
+✅ OS-level encryption
+✅ Very low overhead (~5-15%)
+✅ Transparent to application
 
 **Cons:**
-❌ Requires root/admin privileges  
-❌ Encrypts entire disk/partition  
-❌ Not portable (deployment-specific)  
+❌ Requires root/admin privileges
+❌ Encrypts entire disk/partition
+❌ Not portable (deployment-specific)
 
 **Use When:**
 - Control deployment environment
@@ -382,7 +382,7 @@ impl SecureDb {
         let okm = derive_encryption_key(master_key)?;
         let cipher = XChaCha20Poly1305::new((&*okm).into());
         let db = Database::create(path)?;
-        
+
         Ok(Self {
             db,
             cipher,
@@ -393,7 +393,7 @@ impl SecureDb {
     pub fn insert(&self, key: &[u8], value: &[u8]) -> Result<()> {
         let nonce = self.allocate_nonce()?;
         let ciphertext = self.cipher.encrypt(&nonce, value)?;
-        
+
         let write_txn = self.db.begin_write()?;
         {
             let mut table = write_txn.open_table(DATA_TABLE)?;
@@ -406,7 +406,7 @@ impl SecureDb {
     pub fn get(&self, key: &[u8]) -> Result<Option<Vec<u8>>> {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(DATA_TABLE)?;
-        
+
         match table.get(key)? {
             Some(encrypted) => {
                 let value = encrypted.value();

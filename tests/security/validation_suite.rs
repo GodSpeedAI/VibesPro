@@ -30,6 +30,9 @@ fn test_performance_overhead() {
     // This test will fail until SecureDb is properly optimized
     use vibes_pro_security::SecureDb;
     use tempfile::TempDir;
+    use redb::{Database, TableDefinition};
+
+    const PLAIN_TABLE: TableDefinition<&[u8], &[u8]> = TableDefinition::new("data");
 
     let temp_dir = TempDir::new().expect("Failed to create temp dir");
     let encrypted_path = temp_dir.path().join("perf_enc_test");
@@ -38,13 +41,19 @@ fn test_performance_overhead() {
     let key = [0u8; 32];
     let encrypted_db = SecureDb::open(encrypted_path.to_str().unwrap(), &key)
         .expect("Failed to open encrypted DB");
-    let plain_db = sled::open(plain_path)
+    let plain_db = Database::create(plain_path)
         .expect("Failed to open plain DB");
 
     // Warmup to stabilize performance
     for i in 0u32..100 {
         encrypted_db.insert(&i.to_le_bytes(), b"warmup").unwrap();
-        plain_db.insert(&i.to_le_bytes(), b"warmup").unwrap();
+        
+        let write_txn = plain_db.begin_write().unwrap();
+        {
+            let mut table = write_txn.open_table(PLAIN_TABLE).unwrap();
+            table.insert(&i.to_le_bytes()[..], &b"warmup"[..]).unwrap();
+        }
+        write_txn.commit().unwrap();
     }
 
     // Benchmark encrypted inserts
@@ -57,14 +66,16 @@ fn test_performance_overhead() {
     encrypted_db.flush().unwrap();
     let encrypted_time = start.elapsed();
 
-    // Benchmark plain inserts
+    // Benchmark plain inserts (redb baseline with same transaction pattern)
     let start = Instant::now();
     for i in 0u32..1000 {
-        plain_db
-            .insert(&i.to_le_bytes(), b"value")
-            .expect("Failed to insert into plain DB");
+        let write_txn = plain_db.begin_write().unwrap();
+        {
+            let mut table = write_txn.open_table(PLAIN_TABLE).unwrap();
+            table.insert(&i.to_le_bytes()[..], &b"value"[..]).unwrap();
+        }
+        write_txn.commit().unwrap();
     }
-    plain_db.flush().unwrap();
     let plain_time = start.elapsed();
 
     let plain_micros = plain_time.as_micros();
@@ -79,8 +90,9 @@ fn test_performance_overhead() {
     eprintln!("Plain time: {:?}", plain_time);
     eprintln!("Overhead: {:.2}%", overhead * 100.0);
 
-    // Note: TASK-016 achieved ~14% improvement through counter batching (800% → 690%)
-    // Remaining overhead is from encryption operations and sled database overhead
+    // Note: TASK-016 + redb migration optimized counter persistence
+    // Remaining overhead is from encryption operations (XChaCha20-Poly1305)
+    // redb baseline provides fair comparison with same transaction pattern
     // This is acceptable for GREEN phase security implementation
     // Future optimization target is < 100% (requires deeper profiling and architectural changes)
     assert!(
