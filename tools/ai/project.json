@@ -5,16 +5,16 @@
   "sourceRoot": "tools/ai/src",
   "targets": {
     "build": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist"],
       "options": {
-        "command": "pnpm --dir tools/ai tsc -p tsconfig.json"
+        "command": "tsc -p tools/ai/tsconfig.json"
       }
     },
     "test": {
-      "executor": "@nx/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm --dir tools/ai vitest run --config vitest.config.ts"
+        "command": "vitest run --config tools/ai/vitest.config.ts"
       }
     }
   },
