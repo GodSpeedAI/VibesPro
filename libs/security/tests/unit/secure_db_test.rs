@@ -52,6 +52,9 @@ fn test_nonce_monotonicity() {
     assert_ne!(nonce1, nonce2, "nonces should be unique");
 
     let counter2 = u64::from_le_bytes(nonce2[..8].try_into().unwrap());
+    
+    // Flush to ensure counter is persisted before closing
+    db.flush().expect("flush failed");
     drop(db);
 
     let db_reopened = SecureDb::open(&path, &key).expect("failed to reopen secure db");
