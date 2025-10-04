@@ -47,7 +47,7 @@ fn test_performance_overhead() {
     // Warmup to stabilize performance
     for i in 0u32..100 {
         encrypted_db.insert(&i.to_le_bytes(), b"warmup").unwrap();
-        
+
         let write_txn = plain_db.begin_write().unwrap();
         {
             let mut table = write_txn.open_table(PLAIN_TABLE).unwrap();
