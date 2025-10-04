@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  {{ project_slug }}:
+    build: .
+    container_name: {{ project_slug }}
+    restart: unless-stopped
+    environment:
+      - VIBES_ENV=production
+{% if enable_security_hardening %}    {# Hardened deployments require explicit key material and sled data path. #}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:?must_provide}
+      - VIBES_DATA_DIR=/data
+{% endif %}
+    volumes:
+      - {{ project_slug }}_data:/data
+    ports:
+      - "8080:8080"
+{% if enable_security_hardening %}    {# Drop capabilities and disable privilege escalation when hardened. #}
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+{% endif %}
+volumes:
+  {{ project_slug }}_data:
+{% if enable_security_hardening %}  {# Persist data locally to maintain encrypted sled volume. #}
+    driver: local
+{% endif %}

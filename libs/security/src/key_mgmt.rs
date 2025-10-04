@@ -1,0 +1,18 @@
+use hkdf::Hkdf;
+use sha2::Sha256;
+use zeroize::Zeroizing;
+
+use crate::error::SecureDbResult;
+
+const AEAD_KEY_LEN: usize = 32;
+
+/// Derives a 256-bit XChaCha20-Poly1305 key from the provided master key material.
+///
+/// The derivation uses HKDF-SHA256 with a static info string so callers can safely
+/// reuse the master key for additional purposes via different contexts.
+pub fn derive_encryption_key(master_key: &[u8]) -> SecureDbResult<Zeroizing<[u8; AEAD_KEY_LEN]>> {
+    let hkdf = Hkdf::<Sha256>::new(None, master_key);
+    let mut okm = Zeroizing::new([0u8; AEAD_KEY_LEN]);
+    hkdf.expand(b"secure-db", okm.as_mut())?;
+    Ok(okm)
+}

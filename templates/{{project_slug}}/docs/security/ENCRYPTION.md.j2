@@ -1,0 +1,58 @@
+# Encryption At Rest
+
+This document summarizes how {{ project_name }} secures the temporal learning
+store when the Copier flag `enable_security_hardening` is set to `true`.
+
+## SecureDb Overview
+
+- Storage engine: [`sled`](https://sled.rs)
+- Encryption: XChaCha20-Poly1305 (256-bit key)
+- Key derivation: HKDF-SHA256 via `libs/security/src/key_mgmt.rs`
+- Nonce strategy: Monotonic counter persisted alongside a random database UUID
+
+The `libs/security` crate is only generated when the security flag is enabled.
+Generated projects without the flag have zero runtime impact or dependencies.
+
+## Generating Secrets
+
+1. Generate a 64-character hex key (256 bits):
+
+   ```bash
+   openssl rand -hex 32
+   ```
+
+2. Store the value in `.env` (see `.env.j2` for an annotated template) and
+   propagate it to deployment secrets or a TPM-backed secret store if available.
+3. Never commit the generated key to version control.
+
+## Local Development
+
+- Hardened builds write encrypted data to `VIBES_DATA_DIR` (default
+  `./temporal_db/data`).
+- For quick resets, delete the directory and re-run the application; a new key
+  must be provided after deletion.
+- To disable hardening temporarily, re-run Copier with
+  `enable_security_hardening=false`. The `libs/security` crate will be removed
+  automatically by the post-generation hook.
+
+## Production Guidance
+
+- Prefer injecting `ENCRYPTION_KEY` through a secret manager or TPM-backed
+  binding; set `tpm_enabled=true` in Copier answers when hardware support
+  exists.
+- Rotate keys by:
+  1. Exporting encrypted data (optional backup).
+  2. Deploying a new key value to staging and verifying application behaviour.
+  3. Rolling the change through production with zero-downtime deployments.
+  4. Retiring the previous key once all replicas confirm successful startup.
+- Monitor application logs for `SecureDbError` variants; failed decryptions may
+  indicate key mismatches across services.
+
+## Operational Checks
+
+- Run `pnpm exec jest --config jest.config.json tests/integration/security/template_generation.test.ts --runInBand`
+  to verify templates render the hardened assets correctly.
+- Execute `just security-audit` (once implemented) to validate dependencies via
+  `cargo audit` and confirm no new CVEs impact the encryption stack.
+
+For additional background, consult `docs/aiassit/AI_SECURITY_HARDENING.md`.

@@ -1,0 +1,4 @@
+{% if enable_security_hardening %}{# Only include SecureDb tests when the security module is generated. #}
+#[path = "unit/secure_db_test.rs"]
+mod secure_db_test;
+{% endif %}

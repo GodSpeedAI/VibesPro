@@ -61,7 +61,17 @@ pids
 *.pid.lock
 
 # Added by cargo
-/target
+target/
+**/target/
+libs/**/target/
+
+# Rust test / build artifacts
+*.rlib
+*.d
+*.exe
+*.dll
+*.so
+*.dylib
 
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md

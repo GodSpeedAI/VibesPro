@@ -1,0 +1,10 @@
+{% if enable_security_hardening %}{# Emit secure database wrapper only for hardened workspaces. #}
+//! Security primitives generated for {{ project_name }}.
+
+pub mod error;
+pub mod key_mgmt;
+pub mod secure_db;
+
+pub use error::{SecureDbError, SecureDbResult};
+pub use secure_db::SecureDb;
+{% endif %}

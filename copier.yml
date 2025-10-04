@@ -19,6 +19,9 @@ _skip_if_exists:
   - &AI_TEMPLATE_TEMPORAL_DB_GLOB "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db/**{% endif %}"
   - &AI_TEMPLATE_TEMPORAL_DB_DIR "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db{% endif %}"
 
+_tasks:
+  - ["python3", "hooks/post_gen.py"]
+
 project_slug:
   type: str
   help: "Project slug (kebab-case, used for directories)"
@@ -82,6 +85,24 @@ enable_temporal_learning:
   help: "Enable temporal specification learning system"
   default: true
   when: "{{ include_ai_workflows }}"
+
+# Security hardening flags (PHASE-006)
+enable_security_hardening:
+  type: bool
+  help: "Enable optional security hardening (TPM-backed encryption at rest)"
+  default: false
+
+encryption_backend:
+  type: str
+  help: "Encryption backend for secure storage"
+  default: "xchacha20poly1305"
+  when: "{{ enable_security_hardening }}"
+
+tpm_enabled:
+  type: bool
+  help: "Enable TPM-backed key storage (requires host support)"
+  default: false
+  when: "{{ enable_security_hardening }}"
 
 # Technology Stack
 app_framework:

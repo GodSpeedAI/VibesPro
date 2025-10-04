@@ -45,6 +45,7 @@ graph TD
 | PHASE-003 | 2-3 days | 3 agents (A, B, C) | PHASE-001 | ✅ Yes | ✅ **COMPLETE** (All 3 tasks passing) |
 | PHASE-004 | 3 days | 2 agents (B, C) | PHASE-001, PHASE-003 | ✅ Yes | ✅ **COMPLETE** (Both tasks passing) |
 | PHASE-005 | 1-2 days | 1-2 agents (A, B) | PHASE-001 → PHASE-004 | ✅ Yes | 🔄 Partial (TASK-011 ✅, TASK-012 pending) |
+| PHASE-006 | 3-4 days | 2-3 agents (A, B, C) | PHASE-001 | No (optional) | □ Not Started |
 
 ---
 
@@ -661,6 +662,10 @@ gantt
 - [ ] **PHASE-005:** CI & Regression Hardening 🔄 Partial (1/2 tasks)
   - TASK-011 ✅ 11/11 tests passing
   - TASK-012 🔄 Pending
+- [ ] **PHASE-006:** Security Hardening & Encryption at Rest ☐ Not Started (0/3 tasks)
+  - TASK-013 ☐ Encrypted Sled Wrapper Library
+  - TASK-014 ☐ Security-Hardened Copier Templates
+  - TASK-015 ☐ Security Testing & Validation Suite
 
 ### Individual Task Status
 
@@ -676,6 +681,9 @@ gantt
 - [x] TASK-010: Stack-Aware Generator Integration ✅ Complete (3/3 tests passing)
 - [x] TASK-011: Template CI Pipeline Update ✅ Complete (11/11 tests passing)
 - [ ] TASK-012: Generated Project CI Validation 🔄 Pending
+- [ ] TASK-013: Encrypted Sled Wrapper Library ☐ Not Started
+- [ ] TASK-014: Security-Hardened Copier Templates ☐ Not Started
+- [ ] TASK-015: Security Testing & Validation Suite ☐ Not Started
 
 ### Critical Blockers
 
@@ -722,3 +730,405 @@ gantt
 
 **Overall Implementation Progress: 10/12 tasks have code complete (83%)**
 **Overall Test Success: 55/78 tests passing (70%, excluding copier-blocked tests)**
+
+```
+
+---
+
+## PHASE-006 ☐ Security Hardening & Encryption at Rest
+
+- **Duration:** 3-4 days
+- **Dependencies:** PHASE-001 (Foundation Infrastructure)
+- **Parallel Agents:** Recommend A (crypto integration), B (template generation), C (testing/validation)
+- **MECE Coverage:** TPM-backed key sealing, encrypted sled wrapper, container security, audit logging
+- **Rollback Strategy:** Feature flag `enable_security_hardening` defaults to `false`; zero impact on non-hardened projects
+- **Traceability:** AI_ADR-006, AI_PRD-006, AI_SDS-005, AI_SECURITY_HARDENING.md
+
+### Overview
+
+This phase adds optional security hardening to generated projects, focusing on:
+1. **Encryption at rest** for temporal learning database (sled) using XChaCha20-Poly1305
+2. **TPM-backed key sealing** for hardware-bound security
+3. **Minimal overhead** deployment (distroless containers, static binaries)
+4. **Defense-in-depth** patterns suitable for edge devices
+
+**Key Principle:** Security features are **opt-in** via Copier template variables to avoid adding mandatory complexity or technical debt.
+
+---
+
+### ☐ TASK-013: Encrypted Sled Wrapper Library
+
+- **Traceability:** AI_ADR-006, AI_PRD-006, AI_SDS-005, AI_TS-006
+- **Agent Assignment:** Agent A
+- **Parallel Compatibility:** Independent of TASK-014 & TASK-015
+- **Estimated Time:** 8-10 hours
+- **MECE Boundary:** Rust library for encrypted key-value storage only (no template integration)
+- **Status:** ☐ Not Started
+- **Source Code to Adapt:**
+  - `/home/sprime01/projects/VibesPro/docs/tmp/hardening.md` (lines 200-291: Rust skeleton)
+  - `/home/sprime01/projects/VibesPro/docs/aiassit/AI_SECURITY_HARDENING.md` (Section 5.2: SecureDb implementation)
+
+#### ☐ RED — TASK-013 Failing Tests
+
+**Test File:** `libs/security/tests/unit/secure_db_test.rs`
+
+```rust
+use vibes_pro_security::SecureDb;
+
+#[test]
+fn test_encrypt_decrypt_roundtrip() {
+    let key = [0u8; 32];
+    let db = SecureDb::open("/tmp/test_db", &key).unwrap();
+
+    db.insert(b"key1", b"value1").unwrap();
+    let retrieved = db.get(b"key1").unwrap();
+
+    assert_eq!(retrieved, Some(b"value1".to_vec()));
+}
+
+#[test]
+fn test_nonce_monotonicity() {
+    let key = [0u8; 32];
+    let db = SecureDb::open("/tmp/test_nonce", &key).unwrap();
+
+    let nonce1 = db.next_nonce().unwrap();
+    let nonce2 = db.next_nonce().unwrap();
+
+    assert_ne!(nonce1, nonce2);
+    // Verify counter persists across reopens
+    drop(db);
+    let db2 = SecureDb::open("/tmp/test_nonce", &key).unwrap();
+    let nonce3 = db2.next_nonce().unwrap();
+    assert!(nonce3.as_slice()[..8] > nonce2.as_slice()[..8]);
+}
+
+#[test]
+fn test_no_plaintext_on_disk() {
+    let db = SecureDb::open("/tmp/sec_test", &[0u8; 32]).unwrap();
+    db.insert(b"secret", b"SENSITIVE_DATA").unwrap();
+    db.flush().unwrap();
+    drop(db);
+
+    // Verify plaintext not discoverable in raw file
+    let raw_bytes = std::fs::read("/tmp/sec_test").unwrap();
+    assert!(!raw_bytes.windows(14).any(|w| w == b"SENSITIVE_DATA"));
+}
+
+#[test]
+fn test_wrong_key_fails() {
+    let key1 = [0u8; 32];
+    let key2 = [1u8; 32];
+
+    let db = SecureDb::open("/tmp/wrong_key", &key1).unwrap();
+    db.insert(b"key", b"value").unwrap();
+    drop(db);
+
+    let db2 = SecureDb::open("/tmp/wrong_key", &key2).unwrap();
+    let result = db2.get(b"key");
+    assert!(result.is_err(), "Decryption should fail with wrong key");
+}
+
+#[test]
+fn test_concurrent_inserts() {
+    use std::sync::Arc;
+    use std::thread;
+
+    let db = Arc::new(SecureDb::open("/tmp/concurrent", &[0u8; 32]).unwrap());
+    let mut handles = vec![];
+
+    for i in 0..10 {
+        let db_clone = Arc::clone(&db);
+        handles.push(thread::spawn(move || {
+            db_clone.insert(&format!("key{}", i).into_bytes(), b"value").unwrap();
+        }));
+    }
+
+    for h in handles {
+        h.join().unwrap();
+    }
+
+    // Verify all inserts succeeded with unique nonces
+    for i in 0..10 {
+        assert!(db.get(&format!("key{}", i).into_bytes()).unwrap().is_some());
+    }
+}
+```
+
+- Checklist:
+  - [ ] Create `libs/security/` directory structure
+  - [ ] Create failing test file `tests/unit/secure_db_test.rs`
+  - [ ] Verify tests fail (RED state achieved)
+
+#### ☐ GREEN — TASK-013 Minimal Implementation
+
+**Copy and adapt from AI_SECURITY_HARDENING.md Section 5.2:**
+
+- [ ] Copy Cargo.toml dependencies (sled, chacha20poly1305, hkdf, sha2, zeroize)
+- [ ] Copy `SecureDb` struct and implementation
+- [ ] Implement nonce storage in sled metadata
+- [ ] Implement `[nonce || ciphertext]` storage format
+- [ ] All 5 tests passing
+
+**Key Files:**
+- `libs/security/Cargo.toml`
+- `libs/security/src/lib.rs`
+- `libs/security/src/secure_db.rs`
+
+#### ☐ REFACTOR — TASK-013 Code Quality
+
+- [ ] Extract key derivation to separate module
+- [ ] Add comprehensive error types (not just anyhow)
+- [ ] Add inline documentation for crypto operations
+- [ ] Run `cargo clippy` and fix warnings
+- [ ] Verify zeroization with memory sanitizer (optional)
+
+---
+
+### ☐ TASK-014: Security-Hardened Copier Templates
+
+- **Traceability:** AI_ADR-006, AI_PRD-006, AI_SDS-005, AI_TS-006
+- **Agent Assignment:** Agent B
+- **Parallel Compatibility:** Can start after TASK-013 GREEN (uses SecureDb as library)
+- **Estimated Time:** 6-8 hours
+- **MECE Boundary:** Jinja2 templates for security features only (no implementation code)
+- **Status:** ☐ Not Started
+- **Source Code to Adapt:**
+  - `/home/sprime01/projects/VibesPro/docs/aiassit/AI_SECURITY_HARDENING.md` (Sections 5.3, 5.4, 6.2)
+
+#### ☐ RED — TASK-014 Failing Tests
+
+**Test File:** `tests/integration/security/template_generation_test.ts`
+
+```typescript
+import { runCopierGeneration } from '../../utils/generation-smoke';
+import * as fs from 'fs';
+import * as path from 'path';
+
+describe('Security-Hardened Template Generation', () => {
+  test('Generated project with hardening enabled includes SecureDb', async () => {
+    const tmpDir = await runCopierGeneration({
+      project_name: 'test-secure-project',
+      enable_security_hardening: true,
+      encryption_backend: 'xchacha20poly1305',
+    });
+
+    const secureDbPath = path.join(tmpDir, 'libs', 'security', 'src', 'secure_db.rs');
+    expect(fs.existsSync(secureDbPath)).toBe(true);
+
+    const cargoToml = fs.readFileSync(path.join(tmpDir, 'Cargo.toml'), 'utf-8');
+    expect(cargoToml).toContain('chacha20poly1305');
+  });
+
+  test('Generated project without hardening excludes security libs', async () => {
+    const tmpDir = await runCopierGeneration({
+      project_name: 'test-plain-project',
+      enable_security_hardening: false,
+    });
+
+    const securityDir = path.join(tmpDir, 'libs', 'security');
+    expect(fs.existsSync(securityDir)).toBe(false);
+  });
+
+  test('Dockerfile uses distroless and non-root user', async () => {
+    const tmpDir = await runCopierGeneration({
+      project_name: 'test-docker',
+      enable_security_hardening: true,
+    });
+
+    const dockerfile = fs.readFileSync(path.join(tmpDir, 'Dockerfile'), 'utf-8');
+    expect(dockerfile).toContain('gcr.io/distroless/cc');
+    expect(dockerfile).toContain('USER 65532:65532');
+  });
+
+  test('docker-compose.yml has security options', async () => {
+    const tmpDir = await runCopierGeneration({
+      project_name: 'test-compose',
+      enable_security_hardening: true,
+    });
+
+    const compose = fs.readFileSync(path.join(tmpDir, 'docker-compose.yml'), 'utf-8');
+    expect(compose).toContain('no-new-privileges:true');
+    expect(compose).toContain('cap_drop:');
+  });
+});
+```
+
+- Checklist:
+  - [ ] Create test file
+  - [ ] Update `tests/utils/generation-smoke.ts` to support security flags
+  - [ ] Verify tests fail (RED state)
+
+#### ☐ GREEN — TASK-014 Minimal Implementation
+
+**Copy and adapt from AI_SECURITY_HARDENING.md:**
+
+- [ ] Add `enable_security_hardening`, `encryption_backend`, `tpm_enabled` to `copier.yml`
+- [ ] Create `templates/{{project_slug}}/libs/security/` with `.j2` templates:
+  - [ ] `Cargo.toml.j2`
+  - [ ] `src/lib.rs.j2` (wrapper around TASK-013 implementation)
+  - [ ] `src/secure_db.rs.j2`
+- [ ] Create `templates/{{project_slug}}/Dockerfile.j2` (distroless, musl build)
+- [ ] Create `templates/{{project_slug}}/docker-compose.yml.j2` (security_opt, cap_drop)
+- [ ] Update `hooks/post_gen.py` to remove security libs if disabled
+- [ ] All 4 tests passing
+
+#### ☐ REFACTOR — TASK-014 Code Quality
+
+- [ ] Add comments explaining Jinja2 conditionals
+- [ ] Validate all `.j2` templates with Jinja2 syntax checker
+- [ ] Add example `.env.j2` file with key generation instructions
+- [ ] Update template README with security setup steps
+
+---
+
+### ☐ TASK-015: Security Testing & Validation Suite
+
+- **Traceability:** AI_ADR-006, AI_PRD-006, AI_SDS-005, AI_TS-003, AI_TS-005
+- **Agent Assignment:** Agent C
+- **Parallel Compatibility:** Can start after TASK-014 GREEN
+- **Estimated Time:** 6-8 hours
+- **MECE Boundary:** Testing infrastructure only (no feature implementation)
+- **Status:** ☐ Not Started
+
+#### ☐ RED — TASK-015 Failing Tests
+
+**Test File:** `tests/security/validation_suite.rs`
+
+```rust
+#[test]
+fn test_cargo_audit_passes() {
+    // Verify no high/critical vulnerabilities in dependencies
+    let output = std::process::Command::new("cargo")
+        .args(&["audit", "--deny", "warnings"])
+        .current_dir("libs/security")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "cargo audit failed");
+}
+
+#[test]
+fn test_performance_overhead() {
+    use std::time::Instant;
+    use vibes_pro_security::SecureDb;
+
+    let key = [0u8; 32];
+    let encrypted_db = SecureDb::open("/tmp/perf_enc", &key).unwrap();
+    let plain_db = sled::open("/tmp/perf_plain").unwrap();
+
+    // Benchmark encrypted inserts
+    let start = Instant::now();
+    for i in 0..1000 {
+        encrypted_db.insert(&i.to_le_bytes(), b"value").unwrap();
+    }
+    let encrypted_time = start.elapsed();
+
+    // Benchmark plain inserts
+    let start = Instant::now();
+    for i in 0..1000 {
+        plain_db.insert(&i.to_le_bytes(), b"value").unwrap();
+    }
+    let plain_time = start.elapsed();
+
+    let overhead = (encrypted_time.as_micros() as f64 / plain_time.as_micros() as f64) - 1.0;
+    assert!(overhead < 0.10, "Encryption overhead > 10%: {:.2}%", overhead * 100.0);
+}
+
+#[test]
+fn test_binary_size_increase() {
+    // Compare binary sizes with/without security features
+    let with_security = std::fs::metadata("target/release/vibes-pro-secure")
+        .unwrap()
+        .len();
+    let without_security = std::fs::metadata("target/release/vibes-pro-plain")
+        .unwrap()
+        .len();
+
+    let increase = (with_security as i64 - without_security as i64) as f64 / 1_048_576.0; // MB
+    assert!(increase < 2.5, "Binary size increase > 2.5MB: {:.2}MB", increase);
+}
+```
+
+**Test File:** `tests/integration/security/e2e_security_test.ts`
+
+```typescript
+describe('End-to-End Security Validation', () => {
+  test('Generated project passes security lint', async () => {
+    const tmpDir = await runCopierGeneration({
+      project_name: 'e2e-secure',
+      enable_security_hardening: true,
+    });
+
+    const result = execSync('cargo clippy -- -D warnings', {
+      cwd: tmpDir,
+      encoding: 'utf-8',
+    });
+    expect(result).not.toContain('error');
+  });
+
+  test('Docker container runs with least privilege', async () => {
+    const tmpDir = await runCopierGeneration({
+      project_name: 'docker-secure',
+      enable_security_hardening: true,
+    });
+
+    // Build and inspect container
+    execSync('docker-compose build', { cwd: tmpDir });
+    const inspect = execSync(
+      'docker inspect vibes-pro | jq ".[0].Config.User"',
+      { cwd: tmpDir, encoding: 'utf-8' }
+    );
+    expect(inspect.trim()).toContain('65532');
+  });
+});
+```
+
+- Checklist:
+  - [ ] Create `tests/security/validation_suite.rs`
+  - [ ] Create `tests/integration/security/e2e_security_test.ts`
+  - [ ] Verify tests fail (RED state)
+
+#### ☐ GREEN — TASK-015 Minimal Implementation
+
+- [ ] Implement performance benchmarking in CI
+- [ ] Add `cargo audit` check to justfile (`just security-audit`)
+- [ ] Add binary size tracking script
+- [ ] Create security scanning GitHub workflow (`security-scan.yml`)
+- [ ] All tests passing
+
+#### ☐ REFACTOR — TASK-015 Code Quality
+
+- [ ] Automate benchmark result reporting
+- [ ] Add performance regression detection
+- [ ] Create security dashboard (optional)
+- [ ] Document security testing procedures
+
+---
+
+### Phase-006 Exit Quality Gates
+
+- [ ] All RED tests created and failing initially for TASK-013, 014, 015
+- [ ] GREEN implementations minimal & passing scoped tests
+- [ ] REFACTOR changes maintain green suite
+- [ ] Generated projects with `enable_security_hardening=true` pass all security tests
+- [ ] Generated projects with `enable_security_hardening=false` have zero security overhead
+- [ ] Performance overhead < 10% verified via benchmarks
+- [ ] Binary size increase < 2.5MB verified
+- [ ] `cargo audit` passes with no HIGH/CRITICAL issues
+- [ ] Documentation complete:
+  - [ ] `AI_SECURITY_HARDENING.md` (architectural spec)
+  - [ ] `templates/{{project_slug}}/docs/security/ENCRYPTION.md.j2` (user guide)
+  - [ ] `AI_ADR-006.md` (decision record)
+
+### Rollback Strategy
+
+- **Feature Flag:** `enable_security_hardening` defaults to `false`
+- **Zero Impact:** Non-hardened projects have no code changes
+- **Selective Rollback:** Archive `templates/{{project_slug}}/libs/security/` to `.archived/`
+- **Trigger Conditions:**
+  - Performance regression > 10%
+  - Unresolved security vulnerability in crypto dependencies
+  - Platform compatibility issues (e.g., musl build failures)
+
+---
+
+## 16. Updated Completion Checklist

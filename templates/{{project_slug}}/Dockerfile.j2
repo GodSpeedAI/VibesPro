@@ -1,0 +1,42 @@
+{% if enable_security_hardening %}{# Hardened runtime path: use distroless + static binary when security hardening is enabled. #}
+# ----------------------------------------------------------------------------
+# Security-hardened container image generated for {{ project_name }}
+# ----------------------------------------------------------------------------
+
+# Multi-stage build for lean final image
+FROM rust:1.76 AS builder
+
+WORKDIR /app
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+
+# Build statically with musl for portability
+RUN apt-get update && apt-get install -y musl-tools \
+    && rustup target add x86_64-unknown-linux-musl \
+    && cargo build --release --target x86_64-unknown-linux-musl
+
+# Final image: distroless for minimal attack surface
+FROM gcr.io/distroless/cc AS runtime
+
+WORKDIR /app
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/{{ project_slug | replace('-', '_') }} /usr/local/bin/{{ project_slug | replace('-', '_') }}
+
+# Non-root user (gcr distroless nobody UID/GID)
+USER 65532:65532
+
+# Default sled data dir
+VOLUME ["/data"]
+ENV VIBES_DATA_DIR=/data
+
+ENTRYPOINT ["/usr/local/bin/{{ project_slug | replace('-', '_') }}"]
+{% else %}{# Development-friendly image when security hardening is disabled. #}
+# Default development Dockerfile for {{ project_name }}
+FROM node:20-alpine
+
+WORKDIR /app
+COPY package.json pnpm-lock.yaml .npmrc ./
+RUN corepack enable && pnpm install --frozen-lockfile
+
+COPY . .
+CMD ["pnpm", "dev"]
+{% endif %}
