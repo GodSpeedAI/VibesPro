@@ -1,5 +1,5 @@
 //! Security primitives for the VibesPro platform.
-//! Currently exposes an encrypted sled wrapper used by AI temporal storage.
+//! Currently exposes an encrypted redb wrapper providing secure data storage.
 
 pub mod error;
 pub mod key_mgmt;

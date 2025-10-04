@@ -1,8 +1,6 @@
 # AGENTS.md - AI Agent Guidelines for Vibes Pro (HexDDD-VibePDK Merger)
 
-This document provides AI agents and autonomous coding systems with essential context, patterns, and operational guideli├── temporal_db/                 # AI learning database
-    ├── specifications.redb      # Architectural decisions
-    └── patterns.redb            # Learned development patterns for successfully implementing the HexDDD-VibePDK merger project.
+This document provides AI agents and autonomous coding systems with essential context, patterns, and operational guidelines for successfully implementing the HexDDD-VibePDK merger project.
 
 ## Project Mission Statement
 
@@ -71,9 +69,9 @@ Interface Layer (User/System Interfaces)
 
 **Temporal Learning System**:
 
-- **Database**: redb (Rust-based embedded DB, migrated from sled in TASK-017)
+- **Database**: redb (Rust-based embedded DB, stable and actively maintained)
 - **Purpose**: Store architectural decisions, learn patterns, suggest improvements
-- **Integration**: Python adapters with JSON/SQLite fallback
+- **Integration**: Native async Python/Node.js bindings
 
 ## Implementation Strategy
 
@@ -338,7 +336,7 @@ cd /tmp/test-output && just build  # Verify generated project builds
 
 **AI System Integration**:
 
-- Check redb database connectivity
+- Check tsink database connectivity
 - Verify temporal data recording
 - Validate pattern recognition accuracy
 
@@ -364,10 +362,10 @@ cd /tmp/test-output && just build  # Verify generated project builds
 
 **Database Optimization**:
 
-- Use redb's efficient table structure for temporal data
-- Implement efficient time-range queries with explicit transactions
+- Use tsink's Gorilla compression for temporal data
+- Implement efficient time-range queries
 - Batch database operations where possible
-- Monitor query performance
+- Monitor query performance and optimize indices
 
 **Context Management**:
 

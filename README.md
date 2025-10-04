@@ -1,15 +1,7 @@
 # 🚀 VibesPro – AI-Enhanced Hexagonal Architecture Generator
 
 
-[![CI](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml/badge.svg)](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml)
-[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
-[![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org)
-[![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange)](https://www.rust-lang.org)
-
-# 🚀 VibesPro – AI-Enhanced Hexagonal Architecture Generator
-
-VibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK's AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make. Optional security hardening provides XChaCha20-Poly1305 encryption at rest for sensitive data.
+**AI-assisted, generator-first platform for building hexagonal architecture applications with confidence and speed.**
 
 [![CI](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml/badge.svg)](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
@@ -17,220 +9,114 @@ VibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK'
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org)
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange)](https://www.rust-lang.org)
 
-> **Generator-first platform combining HexDDD's production-ready hexagonal architecture with VibePDK's AI acceleration, now backed by a redb-powered temporal learning stack.**
+VibesPro helps product teams launch production-ready applications that follow hexagonal architecture and domain-driven design from day one. Templates, automation, and an embedded temporal knowledge base combine to guide daily work while leaving teams in full control of their code.
 
-## Overview
+### At a Glance
 
-VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePDK’s AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make.
-
-### Why teams use VibesPro
-
-- Launch full hexagonal, DDD-aligned Nx monorepos with ready-to-ship apps and bounded-context libraries in minutes.
-- Capture architectural decisions, prompt analytics, and AI feedback in a redb-backed temporal database for continuous learning.
-- Ship consistent, type-safe APIs and domain models across TypeScript and Python with single-source-of-truth generators.
-- Operate under specification-driven, TDD-friendly guardrails that keep CI, documentation, and templates from drifting.
-- Optionally harden generated applications with encrypted databases, TPM-backed key sealing, and distroless container images.
+- **Launch faster:** Generate complete Nx monorepos with apps, bounded contexts, and tests in minutes.
+- **Stay aligned:** Guardrails keep architecture, documentation, and AI workflows consistent across teams.
+- **Learn continuously:** A redb-backed temporal intelligence layer captures decisions and improves future suggestions.
+- **Ship safely:** Type-safe generators, strict CI gates, and optional security hardening help production stay stable.
 
 ---
 
-## Feature Pillars
+## Core Capabilities
 
 ### Generator-First Scaffolding
 
-- Copier templates in `templates/{{project_slug}}/` assemble application, domain, infrastructure, and interface layers out of the box.
-- Nx generators in `generators/service/` compose reusable domain features and enforce dependency direction.
-- Conditional Jinja2 templates support multi-framework apps (Next.js, Remix, Expo) and FastAPI service adapters without runtime coupling.
-- GitHub workflow, prompt, and instruction assets ship with generated projects so teams inherit best-practice automation on day one.
+- Copier templates assemble layered applications covering interface, application, domain, and infrastructure code.
+- Nx generators compose reusable capabilities and enforce dependency direction across the workspace.
+- Jinja2 conditionals only materialise the frameworks and adapters you select, keeping output lean and dependency-free.
+- GitHub workflow assets and prompt guidance are generated alongside code so teams inherit automation immediately.
 
-### Temporal AI Learning (redb-powered)
+### Temporal Intelligence with redb
 
-- The Rust crate in `temporal_db/` persists specifications, architectural patterns, and decision logs using the embedded [`redb`](https://docs.rs/redb/) database.
-- Python prompt optimization flows (`libs/prompt-optimizer/infrastructure/temporal_db.py`) use the `RedbTemporalDatabaseAdapter` (with `SledTemporalDatabaseAdapter` as a backward-compatible alias), falling back to deterministic JSON/SQLite stores when Rust bindings are unavailable.
-- Template assets under `templates/tools/prompt-optimizer/` wire the redb adapter into generated projects, enabling on-device learning loops and historical prompt analysis.
-- CLI utilities (`python tools/temporal-db/init.py …`, `scripts/measure_tokens_enhanced.py`) seed, inspect, and exercise the redb store so AI suggestions improve over time.
+- The Rust crate in `temporal_db/` stores architectural decisions, prompt analytics, and learning signals using the embedded [`redb`](https://docs.rs/redb/latest/redb/) database.
+- Python tooling (`libs/prompt-optimizer/infrastructure/temporal_db.py`) provides async adapters so AI workflows collect insights without external services.
+- Template assets under `templates/tools/prompt-optimizer/` wire the temporal database into generated projects for on-device learning loops.
+- CLI utilities such as `python tools/temporal-db/init.py` seed and inspect the knowledge base, helping teams monitor improvement over time.
 
 ### Developer Experience & Automation
 
-- A task-oriented `justfile` wraps pnpm, uv, and Nx; build/test targets auto-detect whether to use Nx run-many or direct commands.
-- `just spec-guard` chains documentation, prompt, and specification linters (see `tests/integration/generated-ci-regression.test.ts`), mirroring CI guardrails locally.
-- `tools/ai/context-manager.ts` implements token-aware context orchestration, integrating with AI providers while respecting budget constraints.
-- GitHub Actions templates in `.github/workflows/` (copied from VibePDK) run markdown lint, prompt validation, and regression suites for generated repos.
+- A task-focused `justfile` coordinates pnpm, uv, Cargo, and Nx targets, adapting to local or CI environments.
+- `just spec-guard` chains documentation, template, and prompt linters, mirroring the checks enforced in CI.
+- `tools/ai/context-manager.ts` manages token budgets and context assembly for AI integrations.
+- GitHub Actions in `.github/workflows/` run markdown lint, prompt validation, type checks, and regression suites for generated repositories.
 
-### Unified Type & Domain Model Safety
+### Unified Domain & Type Safety
 
-- `tools/type-generator/` converts Supabase/PostgreSQL schemas into synchronized TypeScript and Python types, with validation harnesses in `tools/type-generator/tests`.
-- Domain libraries under `templates/{{project_slug}}/libs` enforce strict hexagonal boundaries, using DTOs, ports, and adapters to guarantee separation of concerns.
-- Type gates (`uv run mypy`, `pnpm lint`, `just types-validate`) prevent `any` leaks and keep cross-language models aligned.
+- `tools/type-generator/` converts database schemas into synchronised TypeScript and Python types with thorough validation harnesses.
+- Domain libraries in `templates/{{project_slug}}/libs` enforce ports, adapters, and DTO boundaries to preserve hexagonal architecture.
+- Strict `uv run mypy`, `uv run ruff`, `pnpm lint`, and `python tools/validate-templates.py` workflows prevent type or template drift.
 
-### Security Hardening (Optional, PHASE-006)
+### Security Hardening (Optional)
 
-- **Encrypted database wrapper** (`libs/security/src/secure_db.rs`) provides XChaCha20-Poly1305 encryption at rest using redb for SecureDb storage.
-- **Key management** (`src/key_mgmt.rs`) implements HKDF key derivation with optional TPM sealing support for hardware-backed protection.
-- **Automated security scanning** in `.github/workflows/security-scan.yml` runs cargo audit, plaintext detection, and binary size tracking on every PR.
-- **Performance optimization** targets sub-10% encryption overhead (current: ~200%, roadmap in `docs/aiassist/SECURITY_TESTING.md`).
-- **Distroless container images** (optional feature flag) reduce attack surface by eliminating shell access and unnecessary runtime dependencies.
-- CI/CD security scanning workflows automatically monitor dependencies, track encryption overhead, and enforce security gates.
+- `libs/security/src/secure_db.rs` wraps redb with XChaCha20-Poly1305 encryption-at-rest.
+- TPM-backed key sealing and distroless container baselines can be toggled during generation for regulated environments.
+- Security validation targets (`just security-test`, `just security-scan`) keep hardened builds under watch.
 
-### Documentation & Governance
+---
 
-- Specification packs live in `docs/mergekit/` (ADR, PRD, SDS, TS) with traceability matrices enforced by `just spec-matrix`.
-- AI execution guardrails are documented in `AGENTS.md` and `docs/aiassist/AI_TDD_PLAN.md`, ensuring every change references governing specs.
-- Docs tooling (`tools/docs/generator.py`) produces multi-format documentation; optional Pandoc support enables HTML/Docx export.
-- Security testing procedures documented in `docs/aiassist/SECURITY_TESTING.md` with performance optimization roadmap.
+## Architecture Snapshot
+
+| Layer | Purpose | Included Assets |
+|-------|---------|-----------------|
+| Interface | Entry points for web, API, CLI, and event workloads | Next.js/Remix frontends, FastAPI adapters, CLI starters |
+| Application | Use cases, service orchestration, boundary DTOs | Nx generators for use cases, CQRS-ready workflows |
+| Domain | Entities, value objects, domain events, domain services | Template-driven libraries per bounded context |
+| Infrastructure | Database adapters, messaging integrations, external services | Redb storage, messaging clients, observability hooks |
+| Tooling | Developer experience and AI learning | Temporal DB crate, context manager, docs automation |
 
 ---
 
 ## Getting Started
 
-### Prerequisites
+1. Ensure `pnpm`, `uv`, `rustup`, and `just` are installed.
+2. Clone the repository and run `just setup` to install toolchains and dependencies.
+3. Generate a project using Copier or invoke specific Nx generators to add features.
+4. Run `just test-generation` to validate freshly generated output before committing.
 
-- **Node.js 18+** with `corepack` enabled (pnpm is provisioned automatically).
-- **Python 3.12+** with [`uv`](https://github.com/astral-sh/uv) installed for dependency management.
-- **Rust 1.75+** (`rustup toolchain install stable`) to compile redb-backed temporal services.
-- **copier 9.0+** (`uv tool install copier`) for project generation.
-- **just** task runner ([installation instructions](https://github.com/casey/just#installation)).
-
-### Bootstrap the workspace
-
-```bash
-git clone https://github.com/SPRIME01/Vibes-Pro.git
-cd Vibes-Pro
-corepack enable
-just setup  # Installs pnpm deps, syncs uv environment, and ensures Copier is available
-
-# Seed the redb temporal database with baseline specifications (optional but recommended)
-python tools/temporal-db/init.py init --project-name "My VibesPro Demo"
-```
-
-### Generate a project scaffold
-
-```bash
-copier copy . ../my-awesome-project   --data-file tests/fixtures/test-data.yml   --defaults --force
-```
-
-### Validate your toolchain
-
-```bash
-cd ../my-awesome-project
-just setup           # Install generated project dependencies (pnpm + uv)
-just build           # Build all libraries & apps (auto-detects Nx)
-just test            # Run unit + integration suites
-just spec-guard      # Mirrors CI guardrails locally
-python tools/temporal-db/init.py status  # Inspect redb/SQLite temporal store health
-```
+> Need a full walkthrough? See `docs/README.md` and the tutorials in `docs/how-to/`.
 
 ---
 
-## Repository Layout
-
-```text
-VibesPro/
-├── templates/                # Copier templates and reusable tooling bundles
-│   ├── {{project_slug}}/      # Full project scaffold (apps, libs, configs, workflows)
-│   │   ├── libs/security/     # SecureDb encrypted wrapper (optional, Jinja2 conditional)
-│   │   └── docs/security/     # Security documentation (ENCRYPTION.md)
-│   ├── docs/                  # Documentation templates & MkDocs layouts
-│   └── tools/prompt-optimizer # AI prompt optimizer packaging (redb-aware)
-├── libs/
-│   ├── prompt-optimizer/      # Python prompt optimizer with redb temporal adapter
-│   └── security/              # Rust SecureDb crate with XChaCha20-Poly1305 encryption
-│       ├── src/secure_db.rs   # Encrypted redb wrapper (SecureDb)
-│       ├── src/key_mgmt.rs    # HKDF key derivation, TPM sealing support
-│       └── tests/unit/        # Security unit tests
-├── generators/                # Nx generators for extending template capabilities
-│   └── service/
-├── temporal_db/               # Rust crate + schemas powering redb temporal storage
-│   ├── repository.rs
-│   ├── python/                # Async Python facade & types for redb-backed data
-│   └── schema.rs
-├── tools/
-│   ├── ai/                    # Context manager + AI orchestration utilities
-│   ├── temporal-db/           # CLI scripts for initializing & backing up redb data
-│   ├── type-generator/        # Cross-language schema-to-type pipeline
-│   └── docs/                  # Documentation build + link checking scripts
-├── scripts/
-│   └── track-binary-size.sh   # Binary size overhead tracking for security features
-├── tests/
-│   ├── integration/           # Copier generation, CI workflow, and prompt guard tests
-│   │   └── security/          # Security template generation E2E tests
-│   ├── security/              # Security validation suite (cargo audit, performance, plaintext)
-│   ├── temporal/              # Temporal DB contract and regression suites
-│   └── unit/                  # Python + TypeScript unit tests
-└── docs/
-    ├── mergekit/              # ADR/PRD/SDS/TS governing specs
-    └── aiassist/              # AI-assisted TDD planning artefacts
-        ├── PHASE-006-CHECKLIST.md          # Security hardening task checklist
-        ├── PHASE-006-COMPLETION-SUMMARY.md # Security implementation summary
-        └── SECURITY_TESTING.md             # Security testing procedures
-```
-
----
-
-## Temporal Learning Database
-
-VibesPro standardizes on [`redb`](https://docs.rs/redb/) for temporal learning so architectural decisions, prompt telemetry, and optimization feedback remain local, queryable, and fast. **Note:** We migrated from sled to redb in TASK-017 (PHASE-006) for better long-term stability and active maintenance.
-
-- **Rust core (`temporal_db/repository.rs`)** – Manages specification storage, architectural pattern analysis, and decision logging with redb tables (SPECIFICATIONS, PATTERNS, CHANGES).
-- **Python adapters** – `libs/prompt-optimizer/infrastructure/temporal_db.py` uses `RedbTemporalDatabaseAdapter` (with backward-compatible `SledTemporalDatabaseAdapter` alias), providing JSON/SQLite fallbacks when Rust bindings are unavailable for deterministic testing.
-- **Tooling scripts** – `python tools/temporal-db/init.py` seeds baseline ADRs, patterns, and decision history. Subcommands include `init`, `status`, and `backup` (`--db-path` defaults to `./temporal_db/project_specs.db`).
-- **Prompt analytics** – `scripts/measure_tokens_enhanced.py` demonstrates using the redb-backed adapter to persist prompt token metrics and optimization outcomes.
-
-> **Tip:** Add the `temporal_db/` directory to your generated project’s `.gitignore` if you prefer to keep temporal learning data local to each developer machine.
-
----
-
-## Tooling & Automation
+## Key Commands
 
 | Command | Purpose |
 |---------|---------|
-| `just setup` | Installs Node (pnpm) and Python (uv) dependencies and ensures Copier availability. |
-| `just dev` | Launches all serve targets via Nx run-many with parallelism tuned for monorepos. |
-| `just build` | Auto-detects Nx vs direct builds, compiling TypeScript and Python packages. |
-| `just test` | Runs Python tests (`uv run pytest`), pnpm tests, and template integration suites. |
-| `just test-generation` | Generates a project in `../test-output`, builds it, and runs smoke tests. |
-| `just spec-guard` | Executes spec matrix generation, prompt linting, Markdown lint, GitHub checks, and Node regression tests (mirrors CI). |
-| `just types-generate` / `just types-validate` | Synchronise and verify cross-language type definitions. |
-| `just security-validate` | Run comprehensive security validation suite (audit, plaintext check, size tracking). |
-| `just security-scan` | Execute all security scans via GitHub Actions locally. |
-| `just security-size-check` | Track encryption overhead and binary size impact. |
-| `python tools/temporal-db/init.py …` | Initialize, inspect, or back up the redb temporal database. |
+| `just setup` | Install Node.js, Python, and Rust toolchains plus workspace dependencies. |
+| `just spec-guard` | Run documentation, prompt, and template validators prior to CI. |
+| `just test-generation` | Exercise Copier templates and verify generated projects remain healthy. |
+| `pnpm nx run-many --target=test` | Execute TypeScript test suites across affected packages. |
+| `uv run pytest` | Run Python unit and integration tests. |
+| `cargo test --manifest-path temporal_db/Cargo.toml` | Validate the redb-backed temporal database crate. |
+| `python tools/temporal-db/init.py --help` | Inspect or seed the temporal knowledge base. |
 
-Shared Nx/just automation is validated by `tests/integration/generated-ci-regression.test.ts` so generated repos remain CI-ready.
+Shared Nx and just automation is covered by `tests/integration/generated-ci-regression.test.ts` so generated repositories remain CI-ready.
 
 ---
 
-## Testing & Quality Gates
+## Quality & Testing
 
-- **Specification-driven TDD** – Every change traces back to IDs in `docs/mergekit/*.md`; regression tests assert spec coverage.
-- **Unit tests** – `uv run pytest` (Python) and `pnpm test` (TypeScript) run from `tests/unit/` and package-level suites.
-- **Integration & E2E** – `tests/integration/template-smoke.test.ts` and `generated-ci-regression.test.ts` exercise full Copier generation, workflow configuration, and spec guardrails.
-- **Temporal DB tests** – `temporal_db/lib.rs` includes async redb integration tests; run `cargo test --lib` when modifying Rust storage logic.
-- **Static analysis** – `uv run mypy`, `uv run ruff`, `pnpm lint`, and `python tools/validate-templates.py` enforce strict typing and template health.
-- **Performance** – `tests/performance/` and `just benchmark` (if enabled) ensure project generation and builds stay within SLA (<30s generation, <2m build for standard templates).
-
----
-
-## Documentation & Specifications
-
-- Governing specs: `docs/mergekit/ADR.md`, `PRD.md`, `SDS.md`, `TS.md`, and `IMPLEMENTATION-PLAN.md`.
-- Agent + TDD instructions: `AGENTS.md`, `docs/aiassist/AI_TDD_PLAN.md`.
-- Run `just docs-generate` to rebuild documentation (installs Markdown outputs; Pandoc enables HTML/Docx/Epub variants—see note below).
-- `just spec-matrix` produces traceability matrices consumed by CI for requirement coverage.
-- Prompt + instruction assets live under `.github/` templates and are linted by `pnpm prompt:lint`.
-
-> **Pandoc note:** `tools/docs/generator.py` emits Markdown by default. Install `pandoc` if you need HTML, Docx, or Epub outputs; otherwise the script falls back to Markdown while printing a warning.
+- **Specification-driven TDD**: Each change maps to IDs in `docs/mergekit/` and related specification folders.
+- **Unit coverage**: `uv run pytest` and `pnpm test` keep domain logic and utilities trustworthy.
+- **Integration & E2E**: `tests/integration/template-smoke.test.ts` and `generated-ci-regression.test.ts` exercise full template output and CI expectations.
+- **Temporal DB checks**: Rust and Python adapters ship with async tests; run `cargo test` and `uv run pytest -k temporal_db` when storage logic changes.
+- **Static analysis**: `uv run mypy`, `uv run ruff`, `pnpm lint`, and `python tools/validate-templates.py` enforce type safety and template health.
+- **Performance**: Benchmarks under `tests/performance/` ensure project generation stays under 30 seconds and builds under 2 minutes for reference workloads.
 
 ---
 
-## Supported Generators & Frameworks
+## Documentation Map
 
-| Frontend | Backend | Database | Mobile |
-|----------|---------|----------|--------|
-| Next.js 14+ | FastAPI | PostgreSQL | Expo |
-| Remix | Flask | MySQL | React Native |
-| React 19 | Django | SQLite | - |
+- Project overview: `docs/README.md`
+- Architecture reference: `docs/ARCHITECTURE.md`
+- Specification index: `docs/spec_index.md`
+- Temporal database guidance: `docs/TEMPORAL-DB-MIGRATION-SUMMARY.md`
+- AI workflow playbooks: `docs/aiassist/`
+- Tutorials and task guides: `docs/how-to/`
 
-Templates detect your selections via Copier answers and only materialise the relevant apps, adapters, and infrastructure wiring.
+Run `just docs-generate` to rebuild documentation bundles. Pandoc (optional) enables HTML, Docx, and Epub outputs.
 
 ---
 
@@ -239,18 +125,18 @@ Templates detect your selections via Copier answers and only materialise the rel
 ### Current Release: 0.1.0 (Phase 5)
 
 - ✅ Foundation: Copier scaffolds, Nx/just hybrid build system, CI workflows.
-- ✅ Redb temporal database integration across Rust crates, Python adapters, and prompt optimizer templates (migrated from sled in TASK-017).
-- ✅ AI context manager + prompt optimizer tooling bundled with generated projects.
-- 🚧 Advanced AI pattern prediction and context heuristics for long-running projects.
-- 📋 Template marketplace & custom generator catalog (design in progress).
+- ✅ Redb temporal database integration across Rust crates, Python adapters, and prompt optimizer templates.
+- ✅ AI context manager and prompt optimizer tooling bundled with generated projects.
+- 🚧 Advanced AI pattern prediction and long-running context heuristics.
+- 📋 Template marketplace and custom generator catalog (design in progress).
 
 ### Upcoming Milestones
 
 | Version | Focus | Target |
 |---------|-------|--------|
-| 0.2.0 | Deeper redb analytics, performance tuning, context heuristics | Q1 2025 |
+| 0.2.0 | Redb analytics, performance tuning, context heuristics | Q1 2025 |
 | 0.3.0 | Template marketplace, additional domain generators, observability packs | Q2 2025 |
-| 1.0.0 | Production certification, comprehensive documentation refresh | Q3 2025 |
+| 1.0.0 | Production certification and documentation refresh | Q3 2025 |
 
 ---
 
@@ -258,37 +144,36 @@ Templates detect your selections via Copier answers and only materialise the rel
 
 We welcome contributions from engineers, architects, and AI practitioners.
 
-1. `just setup` to install toolchains; ensure Rust, pnpm, and uv are available.
-2. Pick an issue referencing specification IDs (e.g. `MERGE-TASK-003`, `ADR-MERGE-002`).
-3. Follow RED → GREEN → REFACTOR → REGRESSION; add or update tests before changing templates or tooling.
-4. Reference governing specs in commit messages and PR descriptions.
-5. Run `just spec-guard` and `just test-generation` before opening a pull request.
+1. Run `just setup` and confirm Rust, pnpm, and uv are available.
+2. Select an issue referencing specification IDs (e.g. `MERGE-TASK-003`, `ADR-MERGE-002`).
+3. Follow RED → GREEN → REFACTOR → REGRESSION; write or update tests before adjusting templates or tooling.
+4. Reference relevant specs in commit messages and PR descriptions.
+5. Execute `just spec-guard` and `just test-generation` before submitting a pull request.
 
-See `CONTRIBUTING.md` for style guidance and branching conventions.
+See `CONTRIBUTING.md` for code style and branching conventions.
 
 ---
 
 ## License & Credits
 
-- Licensed under the **Mozilla Public License 2.0** – see `LICENSE` for details.
-- Built on the shoulders of **HexDDD** (hexagonal + DDD patterns) and **VibePDK** (AI-enhanced template accelerator).
-- Redb database integration (migrated from sled in TASK-017) for embedded, high-performance temporal stores with active maintenance.
+- Licensed under the **Mozilla Public License 2.0** – see `LICENSE` for full terms.
+- Built by the VibesPro community with thanks to contributors who shaped the generator-first, AI-assisted workflow.
+- redb integration informed by ongoing community research into embedded, high-performance temporal stores.
 
 ---
 
 ## Success Metrics
 
-- ⚡ 95% faster setup time (minutes vs weeks for enterprise-grade scaffolding).
+- ⚡ 95% faster setup time (minutes instead of weeks for enterprise-grade scaffolding).
 - 🎯 100% architecture compliance enforced by automated checks.
-- 🧠 >80% acceptance rate for AI-suggested architectural improvements as redb learning matures.
-- 📊 Generation time <30s and build time <2m for the standard project template.
+- 🧠 >80% acceptance rate for AI-suggested architectural improvements once redb learning stabilises.
+- 📊 Generation time <30 seconds and build time <2 minutes for the standard project template.
 
 ---
 
 ## Helpful Links
 
-- Project documentation entry point: `docs/README.md`
-- AI workflow reference: `docs/vibecoding/README.md`
-- Temporal DB management: `python tools/temporal-db/init.py --help`
+- Project docs entry point: `docs/README.md`
+- Temporal DB tooling: `python tools/temporal-db/init.py --help`
 - Sample Copier answers: `tests/fixtures/test-data.yml`
 - CI regression expectations: `tests/integration/generated-ci-regression.test.ts`
