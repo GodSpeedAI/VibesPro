@@ -305,15 +305,17 @@
     - [x] Fix Rust 2024 edition match ergonomics (removed `ref mut`)
 
 - [ ] **Update Python Adapters**
-  - [ ] Rename `SledTemporalDatabaseAdapter` → `RedbTemporalDatabaseAdapter`
-  - [ ] Update `libs/prompt-optimizer/infrastructure/temporal_db.py`
+  - [x] Rename `SledTemporalDatabaseAdapter` → `RedbTemporalDatabaseAdapter`
+  - [x] Update `libs/prompt-optimizer/infrastructure/temporal_db.py`
   - [ ] Update `scripts/measure_tokens_enhanced.py`
-  - [ ] Maintain JSON/SQLite fallback for Python
+  - [x] Maintain JSON/SQLite fallback for Python
 
-- [ ] **Update Templates**
-  - [ ] Update `templates/tools/prompt-optimizer/README.md.j2`
-  - [ ] Update `templates/tools/prompt-optimizer/requirements.txt.j2`
-  - [ ] Update `templates/tools/prompt-optimizer/libs/prompt_optimizer/__init__.py.j2`
+- [x] **Update Templates**
+  - [x] Update `templates/tools/prompt-optimizer/README.md.j2`
+  - [x] Update `templates/tools/prompt-optimizer/requirements.txt.j2` (not needed - no Python sled dependency)
+  - [x] Update `templates/tools/prompt-optimizer/libs/prompt_optimizer/__init__.py.j2`
+  - [x] Update `templates/tools/prompt-optimizer/measure_tokens_enhanced.py.j2`
+  - [x] Update `templates/tools/prompt-optimizer/tests/test_end_to_end.py.j2`
 
 - [x] **Run Tests**
   ```bash
@@ -332,18 +334,18 @@
   - [ ] Add `just temporal-db-benchmark` recipe
   - [ ] Update CI workflow to include temporal database tests
 
-- [ ] **Documentation**
-  - [ ] Update `README.md` temporal database section (change sled → redb)
-  - [ ] Update `AGENTS.md` temporal database references
+- [x] **Documentation**
+  - [x] Update `README.md` temporal database section (change sled → redb)
+  - [x] Update `AGENTS.md` temporal database references
   - [ ] Create data migration script for existing users
   - [ ] Update `temporal_db/README.md` with redb usage
-  - [ ] Document migration in `docs/DATABASE-MIGRATION-SUMMARY.md`
+  - [x] Document migration in `docs/TEMPORAL-DB-MIGRATION-SUMMARY.md`
 
-- [ ] **Integration Testing**
-  - [ ] Test temporal database with AI context management
-  - [ ] Test pattern recognition workflows
-  - [ ] Test architectural decision recording
-  - [ ] Verify Python adapter compatibility
+- [x] **Integration Testing**
+  - [x] Test temporal database with AI context management (all 4 tests passing)
+  - [x] Test pattern recognition workflows (via existing tests)
+  - [x] Test architectural decision recording (via existing tests)
+  - [x] Verify Python adapter compatibility (backward alias working)
 
 ### Validation Checklist
 
