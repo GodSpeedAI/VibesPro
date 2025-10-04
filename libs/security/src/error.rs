@@ -6,12 +6,40 @@ use std::fmt::{self, Display};
 pub enum SecureDbError {
     /// Failure while deriving the encryption key using HKDF.
     KeyDerivation,
-    /// An error occurred while interacting with the sled database.
-    Sled {
-        /// High-level context for the sled operation that failed.
+    /// An error occurred while interacting with the redb database.
+    Database {
+        /// High-level context for the database operation that failed.
         context: &'static str,
-        /// Error returned by sled.
-        source: sled::Error,
+        /// Error returned by redb.
+        source: redb::Error,
+    },
+    /// An error occurred during a redb transaction.
+    Transaction {
+        /// High-level context for the transaction that failed.
+        context: &'static str,
+        /// Error returned by redb.
+        source: redb::TransactionError,
+    },
+    /// An error occurred during a redb table operation.
+    Table {
+        /// High-level context for the table operation that failed.
+        context: &'static str,
+        /// Error returned by redb.
+        source: redb::TableError,
+    },
+    /// An error occurred during a redb storage operation.
+    Storage {
+        /// High-level context for the storage operation that failed.
+        context: &'static str,
+        /// Error returned by redb.
+        source: redb::StorageError,
+    },
+    /// An error occurred during a redb commit operation.
+    Commit {
+        /// High-level context for the commit operation that failed.
+        context: &'static str,
+        /// Error returned by redb.
+        source: redb::CommitError,
     },
     /// Persisted metadata had an unexpected shape.
     Metadata {
@@ -32,7 +60,11 @@ impl Display for SecureDbError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             SecureDbError::KeyDerivation => write!(f, "failed to derive encryption key"),
-            SecureDbError::Sled { context, .. } => write!(f, "{}", context),
+            SecureDbError::Database { context, .. } => write!(f, "{}", context),
+            SecureDbError::Transaction { context, .. } => write!(f, "{}", context),
+            SecureDbError::Table { context, .. } => write!(f, "{}", context),
+            SecureDbError::Storage { context, .. } => write!(f, "{}", context),
+            SecureDbError::Commit { context, .. } => write!(f, "{}", context),
             SecureDbError::Metadata { description } => write!(f, "{}", description),
             SecureDbError::NonceOverflow => write!(f, "nonce counter overflowed"),
             SecureDbError::MutexPoisoned => write!(f, "nonce counter mutex was poisoned"),
@@ -45,16 +77,52 @@ impl Display for SecureDbError {
 impl Error for SecureDbError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
-            SecureDbError::Sled { source, .. } => Some(source),
+            SecureDbError::Database { source, .. } => Some(source),
+            SecureDbError::Transaction { source, .. } => Some(source),
+            SecureDbError::Table { source, .. } => Some(source),
+            SecureDbError::Storage { source, .. } => Some(source),
+            SecureDbError::Commit { source, .. } => Some(source),
             _ => None,
         }
     }
 }
 
 impl SecureDbError {
-    /// Helper constructor for sled-related errors with context.
-    pub fn sled(context: &'static str, err: sled::Error) -> Self {
-        SecureDbError::Sled {
+    /// Helper constructor for database-related errors with context.
+    pub fn database(context: &'static str, err: redb::Error) -> Self {
+        SecureDbError::Database {
+            context,
+            source: err,
+        }
+    }
+
+    /// Helper constructor for transaction-related errors with context.
+    pub fn transaction(context: &'static str, err: redb::TransactionError) -> Self {
+        SecureDbError::Transaction {
+            context,
+            source: err,
+        }
+    }
+
+    /// Helper constructor for table-related errors with context.
+    pub fn table(context: &'static str, err: redb::TableError) -> Self {
+        SecureDbError::Table {
+            context,
+            source: err,
+        }
+    }
+
+    /// Helper constructor for storage-related errors with context.
+    pub fn storage(context: &'static str, err: redb::StorageError) -> Self {
+        SecureDbError::Storage {
+            context,
+            source: err,
+        }
+    }
+
+    /// Helper constructor for commit-related errors with context.
+    pub fn commit(context: &'static str, err: redb::CommitError) -> Self {
+        SecureDbError::Commit {
             context,
             source: err,
         }
