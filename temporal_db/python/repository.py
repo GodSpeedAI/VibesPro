@@ -9,17 +9,17 @@ In the future, this could be replaced with PyO3 bindings to the Rust implementat
 
 import json
 import sqlite3
-from typing import List, Optional, Dict, Any
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from .types import (
-    SpecificationRecord,
-    SpecificationChange,
     ArchitecturalPattern,
-    SpecificationType,
-    PatternType,
     ChangeType,
+    PatternType,
+    SpecificationChange,
+    SpecificationRecord,
+    SpecificationType,
 )
 
 
@@ -30,7 +30,7 @@ class TemporalRepository:
         """Initialize the temporal repository."""
         self.db_path = db_path
         self.db_file = Path(db_path).with_suffix('.sqlite')
-        self.connection: Optional[sqlite3.Connection] = None
+        self.connection: sqlite3.Connection | None = None
 
     async def initialize(self) -> None:
         """Initialize the temporal database."""
@@ -163,7 +163,7 @@ class TemporalRepository:
         self,
         spec_type: str,
         identifier: str
-    ) -> Optional[SpecificationRecord]:
+    ) -> SpecificationRecord | None:
         """Get the latest version of a specification."""
         if not self.connection:
             raise RuntimeError("Database not initialized")
@@ -226,7 +226,7 @@ class TemporalRepository:
         context: str,
         similarity_threshold: float,
         lookback_days: int,
-    ) -> List[ArchitecturalPattern]:
+    ) -> list[ArchitecturalPattern]:
         """Get similar architectural patterns."""
         if not self.connection:
             raise RuntimeError("Database not initialized")
@@ -275,7 +275,7 @@ class TemporalRepository:
         selected_option: str,
         context: str,
         author: str,
-        confidence: Optional[float] = None,
+        confidence: float | None = None,
     ) -> None:
         """Record a decision."""
         if not self.connection:
@@ -301,7 +301,7 @@ class TemporalRepository:
     async def analyze_decision_patterns(
         self,
         lookback_days: int
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Analyze decision patterns."""
         if not self.connection:
             raise RuntimeError("Database not initialized")
@@ -315,9 +315,9 @@ class TemporalRepository:
                    GROUP_CONCAT(context) as contexts
             FROM changes
             WHERE change_type = ?
-              AND datetime(timestamp) > datetime('now', '-{} days')
+              AND datetime(timestamp) > datetime('now', '-' || ? || ' days')
             GROUP BY field
-        '''.format(lookback_days), (ChangeType.DECISION.value,))
+        ''', (ChangeType.DECISION.value, lookback_days))
 
         patterns = []
         for row in cursor.fetchall():

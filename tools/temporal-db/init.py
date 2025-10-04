@@ -6,23 +6,22 @@ This script initializes the temporal database for VibesPro projects,
 setting up the necessary tables and initial data.
 """
 
+import argparse
 import asyncio
 import sys
-import argparse
+from datetime import datetime
 from pathlib import Path
-from datetime import datetime, timezone
-import json
 
 # Add the temporal_db module to path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root / "temporal_db"))
 
-from python.repository import initialize_temporal_database
-from python.types import (
-    SpecificationRecord,
+from python.repository import initialize_temporal_database  # noqa: E402
+from python.types import (  # noqa: E402
     ArchitecturalPattern,
+    PatternType,
+    SpecificationRecord,
     SpecificationType,
-    PatternType
 )
 
 
@@ -158,9 +157,9 @@ Accepted
         await repo.close()
 
         print("✅ Temporal database initialized successfully")
-        print(f"   📊 Created 1 specification")
+        print("   📊 Created 1 specification")
         print(f"   🏗️  Added {len(patterns)} architectural patterns")
-        print(f"   🎯 Recorded 2 initial decisions")
+        print("   🎯 Recorded 2 initial decisions")
 
     except Exception as e:
         print(f"❌ Database initialization failed: {e}")

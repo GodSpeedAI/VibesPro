@@ -5,11 +5,11 @@ Type definitions for the temporal database Python bindings.
 These mirror the Rust types defined in temporal_db/schema.rs
 """
 
-from typing import List, Optional, Dict, Any
-from datetime import datetime, timezone
-from enum import Enum
-from dataclasses import dataclass
 import uuid
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from enum import Enum
+from typing import Any
 
 
 class SpecificationType(Enum):
@@ -45,12 +45,12 @@ class SpecificationRecord:
     identifier: str  # e.g., 'ADR-MERGE-001'
     title: str
     content: str
-    template_variables: Dict[str, Any]
+    template_variables: dict[str, Any]
     timestamp: datetime
     version: int
-    author: Optional[str]
-    matrix_ids: List[str]
-    metadata: Dict[str, Any]
+    author: str | None
+    matrix_ids: list[str]
+    metadata: dict[str, Any]
     hash: str
 
     @classmethod
@@ -60,13 +60,13 @@ class SpecificationRecord:
         identifier: str,
         title: str,
         content: str,
-        author: Optional[str] = None,
+        author: str | None = None,
     ) -> "SpecificationRecord":
         """Create a new specification record."""
         import hashlib
 
         spec_id = str(uuid.uuid4())
-        timestamp = datetime.now(timezone.utc)
+        timestamp = datetime.now(UTC)
         content_hash = hashlib.md5(content.encode()).hexdigest()
 
         return cls(
@@ -84,7 +84,7 @@ class SpecificationRecord:
             hash=content_hash,
         )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "id": self.id,
@@ -102,7 +102,7 @@ class SpecificationRecord:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SpecificationRecord":
+    def from_dict(cls, data: dict[str, Any]) -> "SpecificationRecord":
         """Create from dictionary."""
         return cls(
             id=data["id"],
@@ -126,13 +126,13 @@ class SpecificationChange:
     spec_id: str
     change_type: ChangeType
     field: str
-    old_value: Optional[str]
+    old_value: str | None
     new_value: str
     author: str
     context: str
-    confidence: Optional[float]
+    confidence: float | None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "spec_id": self.spec_id,
@@ -146,7 +146,7 @@ class SpecificationChange:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SpecificationChange":
+    def from_dict(cls, data: dict[str, Any]) -> "SpecificationChange":
         """Create from dictionary."""
         return cls(
             spec_id=data["spec_id"],
@@ -168,18 +168,18 @@ class ArchitecturalPattern:
     pattern_type: PatternType
     context_similarity: float  # 0.0 to 1.0
     usage_frequency: int
-    success_rate: Optional[float]
-    last_used: Optional[datetime]
-    pattern_definition: Dict[str, Any]
-    examples: List[str]
-    metadata: Dict[str, Any]
+    success_rate: float | None
+    last_used: datetime | None
+    pattern_definition: dict[str, Any]
+    examples: list[str]
+    metadata: dict[str, Any]
 
     @classmethod
     def create(
         cls,
         pattern_name: str,
         pattern_type: PatternType,
-        pattern_definition: Dict[str, Any],
+        pattern_definition: dict[str, Any],
     ) -> "ArchitecturalPattern":
         """Create a new architectural pattern."""
         return cls(
@@ -198,9 +198,9 @@ class ArchitecturalPattern:
     def use_pattern(self) -> None:
         """Mark pattern as used."""
         self.usage_frequency += 1
-        self.last_used = datetime.now(timezone.utc)
+        self.last_used = datetime.now(UTC)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "id": self.id,
@@ -216,7 +216,7 @@ class ArchitecturalPattern:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ArchitecturalPattern":
+    def from_dict(cls, data: dict[str, Any]) -> "ArchitecturalPattern":
         """Create from dictionary."""
         return cls(
             id=data["id"],
@@ -240,9 +240,9 @@ class DecisionPoint:
     decision_point: str
     context: str
     timestamp: datetime
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "id": self.id,
@@ -254,7 +254,7 @@ class DecisionPoint:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DecisionPoint":
+    def from_dict(cls, data: dict[str, Any]) -> "DecisionPoint":
         """Create from dictionary."""
         return cls(
             id=data["id"],
@@ -272,14 +272,14 @@ class DecisionOption:
     id: str
     decision_point_id: str
     option_name: str
-    description: Optional[str]
-    pros: List[str]
-    cons: List[str]
+    description: str | None
+    pros: list[str]
+    cons: list[str]
     selected: bool
-    selection_rationale: Optional[str]
+    selection_rationale: str | None
     timestamp: datetime
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "id": self.id,
@@ -294,7 +294,7 @@ class DecisionOption:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DecisionOption":
+    def from_dict(cls, data: dict[str, Any]) -> "DecisionOption":
         """Create from dictionary."""
         return cls(
             id=data["id"],
