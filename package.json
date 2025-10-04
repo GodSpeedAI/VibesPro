@@ -67,5 +67,10 @@
     "overrides": {
         "vite-node": "1.6.1"
     },
-    "packageManager": "pnpm@9.0.0"
+    "packageManager": "pnpm@9.0.0",
+    "pnpm": {
+        "overrides": {
+            "esbuild@<=0.24.2": "^0.25.0"
+        }
+    }
 }

@@ -1,6 +1,5 @@
-import pytest
 
-from hooks.pre_gen import normalize_identifier, is_valid_identifier
+from hooks.pre_gen import is_valid_identifier, normalize_identifier
 
 
 def test_normalize_basic():
