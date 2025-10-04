@@ -69,7 +69,7 @@ Interface Layer (User/System Interfaces)
 
 **Temporal Learning System**:
 
-- **Database**: sled (Rust-based embedded DB)
+- **Database**: redb (Rust-based embedded DB, stable and actively maintained)
 - **Purpose**: Store architectural decisions, learn patterns, suggest improvements
 - **Integration**: Native async Python/Node.js bindings
 

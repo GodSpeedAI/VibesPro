@@ -189,7 +189,7 @@ SecureDb may NOT be appropriate for:
 
 **If SecureDb is NOT appropriate for your use case:**
 
-1. **Consider redb** instead of sled (~10-25% faster, actively maintained)
+1. **Using redb** (actively maintained, stable, production-ready)
 2. **Use PostgreSQL/MySQL with TDE** (~20% overhead vs 800%)
 3. **Use filesystem encryption (LUKS, dm-crypt)** (~10% overhead)
 4. **Hybrid approach** - Only encrypt sensitive fields (~200-400% overhead)
@@ -236,7 +236,7 @@ println!("10k inserts: {:?}", start.elapsed());
 - **Implementation Plan:** `docs/aiassist/AI_TDD_PLAN.md` (PHASE-006)
 - **Optimization Task:** `docs/aiassist/PHASE-006-CHECKLIST.md` (TASK-016)
 - **XChaCha20-Poly1305:** https://docs.rs/chacha20poly1305/
-- **Sled Database:** https://docs.rs/sled/
+- **redb Database:** https://docs.rs/redb/
 
 ---
 

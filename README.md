@@ -1,4 +1,4 @@
-# 🚀 VibesPrVibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK's AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make. Optional security hardening provides XChaCha20-Poly1305 encryption at rest for sensitive data. – AI-Enhanced Hexagonal Architecture Generator
+# 🚀 Vib> **Generator-first platform combining HexDDD's production-ready hexagonal architecture with VibePDK's AI acceleration, featuring sled-powered temporal learning and redb-based secure storage.**sPrVibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK's AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make. Optional security hardening provides XChaCha20-Poly1305 encryption at rest for sensitive data. – AI-Enhanced Hexagonal Architecture Generator
 
 [![CI](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml/badge.svg)](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
@@ -31,7 +31,7 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 - Conditional Jinja2 templates support multi-framework apps (Next.js, Remix, Expo) and FastAPI service adapters without runtime coupling.
 - GitHub workflow, prompt, and instruction assets ship with generated projects so teams inherit best-practice automation on day one.
 
-### Temporal AI Learning (sled-powered)
+### Temporal AI Learning (Dual Database Architecture)
 
 - The Rust crate in `temporal_db/` persists specifications, architectural patterns, and decision logs using the embedded [`sled`](https://docs.rs/sled/latest/sled/) database.
 - Python prompt optimization flows (`libs/prompt-optimizer/infrastructure/temporal_db.py`) use the `SledTemporalDatabaseAdapter`, falling back to deterministic JSON/SQLite stores when the binding is unavailable.
@@ -53,7 +53,7 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 
 ### Security Hardening (Optional, PHASE-006)
 
-- **Encrypted database wrapper** (`libs/security/src/secure_db.rs`) provides XChaCha20-Poly1305 encryption at rest for sensitive sled data.
+- **Encrypted database wrapper** (`libs/security/src/secure_db.rs`) provides XChaCha20-Poly1305 encryption at rest using redb for secure data storage.
 - **Key management** (`src/key_mgmt.rs`) implements HKDF key derivation with optional TPM sealing support for hardware-backed protection.
 - **Automated security scanning** in `.github/workflows/security-scan.yml` runs cargo audit, plaintext detection, and binary size tracking on every PR.
 - **Performance optimization** targets sub-10% encryption overhead (current: ~200%, roadmap in `docs/aiassist/SECURITY_TESTING.md`).
@@ -75,7 +75,7 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 
 - **Node.js 18+** with `corepack` enabled (pnpm is provisioned automatically).
 - **Python 3.12+** with [`uv`](https://github.com/astral-sh/uv) installed for dependency management.
-- **Rust 1.75+** (`rustup toolchain install stable`) to compile sled-backed temporal services.
+- **Rust 1.75+** (`rustup toolchain install stable`) to compile embedded database services (redb for security, sled for temporal learning).
 - **copier 9.0+** (`uv tool install copier`) for project generation.
 - **just** task runner ([installation instructions](https://github.com/casey/just#installation)).
 
@@ -123,7 +123,7 @@ VibesPro/
 ├── libs/
 │   ├── prompt-optimizer/      # Python prompt optimizer with sled temporal adapter
 │   └── security/              # Rust SecureDb crate with XChaCha20-Poly1305 encryption
-│       ├── src/secure_db.rs   # Encrypted sled wrapper
+│       ├── src/secure_db.rs   # Encrypted redb wrapper
 │       ├── src/key_mgmt.rs    # HKDF key derivation, TPM sealing support
 │       └── tests/unit/        # Security unit tests
 ├── generators/                # Nx generators for extending template capabilities

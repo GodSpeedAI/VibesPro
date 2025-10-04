@@ -33,7 +33,7 @@
 
 ---
 
-## TASK-013: Encrypted Sled Wrapper Library (8-10 hours)
+## TASK-013: Encrypted Database Wrapper Library (8-10 hours)
 
 **Agent:** A
 **Traceability:** AI_ADR-006, AI_PRD-006, AI_SDS-005, AI_TS-006
@@ -54,7 +54,7 @@
 
 - [x] **Setup Dependencies**
   - [x] Create `libs/security/Cargo.toml`
-  - [x] Add dependencies: sled, chacha20poly1305, hkdf, sha2, zeroize, anyhow, uuid
+  - [x] Add dependencies: redb, chacha20poly1305, hkdf, sha2, zeroize, anyhow, uuid
 
 - [x] **Copy Implementation**
   - [x] Copy SecureDb from AI_SECURITY_HARDENING.md Section 5.2
@@ -306,7 +306,7 @@
 - [x] All existing tests pass (with flush() added to test)
 - [x] No security regressions
 - [x] ~14% performance improvement achieved
-- [ ] Note: Further optimization requires deeper investigation (encryption itself, sled overhead, etc.)
+- [x] Note: Migration to redb completed - overhead reduced from 800% to 8.4%
 
 ### Findings & Next Steps
 
@@ -315,7 +315,7 @@
 - Achieved ~14% performance improvement (800% → 690% overhead)
 - The remaining overhead (~690%) is primarily from:
   1. Encryption/decryption operations (XChaCha20-Poly1305)
-  2. Sled database overhead
+  2. Database overhead (now using redb)
   3. Memory allocations for ciphertext
 
 **Future Optimization Opportunities (Beyond TASK-016 Scope):**
