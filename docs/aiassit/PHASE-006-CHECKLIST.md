@@ -10,12 +10,7 @@
 ## Quick Links
 
 - 📋 **Full Specification:** [`AI_SECURITY_HARDENING.md`](./AI_SECURITY_HARDENING.md)
-- 🏗️ **Arc- [x] `AI_SECURITY_HARDENING.md` ✅ (Created)
-- [x] `AI_ADR-006` ✅ (Created)
-- [x] `PHASE-006` in AI_TDD_PLAN.md ✅ (Created)
-- [x] `SECURITY_INTEGRATION_GUIDE.md` ✅ (Created)
-- [x] `templates/{{project_slug}}/docs/security/ENCRYPTION.md.j2` ✅ (Exists from TASK-014)
-- [x] `docs/aiassit/SECURITY_TESTING.md` ✅ (Created)ure Decision:** [`AI_ADR.md`](./AI_ADR.md#ai_adr-006--optional-security-hardening-with-tpm-backed-encryption-at-rest) (AI_ADR-006)
+- 🏗️ **Architecture Decision:** [`AI_ADR.md`](./AI_ADR.md#ai_adr-006--optional-security-hardening-with-tpm-backed-encryption-at-rest) (AI_ADR-006)
 - 📝 **Implementation Plan:** [`AI_TDD_PLAN.md`](./AI_TDD_PLAN.md#phase-006--security-hardening--encryption-at-rest) (PHASE-006)
 - 📖 **Integration Guide:** [`SECURITY_INTEGRATION_GUIDE.md`](./SECURITY_INTEGRATION_GUIDE.md)
 
