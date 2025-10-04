@@ -1,4 +1,5 @@
-# VibesPro
+# 🚀 VibesPro – AI-Enhanced Hexagonal Architecture Generator
+
 
 **AI-assisted, generator-first platform for building hexagonal architecture applications with confidence and speed.**
 
