@@ -137,7 +137,7 @@ Scenario: "Generated project includes merged Copilot instructions"
 - [x] Copy workflow YAML files (markdownlint.yml, node-tests.yml, spec-guard.yml)
 - [x] Rename all workflow files to .j2 extension for copier processing
 - [x] Rename composite action files to .j2 extension
-- [x] Move root `.github/` → `.github-repo/` to prevent template conflicts
+- [x] Consolidated `.github-repo/` back into `.github/` (Oct 2025)
 - [x] Configure copier `_subdirectory: "templates/{% raw %}{{project_slug}}{% endraw %}"` using Context7 Copier docs
 - [x] Simplify spec-guard.yml to use `just spec-guard` command
 
