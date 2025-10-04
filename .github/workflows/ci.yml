@@ -62,9 +62,13 @@ jobs:
 
       - name: Run tests
         run: |
-          pnpm test:jest --runInBand --passWithNoTests
-          pnpm test:node
-          uv run pytest
+          echo "Running Jest tests..."
+          pnpm test:jest --runInBand --passWithNoTests || { echo "::error::Jest tests failed"; exit 1; }
+          echo "Running Node smoke tests..."
+          pnpm test:node || { echo "::error::Node smoke tests failed"; exit 1; }
+          echo "Running pytest..."
+          uv run pytest || { echo "::error::Pytest failed"; exit 1; }
+          echo "All tests passed successfully!"
 
       - name: Validate template
         # UV_NO_SYNC=1 prevents uv from syncing dependencies during template generation test
