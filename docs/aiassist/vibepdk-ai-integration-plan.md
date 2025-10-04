@@ -8,7 +8,7 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 - **Template repository (`VibesPro/…`)** – This codebase is the Copier *source*. Any assets we import or modify must land inside the template directories (for example, `templates/{{project_slug}}/.github/`, `templates/docs/`, `templates/{{project_slug}}/tools/…`) so every future generation picks them up automatically.
 - **Generated project** – When Copier renders the template, the emitted repo should already contain the AI guardrails (.github instructions, prompts, chat modes, spec tooling, just recipes, MCP descriptors, etc.). The integration plan below focuses on wiring these assets into the template, then validating that the generated project inherits them without post-processing.
-- **Maintainer documentation (`docs/aiassit/`)** – Files under `docs/aiassit/` describe how to evolve the template itself; they are not copied into generated workspaces unless we add explicit templates.
+- **Maintainer documentation (`docs/aiassist/`)** – Files under `docs/aiassist/` describe how to evolve the template itself; they are not copied into generated workspaces unless we add explicit templates.
 
 ## VibePDK AI Stack Overview
 
@@ -52,7 +52,7 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 | Template Area | Current State | Notes |
 | --- | --- | --- |
 | `templates/{{project_slug}}/.github` | Mirrors only a subset of merger guidance; lacks modular instructions, prompts, chat modes, models manifest, and spec-guard workflows. | Need to import VibePDK `.github` assets and reconcile with merger-specific instructions before regeneration. |
-| Template docs (`templates/docs/**` & `templates/{{project_slug}}/docs/**`) | High-level architecture docs exist, but there’s no AI workflow bundle or spec lifecycle runbooks. | Extend templates to emit AI context bundle docs and usage guides; keep maintainer copies under `docs/aiassit/`. |
+| Template docs (`templates/docs/**` & `templates/{{project_slug}}/docs/**`) | High-level architecture docs exist, but there’s no AI workflow bundle or spec lifecycle runbooks. | Extend templates to emit AI context bundle docs and usage guides; keep maintainer copies under `docs/aiassist/`. |
 | Root docs (`docs/**`) | Extensive spec documents + this integration folder. | Use as authoritative guidance for template maintainers; optionally expose curated versions via templates. |
 | Automation (`justfile`, scripts) | Root `justfile` is rich for maintainers, but template `justfile.j2` lacks spec/AI recipes. | Port VibePDK recipes into `justfile.j2` and ensure scripts referenced exist under `templates/{{project_slug}}/scripts/` (or add new ones). |
 | MCP (`templates/{{project_slug}}/mcp/`) | Directory absent. | Add MCP descriptors and document `.vscode/mcp.json` configuration for generated repos. |
@@ -78,7 +78,7 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 ### Phase 2 — Documentation System
 
-1. Maintain `docs/aiassit/` as the maintainer knowledge base (including this report) and add runbooks covering spec lifecycle, prompt usage, and chat mode selection for template contributors.
+1. Maintain `docs/aiassist/` as the maintainer knowledge base (including this report) and add runbooks covering spec lifecycle, prompt usage, and chat mode selection for template contributors.
 2. Create template equivalents (for example `templates/{{project_slug}}/docs/ai_workflows.md.j2` or extend existing docs templates) so generated projects receive user-facing guidance.
 3. Port VibePDK’s `docs/ai_context_bundle` generation flow into `templates/{{project_slug}}/scripts/` and ensure the generated project’s `justfile.j2` can rebuild it.
 4. Align traceability assets: update template docs (`templates/docs/**`) to reference VibesPro specs, and run `pnpm spec:matrix` against the template to confirm links.

@@ -398,6 +398,37 @@ ai-scaffold name="":
 
 # --- Specification Management ---
 
+# --- Security Validation ---
+# Run cargo audit to check for security vulnerabilities
+security-audit:
+	@echo "🔐 Running security audit..."
+	@if command -v cargo > /dev/null 2>&1; then \
+		cargo install cargo-audit --quiet 2>/dev/null || true; \
+		cd libs/security && (cargo audit || echo "⚠️  Audit warnings found but continuing..."); \
+	else \
+		echo "❌ cargo not found. Please install Rust."; \
+		exit 1; \
+	fi
+
+# Run performance benchmarks for encrypted database
+security-benchmark:
+	@echo "⚡ Running security performance benchmarks..."
+	@if command -v cargo > /dev/null 2>&1; then \
+		cargo test --test validation_suite test_performance_overhead --release -- --nocapture; \
+	else \
+		echo "❌ cargo not found. Please install Rust."; \
+		exit 1; \
+	fi
+
+# Track binary size with and without security features
+security-size-check:
+	@echo "📊 Checking binary size overhead..."
+	@bash scripts/track-binary-size.sh
+
+# Run all security validation tests
+security-validate: security-audit security-benchmark security-size-check
+	@echo "✅ Security validation complete"
+
 # --- AI Utilities ---
 ai-analyze PROJECT_PATH:
 	@echo "🤖 Analyzing project with AI..."

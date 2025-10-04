@@ -60,6 +60,7 @@ Interface Layer (User/System Interfaces)
 - **Monorepo**: Nx (code generation, dependency graph, caching)
 
 
+
 **Template System**:
 
 - **Generator**: Copier (single source for project scaffolding with direct Jinja2 variable syntax)

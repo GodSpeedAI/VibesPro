@@ -95,4 +95,25 @@ describe('Security-Hardened Template Generation', () => {
             await removeWorkspace(workspace);
         }
     });
+
+    it('generates security documentation', async () => {
+        let workspace: string | undefined;
+
+        try {
+            workspace = await runCopierGeneration({
+                skipPostGenSetup: true,
+                project_name: 'test-docs',
+                enable_security_hardening: true
+            });
+
+            const encryptionDocPath = join(workspace, 'docs', 'security', 'ENCRYPTION.md');
+            expect(fs.existsSync(encryptionDocPath)).toBe(true);
+
+            const docContent = fs.readFileSync(encryptionDocPath, 'utf-8');
+            expect(docContent).toContain('XChaCha20-Poly1305');
+            expect(docContent).toContain('key rotation');
+        } finally {
+            await removeWorkspace(workspace);
+        }
+    });
 });

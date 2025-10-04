@@ -14,7 +14,7 @@ describe('Maintainer documentation alignment', () => {
         '..',
         '..',
         'docs',
-        'aiassit',
+        'aiassist',
         'maintainer-guide.md'
     );
 

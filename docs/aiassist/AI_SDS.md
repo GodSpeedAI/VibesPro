@@ -20,9 +20,9 @@
 ## AI_SDS-002 — Documentation delivery pipeline
 
 - **Implements PRDs:** AI_PRD-002
-- **Overview:** Provide two documentation channels—maintainer-focused in `docs/aiassit/` and generated-project onboarding via template docs.
+- **Overview:** Provide two documentation channels—maintainer-focused in `docs/aiassist/` and generated-project onboarding via template docs.
 - **Components & Responsibilities:**
-  - Maintainer docs: `docs/aiassit/` stores ADR, PRD, SDS, TS, integration plan, and traceability files.
+  - Maintainer docs: `docs/aiassist/` stores ADR, PRD, SDS, TS, integration plan, and traceability files.
   - Template docs: `templates/{{project_slug}}/docs/**` and `templates/{{project_slug}}/README.md.j2` provide user-facing instructions.
   - Synchronization script (optional) detects drift between maintainer guidance and template outputs.
 - **Interfaces:**

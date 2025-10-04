@@ -23,7 +23,7 @@
 ## AI_ADR-003 — Dual documentation streams (maintainer vs generated)
 
 - **Status:** Accepted
-- **Decision:** Maintain maintainer-focused guidance under `docs/aiassit/` while emitting user-facing AI workflow documentation through template docs so that generated projects have immediate onboarding content.
+- **Decision:** Maintain maintainer-focused guidance under `docs/aiassist/` while emitting user-facing AI workflow documentation through template docs so that generated projects have immediate onboarding content.
 - **Rationale:** Separates template evolution guidance from the artifacts delivered to end users, preventing accidental leakage of maintainer-only instructions.
 - **Alternatives Considered:**
   - Place all documentation in template outputs (rejected because template contributors would lose a central planning space).

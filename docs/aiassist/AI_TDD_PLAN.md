@@ -205,7 +205,7 @@ Scenario: "Generated project includes merged Copilot instructions"
 - **Traceability:** AI_ADR-003, AI_PRD-002, AI_SDS-002, AI_TS-005
 - **Agent:** Agent A
 - **Estimated Time:** 3 hours
-- **MECE Boundary:** `docs/aiassit/` updates only
+- **MECE Boundary:** `docs/aiassist/` updates only
 - **Source Assets:** `/home/sprime01/projects/VibePDK/docs/devkit-prompts-instructions-integration.md`
 
 #### RED — TASK-004 Failing Tests
@@ -627,7 +627,7 @@ gantt
 - [ ] REGRESSION runs include `pnpm test`, `just test-generation`, `pnpm prompt:lint`, `pnpm spec:matrix`
 - [ ] Code coverage ≥ 80% for new modules (enforced via `pnpm test -- --coverage`)
 - [ ] Security scanning (`pnpm audit`) clean
-- [ ] Documentation updated (`docs/aiassit/` and template docs) per phase outputs
+- [ ] Documentation updated (`docs/aiassist/` and template docs) per phase outputs
 
 ---
 
@@ -766,7 +766,7 @@ This phase adds optional security hardening to generated projects, focusing on:
 - **Status:** ☐ Not Started
 - **Source Code to Adapt:**
   - `/home/sprime01/projects/VibesPro/docs/tmp/hardening.md` (lines 200-291: Rust skeleton)
-  - `/home/sprime01/projects/VibesPro/docs/aiassit/AI_SECURITY_HARDENING.md` (Section 5.2: SecureDb implementation)
+  - `/home/sprime01/projects/VibesPro/docs/aiassist/AI_SECURITY_HARDENING.md` (Section 5.2: SecureDb implementation)
 
 #### ☐ RED — TASK-013 Failing Tests
 
@@ -893,7 +893,7 @@ fn test_concurrent_inserts() {
 - **MECE Boundary:** Jinja2 templates for security features only (no implementation code)
 - **Status:** ☐ Not Started
 - **Source Code to Adapt:**
-  - `/home/sprime01/projects/VibesPro/docs/aiassit/AI_SECURITY_HARDENING.md` (Sections 5.3, 5.4, 6.2)
+  - `/home/sprime01/projects/VibesPro/docs/aiassist/AI_SECURITY_HARDENING.md` (Sections 5.3, 5.4, 6.2)
 
 #### ☐ RED — TASK-014 Failing Tests
 

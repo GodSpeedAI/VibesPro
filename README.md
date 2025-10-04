@@ -53,7 +53,7 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 ### Documentation & Governance
 
 - Specification packs live in `docs/mergekit/` (ADR, PRD, SDS, TS) with traceability matrices enforced by `just spec-matrix`.
-- AI execution guardrails are documented in `AGENTS.md` and `docs/aiassit/AI_TDD_PLAN.md`, ensuring every change references governing specs.
+- AI execution guardrails are documented in `AGENTS.md` and `docs/aiassist/AI_TDD_PLAN.md`, ensuring every change references governing specs.
 - Docs tooling (`tools/docs/generator.py`) produces multi-format documentation; optional Pandoc support enables HTML/Docx export.
 
 ---
@@ -126,7 +126,7 @@ VibesPro/
 │   └── unit/                  # Python + TypeScript unit tests
 └── docs/
     ├── mergekit/              # ADR/PRD/SDS/TS governing specs
-    └── aiassit/               # AI-assisted TDD planning artefacts
+    └── aiassist/               # AI-assisted TDD planning artefacts
 ```
 
 ---
@@ -175,7 +175,7 @@ Shared Nx/just automation is validated by `tests/integration/generated-ci-regres
 ## Documentation & Specifications
 
 - Governing specs: `docs/mergekit/ADR.md`, `PRD.md`, `SDS.md`, `TS.md`, and `IMPLEMENTATION-PLAN.md`.
-- Agent + TDD instructions: `AGENTS.md`, `docs/aiassit/AI_TDD_PLAN.md`.
+- Agent + TDD instructions: `AGENTS.md`, `docs/aiassist/AI_TDD_PLAN.md`.
 - Run `just docs-generate` to rebuild documentation (installs Markdown outputs; Pandoc enables HTML/Docx/Epub variants—see note below).
 - `just spec-matrix` produces traceability matrices consumed by CI for requirement coverage.
 - Prompt + instruction assets live under `.github/` templates and are linted by `pnpm prompt:lint`.
