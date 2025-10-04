@@ -67,7 +67,12 @@ fn test_performance_overhead() {
     plain_db.flush().unwrap();
     let plain_time = start.elapsed();
 
-    let overhead = (encrypted_time.as_micros() as f64 / plain_time.as_micros() as f64) - 1.0;
+    let plain_micros = plain_time.as_micros();
+    let overhead = if plain_micros == 0 {
+        f64::INFINITY
+    } else {
+        (encrypted_time.as_micros() as f64 / plain_micros as f64) - 1.0
+    };
 
     // Print performance metrics for visibility
     eprintln!("Encrypted time: {:?}", encrypted_time);
