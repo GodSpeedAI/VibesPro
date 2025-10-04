@@ -12,8 +12,8 @@ import subprocess
 import json
 from pathlib import Path
 from {{ package_path }} import AnalyzePromptUseCase, TiktokenAdapter
-{% if database_type == "sled" -%}
-from {{ package_path }} import SledTemporalDatabaseAdapter
+{% if database_type == "sled" or database_type == "redb" -%}
+from {{ package_path }} import RedbTemporalDatabaseAdapter
 {%- endif %}
 from {{ package_path }}.domain.entities.prompt import Prompt
 from {{ package_path }}.domain.value_objects.ai_model import AIModel
@@ -118,8 +118,8 @@ class TestEndToEndWorkflow:
         """Test the complete analysis workflow using the library directly."""
         # Arrange
         token_counter = TiktokenAdapter()
-        {% if database_type == "sled" -%}
-        database = SledTemporalDatabaseAdapter(temp_database_path)
+        {% if database_type == "sled" or database_type == "redb" -%}
+        database = RedbTemporalDatabaseAdapter(temp_database_path)
         {%- else -%}
         # Mock database for other types
         from unittest.mock import AsyncMock, Mock
@@ -150,8 +150,8 @@ class TestEndToEndWorkflow:
         from {{ package_path }}.domain.value_objects.optimization_goal import OptimizationGoal
 
         token_counter = TiktokenAdapter()
-        {% if database_type == "sled" -%}
-        database = SledTemporalDatabaseAdapter(temp_database_path)
+        {% if database_type == "sled" or database_type == "redb" -%}
+        database = RedbTemporalDatabaseAdapter(temp_database_path)
         {%- else -%}
         # Mock database for other types
         from unittest.mock import AsyncMock, Mock
@@ -195,10 +195,10 @@ class TestEndToEndWorkflow:
     @pytest.mark.asyncio
     async def test_temporal_learning_workflow(self, temp_database_path):
         """Test that the system learns from repeated usage patterns."""
-        {% if database_type == "sled" -%}
+        {% if database_type == "sled" or database_type == "redb" -%}
         # Arrange
         token_counter = TiktokenAdapter()
-        database = SledTemporalDatabaseAdapter(temp_database_path)
+        database = RedbTemporalDatabaseAdapter(temp_database_path)
         use_case = AnalyzePromptUseCase(token_counter, database)
 
         # Create similar prompts
@@ -232,8 +232,8 @@ class TestEndToEndWorkflow:
         from {{ package_path }}.domain.value_objects.optimization_goal import OptimizationGoal
 
         token_counter = TiktokenAdapter()
-        {% if database_type == "sled" -%}
-        database = SledTemporalDatabaseAdapter(temp_database_path)
+        {% if database_type == "sled" or database_type == "redb" -%}
+        database = RedbTemporalDatabaseAdapter(temp_database_path)
         {%- else -%}
         from unittest.mock import AsyncMock, Mock
         database = Mock()
