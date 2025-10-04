@@ -6,23 +6,22 @@ This implements the RED phase of TDD - failing tests for repository operations.
 """
 
 import asyncio
-import tempfile
 import os
-from pathlib import Path
-from datetime import datetime, timezone
-import json
 
 # Add temporal_db to path
 import sys
+import tempfile
+from pathlib import Path
+
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root / "temporal_db"))
 
-from python.repository import TemporalRepository, initialize_temporal_database
-from python.types import (
-    SpecificationRecord,
+from python.repository import initialize_temporal_database  # noqa: E402
+from python.types import (  # noqa: E402
     ArchitecturalPattern,
-    SpecificationType,
     PatternType,
+    SpecificationRecord,
+    SpecificationType,
 )
 
 

@@ -5,29 +5,24 @@ Test suite for temporal database functionality.
 This implements the RED phase of TDD - failing tests that define expected behavior.
 """
 
-import pytest
-import asyncio
-import tempfile
 import os
-from pathlib import Path
-from datetime import datetime, timezone
-import json
 
 # Add temporal_db to path
 import sys
+import tempfile
+from pathlib import Path
+
+import pytest
+
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root / "temporal_db"))
 
-from python.repository import TemporalRepository, initialize_temporal_database
-from python.types import (
-    SpecificationRecord,
-    SpecificationChange,
+from python.repository import initialize_temporal_database  # noqa: E402
+from python.types import (  # noqa: E402
     ArchitecturalPattern,
-    DecisionPoint,
-    DecisionOption,
-    SpecificationType,
     PatternType,
-    ChangeType,
+    SpecificationRecord,
+    SpecificationType,
 )
 
 
@@ -356,8 +351,9 @@ class TestTemporalDatabasePerformance:
     @pytest.mark.asyncio
     async def test_memory_usage_target(self):
         """Test that memory usage is reasonable."""
-        import psutil
         import os
+
+        import psutil
 
         process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss
