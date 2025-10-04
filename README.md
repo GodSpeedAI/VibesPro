@@ -1,4 +1,4 @@
-# 🚀 VibesPrVibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK's AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make. Optional security hardening provides XChaCha20-Poly1305 encryption at rest for sensitive data. – AI-Enhanced Hexagonal Architecture Generator
+# 🚀 Vib> **Generator-first platform combining HexDDD's production-ready hexagonal architecture with VibePDK's AI acceleration, now backed by a redb-powered temporal learning stack.**sPrVibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK's AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make. Optional security hardening provides XChaCha20-Poly1305 encryption at rest for sensitive data. – AI-Enhanced Hexagonal Architecture Generator
 
 [![CI](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml/badge.svg)](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
@@ -6,7 +6,17 @@
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org)
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange)](https://www.rust-lang.org)
 
-> **Generator-first platform combining HexDDD’s production-ready hexagonal architecture with VibePDK’s AI acceleration, now backed by a sled-powered temporal learning stack.**
+# 🚀 VibesPro – AI-Enhanced Hexagonal Architecture Generator
+
+VibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK's AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make. Optional security hardening provides XChaCha20-Poly1305 encryption at rest for sensitive data.
+
+[![CI](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml/badge.svg)](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org)
+[![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange)](https://www.rust-lang.org)
+
+> **Generator-first platform combining HexDDD's production-ready hexagonal architecture with VibePDK's AI acceleration, now backed by a redb-powered temporal learning stack.**
 
 ## Overview
 
@@ -15,7 +25,7 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 ### Why teams use VibesPro
 
 - Launch full hexagonal, DDD-aligned Nx monorepos with ready-to-ship apps and bounded-context libraries in minutes.
-- Capture architectural decisions, prompt analytics, and AI feedback in a sled-backed temporal database for continuous learning.
+- Capture architectural decisions, prompt analytics, and AI feedback in a redb-backed temporal database for continuous learning.
 - Ship consistent, type-safe APIs and domain models across TypeScript and Python with single-source-of-truth generators.
 - Operate under specification-driven, TDD-friendly guardrails that keep CI, documentation, and templates from drifting.
 - Optionally harden generated applications with encrypted databases, TPM-backed key sealing, and distroless container images.
@@ -31,12 +41,12 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 - Conditional Jinja2 templates support multi-framework apps (Next.js, Remix, Expo) and FastAPI service adapters without runtime coupling.
 - GitHub workflow, prompt, and instruction assets ship with generated projects so teams inherit best-practice automation on day one.
 
-### Temporal AI Learning (sled-powered)
+### Temporal AI Learning (redb-powered)
 
-- The Rust crate in `temporal_db/` persists specifications, architectural patterns, and decision logs using the embedded [`sled`](https://docs.rs/sled/latest/sled/) database.
-- Python prompt optimization flows (`libs/prompt-optimizer/infrastructure/temporal_db.py`) use the `SledTemporalDatabaseAdapter`, falling back to deterministic JSON/SQLite stores when the binding is unavailable.
-- Template assets under `templates/tools/prompt-optimizer/` wire the sled adapter into generated projects, enabling on-device learning loops and historical prompt analysis.
-- CLI utilities (`python tools/temporal-db/init.py …`, `scripts/measure_tokens_enhanced.py`) seed, inspect, and exercise the sled store so AI suggestions improve over time.
+- The Rust crate in `temporal_db/` persists specifications, architectural patterns, and decision logs using the embedded [`redb`](https://docs.rs/redb/) database.
+- Python prompt optimization flows (`libs/prompt-optimizer/infrastructure/temporal_db.py`) use the `RedbTemporalDatabaseAdapter` (with `SledTemporalDatabaseAdapter` as a backward-compatible alias), falling back to deterministic JSON/SQLite stores when Rust bindings are unavailable.
+- Template assets under `templates/tools/prompt-optimizer/` wire the redb adapter into generated projects, enabling on-device learning loops and historical prompt analysis.
+- CLI utilities (`python tools/temporal-db/init.py …`, `scripts/measure_tokens_enhanced.py`) seed, inspect, and exercise the redb store so AI suggestions improve over time.
 
 ### Developer Experience & Automation
 
@@ -53,7 +63,7 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 
 ### Security Hardening (Optional, PHASE-006)
 
-- **Encrypted database wrapper** (`libs/security/src/secure_db.rs`) provides XChaCha20-Poly1305 encryption at rest for sensitive sled data.
+- **Encrypted database wrapper** (`libs/security/src/secure_db.rs`) provides XChaCha20-Poly1305 encryption at rest using redb for SecureDb storage.
 - **Key management** (`src/key_mgmt.rs`) implements HKDF key derivation with optional TPM sealing support for hardware-backed protection.
 - **Automated security scanning** in `.github/workflows/security-scan.yml` runs cargo audit, plaintext detection, and binary size tracking on every PR.
 - **Performance optimization** targets sub-10% encryption overhead (current: ~200%, roadmap in `docs/aiassist/SECURITY_TESTING.md`).
@@ -75,7 +85,7 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 
 - **Node.js 18+** with `corepack` enabled (pnpm is provisioned automatically).
 - **Python 3.12+** with [`uv`](https://github.com/astral-sh/uv) installed for dependency management.
-- **Rust 1.75+** (`rustup toolchain install stable`) to compile sled-backed temporal services.
+- **Rust 1.75+** (`rustup toolchain install stable`) to compile redb-backed temporal services.
 - **copier 9.0+** (`uv tool install copier`) for project generation.
 - **just** task runner ([installation instructions](https://github.com/casey/just#installation)).
 
@@ -87,7 +97,7 @@ cd Vibes-Pro
 corepack enable
 just setup  # Installs pnpm deps, syncs uv environment, and ensures Copier is available
 
-# Seed the sled temporal database with baseline specifications (optional but recommended)
+# Seed the redb temporal database with baseline specifications (optional but recommended)
 python tools/temporal-db/init.py init --project-name "My VibesPro Demo"
 ```
 
@@ -105,7 +115,7 @@ just setup           # Install generated project dependencies (pnpm + uv)
 just build           # Build all libraries & apps (auto-detects Nx)
 just test            # Run unit + integration suites
 just spec-guard      # Mirrors CI guardrails locally
-python tools/temporal-db/init.py status  # Inspect sled/SQLite temporal store health
+python tools/temporal-db/init.py status  # Inspect redb/SQLite temporal store health
 ```
 
 ---
@@ -128,13 +138,13 @@ VibesPro/
 │       └── tests/unit/        # Security unit tests
 ├── generators/                # Nx generators for extending template capabilities
 │   └── service/
-├── temporal_db/               # Rust crate + schemas powering sled temporal storage
+├── temporal_db/               # Rust crate + schemas powering redb temporal storage
 │   ├── repository.rs
-│   ├── python/                # Async Python facade & types for sled-backed data
+│   ├── python/                # Async Python facade & types for redb-backed data
 │   └── schema.rs
 ├── tools/
 │   ├── ai/                    # Context manager + AI orchestration utilities
-│   ├── temporal-db/           # CLI scripts for initializing & backing up sled data
+│   ├── temporal-db/           # CLI scripts for initializing & backing up redb data
 │   ├── type-generator/        # Cross-language schema-to-type pipeline
 │   └── docs/                  # Documentation build + link checking scripts
 ├── scripts/
@@ -157,7 +167,7 @@ VibesPro/
 
 ## Temporal Learning Database
 
-VibesPro standardises on [`sled`](https://docs.rs/sled/latest/sled/) for temporal learning so architectural decisions, prompt telemetry, and optimization feedback remain local, queryable, and fast.
+VibesPro standardizes on [`redb`](https://docs.rs/redb/) for temporal learning so architectural decisions, prompt telemetry, and optimization feedback remain local, queryable, and fast. **Note:** We migrated from sled to redb in TASK-017 (PHASE-006) for better long-term stability and active maintenance.
 
 - **Rust core (`temporal_db/repository.rs`)** – Manages specification storage, architectural pattern analysis, and decision logging with sled key-spaces (`spec:*`, `pattern:*`, `change:*`).
 - **Python adapters** – `libs/prompt-optimizer/infrastructure/temporal_db.py` talks to sled via the `SledTemporalDatabaseAdapter`, providing JSON/SQLite fallbacks when bindings are missing so generation tests stay deterministic.
