@@ -426,7 +426,7 @@ security-size-check:
 	@bash scripts/track-binary-size.sh
 
 # Run all security validation tests
-security-validate: security-audit security-benchmark
+security-validate: security-audit security-benchmark security-size-check
 	@echo "✅ Security validation complete"
 
 # --- AI Utilities ---
