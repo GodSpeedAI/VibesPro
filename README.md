@@ -1,4 +1,5 @@
-# 🚀 Vib> **Generator-first platform combining HexDDD's production-ready hexagonal architecture with VibePDK's AI acceleration, now backed by a redb-powered temporal learning stack.**sPrVibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK's AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make. Optional security hardening provides XChaCha20-Poly1305 encryption at rest for sensitive data. – AI-Enhanced Hexagonal Architecture Generator
+# 🚀 VibesPro – AI-Enhanced Hexagonal Architecture Generator
+
 
 [![CI](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml/badge.svg)](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
