@@ -1,4 +1,26 @@
-# SecureDb Performance Characteristics
+# SecureD## Current Performance (v0.1.0)
+
+### Benchmark Results
+
+- **Test:** 1,000 inserts of 5-byte values
+- **Plain sled:** ~9ms
+- **SecureDb:** ~79-95ms
+- **Overhead:** ~800-950% (8-10x slower)
+
+### Real-World Impact
+
+**What 800% overhead means in practice:**
+
+| Operations | Plain Time | Encrypted Time | Added Latency |
+|------------|-----------|----------------|---------------|
+| 10 ops | 0.09ms | 0.8ms | +0.71ms |
+| 100 ops | 0.9ms | 9ms | +8.1ms |
+| 1,000 ops | 9ms | 90ms | +81ms |
+| 10,000 ops | 90ms | 900ms | +810ms |
+| 100,000 ops | 0.9s | 9s | **+8.1s** |
+| 1M ops | 9s | 90s | **+81s** |
+
+**Key Takeaway:** This is a **massive hit** for high-throughput scenarios. For security-critical, low-frequency operations (config, API keys, credentials), it's acceptable. For >10k ops/sec workloads, **consider alternative architectures** (see `/docs/DATABASE-ALTERNATIVES-ANALYSIS.md`).mance Characteristics
 
 **Last Updated:** 2025-10-04  
 **Related:** TASK-016 (PHASE-006)
@@ -48,8 +70,11 @@ fn allocate_nonce(&self) -> SecureDbResult<([u8; 24], XNonce)> {
 
 **Impact:**
 - Reduced counter writes from 1000 to 100 (10x reduction)
-- Improved performance by ~14% (800% → 690% in best case)
+- Improved performance by ~10-14% (800% → 720-750% in best case)
 - Note: Performance variance can show 700-950% depending on system load
+- **Reality check:** This optimization only addresses 10-15% of the overhead. The remaining 85-90% is from encryption itself.
+
+**See Also:** `/docs/DATABASE-ALTERNATIVES-ANALYSIS.md` for deeper analysis and alternative approaches to reduce overhead beyond database-level optimizations.
 
 **Trade-off:**
 - On crash, up to 10 nonces may be skipped (cryptographically safe, uses counter space)
@@ -144,17 +169,31 @@ pub async fn insert_async(&self, key: &[u8], value: &[u8]) -> SecureDbResult<()>
 
 ## Acceptable Use Cases
 
+**⚠️ CRITICAL: Review `/docs/DATABASE-ALTERNATIVES-ANALYSIS.md` if performance is a concern!**
+
 SecureDb is appropriate for:
 - ✅ Configuration storage (low throughput, high security)
 - ✅ API key management (small data, infrequent access)
 - ✅ User credential storage (security > performance)
 - ✅ Audit logs (append-mostly, durability critical)
+- ✅ < 1,000 operations per second
+- ✅ Acceptable to have ~80ms added latency per 1,000 operations
 
 SecureDb may NOT be appropriate for:
 - ❌ High-throughput data pipelines (>10k ops/sec)
 - ❌ Real-time systems (sub-millisecond latency required)
 - ❌ Large-scale analytics (bulk operations on millions of records)
 - ❌ Caching layers (performance is primary concern)
+- ❌ Applications where 800% overhead is unacceptable
+
+**If SecureDb is NOT appropriate for your use case:**
+
+1. **Consider redb** instead of sled (~10-25% faster, actively maintained)
+2. **Use PostgreSQL/MySQL with TDE** (~20% overhead vs 800%)
+3. **Use filesystem encryption (LUKS, dm-crypt)** (~10% overhead)
+4. **Hybrid approach** - Only encrypt sensitive fields (~200-400% overhead)
+
+See `/docs/DATABASE-ALTERNATIVES-ANALYSIS.md` for detailed comparison and migration guide.
 
 ## Benchmarking
 
