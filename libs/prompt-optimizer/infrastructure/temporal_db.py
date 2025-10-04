@@ -165,7 +165,7 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(record, f, indent=2, ensure_ascii=False)
         else:
-            # Sled database
+            # Redb database
             record_bytes = json.dumps(record).encode('utf-8')
             self._db.insert(key.encode('utf-8'), record_bytes)  # type: ignore
 
@@ -195,7 +195,7 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
                 except (json.JSONDecodeError, ValueError, KeyError):
                     continue
         else:
-            # Sled database
+            # Redb database
             prefix_bytes = prefix.encode('utf-8')
             for item in self._db.scan_prefix(prefix_bytes):  # type: ignore
                 try:
