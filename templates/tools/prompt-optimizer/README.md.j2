@@ -59,7 +59,7 @@ The system follows hexagonal architecture with clear separation of concerns:
 ### Adapters
 
 - **TiktokenAdapter**: Implements token counting using tiktoken library
-- **SledTemporalDatabaseAdapter**: Implements temporal storage using sled database
+- **RedbTemporalDatabaseAdapter**: Implements temporal storage using redb database (with SledTemporalDatabaseAdapter as backward-compatible alias)
 
 ## Usage Examples
 
@@ -68,13 +68,13 @@ The system follows hexagonal architecture with clear separation of concerns:
 ```python
 from {{ package_path }}.application.use_cases.analyze_prompt_use_case import AnalyzePromptUseCase
 from {{ package_path }}.infrastructure.adapters.tiktoken_adapter import TiktokenAdapter
-from {{ package_path }}.infrastructure.adapters.sled_temporal_database_adapter import SledTemporalDatabaseAdapter
+from {{ package_path }}.infrastructure.adapters.sled_temporal_database_adapter import RedbTemporalDatabaseAdapter
 from {{ package_path }}.domain.entities.prompt import Prompt
 from {{ package_path }}.domain.value_objects.ai_model import AIModel
 
 # Setup
 token_counter = TiktokenAdapter()
-database = SledTemporalDatabaseAdapter("./temporal_db")
+database = RedbTemporalDatabaseAdapter("./temporal_db")
 use_case = AnalyzePromptUseCase(token_counter, database)
 
 # Analyze prompt

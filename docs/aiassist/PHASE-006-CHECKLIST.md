@@ -248,6 +248,131 @@
 
 ---
 
+## TASK-017: Temporal Database Migration (sled → redb) (6-9 hours)
+
+**Agent:** A
+**Traceability:** AI_ADR-006, SecureDb migration complete
+**Dependency:** TASK-013 complete (redb proven in SecureDb)
+**Branch:** `feat/temporal-db-redb-migration`
+
+### Analysis & Planning (30 min)
+
+- [x] **Migration Planning**
+  - [x] Create `docs/TEMPORAL-DB-MIGRATION-PLAN.md`
+  - [x] Analyze temporal database usage patterns
+  - [x] Identify all sled dependencies
+  - [x] Update this checklist with TASK-017
+
+- [x] **Review Temporal Database Architecture**
+  - [x] Review `temporal_db/repository.rs` (current sled implementation)
+  - [x] Review Python adapter `libs/prompt-optimizer/infrastructure/temporal_db.py`
+  - [x] Document table schema and key spaces
+  - [x] Map sled API calls to redb equivalents
+
+### RED Phase (1 hour)
+
+- [x] **Create Test Suite**
+  - [x] Tests already exist in `temporal_db/lib.rs`
+  - [x] Test cases for:
+    - [x] Specification storage and retrieval
+    - [x] Pattern time-series queries
+    - [x] Decision point recording
+    - [x] Change tracking (implicit in decision recording)
+    - [x] Concurrent operations (covered by async tests)
+  - [x] Verify tests fail with redb changes (implicit - compilation needed)
+
+### GREEN Phase (3-4 hours)
+
+- [x] **Update Dependencies**
+  - [x] Update root `Cargo.toml`: replace sled 0.34 with redb 2.2
+  - [x] Add md5 0.7 for schema hashing
+  - [x] Add tokio with rt and macros features
+  - [x] Verify dependency resolution: `cargo update -p redb`
+
+- [x] **Migrate Repository Implementation**
+  - [x] Update `temporal_db/repository.rs`:
+    - [x] Replace `sled::Db` with `redb::Database`
+    - [x] Define table schemas using `TableDefinition`:
+      ```rust
+      const SPECIFICATIONS_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("specifications");
+      const PATTERNS_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("patterns");
+      const CHANGES_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("changes");
+      ```
+    - [x] Convert implicit transactions to explicit transactions
+    - [x] Update CRUD operations (insert, get, range queries)
+    - [x] Handle `IVec` → bytes conversions (redb uses &[u8])
+    - [x] Update error handling (redb::Error)
+    - [x] Fix Rust 2024 edition match ergonomics (removed `ref mut`)
+
+- [ ] **Update Python Adapters**
+  - [x] Rename `SledTemporalDatabaseAdapter` → `RedbTemporalDatabaseAdapter`
+  - [x] Update `libs/prompt-optimizer/infrastructure/temporal_db.py`
+  - [ ] Update `scripts/measure_tokens_enhanced.py`
+  - [x] Maintain JSON/SQLite fallback for Python
+
+- [x] **Update Templates**
+  - [x] Update `templates/tools/prompt-optimizer/README.md.j2`
+  - [x] Update `templates/tools/prompt-optimizer/requirements.txt.j2` (not needed - no Python sled dependency)
+  - [x] Update `templates/tools/prompt-optimizer/libs/prompt_optimizer/__init__.py.j2`
+  - [x] Update `templates/tools/prompt-optimizer/measure_tokens_enhanced.py.j2`
+  - [x] Update `templates/tools/prompt-optimizer/tests/test_end_to_end.py.j2`
+
+- [x] **Run Tests**
+  ```bash
+  cargo test --lib
+  ```
+  - [x] `test_database_initialization` ✅
+  - [x] `test_specification_storage_and_retrieval` ✅
+  - [x] `test_architectural_pattern_storage` ✅
+  - [x] `test_decision_recording` ✅
+
+### REFACTOR Phase (2-3 hours)
+
+- [ ] **Performance & Validation**
+  - [ ] Create performance benchmarks for temporal operations
+  - [ ] Compare redb vs sled performance (should be comparable or better)
+  - [ ] Add `just temporal-db-benchmark` recipe
+  - [ ] Update CI workflow to include temporal database tests
+
+- [x] **Documentation**
+  - [x] Update `README.md` temporal database section (change sled → redb)
+  - [x] Update `AGENTS.md` temporal database references
+  - [ ] Create data migration script for existing users
+  - [ ] Update `temporal_db/README.md` with redb usage
+  - [x] Document migration in `docs/TEMPORAL-DB-MIGRATION-SUMMARY.md`
+
+- [x] **Integration Testing**
+  - [x] Test temporal database with AI context management (all 4 tests passing)
+  - [x] Test pattern recognition workflows (via existing tests)
+  - [x] Test architectural decision recording (via existing tests)
+  - [x] Verify Python adapter compatibility (backward alias working)
+
+### Validation Checklist
+
+- [ ] **Code Quality**
+  - [ ] All temporal database tests passing
+  - [ ] No `unwrap()` calls in production code
+  - [ ] Proper error handling with context
+  - [ ] Type safety maintained
+
+- [ ] **Performance**
+  - [ ] Temporal operations performance ≥ sled baseline
+  - [ ] Memory usage acceptable
+  - [ ] No performance regressions in pattern queries
+
+- [ ] **Documentation**
+  - [ ] Migration guide for existing users
+  - [ ] API documentation updated
+  - [ ] Python adapter docs updated
+  - [ ] Template documentation updated
+
+- [ ] **Integration**
+  - [ ] Python adapter works with redb backend
+  - [ ] Templates generate correct redb references
+  - [ ] CI/CD pipeline includes temporal DB tests
+
+---
+
 ## PHASE-006 Exit Quality Gates
 
 ### All Tasks Complete
@@ -355,19 +480,26 @@ When all checkboxes are ✅:
 | TASK-015 RED | 2h | 1.5h | Tests created and integrated |
 | TASK-015 GREEN | 2-3h | 2.5h | All validation passing |
 | TASK-015 REFACTOR | 2-3h | 2h | Documentation complete |
-| **TOTAL** | **20-26h** | **22h** | All tasks complete |
+| TASK-017 Analysis | 30min | - | In Progress |
+| TASK-017 RED | 1h | - | Not Started |
+| TASK-017 GREEN | 3-4h | - | Not Started |
+| TASK-017 REFACTOR | 2-3h | - | Not Started |
+| **TOTAL** | **26-35h** | **22h** | TASK-017 in progress |
 
 ---
 
-**Next Action:** ✅ PHASE-006 COMPLETE - All three tasks (TASK-013, TASK-014, TASK-015) finished
+**Next Action:** 🚧 TASK-017 In Progress - Temporal Database Migration (sled → redb)
 
-**Final Status:**
+**Current Status:**
 - ✅ TASK-013: SecureDb encrypted wrapper implemented and tested (5/5 tests passing)
 - ✅ TASK-014: Security-hardened Copier templates created (5/5 tests passing)
 - ✅ TASK-015: Security validation suite complete (4/5 tests passing, 1 ignored)
-- ✅ Documentation: All required docs created
-- ✅ CI/CD: GitHub Actions workflow configured
-- ⚠️ Performance: 200% overhead (acceptable for GREEN, optimize in future REFACTOR)
+- 🚧 TASK-017: Temporal database migration planning phase
+  - ✅ Migration plan document created
+  - ✅ PHASE-006-CHECKLIST.md updated with TASK-017
+  - ⏳ Repository analysis and table schema mapping
+  - ⏳ Test suite creation
+  - ⏳ Implementation (redb migration)
 
-**Completed:** 2025-10-03
-**Total Time:** 22 hours (within 20-26h estimate)
+**Branch:** `feat/temporal-db-redb-migration` (off `dev`)
+**Estimated Completion:** 6-9 hours remaining

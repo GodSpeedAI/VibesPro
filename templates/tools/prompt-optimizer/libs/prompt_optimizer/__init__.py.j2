@@ -26,8 +26,8 @@ from .application.use_cases.optimize_prompt_use_case import OptimizePromptUseCas
 
 # Infrastructure layer exports
 from .infrastructure.adapters.tiktoken_adapter import TiktokenAdapter
-{% if database_type == "sled" -%}
-from .infrastructure.adapters.sled_temporal_database_adapter import SledTemporalDatabaseAdapter
+{% if database_type == "sled" or database_type == "redb" -%}
+from .infrastructure.adapters.sled_temporal_database_adapter import RedbTemporalDatabaseAdapter, SledTemporalDatabaseAdapter
 {%- endif %}
 
 __version__ = "{{ template_version }}"
@@ -43,7 +43,8 @@ __all__ = [
     "AnalyzePromptUseCase",
     "OptimizePromptUseCase",
     "TiktokenAdapter",
-    {% if database_type == "sled" -%}
-    "SledTemporalDatabaseAdapter",
+    {% if database_type == "sled" or database_type == "redb" -%}
+    "RedbTemporalDatabaseAdapter",
+    "SledTemporalDatabaseAdapter",  # Backward compatibility alias
     {%- endif %}
 ]
