@@ -1,6 +1,6 @@
 # SecureDb Performance Characteristics
 
-**Last Updated:** 2025-01-[DATE]
+**Last Updated:** 2025-10-04
 **Related:** TASK-016 (PHASE-006), redb Migration
 
 ## Overview
