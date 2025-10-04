@@ -1,4 +1,4 @@
-# 🚀 VibesPro – AI-Enhanced Hexagonal Architecture Generator
+# 🚀 VibesPrVibesPro merges HexDDD's disciplined Domain-Driven Design monorepo with VibePDK's AI-assisted developer workflows. The template-first approach produces Nx workspaces with domain-centric libraries, synchronized TypeScript/Python tooling, and an embedded temporal knowledge base that learns from every architectural decision teams make. Optional security hardening provides XChaCha20-Poly1305 encryption at rest for sensitive data. – AI-Enhanced Hexagonal Architecture Generator
 
 [![CI](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml/badge.svg)](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
@@ -18,6 +18,7 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 - Capture architectural decisions, prompt analytics, and AI feedback in a sled-backed temporal database for continuous learning.
 - Ship consistent, type-safe APIs and domain models across TypeScript and Python with single-source-of-truth generators.
 - Operate under specification-driven, TDD-friendly guardrails that keep CI, documentation, and templates from drifting.
+- Optionally harden generated applications with encrypted databases, TPM-backed key sealing, and distroless container images.
 
 ---
 
@@ -50,11 +51,21 @@ VibesPro merges HexDDD’s disciplined Domain-Driven Design monorepo with VibePD
 - Domain libraries under `templates/{{project_slug}}/libs` enforce strict hexagonal boundaries, using DTOs, ports, and adapters to guarantee separation of concerns.
 - Type gates (`uv run mypy`, `pnpm lint`, `just types-validate`) prevent `any` leaks and keep cross-language models aligned.
 
+### Security Hardening (Optional, PHASE-006)
+
+- **Encrypted database wrapper** (`libs/security/src/secure_db.rs`) provides XChaCha20-Poly1305 encryption at rest for sensitive sled data.
+- **Key management** (`src/key_mgmt.rs`) implements HKDF key derivation with optional TPM sealing support for hardware-backed protection.
+- **Automated security scanning** in `.github/workflows/security-scan.yml` runs cargo audit, plaintext detection, and binary size tracking on every PR.
+- **Performance optimization** targets sub-10% encryption overhead (current: ~200%, roadmap in `docs/aiassist/SECURITY_TESTING.md`).
+- **Distroless container images** (optional feature flag) reduce attack surface by eliminating shell access and unnecessary runtime dependencies.
+- CI/CD security scanning workflows automatically monitor dependencies, track encryption overhead, and enforce security gates.
+
 ### Documentation & Governance
 
 - Specification packs live in `docs/mergekit/` (ADR, PRD, SDS, TS) with traceability matrices enforced by `just spec-matrix`.
 - AI execution guardrails are documented in `AGENTS.md` and `docs/aiassist/AI_TDD_PLAN.md`, ensuring every change references governing specs.
 - Docs tooling (`tools/docs/generator.py`) produces multi-format documentation; optional Pandoc support enables HTML/Docx export.
+- Security testing procedures documented in `docs/aiassist/SECURITY_TESTING.md` with performance optimization roadmap.
 
 ---
 
@@ -105,10 +116,16 @@ python tools/temporal-db/init.py status  # Inspect sled/SQLite temporal store he
 VibesPro/
 ├── templates/                # Copier templates and reusable tooling bundles
 │   ├── {{project_slug}}/      # Full project scaffold (apps, libs, configs, workflows)
+│   │   ├── libs/security/     # SecureDb encrypted wrapper (optional, Jinja2 conditional)
+│   │   └── docs/security/     # Security documentation (ENCRYPTION.md)
 │   ├── docs/                  # Documentation templates & MkDocs layouts
 │   └── tools/prompt-optimizer # AI prompt optimizer packaging (sled-aware)
 ├── libs/
-│   └── prompt-optimizer/      # Python prompt optimizer with sled temporal adapter
+│   ├── prompt-optimizer/      # Python prompt optimizer with sled temporal adapter
+│   └── security/              # Rust SecureDb crate with XChaCha20-Poly1305 encryption
+│       ├── src/secure_db.rs   # Encrypted sled wrapper
+│       ├── src/key_mgmt.rs    # HKDF key derivation, TPM sealing support
+│       └── tests/unit/        # Security unit tests
 ├── generators/                # Nx generators for extending template capabilities
 │   └── service/
 ├── temporal_db/               # Rust crate + schemas powering sled temporal storage
@@ -120,13 +137,20 @@ VibesPro/
 │   ├── temporal-db/           # CLI scripts for initializing & backing up sled data
 │   ├── type-generator/        # Cross-language schema-to-type pipeline
 │   └── docs/                  # Documentation build + link checking scripts
+├── scripts/
+│   └── track-binary-size.sh   # Binary size overhead tracking for security features
 ├── tests/
 │   ├── integration/           # Copier generation, CI workflow, and prompt guard tests
+│   │   └── security/          # Security template generation E2E tests
+│   ├── security/              # Security validation suite (cargo audit, performance, plaintext)
 │   ├── temporal/              # Temporal DB contract and regression suites
 │   └── unit/                  # Python + TypeScript unit tests
 └── docs/
     ├── mergekit/              # ADR/PRD/SDS/TS governing specs
-    └── aiassist/               # AI-assisted TDD planning artefacts
+    └── aiassist/              # AI-assisted TDD planning artefacts
+        ├── PHASE-006-CHECKLIST.md          # Security hardening task checklist
+        ├── PHASE-006-COMPLETION-SUMMARY.md # Security implementation summary
+        └── SECURITY_TESTING.md             # Security testing procedures
 ```
 
 ---
@@ -155,6 +179,9 @@ VibesPro standardises on [`sled`](https://docs.rs/sled/latest/sled/) for tempora
 | `just test-generation` | Generates a project in `../test-output`, builds it, and runs smoke tests. |
 | `just spec-guard` | Executes spec matrix generation, prompt linting, Markdown lint, GitHub checks, and Node regression tests (mirrors CI). |
 | `just types-generate` / `just types-validate` | Synchronise and verify cross-language type definitions. |
+| `just security-validate` | Run comprehensive security validation suite (audit, plaintext check, size tracking). |
+| `just security-scan` | Execute all security scans via GitHub Actions locally. |
+| `just security-size-check` | Track encryption overhead and binary size impact. |
 | `python tools/temporal-db/init.py …` | Initialize, inspect, or back up the sled temporal database. |
 
 Shared Nx/just automation is validated by `tests/integration/generated-ci-regression.test.ts` so generated repos remain CI-ready.

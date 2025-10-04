@@ -6,7 +6,7 @@
 
 ## Codebase Context
 
-**You are assisting with** {{ project_purpose }} This application follows {{ architecture_style }} architecture with domain-driven design, organized around bounded contexts: {{ primary_domains.replace(',', ', ') }}. The technology stack includes {{ app_framework }} (frontend), {{ backend_framework }} (backend), {{ database_type }} (database){% if tech_stack_summary %}, and {{ tech_stack_summary }}{% endif %}.
+**You are assisting with** {{ project_purpose }} This application follows {{ architecture_style }} architecture with domain-driven design, organized around bounded contexts: {{ primary_domains.replace(',', ', ') }}. The technology stack includes {{ app_framework }} (frontend), {{ backend_framework }} (backend), {{ database_type }} (database){% if tech_stack_summary %}, and {{ tech_stack_summary }}{% endif %}.{% if enable_security_hardening %} This project includes security hardening with XChaCha20-Poly1305 encrypted databases and distroless container images.{% endif %}
 
 > **💡 Tip**: To refine this description as your project evolves, use the project context refinement prompt:
 > `@workspace /project.describe-context.prompt.md`
@@ -15,7 +15,7 @@
 
 When generating code or suggestions:
 
-1. **Security First**: Never modify `.vscode/settings.json` or `.vscode/tasks.json` without explicit user confirmation. Never set `chat.tools.autoApprove` (disables human-in-the-loop controls).
+1. **Security First**: Never modify `.vscode/settings.json` or `.vscode/tasks.json` without explicit user confirmation. Never set `chat.tools.autoApprove` (disables human-in-the-loop controls).{% if enable_security_hardening %} When working with encrypted databases, ensure encryption keys are never logged, committed, or exposed in plain text. Validate that `SecureDb` is used for sensitive data storage.{% endif %}
 
 2. **Composition Over Inheritance**: Favor small, testable functions and dependency injection. Avoid deep inheritance hierarchies.
 
@@ -33,7 +33,8 @@ When generating code or suggestions:
 
 ### Testing & Verification
 - **Generate** tests for new functionality (unit → integration → e2e)
-- **Remind user** to run `just ai-validate` before committing (lint/typecheck/test)
+- **Remind user** to run `just ai-validate` before committing (lint/typecheck/test){% if enable_security_hardening %}
+- **Run** `just security-validate` when modifying security-related code (encryption, key management, SecureDb){% endif %}
 - **Suggest** TDD workflow using `.github/chatmodes/tdd.*` when appropriate
 
 ### Token Efficiency
@@ -134,7 +135,9 @@ Refs: #142, SDS-CORE-002
 - [ ] No security configuration modifications proposed without flagging for user approval
 - [ ] No external commands suggested without explicit user confirmation requirement
 - [ ] No technical debt introduced (or remediation plan included in suggestion)
-- [ ] Dependencies checked for known vulnerabilities
+- [ ] Dependencies checked for known vulnerabilities{% if enable_security_hardening %}
+- [ ] Encryption keys never exposed in logs, commits, or plaintext files
+- [ ] SecureDb used for sensitive data; plaintext sled only for non-sensitive data{% endif %}
 - [ ] Tests generated/updated for new behavior
 - [ ] Spec IDs included in code comments and commit suggestions
 - [ ] Responses use summaries over full file dumps to respect token budgets
