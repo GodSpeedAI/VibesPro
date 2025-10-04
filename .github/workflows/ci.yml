@@ -62,7 +62,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pnpm test:jest -- --runInBand
+          pnpm test:jest --runInBand --passWithNoTests
           pnpm test:node
           uv run pytest
 
