@@ -11,4 +11,5 @@ Provides-Extra: dev
 Requires-Dist: ruff>=0.6.0; extra == "dev"
 Requires-Dist: mypy>=1.11.0; extra == "dev"
 Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
 Dynamic: license-file
