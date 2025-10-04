@@ -118,7 +118,7 @@ test-integration:
 test-generation:
 	@echo "🧪 Testing template generation..."
 	rm -rf ../test-output
-	copier copy . ../test-output --data-file tests/fixtures/test-data.yml
+	copier copy . ../test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force
 	cd ../test-output && pnpm install && { \
 		echo "🏗️ Building all projects..."; \
 		pnpm build --if-present || { \
