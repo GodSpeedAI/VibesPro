@@ -17,7 +17,7 @@
 - **References:** AI_ADR-002, AI_ADR-003, AI_PRD-001, AI_PRD-004, AI_SDS-001, AI_SDS-002, AI_SDS-003
 - **Details:**
   - **`.github` Integration:** Generated repositories include instructions, prompts, chat modes, workflows, and `models.yaml`, preserving frontmatter precedence.
-  - **Documentation Integration:** Maintainer docs stay in `docs/aiassit/`; generated docs live under `templates/{{project_slug}}/docs/**` and README templates.
+  - **Documentation Integration:** Maintainer docs stay in `docs/aiassist/`; generated docs live under `templates/{{project_slug}}/docs/**` and README templates.
   - **MCP Integration:** `mcp/tool_index.md` documents descriptors; `.vscode/mcp.json` guidance instructs users to configure environment variables for authentication.
   - **Generator Integration:** Stack-aware Nx generators read from `tools/transformers/.derived/techstack.resolved.json` if present, handling absent files gracefully.
 - **Assumptions:**

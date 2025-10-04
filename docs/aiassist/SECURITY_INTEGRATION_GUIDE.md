@@ -22,9 +22,9 @@ This guide explains how to incorporate security hardening features into the Vibe
 
 | Document | Purpose | Location |
 |----------|---------|----------|
-| **AI_SECURITY_HARDENING.md** | Complete technical specification | `/docs/aiassit/AI_SECURITY_HARDENING.md` |
-| **AI_ADR-006** | Architectural decision record | `/docs/aiassit/AI_ADR.md` (appended) |
-| **AI_TDD_PLAN PHASE-006** | Implementation task breakdown | `/docs/aiassit/AI_TDD_PLAN.md` (added) |
+| **AI_SECURITY_HARDENING.md** | Complete technical specification | `/docs/aiassist/AI_SECURITY_HARDENING.md` |
+| **AI_ADR-006** | Architectural decision record | `/docs/aiassist/AI_ADR.md` (appended) |
+| **AI_TDD_PLAN PHASE-006** | Implementation task breakdown | `/docs/aiassist/AI_TDD_PLAN.md` (added) |
 
 ### 2. Source Material (Reference)
 
@@ -237,7 +237,7 @@ mkdir -p templates/.archived/security/
 mv templates/{{project_slug}}/libs/security templates/.archived/security/
 
 # 3. Update documentation
-echo "⚠️ Security hardening features are archived pending fixes" >> docs/aiassit/AI_SECURITY_HARDENING.md
+echo "⚠️ Security hardening features are archived pending fixes" >> docs/aiassist/AI_SECURITY_HARDENING.md
 
 # 4. Revert copier.yml variables (comment out)
 # 5. Remove from AI_TDD_PLAN PHASE-006 (mark as deferred)

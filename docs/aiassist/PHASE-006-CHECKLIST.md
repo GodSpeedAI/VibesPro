@@ -81,7 +81,7 @@
   - [x] Added plaintext detection with log scanning
 
 - [x] **Documentation**
-  - [x] Document security testing procedures in `docs/aiassit/SECURITY_TESTING.md`
+  - [x] Document security testing procedures in `docs/aiassist/SECURITY_TESTING.md`
   - [x] Created comprehensive testing guide with troubleshooting
   - [x] Documented performance optimization roadmap
   - [x] Added test coverage matrix and KPI dashboard
@@ -292,7 +292,7 @@
 - [x] `PHASE-006` in AI_TDD_PLAN.md ✅ (Created)
 - [x] `SECURITY_INTEGRATION_GUIDE.md` ✅ (Created)
 - [x] `templates/{{project_slug}}/docs/security/ENCRYPTION.md.j2` ✅ (Exists from TASK-014)
-- [x] `docs/aiassit/SECURITY_TESTING.md` ✅ (Created)
+- [x] `docs/aiassist/SECURITY_TESTING.md` ✅ (Created)
 
 ### Traceability
 
@@ -322,7 +322,7 @@ mv templates/{{project_slug}}/libs/security templates/.archived/security/
 # enable_security_hardening, encryption_backend, tpm_enabled
 
 # 3. Update documentation
-echo "⚠️ PHASE-006 rolled back - see rollback log" >> docs/aiassit/AI_TDD_PLAN.md
+echo "⚠️ PHASE-006 rolled back - see rollback log" >> docs/aiassist/AI_TDD_PLAN.md
 
 # 4. Revert commits (if necessary)
 git revert <commit-range>
@@ -338,7 +338,7 @@ When all checkboxes are ✅:
 2. **Update AGENTS.md** with PHASE-006 completion
 3. **Generate first production-hardened project**
 4. **Document lessons learned**
-5. **Archive this checklist** to `docs/aiassit/completed/PHASE-006-CHECKLIST.md`
+5. **Archive this checklist** to `docs/aiassist/completed/PHASE-006-CHECKLIST.md`
 
 ---
 

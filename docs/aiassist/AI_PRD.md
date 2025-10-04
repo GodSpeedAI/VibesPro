@@ -18,12 +18,12 @@
 ## AI_PRD-002 — Documentation available for maintainers and generated users
 
 - **Related ADRs:** AI_ADR-001, AI_ADR-003
-- **Requirement (EARS):** When updating the template, the maintainers shall provide AI workflow documentation in `docs/aiassit/`, and the Copier template shall emit user-facing AI guidance into generated docs so that both audiences understand expectations.
+- **Requirement (EARS):** When updating the template, the maintainers shall provide AI workflow documentation in `docs/aiassist/`, and the Copier template shall emit user-facing AI guidance into generated docs so that both audiences understand expectations.
 - **User Stories:**
   - As a template maintainer, I need a canonical reference to evolve the AI system.
   - As a generated-project user, I want accessible instructions describing AI workflows without hunting through maintainer notes.
 - **Acceptance Criteria:**
-  1. `docs/aiassit/` contains maintainer-focused ADR, PRD, SDS, TS, and integration plan documents.
+  1. `docs/aiassist/` contains maintainer-focused ADR, PRD, SDS, TS, and integration plan documents.
   2. Generated projects include AI workflow onboarding material referenced from their README or docs tree.
   3. Documentation updates link to relevant spec IDs.
 - **Success Metrics:**

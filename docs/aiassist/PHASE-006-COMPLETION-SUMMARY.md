@@ -75,7 +75,7 @@ tpm_enabled: {type: bool, default: false}
 - `scripts/track-binary-size.sh` - Binary size tracking
 - `.github/workflows/security-scan.yml` - CI security workflow
 - `justfile` - Security validation recipes
-- `docs/aiassit/SECURITY_TESTING.md` - Testing procedures
+- `docs/aiassist/SECURITY_TESTING.md` - Testing procedures
 
 **Test Results:**
 - ✅ 4/5 validation tests passing (1 ignored: binary size comparison)
@@ -162,11 +162,11 @@ just security-validate       # Run all validations
 ## Documentation Deliverables
 
 ### Specifications (Created)
-- ✅ `docs/aiassit/AI_SECURITY_HARDENING.md` - Full specification
-- ✅ `docs/aiassit/AI_ADR-006.md` - Architecture decision record
-- ✅ `docs/aiassit/SECURITY_INTEGRATION_GUIDE.md` - Integration guide
-- ✅ `docs/aiassit/SECURITY_TESTING.md` - Testing procedures
-- ✅ `docs/aiassit/AI_TDD_PLAN.md` (PHASE-006 section)
+- ✅ `docs/aiassist/AI_SECURITY_HARDENING.md` - Full specification
+- ✅ `docs/aiassist/AI_ADR-006.md` - Architecture decision record
+- ✅ `docs/aiassist/SECURITY_INTEGRATION_GUIDE.md` - Integration guide
+- ✅ `docs/aiassist/SECURITY_TESTING.md` - Testing procedures
+- ✅ `docs/aiassist/AI_TDD_PLAN.md` (PHASE-006 section)
 
 ### Generated Project Docs
 - ✅ `templates/.../docs/security/ENCRYPTION.md.j2` - User-facing guide
@@ -297,7 +297,7 @@ git revert <commit-range>
 1. ✅ Merge to main branch with PR review
 2. ✅ Update AGENTS.md with PHASE-006 completion
 3. ⏳ Generate first production-hardened project for validation
-4. ⏳ Archive checklist to `docs/aiassit/completed/`
+4. ⏳ Archive checklist to `docs/aiassist/completed/`
 
 ### Future Work (Optional Optimization)
 1. Performance optimization (200% → <10% overhead)
