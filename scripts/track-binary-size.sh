@@ -33,14 +33,29 @@ echo "Building baseline (no security features)..."
 cargo build --release --no-default-features 2>/dev/null || {
     echo "⚠️  Using sled baseline instead"
     # Create a minimal sled-only binary for comparison
-    cat > /tmp/minimal_sled.rs <<'EOF'
+    # Create a minimal sled-only binary for comparison using cargo
+    MINIMAL_SLED_DIR="/tmp/minimal_sled_proj"
+    mkdir -p "$MINIMAL_SLED_DIR"
+    cat > "$MINIMAL_SLED_DIR/Cargo.toml" <<'EOF'
+[package]
+name = "minimal_sled"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sled = "*"
+EOF
+
+    mkdir -p "$MINIMAL_SLED_DIR/src"
+    cat > "$MINIMAL_SLED_DIR/src/main.rs" <<'EOF'
 fn main() {
     let db = sled::open("/tmp/test").unwrap();
     db.insert(b"key", b"value").unwrap();
 }
 EOF
-    rustc --edition 2021 /tmp/minimal_sled.rs -o target/release/vibes-pro-plain \
-        --extern sled=$(find target/release/deps -name 'libsled-*.rlib' | head -1) 2>/dev/null || {
+
+    cargo build --release --manifest-path "$MINIMAL_SLED_DIR/Cargo.toml" 2>/dev/null && \
+        cp "$MINIMAL_SLED_DIR/target/release/minimal_sled" target/release/vibes-pro-plain || {
         echo "⚠️  Using libs/security size as both baseline and secure (conservative estimate)"
         PLAIN_SIZE=$SECURE_SIZE
     }
