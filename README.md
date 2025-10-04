@@ -129,11 +129,11 @@ VibesPro/
 │   │   ├── libs/security/     # SecureDb encrypted wrapper (optional, Jinja2 conditional)
 │   │   └── docs/security/     # Security documentation (ENCRYPTION.md)
 │   ├── docs/                  # Documentation templates & MkDocs layouts
-│   └── tools/prompt-optimizer # AI prompt optimizer packaging (sled-aware)
+│   └── tools/prompt-optimizer # AI prompt optimizer packaging (redb-aware)
 ├── libs/
-│   ├── prompt-optimizer/      # Python prompt optimizer with sled temporal adapter
+│   ├── prompt-optimizer/      # Python prompt optimizer with redb temporal adapter
 │   └── security/              # Rust SecureDb crate with XChaCha20-Poly1305 encryption
-│       ├── src/secure_db.rs   # Encrypted sled wrapper
+│       ├── src/secure_db.rs   # Encrypted redb wrapper (SecureDb)
 │       ├── src/key_mgmt.rs    # HKDF key derivation, TPM sealing support
 │       └── tests/unit/        # Security unit tests
 ├── generators/                # Nx generators for extending template capabilities
@@ -169,10 +169,10 @@ VibesPro/
 
 VibesPro standardizes on [`redb`](https://docs.rs/redb/) for temporal learning so architectural decisions, prompt telemetry, and optimization feedback remain local, queryable, and fast. **Note:** We migrated from sled to redb in TASK-017 (PHASE-006) for better long-term stability and active maintenance.
 
-- **Rust core (`temporal_db/repository.rs`)** – Manages specification storage, architectural pattern analysis, and decision logging with sled key-spaces (`spec:*`, `pattern:*`, `change:*`).
-- **Python adapters** – `libs/prompt-optimizer/infrastructure/temporal_db.py` talks to sled via the `SledTemporalDatabaseAdapter`, providing JSON/SQLite fallbacks when bindings are missing so generation tests stay deterministic.
+- **Rust core (`temporal_db/repository.rs`)** – Manages specification storage, architectural pattern analysis, and decision logging with redb tables (SPECIFICATIONS, PATTERNS, CHANGES).
+- **Python adapters** – `libs/prompt-optimizer/infrastructure/temporal_db.py` uses `RedbTemporalDatabaseAdapter` (with backward-compatible `SledTemporalDatabaseAdapter` alias), providing JSON/SQLite fallbacks when Rust bindings are unavailable for deterministic testing.
 - **Tooling scripts** – `python tools/temporal-db/init.py` seeds baseline ADRs, patterns, and decision history. Subcommands include `init`, `status`, and `backup` (`--db-path` defaults to `./temporal_db/project_specs.db`).
-- **Prompt analytics** – `scripts/measure_tokens_enhanced.py` demonstrates using the sled-backed adapter to persist prompt token metrics and optimization outcomes.
+- **Prompt analytics** – `scripts/measure_tokens_enhanced.py` demonstrates using the redb-backed adapter to persist prompt token metrics and optimization outcomes.
 
 > **Tip:** Add the `temporal_db/` directory to your generated project’s `.gitignore` if you prefer to keep temporal learning data local to each developer machine.
 
@@ -192,7 +192,7 @@ VibesPro standardizes on [`redb`](https://docs.rs/redb/) for temporal learning s
 | `just security-validate` | Run comprehensive security validation suite (audit, plaintext check, size tracking). |
 | `just security-scan` | Execute all security scans via GitHub Actions locally. |
 | `just security-size-check` | Track encryption overhead and binary size impact. |
-| `python tools/temporal-db/init.py …` | Initialize, inspect, or back up the sled temporal database. |
+| `python tools/temporal-db/init.py …` | Initialize, inspect, or back up the redb temporal database. |
 
 Shared Nx/just automation is validated by `tests/integration/generated-ci-regression.test.ts` so generated repos remain CI-ready.
 
@@ -203,7 +203,7 @@ Shared Nx/just automation is validated by `tests/integration/generated-ci-regres
 - **Specification-driven TDD** – Every change traces back to IDs in `docs/mergekit/*.md`; regression tests assert spec coverage.
 - **Unit tests** – `uv run pytest` (Python) and `pnpm test` (TypeScript) run from `tests/unit/` and package-level suites.
 - **Integration & E2E** – `tests/integration/template-smoke.test.ts` and `generated-ci-regression.test.ts` exercise full Copier generation, workflow configuration, and spec guardrails.
-- **Temporal DB tests** – `temporal_db/lib.rs` includes async sled integration tests; run `cargo test --manifest-path temporal_db/Cargo.toml` when modifying Rust storage logic.
+- **Temporal DB tests** – `temporal_db/lib.rs` includes async redb integration tests; run `cargo test --lib` when modifying Rust storage logic.
 - **Static analysis** – `uv run mypy`, `uv run ruff`, `pnpm lint`, and `python tools/validate-templates.py` enforce strict typing and template health.
 - **Performance** – `tests/performance/` and `just benchmark` (if enabled) ensure project generation and builds stay within SLA (<30s generation, <2m build for standard templates).
 
@@ -238,7 +238,7 @@ Templates detect your selections via Copier answers and only materialise the rel
 ### Current Release: 0.1.0 (Phase 5)
 
 - ✅ Foundation: Copier scaffolds, Nx/just hybrid build system, CI workflows.
-- ✅ Sled temporal database integration across Rust crates, Python adapters, and prompt optimizer templates.
+- ✅ Redb temporal database integration across Rust crates, Python adapters, and prompt optimizer templates (migrated from sled in TASK-017).
 - ✅ AI context manager + prompt optimizer tooling bundled with generated projects.
 - 🚧 Advanced AI pattern prediction and context heuristics for long-running projects.
 - 📋 Template marketplace & custom generator catalog (design in progress).
@@ -247,7 +247,7 @@ Templates detect your selections via Copier answers and only materialise the rel
 
 | Version | Focus | Target |
 |---------|-------|--------|
-| 0.2.0 | Deeper sled analytics, performance tuning, context heuristics | Q1 2025 |
+| 0.2.0 | Deeper redb analytics, performance tuning, context heuristics | Q1 2025 |
 | 0.3.0 | Template marketplace, additional domain generators, observability packs | Q2 2025 |
 | 1.0.0 | Production certification, comprehensive documentation refresh | Q3 2025 |
 
@@ -271,7 +271,7 @@ See `CONTRIBUTING.md` for style guidance and branching conventions.
 
 - Licensed under the **Mozilla Public License 2.0** – see `LICENSE` for details.
 - Built on the shoulders of **HexDDD** (hexagonal + DDD patterns) and **VibePDK** (AI-enhanced template accelerator).
-- Sled database integration inspired by ongoing community work around embedded, high-performance temporal stores.
+- Redb database integration (migrated from sled in TASK-017) for embedded, high-performance temporal stores with active maintenance.
 
 ---
 
@@ -279,7 +279,7 @@ See `CONTRIBUTING.md` for style guidance and branching conventions.
 
 - ⚡ 95% faster setup time (minutes vs weeks for enterprise-grade scaffolding).
 - 🎯 100% architecture compliance enforced by automated checks.
-- 🧠 >80% acceptance rate for AI-suggested architectural improvements once sled learning stabilises.
+- 🧠 >80% acceptance rate for AI-suggested architectural improvements as redb learning matures.
 - 📊 Generation time <30s and build time <2m for the standard project template.
 
 ---
