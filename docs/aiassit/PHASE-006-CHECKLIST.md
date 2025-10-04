@@ -241,7 +241,7 @@
   - [x] Added plaintext detection with log scanning
 
 - [x] **Documentation**
-  - [x] Document security testing procedures in `docs/aiassist/SECURITY_TESTING.md`
+  - [x] Document security testing procedures in `docs/aiassit/SECURITY_TESTING.md`
   - [x] Created comprehensive testing guide with troubleshooting
   - [x] Documented performance optimization roadmap
   - [x] Added test coverage matrix and KPI dashboard
