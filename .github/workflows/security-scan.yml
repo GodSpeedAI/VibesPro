@@ -1,0 +1,121 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly on Mondays at 00:00 UTC
+    - cron: "0 0 * * 1"
+
+jobs:
+  cargo-audit:
+    name: Cargo Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+
+      - name: Run cargo audit
+        working-directory: libs/security
+        run: cargo audit --deny warnings
+
+  performance-benchmark:
+    name: Performance Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build security library
+        working-directory: libs/security
+        run: cargo build --release
+
+      - name: Run performance tests
+        run: cargo test --test validation_suite test_performance_overhead --release -- --nocapture
+
+      - name: Check startup time
+        run: cargo test --test validation_suite test_startup_time_overhead --release -- --nocapture
+
+  binary-size-tracking:
+    name: Binary Size Tracking
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install bc (calculator)
+        run: sudo apt-get update && sudo apt-get install -y bc
+
+      - name: Run binary size check
+        run: bash scripts/track-binary-size.sh
+
+      - name: Upload size report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-size-report
+          path: |
+            target/release/vibes-pro-*
+            libs/security/target/release/*
+
+  security-validation:
+    name: Security Validation Suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Rust validation tests
+        run: cargo test --test validation_suite
+
+      - name: Run E2E security tests
+        run: pnpm test tests/integration/security/e2e_security_test.ts
+
+  plaintext-detection:
+    name: Plaintext Detection Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run plaintext detection test
+        run: cargo test --test validation_suite test_no_plaintext_in_encrypted_db -- --nocapture
+
+      - name: Verify no sensitive data in logs
+        run: |
+          # Check that test logs don't contain plaintext secrets
+          if cargo test --test validation_suite 2>&1 | grep -i "super_secret"; then
+            echo "❌ Plaintext secrets found in test output!"
+            exit 1
+          else
+            echo "✅ No plaintext secrets in output"
+          fi
