@@ -234,9 +234,9 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
 1. **Review Documentation**
    ```bash
    # Read these in order:
-   cat docs/aiassit/AI_SECURITY_HARDENING.md      # Technical spec
-   cat docs/aiassit/AI_ADR.md | grep -A50 ADR-006  # Decision rationale
-   cat docs/aiassit/PHASE-006-CHECKLIST.md         # Step-by-step guide
+   cat docs/aiassist/AI_SECURITY_HARDENING.md      # Technical spec
+   cat docs/aiassist/AI_ADR.md | grep -A50 ADR-006  # Decision rationale
+   cat docs/aiassist/PHASE-006-CHECKLIST.md         # Step-by-step guide
    ```
 
 2. **Update copier.yml**
@@ -259,7 +259,7 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
 
 ### Resources Available
 
-- **Full specification:** `docs/aiassit/AI_SECURITY_HARDENING.md` (12 sections, 500+ lines)
+- **Full specification:** `docs/aiassist/AI_SECURITY_HARDENING.md` (12 sections, 500+ lines)
 - **Reference code:** All implementations pre-written in specification
 - **Test cases:** All tests pre-written in specification
 - **Docker configs:** Dockerfile and docker-compose.yml ready to copy

@@ -523,7 +523,7 @@ Topics:
 
 ### 8.2 Developer Docs
 
-**Location:** `docs/aiassit/SECURITY_IMPLEMENTATION.md`
+**Location:** `docs/aiassist/SECURITY_IMPLEMENTATION.md`
 
 Topics:
 - Cryptographic design decisions
