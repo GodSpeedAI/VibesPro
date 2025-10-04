@@ -21,7 +21,7 @@ try:
     from libs.prompt_optimizer.application.use_cases.analyze_prompt_use_case import AnalyzePromptUseCase
     from libs.prompt_optimizer.application.use_cases.optimize_prompt_use_case import OptimizePromptUseCase
     from libs.prompt_optimizer.infrastructure.adapters.tiktoken_adapter import TiktokenAdapter
-    from libs.prompt_optimizer.infrastructure.adapters.sled_temporal_database_adapter import SledTemporalDatabaseAdapter
+    from libs.prompt_optimizer.infrastructure.adapters.sled_temporal_database_adapter import RedbTemporalDatabaseAdapter
     from libs.prompt_optimizer.domain.entities.prompt import Prompt
     from libs.prompt_optimizer.domain.value_objects.optimization_goal import OptimizationGoal
     from libs.prompt_optimizer.domain.value_objects.ai_model import AIModel
@@ -38,7 +38,7 @@ class PromptOptimizerCLI:
         """Initialize the CLI with necessary adapters."""
         if ENHANCED_MODE:
             self.token_counter = TiktokenAdapter()
-            self.database = SledTemporalDatabaseAdapter(str(project_root / "temporal_db"))
+            self.database = RedbTemporalDatabaseAdapter(str(project_root / "temporal_db"))
             self.analyze_use_case = AnalyzePromptUseCase(self.token_counter, self.database)
             self.optimize_use_case = OptimizePromptUseCase(self.token_counter, self.database)
 
