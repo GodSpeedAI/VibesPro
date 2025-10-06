@@ -261,12 +261,38 @@ Imagine a world where:
 
 ---
 
-## 📜 License & Gratitude
+## 📜 License & Community
 
 Built with ❤️ by the VibesPro community.
-Licensed under **Mozilla Public License 2.0** – see `LICENSE` for details.
 
 **Special thanks** to every contributor who believed that building software could feel less like archaeology and more like artistry.
+
+### Understanding Your Rights: The Photoshop Rule 🖼️
+
+We follow what we call **"The Photoshop Rule"** — a simple way to understand how you can use VibesPro without getting lost in legal jargon:
+
+> **Think of VibesPro like Photoshop.**
+>
+> You can use Photoshop to design, paint, or build anything — logos, posters, full digital worlds. You can sell your art, keep it private, or use it inside your company.
+>
+> What you *can't* do is **sell Photoshop itself** or offer "Photoshop as a service."
+
+It's the same with VibesPro:
+
+- ✅ **Use VibesPro freely inside your organization** — generate projects, build applications, support your development workflows
+- ✅ **Use it to create outputs** (applications, services, codebases) and use or sell those outputs however you like
+- ✅ **Modify and customize** templates and generators for your team's needs
+- ❌ **Don't resell VibesPro itself** — you can't package it up and offer it as a hosted platform or SaaS to third parties without a commercial license
+- ❌ **Don't strip out VibesPro's core** to make a competing generator service
+
+**Dual License Structure:**
+
+- 🧩 **MPL-2.0 (Open Source)** — for personal, educational, and internal company use
+- 💼 **Commercial License** — required if you want to embed, resell, or offer VibesPro as a hosted service
+
+**In short:** Build amazing things with VibesPro. Sell what you build. Just don't sell VibesPro itself.
+
+See `LICENSE` for complete legal terms.
 
 ---
 
