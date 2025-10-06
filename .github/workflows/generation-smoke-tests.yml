@@ -45,7 +45,7 @@ jobs:
         run: |
           TARGET_DIR=$(mktemp -d)
           echo "Rendering into $TARGET_DIR"
-          uvx copier copy . "$TARGET_DIR" --data-file tests/fixtures/test-data.yml --force
+          uvx copier copy . "$TARGET_DIR" --data-file tests/fixtures/test-data.yml --force --trust
           echo "RENDERED_DIR=$TARGET_DIR" >> $GITHUB_ENV
           echo "Rendered files:" && ls -la "$TARGET_DIR" | sed -n '1,120p'
 
