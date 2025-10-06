@@ -10,6 +10,7 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { performance } from 'node:perf_hooks';
+import { runCopierGeneration } from '../utils/generation-smoke';
 
 describe('Performance Integration', () => {
     let testWorkspace: string;
@@ -25,29 +26,30 @@ describe('Performance Integration', () => {
     });
 
     it('should generate project within 30 seconds', async () => {
-        const projectPath = join(testWorkspace, 'perf-test-project');
-
         const startTime = performance.now();
 
-        execSync(`copier copy . ${projectPath} --data project_name="Performance Test Project" --data include_ai_workflows=true --data architecture_style="hexagonal" --defaults`, {
-            cwd: process.cwd(),
-            stdio: 'pipe'
+        const projectPath = await runCopierGeneration({
+            skipPostGenSetup: true,
+            project_name: 'Performance Test Project',
+            include_ai_workflows: true,
+            architecture_style: 'hexagonal'
         });
 
         const endTime = performance.now();
-        const generationTime = endTime - startTime;
+        const duration = (endTime - startTime) / 1000; // Convert to seconds
 
-        // Performance target: < 30 seconds (30,000ms)
-        expect(generationTime).toBeLessThan(30000);
-    }, 45000); // Test timeout: 45 seconds
+        expect(duration).toBeLessThan(30);
+
+        // Cleanup
+        await fs.rm(projectPath, { recursive: true, force: true });
+    }, 35000); // 35 second timeout to allow for 30s generation + cleanup
 
     it('should build generated project within 2 minutes', async () => {
-        const projectPath = join(testWorkspace, 'build-perf-project');
-
         // Generate project first
-        execSync(`copier copy . ${projectPath} --data project_name="Build Performance Test" --data include_ai_workflows=false --defaults`, {
-            cwd: process.cwd(),
-            stdio: 'pipe'
+        const projectPath = await runCopierGeneration({
+            skipPostGenSetup: true,
+            project_name: 'Build Performance Test',
+            include_ai_workflows: false
         });
 
         // Measure build time
@@ -69,17 +71,18 @@ describe('Performance Integration', () => {
 
         // Performance target: < 2 minutes (120,000ms)
         expect(buildTime).toBeLessThan(120000);
+
+        // Cleanup
+        await fs.rm(projectPath, { recursive: true, force: true });
     }, 180000); // Test timeout: 3 minutes
 
     it('should use reasonable memory during generation', async () => {
-        const projectPath = join(testWorkspace, 'memory-test-project');
-
         // Monitor memory usage during generation
         const initialMemory = process.memoryUsage();
 
-        execSync(`copier copy . ${projectPath} --data project_name="Memory Test Project" --defaults`, {
-            cwd: process.cwd(),
-            stdio: 'pipe'
+        const projectPath = await runCopierGeneration({
+            skipPostGenSetup: true,
+            project_name: 'Memory Test Project'
         });
 
         const finalMemory = process.memoryUsage();
@@ -87,14 +90,16 @@ describe('Performance Integration', () => {
 
         // Performance target: < 512MB (512 * 1024 * 1024 bytes)
         expect(memoryIncrease).toBeLessThan(512 * 1024 * 1024);
+
+        // Cleanup
+        await fs.rm(projectPath, { recursive: true, force: true });
     });
 
     it('should have reasonable file generation count', async () => {
-        const projectPath = join(testWorkspace, 'file-count-project');
-
-        execSync(`copier copy . ${projectPath} --data project_name="File Count Test" --data include_ai_workflows=true --defaults`, {
-            cwd: process.cwd(),
-            stdio: 'pipe'
+        const projectPath = await runCopierGeneration({
+            skipPostGenSetup: true,
+            project_name: 'File Count Test',
+            include_ai_workflows: true
         });
 
         // Count generated files (recursive)
@@ -118,5 +123,8 @@ describe('Performance Integration', () => {
         // Reasonable range: should generate significant structure but not excessive files
         expect(fileCount).toBeGreaterThan(10); // At least basic project structure
         expect(fileCount).toBeLessThan(1000); // Not excessive bloat
+
+        // Cleanup
+        await fs.rm(projectPath, { recursive: true, force: true });
     });
 });

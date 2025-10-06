@@ -16,7 +16,8 @@ describe('Generated Project Scripts', () => {
         generatedProjectPath = await runCopierGeneration({
             dataFile: 'tests/fixtures/test-data.yml',
             useDefaults: true,
-            force: true
+            force: true,
+            skipPostGenSetup: true
         });
     });
 

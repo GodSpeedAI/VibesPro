@@ -9,8 +9,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import yaml
-
 
 def run(cmd: list[str], cwd: Path) -> None:
     """Run a subprocess, printing the command for visibility."""
@@ -24,6 +22,12 @@ def generate_types(target: Path) -> None:
     type_generator_dir = target / "tools" / "type-generator"
     schema_path = target / "temporal_db" / "schema.json"
     ts_output_dir = target / "libs" / "shared" / "database-types"
+
+    # Check if type generator exists in generated project
+    if not type_generator_dir.exists():
+        print(f"   → Type generator not found at {type_generator_dir}, skipping type generation.")
+        return
+
     if not schema_path.parent.exists():
         print("   → Temporal database assets not found, skipping type generation.")
         return
@@ -49,6 +53,7 @@ def generate_types(target: Path) -> None:
 
 
 def _is_hardening_enabled(target: Path) -> bool:
+    """Check if security hardening is enabled via env var or answers file."""
     env_val = os.environ.get("COPIER_ENABLE_SECURITY_HARDENING")
     if env_val is not None:
         return str(env_val).lower() in ("1", "true", "yes")
@@ -57,10 +62,16 @@ def _is_hardening_enabled(target: Path) -> bool:
         answers = target / fname
         if answers.exists():
             try:
+                import yaml  # Lazy import to avoid dependency issues when skipping setup
                 data = yaml.safe_load(answers.read_text()) or {}
                 if isinstance(data, dict) and "enable_security_hardening" in data:
                     return bool(data.get("enable_security_hardening"))
+            except ImportError:
+                # PyYAML not available - this is expected in test environments
+                # Default to False since we can't read the answers file
+                return False
             except Exception:
+                # Any other error reading/parsing the file
                 return False
 
     return False
@@ -82,12 +93,14 @@ def setup_generated_project(target: Path) -> None:
 
     if skip_setup:
         print('⚠️ Skipping install/build steps (COPIER_SKIP_PROJECT_SETUP=1)')
-    else:
-        print('🔧 Setting up generated project...')
-        generate_types(target)
-        run(["pnpm", "install"], cwd=target)
-        run(["uv", "sync", "--dev"], cwd=target)
-        run(["just", "build"], cwd=target)
+        cleanup_security_assets(target)
+        return
+
+    print('🔧 Setting up generated project...')
+    generate_types(target)
+    run(["pnpm", "install"], cwd=target)
+    run(["uv", "sync", "--dev"], cwd=target)
+    run(["just", "build"], cwd=target)
 
     cleanup_security_assets(target)
 

@@ -20,7 +20,12 @@ _skip_if_exists:
   - &AI_TEMPLATE_TEMPORAL_DB_DIR "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db{% endif %}"
 
 _tasks:
-  - ["python3", "hooks/post_gen.py"]
+  - ["{{ _copier_python }}", "{{ _copier_conf.src_path }}/hooks/post_gen.py"]
+
+project_name:
+  type: str
+  help: "Project name (human-readable, will be converted to slug)"
+  default: "My Project"
 
 project_slug:
   type: str

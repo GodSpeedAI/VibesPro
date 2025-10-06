@@ -13,25 +13,15 @@ import { execSync, spawnSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { runCopierGeneration } from '../utils/generation-smoke';
 
 const generateProject = async (): Promise<string> => {
-    const projectRoot = await fs.mkdtemp(join(tmpdir(), 'vibes-ci-test-'));
-
-    execSync(
-        [
-            'copier',
-            'copy',
-            '.',
-            projectRoot,
-            '--data-file',
-            'tests/fixtures/test-data.yml',
-            '--defaults',
-            '--force'
-        ].join(' '),
-        { cwd: process.cwd(), stdio: 'inherit' }
-    );
-
-    return projectRoot;
+    return await runCopierGeneration({
+        skipPostGenSetup: true,
+        project_name: 'test-ci-project',
+        include_ai_workflows: true,
+        architecture_style: 'hexagonal'
+    });
 };
 
 const runCIScriptDryRun = (projectRoot: string, scriptName: string): { status: number; stdout: string; stderr: string } => {

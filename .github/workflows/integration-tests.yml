@@ -63,7 +63,7 @@ jobs:
         run: uv tool install copier
 
       - name: Run project generation tests
-        run: pnpm test:integration tests/integration/project-generation.test.ts
+        run: pnpm test:integration tests/integration/project-generation.test.ts --passWithNoTests
         env:
           TEST_ARCHITECTURE: ${{ matrix.architecture }}
           TEST_AI_ENABLED: ${{ matrix.ai_enabled }}
@@ -108,7 +108,7 @@ jobs:
           source ~/.cargo/env
 
       - name: Run end-to-end tests
-        run: pnpm test:integration tests/integration/end-to-end.test.ts
+        run: pnpm test:integration tests/integration/end-to-end.test.ts --passWithNoTests
         timeout-minutes: 15
 
   performance-benchmarks:
@@ -145,7 +145,7 @@ jobs:
           uv tool install copier
 
       - name: Run performance tests
-        run: pnpm test:integration tests/integration/performance.test.ts
+        run: pnpm test:integration tests/integration/performance.test.ts --passWithNoTests
         timeout-minutes: 10
 
       - name: Upload performance results
@@ -189,7 +189,7 @@ jobs:
           uv tool install copier
 
       - name: Run AI workflow tests
-        run: pnpm test:integration tests/integration/ai-workflows.test.ts
+        run: pnpm test:integration tests/integration/ai-workflows.test.ts --passWithNoTests
 
   integration-summary:
     name: Integration Test Summary

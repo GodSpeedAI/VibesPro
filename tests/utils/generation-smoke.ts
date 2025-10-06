@@ -130,7 +130,7 @@ export const runGenerationSmokeTest = async (): Promise<SmokeTestResult> => {
     const workspaceRoot = await fs.mkdtemp(join(tmpdir(), 'vibes-smoke-'));
 
     try {
-        runCopier(workspaceRoot);
+        runCopier(workspaceRoot, { skipPostGenSetup: true });
 
         const promptsAvailable = await ensureScriptExists(workspaceRoot, 'prompt:lint');
         const specMatrixAvailable = await ensureScriptExists(workspaceRoot, 'spec:matrix');

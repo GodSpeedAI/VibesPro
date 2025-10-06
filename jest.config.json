@@ -18,7 +18,6 @@
         "/dist/",
         "/coverage/",
         "/tools/ai/",
-        "/tests/integration/",
         "/tests/generators/",
         "/tests/ci/",
         "tests/unit/spec_ids.test.js",

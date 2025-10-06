@@ -34,6 +34,8 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@7b1c307e0dcbda6122208f10795a713336a9b35a # stable
+        with:
+          toolchain: stable
 
       - name: Build security library
         working-directory: libs/security
@@ -53,6 +55,8 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@7b1c307e0dcbda6122208f10795a713336a9b35a # stable
+        with:
+          toolchain: stable
 
       - name: Install bc (calculator)
         run: sudo apt-get update && sudo apt-get install -y bc
@@ -77,11 +81,13 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@7b1c307e0dcbda6122208f10795a713336a9b35a # stable
+        with:
+          toolchain: stable
 
       - name: Install pnpm
         uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
         with:
-          version: 8
+          version: 9
 
       - name: Install Node.js
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
@@ -110,6 +116,8 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@7b1c307e0dcbda6122208f10795a713336a9b35a # stable
+        with:
+          toolchain: stable
 
       - name: Run plaintext detection test
         run: cargo test --test validation_suite test_no_plaintext_in_encrypted_db -- --nocapture

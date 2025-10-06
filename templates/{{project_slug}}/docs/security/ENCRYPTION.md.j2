@@ -40,7 +40,7 @@ Generated projects without the flag have zero runtime impact or dependencies.
 - Prefer injecting `ENCRYPTION_KEY` through a secret manager or TPM-backed
   binding; set `tpm_enabled=true` in Copier answers when hardware support
   exists.
-- Rotate keys by:
+- Perform key rotation by:
   1. Exporting encrypted data (optional backup).
   2. Deploying a new key value to staging and verifying application behaviour.
   3. Rolling the change through production with zero-downtime deployments.
