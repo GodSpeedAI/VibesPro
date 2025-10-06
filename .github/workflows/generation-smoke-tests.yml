@@ -42,6 +42,8 @@ jobs:
         uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
 
       - name: Render template to temporary dir
+        env:
+          COPIER_SKIP_PROJECT_SETUP: "1"
         run: |
           TARGET_DIR=$(mktemp -d)
           echo "Rendering into $TARGET_DIR"
