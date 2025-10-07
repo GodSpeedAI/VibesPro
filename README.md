@@ -1,6 +1,6 @@
 # 🌟 VibesPro – Your AI-Powered Architecture Companion
 
-[![CI](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml/badge.svg)](https://github.com/SPRIME01/Vibes-Pro/actions/workflows/ci.yml)
+[![CI](https://github.com/GodSpeedAI/VibesPro/actions/workflows/ci.yml/badge.svg)](https://github.com/GodSpeedAI/VibesPro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org)
