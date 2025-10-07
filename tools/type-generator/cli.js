@@ -371,7 +371,7 @@ function renamePythonField(className, fromName, toName, pyFilePath, pyClassField
 program
   .name('typegen')
   .description('TypeScript and Python type generator from database schema')
-  .version('0.0.1')
+  .version('0.1.0')
   .configureOutput({
     outputError: (str, write) => {
       write(`❌ Error: ${str}`);
