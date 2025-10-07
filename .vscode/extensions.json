@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "esbenp.prettier-vscode",
+    "ms-vscode-remote.remote-containers",
+    "nrwl.angular-console",
+    "dbaeumer.vscode-eslint",
+    "samuelcolvin.jinjahtml",
+    "redhat.vscode-yaml",
+    "github.vscode-github-actions"
+  ]
+}
