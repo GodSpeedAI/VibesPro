@@ -66,6 +66,27 @@ db-init:
 # Backup temporal database
 db-backup:
     python tools/temporal-db/backup.py
+
+# Customize copilot instructions interactively
+customize-instructions:
+    @echo "🤖 Interactive Copilot Instructions Customization"
+    @echo "=================================================="
+    @echo ""
+    @echo "This will guide you through customizing .github/copilot-instructions.md"
+    @echo "for your project. Answer questions about your:"
+    @echo "  - Project type and tech stack"
+    @echo "  - Architecture and domain"
+    @echo "  - Team size and development practices"
+    @echo "  - Testing, security, and deployment approaches"
+    @echo ""
+    @echo "You can also use the 'meta.customize-instructions' chat mode in VS Code."
+    @echo ""
+    @read -p "Press Enter to start the interactive customization..."
+    @echo ""
+    @echo "Opening .github/prompts/customize.copilot-instructions.prompt.md..."
+    @echo "Please use this prompt in your AI chat (GitHub Copilot or VS Code chat)."
+    @echo ""
+    @cat .github/prompts/customize.copilot-instructions.prompt.md
 {% endif %}
 
 _detect_build_system:
