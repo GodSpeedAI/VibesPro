@@ -1,4 +1,4 @@
-```chatmode
+````chatmode
 ---
 kind: chatmode
 domain: tdd
@@ -22,7 +22,7 @@ pnpm exec nx list
 
 # Use generator to scaffold
 just ai-scaffold name=<generator>
-```
+````
 
 See `.github/instructions/generators-first.instructions.md` for complete workflow.
 
@@ -51,6 +51,8 @@ tools: ["codebase", "search", "runTests"]
 ---
 
 )
+
+```
 
 ```
 

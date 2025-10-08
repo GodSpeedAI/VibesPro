@@ -206,12 +206,12 @@ To verify AI assistants now use generators:
 
 ## Key Benefits
 
-✅ **Consistency:** All projects/libs use standard Nx structure  
-✅ **Maintainability:** Generated code follows conventions  
-✅ **Project Graph:** Nx knows all dependencies and relationships  
-✅ **Less Boilerplate:** Generators handle config files automatically  
-✅ **Discoverability:** AI can list and use all available generators  
-✅ **Safety:** Generator-first prevents ad-hoc project structures  
+✅ **Consistency:** All projects/libs use standard Nx structure
+✅ **Maintainability:** Generated code follows conventions
+✅ **Project Graph:** Nx knows all dependencies and relationships
+✅ **Less Boilerplate:** Generators handle config files automatically
+✅ **Discoverability:** AI can list and use all available generators
+✅ **Safety:** Generator-first prevents ad-hoc project structures
 
 ---
 
@@ -253,12 +253,12 @@ To verify AI assistants now use generators:
 
 ## Commit Details
 
-**Commit:** a5b6098  
-**Message:** ✨feat(ai-workflows): integrate generator-first policy across all AI workflows  
-**Files:** 8 changed, 574 insertions(+), 2 deletions(-)  
-**Branch:** main  
+**Commit:** a5b6098
+**Message:** ✨feat(ai-workflows): integrate generator-first policy across all AI workflows
+**Files:** 8 changed, 574 insertions(+), 2 deletions(-)
+**Branch:** main
 
-**Traceability:**  
+**Traceability:**
 Addresses user requirement: "ai assisted instructions, chatmodes, prompts should use generators first for all coding tasks leveraging just recipes (Nx Generators) before adding unique code"
 
 ---

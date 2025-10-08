@@ -22,6 +22,24 @@ description: "Implement a feature per PRD/ADR/SDS/TS with tests and traceability
 
 ## Task
 
+### 0. Check for Nx Generators (REQUIRED FIRST STEP)
+
+**Before writing any code**, check if an Nx generator exists to scaffold this feature:
+
+```bash
+# List available generators
+pnpm exec nx list
+
+# Use generator via just recipe (recommended)
+just ai-scaffold name=<generator>
+```
+
+**See `.github/instructions/generators-first.instructions.md` for complete workflow.**
+
+Only proceed to manual implementation if no appropriate generator exists.
+
+### 1. Plan Implementation
+
 1. Plan edits with file list and impact radius.
 2. Implement per SDS/TS boundaries and ADR constraints.
 3. Add/extend tests and update CI gates per DEV specs.

@@ -1,5 +1,16 @@
 # Repository‑Wide Copilot Instructions
 
+The purpose of these instructions is to provide repository‑specific guidance to GitHub Copilot and VS Code's AI chat features. These instructions apply to every file in the repository.
+
+## 🎯 Core Principles (HIGHEST PRIORITY)
+
+- **Generator-First Requirement**: Before writing any new code, ALWAYS check if an Nx generator exists to scaffold it. Use `just ai-scaffold name=<generator>` or consult `.github/instructions/generators-first.instructions.md` and `.github/instructions/nx.instructions.md`. Only write custom code after confirming no appropriate generator exists.
+- **Security First**: Never write or modify `.vscode/settings.json` or `.vscode/tasks.json` without explicit user confirmation. Avoid setting `chat.tools.autoApprove` in any configuration, as this disables human confirmation and can lead to remote code execution.
+
+## 📋 General Guidelines
+
+- This repository contains a modular AI assistant and related tooling written primarily in TypeScript with a Node.js runtime. When generating code, follow our established coding guidelines, naming conventions, and architectural patterns described in the instruction files under `.github/instructions`.sitory‑Wide Copilot Instructions
+
 The purpose of these instructions is to provide repository‑specific guidance to GitHub Copilot and VS Code’s AI chat features. These instructions apply to every file in the repository.
 
 - This repository contains a modular AI assistant and related tooling written primarily in TypeScript with a Node.js runtime. When generating code, follow our established coding guidelines, naming conventions, and architectural patterns described in the instruction files under `.github/instructions`.
