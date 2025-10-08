@@ -24,9 +24,6 @@ dependencies = [
 {% if include_supabase %}
     "supabase>=2.0.0",
 {% endif %}
-{% if enable_temporal_learning %}
-    "tsink>=0.1.0",  # Temporal database for specifications
-{% endif %}
     "pydantic-settings>=2.1.0",
     "python-multipart>=0.0.6",
     "python-jose[cryptography]>=3.3.0",
