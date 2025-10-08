@@ -8,6 +8,18 @@
 
 ---
 
+## 📋 Important: Template vs. Generated Project
+
+**VibesPro is a Copier template, not a standalone application.**
+
+- 🎨 **This repository** contains the template that generates projects
+- 🏗️ **You work in** the projects that VibesPro generates for you
+- 🚀 **Quick start:** `copier copy gh:GodSpeedAI/VibesPro my-project`
+
+Think of VibesPro as a **cookie cutter** 🍪—you don't work inside the cookie cutter, you use it to create cookies (projects) that you then customize and enjoy!
+
+---
+
 ## 🎬 Picture This...
 
 It's Monday morning. Your team just got greenlit to build a new service. You know the business logic inside and out, but the thought of setting up *yet another* codebase makes you weary. Copy-pasting from the last project? Risky. Starting from scratch? Days of boilerplate await.
@@ -33,9 +45,9 @@ Think of it as a **GPS for software architecture**—you tell it where you want 
 
 ## ✨ How It Works (The Human Way)
 
-### Step 1: **Tell Us What You're Building**
+### Step 1: **Generate Your Project from the Template**
 ```bash
-just setup
+copier copy gh:GodSpeedAI/VibesPro my-project-name
 # Answer a few friendly questions about your project
 ```
 
@@ -43,6 +55,8 @@ Imagine ordering a custom coffee: "I'd like a web API with user authentication, 
 
 ### Step 2: **Watch Your Project Take Shape**
 ```bash
+cd my-project-name
+just setup
 # Minutes later, not days...
 ```
 
@@ -124,17 +138,19 @@ Think of your application like a **modern building**:
 ## 🚦 Get Started in Three Commands
 
 ```bash
-# 1. Set everything up (one-time, runs itself)
-just setup
+# 1. Generate your project from the VibesPro template
+copier copy gh:GodSpeedAI/VibesPro my-awesome-project
 
-# 2. Create your first project (answer a few questions)
-copier copy . my-awesome-project
+# 2. Set up the generated project's environment
+cd my-awesome-project && just setup
 
 # 3. See it in action (really, it's ready)
-cd my-awesome-project && pnpm dev
+pnpm dev
 ```
 
 **That's it.** You're building.
+
+> 💡 **Note:** Don't clone the VibesPro repository to work from it directly. VibesPro is a **template** that generates new projects. You use Copier to create a project FROM this template, then work in that generated project.
 
 ---
 
@@ -161,10 +177,13 @@ cd my-awesome-project && pnpm dev
 
 | What You Want | What You Type | What Happens |
 |---------------|---------------|--------------|
-| **Set up everything** | `just setup` | Installs all tools and dependencies (once and done) |
+| **Generate a new project** | `copier copy gh:GodSpeedAI/VibesPro my-project` | Creates a new project from the template |
+| **Set up generated project** | `cd my-project && just setup` | Installs all tools and dependencies in your new project |
 | **Check quality before pushing** | `just spec-guard` | Runs all validators—like spell-check for architecture |
-| **Test a new template** | `just test-generation` | Makes sure generated projects actually work |
+| **Test the template** | `just test-generation` | Makes sure generated projects actually work (for contributors) |
 | **Run all tests** | `pnpm nx run-many --target=test` | Confidence that nothing broke |
+
+> 📝 **For Template Contributors:** If you're developing VibesPro itself, clone this repo and run `just setup` to set up the development environment. Most users should use Copier to generate projects instead.
 
 ---
 
