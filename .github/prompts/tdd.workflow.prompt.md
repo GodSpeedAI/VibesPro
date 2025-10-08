@@ -21,7 +21,10 @@ description: "TDD phases (Red/Green/Refactor) aligned to specs and CALM."
 
 ## Red (Write Failing Test)
 
+**If creating a new module/component**: Check for Nx generators FIRST via `just ai-scaffold name=<generator>` (see `.github/instructions/generators-first.instructions.md`).
+
 - Locate the spec items; write the smallest failing test proving the requirement.
+- If generator created test scaffold, customize it for spec requirements.
 - No production code changes.
 
 ## Green (Make It Pass)

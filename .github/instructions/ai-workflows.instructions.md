@@ -10,6 +10,11 @@ precedence: 20
 
 This policy keeps AI-assisted flows safe, portable, and maintainable.
 
+- **Generator-First Policy**
+  - **ALWAYS check for Nx generators before writing code**: See `.github/instructions/generators-first.instructions.md`
+  - Use `just ai-scaffold name=<generator>` to scaffold components/libs/apps first
+  - Only write custom code after confirming no appropriate generator exists
+  - Cross-reference with `.github/instructions/nx.instructions.md` for Nx MCP server tools
 - Namespacing
   - Use `ai-*` names for Just recipes (e.g., `ai-context-bundle`). Chat modes now use domain.task pattern (e.g., `tdd.red`, `debug.start`).
 - Prompt dedupe
