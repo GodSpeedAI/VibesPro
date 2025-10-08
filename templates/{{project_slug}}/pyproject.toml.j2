@@ -24,6 +24,9 @@ dependencies = [
 {% if include_supabase %}
     "supabase>=2.0.0",
 {% endif %}
+{% if enable_temporal_learning %}
+    "redb>=2.1.0",  # Embedded key-value database for temporal specifications
+{% endif %}
     "pydantic-settings>=2.1.0",
     "python-multipart>=0.0.6",
     "python-jose[cryptography]>=3.3.0",
