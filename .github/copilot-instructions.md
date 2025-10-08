@@ -744,4 +744,4 @@ The `temporal_db/` stores:
 
 For detailed guidance on any topic, consult the modular instruction files in `.github/instructions/`.
 
-**Save and generated summaries in the docs/workingdocs/ folder for future reference.**
+**Save and generated summaries in the docs/workdocs/ folder for future reference.**

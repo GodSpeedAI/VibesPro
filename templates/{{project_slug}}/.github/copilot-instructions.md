@@ -27,22 +27,26 @@ The purpose of these instructions is to provide repository‑specific guidance t
 For more detailed guidelines, see the individual instruction files in `.github/instructions`.
 
 ## Spec-driven workflow and ordering
-- Prefer architectural and interface constraints first: ADR → SDS/Technical Specs → PRD → DEV-* specs (DEV-PRD/DEV-ADR/DEV-SDS/DEV-TS).
+
+- Prefer architectural and interface constraints first: ADR → SDS/Technical Specs → PRD → DEV-\* specs (DEV-PRD/DEV-ADR/DEV-SDS/DEV-TS).
 - If conflicts arise, capture a short “Spec Gaps” note in the relevant doc and propose 2–3 options.
 - Maintain traceability: reference spec IDs in code/doc comments and commits, and keep the matrix up to date.
 
 See: `docs/spec_index.md`, `docs/dev_spec_index.md`, and `docs/traceability_matrix.md` (if present).
 
 ## Commit messages and reviews
+
 - Follow `.github/instructions/commit-msg.instructions.md` for commit messages.
 - Summaries should explain what/why with spec IDs, note risks and mitigations, and keep the subject ≤ 72 chars in imperative mood.
 
 ## MCP tools (optional)
+
 - Tool descriptors live under `mcp/` with a `tool_index.md` and individual `*.tool.md` files.
 - Do not hardcode secrets; read tokens from environment variables in settings or runtime.
 - These descriptors are optional and may be used to document available tools for MCP-aware setups.
 
 ## Using AI workflows (TDD, Debug)
+
 - Chat modes added under `.github/chatmodes/`:
   - TDD: `tdd.red`, `tdd.green`, `tdd.refactor`
   - Debug: `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`, `debug.refactor`, `debug.regress`
@@ -52,3 +56,5 @@ See: `docs/spec_index.md`, `docs/dev_spec_index.md`, and `docs/traceability_matr
 - Scaffolding: `just ai-scaffold name=<generator>` wraps `pnpm exec nx g` (safe if pnpm/Nx missing).
 
 See: `.github/instructions/ai-workflows.instructions.md` for conventions and risk mitigations.
+
+**Save and generated summaries in the docs/workdocs/ folder for future reference (create it if it doesn't exist).**
