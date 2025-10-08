@@ -99,7 +99,15 @@ def setup_generated_project(target: Path) -> None:
     print('🔧 Setting up generated project...')
     generate_types(target)
     run(["pnpm", "install"], cwd=target)
-    run(["uv", "sync", "--dev"], cwd=target)
+    
+    # Only run uv sync if there's an actual Python package structure
+    # Python apps are generated via Nx (@nxlv/python) after template initialization
+    python_packages = list(target.glob("*/__init__.py")) or list(target.glob("src/*/__init__.py"))
+    if python_packages:
+        run(["uv", "sync", "--dev"], cwd=target)
+    else:
+        print("   → Skipping uv sync (no Python package found - generate via Nx later)")
+    
     run(["just", "build"], cwd=target)
 
     cleanup_security_assets(target)
