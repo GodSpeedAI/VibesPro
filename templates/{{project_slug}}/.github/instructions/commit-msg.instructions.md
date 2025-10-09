@@ -6,43 +6,99 @@ domain: docs
 precedence: 15
 ---
 
-# Commit Message Guidelines
+### ✨ Core Principles
 
-Write clear, scannable messages that explain **what changed and why**. Follow conventional commit format: type(scope): description
+- **Clarity & Actionability:** Every commit message should make it easy to understand what changed and why—at a glance.
+- **Blend of Code & Reasoning:** Surface the rationale and context when it adds value (e.g., for architectural, non-obvious, or risky changes), but keep routine commits concise.
+- **Traceability & Automation:** Reference relevant specs, issues, or design docs to support automated workflows and future audits.
+- **Cognitive Ergonomics:** Use a small, meaningful emoji set to improve scanability—never for decoration.
+- **Validation & Risk Awareness:** Explicitly note how changes were tested, any risks introduced, and mitigation strategies.
 
-Structure
+---
 
-- Use imperative mood ("Add", not "Added").
-- Keep the subject line ≤ 50 characters.
-- Use bullet points for multiple changes in the body.
-- If a change is breaking, add a clear "⚠️BREAKING CHANGE:" section and call it out in the subject or body.
+### 📝 Commit Message Structure
 
-Content focus
+| Section         | Guidance                                                                                   |
+|-----------------|-------------------------------------------------------------------------------------------|
+| **Subject**     | ≤ 72 chars, imperative mood (“Add”, “Fix”, “Refactor”). Summarize the main action.        |
+| **Body**        | Wrap at 72–100 cols. Explain **what** changed and **why** (not just how).                 |
+| **Traceability**| Reference spec/issue IDs (e.g., PRD-xxx, ADR-xxx, SDS-xxx, TS-xxx, DEV-*, AI_*).         |
+| **Emojis**      | Use a small, documented set for quick scanning (e.g., ✨, 🐛,♻️, ⚠️). No decorative use.  |
+| **Risks**       | Call out security, performance, UX, or operational risks and how you mitigated them.      |
+| **Validation**  | Note updated tests, docs, or scripts. Mention deferred follow-ups and mitigation plans.   |
 
-- Explain business impact and rationale, not implementation minutiae.
-- Link to issues/tickets or spec IDs when relevant (e.g., PRD-xxx, ADR-xxx, SDS-xxx, TS-xxx, DEV-\*).
-- Call out Risks/Mitigations (security, perf, UX) and any testing or rollout steps.
-- Mention updated or added tests and docs.
+---
 
-Tone & visuals
+### 🧠 When to Surface Analytical Context
 
-- Use meaningful emojis sparingly (✨ for features, 🐛 for bugfixes, ♻️ for refactors, ⚠️ for risks).
-- Include diagrams (e.g., mermaid) only when they clarify complex architectural changes.
+- **Do include reasoning** for:
+  - Architectural changes
+  - Non-obvious bug fixes
+  - Performance/security optimizations
+  - Trade-offs or alternatives considered
+- **Keep it concise** for:
+  - Routine refactors
+  - Simple feature additions
+  - Standard dependency updates
 
-Traceability & examples
+---
 
-- Include at least one spec ID when applicable to align with commit-msg hooks and review traceability.
-- Examples:
-  - ✨feat(auth): add login rate limiter (PRD-042, DEV-123)
-    - Adds rate limiter + unit tests; updates docs/auth.md
-    - ⚠️Risk: potential login latency spike; Mitigation: gradual rollout with monitoring
-  - 🐛fix(api): handle null payloads (DEV-456)
-    - Prevents 500s on malformed requests; adds regression tests
+### 🛠️ Example Commit Messages
 
-Formatting tips
+#### 1. Feature with Context & Traceability
 
-- Wrap body at ~72–100 cols.
-- Keep the subject concise and specific.
-- Use the body for the why, impact, and test plan.
+```
+✨ feat(auth): add two-factor authentication
 
-Note: This aligns with our existing commit-msg hook that expects a spec ID in the commit message.
+Implements TOTP-based 2FA to enhance account security.
+Motivation: Addresses PRD-102 and mitigates risk of credential stuffing attacks.
+Tested with new integration tests; docs updated.
+Refs: PRD-102, SDS-45
+```
+
+#### 2. Bug Fix with Root Cause
+
+```
+🐛 fix(ui): resolve dropdown misalignment on profile page
+
+Dropdown was misaligned due to conflicting CSS.
+Root cause: Overlapping flexbox rules.
+Tested on all supported browsers.
+Fixes: DEV-789
+```
+
+#### 3. Refactor with Rationale
+
+```
+♻️ refactor(user-service): modularize user validation logic
+
+Split monolithic validateUser() into smaller, testable functions.
+Motivation: Improves maintainability and test coverage.
+Unit tests added.
+Refs: ADR-112
+```
+
+#### 4. Breaking Change with Risk & Mitigation
+
+```
+⚠️ feat(config): support config inheritance via 'extends' key
+
+BREAKING CHANGE: Config files now support 'extends' for modularity.
+Migration: Existing configs must add 'extends' or update structure.
+Mitigation: Migration script provided; see docs.
+Refs: ADR-102, PRD-45
+```
+
+---
+
+### 📋 Quick Reference Table
+
+| Element         | Why It Matters                                                                                 |
+|-----------------|-----------------------------------------------------------------------------------------------|
+| **Subject**     | Fast scan, enables automation, sets context                                                    |
+| **Body**        | Captures intent, rationale, and value for future readers                                       |
+| **Traceability**| Links code to specs/issues, supports audits and automation                                     |
+| **Emojis**      | Boosts scanability, signals change type                                                        |
+| **Risks**       | Surfaces potential issues, supports safe deployment                                            |
+| **Validation**  | Documents testing, docs, and follow-ups for accountability                                     |
+
