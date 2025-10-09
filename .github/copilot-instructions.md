@@ -14,6 +14,7 @@
 - **Template-Based Generation** using Copier + Jinja2 with Nx monorepo orchestration
 
 ### Primary Goal
+
 Optimize developer experience through intelligent code generation, AI-assisted workflows, and spec-driven development—all integrated natively into VS Code tooling.
 
 ---
@@ -78,23 +79,27 @@ temporal_db/          # AI learning database (sled - Rust-based embedded DB)
 ### How We Work Together
 
 **You (Copilot)** and **I (Developer)** build production code together:
+
 - **Developer**: Guides architecture, catches complexity early, makes decisions
 - **Copilot**: Handles implementation details, suggests patterns, validates approaches
 
 ### Core Workflow: Research → Plan → Implement → Validate
 
-**Always start every feature with**: *"Let me research the codebase and create a plan before implementing."*
+**Always start every feature with**: _"Let me research the codebase and create a plan before implementing."_
 
 1. **Research** - Understand existing patterns and architecture
+
    - Use semantic search, grep, and file reads to gather context
    - Identify related specs, ADRs, and existing implementations
 
 2. **Plan** - Propose approach and verify with developer
+
    - Present 2-3 options when uncertainty exists
    - Reference spec IDs and architectural constraints
    - Get explicit approval before proceeding
 
 3. **Implement** - Build with tests and error handling
+
    - Follow established patterns from codebase
    - Match testing approach to code complexity
    - Include traceability comments (spec IDs)
@@ -120,27 +125,29 @@ temporal_db/          # AI learning database (sled - Rust-based embedded DB)
 ### Type Safety (CRITICAL)
 
 #### TypeScript
+
 - **Strict mode enabled**: `strict: true` in tsconfig.json
 - **No `any` types**: Use `unknown` and type guards instead
 - **100% type coverage**: All public APIs must be fully typed
 - **Prefer interfaces over types** for object shapes
 
 #### Python
+
 - **mypy strict mode**: 100% type coverage required
 - **Type all function signatures**: Args, returns, and raises
 - **Use `typing` module**: Generic types, Protocol, TypedDict
 
 ### File Naming Patterns
 
-| File Type | Pattern | Location | Example |
-|-----------|---------|----------|---------|
-| Prompts | `*.prompt.md` | `.github/prompts/` | `tdd.workflow.prompt.md` |
-| Instructions | `*.instructions.md` | `.github/instructions/` | `security.instructions.md` |
-| Chat Modes | `*.chatmode.md` | `.github/chatmodes/` | `persona.system-architect.chatmode.md` |
-| Templates | `{{variable}}.ext.j2` | `templates/` | `{{project_slug}}.config.ts.j2` |
-| Tests (Node) | `*.test.js` / `*.test.ts` | `tests/unit/`, `tests/integration/` | `context-manager.test.ts` |
-| Tests (Python) | `test_*.py` | `tests/` | `test_spec_parser.py` |
-| Specs (Shell) | `*_spec.sh` | `tests/shell/` | `run_prompt_spec.sh` |
+| File Type      | Pattern                   | Location                            | Example                                |
+| -------------- | ------------------------- | ----------------------------------- | -------------------------------------- |
+| Prompts        | `*.prompt.md`             | `.github/prompts/`                  | `tdd.workflow.prompt.md`               |
+| Instructions   | `*.instructions.md`       | `.github/instructions/`             | `security.instructions.md`             |
+| Chat Modes     | `*.chatmode.md`           | `.github/chatmodes/`                | `persona.system-architect.chatmode.md` |
+| Templates      | `{{variable}}.ext.j2`     | `templates/`                        | `{{project_slug}}.config.ts.j2`        |
+| Tests (Node)   | `*.test.js` / `*.test.ts` | `tests/unit/`, `tests/integration/` | `context-manager.test.ts`              |
+| Tests (Python) | `test_*.py`               | `tests/`                            | `test_spec_parser.py`                  |
+| Specs (Shell)  | `*_spec.sh`               | `tests/shell/`                      | `run_prompt_spec.sh`                   |
 
 ### Code Organization Patterns
 
@@ -194,26 +201,31 @@ export class UserController {
 ### Critical Security Rules
 
 1. **NEVER modify VS Code configuration files without explicit user confirmation**
+
    - `.vscode/settings.json`
    - `.vscode/tasks.json`
    - Rationale: Malicious changes can enable auto-approval (`chat.tools.autoApprove`) → Remote Code Execution
 
 2. **Always sanitize and validate ALL user inputs**
+
    - Never interpolate untrusted data into shell commands
    - Use prepared statements for SQL queries
    - Validate file paths, URLs, and external data
 
 3. **Respect VS Code workspace trust boundaries**
+
    - Do not run tasks or execute code in untrusted folders
    - Require user confirmation before executing external commands
 
 4. **Secret Management**
+
    - NEVER hardcode secrets in code or configuration
    - Use environment variables or secret stores
    - Expect `.env` files or external secret management
    - Never commit keys to version control
 
 5. **Cryptographic Standards**
+
    - Use `crypto/rand` for randomness (not Math.random)
    - Use modern crypto libraries (libsodium, Web Crypto API)
    - Follow current best practices for hashing, encryption
@@ -252,14 +264,14 @@ ADR → SDS/Technical Specs → PRD → DEV-* specs
 
 ### Key Specification Documents
 
-| Document | Purpose | Location |
-|----------|---------|----------|
-| ADR | Architectural decisions | `docs/dev_adr.md` |
-| PRD | Product requirements | `docs/dev_prd.md` |
-| SDS | Software design spec | `docs/dev_sds.md` |
-| TS | Technical specifications | `docs/dev_technical-specifications.md` |
-| Spec Index | Specification catalog | `docs/spec_index.md`, `docs/dev_spec_index.md` |
-| Traceability | Requirement mapping | `docs/traceability_matrix.md` |
+| Document     | Purpose                  | Location                                       |
+| ------------ | ------------------------ | ---------------------------------------------- |
+| ADR          | Architectural decisions  | `docs/dev_adr.md`                              |
+| PRD          | Product requirements     | `docs/dev_prd.md`                              |
+| SDS          | Software design spec     | `docs/dev_sds.md`                              |
+| TS           | Technical specifications | `docs/dev_technical-specifications.md`         |
+| Spec Index   | Specification catalog    | `docs/spec_index.md`, `docs/dev_spec_index.md` |
+| Traceability | Requirement mapping      | `docs/traceability_matrix.md`                  |
 
 ### Handling Conflicts
 
@@ -277,30 +289,33 @@ ADR → SDS/Technical Specs → PRD → DEV-* specs
 
 **Match testing approach to code complexity:**
 
-| Scenario | Approach | Rationale |
-|----------|----------|-----------|
-| Complex business logic | **TDD** (Test-First) | High confidence, clear requirements |
-| Simple CRUD operations | **Code-First, Then Tests** | Avoid over-engineering |
-| Hot paths / Performance-critical | **Add benchmarks after implementation** | Measure before optimizing |
-| Security-sensitive code | **TDD + Security Review** | Zero tolerance for vulnerabilities |
+| Scenario                         | Approach                                | Rationale                           |
+| -------------------------------- | --------------------------------------- | ----------------------------------- |
+| Complex business logic           | **TDD** (Test-First)                    | High confidence, clear requirements |
+| Simple CRUD operations           | **Code-First, Then Tests**              | Avoid over-engineering              |
+| Hot paths / Performance-critical | **Add benchmarks after implementation** | Measure before optimizing           |
+| Security-sensitive code          | **TDD + Security Review**               | Zero tolerance for vulnerabilities  |
 
 ### Test Types & Organization
 
 #### Unit Tests
 
 **Node.js/TypeScript (Jest)**
+
 - Location: `tests/unit/**/*.test.ts`, `tests/unit/**/*.test.js`
 - Use `node:assert` for simple cases, Jest for complex scenarios
 - Structure: Arrange → Act → Assert
 - Isolation: Mock external dependencies, use dependency injection
 
 **Python (pytest)**
+
 - Location: `tests/unit/test_*.py`
 - Use pytest fixtures for setup
 - mypy strict mode: 100% type coverage in tests
 - Use `pytest-cov` for coverage reports
 
 **Rust (cargo test)**
+
 - Location: `temporal_db/tests/`
 - Run: `cargo test --manifest-path temporal_db/Cargo.toml`
 
@@ -389,16 +404,16 @@ pnpm test-generation
 
 ### Key Orchestration Commands (justfile)
 
-| Command | Purpose |
-|---------|---------|
-| `just setup` | Full environment setup (Node + Python + Tools) |
-| `just dev` | Start all dev servers (parallel) |
-| `just test` | Run all test suites |
-| `just ai-validate` | Lint + typecheck + optional tests |
-| `just ai-context-bundle` | Generate AI context bundle in `docs/ai_context_bundle/` |
-| `just ai-scaffold name=<gen>` | Run Nx generator safely |
-| `just spec-guard` | Validate specs, prompts, and docs |
-| `just prompt-lint` | Lint all prompt files |
+| Command                       | Purpose                                                 |
+| ----------------------------- | ------------------------------------------------------- |
+| `just setup`                  | Full environment setup (Node + Python + Tools)          |
+| `just dev`                    | Start all dev servers (parallel)                        |
+| `just test`                   | Run all test suites                                     |
+| `just ai-validate`            | Lint + typecheck + optional tests                       |
+| `just ai-context-bundle`      | Generate AI context bundle in `docs/ai_context_bundle/` |
+| `just ai-scaffold name=<gen>` | Run Nx generator safely                                 |
+| `just spec-guard`             | Validate specs, prompts, and docs                       |
+| `just prompt-lint`            | Lint all prompt files                                   |
 
 ### CI/CD Integration
 
@@ -413,6 +428,7 @@ pnpm test-generation
 ### Context Management
 
 **AI Context Bundle** (`just ai-context-bundle`)
+
 - Generates `docs/ai_context_bundle/` with:
   - CALM architecture docs
   - Tech stack information
@@ -425,18 +441,22 @@ pnpm test-generation
 Specialized AI personas in `.github/chatmodes/`:
 
 #### Development Personas
+
+- `persona.navigator.chatmode.md` - Elite multi-language coding assistant with MCP integration
 - `persona.system-architect.chatmode.md` - Architectural guidance
 - `persona.senior-backend.chatmode.md` - Backend best practices
 - `persona.senior-frontend.chatmode.md` - Frontend patterns
 - `persona.qa.chatmode.md` - Testing strategies
 
 #### Workflow Modes
+
 - **TDD**: `tdd.red`, `tdd.green`, `tdd.refactor`
 - **Debug**: `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`, `debug.refactor`, `debug.regress`
 - **DevOps**: `devops.audit`, `devops.deployment`
 - **Product**: `product.manager`, `product.elevator-pitch`, `product.features-list`
 
 #### Specification Modes
+
 - `spec.lean.chatmode.md` - Minimal spec generation
 - `spec.wide.chatmode.md` - Comprehensive spec generation
 - `spec.nfr.chatmode.md` - Non-functional requirements
@@ -445,21 +465,22 @@ Specialized AI personas in `.github/chatmodes/`:
 
 Key prompts in `.github/prompts/`:
 
-| Prompt | Purpose |
-|--------|---------|
-| `spec.implement.prompt.md` | Implement from specification |
-| `spec.plan.*.prompt.md` | Generate ADR, PRD, SDS, TS docs |
-| `tdd.workflow.prompt.md` | TDD workflow guidance |
-| `debug.workflow.prompt.md` | Debugging workflow |
-| `sec.review.prompt.md` | Security audit |
-| `perf.analyze.prompt.md` | Performance analysis |
-| `docs.generate.prompt.md` | Documentation generation |
+| Prompt                     | Purpose                         |
+| -------------------------- | ------------------------------- |
+| `spec.implement.prompt.md` | Implement from specification    |
+| `spec.plan.*.prompt.md`    | Generate ADR, PRD, SDS, TS docs |
+| `tdd.workflow.prompt.md`   | TDD workflow guidance           |
+| `debug.workflow.prompt.md` | Debugging workflow              |
+| `sec.review.prompt.md`     | Security audit                  |
+| `perf.analyze.prompt.md`   | Performance analysis            |
+| `docs.generate.prompt.md`  | Documentation generation        |
 
 ### Modular Instruction Stacking
 
 **MECE Principle** (Mutually Exclusive, Collectively Exhaustive)
 
 Instructions are organized by domain with precedence:
+
 1. `security.instructions.md` (precedence: 10) - HIGHEST
 2. `testing.instructions.md` (precedence: 35)
 3. `general.instructions.md` (precedence: 50)
@@ -483,6 +504,7 @@ Instructions are organized by domain with precedence:
 ### Frontend Style (React/TypeScript)
 
 See `.github/instructions/style.frontend.instructions.md` for details:
+
 - Functional components with hooks
 - CSS Modules or styled-components
 - Accessibility (ARIA, semantic HTML)
@@ -491,6 +513,7 @@ See `.github/instructions/style.frontend.instructions.md` for details:
 ### Python Style
 
 See `.github/instructions/style.python.instructions.md` for details:
+
 - PEP 8 compliance via `ruff`
 - Type hints everywhere (`mypy --strict`)
 - Docstrings (Google style)
@@ -499,6 +522,7 @@ See `.github/instructions/style.python.instructions.md` for details:
 ### Documentation
 
 See `.github/instructions/docs.instructions.md` for details:
+
 - Markdown linting (markdownlint)
 - Link checking automated
 - API documentation auto-generated
@@ -521,6 +545,7 @@ Follow `.github/instructions/commit-msg.instructions.md`:
 ```
 
 **Example:**
+
 ```
 feat(auth): add OAuth2 authentication [DEV-PRD-023]
 
@@ -588,16 +613,19 @@ Risk: New attack surface - mitigated with OWASP controls
 ### AI-Enhanced Development
 
 1. **Temporal Learning System**
+
    - Records architectural decisions in `temporal_db/project_specs.db`
    - Learns from development patterns over time
    - Uses sled (Rust embedded database) for persistence
 
 2. **Context Management**
+
    - Token budget optimization
    - Relevance scoring for context inclusion
    - Dynamic context bundling
 
 3. **Custom Chat Modes**
+
    - 30+ specialized personas
    - Workflow-specific guidance (TDD, debugging, planning)
    - Product and technical modes
@@ -622,7 +650,7 @@ Risk: New attack surface - mitigated with OWASP controls
 
 1. **Architecture docs** (CALM, ADR) - Highest authority
 2. **Specifications** (SDS, Technical Specs, PRD)
-3. **Developer specs** (DEV-*)
+3. **Developer specs** (DEV-\*)
 4. **API Reference** - Auto-generated from code
 5. **How-to guides** - Task-oriented tutorials
 
@@ -652,7 +680,7 @@ See `.github/instructions/performance.instructions.md` for detailed guidance.
 ### When Starting Any Task
 
 1. **Research** - "Let me research the codebase and create a plan"
-2. **Check specs** - Reference ADR, SDS, PRD, DEV-* docs
+2. **Check specs** - Reference ADR, SDS, PRD, DEV-\* docs
 3. **Find patterns** - Search for similar existing implementations
 4. **Plan** - Propose 2-3 options if uncertain
 5. **Get approval** - Wait for developer confirmation
@@ -697,6 +725,7 @@ See `.github/instructions/performance.instructions.md` for detailed guidance.
 ### External References
 
 Use Context7 MCP for up-to-date library documentation:
+
 - React, Next.js, Node.js patterns
 - TypeScript best practices
 - Python ecosystem tools
@@ -708,6 +737,7 @@ Use Context7 MCP for up-to-date library documentation:
 ### Temporal Database Insights
 
 The `temporal_db/` stores:
+
 - Architectural decisions and rationale
 - Development patterns that worked well
 - Anti-patterns to avoid
@@ -736,6 +766,7 @@ The `temporal_db/` stores:
 6. **Developer Partnership** - Research, plan, implement, validate
 
 **Always remember**:
+
 - Simple solutions are usually correct
 - Security overrides all other concerns
 - Specs before code

@@ -1,6 +1,6 @@
 /**
  * Core Library Entry Point
- * 
+ *
  * This file serves as the main entry point for the @{{ project_slug }}/core library.
  * Export public APIs from domain, application, infrastructure, and interface layers here.
  */

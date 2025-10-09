@@ -1,4 +1,6 @@
 # HexDDD-VibePDK Merger Template Configuration
+# Improved with layman-friendly questions and concrete examples
+
 _subdirectory: "templates/{% raw %}{{project_slug}}{% endraw %}"
 _templates_suffix: .j2
 _skip_if_exists:
@@ -22,195 +24,445 @@ _skip_if_exists:
 _tasks:
   - ["{{ _copier_python }}", "{{ _copier_conf.src_path }}/hooks/post_gen.py"]
 
+# ============================================================================
+# SECTION 1: Basic Project Information
+# ============================================================================
+
 project_name:
   type: str
-  help: "Project name (human-readable, will be converted to slug)"
+  help: |
+    What should we call your project?
+
+    This is the display name people will see (like "My Task Manager" or "Customer Portal").
+    Don't worry about formatting - we'll handle that automatically.
+  placeholder: "My Awesome App"
   default: "My Project"
 
 project_slug:
   type: str
-  help: "Project slug (kebab-case, used for directories)"
+  help: |
+    What's the technical name for your project?
+
+    This will be used in folder names and URLs. It should be lowercase with dashes.
+    We've suggested one based on your project name - you can use it or change it.
+
+    Examples:
+    - "my-task-manager" (good)
+    - "customer-portal" (good)
+    - "My App" (bad - has spaces and capitals)
+  placeholder: "my-awesome-app"
   default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
-  validator: "{% if not project_slug.replace('-', '').isalnum() %}Invalid project slug{% endif %}"
+  validator: "{% if not project_slug.replace('-', '').isalnum() %}Project slug must contain only letters, numbers, and dashes (no spaces or special characters){% endif %}"
 
 author_name:
   type: str
-  help: "Author's full name"
+  help: |
+    Who's creating this project?
+
+    Enter your full name or your company name. This appears in documentation and package files.
+  placeholder: "Jane Smith"
   default: "Developer"
 
 author_email:
   type: str
-  help: "Author's email address"
-  default: "developer@example.com"
-  validator: "{% if '@' not in author_email %}Invalid email format{% endif %}"
+  help: |
+    What email should we use for this project?
 
-# Defaults to avoid template rendering failures when certain context values are not provided
+    This is for project documentation and package information.
+    Don't worry - this won't sign you up for anything!
+  placeholder: "jane@example.com"
+  default: "developer@example.com"
+  validator: "{% if '@' not in author_email %}Please enter a valid email address (must contain @){% endif %}"
+
+# ============================================================================
+# SECTION 2: What Does Your Project Do?
+# ============================================================================
+
+project_purpose:
+  type: str
+  help: |
+    What does this project do? (In plain English)
+
+    Describe what your app is for in 1-2 sentences. Imagine explaining it to a friend.
+
+    Examples:
+    - "A task manager that helps teams organize their work"
+    - "An online store for selling handmade crafts"
+    - "A customer relationship management system for small businesses"
+  placeholder: "A task manager that helps teams organize their work and track progress"
+  default: "a modular application"
+
+# ============================================================================
+# SECTION 3: What Should Your App Be Called Internally?
+# ============================================================================
+
+domain_name:
+  type: str
+  help: |
+    What's the main "business area" of your project?
+
+    Think of this as the core concept your app revolves around.
+    Use lowercase with dashes (like: task-manager, e-commerce, crm).
+
+    If unsure, you can use the same as your project slug.
+  placeholder: "task-manager"
+  default: "{{ project_slug }}"
+  validator: "{% if not domain_name.replace('-', '').isalnum() %}Domain name must contain only lowercase letters, numbers, and dashes{% endif %}"
+
 domains:
   type: str
-  help: "Comma-separated list of domain names for generated docs and code"
+  help: |
+    Does your app cover multiple business areas?
+
+    Most apps start with just one - leave this blank if you're unsure.
+
+    If you need multiple (like an app that handles both "users" AND "billing"),
+    enter them separated by commas: users,billing,notifications
+  placeholder: "users,billing"
   default: ""
 
 primary_domains:
   type: str
-  help: "Primary domain contexts (comma-separated)"
+  help: |
+    Which business areas are most important? (Advanced - skip if unsure)
+
+    This helps organize your code. We'll use your domain from above if you leave this blank.
+  placeholder: "users,billing"
   default: "{{ domains if domains else domain_name }}"
 
-project_purpose:
+bounded_context:
   type: str
-  help: "Brief description of project purpose"
-  default: "a modular application"
+  help: |
+    What's the boundary of this project? (Advanced - skip if unsure)
+
+    This is for developers who understand Domain-Driven Design.
+    If you're not sure, just press Enter - we'll use your domain name.
+  placeholder: "task-management-context"
+  default: "{{ domain_name }}"
+
+# ============================================================================
+# SECTION 4: Technology Choices (Pick What You Know!)
+# ============================================================================
+
+architecture_style:
+  type: str
+  help: |
+    How should we organize your code? (Pick one)
+
+    Don't worry if these sound technical - here's what they mean:
+
+    - hexagonal: Clean separation between business logic and technical details (RECOMMENDED for most projects)
+    - layered: Traditional approach with clear layers (database, business logic, UI)
+    - microservices: Multiple small apps working together (for advanced/large projects)
+
+    If unsure, choose "hexagonal" - it's the most flexible and maintainable.
+  choices:
+    Hexagonal (Recommended - clean and flexible): hexagonal
+    Layered (Traditional approach): layered
+    Microservices (Advanced - multiple services): microservices
+  default: hexagonal
+
+app_framework:
+  type: str
+  help: |
+    What kind of user interface do you need?
+
+    Choose the technology for your frontend (what users see):
+
+    - next: Websites and web apps (most popular, great for everything)
+    - remix: Fast websites with excellent user experience
+    - expo: Mobile apps (iOS and Android from one codebase)
+
+    If you're building a website or web app, choose "next".
+    If you're building a mobile app, choose "expo".
+  choices:
+    Next.js (Websites & web apps - recommended): next
+    Remix (Fast modern websites): remix
+    Expo (Mobile apps for iOS & Android): expo
+  default: next
+
+app_name:
+  type: str
+  help: |
+    What should we call the app folder?
+
+    This is just for organizing files. Usually it's fine to use your project slug.
+  placeholder: "my-awesome-app"
+  default: "{{ project_slug }}"
+  validator: "{% if not app_name.replace('-', '').isalnum() %}App name must contain only lowercase letters, numbers, and dashes{% endif %}"
+
+app_router_style:
+  type: str
+  help: |
+    Which Next.js routing style? (Only if you chose Next.js above)
+
+    Next.js has two ways to organize pages:
+
+    - app: Modern approach with more features (RECOMMENDED for new projects)
+    - pages: Traditional approach (choose if you're migrating an old project)
+
+    If you're starting fresh, choose "app".
+  choices:
+    App Router (Modern - recommended for new projects): app
+    Pages Router (Traditional - for compatibility): pages
+  default: app
+  when: "{{ app_framework == 'next' }}"
+
+backend_framework:
+  type: str
+  help: |
+    What technology should power your backend? (The server that handles data)
+
+    Choose one:
+
+    - fastapi: Modern, fast Python framework (RECOMMENDED - great for APIs and web services)
+    - flask: Simple Python framework (good for small projects)
+    - django: Full-featured Python framework (good for complex apps with admin panels)
+
+    If unsure, choose "fastapi" - it's fast and handles most needs.
+  choices:
+    FastAPI (Modern & fast - recommended): fastapi
+    Flask (Simple & lightweight): flask
+    Django (Full-featured with admin): django
+  default: fastapi
+
+database_type:
+  type: str
+  help: |
+    Where should we store your data?
+
+    Choose a database:
+
+    - postgresql: Professional database, handles everything (RECOMMENDED for production)
+    - mysql: Popular database, widely supported
+    - sqlite: Simple file-based database (good for development/small projects)
+
+    For real projects, choose "postgresql".
+    For learning or small tools, "sqlite" is fine.
+  choices:
+    PostgreSQL (Professional - recommended): postgresql
+    MySQL (Popular & widely supported): mysql
+    SQLite (Simple - good for learning): sqlite
+  default: postgresql
+
+include_supabase:
+  type: bool
+  help: |
+    Include Supabase integration? (Only if you chose PostgreSQL)
+
+    Supabase is a service that gives you:
+    - User authentication (login/signup)
+    - Real-time data updates
+    - File storage
+    - Ready-to-use database
+
+    It's free to start and makes development faster!
+
+    Choose "yes" if you want these features.
+    Choose "no" if you'll handle database setup yourself.
+  default: true
+  when: "{{ database_type == 'postgresql' }}"
 
 tech_stack_summary:
   type: str
-  help: "Additional technology stack details (optional)"
+  help: |
+    Any other technologies you plan to use? (Optional - you can skip this)
+
+    If you know you'll need specific tools, list them here.
+
+    Examples:
+    - "Redis for caching, Stripe for payments"
+    - "SendGrid for emails, AWS S3 for file storage"
+    - "Temporal for background jobs"
+
+    If unsure, just press Enter to skip.
+  placeholder: "Redis for caching, Stripe for payments"
   default: ""
 
 base_url:
   type: str
-  help: "Base URL used in generated API examples"
+  help: |
+    What URL will your app run on during development?
+
+    This is just for local testing. The default works for most people.
+    Only change this if you know you need a different port or domain.
+  placeholder: "http://localhost:3000"
   default: "http://localhost:8000"
 
-# Architecture Configuration
-architecture_style:
-  type: str
-  help: "Primary architecture pattern"
-  choices:
-    - hexagonal
-    - layered
-    - microservices
-  default: hexagonal
+# ============================================================================
+# SECTION 5: AI-Powered Development Features (Optional but Recommended!)
+# ============================================================================
 
 include_ai_workflows:
   type: bool
-  help: "Include AI-enhanced development workflows"
+  help: |
+    Include AI-assisted development tools?
+
+    This adds GitHub Copilot integration and smart development workflows that help you:
+    - Write better code faster
+    - Get intelligent suggestions
+    - Follow best practices automatically
+    - Generate documentation
+
+    Recommended: YES - these tools make development much easier!
+
+    Choose "no" only if you want a minimal setup without AI assistance.
   default: true
 
 enable_temporal_learning:
   type: bool
-  help: "Enable temporal specification learning system"
+  help: |
+    Enable AI learning system? (Only if you chose AI workflows above)
+
+    This allows the AI to learn from your project and give better suggestions over time.
+
+    It's like having an assistant that gets smarter the more you work together!
+
+    Choose "yes" for smarter AI suggestions.
+    Choose "no" for basic AI features without learning.
   default: true
   when: "{{ include_ai_workflows }}"
 
-# Security hardening flags (PHASE-006)
+# ============================================================================
+# SECTION 6: Code Structure Options (Advanced - Safe to Use Defaults)
+# ============================================================================
+
+include_domain_entities:
+  type: bool
+  help: |
+    Generate domain entities? (Advanced)
+
+    These are the core "things" in your business (like User, Product, Order).
+
+    Recommended: YES - you'll need these for most apps.
+  default: true
+
+include_value_objects:
+  type: bool
+  help: |
+    Generate value objects? (Advanced)
+
+    These represent values in your business (like EmailAddress, Money, PhoneNumber).
+
+    Recommended: YES - they make your code safer and clearer.
+  default: true
+
+include_domain_events:
+  type: bool
+  help: |
+    Generate domain events? (Advanced)
+
+    These track important things that happen (like "UserRegistered", "OrderPlaced").
+
+    Recommended: YES if your app needs to track and respond to events.
+    Choose NO for simple CRUD apps.
+  default: true
+
+include_use_cases:
+  type: bool
+  help: |
+    Generate use cases? (Advanced)
+
+    These represent actions users can take (like "RegisterUser", "PlaceOrder").
+
+    Recommended: YES - these make your business logic clear and testable.
+  default: true
+
+include_repositories:
+  type: bool
+  help: |
+    Generate repository patterns? (Advanced)
+
+    These handle how you save and load data from the database.
+
+    Recommended: YES - you'll need these for database operations.
+  default: true
+
+app_domains:
+  type: str
+  help: |
+    Which business areas should the app connect to? (Advanced)
+
+    List the domains your app needs to work with (comma-separated).
+    Usually this is the same as your main domain.
+  placeholder: "users,products"
+  default: "{{ domain_name }}"
+  validator: "{% if app_domains %}{% set _errors = [] %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn == '' or ' ' in dn or dn != dn.lower() or not dn.replace('-', '').isalnum() %}{% set _ = _errors.append(dn) %}{% endif %}{% endfor %}{% if _errors %}Invalid domain names: {{ _errors | join(', ') }} - use lowercase with dashes only{% endif %}{% endif %}"
+
+include_api_client:
+  type: bool
+  help: |
+    Generate API client code? (Advanced)
+
+    This creates code to connect your frontend to your backend.
+
+    Recommended: YES for most web/mobile apps.
+  default: true
+
+include_example_page:
+  type: bool
+  help: |
+    Include example pages showing how everything works?
+
+    This adds sample pages you can learn from and customize.
+    Great for getting started quickly!
+
+    Recommended: YES for first-time users.
+  default: true
+
+# ============================================================================
+# SECTION 7: Security Features (Advanced - Optional)
+# ============================================================================
+
 enable_security_hardening:
   type: bool
-  help: "Enable optional security hardening (TPM-backed encryption at rest)"
+  help: |
+    Enable advanced security features? (Advanced - Optional)
+
+    This adds military-grade encryption for sensitive data.
+
+    Choose "yes" if:
+    - You're handling medical records, financial data, or personal information
+    - You need compliance with strict security regulations
+
+    Choose "no" for:
+    - Internal tools
+    - Public websites without sensitive data
+    - Learning projects
+
+    Most projects can choose "no" and still be secure.
   default: false
 
 encryption_backend:
   type: str
-  help: "Encryption backend for secure storage"
+  help: |
+    Which encryption method? (Only if you enabled security hardening)
+
+    The default (xchacha20poly1305) is military-grade and works great.
+    Only change if you have specific compliance requirements.
+  placeholder: "xchacha20poly1305"
   default: "xchacha20poly1305"
   when: "{{ enable_security_hardening }}"
 
 tpm_enabled:
   type: bool
-  help: "Enable TPM-backed key storage (requires host support)"
+  help: |
+    Use hardware security chip (TPM)? (Only if you enabled security hardening)
+
+    This uses a physical chip in your computer for extra security.
+
+    Choose "yes" only if:
+    - Your computer has a TPM chip
+    - You know how to configure it
+    - You need maximum security
+
+    For most users: choose "no"
   default: false
   when: "{{ enable_security_hardening }}"
 
-# Technology Stack
-app_framework:
-  type: str
-  help: "Primary frontend application framework"
-  choices:
-    - next
-    - remix
-    - expo
-  default: next
-
-app_name:
-  type: str
-  help: "Primary application name (kebab-case, used under apps/)"
-  default: "{{ project_slug }}"
-  validator: "{% if not app_name.replace('-', '').isalnum() %}Invalid app name{% endif %}"
-
-backend_framework:
-  type: str
-  help: "Backend framework"
-  choices:
-    - fastapi
-    - flask
-    - django
-  default: fastapi
-
-database_type:
-  type: str
-  help: "Primary database type"
-  choices:
-    - postgresql
-    - mysql
-    - sqlite
-  default: postgresql
-
-include_supabase:
-  type: bool
-  help: "Include Supabase integration"
-  default: true
-  when: "{{ database_type == 'postgresql' }}"
-
-# Domain-Driven Design Configuration (for MERGE-TASK-003)
-domain_name:
-  type: str
-  help: "Domain name (kebab-case)"
-  default: "{{ project_slug }}"
-  validator: "{% if not domain_name.replace('-', '').isalnum() %}Invalid domain name{% endif %}"
-
-bounded_context:
-  type: str
-  help: "Bounded context for DDD"
-  default: "{{ domain_name }}"
-
-include_domain_entities:
-  type: bool
-  help: "Generate domain entities"
-  default: true
-
-include_value_objects:
-  type: bool
-  help: "Generate value objects"
-  default: true
-
-include_domain_events:
-  type: bool
-  help: "Generate domain events"
-  default: true
-
-include_use_cases:
-  type: bool
-  help: "Generate application use cases"
-  default: true
-
-include_repositories:
-  type: bool
-  help: "Generate repository interfaces and implementations"
-  default: true
-
-# Application Generator Configuration (for MERGE-TASK-004)
-app_domains:
-  type: str
-  help: "Comma-separated list of domain names to integrate with the application"
-  default: "{{ domain_name }}"
-  validator: "{% if app_domains %}{% set _errors = [] %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn == '' or ' ' in dn or dn != dn.lower() or not dn.replace('-', '').isalnum() %}{% set _ = _errors.append(dn) %}{% endif %}{% endfor %}{% if _errors %}Invalid domain names: {{ _errors | join(', ') }}{% endif %}{% endif %}"
-
-include_api_client:
-  type: bool
-  help: "Generate API client for domain integration"
-  default: true
-
-include_example_page:
-  type: bool
-  help: "Include example page demonstrating domain integration"
-  default: true
-
-app_router_style:
-  type: str
-  help: "Next.js router style (ignored for Remix/Expo)"
-  choices:
-    - app
-    - pages
-  default: app
-  when: "{{ app_framework == 'next' }}"
+# ============================================================================
+# EXCLUDE RULES (Don't worry about this - it's automatic)
+# ============================================================================
 
 _exclude:
   # Exclude framework-specific configs
