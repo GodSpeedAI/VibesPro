@@ -81,7 +81,7 @@ domain_name:
   help: Main business area/concept (lowercase-with-dashes, e.g., 'task-manager' or 'e-commerce')
   placeholder: "task-manager"
   default: "{{ project_slug }}"
-  validator: "{% if not domain_name.replace('-', '').isalnum() %}Domain name must contain only lowercase letters, numbers, and dashes{% endif %}"
+  validator: "{% if not domain_name.replace('-', '').replace('_', '').isalnum() or domain_name != domain_name.lower() %}Domain name must contain only lowercase letters, numbers, and dashes{% endif %}"
 
 domains:
   type: str
