@@ -1,0 +1,110 @@
+{% raw %}{% include 'docs/partials/_metadata_header.j2' %}
+<!--
+thread: {{ project_slug }}
+matrix_ids: []
+project: {{ project_name }}
+date: {{ year }}
+-->
+
+# Technical Specifications (TS)
+
+> **🎯 Purpose**: Document detailed technical implementation specifications for features and components.
+> 
+> **📝 How to use this file**:
+> 1. Use chat mode `@workspace #spec.lean` or `#spec.wide` to generate TS entries
+> 2. Or run the prompt: `.github/prompts/spec.plan.ts.prompt.md`
+> 3. Each TS should follow the template structure below
+
+---
+
+## Template Structure
+
+### TS-XXX — [Technical Feature/Implementation]
+
+#### Overview
+- **Feature**: [What is being implemented]
+- **Purpose**: [Why this is needed]
+- **Priority**: [High | Medium | Low]
+- **Status**: [Draft | Approved | Implemented]
+
+#### Technical Requirements
+- **FR-1**: [Functional requirement]
+- **NFR-1**: [Non-functional requirement]
+
+#### Implementation Details
+- **Architecture**: [Design pattern, components involved]
+- **Data Structures**: [Key types and interfaces]
+- **Algorithms**: [Algorithm description and complexity]
+
+#### Testing Strategy
+- **Unit Tests**: [What to test]
+- **Integration Tests**: [What to test]
+- **Test Coverage**: [Target percentage]
+
+#### Security Considerations
+- **Authentication**: [How auth is handled]
+- **Data Protection**: [Encryption, sanitization]
+
+#### Performance Considerations
+- **Benchmarks**: [Expected metrics]
+- **Optimization**: [Techniques used]
+
+#### Related Specs
+- PRD: [PRD-XXX]
+- ADR: [ADR-XXX]
+- SDS: [SDS-XXX]
+
+---
+
+## Example TS Entry
+
+### TS-001 — Rate Limiting Middleware
+
+#### Overview
+- **Feature**: HTTP request rate limiting middleware
+- **Purpose**: Prevent abuse and ensure fair usage of API resources
+- **Priority**: High
+- **Status**: Approved
+
+#### Technical Requirements
+- **FR-1**: Limit requests to 100 per minute per IP address
+- **FR-2**: Return 429 status code when limit exceeded
+- **NFR-1**: <5ms overhead per request
+
+#### Implementation Details
+- **Architecture**: Middleware pattern with sliding window counter
+- **Data Structures**: 
+  ```typescript
+  interface RateLimitConfig {
+    windowMs: number;
+    maxRequests: number;
+    keyGenerator: (req: Request) => string;
+  }
+  ```
+- **Algorithms**: Sliding window counter using Redis INCR and EXPIRE (O(1) time complexity)
+
+#### Testing Strategy
+- **Unit Tests**: Test rate limit logic, key generation, header setting
+- **Integration Tests**: Test with Redis, verify distributed behavior
+- **Test Coverage**: >90% for middleware logic
+
+#### Security Considerations
+- **Authentication**: Rate limiting applied before auth to prevent brute force
+- **Data Protection**: Rate limit keys use hashed IPs for privacy
+
+#### Performance Considerations
+- **Benchmarks**: <5ms overhead, 10,000 req/s throughput
+- **Optimization**: Redis pipelining for batch operations
+
+#### Related Specs
+- PRD: PRD-001
+- ADR: ADR-003
+- SDS: SDS-002
+
+---
+
+## Your TS Entries
+
+<!-- Add your TS entries below this line -->
+<!-- Use the chat modes or prompts mentioned above to generate detailed technical specifications -->
+{% endraw %}

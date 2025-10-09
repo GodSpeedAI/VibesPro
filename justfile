@@ -152,6 +152,24 @@ lint-templates:
 	@echo "🔍 Validating templates..."
 	python tools/validate-templates.py
 
+# --- Template Maintenance ---
+template-cleanup:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	echo "🧹 Cleaning up template files..."
+	echo "⚠️  This will remove maintainer-specific files and replace spec files with minimal starters"
+	read -p "Continue? [y/N] " -r REPLY
+	echo
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		bash scripts/template-cleanup.sh
+	else
+		echo "❌ Cleanup cancelled"
+	fi
+
+template-cleanup-force:
+	@echo "🧹 Force cleaning template files (no confirmation)..."
+	@bash scripts/template-cleanup.sh
+
 format:
 	just format-python
 	just format-node
