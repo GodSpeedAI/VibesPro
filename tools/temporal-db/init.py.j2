@@ -3,7 +3,7 @@
 """
 Temporal Database Initialization for {{ project_name }}
 
-Initializes tsink time-series database for storing architectural decisions
+Initializes redb time-series database for storing architectural decisions
 and development patterns.
 """
 
@@ -52,7 +52,7 @@ class TemporalRepository:
 
     def store_specification(self, spec: SpecificationRecord) -> None:
         """Store a specification record in the temporal database."""
-        # Simple file-based storage for now (would use tsink in production)
+        # Simple file-based storage for now (would use redb in production)
         spec_file = self.db_path / f"{spec.spec_type.lower()}_{spec.id}.txt"
         with open(spec_file, 'w') as f:
             f.write(f"ID: {spec.id}\n")
