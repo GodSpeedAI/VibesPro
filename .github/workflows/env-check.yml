@@ -38,7 +38,7 @@ jobs:
 
       - name: Install Devbox
         run: |
-          curl -fsSL https://get.jetpack.io/devbox | bash
+          curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           devbox --version
 
