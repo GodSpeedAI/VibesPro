@@ -42,6 +42,9 @@ const runCopier = (targetDir: string, options: CopierOptions = {}): void => {
 
     const command = ['copier', 'copy', '.', targetDir, '--trust'];
 
+    // Use --vcs-ref=HEAD to include staged but uncommitted template changes
+    command.push('--vcs-ref=HEAD');
+
     if (dataFile) {
         command.push('--data-file', dataFile);
     }
@@ -53,6 +56,9 @@ const runCopier = (targetDir: string, options: CopierOptions = {}): void => {
     if (force) {
         command.push('--force');
     }
+
+    // Note: --force already includes --overwrite behavior
+    // No need to add --overwrite separately
 
     const reservedKeys = new Set(['dataFile', 'useDefaults', 'force', 'skipPostGenSetup']);
     const dataEntries: Array<[string, CopierDataValue]> = [];
@@ -151,9 +157,7 @@ export const runGenerationSmokeTest = async (): Promise<SmokeTestResult> => {
     } finally {
         await fs.rm(workspaceRoot, { recursive: true, force: true });
     }
-};
-
-export const runCopierGeneration = async (options: CopierOptions = {}): Promise<string> => {
+}; export const runCopierGeneration = async (options: CopierOptions = {}): Promise<string> => {
     const workspaceRoot = await fs.mkdtemp(join(tmpdir(), 'vibes-gen-'));
 
     try {

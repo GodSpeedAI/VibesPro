@@ -78,22 +78,17 @@ project_purpose:
 
 domain_name:
   type: str
-  help: Main business area/concept (lowercase-with-dashes, e.g., 'task-manager' or 'e-commerce')
+  help: Main business area/concept (lowercase-with-dashes, ONE ONLY - e.g., 'task-manager')
   placeholder: "task-manager"
   default: "{{ project_slug }}"
-  validator: "{% if not domain_name.replace('-', '').replace('_', '').isalnum() or domain_name != domain_name.lower() %}Domain name must contain only lowercase letters, numbers, and dashes{% endif %}"
+  validator: "{% if ',' in domain_name %}Use the 'domains' field for multiple areas, this field is for ONE main domain only{% elif not domain_name.replace('-', '').replace('_', '').isalnum() or domain_name != domain_name.lower() %}Domain name must contain only lowercase letters, numbers, and dashes (no commas){% endif %}"
 
 domains:
   type: str
-  help: |
-    Does your app cover multiple business areas?
-
-    Most apps start with just one - leave this blank if you're unsure.
-
-    If you need multiple (like an app that handles both "users" AND "billing"),
-    enter them separated by commas: users,billing,notifications
+  help: Multiple business areas? (comma-separated, e.g., 'users,billing,notifications' - or leave blank)
   placeholder: "users,billing"
   default: ""
+  validator: "{% if domains and domains != domains.lower() %}All domain names must be lowercase{% elif domains %}{% set invalid = [] %}{% for d in domains.split(',') %}{% if not d.strip().replace('-', '').replace('_', '').isalnum() %}{% set _ = invalid.append(d) %}{% endif %}{% endfor %}{% if invalid %}Invalid domain names: {{ invalid|join(', ') }}. Use lowercase letters, numbers, and dashes only{% endif %}{% endif %}"
 
 primary_domains:
   type: str

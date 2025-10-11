@@ -8,6 +8,20 @@ default:
 setup: setup-node setup-python setup-tools
 	@echo "✅ Development environment ready"
 
+test-env:
+	@echo "🧪 Running environment tests..."
+	@bash -eu tests/env/run.sh
+
+env-enter:
+	@echo "🎯 Entering Devbox environment..."
+	@if command -v devbox >/dev/null 2>&1; then \
+		devbox shell; \
+	else \
+		echo "❌ Devbox not installed"; \
+		echo "   Install: curl -fsSL https://get.jetpack.io/devbox | bash"; \
+		exit 1; \
+	fi
+
 setup-node:
 	@echo "🛠️ Setting up Node.js environment..."
 	corepack enable
@@ -26,10 +40,14 @@ setup-tools:
 		uv tool install copier; \
 	fi
 
+verify-node:
+	@echo "🔍 Verifying Node version alignment..."
+	@bash scripts/verify-node.sh
+
 # --- Developer Experience ---
 dev:
 	@echo "🚀 Starting development servers..."
-	nx run-many --target=serve --all --parallel=5
+	pnpm exec nx run-many --target=serve --all --parallel=5
 
 spec-matrix:
 	pnpm spec:matrix
@@ -71,10 +89,10 @@ build-direct:
 	pnpm run build
 
 build-nx:
-	nx run-many --target=build --all --parallel=3
+	pnpm exec nx run-many --target=build --all --parallel=3
 
 build-target TARGET:
-	nx run {{TARGET}}:build
+	pnpm exec nx run {{TARGET}}:build
 
 # --- Test Orchestration ---
 test TARGET="": (_detect_test_strategy TARGET)
@@ -97,10 +115,10 @@ test-direct:
 	just test-integration
 
 test-nx:
-	nx run-many --target=test --all --parallel=3
+	pnpm exec nx run-many --target=test --all --parallel=3
 
 test-target TARGET:
-	nx run {{TARGET}}:test
+	pnpm exec nx run {{TARGET}}:test
 
 # --- Language-Specific Test Tasks ---
 test-python:
@@ -123,7 +141,7 @@ test-generation:
 		echo "🏗️ Building all projects..."; \
 		pnpm build --if-present || { \
 			echo "⚠️ Some build targets failed. Checking core domain libraries..."; \
-			if pnpm nx run test-domain-domain:build && pnpm nx run test-domain-application:build && pnpm nx run test-domain-infrastructure:build; then \
+			if pnpm exec nx run test-domain-domain:build && pnpm exec nx run test-domain-application:build && pnpm exec nx run test-domain-infrastructure:build; then \
 				echo "✅ Core domain libraries built successfully - MERGE-TASK-003 success criteria met"; \
 			else \
 				echo "❌ Core domain libraries failed to build"; \
@@ -216,6 +234,10 @@ clean-all: clean
 	rm -rf .venv
 	rm -rf pnpm-lock.yaml
 	rm -rf uv.lock
+
+doctor:
+	@echo "🩺 Running project doctor (no secrets will be shown)"
+	@bash scripts/doctor.sh
 
 # --- Documentation Generation ---
 docs-generate PROJECT_NAME="vibes-pro":

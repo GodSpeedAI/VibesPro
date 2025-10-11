@@ -59,6 +59,66 @@ Source: transcript.md synthesis and repository conventions
 - Rationale: Close the loop on output quality and cost.
 - DX Impact: Faster feedback; predictable spend; structured improvements.
 
+## DEV-ADR-011 — Adopt Devbox as OS dependency boundary
+
+Decision: Use Devbox to provision all OS-level tools for local and CI environments.
+
+Context: Current manuals require host installs; variability causes flakiness.
+
+Rationale: Reproducibility, cross-platform parity, smaller onboarding surface.
+
+DX Impact: Faster “first build,” fewer “works on my machine” incidents.
+
+Trade-offs: Devbox binary required; CI runner images may need an extra layer.
+
+## DEV-ADR-012 — Standardize on mise for multi-language runtime management
+
+Decision: Use mise to pin/activate Node, Python, and Rust; remove .python-version and avoid per-language managers in CI.
+
+Context: Prior pyenv and ad-hoc Node/Rust flows drifted.
+
+Rationale: Single tool, consistent PATH, simpler docs/CI.
+
+DX Impact: Zero drift; simpler contributor experience.
+
+Trade-offs: Team must learn mise; initial cache warming in CI.
+
+## DEV-ADR-013 — Secrets managed by SOPS; ephemeral decryption
+
+Decision: Store .secrets.env.sops in Git (encrypted) and decrypt only into process env at runtime; no plaintext .env committed.
+
+Context: Desire to avoid secret sprawl and align local/CI flows.
+
+Rationale: Strong auditability; easy rotation; flexible recipients (AGE/KMS).
+
+DX Impact: Safer by default; minimal friction after keys configured.
+
+Trade-offs: Requires developer key management; CI key plumbing.
+
+## DEV-ADR-014 — Volta compatibility, mise authority, and timed deprecation
+
+Decision: Keep Volta temporarily as a compatibility signal but treat mise as authoritative for Node; fail builds on divergence.
+
+Context: Some contributors use Volta; the repo may include volta pins.
+
+Rationale: Smooth transition, deterministic behavior, one true source.
+
+DX Impact: Clear, early feedback; removal plan avoids confusion.
+
+Trade-offs: Short-term duplication until deprecation window ends.
+
+## DEV-ADR-015 — Minimal CI (no direnv) with explicit SOPS decrypt
+
+Decision: CI uses Devbox + mise and decrypts SOPS via CI secrets; direnv is not used in CI.
+
+Context: direnv adds little value in non-interactive jobs.
+
+Rationale: Simpler pipeline, fewer moving parts; same versions as local.
+
+DX Impact: Faster, more reliable CI; clearer failure modes.
+
+Trade-offs: Need small glue to source decrypted env file.
+
 ---
 
 ## Developer ergonomics considerations (summary)

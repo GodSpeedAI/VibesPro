@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# Pre-commit hook to prevent committing plaintext secrets
+# Install: git config core.hooksPath .githooks
+
+set -euo pipefail
+
+echo "🔒 Checking for plaintext secrets..."
+
+# Check for plaintext .env files (allow .sops encrypted files)
+if git diff --cached --name-only | grep -E '(^|/)\.env($|\.local$)'; then
+  echo "❌ ERROR: Attempting to commit plaintext .env file"
+  echo ""
+  echo "   Only encrypted secrets (.secrets.env.sops) should be committed."
+  echo "   Use: sops -e -i .secrets.env.sops"
+  echo ""
+  exit 1
+fi
+
+# Check for common secret patterns in staged content
+staged_content=$(git diff --cached --diff-filter=ACM)
+
+if echo "$staged_content" | grep -iE '(api_key|secret_key|password|token|private_key)\s*=\s*["\047][^"\047]{8,}'; then
+  echo "⚠️  WARNING: Possible plaintext secret detected in staged changes"
+  echo ""
+  echo "   Review your changes and ensure no secrets are committed."
+  echo "   Use environment variables or SOPS encryption instead."
+  echo ""
+  echo "   To bypass this check (not recommended):"
+  echo "   git commit --no-verify"
+  echo ""
+  exit 1
+fi
+
+echo "✅ No plaintext secrets detected"
+exit 0

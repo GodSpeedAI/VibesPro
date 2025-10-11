@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vibes-pro"
+version = "0.1.0"
+description = "HexDDD-VibePDK Merger: Generator-first platform"
+requires-python = ">=3.12"
+dependencies = [
+    "copier>=9.0.0",
+    "jinja2>=3.1.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.6.0",
+    "mypy>=1.11.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = [
+    "tests/fixtures/**",
+    "**/test-output/**",
+    "**/*.j2",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "S"]
+ignore = [
+    "E501",  # Line length handled by formatter
+    "S603",  # subprocess call with untrusted input (false positive in our controlled context)
+    "S607",  # Starting process with partial executable path (acceptable for our use case)
+    "S105",  # Possible hardcoded password (false positives for enum values and punctuation)
+    "S324",  # hashlib.md5 usage (acceptable for content hashing, not cryptographic purposes)
+    "S101",  # Use of assert detected (acceptable in test files)
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+exclude = [
+    "tests/fixtures/",
+    "test-output/",
+    ".*\\.j2$",
+    "libs/prompt-optimizer/",
+    "libs/\\{\\{domain_name\\}\\}/",
+]
+
+[[tool.mypy.overrides]]
+module = ["prompt_optimizer.*", "my_test_domain.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+# Implements: AI_SDS-004, AI_TS-004
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+norecursedirs = [
+    "tmp",
+    "tmp/*",
+    "tmpdocs",
+    "tmpdocs-html",
+    "templates",
+    "node_modules",
+    ".venv",
+    ".git",
+    "target",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.2",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "ruff>=0.13.1",
+]

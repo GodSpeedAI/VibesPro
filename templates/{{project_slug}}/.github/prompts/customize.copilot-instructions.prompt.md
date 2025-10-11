@@ -1,5 +1,11 @@
 ---
 description: "Flipped interaction: AI asks questions to customize copilot-instructions.md for the project"
+kind: prompt
+domain: docs
+task: customize-instructions
+thread: single
+matrix_ids: []
+budget: 50000
 model: GPT-5 mini
 mode: agent
 tools: ["codebase", "search"]
