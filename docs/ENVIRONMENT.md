@@ -757,7 +757,8 @@ tests/env/
 ├── test_harness.sh      # Validates test discovery
 ├── test_devbox.sh       # Validates devbox.json configuration
 ├── test_mise_versions.sh # Validates mise runtime versions
-└── test_sops_local.sh   # Validates SOPS encryption setup
+├── test_sops_local.sh   # Validates SOPS encryption setup
+└── test_ci_minimal.sh   # Validates CI workflow configuration
 ```
 
 **Running Tests:**
@@ -933,14 +934,368 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## Continuous Integration
 
-Environment tests run in CI to ensure consistency:
+VibesPro includes automated CI workflows that validate the environment setup and ensure consistency across development and production environments.
 
-- Validates tool availability
-- Checks configuration integrity
-- Prevents secret leakage
-- Enforces code quality standards
+### Overview
 
-See `.github/workflows/` for CI configuration.
+The CI system uses GitHub Actions with two primary workflows:
+
+1. **env-check.yml** - Validates environment setup on Ubuntu
+2. **build-matrix.yml** - Tests on Ubuntu and macOS with full build matrix
+
+Both workflows follow the same layered approach as local development:
+- Install Devbox (OS-level tools)
+- Install mise (runtime versions)
+- Decrypt secrets with SOPS
+- Run tests and builds
+
+### Environment Validation Workflow
+
+**File:** `.github/workflows/env-check.yml`
+
+This workflow runs on every push and pull request to validate:
+
+**System Setup:**
+- ✅ Installs SOPS, age, jq, make via apt
+- ✅ Installs Devbox for OS-level toolchain
+- ✅ Installs mise for runtime management
+- ✅ Caches mise runtimes for faster builds
+
+**Secret Management:**
+- ✅ Decrypts `.secrets.env.sops` using `SOPS_AGE_KEY` secret
+- ✅ Loads secrets into ephemeral environment
+- ✅ Cleans up decrypted secrets after run
+- ✅ **Does NOT use direnv** (explicit decryption instead)
+
+**Validation Steps:**
+- ✅ Verifies Devbox environment works
+- ✅ Installs all mise runtimes (Node, Python, Rust)
+- ✅ Checks for Volta/mise version conflicts
+- ✅ Installs project dependencies (pnpm, uv)
+- ✅ Runs build and test suites
+
+**Key Features:**
+```yaml
+# Explicit SOPS decryption (not direnv)
+- name: Decrypt secrets to ephemeral env
+  run: |
+    sops -d .secrets.env.sops > /tmp/ci.env
+    set -a; source /tmp/ci.env; set +a
+  env:
+    SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+
+# Always cleanup secrets
+- name: Cleanup secrets
+  if: always()
+  run: rm -f /tmp/ci.env
+```
+
+### Build Matrix Workflow
+
+**File:** `.github/workflows/build-matrix.yml`
+
+This workflow provides comprehensive cross-platform testing:
+
+**Matrix Strategy:**
+```yaml
+matrix:
+  os: [ ubuntu-latest, macos-latest ]
+```
+
+**Features:**
+- ✅ Tests on both Ubuntu and macOS
+- ✅ Fail-fast: false (tests all platforms even if one fails)
+- ✅ Platform-specific package managers (apt vs brew)
+- ✅ Shared cache for mise runtimes
+- ✅ Parallel execution for faster feedback
+
+**Prepare Job:**
+- Introspects `.mise.toml` for runtime versions
+- Computes cache keys
+- Outputs versions for matrix jobs to use
+
+**Build-Test Job:**
+- Runs on each OS in parallel
+- Installs base tools (sops, age, jq)
+- Sets up Devbox and mise
+- Decrypts secrets
+- Runs full build and test suite
+
+### Setting Up CI Secrets
+
+**Required GitHub Secret:**
+
+1. Go to repository **Settings → Secrets and variables → Actions**
+2. Click **New repository secret**
+3. Name: `SOPS_AGE_KEY`
+4. Value: Your **private age key** (contents of `~/.config/sops/age/keys.txt`)
+
+**Security Notes:**
+- ⚠️ The private age key grants access to all encrypted secrets
+- 🔒 Only add to trusted repositories
+- 🔄 Rotate keys periodically
+- 📝 Consider using environment-specific keys (dev/staging/prod)
+
+### CI vs Local Development
+
+| Aspect | Local Development | CI/CD |
+|--------|------------------|--------|
+| **Secret Loading** | direnv (automatic) | Explicit `sops -d` |
+| **Tool Installation** | Manual (one-time) | Automated (every run) |
+| **Caching** | System-wide | GitHub Actions cache |
+| **Environment** | Interactive shell | Non-interactive |
+| **mise Activation** | Shell hook | `mise exec --` |
+| **Cleanup** | Manual | Always via `if: always()` |
+
+**Why No direnv in CI?**
+- ✅ Explicit > Implicit in CI
+- ✅ Easier to debug failures
+- ✅ No shell hook dependencies
+- ✅ Clear secret lifecycle
+
+### Running Tests Locally Before CI
+
+Validate your changes pass CI checks before pushing:
+
+```bash
+# Run all environment tests (same as CI validation)
+just test-env
+
+# Check environment health
+just doctor
+
+# Verify Node version alignment
+just verify:node
+
+# Run full test suite
+just test
+
+# Build all projects
+just build
+```
+
+### CI Workflow Files
+
+```
+.github/workflows/
+├── env-check.yml          # Environment validation (Ubuntu)
+├── build-matrix.yml       # Cross-platform build matrix
+├── node-tests.yml         # Node-specific test suite
+├── integration-tests.yml  # Integration test suite
+├── security-scan.yml      # Security scanning (Semgrep, etc.)
+├── markdownlint.yml       # Documentation linting
+└── spec-guard.yml         # Specification validation
+```
+
+### Debugging CI Failures
+
+**Problem:** `sops: Failed to get the data key`
+
+```yaml
+# Solution: Ensure SOPS_AGE_KEY secret is set
+# Check in workflow logs (key won't be printed)
+- run: |
+    echo "Age key file exists: $(test -f ~/.config/sops/age/keys.txt && echo yes || echo no)"
+```
+
+**Problem:** `mise: command not found`
+
+```yaml
+# Solution: Ensure mise is in PATH after installation
+- run: |
+    curl https://mise.run | bash
+    echo "$HOME/.local/bin" >> $GITHUB_PATH  # Critical!
+```
+
+**Problem:** Runtime version mismatch
+
+```yaml
+# Solution: Check .mise.toml is committed and up-to-date
+- run: |
+    mise ls
+    mise current
+```
+
+**Problem:** Cache not restoring
+
+```yaml
+# Solution: Verify cache key matches across jobs
+key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+# Ensure .mise.toml is not modified during workflow
+```
+
+**Problem:** Secrets not available in environment
+
+```yaml
+# Solution: Use set -a to export all variables
+- run: |
+    sops -d .secrets.env.sops > /tmp/ci.env
+    set -a; source /tmp/ci.env; set +a  # Exports all vars
+    env | grep -E 'APP_|OPENAI'  # Verify (remove in production)
+```
+
+### Workflow Triggers
+
+**env-check.yml:**
+```yaml
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+```
+
+**build-matrix.yml:**
+```yaml
+on:
+  push:
+    branches: [ main ]
+    tags: [ "v*.*.*" ]  # Also on version tags
+  pull_request:
+    branches: [ main ]
+```
+
+### Performance Optimization
+
+**Caching Strategy:**
+
+```yaml
+# Cache mise runtimes (saves ~2-3 minutes per run)
+- uses: actions/cache@v4
+  with:
+    path: |
+      ~/.local/share/mise
+      ~/.cache/mise
+    key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+
+# Cache pnpm dependencies (saves ~1-2 minutes)
+- uses: actions/cache@v4
+  with:
+    path: ~/.pnpm-store
+    key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+```
+
+**Concurrency Control:**
+
+```yaml
+# Cancel in-progress runs on new push
+concurrency:
+  group: env-check-${{ github.ref }}
+  cancel-in-progress: true
+```
+
+### Monitoring CI Health
+
+**Key Metrics:**
+- ✅ Build time: Target < 5 minutes for env-check
+- ✅ Cache hit rate: Should be > 80% for mise/pnpm
+- ✅ Test pass rate: Should be 100% on main branch
+- ✅ Secret decryption: Should always succeed
+
+**When to Update Workflows:**
+- Tool version changes (mise, devbox, sops)
+- New runtime added to `.mise.toml`
+- Additional OS-level dependencies needed
+- Security updates for actions (dependabot)
+
+### Local CI Simulation
+
+Test CI behavior locally with act:
+
+```bash
+# Install act (optional)
+brew install act  # macOS
+# or: https://github.com/nektos/act
+
+# Run workflow locally
+act -j env-check
+
+# Run with secrets
+act -j env-check --secret-file .secrets.env
+```
+
+**Note:** act has limitations (no full Devbox support), use for quick validation only.
+
+### Environment Test Coverage
+
+The CI validates these aspects via `just test-env`:
+
+| Test | Purpose | CI Validation |
+|------|---------|---------------|
+| `test_sanity.sh` | Basic harness works | ✅ |
+| `test_doctor.sh` | Doctor script output | ✅ |
+| `test_harness.sh` | Test discovery | ✅ |
+| `test_devbox.sh` | Devbox config valid | ✅ |
+| `test_mise_versions.sh` | Runtime versions match | ✅ |
+| `test_sops_local.sh` | SOPS config valid | ✅ |
+| `test_ci_minimal.sh` | CI workflow validation | ✅ |
+
+**Total:** 7 environment tests run in CI
+
+### Adding New CI Checks
+
+To add a new validation step:
+
+1. **Create test locally:**
+   ```bash
+   # Create tests/env/test_new_feature.sh
+   # Ensure it uses helpers.sh and follows TDD
+   ```
+
+2. **Run locally:**
+   ```bash
+   just test-env
+   ```
+
+3. **CI automatically picks it up:**
+   - Test discovery in `tests/env/run.sh` finds `test_*.sh`
+   - No workflow changes needed
+
+4. **For non-env tests:**
+   ```yaml
+   # Add step to .github/workflows/env-check.yml
+   - name: Run new check
+     run: just new-check
+   ```
+
+### Best Practices
+
+✅ **DO:**
+- Keep workflows DRY (use reusable actions)
+- Cache aggressively (mise, pnpm, apt packages)
+- Fail fast for quick feedback
+- Clean up secrets with `if: always()`
+- Use matrix testing for cross-platform compatibility
+- Pin action versions (`@v4` not `@main`)
+
+❌ **DON'T:**
+- Use direnv in CI (explicit is better)
+- Echo secrets in logs (even masked)
+- Skip cleanup steps
+- Hardcode versions (use `.mise.toml` as source of truth)
+- Commit decrypted secrets
+- Run tests without caching
+
+### Troubleshooting Guide
+
+See individual sections above for specific error solutions.
+
+**General debugging steps:**
+
+1. Check workflow runs in GitHub Actions UI
+2. Look for red ❌ step failures
+3. Expand failed step to see logs
+4. Reproduce locally: `just test-env && just build && just test`
+5. Fix locally, commit, push
+6. Verify CI passes
+
+**For persistent failures:**
+- Re-run workflow (may be transient)
+- Clear caches (Settings → Actions → Caches)
+- Check GitHub Actions status page
+- Review recent changes to workflows or configuration files
+
+
 
 ## Next Steps
 
@@ -948,7 +1303,7 @@ See `.github/workflows/` for CI configuration.
 - ✅ **Phase 1:** Devbox integration (`devbox.json`) (complete)
 - ✅ **Phase 2:** mise runtime management (`.mise.toml`) (complete)
 - ✅ **Phase 3:** SOPS secret encryption (`.sops.yaml`, `.secrets.env.sops`) (complete)
-- **Phase 4:** Add minimal CI workflows
+- ✅ **Phase 4:** Minimal CI workflows (`env-check.yml`, `build-matrix.yml`) (complete)
 - **Phase 5:** Add Volta coexistence checks
 - **Phase 6:** Ensure Just tasks are environment-aware
 
