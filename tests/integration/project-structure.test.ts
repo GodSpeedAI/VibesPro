@@ -108,9 +108,16 @@ describe('Merged Project Structure', () => {
         // Validate architecture choices safely (new format with descriptions)
         const arch = copierConfig['architecture_style'] as Record<string, unknown> | undefined;
         expect(arch).toBeDefined();
-        const choices = arch && typeof arch['choices'] === 'object' && arch['choices'] !== null
-            ? Object.values(arch['choices'] as Record<string, string>)
-            : [];
+        const getArchChoices = (a?: Record<string, unknown>): string[] => {
+            if (!a) return [];
+            const raw = a['choices'];
+            if (raw == null) return [];
+            if (Array.isArray(raw)) return raw.map(String);
+            if (typeof raw === 'object') return Object.values(raw as Record<string, unknown>).map(String);
+            return [];
+        };
+
+        const choices = getArchChoices(arch);
         expect(choices).toContain('hexagonal');
         expect(choices).toContain('layered');
         expect(choices).toContain('microservices');
