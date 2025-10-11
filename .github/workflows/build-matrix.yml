@@ -80,6 +80,18 @@ jobs:
             brew install age jq
           fi
 
+      # ---- Install just ----
+      - name: Install just
+        shell: bash
+        run: |
+          if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
+            curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+            sudo chmod +x /usr/local/bin/just
+          else
+            brew install just
+          fi
+          just --version
+
       # ---- Install SOPS ----
       - name: Install SOPS
         shell: bash
