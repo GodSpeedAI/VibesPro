@@ -1,0 +1,100 @@
+name: env-check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: env-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  env-check:
+    runs-on: ubuntu-latest
+    env:
+      MISE_NONINTERACTIVE: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install system packages (sops, age, jq, make)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends sops age jq make
+
+      - name: Install Devbox
+        run: |
+          curl -fsSL https://get.jetpack.io/devbox | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          devbox --version
+
+      - name: Install mise
+        run: |
+          curl https://mise.run | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          mise --version
+
+      - name: Cache mise runtimes
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+          restore-keys: |
+            mise-${{ runner.os }}-
+
+      - name: Devbox environment (OS toolchain)
+        run: devbox shell -- echo "Devbox ready"
+
+      - name: Install runtimes (Node/Python/Rust via mise)
+        run: mise install
+
+      # Optional: pnpm cache if you use pnpm (works with Node's Corepack)
+      - name: Enable corepack (optional)
+        run: corepack enable
+
+      - name: Cache pnpm store (optional)
+        if: hashFiles('pnpm-lock.yaml') != ''
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      - name: Decrypt secrets to ephemeral env
+        # Provide SOPS_AGE_KEY via repo/org Actions secrets
+        run: |
+          sops -d .secrets.env.sops > /tmp/ci.env
+          set -a; source /tmp/ci.env; set +a
+
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+
+      - name: Verify Node pins (mise vs Volta)
+        run: |
+          # Uses the verify target defined in your Justfile per ENVIRONMENT.md §5
+          just verify:node
+
+      - name: Install dependencies
+        # Adjust to your project (pnpm, uv, poetry, cargo, etc.)
+        run: |
+          if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; fi
+          if [ -f uv.lock ] || [ -f pyproject.toml ]; then uv sync --frozen || true; fi
+
+      - name: Build
+        run: just build
+
+      - name: Test
+        run: just test
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -f /tmp/ci.env

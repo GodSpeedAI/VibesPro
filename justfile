@@ -8,6 +8,20 @@ default:
 setup: setup-node setup-python setup-tools
 	@echo "✅ Development environment ready"
 
+test-env:
+	@echo "🧪 Running environment tests..."
+	@bash -eu tests/env/run.sh
+
+env-enter:
+	@echo "🎯 Entering Devbox environment..."
+	@if command -v devbox >/dev/null 2>&1; then \
+		devbox shell; \
+	else \
+		echo "❌ Devbox not installed"; \
+		echo "   Install: curl -fsSL https://get.jetpack.io/devbox | bash"; \
+		exit 1; \
+	fi
+
 setup-node:
 	@echo "🛠️ Setting up Node.js environment..."
 	corepack enable
@@ -25,6 +39,10 @@ setup-tools:
 		echo "📦 Installing Copier..."; \
 		uv tool install copier; \
 	fi
+
+verify-node:
+	@echo "🔍 Verifying Node version alignment..."
+	@bash scripts/verify-node.sh
 
 # --- Developer Experience ---
 dev:
@@ -216,6 +234,10 @@ clean-all: clean
 	rm -rf .venv
 	rm -rf pnpm-lock.yaml
 	rm -rf uv.lock
+
+doctor:
+	@echo "🩺 Running project doctor (no secrets will be shown)"
+	@bash scripts/doctor.sh
 
 # --- Documentation Generation ---
 docs-generate PROJECT_NAME="vibes-pro":

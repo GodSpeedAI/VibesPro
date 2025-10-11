@@ -186,11 +186,15 @@ pnpm dev
 |---------------|---------------|--------------|
 | **Generate a new project** | `copier copy gh:GodSpeedAI/VibesPro my-project` | Creates a new project from the template |
 | **Set up generated project** | `cd my-project && just setup` | Installs all tools and dependencies in your new project |
+| **Check environment health** | `just doctor` | Reports tool versions and PATH configuration |
+| **Run environment tests** | `just test-env` | Validates development environment setup |
 | **Check quality before pushing** | `just spec-guard` | Runs all validators—like spell-check for architecture |
 | **Test the template** | `just test-generation` | Makes sure generated projects actually work (for contributors) |
 | **Run all tests** | `pnpm nx run-many --target=test` | Confidence that nothing broke |
 
 > 📝 **For Template Contributors:** If you're developing VibesPro itself, clone this repo and run `just setup` to set up the development environment. Most users should use Copier to generate projects instead.
+>
+> 📚 **Environment Setup:** See [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) for detailed environment configuration, testing, and troubleshooting guides.
 
 ---
 

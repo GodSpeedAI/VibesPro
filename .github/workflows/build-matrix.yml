@@ -1,0 +1,252 @@
+name: build-matrix
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ "v*.*.*" ]   # enables the optional release job
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-matrix-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------- Prepare: cache keys & versions (Ubuntu) ----------
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      mise_cache_key: ${{ steps.cache-key.outputs.mise_cache_key }}
+      node_version: ${{ steps.vers.outputs.node }}
+      python_version: ${{ steps.vers.outputs.python }}
+      rust_version: ${{ steps.vers.outputs.rust }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install mise (for version introspection)
+        run: |
+          curl https://mise.run | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          mise --version
+
+      - name: Resolve versions from .mise.toml
+        id: vers
+        shell: bash
+        run: |
+          # Emits JSON; robust against plugin formatting changes
+          J=$(mise ls --json || echo '{}')
+          echo "node=$(echo "$J" | jq -r '.node.version // empty')"     >> $GITHUB_OUTPUT
+          echo "python=$(echo "$J" | jq -r '.python.version // empty')" >> $GITHUB_OUTPUT
+          echo "rust=$(echo "$J" | jq -r '.rust.version // empty')"     >> $GITHUB_OUTPUT
+
+      - name: Compute mise cache key
+        id: cache-key
+        run: |
+          echo "mise_cache_key=mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}" >> $GITHUB_OUTPUT
+
+  # ---------- Build & Test Matrix ----------
+  build-test:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+        include:
+          - os: ubuntu-latest
+            pkg_mgr: apt
+          - os: macos-latest
+            pkg_mgr: brew
+    runs-on: ${{ matrix.os }}
+    env:
+      MISE_NONINTERACTIVE: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ---- Base tools (sops/age/jq) for both OSes ----
+      - name: Install base packages
+        shell: bash
+        run: |
+          if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends sops age jq make
+          else
+            brew update
+            brew install sops age jq
+          fi
+
+      # ---- Devbox (OS toolchain) — skip on mac if you prefer native ----
+      - name: Install Devbox
+        shell: bash
+        run: |
+          curl -fsSL https://get.jetpack.io/devbox | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          devbox --version
+      - name: Devbox environment (OS toolchain)
+        run: devbox shell -- echo "Devbox ready on ${{ matrix.os }}"
+
+      # ---- mise runtimes ----
+      - name: Install mise
+        run: |
+          curl https://mise.run | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          mise --version
+      - name: Cache mise runtimes
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: ${{ needs.prepare.outputs.mise_cache_key }}
+          restore-keys: |
+            mise-${{ runner.os }}-
+      - name: Install runtimes (Node/Python/Rust via mise)
+        run: mise install
+
+      # ---- Node package manager (optional; respects Corepack) ----
+      - name: Enable corepack (optional)
+        run: corepack enable
+
+      - name: Cache pnpm store (optional)
+        if: hashFiles('pnpm-lock.yaml') != ''
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      # ---- Secrets (Minimal CI: no direnv) ----
+      # If your unit tests/build need secrets, decrypt them. If not, you can remove this step.
+      - name: Decrypt secrets to ephemeral env (if key provided)
+        id: sops
+        continue-on-error: true
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          if [ -n "${SOPS_AGE_KEY}" ]; then
+            sops -d .secrets.env.sops > /tmp/ci.env
+            set -a; source /tmp/ci.env; set +a
+            echo "loaded=true" >> $GITHUB_OUTPUT
+          else
+            echo "loaded=false" >> $GITHUB_OUTPUT
+            echo "No SOPS_AGE_KEY provided; continuing without decrypted env."
+          fi
+
+      # ---- Volta compatibility & enforcement (CI does not install Volta) ----
+      - name: Verify Node pins (mise vs Volta block)
+        run: just verify:node
+
+      # ---- Install project deps ----
+      - name: Install dependencies
+        run: |
+          if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; fi
+          if [ -f uv.lock ] || [ -f pyproject.toml ]; then uv sync --frozen || true; fi
+          if [ -f Cargo.toml ]; then cargo fetch; fi
+
+      # ---- Build / Lint / Test ----
+      - name: Lint
+        run: |
+          if [ -f package.json ]; then pnpm run lint || pnpm run lint:ci || true; fi
+          if [ -f pyproject.toml ]; then just lint:py || true; fi
+          if [ -f Cargo.toml ]; then cargo clippy --all-targets -- -D warnings || true; fi
+
+      - name: Build
+        run: just build
+
+      - name: Test
+        run: just test
+
+      # ---- Coverage & Artifacts ----
+      - name: Collect coverage (if any)
+        run: |
+          mkdir -p artifacts/coverage
+          # Add your coverage copy/move commands here, e.g.:
+          # cp -r coverage/ artifacts/coverage/ || true
+          # cp coverage.xml artifacts/coverage/ || true
+        if: always()
+
+      - name: Upload artifacts (logs/coverage/build)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}-${{ github.sha }}
+          path: |
+            artifacts/**
+            dist/**
+            build/**
+            coverage/**
+            **/junit*.xml
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -f /tmp/ci.env
+
+  # ---------- Optional Release (tagged builds) ----------
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [ prepare, build-test ]
+    runs-on: ubuntu-latest
+    env:
+      MISE_NONINTERACTIVE: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install base packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends sops age jq make
+
+      - name: Install Devbox
+        run: |
+          curl -fsSL https://get.jetpack.io/devbox | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install mise
+        run: |
+          curl https://mise.run | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Devbox environment
+        run: devbox shell -- echo "Release OS deps ready"
+
+      - name: Setup runtimes
+        run: mise install
+
+      - name: Decrypt release secrets
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          sops -d .secrets.env.sops > /tmp/ci.env
+          set -a; source /tmp/ci.env; set +a
+
+      - name: Build (release)
+        run: just build
+
+      # Example: npm publish / docker push (uncomment & tailor)
+      # - name: Publish package
+      #   env:
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: |
+      #     echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      #     pnpm publish --access public --no-git-checks
+
+      # - name: Push Docker image
+      #   env:
+      #     REGISTRY: ghcr.io
+      #     IMAGE: ${{ github.repository }}
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     echo "${GH_TOKEN}" | docker login ghcr.io -u $ --password-stdin
+      #     docker build -t ${REGISTRY}/${IMAGE}:${GITHUB_REF_NAME} .
+      #     docker push ${REGISTRY}/${IMAGE}:${GITHUB_REF_NAME}
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -f /tmp/ci.env
