@@ -1321,10 +1321,10 @@ just verify-node
 2. **❌ Version mismatch:**
    ```
    ❌ ERROR: Node version mismatch between mise and Volta!
-   
+
       mise (.mise.toml):      20.11.1
       Volta (package.json):   18.17.0
-   
+
       Please align versions:
       1. Update .mise.toml to match Volta, OR
       2. Update package.json Volta section to match mise, OR
@@ -1422,9 +1422,9 @@ Both CI workflows (`env-check.yml` and `build-matrix.yml`) run `just verify-node
 
 ### Deprecation Timeline
 
-**Current:** Volta optional, must align if present (Phase 5 complete)  
-**Next minor release:** Deprecation warnings added  
-**Two releases later:** Volta section ignored, warnings removed  
+**Current:** Volta optional, must align if present (Phase 5 complete)
+**Next minor release:** Deprecation warnings added
+**Two releases later:** Volta section ignored, warnings removed
 **Future:** mise-only configuration
 
 **Recommendation:** Migrate to mise-only configuration now to avoid future disruption.
