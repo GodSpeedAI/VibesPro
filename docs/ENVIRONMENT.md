@@ -1480,6 +1480,318 @@ just test-env
 # ✅ test_volta_mise_guard.sh passes
 ```
 
+## Just Task Environment Requirements
+
+### Overview
+
+VibesPro uses **Just** as a task runner to orchestrate development workflows across multiple languages (Node.js, Python, Rust). All tasks are designed to work seamlessly with **mise** as the authoritative runtime manager.
+
+**Key principle:** Tasks gracefully degrade when dependencies are unavailable, providing clear error messages and installation instructions.
+
+### Environment Detection
+
+Tasks automatically detect and use mise-managed runtimes:
+
+```bash
+# mise ensures correct versions are active
+$ just setup          # Uses mise-managed Node, Python, tools
+$ just test-node      # Uses pnpm from mise Node installation
+$ just test-python    # Uses uv/pytest from mise Python
+```
+
+### Task Categories & Runtime Requirements
+
+#### Setup Tasks
+
+| Task | Requires | Purpose | Environment Check |
+|------|----------|---------|-------------------|
+| `setup` | Node, Python, Copier | Full environment setup | Delegates to sub-tasks |
+| `setup-node` | pnpm (via mise Node) | Install Node dependencies | None (assumes pnpm via corepack) |
+| `setup-python` | uv (via mise Python) | Install Python dependencies | None (assumes uv available) |
+| `setup-tools` | uv | Install Copier template tool | Checks `command -v copier` |
+| `verify-node` | bash | Verify Node version alignment | None (bash script) |
+
+#### Development Tasks
+
+| Task | Requires | Purpose | Environment Check |
+|------|----------|---------|-------------------|
+| `dev` | Nx, pnpm | Start all development servers | None (assumes setup complete) |
+| `env-enter` | devbox | Enter Devbox shell | ✅ Checks `command -v devbox` |
+
+#### Build Tasks
+
+| Task | Requires | Purpose | Environment Check |
+|------|----------|---------|-------------------|
+| `build` | Nx or Python build | Auto-detect build strategy | Checks for `nx.json` |
+| `build-nx` | Nx, pnpm | Build all Nx projects | None |
+| `build-direct` | Python, pnpm | Build without Nx | None |
+
+#### Test Tasks
+
+| Task | Requires | Purpose | Environment Check |
+|------|----------|---------|-------------------|
+| `test` | Auto-detect | Run all tests | Delegates based on `nx.json` |
+| `test-node` | pnpm, Jest | Run Node.js tests | None |
+| `test-python` | uv, pytest | Run Python tests | None |
+| `test-env` | bash | Run environment validation tests | None |
+| `test-integration` | Copier, pnpm | Test template generation | None |
+
+#### Lint & Format Tasks
+
+| Task | Requires | Purpose | Environment Check |
+|------|----------|---------|-------------------|
+| `lint` | All linters | Run all linters | Delegates to sub-tasks |
+| `lint-node` | pnpm, ESLint | Lint Node.js code | None |
+| `lint-python` | uv, ruff, mypy | Lint Python code | None |
+| `format-node` | pnpm, Prettier | Format Node.js code | None |
+| `format-python` | uv, black, isort | Format Python code | None |
+
+#### AI Workflow Tasks
+
+| Task | Requires | Purpose | Environment Check |
+|------|----------|---------|-------------------|
+| `ai-validate` | pnpm, Nx (optional) | Lint + typecheck + tests | ✅ Checks `command -v pnpm` |
+| `ai-scaffold` | pnpm, Nx | Run Nx generator | ✅ Checks `command -v pnpm` |
+| `ai-context-bundle` | bash | Bundle AI context | None |
+
+#### Security Tasks
+
+| Task | Requires | Purpose | Environment Check |
+|------|----------|---------|-------------------|
+| `security-audit` | cargo | Audit Rust dependencies | ✅ Checks `command -v cargo` |
+| `security-benchmark` | cargo | Performance benchmarks | ✅ Checks `command -v cargo` |
+
+#### Documentation Tasks
+
+| Task | Requires | Purpose | Environment Check |
+|------|----------|---------|-------------------|
+| `docs-generate` | node | Generate documentation | None (direct `node` call) |
+| `docs-serve` | Python http.server | Serve docs locally | None |
+
+### Graceful Degradation Examples
+
+Tasks check for tool availability before executing:
+
+**Example 1: ai-validate**
+```makefile
+ai-validate:
+    @echo "🔍 Validating project..."
+    @if command -v pnpm > /dev/null 2>&1; then \
+        if [ -f package.json ] && grep -q '"lint"' package.json; then \
+            echo "Running lint..."; \
+            pnpm run lint || true; \
+        else \
+            echo "⚠️  No 'lint' script found in package.json. Skipping lint."; \
+        fi; \
+        # ... more checks
+    else \
+        echo "⚠️  pnpm not found. Skipping validation."; \
+        echo "Run 'just setup' to install dependencies."; \
+    fi
+```
+
+**Example 2: env-enter**
+```makefile
+env-enter:
+    @echo "🎯 Entering Devbox environment..."
+    @if command -v devbox >/dev/null 2>&1; then \
+        devbox shell; \
+    else \
+        echo "❌ Devbox not installed"; \
+        echo "   Install: curl -fsSL https://get.jetpack.io/devbox | bash"; \
+        exit 1; \
+    fi
+```
+
+**Example 3: security-audit**
+```makefile
+security-audit:
+    @echo "🔐 Running security audit..."
+    @if command -v cargo > /dev/null 2>&1; then \
+        cargo install cargo-audit --quiet 2>/dev/null || true; \
+        cd libs/security && (cargo audit || echo "⚠️  Audit warnings found but continuing..."); \
+    else \
+        echo "❌ cargo not found. Please install Rust."; \
+        exit 1; \
+    fi
+```
+
+### Common Patterns
+
+#### Pattern 1: Check Tool Availability
+```makefile
+task-name:
+    @if command -v tool > /dev/null 2>&1; then \
+        tool command; \
+    else \
+        echo "❌ tool not found. Install via: mise install"; \
+        exit 1; \
+    fi
+```
+
+#### Pattern 2: Optional Features
+```makefile
+task-name:
+    @if [ -f config.json ]; then \
+        echo "Using config.json"; \
+    else \
+        echo "⚠️  config.json not found, using defaults"; \
+    fi
+```
+
+#### Pattern 3: Multi-Tool Chains
+```makefile
+task-name:
+    @if command -v tool1 && command -v tool2; then \
+        tool1 | tool2; \
+    else \
+        echo "❌ Requires tool1 and tool2"; \
+        echo "   Run: just setup"; \
+        exit 1; \
+    fi
+```
+
+### Environment Validation
+
+Run environment tests to validate Just task integration:
+
+```bash
+# Run all environment tests (including Just task awareness)
+just test-env
+
+# Expected output:
+# ✅ test_just_env_awareness.sh passes
+# ✅ Validates all critical tasks exist
+# ✅ Confirms tasks check for tool availability
+# ✅ Verifies tasks degrade gracefully
+```
+
+**Test coverage (9 tests):**
+- `test_sanity.sh` - Basic harness validation
+- `test_doctor.sh` - Doctor script validation
+- `test_harness.sh` - Test discovery mechanism
+- `test_devbox.sh` - Devbox configuration
+- `test_mise_versions.sh` - mise runtime versions
+- `test_sops_local.sh` - SOPS encryption setup
+- `test_ci_minimal.sh` - CI workflow validation
+- `test_volta_mise_guard.sh` - Volta/mise alignment
+- `test_just_env_awareness.sh` - **Just task environment checks** ✨ **NEW**
+
+### Task Execution Best Practices
+
+1. **Always run `just setup` first** in new environments
+   ```bash
+   just setup  # Installs all dependencies (Node, Python, tools)
+   ```
+
+2. **Verify environment before running tasks**
+   ```bash
+   just test-env     # Validates entire environment
+   just verify-node  # Checks Node version alignment
+   just doctor       # Comprehensive environment check
+   ```
+
+3. **Use mise for runtime version management**
+   ```bash
+   mise install      # Install all runtimes from .mise.toml
+   mise current      # Show active runtime versions
+   ```
+
+4. **Let tasks handle missing tools gracefully**
+   - Tasks provide clear installation instructions
+   - No need to manually check for tools
+   - Run `just <task>` and follow error messages
+
+### CI Integration
+
+Just tasks work seamlessly in CI environments with mise:
+
+**GitHub Actions Example:**
+```yaml
+- name: Install mise
+  uses: jdx/mise-action@v2
+
+- name: Install dependencies
+  run: just setup
+
+- name: Verify environment
+  run: |
+    just verify-node  # Check Node version alignment
+    just test-env     # Run environment tests
+
+- name: Build and test
+  run: |
+    just build
+    just test
+```
+
+See `.github/workflows/env-check.yml` and `.github/workflows/build-matrix.yml` for complete examples.
+
+### Troubleshooting
+
+#### Task fails with "command not found"
+
+**Problem:** `just <task>` fails with "pnpm: command not found"
+
+**Solution:**
+```bash
+# Install mise if not installed
+curl https://mise.jdx.dev/install.sh | sh
+
+# Install runtimes from .mise.toml
+mise install
+
+# Re-run setup
+just setup
+```
+
+#### Task skips steps with warnings
+
+**Problem:** Task shows "⚠️  Nx not available" warnings
+
+**Solution:**
+```bash
+# This is expected behavior - task degrades gracefully
+# If you need the skipped functionality:
+just setup-node  # Installs Nx via pnpm
+```
+
+#### Incorrect Node version used
+
+**Problem:** Task uses wrong Node version
+
+**Solution:**
+```bash
+# Verify mise is managing Node
+mise current
+
+# Check for Volta conflicts
+just verify-node
+
+# Fix version mismatch (see Volta Coexistence section)
+```
+
+### Testing Just Tasks
+
+The `test_just_env_awareness.sh` test validates:
+
+- ✅ justfile exists and is well-formed
+- ✅ just command is available
+- ✅ All critical tasks are defined
+- ✅ Node tasks check for pnpm availability
+- ✅ Python tasks check for uv availability
+- ✅ Cargo tasks check for cargo availability
+- ✅ Tasks gracefully degrade when tools unavailable
+- ✅ Environment setup tasks properly ordered
+- ✅ verify-node integration works
+- ✅ Shell safety best practices followed
+
+Run test:
+```bash
+bash tests/env/test_just_env_awareness.sh
+# ✅ All Just task environment awareness checks passed
+```
+
 ## Next Steps
 
 - ✅ **Phase 0:** Test harness and guardrails (complete)
@@ -1488,7 +1800,9 @@ just test-env
 - ✅ **Phase 3:** SOPS secret encryption (`.sops.yaml`, `.secrets.env.sops`) (complete)
 - ✅ **Phase 4:** Minimal CI workflows (`env-check.yml`, `build-matrix.yml`) (complete)
 - ✅ **Phase 5:** Volta coexistence checks (`verify-node`, conflict detection) (complete)
-- **Phase 6:** Ensure Just tasks are environment-aware
+- ✅ **Phase 6:** Just task environment awareness (task validation, documentation) (complete)
+
+**All 6 phases of the environment setup roadmap are now complete! 🎉**
 
 See `docs/tmp/devenv.md` for the complete environment setup roadmap.
 
