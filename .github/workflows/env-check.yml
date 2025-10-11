@@ -23,10 +23,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install system packages (sops, age, jq, make)
+      - name: Install system packages (age, jq, make)
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends sops age jq make
+          sudo apt-get install -y --no-install-recommends age jq make
+
+      - name: Install SOPS
+        run: |
+          SOPS_VERSION="3.9.3"
+          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+          sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+          sudo chmod +x /usr/local/bin/sops
+          sops --version
 
       - name: Install Devbox
         run: |

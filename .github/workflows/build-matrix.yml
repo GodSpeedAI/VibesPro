@@ -68,17 +68,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ---- Base tools (sops/age/jq) for both OSes ----
+      # ---- Base tools (age/jq) for both OSes ----
       - name: Install base packages
         shell: bash
         run: |
           if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
             sudo apt-get update
-            sudo apt-get install -y --no-install-recommends sops age jq make
+            sudo apt-get install -y --no-install-recommends age jq make
           else
             brew update
-            brew install sops age jq
+            brew install age jq
           fi
+
+      # ---- Install SOPS ----
+      - name: Install SOPS
+        shell: bash
+        run: |
+          SOPS_VERSION="3.9.3"
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+            sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+            sudo chmod +x /usr/local/bin/sops
+          else
+            brew install sops
+          fi
+          sops --version
 
       # ---- Devbox (OS toolchain) — skip on mac if you prefer native ----
       - name: Install Devbox
@@ -201,7 +215,15 @@ jobs:
       - name: Install base packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends sops age jq make
+          sudo apt-get install -y --no-install-recommends age jq make
+
+      - name: Install SOPS
+        run: |
+          SOPS_VERSION="3.9.3"
+          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+          sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+          sudo chmod +x /usr/local/bin/sops
+          sops --version
 
       - name: Install Devbox
         run: |
