@@ -183,6 +183,437 @@ mise upgrade
 mise exec -- node --version
 mise exec -- python --version
 mise exec -- rustc --version
+```
+
+### Configuration
+
+The `.mise.toml` file defines all runtime versions:
+
+```toml
+[tools]
+node = "20.11.1"
+python = "3.12.5"
+rust = "1.80.1"
+
+[env]
+# optional shared ENV defaults
+```
+
+**Version Formats:**
+- Exact: `"20.11.1"` - pins to specific patch
+- Prefix: `"20"` or `"20.11"` - latest matching version
+- Latest: `"latest"` - always use newest (not recommended)
+
+### Why mise Instead of nvm/pyenv/rustup?
+
+**Before (multiple tools):**
+```bash
+nvm use 20        # Node
+pyenv local 3.12  # Python
+rustup default stable  # Rust
+# 3 tools, 3 config files, 3 commands to remember
+```
+
+**After (mise only):**
+```bash
+mise install      # All runtimes from one config
+# 1 tool, 1 config file, 1 command
+```
+
+### Migration from Other Tools
+
+**From nvm:**
+```bash
+# Old: .nvmrc
+# 20.11.1
+
+# New: .mise.toml
+# [tools]
+# node = "20.11.1"
+```
+
+**From pyenv:**
+```bash
+# Remove .python-version (already done in this repo)
+# mise reads versions from .mise.toml instead
+```
+
+**From Volta:**
+```bash
+# package.json "volta" section can coexist
+# but mise is authoritative
+# Use 'just verify:node' to check alignment
+```
+
+### When to Use mise
+
+**Use mise for:**
+- Node.js, Python, Rust runtimes
+- Development environment version management
+- Team-wide version consistency
+- CI/CD reproducibility
+
+**Don't use mise for:**
+- OS-level tools (use devbox instead)
+- Language packages (use pnpm/uv/cargo instead)
+- System services (use devbox for PostgreSQL, etc.)
+
+### Troubleshooting
+
+**Problem:** `mise: command not found`
+```bash
+# Ensure mise is in PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Verify installation
+which mise
+
+# Reinstall if needed
+curl https://mise.jdx.dev/install.sh | sh
+```
+
+**Problem:** Runtimes not activating automatically
+```bash
+# Ensure mise is activated in shell
+eval "$(mise activate bash)"  # or zsh
+
+# Or add to shell RC file permanently
+```
+
+**Problem:** Version mismatch warnings
+```bash
+# Check what's active
+mise current
+
+# Reinstall runtimes
+mise install --force
+
+# Check for conflicts
+just verify:node  # if Volta is also present
+```
+
+**Problem:** Slow runtime installation
+```bash
+# mise downloads pre-built binaries (fast)
+# If building from source, ensure build tools installed
+devbox shell  # provides make, gcc, etc.
+```
+
+## SOPS (Secret Encryption)
+
+SOPS (Secrets OPerationS) provides encrypted secret management for local development and CI/CD.
+
+### What is SOPS?
+
+SOPS encrypts files using age, AWS KMS, GCP KMS, Azure Key Vault, or PGP:
+- **Encrypted at rest:** Secrets committed to git are encrypted
+- **Decrypted in memory:** Only at runtime via direnv or CI
+- **Fine-grained:** Encrypt only specific keys (encrypted_regex)
+- **Git-friendly:** Encrypted files can be safely committed
+
+### Installation
+
+```bash
+# Install SOPS (if not already installed)
+brew install sops age  # macOS/Linux with Homebrew
+
+# Or download binaries
+# SOPS: https://github.com/getsops/sops/releases
+# age: https://github.com/FiloSottile/age/releases
+
+# Verify installation
+sops --version
+age --version
+```
+
+### First-Time Setup
+
+**1. Generate an age key pair:**
+
+```bash
+# Generate key (only do this once)
+age-keygen -o ~/.config/sops/age/keys.txt
+
+# View your public key
+grep 'public key:' ~/.config/sops/age/keys.txt
+# Example output: age1abc123...xyz
+```
+
+**2. Update `.sops.yaml` with your public key:**
+
+```yaml
+creation_rules:
+  - path_regex: \.secrets\.env\.sops$
+    encrypted_regex: ^(OPENAI_API_KEY|DATABASE_URL|GITHUB_TOKEN|.*_SECRET|.*_KEY|.*_PASSWORD)$
+    age: age1abc123...xyz  # Replace with YOUR public key from step 1
+```
+
+**3. Encrypt the secrets file:**
+
+```bash
+# Encrypt in place
+sops -e -i .secrets.env.sops
+
+# Verify it's encrypted
+cat .secrets.env.sops
+# Should show: sops_age__list_0__map_enc: ...
+```
+
+**4. Export age key for runtime decryption:**
+
+```bash
+# Add to your shell RC file (~/.bashrc or ~/.zshrc)
+export SOPS_AGE_KEY_FILE=$HOME/.config/sops/age/keys.txt
+
+# Reload shell
+exec $SHELL
+```
+
+### Configuration
+
+The `.sops.yaml` file controls what gets encrypted:
+
+```yaml
+creation_rules:
+  - path_regex: \.secrets\.env\.sops$
+    encrypted_regex: ^(OPENAI_API_KEY|DATABASE_URL|GITHUB_TOKEN|.*_SECRET|.*_KEY|.*_PASSWORD)$
+    age: age1abc123...xyz
+```
+
+**Key Fields:**
+- `path_regex`: Which files to encrypt (uses regex)
+- `encrypted_regex`: Which keys within the file to encrypt (case-sensitive)
+- `age`: Your age public key (from `age-keygen`)
+
+### Usage
+
+**Encrypting secrets:**
+
+```bash
+# Encrypt file in place
+sops -e -i .secrets.env.sops
+
+# Encrypt and create new file
+sops -e .secrets.env.sops > .secrets.env.sops.encrypted
+```
+
+**Decrypting secrets:**
+
+```bash
+# Decrypt to stdout (inspect without saving)
+sops -d .secrets.env.sops
+
+# Decrypt to file (NEVER commit this!)
+sops -d .secrets.env.sops > .env
+```
+
+**Editing encrypted secrets:**
+
+```bash
+# Opens in $EDITOR, auto-decrypts and re-encrypts on save
+sops .secrets.env.sops
+```
+
+**Running commands with secrets:**
+
+```bash
+# One-time command with secrets loaded
+sops exec-env .secrets.env.sops 'echo $OPENAI_API_KEY'
+
+# Or use direnv (see below)
+```
+
+### Local Development (direnv Integration)
+
+The `.envrc` file automatically decrypts secrets when you `cd` into the project:
+
+```bash
+# .envrc content (already configured in this repo)
+use mise
+watch_file .secrets.env.sops
+eval "$(sops --decrypt .secrets.env.sops | sed 's/^/export /')"
+```
+
+**Setup direnv:**
+
+```bash
+# Install direnv
+brew install direnv  # macOS/Linux
+
+# Activate in shell (add to ~/.bashrc or ~/.zshrc)
+eval "$(direnv hook bash)"  # or zsh
+
+# Allow this repo's .envrc
+cd /path/to/VibesPro
+direnv allow
+```
+
+**How it works:**
+1. You `cd` into the project directory
+2. direnv automatically runs `.envrc`
+3. `.envrc` decrypts `.secrets.env.sops` using your age key
+4. Environment variables are loaded into your shell
+5. When you `cd` out, variables are unloaded
+
+**Security notes:**
+- Secrets are only in memory, never written to disk unencrypted
+- Age key (`~/.config/sops/age/keys.txt`) must be secured (chmod 600)
+- direnv only works locally; CI uses different method (see below)
+
+### CI/CD Integration
+
+**GitHub Actions example:**
+
+```yaml
+name: CI
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Install SOPS and age
+      - name: Install SOPS
+        run: |
+          curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
+          chmod +x sops-v3.8.1.linux.amd64
+          sudo mv sops-v3.8.1.linux.amd64 /usr/local/bin/sops
+
+      # Set age key from GitHub secret
+      - name: Decrypt secrets
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          mkdir -p ~/.config/sops/age
+          echo "$SOPS_AGE_KEY" > ~/.config/sops/age/keys.txt
+          chmod 600 ~/.config/sops/age/keys.txt
+
+          # Export decrypted secrets to GITHUB_ENV
+          sops -d .secrets.env.sops | tee -a $GITHUB_ENV
+
+      # Now secrets are available as env vars
+      - name: Run tests
+        run: just test
+```
+
+**Setup in GitHub:**
+1. Go to repository Settings → Secrets and variables → Actions
+2. Add secret named `SOPS_AGE_KEY`
+3. Paste your **private age key** (from `~/.config/sops/age/keys.txt`)
+
+**WARNING:** Never commit your private age key to git!
+
+### Security Best Practices
+
+✅ **DO:**
+- Commit `.secrets.env.sops` (encrypted) to git
+- Use `.gitignore` to block plaintext `.env*` files
+- Rotate age keys periodically
+- Use different age keys for different environments (dev/staging/prod)
+- Keep age private key secure (chmod 600)
+
+❌ **DON'T:**
+- Commit plaintext `.env` files
+- Share your age private key
+- Use the same key across multiple projects
+- Decrypt secrets to disk unnecessarily
+
+### Template Mode (for generated projects)
+
+VibesPro includes `.secrets.env.sops` as an **unencrypted template**:
+
+```bash
+# Example placeholder content
+APP_ENV=production
+APP_VERSION=0.1.0
+OPENAI_API_KEY=sk-placeholder-replace-me
+DATABASE_URL=postgresql://user:pass@localhost/db
+```
+
+**After generating a project:**
+1. Replace placeholders with real values
+2. Update `.sops.yaml` with your age public key
+3. Encrypt: `sops -e -i .secrets.env.sops`
+4. Setup direnv: `direnv allow`
+
+### Troubleshooting
+
+**Problem:** `sops: command not found`
+```bash
+# Install SOPS
+brew install sops  # macOS/Linux with Homebrew
+
+# Or download binary from GitHub releases
+```
+
+**Problem:** `Failed to get the data key required to decrypt the SOPS file`
+```bash
+# Ensure SOPS_AGE_KEY_FILE is set
+export SOPS_AGE_KEY_FILE=$HOME/.config/sops/age/keys.txt
+
+# Verify key file exists and is readable
+ls -l ~/.config/sops/age/keys.txt
+# Should show: -rw------- (chmod 600)
+```
+
+**Problem:** `no matching creation rules found`
+```bash
+# Ensure .sops.yaml path_regex matches your file
+# Default: \.secrets\.env\.sops$
+
+# Test regex match
+echo ".secrets.env.sops" | grep -E '\.secrets\.env\.sops$'
+```
+
+**Problem:** `direnv: .envrc is blocked`
+```bash
+# You must explicitly allow .envrc
+direnv allow
+
+# Check direnv status
+direnv status
+```
+
+**Problem:** Secrets not loading in shell
+```bash
+# Verify direnv is hooked
+echo $DIRENV_DIR  # Should show current directory
+
+# Check .envrc was evaluated
+direnv reload
+
+# Manually test SOPS decryption
+sops -d .secrets.env.sops  # Should show plaintext
+```
+
+**Problem:** CI can't decrypt secrets
+```bash
+# Ensure GitHub secret SOPS_AGE_KEY contains the PRIVATE key
+# (entire contents of ~/.config/sops/age/keys.txt)
+
+# Verify in CI logs (without echoing the key!)
+- run: |
+    echo "Age key file exists: $(test -f ~/.config/sops/age/keys.txt && echo yes || echo no)"
+```
+
+### Alternatives to SOPS
+
+If SOPS doesn't fit your workflow:
+
+- **Doppler:** Cloud-based secret management (SaaS)
+- **Vault:** HashiCorp Vault (self-hosted)
+- **AWS Secrets Manager / GCP Secret Manager:** Cloud provider native
+- **1Password CLI:** For teams already using 1Password
+
+SOPS is chosen for VibesPro because:
+- ✅ Encrypted secrets can be committed to git
+- ✅ No external service dependency
+- ✅ Works offline
+- ✅ Free and open source
+- ✅ Git-friendly diffs (only changed keys show as changed)
+
+
 
 # Use specific runtime (override .mise.toml)
 mise use node@22
@@ -325,7 +756,8 @@ tests/env/
 ├── test_doctor.sh       # Validates doctor script output
 ├── test_harness.sh      # Validates test discovery
 ├── test_devbox.sh       # Validates devbox.json configuration
-└── test_mise_versions.sh # Validates mise runtime versions
+├── test_mise_versions.sh # Validates mise runtime versions
+└── test_sops_local.sh   # Validates SOPS encryption setup
 ```
 
 **Running Tests:**
@@ -515,7 +947,7 @@ See `.github/workflows/` for CI configuration.
 - ✅ **Phase 0:** Test harness and guardrails (complete)
 - ✅ **Phase 1:** Devbox integration (`devbox.json`) (complete)
 - ✅ **Phase 2:** mise runtime management (`.mise.toml`) (complete)
-- **Phase 3:** Add SOPS secret encryption
+- ✅ **Phase 3:** SOPS secret encryption (`.sops.yaml`, `.secrets.env.sops`) (complete)
 - **Phase 4:** Add minimal CI workflows
 - **Phase 5:** Add Volta coexistence checks
 - **Phase 6:** Ensure Just tasks are environment-aware
