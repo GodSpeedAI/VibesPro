@@ -69,14 +69,21 @@ jobs:
           restore-keys: |
             pnpm-${{ runner.os }}-
 
-      - name: Decrypt secrets to ephemeral env
-        # Provide SOPS_AGE_KEY via repo/org Actions secrets
-        run: |
-          sops -d .secrets.env.sops > /tmp/ci.env
-          set -a; source /tmp/ci.env; set +a
-
+      - name: Decrypt secrets to ephemeral env (if key provided)
+        # Provide SOPS_AGE_KEY via repo/org Actions secrets (optional)
+        id: sops
+        continue-on-error: true
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          if [ -n "${SOPS_AGE_KEY}" ] && [ -f .secrets.env.sops ]; then
+            sops -d .secrets.env.sops > /tmp/ci.env
+            set -a; source /tmp/ci.env; set +a
+            echo "loaded=true" >> $GITHUB_OUTPUT
+          else
+            echo "loaded=false" >> $GITHUB_OUTPUT
+            echo "No SOPS_AGE_KEY provided or .secrets.env.sops not found; continuing without decrypted env."
+          fi
 
       - name: Verify Node pins (mise vs Volta)
         run: |
