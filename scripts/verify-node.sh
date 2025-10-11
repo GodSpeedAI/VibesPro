@@ -25,7 +25,7 @@ if [ -f "package.json" ]; then
     # Fallback if jq not available
     volta_node=$(grep -A 1 '"volta"' package.json | grep '"node"' | cut -d'"' -f4 || echo "")
   fi
-  
+
   if [ -n "$volta_node" ]; then
     echo "  Volta (package.json): $volta_node"
   fi
@@ -36,7 +36,7 @@ if [ -n "$mise_node" ] && [ -n "$volta_node" ]; then
   # Extract major versions
   mise_major=$(echo "$mise_node" | cut -d'.' -f1)
   volta_major=$(echo "$volta_node" | cut -d'.' -f1)
-  
+
   if [ "$mise_major" != "$volta_major" ]; then
     echo ""
     echo "❌ ERROR: Node version mismatch between mise and Volta!"

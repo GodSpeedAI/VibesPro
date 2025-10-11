@@ -21,14 +21,14 @@ if command -v mise >/dev/null 2>&1; then
   else
     echo "  node (mise): not installed (run 'mise install')"
   fi
-  
+
   if mise which python >/dev/null 2>&1; then
     echo -n "  python (mise): "
     mise exec -- python -V 2>&1 | awk '{print $2}' || echo "not installed"
   else
     echo "  python (mise): not installed (run 'mise install')"
   fi
-  
+
   if mise which rustc >/dev/null 2>&1; then
     echo -n "  rust (mise): "
     mise exec -- rustc --version 2>&1 | awk '{print $2}' || echo "not installed"
