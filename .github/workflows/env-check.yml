@@ -53,6 +53,8 @@ jobs:
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           mise --version
+      - name: Trust mise config
+        run: mise trust --yes .mise.toml
 
       - name: Cache mise runtimes
         uses: actions/cache@v4

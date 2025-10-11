@@ -39,9 +39,16 @@ jobs:
         run: |
           # Emits JSON; robust against plugin formatting changes
           J=$(mise ls --json || echo '{}')
-          echo "node=$(echo "$J" | jq -r '.node.version // empty')"     >> $GITHUB_OUTPUT
-          echo "python=$(echo "$J" | jq -r '.python.version // empty')" >> $GITHUB_OUTPUT
-          echo "rust=$(echo "$J" | jq -r '.rust.version // empty')"     >> $GITHUB_OUTPUT
+          get_version() {
+            echo "$J" | jq -r --arg tool "$1" '
+              (if type == "object" and has($tool) then .[$tool] else [] end)
+              | map(.version)
+              | first // empty
+            '
+          }
+          echo "node=$(get_version node)"     >> $GITHUB_OUTPUT
+          echo "python=$(get_version python)" >> $GITHUB_OUTPUT
+          echo "rust=$(get_version rust)"     >> $GITHUB_OUTPUT
 
       - name: Compute mise cache key
         id: cache-key
@@ -120,6 +127,8 @@ jobs:
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           mise --version
+      - name: Trust mise config
+        run: mise trust --yes .mise.toml
       - name: Cache mise runtimes
         uses: actions/cache@v4
         with:
@@ -177,7 +186,7 @@ jobs:
       - name: Lint
         run: |
           if [ -f package.json ]; then pnpm run lint || pnpm run lint:ci || true; fi
-          if [ -f pyproject.toml ]; then just lint:py || true; fi
+          if [ -f pyproject.toml ]; then just lint-python || true; fi
           if [ -f Cargo.toml ]; then cargo clippy --all-targets -- -D warnings || true; fi
 
       - name: Build
