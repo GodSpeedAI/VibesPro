@@ -18,10 +18,10 @@ describe('Template documentation tokens', () => {
 
     it('maintainer docs include project metadata tokens for repo alignment', () => {
         const docs = [
-            'dev_adr.md.j2',
-            'dev_prd.md.j2',
-            'dev_sds.md.j2',
-            'dev_technical-specifications.md.j2'
+            'adr.md.j2',
+            'prd.md.j2',
+            'sds.md.j2',
+            'technical-specifications.md.j2'
         ];
 
         docs.forEach((fileName) => {

@@ -105,10 +105,12 @@ describe('Merged Project Structure', () => {
         expect(copierConfig['include_ai_workflows']).toBeDefined();
         expect(copierConfig['architecture_style']).toBeDefined();
 
-        // Validate architecture choices safely
+        // Validate architecture choices safely (new format with descriptions)
         const arch = copierConfig['architecture_style'] as Record<string, unknown> | undefined;
         expect(arch).toBeDefined();
-        const choices = arch && Array.isArray(arch['choices']) ? (arch['choices'] as unknown[]).map(String) : [];
+        const choices = arch && typeof arch['choices'] === 'object' && arch['choices'] !== null
+            ? Object.values(arch['choices'] as Record<string, string>)
+            : [];
         expect(choices).toContain('hexagonal');
         expect(choices).toContain('layered');
         expect(choices).toContain('microservices');

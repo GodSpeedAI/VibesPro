@@ -52,7 +52,6 @@ describe('Documentation template emission', () => {
         const expectedDocs = [
             'docs/README.md',
             'docs/spec_index.md',
-            'docs/dev_spec_index.md',
             'docs/traceability_matrix.md',
             'docs/commit_message_guidelines.md',
             'docs/how-to/ai-onboarding.md'
@@ -81,16 +80,15 @@ describe('Documentation template emission', () => {
         );
         const docsReadmeContent = await fs.readFile(docsReadmePath, 'utf-8');
         expect(docsReadmeContent).toContain('AI-enhanced development workflows');
-        expect(docsReadmeContent).toContain('dev_spec_index.md');
+        expect(docsReadmeContent).toContain('spec_index.md');
         expect(docsReadmeContent).toContain('commit_message_guidelines.md');
 
-        const devSpecIndexPath = join(
+        const specIndexPath = join(
             generatedWorkspace,
-            'docs/dev_spec_index.md'
+            'docs/spec_index.md'
         );
-        const devSpecIndexContent = await fs.readFile(devSpecIndexPath, 'utf-8');
-        expect(devSpecIndexContent).toContain('Developer Specification Index');
-        expect(devSpecIndexContent).toContain('DEV-PRD');
+        const specIndexContent = await fs.readFile(specIndexPath, 'utf-8');
+        expect(specIndexContent).toContain('Specification Index');
 
         const commitGuidePath = join(
             generatedWorkspace,
