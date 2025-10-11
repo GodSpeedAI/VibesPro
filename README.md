@@ -213,9 +213,64 @@ We don't just generate code—we generate *confidence*.
 
 ---
 
-## 🆕 Recent Improvements (v0.1.0 – October 2025)
+## 🆕 Recent Improvements
 
-### Complete Nx & TypeScript Configuration Out of the Box
+### v0.2.0 – Development Environment & CI/CD (October 2025)
+
+**The Problem We Solved:**
+Inconsistent development environments across machines and fragile CI pipelines caused "works on my machine" issues and failed builds. Teams struggled with tool version mismatches and missing dependencies.
+
+**The Solution:**
+Comprehensive development environment setup with automated validation:
+
+✅ **Devbox Integration** – Reproducible dev environments via `devbox.json` configuration
+✅ **Mise Tool Management** – Automatic version management for Node, Python, and Rust
+✅ **SOPS Secret Management** – Secure handling of environment secrets with encryption
+✅ **CI Workflow Improvements** – New `env-check.yml` and `build-matrix.yml` workflows
+✅ **Environment Testing Suite** – Comprehensive tests in `tests/env/` validate tool installation
+✅ **Just Task Awareness** – Tasks now detect and adapt to local environment configuration
+✅ **Volta Coexistence** – Guards prevent conflicts between Volta and Mise
+✅ **Complete Documentation** – New `docs/ENVIRONMENT.md` with setup and troubleshooting guides
+
+**What This Means:**
+```bash
+# Clone or generate a project
+copier copy gh:GodSpeedAI/VibesPro my-project
+cd my-project
+
+# Single command setup (detects your environment automatically)
+just setup
+
+# Everything validated and ready
+just doctor           ✅ All tools detected and working
+just test-env         ✅ Environment tests pass
+pnpm dev             ✅ Development server starts instantly
+```
+
+**No more:**
+- ❌ "Node version mismatch" errors between team members
+- ❌ Missing tools breaking CI builds
+- ❌ Hours debugging PATH and environment variables
+- ❌ Secrets accidentally committed to version control
+
+**Just:**
+- ✅ Consistent environments across all machines
+- ✅ CI pipelines that actually pass
+- ✅ One-command setup and validation
+- ✅ Secure secret management out of the box
+
+**Technical Details:**
+- Added `devbox.json`, `.mise.toml`, `.sops.yaml` configuration files
+- Created 11+ shell test suites for environment validation
+- Implemented `scripts/doctor.sh` and `scripts/devbox_boot.sh` helpers
+- Updated CI workflows with proper tool installation steps
+- Fixed version retrieval and linting commands in GitHub Actions
+
+See: [CHANGELOG.md](CHANGELOG.md) and `docs/work-summaries/` for complete details.
+
+---
+
+### v0.1.0 – Complete Nx & TypeScript Configuration (October 2025)
 
 **The Problem We Solved:**
 Early generated projects required manual configuration of Nx, ESLint, Jest, and TypeScript settings. Developers faced daemon crashes, module resolution errors, and missing dependencies that took hours to fix.
@@ -270,31 +325,49 @@ See: `docs/workdocs/template-nx-fixes-complete.md` for full details.
 
 ## 🗺️ Your Journey Ahead
 
-### ✅ **You Are Here** (v0.1.0 – October 2025)
+### ✅ **v0.2.0 – Shipped!** (October 2025)
+- 🛠️ **Complete development environment setup** – Devbox, Mise, SOPS integration
+- 🔄 **CI/CD improvements** – Environment validation workflows and build matrix
+- ✅ **Environment testing suite** – Comprehensive validation in `tests/env/`
+- 📚 **Environment documentation** – Complete setup guide in `docs/ENVIRONMENT.md`
+- 🎯 **Just task awareness** – Tasks detect and adapt to local configuration
+- 🔐 **Secure secret management** – SOPS encryption out of the box
+- 🚦 **Tool conflict guards** – Volta/Mise coexistence checks
+
+### ✅ **v0.1.0 – Foundation** (October 2025)
 - ✨ Complete project generation with hexagonal architecture
 - 🤖 AI-powered temporal knowledge base
 - 💻 TypeScript, Python, and Rust support
 - 🧪 Automated testing and documentation
-- 🎯 **NEW:** Complete Nx, ESLint, Jest configuration out of the box
-- 🛠️ **NEW:** Zero-config development setup—projects work immediately after `pnpm install`
-- 📦 **NEW:** All dependencies and tooling pre-configured (upgraded to Nx 21.6.4)
-- 🎨 **NEW:** Intelligent customization with audit-first approach
-- 📚 **NEW:** Interactive onboarding for generated projects
+- 🎯 Complete Nx, ESLint, Jest configuration out of the box
+- 🛠️ Zero-config development setup—projects work immediately after `pnpm install`
+- 📦 All dependencies and tooling pre-configured (upgraded to Nx 21.6.4)
+- 🎨 Intelligent customization with audit-first approach
+- 📚 Interactive onboarding for generated projects
 
-### 🔜 **Coming Soon** (v0.2.0 – Q1 2025)
-- Enhanced AI pattern prediction
-- Performance optimization toolkit
-- Extended context awareness
+### 🔜 **v0.3.0 – Observability Focus** (Q1 2026)
+- 📊 **Observability packs** – Monitoring, tracing, and logging built-in
+- 🔍 **Telemetry integration** – OpenTelemetry support with common providers
+- 📈 **Metrics dashboards** – Pre-configured Grafana/Prometheus templates
+- 🚨 **Alerting patterns** – Standard alert configurations for common scenarios
+- 📉 **Performance tracking** – Built-in performance monitoring and profiling
 
-### 🎯 **The Future** (v0.3.0 – Q2 2025)
-- Template marketplace (share your patterns with the community)
-- Additional domain generators (e-commerce, auth, analytics)
-- Observability packs (monitoring built-in)
+### 🎯 **v0.4.0 – AI Enhancements** (Q2 2026)
+- 🧠 **Enhanced AI pattern prediction** – Smarter suggestions based on project context
+- ⚡ **Performance optimization toolkit** – Automated performance analysis and recommendations
+- 🎯 **Extended context awareness** – Deeper understanding of project architecture and patterns
 
-### 🏆 **Production Ready** (v1.0 – Q3 2025)
-- Enterprise certification
-- Complete documentation refresh
-- Battle-tested at scale
+### 🏗️ **v0.5.0 – Ecosystem Expansion** (Q3 2026)
+- 🏪 **Template marketplace** – Share your patterns with the community
+- 🎨 **Additional domain generators** – E-commerce, auth, analytics, and more
+- 🔌 **Plugin system** – Extend VibesPro with custom generators
+- 🌐 **Multi-cloud support** – AWS, Azure, GCP deployment templates
+
+### 🏆 **v1.0 – Production Ready** (Q4 2026)
+- 🎓 **Enterprise certification** – Battle-tested at scale
+- 📖 **Complete documentation refresh** – Comprehensive guides and tutorials
+- 🔒 **Security hardening** – Full security audit and certification
+- 🚀 **Performance benchmarks** – Proven scalability and reliability
 
 ---
 
@@ -322,9 +395,11 @@ Since teams started using VibesPro:
 - 🧠 **80%+ AI acceptance** – Suggested improvements that developers actually use
 - ⏱️ **<30 second generation** – Fresh coffee, fresh codebase
 - 🚀 **<2 minute builds** – From code to running application
-- ✅ **Zero manual configuration** – All Nx, ESLint, Jest, TypeScript settings included (Oct 2025)
+- ✅ **Zero manual configuration** – All Nx, ESLint, Jest, TypeScript settings included (v0.1.0)
 - 🔧 **1-2 hours saved per project** – No more fixing daemon crashes or dependency issues
 - 🎨 **60-70% fewer questions** – Audit-first customization detects project setup automatically
+- 🛠️ **Consistent environments** – Devbox + Mise eliminate "works on my machine" issues (v0.2.0)
+- 🔄 **CI reliability** – Environment validation ensures builds pass first time (v0.2.0)
 
 ---
 
