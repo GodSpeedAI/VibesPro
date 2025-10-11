@@ -100,7 +100,7 @@ jobs:
         run: |
           curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-          devbox --version
+          devbox version
 
       # ---- mise runtimes ----
       - name: Install mise
