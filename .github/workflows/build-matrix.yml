@@ -101,8 +101,6 @@ jobs:
           curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           devbox --version
-      - name: Devbox environment (OS toolchain)
-        run: devbox shell -- echo "Devbox ready on ${{ matrix.os }}"
 
       # ---- mise runtimes ----
       - name: Install mise
@@ -234,9 +232,6 @@ jobs:
         run: |
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Devbox environment
-        run: devbox shell -- echo "Release OS deps ready"
 
       - name: Setup runtimes
         run: mise install

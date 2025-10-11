@@ -58,9 +58,6 @@ jobs:
           restore-keys: |
             mise-${{ runner.os }}-
 
-      - name: Devbox environment (OS toolchain)
-        run: devbox shell -- echo "Devbox ready"
-
       - name: Install runtimes (Node/Python/Rust via mise)
         run: mise install
 
