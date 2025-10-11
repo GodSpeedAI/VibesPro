@@ -2,9 +2,9 @@ name: env-check
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -80,8 +80,8 @@ jobs:
 
       - name: Verify Node pins (mise vs Volta)
         run: |
-          # Uses the verify target defined in your Justfile per ENVIRONMENT.md §5
-          just verify:node
+          # Detects version conflicts between mise and Volta
+          just verify-node
 
       - name: Install dependencies
         # Adjust to your project (pnpm, uv, poetry, cargo, etc.)

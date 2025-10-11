@@ -758,7 +758,8 @@ tests/env/
 ├── test_devbox.sh       # Validates devbox.json configuration
 ├── test_mise_versions.sh # Validates mise runtime versions
 ├── test_sops_local.sh   # Validates SOPS encryption setup
-└── test_ci_minimal.sh   # Validates CI workflow configuration
+├── test_ci_minimal.sh   # Validates CI workflow configuration
+└── test_volta_mise_guard.sh # Validates Volta/mise version alignment
 ```
 
 **Running Tests:**
@@ -1229,8 +1230,9 @@ The CI validates these aspects via `just test-env`:
 | `test_mise_versions.sh` | Runtime versions match | ✅ |
 | `test_sops_local.sh` | SOPS config valid | ✅ |
 | `test_ci_minimal.sh` | CI workflow validation | ✅ |
+| `test_volta_mise_guard.sh` | Volta/mise alignment | ✅ |
 
-**Total:** 7 environment tests run in CI
+**Total:** 8 environment tests run in CI
 
 ### Adding New CI Checks
 
@@ -1295,7 +1297,188 @@ See individual sections above for specific error solutions.
 - Check GitHub Actions status page
 - Review recent changes to workflows or configuration files
 
+## Volta Coexistence & Migration
 
+### Overview
+
+VibesPro uses **mise as the authoritative runtime manager**, but allows Volta configuration in `package.json` for gradual migration. The `verify-node` script detects version conflicts and enforces alignment.
+
+### Checking for Conflicts
+
+```bash
+# Check Node version alignment
+just verify-node
+```
+
+**Possible outcomes:**
+
+1. **✅ Versions aligned:**
+   ```
+   ✅ Node versions aligned (major version 20)
+      mise will be used as authoritative source
+   ```
+
+2. **❌ Version mismatch:**
+   ```
+   ❌ ERROR: Node version mismatch between mise and Volta!
+   
+      mise (.mise.toml):      20.11.1
+      Volta (package.json):   18.17.0
+   
+      Please align versions:
+      1. Update .mise.toml to match Volta, OR
+      2. Update package.json Volta section to match mise, OR
+      3. Remove Volta section from package.json (mise is authoritative)
+   ```
+
+3. **ℹ️ mise only (recommended):**
+   ```
+   ✅ mise is managing Node (20.11.1)
+      No Volta configuration detected
+   ```
+
+### Migration Strategies
+
+**Option 1: Gradual Migration (Keep Volta Aligned)**
+
+Keep the Volta section in `package.json` but ensure it matches mise:
+
+```json
+// package.json
+{
+  "volta": {
+    "node": "20.11.1"  // Match .mise.toml major version
+  }
+}
+```
+
+```toml
+# .mise.toml
+[tools]
+node = "20.11.1"
+```
+
+**Benefits:**
+- Team members can continue using Volta temporarily
+- Gradual transition reduces disruption
+- CI enforces alignment
+
+**Drawbacks:**
+- Two sources of truth (risk of drift)
+- Requires manual synchronization
+
+**Option 2: Clean Migration (Remove Volta)**
+
+Remove Volta configuration entirely:
+
+```bash
+# Remove volta section from package.json
+# (delete the "volta" key)
+
+# Ensure .mise.toml has Node version
+cat .mise.toml
+# [tools]
+# node = "20.11.1"
+
+# Verify
+just verify-node
+# ✅ mise is managing Node (20.11.1)
+```
+
+**Benefits:**
+- Single source of truth
+- No synchronization needed
+- Simpler configuration
+
+**Drawbacks:**
+- All team members must switch to mise
+- Immediate change required
+
+### Why mise Over Volta?
+
+| Aspect | Volta | mise |
+|--------|-------|------|
+| **Languages** | Node only | Node, Python, Rust, 50+ |
+| **Configuration** | package.json | .mise.toml (centralized) |
+| **Installation** | Binary download | Pre-built binaries via plugins |
+| **Shell Integration** | Automatic shim | Shell hooks + direct |
+| **Speed** | Fast | Very fast (Rust-based) |
+| **Plugin Ecosystem** | Limited | Extensive (asdf compatible) |
+| **Active Development** | Slowing | Very active |
+
+### CI Enforcement
+
+Both CI workflows (`env-check.yml` and `build-matrix.yml`) run `just verify-node`:
+
+```yaml
+- name: Verify Node pins (mise vs Volta)
+  run: just verify-node
+```
+
+**Behavior:**
+- ✅ Passes if versions aligned or Volta absent
+- ❌ Fails if major version mismatch
+- Ensures consistent Node version across environments
+
+### Deprecation Timeline
+
+**Current:** Volta optional, must align if present (Phase 5 complete)  
+**Next minor release:** Deprecation warnings added  
+**Two releases later:** Volta section ignored, warnings removed  
+**Future:** mise-only configuration
+
+**Recommendation:** Migrate to mise-only configuration now to avoid future disruption.
+
+### Troubleshooting
+
+**Problem:** `just verify-node` fails with mismatch
+
+```bash
+# Solution 1: Update mise to match Volta
+# Edit .mise.toml to use Volta's version
+
+# Solution 2: Update Volta to match mise
+# Edit package.json volta.node to match .mise.toml
+
+# Solution 3: Remove Volta (recommended)
+# Delete "volta" section from package.json
+```
+
+**Problem:** Team members still using Volta
+
+```bash
+# Coordinate migration:
+# 1. Announce mise transition with timeline
+# 2. Share mise installation guide
+# 3. Keep Volta aligned during transition period
+# 4. Remove Volta section after team migrates
+```
+
+**Problem:** Different Node versions needed per project
+
+```bash
+# mise handles this automatically via .mise.toml
+cd project-a  # Uses .mise.toml (node = "18.17.0")
+cd ../project-b  # Uses .mise.toml (node = "20.11.1")
+
+# No manual switching needed
+```
+
+### Testing Version Alignment
+
+The `tests/env/test_volta_mise_guard.sh` test validates:
+- ✅ verify-node script exists and is runnable
+- ✅ just verify-node target exists
+- ✅ Script detects mise configuration
+- ✅ Script correctly identifies version mismatches (major version)
+- ✅ Script allows same major version with different minor/patch
+- ✅ Script works with mise-only configuration
+
+Run tests:
+```bash
+just test-env
+# ✅ test_volta_mise_guard.sh passes
+```
 
 ## Next Steps
 
@@ -1304,7 +1487,7 @@ See individual sections above for specific error solutions.
 - ✅ **Phase 2:** mise runtime management (`.mise.toml`) (complete)
 - ✅ **Phase 3:** SOPS secret encryption (`.sops.yaml`, `.secrets.env.sops`) (complete)
 - ✅ **Phase 4:** Minimal CI workflows (`env-check.yml`, `build-matrix.yml`) (complete)
-- **Phase 5:** Add Volta coexistence checks
+- ✅ **Phase 5:** Volta coexistence checks (`verify-node`, conflict detection) (complete)
 - **Phase 6:** Ensure Just tasks are environment-aware
 
 See `docs/tmp/devenv.md` for the complete environment setup roadmap.
