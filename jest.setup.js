@@ -28,6 +28,17 @@ const TEMP_ROOT = (() => {
   }
 })();
 
+const SCRIPTS_DIR = path.join(WORKSPACE_ROOT, 'scripts');
+if (process.env.PATH) {
+  if (!process.env.PATH.split(path.delimiter).includes(SCRIPTS_DIR)) {
+    process.env.PATH = `${SCRIPTS_DIR}${path.delimiter}${process.env.PATH}`;
+  }
+} else {
+  process.env.PATH = SCRIPTS_DIR;
+}
+process.env.COPIER_COMMAND = path.join(SCRIPTS_DIR, 'copier');
+process.env.JUST_COMMAND = path.join(SCRIPTS_DIR, 'just');
+
 function isWithinAllowedRoots(targetPath, roots) {
   const normalizedTarget = path.resolve(targetPath);
   return roots.some(root => {

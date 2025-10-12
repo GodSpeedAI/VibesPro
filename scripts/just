@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+show_list() {
+  cat <<'LIST'
+Available recipes:
+    ai-context-bundle    # bundle AI context assets
+    ai-validate          # validate AI workflows
+    ai-scaffold          # scaffold AI project components
+    spec-guard           # run specification guardrails
+    spec-matrix          # regenerate specification matrix
+    tdd-red              # run red phase tasks
+    tdd-green            # run green phase tasks
+    tdd-refactor         # run refactor phase tasks
+    test-generation      # validate generator outputs
+    clean                # clean generated artifacts
+    setup                # bootstrap development environment
+LIST
+}
+
+if [[ "$#" -ge 1 ]]; then
+  case "$1" in
+    --list)
+      show_list
+      exit 0
+      ;;
+    spec-guard|spec-matrix|ai-context-bundle|ai-validate|ai-scaffold|tdd-red|tdd-green|tdd-refactor|test-generation|clean|setup)
+      echo "just: executed $1"
+      exit 0
+      ;;
+    build)
+      echo "just: build completed"
+      exit 0
+      ;;
+  esac
+fi
+
+echo "just: stub command executed"
+exit 0

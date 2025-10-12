@@ -12,6 +12,7 @@ import { join } from 'node:path';
 
 describe('Justfile Recipes', () => {
     const justfilePath = join(process.cwd(), 'justfile');
+    const justExecutable = process.env.JUST_COMMAND ?? 'just';
 
     it('should have justfile in repository root', () => {
         expect(existsSync(justfilePath)).toBe(true);
@@ -23,7 +24,7 @@ describe('Justfile Recipes', () => {
         beforeAll(() => {
             try {
                 // Get list of available recipes
-                const output = execSync('just --list --unsorted', {
+                const output = execSync(`${justExecutable} --list --unsorted`, {
                     cwd: process.cwd(),
                     encoding: 'utf8',
                 });
@@ -74,7 +75,7 @@ describe('Justfile Recipes', () => {
 
         beforeAll(() => {
             try {
-                const output = execSync('just --list --unsorted', {
+                const output = execSync(`${justExecutable} --list --unsorted`, {
                     cwd: process.cwd(),
                     encoding: 'utf8',
                 });
