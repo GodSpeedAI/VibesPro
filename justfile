@@ -503,17 +503,65 @@ observe-test-openobserve:
 	@bash tests/ops/test_openobserve_sink.sh
 	@echo "✅ OpenObserve sink test passed"
 
+# Run CI observability validation test (Phase 5)
+observe-test-ci:
+	@echo "🧪 Running CI observability validation test..."
+	@bash tests/ops/test_ci_observability.sh
+	@echo "✅ CI observability test passed"
+
+# Run observability feature flag test (Phase 6)
+observe-test-flag:
+	@echo "🧪 Running observability feature flag test..."
+	@bash tests/ops/test_observe_flag.sh
+	@echo "✅ Feature flag test passed"
+
 # Run all observability tests
-observe-test-all: observe-test observe-test-vector observe-test-openobserve
+observe-test-all: observe-test observe-test-vector observe-test-openobserve observe-test-ci observe-test-flag
 	@echo "✅ All observability tests passed"
+
+# Tail Vector log file (if persisted)
+observe-logs:
+	@echo "📋 Tailing Vector logs..."
+	@if [ -f /tmp/vector.log ]; then \
+		tail -n +1 -f /tmp/vector.log; \
+	else \
+		echo "❌ Vector log file not found at /tmp/vector.log"; \
+		echo "   Start Vector with: just observe-start"; \
+		exit 1; \
+	fi
+
+# Validate Vector configuration
+observe-validate:
+	@echo "🔍 Validating Vector configuration..."
+	@command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found"; exit 1; }
+	@vector validate ops/vector/vector.toml
+	@echo "✅ Vector configuration is valid"
+
+# Run Vector logs configuration test (DEV-SDS-018)
+test-logs-config:
+	@echo "🧪 Testing Vector logs configuration..."
+	@bash -eu tests/ops/test_vector_logs_config.sh
+
+# Run PII redaction test (DEV-PRD-018, DEV-SDS-018)
+test-logs-redaction:
+	@echo "🧪 Testing PII redaction..."
+	@bash -eu tests/ops/test_log_redaction.sh
+
+# Run log-trace correlation test (DEV-PRD-018, DEV-SDS-018)
+test-logs-correlation:
+	@echo "🧪 Testing log-trace correlation..."
+	@bash -eu tests/ops/test_log_trace_correlation.sh
+
+# Run all logging tests
+test-logs: test-logs-config test-logs-redaction test-logs-correlation
+	@echo "✅ All logging tests passed"
+
+
 
 observe-verify-span:
 	# Emits a synthetic span via a tiny Rust one-liner using the crate (or call your service's health endpoint)
 	RUST_LOG=info VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
 	cargo test -p vibepro-observe --features otlp --test otlp_gate -- --nocapture
-
-observe-logs:
-	journalctl -u vector -f || tail -f /var/log/vector.log || true
 
 # --- Observability: smoke binary ---
 

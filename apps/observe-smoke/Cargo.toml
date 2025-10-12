@@ -8,6 +8,7 @@ description = "VibePro: smoke test binary for the Rust-native observability pipe
 [dependencies]
 anyhow = "1"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+tracing = "0.1"
 
 # Path dep to the helper crate you added earlier
 # Default build: no OTLP exporter (stdout JSON only)

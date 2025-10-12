@@ -86,17 +86,17 @@ fi
 # Step 7: Optional - Test endpoint reachability if variables are set
 if [[ -n "${OPENOBSERVE_URL:-}" ]] && [[ -n "${OPENOBSERVE_TOKEN:-}" ]]; then
   echo "  → Testing OpenObserve endpoint reachability..."
-  
+
   # Extract just the base URL (remove path if present)
   BASE_URL="${OPENOBSERVE_URL%/v1/traces*}"
-  
+
   if command -v curl >/dev/null 2>&1; then
     # Test if endpoint is reachable (expect 401 without token or 200 with valid endpoint)
     HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
       -H "Authorization: Basic ${OPENOBSERVE_TOKEN}" \
       -H "Content-Type: application/json" \
       "${BASE_URL}/api/default/v1/traces" 2>/dev/null || echo "000")
-    
+
     if [[ "${HTTP_CODE}" == "000" ]]; then
       echo "⚠️  Cannot reach OpenObserve endpoint at ${BASE_URL}" >&2
       echo "   This may be expected if OpenObserve is not running locally." >&2

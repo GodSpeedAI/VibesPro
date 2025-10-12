@@ -88,6 +88,105 @@ retry_attempts = 3
 inputs = ["otlp.metrics"]
 type = "blackhole"
 
-[sinks.null_logs]
+# --- Logs Pipeline ---
+# Process OTLP logs with PII redaction, enrichment, and storage
+
+[transforms.logs_redact_pii]
+type = "remap"
 inputs = ["otlp.logs"]
-type = "blackhole"
+source = '''
+# Redact PII fields to [REDACTED]
+if exists(.attributes.user_email) { .attributes.user_email = "[REDACTED]" }
+if exists(.attributes.email) { .attributes.email = "[REDACTED]" }
+if exists(.attributes.authorization) { .attributes.authorization = "[REDACTED]" }
+if exists(.attributes.Authorization) { .attributes.Authorization = "[REDACTED]" }
+if exists(.attributes.password) { .attributes.password = "[REDACTED]" }
+if exists(.attributes.token) { .attributes.token = "[REDACTED]" }
+if exists(.attributes.api_key) { .attributes.api_key = "[REDACTED]" }
+
+# Also check resource attributes
+if exists(.resource.attributes.user_email) { .resource.attributes.user_email = "[REDACTED]" }
+if exists(.resource.attributes.email) { .resource.attributes.email = "[REDACTED]" }
+if exists(.resource.attributes.authorization) { .resource.attributes.authorization = "[REDACTED]" }
+if exists(.resource.attributes.password) { .resource.attributes.password = "[REDACTED]" }
+if exists(.resource.attributes.token) { .resource.attributes.token = "[REDACTED]" }
+if exists(.resource.attributes.api_key) { .resource.attributes.api_key = "[REDACTED]" }
+'''
+
+[transforms.logs_enrich]
+type = "remap"
+inputs = ["logs_redact_pii"]
+source = '''
+# Enrich with metadata from resource attributes or set defaults
+# Service name from resource or unknown
+if exists(.resource.attributes."service.name") {
+  .service = string!(.resource.attributes."service.name")
+} else if exists(.attributes.service) {
+  .service = string!(.attributes.service)
+} else {
+  .service = "unknown"
+}
+
+# Environment from resource or local
+if exists(.resource.attributes.environment) {
+  .environment = string!(.resource.attributes.environment)
+} else if exists(.attributes.environment) {
+  .environment = string!(.attributes.environment)
+} else {
+  .environment = "local"
+}
+
+# Application version from resource or dev
+if exists(.resource.attributes."service.version") {
+  .application_version = string!(.resource.attributes."service.version")
+} else if exists(.attributes.application_version) {
+  .application_version = string!(.attributes.application_version)
+} else {
+  .application_version = "dev"
+}
+
+# Ensure category field exists (default to "app")
+if !exists(.attributes.category) {
+  .attributes.category = "app"
+}
+'''
+
+# Console output for local debugging
+[sinks.logs_console]
+inputs = ["logs_enrich"]
+target = "stdout"
+type = "console"
+
+[sinks.logs_console.encoding]
+codec = "json"
+
+# File sink for local log persistence
+[sinks.logs_file]
+type = "file"
+inputs = ["logs_enrich"]
+path = "tmp/vector-logs.log"
+
+[sinks.logs_file.encoding]
+codec = "json"
+
+# OpenObserve OTLP HTTP sink for production log storage
+[sinks.logs_openobserve]
+type = "http"
+inputs = ["logs_enrich"]
+uri = "${OPENOBSERVE_URL:-http://localhost:5080}/api/${OPENOBSERVE_ORG:-default}/v1/logs"
+method = "post"
+
+[sinks.logs_openobserve.encoding]
+codec = "json"
+
+[sinks.logs_openobserve.auth]
+strategy = "basic"
+user = "${OPENOBSERVE_USER:-root@example.com}"
+password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
+
+[sinks.logs_openobserve.request]
+timeout_secs = 30
+retry_attempts = 3
+
+  [sinks.logs_openobserve.request.headers]
+  "Content-Type" = "application/json"

@@ -283,10 +283,29 @@ GROUP BY service.name;
 ### Artifacts & source control
 - Rust instrumentation crate: `crates/vibepro-observe/`
 - Vector config: `ops/vector/vector.toml`
-- Docs: `docs/observability/README.md`
+- Docs: `docs/observability/README.md`, `docs/ENVIRONMENT.md` § 8
 - Secrets: `.secrets.env.sops`
 - CI validation: `.github/workflows/env-check.yml` (vector validate)
-- Tests: `tests/ops/test_vector_config.sh`, `tests/ops/test_openobserve_sink.sh`
+- Tests:
+  - `tests/ops/test_vector_config.sh` (Phase 2)
+  - `tests/ops/test_tracing_vector.sh` (Phase 3)
+  - `tests/ops/test_openobserve_sink.sh` (Phase 4)
+  - `tests/ops/test_ci_observability.sh` (Phase 5)
+  - `tests/ops/test_observe_flag.sh` (Phase 6)
+- Implementation notes:
+  - `docs/work-summaries/observability-phase1-completion.md`
+  - `docs/work-summaries/observability-phase2-completion.md`
+  - `docs/work-summaries/observability-phase3-completion.md`
+  - `docs/work-summaries/observability-phase4-completion.md`
+  - `docs/work-summaries/observability-phase5-completion.md`
+  - `docs/work-summaries/observability-phase6-completion.md`
+
+**Implementation Status**: ✅ Complete (All 6 phases finished as of 2025-10-12)
+
+**Feature Flags**:
+- Runtime: `VIBEPRO_OBSERVE=1` enables OTLP export
+- Compile-time: `features = ["otlp"]` enables OTLP capability
+- Default: JSON logs only (no network export)
 
 ---
 
@@ -321,6 +340,400 @@ GROUP BY service.name;
 - `just observe-verify` ingests a sample trace into OpenObserve successfully.
 - Redaction and sampling rules verified in test environment.
 - Documentation updated with schema and endpoints.
+
+---
+
+## DEV-SDS-018 — Structured Logging with Trace Correlation (Multi-Language)
+
+### Principle
+Logging is structured-first (JSON), trace-aware by default, and consistent across all languages. All logs carry correlation metadata (`trace_id`, `span_id`, `service`, `environment`, `version`) and flow through Vector for PII redaction before storage.
+
+---
+
+### Design overview
+
+| Layer | Component | Role | Implementation artifacts |
+|---|---:|---|---|
+| Rust | tracing events | Emit structured log events via `info!()`, `warn!()`, `error!()` | crates/vibepro-observe (already in place) |
+| Node | pino | JSON logger with trace context injection | libs/node-logging/logger.ts |
+| Python | structlog | JSON logger with context binding | libs/python/vibepro_logging.py |
+| Pipeline | Vector | OTLP logs source, PII redaction, enrichment | ops/vector/vector.toml (logs section) |
+| Storage | OpenObserve | Unified log storage with trace correlation | External service (staging/prod) |
+| Validation | Shell tests | Config validation, PII redaction, correlation | tests/ops/test_vector_logs_*.sh |
+
+Architecture (logical flow)
+```
+App Code (Rust/Node/Python structured loggers)
+  └─JSON to stdout (local) or OTLP (observe-on)
+    └─Vector (OTLP logs source, VRL transforms)
+      └─OpenObserve (unified storage, log-trace correlation)
+```
+
+---
+
+### Log schema (mandatory fields)
+
+Every log line MUST include:
+```json
+{
+  "timestamp": "2025-10-12T16:00:00.000Z",
+  "level": "info",
+  "message": "request accepted",
+  "trace_id": "abc123def456...",
+  "span_id": "789ghi...",
+  "service": "user-api",
+  "environment": "staging",
+  "application_version": "v1.2.3",
+  "category": "app"
+}
+```
+
+**Field definitions:**
+- `timestamp`: ISO 8601 with timezone
+- `level`: one of `error`, `warn`, `info`, `debug` (no `trace` level—use spans)
+- `message`: Human-readable description
+- `trace_id`: Current trace identifier (from tracing context)
+- `span_id`: Current span identifier
+- `service`: Service name (e.g., `user-api`, `vibepro-node`)
+- `environment`: Deployment environment (`local`, `staging`, `production`)
+- `application_version`: Application version (e.g., `v1.2.3`)
+- `category`: Log category (`app`, `audit`, `security`)
+
+---
+
+### Design details by language
+
+#### 1) Rust (tracing events)
+Already implemented via `vibepro-observe`. Use `tracing` events for logs:
+
+```rust
+use tracing::{info, warn, error};
+
+// App log
+info!(category = "app", user_id_hash = "abc123", "request accepted");
+
+// Security log
+warn!(category = "security", action = "auth_failure", user_id_hash = hash(user_id), "auth failed");
+
+// Error log
+error!(category = "app", code = 500, "upstream timeout");
+```
+
+**Trace context:** Automatically captured when inside a tracing span.
+**Transport:** stdout JSON (default) or OTLP (when `VIBEPRO_OBSERVE=1` + `--features otlp`)
+
+#### 2) Node (pino wrapper)
+Create `libs/node-logging/logger.ts`:
+
+```typescript
+import pino from "pino";
+
+export function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
+  return pino({
+    base: {
+      service,
+      environment: process.env.APP_ENV || "local",
+      application_version: process.env.APP_VERSION || "dev",
+    },
+    messageKey: "message",
+    formatters: {
+      level(label) { return { level: label }; },
+      log(obj) {
+        return {
+          trace_id: obj.trace_id,
+          span_id: obj.span_id,
+          category: obj.category || "app",
+          ...obj,
+        };
+      }
+    }
+  });
+}
+```
+
+**Usage:**
+```typescript
+import { logger } from "@vibepro/node-logging/logger";
+const log = logger();
+
+log.info({ user_id_hash: "abc123", category: "app" }, "request accepted");
+log.warn({ category: "security", action: "rate_limit" }, "client throttled");
+log.error({ category: "app", code: 500 }, "upstream timeout");
+```
+
+**Trace context:** Injected via middleware/headers (OpenTelemetry context propagation)
+**Transport:** stdout JSON → Vector OTLP logs source or HTTP ingestion
+
+#### 3) Python (structlog wrapper)
+Create `libs/python/vibepro_logging.py`:
+
+```python
+import logging, os, json, structlog
+
+def configure_logger(service=os.getenv("SERVICE_NAME","vibepro-py")):
+    logging.basicConfig(format="%(message)s", stream=logging.stdout, level=logging.INFO)
+    structlog.configure(
+        processors=[
+            structlog.processors.add_log_level,
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.processors.JSONRenderer()
+        ],
+        wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+    )
+    return structlog.get_logger().bind(
+        service=service,
+        environment=os.getenv("APP_ENV","local"),
+        application_version=os.getenv("APP_VERSION","dev"),
+    )
+```
+
+**Usage:**
+```python
+from libs.python.vibepro_logging import configure_logger
+log = configure_logger()
+log.info("request accepted", category="app", user_id_hash="abc123")
+log.warning("auth failed", category="security", action="auth_failure")
+```
+
+**Trace context:** Injected via OpenTelemetry Python SDK context
+**Transport:** stdout JSON → Vector OTLP logs source
+
+---
+
+### Vector configuration (logs pipeline)
+
+Add to `ops/vector/vector.toml`:
+
+```toml
+# --- Logs Source (OTLP/HTTP) ---
+[sources.otel_logs]
+type    = "opentelemetry"
+address = "0.0.0.0:4318"   # OTLP/HTTP default for logs
+protocols = ["logs"]
+
+# --- PII Redaction Transform ---
+[transforms.logs_redact_pii]
+type   = "remap"
+inputs = ["otel_logs"]
+source = '''
+  if exists(.attributes.user_email) { .attributes.user_email = "[REDACTED]" }
+  if exists(.attributes.email) { .attributes.email = "[REDACTED]" }
+  if exists(.attributes.authorization) { .attributes.authorization = "[REDACTED]" }
+  if exists(.attributes.Authorization) { .attributes.Authorization = "[REDACTED]" }
+  if exists(.attributes.password) { .attributes.password = "[REDACTED]" }
+  if exists(.attributes.token) { .attributes.token = "[REDACTED]" }
+  if exists(.attributes.api_key) { .attributes.api_key = "[REDACTED]" }
+'''
+
+# --- Enrichment Transform ---
+[transforms.logs_enrich]
+type   = "remap"
+inputs = ["logs_redact_pii"]
+source = '''
+  .service = get_env!("SERVICE_NAME", default: "unknown")
+  .environment = get_env!("APP_ENV", default: "local")
+  .application_version = get_env!("APP_VERSION", default: "dev")
+'''
+
+# --- OpenObserve Sink ---
+[sinks.logs_otlp]
+type     = "opentelemetry"
+inputs   = ["logs_enrich"]
+endpoint = "${OPENOBSERVE_URL}"
+auth     = { strategy = "bearer", token = "${OPENOBSERVE_TOKEN}" }
+```
+
+**PII redaction rules:**
+- `user_email`, `email` → `[REDACTED]`
+- `authorization`, `Authorization` → `[REDACTED]`
+- `password`, `token`, `api_key` → `[REDACTED]`
+
+**Enrichment:**
+- `service`: from `SERVICE_NAME` env var
+- `environment`: from `APP_ENV` env var
+- `application_version`: from `APP_VERSION` env var
+
+---
+
+### Log levels & categories
+
+**Levels:** `error`, `warn`, `info`, `debug`
+- No `trace` level—use tracing spans for operation-level detail
+
+**Categories:**
+- `app` (default): Application behavior, business logic
+- `audit`: Compliance/audit trail (longer retention)
+- `security`: Security events (immediate alerting)
+
+Categories use a dedicated field—not level—to enable separate routing and retention policies in OpenObserve.
+
+---
+
+### Retention policy
+
+- **Logs:** 14-30 days (shorter than traces)
+- **Traces:** 30-90 days (per DEV-SDS-017)
+- **Audit logs:** 90 days minimum (compliance requirement)
+
+Configured per OpenObserve stream/index based on `category` field.
+
+---
+
+### Testing strategy
+
+#### 1) Vector config validation (`tests/ops/test_vector_logs_config.sh`)
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+vector validate ops/vector/vector.toml || exit 1
+grep -q 'sources.otel_logs' ops/vector/vector.toml || exit 1
+grep -q 'transforms.logs_redact_pii' ops/vector/vector.toml || exit 1
+grep -q 'sinks.logs_otlp' ops/vector/vector.toml || exit 1
+
+echo "✅ Vector logs config valid"
+```
+
+#### 2) PII redaction test (`tests/ops/test_log_redaction.sh`)
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Start Vector in background
+vector --config ops/vector/vector.toml &
+VECTOR_PID=$!
+sleep 2
+
+# Emit log with PII via test script
+node tools/logging/test_pino.js | grep -q '[REDACTED]' || {
+  kill $VECTOR_PID
+  echo "❌ PII not redacted"
+  exit 1
+}
+
+kill $VECTOR_PID
+echo "✅ PII redaction works"
+```
+
+#### 3) Trace correlation test (`tests/ops/test_log_trace_correlation.sh`)
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Emit log with trace_id and verify it appears in output
+node tools/logging/test_pino.js | jq -r '.trace_id' | grep -q '^[a-f0-9]\+$' || {
+  echo "❌ trace_id missing or invalid"
+  exit 1
+}
+
+echo "✅ Log-trace correlation valid"
+```
+
+---
+
+### Quick-start validation tools
+
+#### Node (`tools/logging/test_pino.js`)
+```javascript
+const { logger } = require('../../libs/node-logging/logger');
+const log = logger('test-service');
+
+log.info({
+  trace_id: 'abc123def456',
+  span_id: '789ghi',
+  category: 'app',
+  user_email: 'test@example.com',  // Should be redacted
+}, 'test log message');
+```
+
+#### Python (`tools/logging/test_structlog.py`)
+```python
+import sys
+sys.path.insert(0, 'libs/python')
+from vibepro_logging import configure_logger
+
+log = configure_logger('test-service')
+log.info(
+    "test log message",
+    trace_id="abc123def456",
+    span_id="789ghi",
+    category="app",
+    user_email="test@example.com"  # Should be redacted
+)
+```
+
+---
+
+### Security & compliance
+- **PII redaction:** Enforced at Vector layer (before storage)
+- **Secrets:** `OPENOBSERVE_TOKEN` stored in `.secrets.env.sops`
+- **Network:** TLS for Vector → OpenObserve connections
+- **Audit trail:** `category=audit` logs retained for 90+ days
+- **Access control:** OpenObserve RBAC for log query permissions
+
+---
+
+### Error modes & recovery
+- **Missing trace context:** Logs still valid; correlation fields may be empty
+- **Vector unavailable:** Logs continue to stdout; no data loss (just no forwarding)
+- **PII redaction failure:** Vector refuses to start if VRL syntax is invalid
+- **Schema mismatch:** OpenObserve accepts JSON; missing fields logged as warnings
+
+---
+
+### Artifacts & source control
+- Rust instrumentation: `crates/vibepro-observe/` (already exists)
+- Node logger: `libs/node-logging/logger.ts` (to be created)
+- Python logger: `libs/python/vibepro_logging.py` (to be created)
+- Vector config: `ops/vector/vector.toml` (logs section to be added)
+- Tests:
+  - `tests/ops/test_vector_logs_config.sh`
+  - `tests/ops/test_log_redaction.sh`
+  - `tests/ops/test_log_trace_correlation.sh`
+- Quick-start tools:
+  - `tools/logging/test_pino.js`
+  - `tools/logging/test_structlog.py`
+- Docs:
+  - `docs/ENVIRONMENT.md` §9 — Logging Policy
+  - `docs/observability/README.md` §11 — Governance & Cost Controls
+
+---
+
+### Performance targets
+- Log emission overhead: < 100 µs per log line
+- Vector CPU: < 2% per core at 1k logs/s
+- PII redaction latency: < 10 µs per log line
+- Log-trace correlation success: > 95%
+
+---
+
+### Implementation dependencies
+- Rust: `tracing` crate (already in use)
+- Node: `pino` package (to be added to libs/node-logging/package.json)
+- Python: `structlog` package (to be added to requirements.txt or pyproject.toml)
+- Vector: `vector` binary (already installed via Devbox)
+- OpenObserve: API token and URL in `.secrets.env.sops`
+
+---
+
+### Cross-references
+- DEV-ADR-017 — JSON-First Structured Logging architecture decision
+- DEV-PRD-018 — Structured Logging product requirements
+- DEV-SDS-017 — Rust-Native Observability Pipeline (foundation)
+- DEV-ADR-016 — Rust-Native Observability Pipeline (architecture)
+
+---
+
+### Exit criteria
+- `vector validate ops/vector/vector.toml` passes with logs section
+- `tests/ops/test_vector_logs_config.sh` passes
+- `tests/ops/test_log_redaction.sh` passes (PII redacted)
+- `tests/ops/test_log_trace_correlation.sh` passes (correlation fields present)
+- Node and Python quick-start tools emit valid JSON logs
+- Documentation updated in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
+- All three language loggers (Rust/Node/Python) emit identical schema
 
 ---
 

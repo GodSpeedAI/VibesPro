@@ -53,14 +53,22 @@ jobs:
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           mise --version
-      - name: Validate Vector config
-        run: vector validate ops/vector/vector.toml
-      - name: Crate tests (no otlp)
-        run: cargo test -p vibepro-observe
-      - name: Crate tests (otlp feature)
-        run: cargo test -p vibepro-observe --features otlp
+
+      - name: Install Vector
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL https://sh.vector.dev | bash -s -- -y --prefix /usr/local
+          vector --version
+
       - name: Trust mise config
         run: mise trust --yes .mise.toml
+
+      - name: Cache Vector binary
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/vector
+          key: vector-${{ runner.os }}-${{ hashFiles('ops/vector/vector.toml') }}
+          restore-keys: |
+            vector-${{ runner.os }}-
 
       - name: Cache mise runtimes
         uses: actions/cache@v4
@@ -74,6 +82,21 @@ jobs:
 
       - name: Install runtimes (Node/Python/Rust via mise)
         run: mise install
+
+      - name: Validate Vector config
+        run: |
+          echo "Validating Vector configuration..."
+          vector validate ops/vector/vector.toml
+          echo "✅ Vector config valid"
+
+      - name: Ops smoke test (stdout + OTLP)
+        run: sh -eu tests/ops/test_observe_smoke.sh
+
+      - name: Crate tests (no otlp)
+        run: cargo test --manifest-path crates/vibepro-observe/Cargo.toml
+
+      - name: Crate tests (otlp feature)
+        run: cargo test --manifest-path crates/vibepro-observe/Cargo.toml --features otlp
 
       # Optional: pnpm cache if you use pnpm (works with Node's Corepack)
       - name: Enable corepack (optional)
@@ -93,7 +116,7 @@ jobs:
         id: sops
         continue-on-error: true
         env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY || '' }}
         run: |
           if [ -n "${SOPS_AGE_KEY}" ] && [ -f .secrets.env.sops ]; then
             sops -d .secrets.env.sops > /tmp/ci.env
