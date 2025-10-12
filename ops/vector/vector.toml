@@ -1,0 +1,70 @@
+# Vector configuration for local observability pipeline.
+# Ingests OTLP traffic (gRPC + HTTP) and prints spans/logs to stdout for now.
+
+data_dir = "tmp/vector-data"
+
+[api]
+enabled = true
+address = "127.0.0.1:8686"
+
+[sources.otlp]
+type = "opentelemetry"
+use_otlp_decoding = true
+
+  [sources.otlp.acknowledgements]
+
+  [sources.otlp.grpc]
+  address = "0.0.0.0:4317"
+
+  [sources.otlp.http]
+  address = "0.0.0.0:4318"
+  headers = []
+
+  [sources.otlp.http.keepalive]
+  max_connection_age_secs = 300
+  max_connection_age_jitter_factor = 0.1
+
+[transforms.traces_sanitize]
+type = "remap"
+inputs = ["otlp.traces"]
+source = '''
+.sampled = true
+
+if exists(.attributes) {
+  if exists(.attributes."user.email") { del(.attributes."user.email") }
+  if exists(.attributes."auth.token") { del(.attributes."auth.token") }
+  if exists(.attributes.user_email) { del(.attributes.user_email) }
+  if exists(.attributes.auth_token) { del(.attributes.auth_token) }
+}
+
+if exists(.resource) && exists(.resource.attributes) {
+  if exists(.resource.attributes."user.email") { del(.resource.attributes."user.email") }
+  if exists(.resource.attributes."auth.token") { del(.resource.attributes."auth.token") }
+  if exists(.resource.attributes.user_email) { del(.resource.attributes.user_email) }
+  if exists(.resource.attributes.auth_token) { del(.resource.attributes.auth_token) }
+}
+'''
+
+[sinks.dev_console]
+inputs = ["traces_sanitize"]
+target = "stdout"
+type = "console"
+
+[sinks.dev_console.encoding]
+codec = "json"
+
+[sinks.trace_file]
+type = "file"
+inputs = ["traces_sanitize"]
+path = "tmp/vector-traces.log"
+
+[sinks.trace_file.encoding]
+codec = "json"
+
+[sinks.null_metrics]
+inputs = ["otlp.metrics"]
+type = "blackhole"
+
+[sinks.null_logs]
+inputs = ["otlp.logs"]
+type = "blackhole"

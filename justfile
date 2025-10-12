@@ -477,3 +477,57 @@ ai-analyze PROJECT_PATH:
 ai-suggest CONTEXT:
 	@echo "🤖 Getting AI suggestions..."
 	python tools/ai/suggester.py "{{CONTEXT}}"
+
+# --- Observability helpers ---
+observe-start:
+	@echo "🚀 Starting Vector pipeline with ops/vector/vector.toml..."
+	@command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found. Install from https://vector.dev/"; exit 1; }
+	@mkdir -p tmp/vector-data
+	vector --config ops/vector/vector.toml --watch
+
+# Run OTLP integration tests with fake collector (Phase 3)
+observe-test:
+	@echo "🧪 Running OTLP integration tests with mock collector..."
+	@cargo test -p vibepro-observe --features otlp --test otlp_integration
+	@echo "✅ OTLP integration tests passed"
+
+# Run Vector smoke test (configuration validation)
+observe-test-vector:
+	@echo "🧪 Running Vector smoke test..."
+	@bash tests/ops/test_tracing_vector.sh
+	@echo "✅ Vector smoke test passed"
+
+# Run all observability tests
+observe-test-all: observe-test observe-test-vector
+	@echo "✅ All observability tests passed"
+
+observe-verify-span:
+	# Emits a synthetic span via a tiny Rust one-liner using the crate (or call your service's health endpoint)
+	RUST_LOG=info VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
+	cargo test -p vibepro-observe --features otlp --test otlp_gate -- --nocapture
+
+observe-logs:
+	journalctl -u vector -f || tail -f /var/log/vector.log || true
+
+# --- Observability: smoke binary ---
+
+# stdout JSON only (no OTLP)
+observe-smoke:
+	cargo run --manifest-path apps/observe-smoke/Cargo.toml
+
+# OTLP export enabled (requires Feature + Env)
+observe-smoke-otlp:
+	VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
+	cargo run --features otlp --manifest-path apps/observe-smoke/Cargo.toml
+
+# End-to-end local verification:
+# 1) start Vector (listens 4317/4318)
+# 2) run the OTLP smoke
+observe-verify:
+	vector validate ops/vector/vector.toml
+	( just observe-start & ) ; \
+	sleep 2 ; \
+	VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
+	cargo run --features otlp --manifest-path apps/observe-smoke/Cargo.toml ; \
+	sleep 1 ; \
+	echo "✅ observe-smoke sent spans (check Vector/OpenObserve)"

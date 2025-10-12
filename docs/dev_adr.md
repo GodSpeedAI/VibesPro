@@ -119,6 +119,53 @@ DX Impact: Faster, more reliable CI; clearer failure modes.
 
 Trade-offs: Need small glue to source decrypted env file.
 
+## DEV-ADR-016 — Adopt Rust‑Native Observability Pipeline (tracing → Vector → OpenObserve)
+
+Status: Proposed → Active (feature‑flagged)
+
+Context
+VibePro’s execution model is moving toward deterministic, AI‑ready telemetry. Current logging is largely unstructured, preventing reliable correlation and automated analysis. A Rust‑native stack (tracing → Vector → OpenObserve) provides structured OTLP telemetry with low runtime overhead and avoids container‑side agents.
+
+Decision
+Implement an opt‑in observability subsystem composed of:
+- tracing + tracing‑opentelemetry for in‑process spans, metrics, and structured logs
+- Vector as the host‑level collector/transformer
+- OpenObserve as the unified long‑term store
+
+Enable via the environment flag: VIBEPRO_OBSERVE=1
+
+Rationale
+- Low overhead: Rust async tracing with minimal allocations
+- Standardized telemetry (OTLP) compatible with AIOps tools
+- Enables AI‑driven RCA and anomaly detection with context‑rich spans
+- Removes dependency on container agents (Vector runs as a host binary)
+
+Consequences
+
+| Area | Positive | Trade‑off |
+| --- | --- | --- |
+| Performance | <1% CPU overhead at ~1k spans/s | Slight binary size growth |
+| Developer DX | Unified API for logs/traces | New crate dependency (crates/vibepro-observe) |
+| Ops | Simplified deploy; fewer moving parts | Requires Vector rollout policy & binary distribution |
+| AI Enablement | Historical OTLP data for feature extraction | Must govern PII fields before ingestion |
+
+Adoption phases
+1. Create crates/vibepro-observe exposing init_tracing() and record_metric() APIs. (traceability: DEV-SDS-017)
+2. Add ops/vector/vector.toml and CI validation step (vector validate).
+3. Connect Vector → OpenObserve in staging and validate retention/PII policies.
+4. Keep feature flag off by default; enable for opt‑in environments. Promote to default in Phase 2 after stabilization.
+
+Related
+- DEV-PRD-017 — Observability Integration Story (to be authored after prototype)
+- docs/dev_tdd_observability.md (v1)
+- DEV-SDS-017 — Observability Design Spec (forthcoming)
+- Traceability: reference DEV-SDS-017 and DEV-PRD-017 in implementation commits
+
+Notes
+- Ensure PII/PII‑like fields are redacted or filtered before export.
+- Add automated CI checks for vector config validation and a small benchmark to detect regressions.
+- Document rollout plan for operators (Vector binary distribution, upgrades, and monitoring).
+
 ---
 
 ## Developer ergonomics considerations (summary)

@@ -53,6 +53,12 @@ jobs:
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           mise --version
+      - name: Validate Vector config
+        run: vector validate ops/vector/vector.toml
+      - name: Crate tests (no otlp)
+        run: cargo test -p vibepro-observe
+      - name: Crate tests (otlp feature)
+        run: cargo test -p vibepro-observe --features otlp
       - name: Trust mise config
         run: mise trust --yes .mise.toml
 

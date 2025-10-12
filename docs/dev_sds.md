@@ -174,6 +174,154 @@ Error modes: None in CI (not used). Local failures fall back to manual direnv al
 
 Artifacts: Chezmoi templates (outside repo), docs pointer only.
 
+## DEV-SDS-017 — Rust‑Native Observability Pipeline (Tracing → Vector → OpenObserve)
+
+### Principle
+Observability is native, structured, and AI‑enriched by design — not bolted on. The stack must produce high‑fidelity, low‑overhead telemetry usable for diagnostics, optimization, and AI‑assisted pattern discovery.
+
+---
+
+### Design overview
+
+| Layer | Component | Role | Implementation artifacts |
+|---|---:|---|---|
+| Instrumentation | tracing / tracing‑opentelemetry | Emit structured spans, metrics, and logs from Rust services | crates/vibepro-observe/src/lib.rs |
+| Pipeline | Vector | Receive OTLP, sample, redact, enrich | ops/vector/vector.toml |
+| Storage & Analytics | OpenObserve | Columnar unified store + SQL/UI | External service (staging/prod) |
+| Integration | Just + CI | Local run, validation, CI checks | Justfile, .github/workflows/env-check.yml |
+
+Architecture (logical flow)
+```
+Rust App (tracing macros, tracing_subscriber, tracing_opentelemetry)
+  └─OTLP/gRPC→ Vector (host binary: otel sources, VRL transforms, otlp sink)
+      └─OTLP/HTTP or gRPC→ OpenObserve (columnar store, SQL + UI)
+```
+
+---
+
+### Design details
+
+1) Instrumentation layer (Rust)
+- Crates: tracing, tracing-core, tracing-subscriber, tracing-opentelemetry, opentelemetry-otlp, anyhow, once_cell.
+- Public API (example)
+```rust
+pub fn init_tracing(service: &str) -> Result<(), anyhow::Error>;
+pub fn record_metric(key: &str, value: f64);
+```
+- Config (env flags):
+  - VIBEPRO_OBSERVE=1
+  - OTLP_ENDPOINT=http://127.0.0.1:4317
+- Behavior:
+  - If VIBEPRO_OBSERVE=1 → install OTLP exporter (OTLP/gRPC).
+  - Otherwise → default to fmt::Subscriber with JSON stdout.
+
+2) Data pipeline layer (Vector)
+- Deployment:
+  - Install via Devbox/mise (vector binary) or package manager.
+  - Run locally: `just observe-start` (Just target).
+- Config path: `ops/vector/vector.toml`
+- Example vector.toml (snippets)
+```toml
+[sources.otel_traces]
+type    = "opentelemetry"
+address = "0.0.0.0:4317"
+
+[transforms.sample_slow]
+type      = "sample"
+inputs    = ["otel_traces"]
+rate      = 0.25
+condition = 'exists(.attributes.latency_ms) && to_int!(.attributes.latency_ms) > 300'
+
+[transforms.redact_email]
+type = "remap"
+inputs = ["sample_slow"]
+source = '''
+  .user_email = replace(.user_email, r"[^@]+@[^@]+", "[REDACTED]")
+'''
+
+[sinks.otlp]
+type     = "opentelemetry"
+inputs   = ["redact_email"]
+endpoint = "${OPENOBSERVE_URL}"
+auth     = { strategy = "bearer", token = "${OPENOBSERVE_TOKEN}" }
+```
+- Purpose:
+  - Local buffering, sampling, PII redaction, enrichment (app version, host, region).
+  - Enforce opt‑in (env var) and host-level controls.
+
+3) Storage & analytics (OpenObserve)
+- Ingestion: standard OTLP/gRPC or OTLP/HTTP (4317/4318).
+- Auth: API token via `.secrets.env.sops` (OPENOBSERVE_TOKEN).
+- Data model: unified schema for logs, metrics, traces; columnar (Parquet) storage for fast analytics.
+- Example query:
+```sql
+SELECT service.name, COUNT(*), AVG(duration_ms)
+FROM traces
+WHERE status = 'error'
+GROUP BY service.name;
+```
+
+---
+
+### Security & compliance
+- Secrets: OPENOBSERVE_TOKEN & OPENOBSERVE_URL kept in `.secrets.env.sops` (SOPS).
+- PII redaction: VRL transform in `vector.toml` (runtime enforcement).
+- Opt‑in activation: controlled by VIBEPRO_OBSERVE env var.
+- Network boundaries: host Vector → TLS endpoint; enforce via host firewall and CI checks.
+- Governance: sampling + retention configured in Vector/OpenObserve policies.
+
+---
+
+### Error modes & recovery
+- OpenObserve unreachable → retries, memory‑backed buffer, backpressure. Mitigation: Vector retry + buffer config.
+- Invalid VRL transform → Vector refuses to start. Mitigation: `just observe-validate` and CI `vector validate`.
+- Missing token → sink disabled with warning; fallback to JSON stdout.
+- High volume (>1k spans/s) → CPU rise. Mitigation: tune sampling, switch to async exporter.
+
+---
+
+### Artifacts & source control
+- Rust instrumentation crate: `crates/vibepro-observe/`
+- Vector config: `ops/vector/vector.toml`
+- Docs: `docs/observability/README.md`
+- Secrets: `.secrets.env.sops`
+- CI validation: `.github/workflows/env-check.yml` (vector validate)
+- Tests: `tests/ops/test_vector_config.sh`, `tests/ops/test_openobserve_sink.sh`
+
+---
+
+### Performance & benchmark goals (targets)
+- Trace emission overhead: < 1 µs per span (criterion bench in vibepro-observe)
+- Vector CPU: < 3% per core at 1k spans/s (staging)
+- Data retention: ≥ 90 days (OpenObserve policy)
+- Ingestion latency: < 250 ms (p95)
+- Sampling efficiency: ~4:1 reduction on average
+
+---
+
+### Implementation dependencies
+- Rust crates: tracing, tracing-opentelemetry, opentelemetry-otlp, anyhow, once_cell.
+- System tools: `vector` binary (Devbox/mise).
+- Secrets: OPENOBSERVE_URL, OPENOBSERVE_TOKEN in `.secrets.env.sops`.
+
+---
+
+### Cross-references
+- DEV-ADR-016 — Architecture decision for adoption
+- DEV-TDD-OBSERVABILITY.md — Implementation test plan
+- DEV-PRD-017 — Product requirement (to be authored)
+- ENVIRONMENT.md §8 — Activation & workflow
+- .github/workflows/env-check.yml — CI validation
+
+---
+
+### Exit criteria
+- `cargo test -p vibepro-observe` passes.
+- `vector validate ops/vector/vector.toml` returns 0.
+- `just observe-verify` ingests a sample trace into OpenObserve successfully.
+- Redaction and sampling rules verified in test environment.
+- Documentation updated with schema and endpoints.
+
 ---
 
 ## Documentation-as-code specs
