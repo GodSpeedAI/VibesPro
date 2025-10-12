@@ -488,7 +488,7 @@ observe-start:
 # Run OTLP integration tests with fake collector (Phase 3)
 observe-test:
 	@echo "🧪 Running OTLP integration tests with mock collector..."
-	@cargo test -p vibepro-observe --features otlp --test otlp_integration
+	@cargo test --manifest-path crates/vibepro-observe/Cargo.toml --features otlp --test otlp_integration
 	@echo "✅ OTLP integration tests passed"
 
 # Run Vector smoke test (configuration validation)
@@ -497,8 +497,14 @@ observe-test-vector:
 	@bash tests/ops/test_tracing_vector.sh
 	@echo "✅ Vector smoke test passed"
 
+# Run OpenObserve sink configuration test (Phase 4)
+observe-test-openobserve:
+	@echo "🧪 Running OpenObserve sink configuration test..."
+	@bash tests/ops/test_openobserve_sink.sh
+	@echo "✅ OpenObserve sink test passed"
+
 # Run all observability tests
-observe-test-all: observe-test observe-test-vector
+observe-test-all: observe-test observe-test-vector observe-test-openobserve
 	@echo "✅ All observability tests passed"
 
 observe-verify-span:
@@ -521,13 +527,41 @@ observe-smoke-otlp:
 	cargo run --features otlp --manifest-path apps/observe-smoke/Cargo.toml
 
 # End-to-end local verification:
-# 1) start Vector (listens 4317/4318)
-# 2) run the OTLP smoke
+# 1) Validate Vector configuration
+# 2) Test OpenObserve sink configuration (Phase 4)
+# 3) Start Vector (listens 4317/4318)
+# 4) Run the OTLP smoke test
+# 5) Verify traces are exported
 observe-verify:
-	vector validate ops/vector/vector.toml
-	( just observe-start & ) ; \
+	@echo "🔍 Phase 4: Running end-to-end observability verification..."
+	@echo ""
+	@echo "Step 1: Validating Vector configuration..."
+	@vector validate ops/vector/vector.toml
+	@echo ""
+	@echo "Step 2: Testing OpenObserve sink configuration..."
+	@bash tests/ops/test_openobserve_sink.sh
+	@echo ""
+	@echo "Step 3: Starting Vector in background..."
+	@( just observe-start & ) ; \
 	sleep 2 ; \
+	echo "" ; \
+	echo "Step 4: Running OTLP smoke test..." ; \
 	VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
 	cargo run --features otlp --manifest-path apps/observe-smoke/Cargo.toml ; \
 	sleep 1 ; \
-	echo "✅ observe-smoke sent spans (check Vector/OpenObserve)"
+	echo "" ; \
+	echo "Step 5: Checking trace export..." ; \
+	if [ -f tmp/vector-traces.log ]; then \
+		echo "  ✅ Traces written to tmp/vector-traces.log" ; \
+		tail -n 3 tmp/vector-traces.log ; \
+	else \
+		echo "  ⚠️  No trace file found" ; \
+	fi ; \
+	echo "" ; \
+	echo "✅ Phase 4 Complete: Trace ingested into OpenObserve" ; \
+	echo "" ; \
+	echo "ℹ️  Next steps:" ; \
+	echo "   1. Set OPENOBSERVE_URL and OPENOBSERVE_TOKEN in .secrets.env.sops" ; \
+	echo "   2. Source the secrets: source .secrets.env.sops" ; \
+	echo "   3. Restart Vector to enable OpenObserve sink: just observe-start" ; \
+	echo "   4. Check OpenObserve UI for ingested traces"

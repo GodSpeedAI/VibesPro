@@ -61,6 +61,29 @@ path = "tmp/vector-traces.log"
 [sinks.trace_file.encoding]
 codec = "json"
 
+# OpenObserve OTLP HTTP sink for production trace storage and analytics
+# Requires: OPENOBSERVE_URL and OPENOBSERVE_TOKEN environment variables
+[sinks.openobserve]
+type = "http"
+inputs = ["traces_sanitize"]
+uri = "${OPENOBSERVE_URL:-http://localhost:5080}/api/${OPENOBSERVE_ORG:-default}/v1/traces"
+method = "post"
+
+[sinks.openobserve.encoding]
+codec = "json"
+
+[sinks.openobserve.auth]
+strategy = "basic"
+user = "${OPENOBSERVE_USER:-root@example.com}"
+password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
+
+[sinks.openobserve.request]
+timeout_secs = 30
+retry_attempts = 3
+
+  [sinks.openobserve.request.headers]
+  "Content-Type" = "application/json"
+
 [sinks.null_metrics]
 inputs = ["otlp.metrics"]
 type = "blackhole"

@@ -1,7 +1,7 @@
 # Codex MCP Server Configuration Guide
 
-**Date**: October 12, 2025  
-**Task**: Structure MCP servers for Codex CLI  
+**Date**: October 12, 2025
+**Task**: Structure MCP servers for Codex CLI
 **Spec Reference**: N/A (External tool configuration)
 
 ## Summary
