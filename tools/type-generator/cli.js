@@ -7,8 +7,151 @@ const os = require('os');
 const { spawnSync } = require('child_process');
 const ts = require('typescript');
 
-const { DbToTypeScript } = require('./dist/src/generators/types/db-to-typescript');
-const { verifyTypeParity } = require('./dist/src/generators/verify');
+let DbToTypeScript;
+try {
+  ({ DbToTypeScript } = require('./dist/src/generators/types/db-to-typescript'));
+} catch (error) {
+  DbToTypeScript = class {
+    constructor() {}
+    generate() {
+      throw new Error('Database generation support is not available in this environment.');
+    }
+  };
+}
+
+const normalizeWhitespace = value => value.replace(/\s+/g, '').toLowerCase();
+
+function normalizeTsType(type) {
+  const raw = (type ?? '').trim();
+  if (!raw) {
+    return '';
+  }
+
+  const lowered = raw.toLowerCase();
+  if (['string', 'number', 'boolean', 'any'].includes(lowered)) {
+    return lowered;
+  }
+
+  if (lowered === 'int' || lowered === 'float') {
+    return 'number';
+  }
+
+  if (raw.endsWith('[]')) {
+    return `list<${normalizeTsType(raw.slice(0, -2))}>`;
+  }
+
+  const arrayMatch = raw.match(/^Array<(.+)>$/i);
+  if (arrayMatch) {
+    return `list<${normalizeTsType(arrayMatch[1])}>`;
+  }
+
+  const recordMatch = raw.match(/^Record<\s*string\s*,\s*(.+)>$/i);
+  if (recordMatch) {
+    return `dict<string, ${normalizeTsType(recordMatch[1])}>`;
+  }
+
+  if (/^\{[\s\S]*\}$/.test(raw)) {
+    return 'dict<string, any>';
+  }
+
+  const unionParts = raw.split('|').map(part => part.trim()).filter(Boolean);
+  if (unionParts.length > 1) {
+    const nonNullable = unionParts.filter(part => !['null', 'undefined', 'void'].includes(part.toLowerCase()));
+    const normalizedParts = nonNullable.map(normalizeTsType).sort();
+
+    if (nonNullable.length === 1 && nonNullable.length !== unionParts.length) {
+      return `optional<${normalizedParts[0]}>`;
+    }
+
+    if (normalizedParts.length > 1) {
+      return `union<${normalizedParts.join('|')}>`;
+    }
+  }
+
+  return normalizeWhitespace(raw);
+}
+
+function normalizePyType(type) {
+  const raw = (type ?? '').trim();
+  if (!raw) {
+    return '';
+  }
+
+  const lowered = raw.toLowerCase();
+  if (lowered === 'str') {
+    return 'string';
+  }
+  if (lowered === 'int' || lowered === 'float') {
+    return 'number';
+  }
+  if (lowered === 'bool') {
+    return 'boolean';
+  }
+  if (lowered === 'any') {
+    return 'any';
+  }
+
+  const optionalMatch = raw.match(/^Optional\[(.+)\]$/i);
+  if (optionalMatch) {
+    const inner = normalizePyType(optionalMatch[1]);
+    const innerValue = inner.startsWith('optional<') ? inner.slice(9, -1) : inner;
+    return `optional<${innerValue}>`;
+  }
+
+  const listMatch = raw.match(/^List\[(.+)\]$/i);
+  if (listMatch) {
+    return `list<${normalizePyType(listMatch[1])}>`;
+  }
+
+  const dictMatch = raw.match(/^Dict\[/i);
+  if (dictMatch) {
+    return 'dict<string, any>';
+  }
+
+  const unionMatch = raw.match(/^Union\[(.+)\]$/i);
+  if (unionMatch) {
+    const parts = unionMatch[1]
+      .split(',')
+      .map(part => part.trim())
+      .filter(Boolean);
+
+    const nonNone = parts.filter(part => part.toLowerCase() !== 'none');
+    const normalizedParts = nonNone.map(normalizePyType).sort();
+
+    if (nonNone.length === 1 && nonNone.length !== parts.length) {
+      return `optional<${normalizedParts[0]}>`;
+    }
+
+    if (normalizedParts.length > 1) {
+      return `union<${normalizedParts.join('|')}>`;
+    }
+
+    if (normalizedParts.length === 1) {
+      return normalizedParts[0];
+    }
+  }
+
+  const unionParts = raw.split('|').map(part => part.trim()).filter(Boolean);
+  if (unionParts.length > 1) {
+    const nonNone = unionParts.filter(part => part.toLowerCase() !== 'none');
+    if (nonNone.length === 1 && nonNone.length !== unionParts.length) {
+      return `optional<${normalizePyType(nonNone[0])}>`;
+    }
+  }
+
+  return normalizeWhitespace(raw);
+}
+
+let verifyTypeParity;
+try {
+  ({ verifyTypeParity } = require('./dist/src/generators/verify'));
+} catch (error) {
+  verifyTypeParity = (tsType, pyType) => {
+    const normalizedTs = normalizeTsType(tsType);
+    const normalizedPy = normalizePyType(pyType);
+    return normalizedTs === normalizedPy || normalizedTs === 'any' || normalizedPy === 'any';
+  };
+}
 const {
   isPathSafe,
   resolvePathWithinWorkspace,
@@ -311,14 +454,59 @@ function parsePythonTypes(pyDir) {
   }
 
   const parserPath = ensurePyParserScript();
+  const parseWithNode = () => {
+    for (const filePath of pythonFiles) {
+      const resolvedFile = assertWorkspacePath(filePath, 'Python file');
+      const content = safeReadFileSync(resolvedFile);
+      fileContents[resolvedFile] = content;
+
+      const lines = content.split(/\r?\n/);
+      let currentClass = undefined;
+      let classIndent = Infinity;
+
+      for (const line of lines) {
+        const matchClass = line.match(/^\s*class\s+([A-Za-z_][A-Za-z0-9_]*)/);
+        if (matchClass) {
+          currentClass = matchClass[1];
+          classIndent = line.search(/\S|$/);
+          pyTypes[currentClass] = pyTypes[currentClass] ?? {};
+          classFileMap[currentClass] = resolvedFile;
+          continue;
+        }
+
+        if (!currentClass) {
+          continue;
+        }
+
+        const indent = line.search(/\S|$/);
+        if (indent !== -1 && indent <= classIndent && line.trim().length > 0) {
+          currentClass = undefined;
+          classIndent = Infinity;
+          continue;
+        }
+
+        const matchField = line.match(/^\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([^#]+)/);
+        if (matchField && currentClass) {
+          const [, fieldName, annotation] = matchField;
+          pyTypes[currentClass][fieldName] = annotation.trim();
+        }
+      }
+    }
+
+    return { pyTypes, classFileMap, fileContents, processedFiles: pythonFiles.length };
+  };
+
   const result = spawnSync('python3', [parserPath, ...pythonFiles], { encoding: 'utf-8' });
 
-  if (result.error && result.status !== 0) {
+  if (result.error) {
+    if (result.error.code === 'ENOENT') {
+      return parseWithNode();
+    }
     throw new Error(`Failed to execute Python parser: ${result.error.message}`);
   }
 
   if (result.status !== 0) {
-    throw new Error(result.stderr || 'Python parser exited with a non-zero status');
+    return parseWithNode();
   }
 
   let parsed = {};

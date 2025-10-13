@@ -119,6 +119,115 @@ DX Impact: Faster, more reliable CI; clearer failure modes.
 
 Trade-offs: Need small glue to source decrypted env file.
 
+## DEV-ADR-016 — Adopt Rust‑Native Observability Pipeline (tracing → Vector → OpenObserve)
+
+Status: Proposed → Active (feature‑flagged)
+
+Context
+VibePro’s execution model is moving toward deterministic, AI‑ready telemetry. Current logging is largely unstructured, preventing reliable correlation and automated analysis. A Rust‑native stack (tracing → Vector → OpenObserve) provides structured OTLP telemetry with low runtime overhead and avoids container‑side agents.
+
+Decision
+Implement an opt‑in observability subsystem composed of:
+- tracing + tracing‑opentelemetry for in‑process spans, metrics, and structured logs
+- Vector as the host‑level collector/transformer
+- OpenObserve as the unified long‑term store
+
+Enable via the environment flag: VIBEPRO_OBSERVE=1
+
+Rationale
+- Low overhead: Rust async tracing with minimal allocations
+- Standardized telemetry (OTLP) compatible with AIOps tools
+- Enables AI‑driven RCA and anomaly detection with context‑rich spans
+- Removes dependency on container agents (Vector runs as a host binary)
+
+Consequences
+
+| Area | Positive | Trade‑off |
+| --- | --- | --- |
+| Performance | <1% CPU overhead at ~1k spans/s | Slight binary size growth |
+| Developer DX | Unified API for logs/traces | New crate dependency (crates/vibepro-observe) |
+| Ops | Simplified deploy; fewer moving parts | Requires Vector rollout policy & binary distribution |
+| AI Enablement | Historical OTLP data for feature extraction | Must govern PII fields before ingestion |
+
+Adoption phases
+1. Create crates/vibepro-observe exposing init_tracing() and record_metric() APIs. (traceability: DEV-SDS-017)
+2. Add ops/vector/vector.toml and CI validation step (vector validate).
+3. Connect Vector → OpenObserve in staging and validate retention/PII policies.
+4. Keep feature flag off by default; enable for opt‑in environments. Promote to default in Phase 2 after stabilization.
+
+Related
+- DEV-PRD-017 — Observability Integration Story (to be authored after prototype)
+- docs/dev_tdd_observability.md (v1)
+- DEV-SDS-017 — Observability Design Spec (forthcoming)
+- Traceability: reference DEV-SDS-017 and DEV-PRD-017 in implementation commits
+
+Notes
+- Ensure PII/PII‑like fields are redacted or filtered before export.
+- Add automated CI checks for vector config validation and a small benchmark to detect regressions.
+- Document rollout plan for operators (Vector binary distribution, upgrades, and monitoring).
+
+## DEV-ADR-017 — JSON-First Structured Logging with Trace Correlation
+
+Status: Active
+
+Context
+VibePro's current logging approach is inconsistent across languages (Rust, Node, Python) with mixed formats (printf-style, JSON, unstructured). This prevents reliable log-trace correlation, PII governance, and cost-effective retention strategies. The existing observability pipeline (DEV-ADR-016) provides the transport layer but needs logging conventions.
+
+Decision
+Implement structured, JSON-first logging with mandatory trace correlation across all languages:
+- **Format:** JSON only (machine-first) for all application logs
+- **Correlation:** Every log line carries `trace_id`, `span_id`, `service`, `env`, `version`
+- **PII Protection:** Never emit raw PII from app code; mandatory redaction in Vector
+- **Levels:** `error`, `warn`, `info`, `debug` (no `trace` level—use tracing spans)
+- **Categories:** `app` (default), `audit`, `security` via dedicated field
+- **Transport:** stdout/stderr locally; OTLP to Vector when `VIBEPRO_OBSERVE=1`
+- **Retention:** 14-30 days for logs (shorter than traces)
+
+Language-specific implementations:
+- **Rust:** Continue using `tracing` events (already in place via `vibepro-observe`)
+- **Node:** `pino` with custom formatters for trace context injection
+- **Python:** `structlog` with JSON renderer and context binding
+
+Rationale
+- **Consistency:** Same log schema regardless of language/runtime
+- **Correlation:** Enables log ↔ trace navigation in OpenObserve
+- **Cost Control:** Sampling/redaction at Vector edge; shorter retention than traces
+- **PII Safety:** Centralized redaction rules prevent accidental exposure
+- **Query Performance:** JSON structure enables fast field indexing
+
+Consequences
+
+| Area | Positive | Trade-off |
+| --- | --- | --- |
+| Developer DX | Unified logging API across languages | Learning curve for structured logging |
+| Debugging | Fast correlation between logs and traces | Must adopt new logger libs (pino/structlog) |
+| Security | PII redaction enforced at infrastructure layer | Vector config complexity |
+| Cost | Lower retention costs; efficient queries | Initial setup overhead |
+| Operations | Consistent log schema for alerting/dashboards | Requires Vector transforms validation |
+
+Implementation Requirements
+1. Add Vector OTLP logs source and PII redaction transforms to `ops/vector/vector.toml`
+2. Create `libs/node-logging/logger.ts` with pino wrapper
+3. Create `libs/python/vibepro_logging.py` with structlog configuration
+4. Document logging policy in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
+5. Add TDD tests: Vector config validation, PII redaction, trace correlation
+
+Related Specs
+- DEV-ADR-016 — Rust-Native Observability Pipeline (foundation)
+- DEV-PRD-018 — Structured Logging Product Requirements (to be created)
+- DEV-SDS-018 — Structured Logging Design Specification (to be created)
+- DEV-SPEC-009 — Logging Policy & Examples (documentation)
+
+Migration Strategy
+- Phase 1: Introduce logging libraries as opt-in; update examples
+- Phase 2: Deprecate printf-style logging; lint rules to enforce JSON
+- Phase 3: Mandatory for all new code; existing code migrated incrementally
+
+Validation
+- All logs must include: `trace_id`, `span_id`, `service`, `environment`, `application_version`
+- PII fields (email, authorization, tokens) automatically redacted by Vector
+- Tests validate: config correctness, redaction behavior, correlation fields
+
 ---
 
 ## Developer ergonomics considerations (summary)

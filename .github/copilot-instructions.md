@@ -776,3 +776,5 @@ The `temporal_db/` stores:
 For detailed guidance on any topic, consult the modular instruction files in `.github/instructions/`.
 
 **Save and generated summaries in the docs/work-summaries/ folder for future reference.**
+
+**Always check which mcp tools are available and use them when appropriate.**

@@ -1,0 +1,19 @@
+[package]
+name = "observe-smoke"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "VibePro: smoke test binary for the Rust-native observability pipeline"
+
+[dependencies]
+anyhow = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+tracing = "0.1"
+
+# Path dep to the helper crate you added earlier
+# Default build: no OTLP exporter (stdout JSON only)
+vibepro-observe = { path = "../../crates/vibepro-observe" }
+
+[features]
+# Forward the `otlp` feature to the helper crate so you can opt-in at build time
+otlp = ["vibepro-observe/otlp"]

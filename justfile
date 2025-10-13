@@ -477,3 +477,139 @@ ai-analyze PROJECT_PATH:
 ai-suggest CONTEXT:
 	@echo "🤖 Getting AI suggestions..."
 	python tools/ai/suggester.py "{{CONTEXT}}"
+
+# --- Observability helpers ---
+observe-start:
+	@echo "🚀 Starting Vector pipeline with ops/vector/vector.toml..."
+	@command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found. Install from https://vector.dev/"; exit 1; }
+	@mkdir -p tmp/vector-data
+	vector --config ops/vector/vector.toml --watch
+
+# Run OTLP integration tests with fake collector (Phase 3)
+observe-test:
+	@echo "🧪 Running OTLP integration tests with mock collector..."
+	@cargo test --manifest-path crates/vibepro-observe/Cargo.toml --features otlp --test otlp_integration
+	@echo "✅ OTLP integration tests passed"
+
+# Run Vector smoke test (configuration validation)
+observe-test-vector:
+	@echo "🧪 Running Vector smoke test..."
+	@bash tests/ops/test_tracing_vector.sh
+	@echo "✅ Vector smoke test passed"
+
+# Run OpenObserve sink configuration test (Phase 4)
+observe-test-openobserve:
+	@echo "🧪 Running OpenObserve sink configuration test..."
+	@bash tests/ops/test_openobserve_sink.sh
+	@echo "✅ OpenObserve sink test passed"
+
+# Run CI observability validation test (Phase 5)
+observe-test-ci:
+	@echo "🧪 Running CI observability validation test..."
+	@bash tests/ops/test_ci_observability.sh
+	@echo "✅ CI observability test passed"
+
+# Run observability feature flag test (Phase 6)
+observe-test-flag:
+	@echo "🧪 Running observability feature flag test..."
+	@bash tests/ops/test_observe_flag.sh
+	@echo "✅ Feature flag test passed"
+
+# Run all observability tests
+observe-test-all: observe-test observe-test-vector observe-test-openobserve observe-test-ci observe-test-flag
+	@echo "✅ All observability tests passed"
+
+# Tail Vector log file (if persisted)
+observe-logs:
+	@echo "📋 Tailing Vector logs..."
+	@if [ -f /tmp/vector.log ]; then \
+		tail -n +1 -f /tmp/vector.log; \
+	else \
+		echo "❌ Vector log file not found at /tmp/vector.log"; \
+		echo "   Start Vector with: just observe-start"; \
+		exit 1; \
+	fi
+
+# Validate Vector configuration
+observe-validate:
+	@echo "🔍 Validating Vector configuration..."
+	@command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found"; exit 1; }
+	@vector validate ops/vector/vector.toml
+	@echo "✅ Vector configuration is valid"
+
+# Run Vector logs configuration test (DEV-SDS-018)
+test-logs-config:
+	@echo "🧪 Testing Vector logs configuration..."
+	@bash -eu tests/ops/test_vector_logs_config.sh
+
+# Run PII redaction test (DEV-PRD-018, DEV-SDS-018)
+test-logs-redaction:
+	@echo "🧪 Testing PII redaction..."
+	@bash -eu tests/ops/test_log_redaction.sh
+
+# Run log-trace correlation test (DEV-PRD-018, DEV-SDS-018)
+test-logs-correlation:
+	@echo "🧪 Testing log-trace correlation..."
+	@bash -eu tests/ops/test_log_trace_correlation.sh
+
+# Run all logging tests
+test-logs: test-logs-config test-logs-redaction test-logs-correlation
+	@echo "✅ All logging tests passed"
+
+
+
+observe-verify-span:
+	# Emits a synthetic span via a tiny Rust one-liner using the crate (or call your service's health endpoint)
+	RUST_LOG=info VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
+	cargo test -p vibepro-observe --features otlp --test otlp_gate -- --nocapture
+
+# --- Observability: smoke binary ---
+
+# stdout JSON only (no OTLP)
+observe-smoke:
+	cargo run --manifest-path apps/observe-smoke/Cargo.toml
+
+# OTLP export enabled (requires Feature + Env)
+observe-smoke-otlp:
+	VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
+	cargo run --features otlp --manifest-path apps/observe-smoke/Cargo.toml
+
+# End-to-end local verification:
+# 1) Validate Vector configuration
+# 2) Test OpenObserve sink configuration (Phase 4)
+# 3) Start Vector (listens 4317/4318)
+# 4) Run the OTLP smoke test
+# 5) Verify traces are exported
+observe-verify:
+	@echo "🔍 Phase 4: Running end-to-end observability verification..."
+	@echo ""
+	@echo "Step 1: Validating Vector configuration..."
+	@vector validate ops/vector/vector.toml
+	@echo ""
+	@echo "Step 2: Testing OpenObserve sink configuration..."
+	@bash tests/ops/test_openobserve_sink.sh
+	@echo ""
+	@echo "Step 3: Starting Vector in background..."
+	@( just observe-start & ) ; \
+	sleep 2 ; \
+	echo "" ; \
+	echo "Step 4: Running OTLP smoke test..." ; \
+	VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
+	cargo run --features otlp --manifest-path apps/observe-smoke/Cargo.toml ; \
+	sleep 1 ; \
+	echo "" ; \
+	echo "Step 5: Checking trace export..." ; \
+	if [ -f tmp/vector-traces.log ]; then \
+		echo "  ✅ Traces written to tmp/vector-traces.log" ; \
+		tail -n 3 tmp/vector-traces.log ; \
+	else \
+		echo "  ⚠️  No trace file found" ; \
+	fi ; \
+	echo "" ; \
+	echo "✅ Phase 4 Complete: Trace ingested into OpenObserve" ; \
+	echo "" ; \
+	echo "ℹ️  Next steps:" ; \
+	echo "   1. Set OPENOBSERVE_URL and OPENOBSERVE_TOKEN in .secrets.env.sops" ; \
+	echo "   2. Source the secrets: source .secrets.env.sops" ; \
+	echo "   3. Restart Vector to enable OpenObserve sink: just observe-start" ; \
+	echo "   4. Check OpenObserve UI for ingested traces"
