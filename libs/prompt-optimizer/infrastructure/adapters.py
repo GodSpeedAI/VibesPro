@@ -53,7 +53,7 @@ class TiktokenAdapter(TokenCounterPort):
                 total_tokens=total_tokens,
                 model=model,
                 estimated_cost=estimated_cost,
-                token_distribution=token_distribution
+                token_distribution=token_distribution,
             )
 
         except ImportError:
@@ -71,12 +71,7 @@ class TiktokenAdapter(TokenCounterPort):
 
     def _analyze_token_distribution(self, decoded_tokens: list[str]) -> dict[str, int]:
         """Analyze the distribution of token types."""
-        distribution = {
-            "words": 0,
-            "punctuation": 0,
-            "special": 0,
-            "whitespace": 0
-        }
+        distribution = {"words": 0, "punctuation": 0, "special": 0, "whitespace": 0}
 
         for token in decoded_tokens:
             if token.isalpha():
@@ -102,7 +97,12 @@ class TiktokenAdapter(TokenCounterPort):
             total_tokens=estimated_tokens,
             model=model,
             estimated_cost=estimated_cost,
-            token_distribution={"words": word_count, "punctuation": 0, "special": 0, "whitespace": 0}
+            token_distribution={
+                "words": word_count,
+                "punctuation": 0,
+                "special": 0,
+                "whitespace": 0,
+            },
         )
 
 
@@ -167,20 +167,24 @@ class FilePromptRepository(PromptRepositoryPort):
                 "total_tokens": prompt.token_count.total_tokens,
                 "model": prompt.token_count.model.value,
                 "estimated_cost": prompt.token_count.estimated_cost,
-                "token_distribution": prompt.token_count.token_distribution
-            } if prompt.token_count else None,
+                "token_distribution": prompt.token_count.token_distribution,
+            }
+            if prompt.token_count
+            else None,
             "effectiveness_score": {
                 "overall_score": prompt.effectiveness_score.overall_score,
                 "clarity_score": prompt.effectiveness_score.clarity_score,
                 "specificity_score": prompt.effectiveness_score.specificity_score,
-                "completeness_score": prompt.effectiveness_score.completeness_score
-            } if prompt.effectiveness_score else None,
+                "completeness_score": prompt.effectiveness_score.completeness_score,
+            }
+            if prompt.effectiveness_score
+            else None,
             "optimization_suggestions": prompt.optimization_suggestions,
-            "metadata": prompt.metadata
+            "metadata": prompt.metadata,
         }
 
         file_path = os.path.join(self.storage_path, f"{prompt.id}.json")
-        with open(file_path, 'w', encoding='utf-8') as f:
+        with open(file_path, "w", encoding="utf-8") as f:
             json.dump(prompt_data, f, indent=2, ensure_ascii=False)
 
     async def get_prompt(self, prompt_id: PromptId) -> Prompt | None:
@@ -192,7 +196,7 @@ class FilePromptRepository(PromptRepositoryPort):
             return None
 
         try:
-            with open(file_path, encoding='utf-8') as f:
+            with open(file_path, encoding="utf-8") as f:
                 data = json.load(f)
 
             return self._deserialize_prompt(data)
@@ -228,7 +232,7 @@ class FilePromptRepository(PromptRepositoryPort):
         prompts: list[Prompt] = []
         for file_path in files[:limit]:
             try:
-                with open(file_path, encoding='utf-8') as f:
+                with open(file_path, encoding="utf-8") as f:
                     data = json.load(f)
 
                 prompt = self._deserialize_prompt(data)
@@ -242,6 +246,7 @@ class FilePromptRepository(PromptRepositoryPort):
     def _ensure_storage_exists(self) -> None:
         """Ensure storage directory exists."""
         import os
+
         os.makedirs(self.storage_path, exist_ok=True)
 
     def _deserialize_prompt(self, data: dict[str, Any]) -> Prompt | None:
@@ -257,7 +262,7 @@ class FilePromptRepository(PromptRepositoryPort):
                 content=data["content"],
                 created_at=created_at,
                 optimization_suggestions=data.get("optimization_suggestions", []),
-                metadata=data.get("metadata", {})
+                metadata=data.get("metadata", {}),
             )
 
             # Restore features if present
@@ -273,7 +278,7 @@ class FilePromptRepository(PromptRepositoryPort):
                     total_tokens=tc_data["total_tokens"],
                     model=ModelType(tc_data["model"]),
                     estimated_cost=tc_data["estimated_cost"],
-                    token_distribution=tc_data["token_distribution"]
+                    token_distribution=tc_data["token_distribution"],
                 )
                 prompt.update_token_count(token_count)
 
@@ -284,7 +289,7 @@ class FilePromptRepository(PromptRepositoryPort):
                     overall_score=es_data["overall_score"],
                     clarity_score=es_data["clarity_score"],
                     specificity_score=es_data["specificity_score"],
-                    completeness_score=es_data["completeness_score"]
+                    completeness_score=es_data["completeness_score"],
                 )
                 prompt.update_effectiveness_score(effectiveness)
 

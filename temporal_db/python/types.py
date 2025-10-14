@@ -7,13 +7,14 @@ These mirror the Rust types defined in temporal_db/schema.rs
 
 import uuid
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from enum import Enum
 from typing import Any
 
 
 class SpecificationType(Enum):
     """Type of specification document."""
+
     ADR = "ADR"
     PRD = "PRD"
     SDS = "SDS"
@@ -22,6 +23,7 @@ class SpecificationType(Enum):
 
 class PatternType(Enum):
     """Type of architectural pattern."""
+
     DOMAIN = "Domain"
     APPLICATION = "Application"
     INFRASTRUCTURE = "Infrastructure"
@@ -30,6 +32,7 @@ class PatternType(Enum):
 
 class ChangeType(Enum):
     """Type of change in the temporal database."""
+
     CREATE = "Create"
     UPDATE = "Update"
     DELETE = "Delete"
@@ -40,6 +43,7 @@ class ChangeType(Enum):
 @dataclass
 class SpecificationRecord:
     """A specification record stored in the temporal database."""
+
     id: str
     spec_type: SpecificationType
     identifier: str  # e.g., 'ADR-MERGE-001'
@@ -123,6 +127,7 @@ class SpecificationRecord:
 @dataclass
 class SpecificationChange:
     """A change record in the temporal database."""
+
     spec_id: str
     change_type: ChangeType
     field: str
@@ -163,6 +168,7 @@ class SpecificationChange:
 @dataclass
 class ArchitecturalPattern:
     """An architectural pattern stored in the temporal database."""
+
     id: str
     pattern_name: str
     pattern_type: PatternType
@@ -235,6 +241,7 @@ class ArchitecturalPattern:
 @dataclass
 class DecisionPoint:
     """A decision point in the specification process."""
+
     id: str
     specification_id: str
     decision_point: str
@@ -269,6 +276,7 @@ class DecisionPoint:
 @dataclass
 class DecisionOption:
     """A decision option for a decision point."""
+
     id: str
     decision_point_id: str
     option_name: str
@@ -306,4 +314,95 @@ class DecisionOption:
             selected=data["selected"],
             selection_rationale=data.get("selection_rationale"),
             timestamp=datetime.fromisoformat(data["timestamp"]),
+        )
+
+
+@dataclass
+class PatternRecommendation:
+    """A generated pattern recommendation entry."""
+
+    id: str
+    pattern_name: str
+    decision_point: str
+    confidence: float
+    provenance: str
+    rationale: str
+    created_at: datetime
+    expires_at: datetime
+    metadata: dict[str, Any]
+
+    @classmethod
+    def create(
+        cls,
+        *,
+        pattern_name: str,
+        decision_point: str,
+        confidence: float,
+        provenance: str,
+        rationale: str,
+        ttl_days: int,
+        metadata: dict[str, Any] | None = None,
+    ) -> "PatternRecommendation":
+        """Create a new recommendation instance with calculated identifiers."""
+
+        recommendation_id = str(uuid.uuid4())
+        created_at = datetime.now(UTC)
+        expires_at = created_at + timedelta(days=max(1, ttl_days))
+
+        return cls(
+            id=recommendation_id,
+            pattern_name=pattern_name,
+            decision_point=decision_point,
+            confidence=max(0.0, min(1.0, confidence)),
+            provenance=provenance,
+            rationale=rationale,
+            created_at=created_at,
+            expires_at=expires_at,
+            metadata=metadata or {},
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary representation."""
+
+        return {
+            "id": self.id,
+            "pattern_name": self.pattern_name,
+            "decision_point": self.decision_point,
+            "confidence": self.confidence,
+            "provenance": self.provenance,
+            "rationale": self.rationale,
+            "created_at": self.created_at.isoformat(),
+            "expires_at": self.expires_at.isoformat(),
+            "metadata": self.metadata,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "PatternRecommendation":
+        """Rehydrate recommendation from raw dictionary data."""
+
+        return cls(
+            id=data["id"],
+            pattern_name=data["pattern_name"],
+            decision_point=data["decision_point"],
+            confidence=float(data["confidence"]),
+            provenance=data["provenance"],
+            rationale=data["rationale"],
+            created_at=datetime.fromisoformat(data["created_at"]),
+            expires_at=datetime.fromisoformat(data["expires_at"]),
+            metadata=data.get("metadata", {}),
+        )
+
+    def with_adjusted_confidence(self, delta: float) -> "PatternRecommendation":
+        """Return a new instance with confidence adjusted by delta."""
+
+        return PatternRecommendation(
+            id=self.id,
+            pattern_name=self.pattern_name,
+            decision_point=self.decision_point,
+            confidence=max(0.0, min(1.0, self.confidence + delta)),
+            provenance=self.provenance,
+            rationale=self.rationale,
+            created_at=self.created_at,
+            expires_at=self.expires_at,
+            metadata=self.metadata,
         )

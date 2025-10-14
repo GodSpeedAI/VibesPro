@@ -34,21 +34,19 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
             # Import redb bindings (assuming Python bindings exist or use Rust FFI)
             # For now, redb doesn't have direct Python bindings, so we use JSON fallback
             import os
+
             os.makedirs(self.db_path, exist_ok=True)
             self._db = self.db_path
             self._initialized = True
         except Exception:
             # Fallback to file-based storage if redb bindings not available
             import os
+
             os.makedirs(self.db_path, exist_ok=True)
             self._db = self.db_path
             self._initialized = True
 
-    async def store_prompt_analysis(
-        self,
-        prompt: Prompt,
-        timestamp: datetime
-    ) -> None:
+    async def store_prompt_analysis(self, prompt: Prompt, timestamp: datetime) -> None:
         """Store prompt analysis results in temporal database."""
         await self._ensure_initialized()
 
@@ -62,26 +60,27 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
                 "total_tokens": prompt.token_count.total_tokens,
                 "model": prompt.token_count.model.value,
                 "estimated_cost": prompt.token_count.estimated_cost,
-                "token_distribution": prompt.token_count.token_distribution
-            } if prompt.token_count else None,
+                "token_distribution": prompt.token_count.token_distribution,
+            }
+            if prompt.token_count
+            else None,
             "effectiveness_score": {
                 "overall_score": prompt.effectiveness_score.overall_score,
                 "clarity_score": prompt.effectiveness_score.clarity_score,
                 "specificity_score": prompt.effectiveness_score.specificity_score,
-                "completeness_score": prompt.effectiveness_score.completeness_score
-            } if prompt.effectiveness_score else None,
+                "completeness_score": prompt.effectiveness_score.completeness_score,
+            }
+            if prompt.effectiveness_score
+            else None,
             "optimization_suggestions": prompt.optimization_suggestions,
-            "metadata": prompt.metadata
+            "metadata": prompt.metadata,
         }
 
         # Store with timestamp-based key for temporal ordering
         key = f"prompt_analysis:{timestamp.isoformat()}:{prompt.id}"
         await self._store_record(key, record)
 
-    async def store_optimization_session(
-        self,
-        session: PromptOptimizationSession
-    ) -> None:
+    async def store_optimization_session(self, session: PromptOptimizationSession) -> None:
         """Store optimization session data."""
         await self._ensure_initialized()
 
@@ -92,16 +91,14 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
             "started_at": session.started_at.isoformat(),
             "completed_at": session.completed_at.isoformat() if session.completed_at else None,
             "prompt_ids": [str(p.id) for p in session.prompts],
-            "result_count": len(session.results)
+            "result_count": len(session.results),
         }
 
         key = f"optimization_session:{session.started_at.isoformat()}:{session.id}"
         await self._store_record(key, session_record)
 
     async def get_similar_prompts(
-        self,
-        features: dict[str, Any],
-        similarity_threshold: float = 0.7
+        self, features: dict[str, Any], similarity_threshold: float = 0.7
     ) -> list[Prompt]:
         """Find similar prompts based on features."""
         await self._ensure_initialized()
@@ -124,9 +121,7 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
         return similar_prompts[:10]  # Limit results
 
     async def get_optimization_patterns(
-        self,
-        goal: OptimizationGoal,
-        days_back: int = 90
+        self, goal: OptimizationGoal, days_back: int = 90
     ) -> list[dict[str, Any]]:
         """Get optimization patterns from historical data."""
         await self._ensure_initialized()
@@ -141,18 +136,21 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
 
         if goal_sessions:
             # Analyze patterns (simplified)
-            patterns.append({
-                "goal": goal.value,
-                "session_count": len(goal_sessions),
-                "avg_prompts_per_session": sum(s.get("result_count", 0) for s in goal_sessions) / len(goal_sessions),
-                "most_common_model": self._get_most_common_model(goal_sessions),
-                "success_rate": 0.8,  # Would calculate from actual feedback
-                "common_improvements": [
-                    "Reduced token count",
-                    "Improved clarity",
-                    "Better structure"
-                ]
-            })
+            patterns.append(
+                {
+                    "goal": goal.value,
+                    "session_count": len(goal_sessions),
+                    "avg_prompts_per_session": sum(s.get("result_count", 0) for s in goal_sessions)
+                    / len(goal_sessions),
+                    "most_common_model": self._get_most_common_model(goal_sessions),
+                    "success_rate": 0.8,  # Would calculate from actual feedback
+                    "common_improvements": [
+                        "Reduced token count",
+                        "Improved clarity",
+                        "Better structure",
+                    ],
+                }
+            )
 
         return patterns
 
@@ -161,13 +159,14 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
         if isinstance(self._db, str):
             # File-based fallback
             import os
+
             file_path = os.path.join(self._db, f"{key.replace(':', '_')}.json")
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(record, f, indent=2, ensure_ascii=False)
         else:
             # Redb database
-            record_bytes = json.dumps(record).encode('utf-8')
-            self._db.insert(key.encode('utf-8'), record_bytes)  # type: ignore
+            record_bytes = json.dumps(record).encode("utf-8")
+            self._db.insert(key.encode("utf-8"), record_bytes)  # type: ignore
 
     async def _get_recent_records(self, prefix: str, days: int) -> list[dict[str, Any]]:
         """Get recent records with the given prefix."""
@@ -184,11 +183,13 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
 
             for file_path in files:
                 try:
-                    with open(file_path, encoding='utf-8') as f:
+                    with open(file_path, encoding="utf-8") as f:
                         record = json.load(f)
 
                     # Check if record is recent enough
-                    record_time = datetime.fromisoformat(record.get("timestamp", record.get("started_at", "")))
+                    record_time = datetime.fromisoformat(
+                        record.get("timestamp", record.get("started_at", ""))
+                    )
                     if record_time >= cutoff_date:
                         records.append(record)
 
@@ -196,14 +197,16 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
                     continue
         else:
             # Redb database
-            prefix_bytes = prefix.encode('utf-8')
+            prefix_bytes = prefix.encode("utf-8")
             for item in self._db.scan_prefix(prefix_bytes):  # type: ignore
                 try:
                     key_bytes, value_bytes = item  # type: ignore
-                    record = json.loads(value_bytes.decode('utf-8'))  # type: ignore
+                    record = json.loads(value_bytes.decode("utf-8"))  # type: ignore
 
                     # Check if record is recent enough
-                    record_time = datetime.fromisoformat(record.get("timestamp", record.get("started_at", "")))
+                    record_time = datetime.fromisoformat(
+                        record.get("timestamp", record.get("started_at", ""))
+                    )
                     if record_time >= cutoff_date:
                         records.append(record)
 
@@ -213,12 +216,14 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
         # Sort by timestamp, most recent first
         records.sort(
             key=lambda r: datetime.fromisoformat(r.get("timestamp", r.get("started_at", ""))),
-            reverse=True
+            reverse=True,
         )
 
         return records
 
-    def _calculate_feature_similarity(self, features1: dict[str, Any], features2: dict[str, Any]) -> float:
+    def _calculate_feature_similarity(
+        self, features1: dict[str, Any], features2: dict[str, Any]
+    ) -> float:
         """Calculate similarity between two feature sets."""
         # Simple cosine similarity calculation
         common_keys = set(features1.keys()) & set(features2.keys())
@@ -240,7 +245,7 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
         if norm1 == 0 or norm2 == 0:
             return 0.0
 
-        return dot_product / (norm1 ** 0.5 * norm2 ** 0.5)
+        return dot_product / (norm1**0.5 * norm2**0.5)
 
     def _deserialize_prompt_from_record(self, record: dict[str, Any]) -> Prompt | None:
         """Deserialize a prompt from a database record."""
@@ -257,7 +262,7 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
                 content=record["content"],
                 created_at=created_at,
                 optimization_suggestions=record.get("optimization_suggestions", []),
-                metadata=record.get("metadata", {})
+                metadata=record.get("metadata", {}),
             )
 
             # Restore features if present
@@ -273,7 +278,7 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
                     total_tokens=tc_data["total_tokens"],
                     model=ModelType(tc_data["model"]),
                     estimated_cost=tc_data["estimated_cost"],
-                    token_distribution=tc_data["token_distribution"]
+                    token_distribution=tc_data["token_distribution"],
                 )
                 prompt.update_token_count(token_count)
 
@@ -284,7 +289,7 @@ class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
                     overall_score=es_data["overall_score"],
                     clarity_score=es_data["clarity_score"],
                     specificity_score=es_data["specificity_score"],
-                    completeness_score=es_data["completeness_score"]
+                    completeness_score=es_data["completeness_score"],
                 )
                 prompt.update_effectiveness_score(effectiveness)
 
@@ -338,9 +343,7 @@ class SimpleMLModelAdapter(MLModelPort):
         return max(0.0, min(100.0, score))
 
     async def generate_optimization_suggestions(
-        self,
-        prompt_content: str,
-        goal: OptimizationGoal
+        self, prompt_content: str, goal: OptimizationGoal
     ) -> list[str]:
         """Generate optimization suggestions using simple rules."""
         suggestions: list[str] = []
@@ -364,7 +367,9 @@ class SimpleMLModelAdapter(MLModelPort):
             if "example" not in content_lower:
                 suggestions.append("Add specific examples to improve effectiveness")
 
-            if not any(action in content_lower for action in ["generate", "create", "write", "analyze"]):
+            if not any(
+                action in content_lower for action in ["generate", "create", "write", "analyze"]
+            ):
                 suggestions.append("Use clear action verbs to specify the desired task")
 
         elif goal == OptimizationGoal.TOKEN_EFFICIENCY:
@@ -384,10 +389,7 @@ class SimpleMLModelAdapter(MLModelPort):
 class SimpleNotificationAdapter(NotificationPort):
     """Simple notification adapter for development."""
 
-    async def notify_optimization_complete(
-        self,
-        result: OptimizationResult
-    ) -> None:
+    async def notify_optimization_complete(self, result: OptimizationResult) -> None:
         """Log optimization completion."""
         print(f"✅ Optimization complete for prompt: {result.original_prompt.id}")
         print(f"   Goal: {result.optimization_goal}")

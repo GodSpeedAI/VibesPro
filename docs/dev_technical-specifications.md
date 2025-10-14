@@ -17,7 +17,7 @@ Audience: Developers and CI maintainers
 
 ## DEV-SPEC-003 — Build/lint tasks
 - Markdown: markdownlint + link-check (CI step).
-- Prompt lint: schema check for frontmatter, title present, token estimate < budget.
+- Prompt lint: schema check for frontmatter, title present, token estimate < 4096. Note: TOKEN_BUDGET = 4096 is the canonical value for validation.
 
 ## DEV-SPEC-004 — Orchestration tasks
 - Run prompts: tasks called “Run: <Name>” invoke `scripts/run_prompt.sh <file> [--config=...]`.
@@ -41,6 +41,7 @@ Audience: Developers and CI maintainers
 - Golden tests for prompts: snapshot the rendered stack and compare on PR.
 
 ## DEV-SPEC-009 — Traceability matrix
+
 | Source | Target(s) |
 |-------|-----------|
 | DEV-ADR-001 Native substrate | DEV-PRD-001, DEV-SDS-001, DEV-SPEC-001/002 |

@@ -1,7 +1,7 @@
 # AI Guidance Fabric TDD Implementation Plan
 
-**Status**: Draft (Pre-implementation)
-**Last Updated**: 2025-10-13
+**Status**: ✅ Completed (Phases 1–4 implemented)
+**Last Updated**: 2025-10-14
 
 ---
 
@@ -14,7 +14,7 @@ This plan drives the TDD execution for the "AI guidance fabric" defined in DEV-A
 
 ---
 
-## Phase 1: Temporal pattern mining foundation ☐ Planned
+## Phase 1: Temporal pattern mining foundation ✅ Completed
 
 **Specs**: DEV-ADR-018, DEV-PRD-018, DEV-SDS-021 (to be authored)
 **Focus**: Extend `ArchitecturalPatternRecognizer` to mine temporal DB snapshots and emit recommendation artifacts.
@@ -48,7 +48,7 @@ This plan drives the TDD execution for the "AI guidance fabric" defined in DEV-A
 
 ---
 
-## Phase 2: Performance advisory heuristics ☐ Planned
+## Phase 2: Performance advisory heuristics ✅ Completed
 
 **Specs**: DEV-ADR-018, DEV-PRD-018, DEV-SDS-022 (to be authored)
 **Focus**: Expand `PerformanceMonitor` to compute baseline deltas and publish advisories.
@@ -82,7 +82,7 @@ This plan drives the TDD execution for the "AI guidance fabric" defined in DEV-A
 
 ---
 
-## Phase 3: Context scoring integration ☐ Planned
+## Phase 3: Context scoring integration ✅ Completed
 
 **Specs**: DEV-ADR-018, DEV-PRD-018, DEV-SDS-021/022
 **Focus**: Update `AIContextManager` to weight context sources using temporal success and confidence scores.
@@ -116,7 +116,7 @@ This plan drives the TDD execution for the "AI guidance fabric" defined in DEV-A
 
 ---
 
-## Phase 4: Feedback loop & delivery surfaces ☐ Planned
+## Phase 4: Feedback loop & delivery surfaces ✅ Completed
 
 **Specs**: DEV-ADR-018, DEV-PRD-018
 **Focus**: Close the loop with developer feedback capture and multi-surface delivery (CLI, VS Code task, chat response adapters).
@@ -199,10 +199,9 @@ This plan drives the TDD execution for the "AI guidance fabric" defined in DEV-A
 
 | Phase | CI Workflow Status | S.W.O.R.D Skills Status | Notes |
 | --- | --- | --- | --- |
-| Phase 1 — Temporal mining | ☐ Pending (`temporal-suite`) | ☐ Pending (Safety/WO/Reliability/DX sign-off) | Initialize collector + retention guards |
-| Phase 2 — Performance advisories | ☐ Pending (`performance-suite`) | ☐ Pending | Configure junit upload + README update |
-| Phase 3 — Context scoring | ☐ Pending (`context-suite`) | ☐ Pending | Snapshot deterministic bundle ordering |
-| Phase 4 — Feedback surfaces | ☐ Pending (`surfaces-suite`) | ☐ Pending | Chaos-mode feedback durability test |
+| Phase 1 — Temporal mining | ✅ `temporal-suite` executing via ai-guidance workflow | ✅ Safety/WO/Reliability/DX checks automated in pytest | Pattern retention + provenance covered by tests |
+| Phase 2 — Performance advisories | ✅ `performance-suite` vitest job | ✅ Sanitisation + observability instrumentation validated | Baseline persistence + redaction verified |
+| Phase 3 — Context scoring | ✅ `context-suite` vitest job | ✅ Deterministic ordering + DX metadata confirmed | Confidence-weighted scoring shipped |
+| Phase 4 — Feedback surfaces | ✅ `surfaces-suite` CLI smoke | ✅ Feedback + observability guardrails enforced | CLI integrates recommendations + feedback |
 
 > Update the table as phases complete; both columns must read ✅ prior to marking a phase complete in work summaries.
-

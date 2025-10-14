@@ -63,6 +63,7 @@ def _is_hardening_enabled(target: Path) -> bool:
         if answers.exists():
             try:
                 import yaml  # Lazy import to avoid dependency issues when skipping setup
+
                 data = yaml.safe_load(answers.read_text()) or {}
                 if isinstance(data, dict) and "enable_security_hardening" in data:
                     return bool(data.get("enable_security_hardening"))
@@ -89,14 +90,14 @@ def cleanup_security_assets(target: Path) -> None:
 
 def setup_generated_project(target: Path) -> None:
     """Run initial setup commands inside the generated project."""
-    skip_setup = os.environ.get("COPIER_SKIP_PROJECT_SETUP") == '1'
+    skip_setup = os.environ.get("COPIER_SKIP_PROJECT_SETUP") == "1"
 
     if skip_setup:
-        print('⚠️ Skipping install/build steps (COPIER_SKIP_PROJECT_SETUP=1)')
+        print("⚠️ Skipping install/build steps (COPIER_SKIP_PROJECT_SETUP=1)")
         cleanup_security_assets(target)
         return
 
-    print('🔧 Setting up generated project...')
+    print("🔧 Setting up generated project...")
     generate_types(target)
     run(["pnpm", "install"], cwd=target)
 

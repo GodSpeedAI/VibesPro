@@ -173,7 +173,7 @@ Refs: copier.yml improvements
   ```markdown
   ## Quick Start
 
-  New to VibesPro? Check out our [Quick Start Guide](docs/QUICKSTART.md)!
+  New to VibesPro? Check out our [Quick Start Guide](../QUICKSTART.md)!
 
   ```bash
   copier copy gh:GodSpeedAI/VibesPro my-project

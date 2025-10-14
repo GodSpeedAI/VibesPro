@@ -6,7 +6,9 @@
 use anyhow::{anyhow, Result};
 use once_cell::sync::OnceCell;
 use std::env;
-use tracing::{debug, info};
+use tracing::info;
+#[cfg(feature = "otlp")]
+use tracing::debug;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 static INIT_GUARD: OnceCell<()> = OnceCell::new();
@@ -14,9 +16,10 @@ static INIT_GUARD: OnceCell<()> = OnceCell::new();
 /// Initialize tracing for a given service name.
 /// Behavior:
 /// - Always installs JSON fmt layer + EnvFilter (RUST_LOG or default "info").
-/// - If env `VIBEPRO_OBSERVE=1` AND crate compiled with `features = ["otlp"]`,
-///   installs an OTLP exporter targeting `OTLP_ENDPOINT` (default grpc://127.0.0.1:4317).
-pub fn init_tracing(_service_name: &str) -> Result<()> {
+/// - If `VIBEPRO_OBSERVE=1` and feature `otlp` is enabled,
+///   installs an OTLP exporter targeting `OTLP_ENDPOINT` (default http://127.0.0.1:4317).
+pub fn init_tracing(service_name: &str) -> Result<()> {
+    }
     if INIT_GUARD.get().is_some() {
         return Ok(());
     }

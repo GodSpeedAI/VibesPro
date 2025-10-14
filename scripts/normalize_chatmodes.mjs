@@ -19,7 +19,7 @@ async function walk(dir, list = []) {
 
 function titleFromFilename(fn) {
     const base = path.basename(fn, '.chatmode.md');
-    const parts = base.split(/[._\-]/).filter(Boolean);
+    const parts = base.split(/[._-]/).filter(Boolean);
     return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
 }
 
@@ -39,8 +39,7 @@ function joinToolsArray(arr) {
 
 async function processFile(file) {
     let changed = false;
-    let text = await fs.readFile(file, 'utf8');
-    const orig = text;
+    const text = await fs.readFile(file, 'utf8');
 
     // Try to find first frontmatter block (--- ... ---), even if wrapped in code fences
     const firstDash = text.indexOf('---');
@@ -56,9 +55,9 @@ async function processFile(file) {
     const fmContent = text.slice(fmStart, secondDash).trim();
 
     // Determine the rest of the document after the frontmatter closing markers and any trailing fences
-    let rest = text.slice(secondDash + 3);
-    // If rest begins with a code fence end or newline + ``` remove immediate fences that were wrapping frontmatter
-    rest = rest.replace(/^\s*```[a-zA-Z0-9_-]*\n?/, '');
+    // Determine the rest of the document after the frontmatter closing markers and strip any leading code-fence
+    // that may wrap the content.
+    // (we don't need to keep an intermediate variable)
 
     // Normalize frontmatter block
     let fmLines = fmContent.split(/\r?\n/).map(l => l.replace(/\r?\n$/, ''));
@@ -106,7 +105,6 @@ async function processFile(file) {
     const secondDashEnd = secondDash + 3;
     // Skip any following fence markers that immediately followed the closing dashes
     let trailing = text.slice(secondDashEnd);
-    // If leading trailing starts with code fence, strip it
     trailing = trailing.replace(/^\s*```[a-zA-Z0-9_-]*\n?/, '');
 
     const newContent = normalized + trailing.trimStart();

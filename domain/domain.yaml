@@ -23,6 +23,6 @@ services:
             type: string
 
 relationships:
-  - from: auth
-    to: chat
+  - from: chat
+    to: auth
     type: authenticated_by

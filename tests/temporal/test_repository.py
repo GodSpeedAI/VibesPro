@@ -30,7 +30,7 @@ class TestTemporalRepository:
 
     async def setup_temp_repository(self):
         """Create a temporary repository for testing."""
-        temp_file = tempfile.NamedTemporaryFile(suffix='.db', delete=False)
+        temp_file = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
         db_path = temp_file.name
         temp_file.close()
 
@@ -44,10 +44,10 @@ class TestTemporalRepository:
         try:
             assert repo is not None
             assert repo.connection is not None
-            assert hasattr(repo, 'store_specification')
-            assert hasattr(repo, 'get_latest_specification')
-            assert hasattr(repo, 'store_architectural_pattern')
-            assert hasattr(repo, 'record_decision')
+            assert hasattr(repo, "store_specification")
+            assert hasattr(repo, "get_latest_specification")
+            assert hasattr(repo, "store_architectural_pattern")
+            assert hasattr(repo, "record_decision")
         finally:
             await repo.close()
             os.unlink(db_path)
@@ -110,8 +110,8 @@ class TestTemporalRepository:
                     "purpose": "Data access abstraction",
                     "structure": "Interface + Implementation",
                     "benefits": ["Testability", "Flexibility"],
-                    "example_code": "interface Repository<T> { save(entity: T): Promise<void> }"
-                }
+                    "example_code": "interface Repository<T> { save(entity: T): Promise<void> }",
+                },
             )
 
             await repo.store_architectural_pattern(pattern)
@@ -169,19 +169,17 @@ class TestTemporalRepository:
 
             # Check database type decisions
             db_decisions = next(
-                (p for p in patterns if p.get('decision_point') == 'database_type'),
-                None
+                (p for p in patterns if p.get("decision_point") == "database_type"), None
             )
             assert db_decisions is not None
-            assert db_decisions['total_decisions'] == 2
+            assert db_decisions["total_decisions"] == 2
 
             # Check caching decisions
             cache_decisions = next(
-                (p for p in patterns if p.get('decision_point') == 'caching_strategy'),
-                None
+                (p for p in patterns if p.get("decision_point") == "caching_strategy"), None
             )
             assert cache_decisions is not None
-            assert cache_decisions['total_decisions'] == 1
+            assert cache_decisions["total_decisions"] == 1
 
         finally:
             await repo.close()
@@ -197,30 +195,30 @@ class TestTemporalRepository:
                 {
                     "name": "MVC Pattern",
                     "type": PatternType.APPLICATION,
-                    "definition": {"description": "Model View Controller architecture pattern"}
+                    "definition": {"description": "Model View Controller architecture pattern"},
                 },
                 {
                     "name": "Repository Pattern",
                     "type": PatternType.DOMAIN,
-                    "definition": {"description": "Data access abstraction pattern"}
+                    "definition": {"description": "Data access abstraction pattern"},
                 },
                 {
                     "name": "Factory Pattern",
                     "type": PatternType.DOMAIN,
-                    "definition": {"description": "Object creation pattern"}
+                    "definition": {"description": "Object creation pattern"},
                 },
                 {
                     "name": "Observer Pattern",
                     "type": PatternType.APPLICATION,
-                    "definition": {"description": "Event notification pattern"}
-                }
+                    "definition": {"description": "Event notification pattern"},
+                },
             ]
 
             for pattern_data in patterns_to_store:
                 pattern = ArchitecturalPattern.create(
                     pattern_name=pattern_data["name"],
                     pattern_type=pattern_data["type"],
-                    pattern_definition=pattern_data["definition"]
+                    pattern_definition=pattern_data["definition"],
                 )
                 await repo.store_architectural_pattern(pattern)
 
@@ -271,11 +269,10 @@ class TestTemporalRepository:
 
             assert len(recent_patterns) >= 1
             query_pattern = next(
-                (p for p in recent_patterns if p.get('decision_point') == 'query_strategy'),
-                None
+                (p for p in recent_patterns if p.get("decision_point") == "query_strategy"), None
             )
             assert query_pattern is not None
-            assert query_pattern['total_decisions'] == 1
+            assert query_pattern["total_decisions"] == 1
 
             # Query older decisions (should be empty for distant past)
             old_patterns = await repo.analyze_decision_patterns(0)  # 0 days = no results
@@ -362,7 +359,7 @@ class TestTemporalRepository:
             pattern = ArchitecturalPattern.create(
                 pattern_name="Integrity Pattern",
                 pattern_type=PatternType.APPLICATION,
-                pattern_definition={"test": "integrity validation"}
+                pattern_definition={"test": "integrity validation"},
             )
 
             await repo.store_architectural_pattern(pattern)
@@ -385,18 +382,17 @@ class TestTemporalRepository:
             retrieved_patterns = await repo.get_similar_patterns("integrity", 0.1, 30)
             assert len(retrieved_patterns) >= 1
             integrity_pattern = next(
-                (p for p in retrieved_patterns if p.pattern_name == "Integrity Pattern"),
-                None
+                (p for p in retrieved_patterns if p.pattern_name == "Integrity Pattern"), None
             )
             assert integrity_pattern is not None
 
             decision_patterns = await repo.analyze_decision_patterns(30)
             integrity_decisions = next(
-                (p for p in decision_patterns if p.get('decision_point') == 'integrity_approach'),
-                None
+                (p for p in decision_patterns if p.get("decision_point") == "integrity_approach"),
+                None,
             )
             assert integrity_decisions is not None
-            assert integrity_decisions['total_decisions'] == 1
+            assert integrity_decisions["total_decisions"] == 1
 
         finally:
             await repo.close()

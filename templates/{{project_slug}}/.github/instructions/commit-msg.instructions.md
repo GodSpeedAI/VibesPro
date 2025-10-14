@@ -101,4 +101,3 @@ Refs: ADR-102, PRD-45
 | **Emojis**      | Boosts scanability, signals change type                                                        |
 | **Risks**       | Surfaces potential issues, supports safe deployment                                            |
 | **Validation**  | Documents testing, docs, and follow-ups for accountability                                     |
-

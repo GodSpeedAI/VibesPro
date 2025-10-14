@@ -566,5 +566,3 @@ just setup
 ---
 
 *"The best architecture is the one you don't have to think about—until you need to change it. Then it welcomes you like an old friend."*
-
-

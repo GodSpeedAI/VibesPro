@@ -60,6 +60,7 @@ def generate_report(metrics_file: str | Path, output_file: str | Path) -> None:
             f"| Memory Usage (MB)  | {mem_usage:.2f}MB      | < {mem_threshold}MB     | {mem_status} |\n"
         )
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate performance reports.")
     parser.add_argument("metrics_file", help="Path to the JSON metrics file.")

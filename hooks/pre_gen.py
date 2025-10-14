@@ -76,7 +76,7 @@ def main() -> None:
         context = {}
 
     if not context:
-        print('⚠️ No copier context available; skipping pre-generation validation.')
+        print("⚠️ No copier context available; skipping pre-generation validation.")
         return
 
     validate_project_config(context)
@@ -93,7 +93,9 @@ def main() -> None:
 
     # If strict, error out if identifiers are invalid
     if fail_on_invalid:
-        if not is_valid_identifier(normalized_project_slug) or not is_valid_identifier(normalized_app_name):
+        if not is_valid_identifier(normalized_project_slug) or not is_valid_identifier(
+            normalized_app_name
+        ):
             print(
                 "❌ Invalid project_slug or app_name for Android package naming."
                 " Set 'fail_on_invalid_identifiers' to false to auto-normalize."

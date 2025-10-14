@@ -1,0 +1,4 @@
+[project]
+name = "prompt_optimizer"
+version = "0.0.0"
+description = "Generated prompt-optimizer package (hyphenated dir); packaging uses underscored name"

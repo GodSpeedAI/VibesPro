@@ -4,7 +4,8 @@ from typing import TypeVar
 from my_test_domain.domain.ports import IUnitOfWork
 from sqlalchemy.ext.asyncio import AsyncSession
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 class UnitOfWorkSQLAlchemyAdapter(IUnitOfWork):
     def __init__(self, session: AsyncSession):

@@ -94,11 +94,12 @@ Design:
 
 Local: .secrets.env.sops checked into Git (encrypted); developers run inside a shell that executes sops exec-env .secrets.env.sops <cmd> (via .envrc locally or manual wrapper).
 
-CI (no direnv): Decrypt ephemerally with CI-provided AGE key or KMS:
+CI (no direnv): Decrypt with CI-provided AGE key or KMS:
 
-sops exec-env .secrets.env.sops -- <cmd>
+sops -d .secrets.env.sops > /tmp/ci.env && set -a && source /tmp/ci.env && set +a
 
-No plaintext file is written; secrets exist only in process memory.
+Ensure /tmp/ci.env is removed post-job.
+
 Error modes: Missing key, stale recipients, plaintext leakage. Pipeline fails closed with clear logs; pre-commit rule forbids .env commits.
 
 Artifacts: .sops.yaml, .secrets.env.sops (encrypted), CI snippets.
@@ -229,15 +230,17 @@ address = "0.0.0.0:4317"
 type      = "sample"
 inputs    = ["otel_traces"]
 rate      = 0.25
-condition = 'exists(.attributes.latency_ms) && (to_int(.attributes.latency_ms) ?? 0) > 300'
+condition = 'exists(.attributes.latency_ms) && to_int!(.attributes.latency_ms) > 300'
+
 [transforms.redact_email]
 type = "remap"
 inputs = ["sample_slow"]
 source = '''
   .user_email = replace(.user_email, r"[^@]+@[^@]+", "[REDACTED]")
-source = '''
-  if exists(.user_email) { .user_email = "[REDACTED]" }
-'''type     = "opentelemetry"
+'''
+
+[sinks.otlp]
+type     = "opentelemetry"
 inputs   = ["redact_email"]
 endpoint = "${OPENOBSERVE_URL}"
 auth     = { strategy = "bearer", token = "${OPENOBSERVE_TOKEN}" }
@@ -601,8 +604,6 @@ set -euo pipefail
 # Start Vector in background
 vector --config ops/vector/vector.toml &
 VECTOR_PID=$!
-# Ensure Vector is killed on script exit or error
-trap 'if [ -n "${VECTOR_PID:-}" ]; then kill ${VECTOR_PID} 2>/dev/null || true; fi' EXIT ERR
 sleep 2
 
 # Emit log with PII via test script

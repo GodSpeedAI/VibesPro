@@ -85,10 +85,19 @@ domain_name:
 
 domains:
   type: str
-  help: Multiple business areas? (comma-separated, e.g., 'users,billing,notifications' - or leave blank)
-  placeholder: "users,billing"
+  help: |
+    Multiple business areas? (comma-separated, e.g., 'users,billing,notifications')
+
+    Use this field when you need more than one domain in your project.
+    If you only have one domain, use the 'domain_name' field above instead.
+
+    Examples:
+    - 'users,billing,notifications' for an app with user management, billing, and notifications
+    - 'products,inventory,orders' for an e-commerce system
+    - 'patients,doctors,appointments' for a healthcare app
+  placeholder: "users,billing,notifications"
   default: ""
-  validator: "{% if domains and domains != domains.lower() %}All domain names must be lowercase{% elif domains %}{% set invalid = [] %}{% for d in domains.split(',') %}{% if not d.strip().replace('-', '').replace('_', '').isalnum() %}{% set _ = invalid.append(d) %}{% endif %}{% endfor %}{% if invalid %}Invalid domain names: {{ invalid|join(', ') }}. Use lowercase letters, numbers, and dashes only{% endif %}{% endif %}"
+  validator: "{% if domains %}{% set invalid = [] %}{% for d in domains.split(',') %}{% set dn = d.strip() %}{% if dn != dn.lower() or not dn.replace('-', '').replace('_', '').isalnum() %}{% set _ = invalid.append(dn) %}{% endif %}{% endfor %}{% if invalid %}Invalid domain names: {{ invalid|join(', ') }}. Use lowercase letters, numbers, dashes, and underscores only{% endif %}{% endif %}"
 
 primary_domains:
   type: str
@@ -347,7 +356,7 @@ app_domains:
     Usually this is the same as your main domain.
   placeholder: "users,products"
   default: "{{ domain_name }}"
-  validator: "{% if app_domains %}{% set _errors = [] %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn == '' or ' ' in dn or dn != dn.lower() or not dn.replace('-', '').isalnum() %}{% set _ = _errors.append(dn) %}{% endif %}{% endfor %}{% if _errors %}Invalid domain names: {{ _errors | join(', ') }} - use lowercase with dashes only{% endif %}{% endif %}"
+  validator: "{% if app_domains %}{% set invalid = [] %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn != dn.lower() or not dn.replace('-', '').replace('_', '').isalnum() %}{% set _ = invalid.append(dn) %}{% endif %}{% endfor %}{% if invalid %}Invalid domain names: {{ invalid|join(', ') }}. Use lowercase letters, numbers, dashes, and underscores only{% endif %}{% endif %}"
 
 include_api_client:
   type: bool

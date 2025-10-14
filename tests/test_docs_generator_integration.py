@@ -14,9 +14,11 @@ def test_docs_generator_writes_markdown(tmp_path: Path) -> None:
 
     cmd = [
         sys.executable,
-        str(Path('tools/docs/generator.py').absolute()),
-        '--project-name', 'integration-test-project',
-        '--output-dir', str(outdir),
+        str(Path("tools/docs/generator.py").absolute()),
+        "--project-name",
+        "integration-test-project",
+        "--output-dir",
+        str(outdir),
     ]
 
     # Run the generator; it should exit 0
@@ -24,7 +26,9 @@ def test_docs_generator_writes_markdown(tmp_path: Path) -> None:
     assert result.returncode == 0, f"Generator failed: {result.stderr}\n{result.stdout}"
 
     # Check expected files
-    expected = ['README.md', 'ARCHITECTURE.md', 'API-REFERENCE.md']
+    expected = ["README.md", "ARCHITECTURE.md", "API-REFERENCE.md"]
     for fname in expected:
         path = outdir / fname
-        assert path.exists() and path.stat().st_size > 0, f"Expected {path} to exist and be non-empty"
+        assert (
+            path.exists() and path.stat().st_size > 0
+        ), f"Expected {path} to exist and be non-empty"

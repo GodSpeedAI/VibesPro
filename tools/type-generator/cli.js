@@ -204,7 +204,7 @@ function findWorkspaceRoot(startDir) {
   const { root } = path.parse(currentDir);
   const visited = new Set();
 
-  while (true) {
+  while (currentDir !== root) {
     if (visited.has(currentDir)) {
       throw new Error(`Cyclical directory resolution detected while locating workspace root from: ${realStartDir}`);
     }

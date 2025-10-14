@@ -117,6 +117,7 @@ pub fn flush(&self) -> SecureDbResult<()> {
 ### Real-World Impact
 
 **v0.1.1 (sled, 720% overhead):**
+
 | Operations | Plain Time | Encrypted Time | Added Latency |
 |------------|-----------|----------------|---------------|
 | 1,000 | 9ms | 72ms | +63ms |
@@ -124,6 +125,7 @@ pub fn flush(&self) -> SecureDbResult<()> {
 | 100,000 | 0.9s | 7.2s | **+6.3s** |
 
 **v0.2.0 (redb, 8.4% overhead):**
+
 | Operations | Plain Time | Encrypted Time | Added Latency |
 |------------|-----------|----------------|---------------|
 | 1,000 | 672ms | 729ms | +57ms |

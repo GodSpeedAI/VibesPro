@@ -21,7 +21,9 @@
         "/tests/generators/",
         "/tests/ci/",
         "tests/unit/spec_ids.test.js",
-        "tests/unit/matrix.test.js"
+        "tests/unit/matrix.test.js",
+        "tests/context/test_context_manager_scoring.spec.ts",
+        "tests/perf/test_performance_advisories.spec.ts"
     ],
     "transform": {
         "^.+\\.ts$": [

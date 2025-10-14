@@ -1,9 +1,131 @@
+# Pre-commit hooks configuration for VibesPro
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+default_install_hook_types: [pre-commit, commit-msg]
+
 repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(.*\.md|.*\.j2)$
+      - id: end-of-file-fixer
+        exclude: ^(.*\.j2|tests/fixtures/.*)$
+      - id: check-yaml
+        exclude: ^(.*\.j2|\.github/copilot-instructions\.md)$
+      - id: check-json
+        exclude: ^(.*\.j2|tsconfig\..*\.json)$
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=1000"]
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+        exclude: ^.*\.rs$
+
+  # Python linting and formatting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      # Run the linter
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        exclude: ^(.*\.j2|tests/fixtures/.*|libs/prompt_optimizer/.*)$
+      # Run the formatter
+      - id: ruff-format
+        exclude: ^(.*\.j2|tests/fixtures/.*)$
+
+  # Python type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.14.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-PyYAML, types-requests]
+        # Exclude the generated prompt package and copier temp inspection dirs to avoid
+        # false-positive mypy duplicate-module errors
+        exclude: ^(.*\.j2|tests/fixtures/|libs/\{\{domain_name\}\}/|libs/prompt-optimizer/.*\.py)$
+        args:
+          [
+            --strict,
+            --python-version=3.12,
+            "--install-types",
+            "--non-interactive",
+            "--ignore-missing-imports",
+            "--exclude",
+            "libs/prompt_optimizer|tmp/copier-inspect|hooks|libs/python|libs/prompt-optimizer",
+          ]
+        # Run mypy only on the files being committed to keep pre-commit fast and
+        # to avoid blocking commits due to unrelated test/tooling type issues.
+        pass_filenames: true
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.43.0
+    hooks:
+      - id: markdownlint
+        args: ["--config", ".markdownlint.json", "--fix"]
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        args: ["-S", "style", "-o", "all"]
+        exclude: ^(.*\.j2|tests/fixtures/|tests/cli/|tests/env/.*)$
+
+  # TypeScript/JavaScript linting (using local eslint)
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint
+        entry: bash -c 'if command -v pnpm >/dev/null 2>&1; then pnpm exec eslint --fix "$@"; else npx eslint --fix "$@"; fi' --
+        language: system
+        types_or: [javascript, jsx, ts, tsx]
+        exclude: ^(node_modules/|\.nx/|dist/|coverage/|.*\.j2|tests/fixtures/|tools/reference/)$
+        require_serial: false
+
+  # AGENTS.md and documentation link checking
   - repo: local
     hooks:
       - id: check-agent-links
-        name: AGENT.md link checker
-        entry: python3 tools/check_agent_links.py
+        name: Check AGENTS.md links
+        entry: node
+        args: [tools/docs/link_check.js]
         language: system
+        files: ^AGENTS\.md$
         pass_filenames: false
-        stages: [pre-commit, pre-push]
+
+  # Prompt file linting (custom validation)
+  - repo: local
+    hooks:
+      - id: prompt-lint
+        name: Lint prompt files
+        entry: node
+        args: [tools/prompt/lint.js]
+        language: system
+        files: ^\.github/prompts/.*\.prompt\.md$
+
+  # Specification matrix validation
+  - repo: local
+    hooks:
+      - id: spec-matrix
+        name: Validate spec matrix
+        entry: node
+        args: [tools/spec/matrix.js]
+        language: system
+        files: ^(docs/.*\.md|\.github/instructions/.*\.md)$
+        pass_filenames: false
+
+# Configuration
+fail_fast: false
+minimum_pre_commit_version: "2.15.0"
+
+# CI skip tags
+ci:
+  skip: []

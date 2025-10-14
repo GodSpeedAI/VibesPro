@@ -25,6 +25,7 @@ See DEV-PRD-018 for requirements.
 import logging
 import os
 import sys
+
 import structlog
 
 
@@ -46,35 +47,24 @@ def configure_logger(service: str = None) -> structlog.BoundLogger:
         service = os.getenv("SERVICE_NAME", "vibepro-py")
 
     # Configure stdlib logging to output to stdout
-    logging.basicConfig(
-        format="%(message)s",
-        stream=sys.stdout,
-        level=logging.INFO,
-        force=True
-    )
+    logging.basicConfig(format="%(message)s", stream=sys.stdout, level=logging.INFO)
 
     # Configure structlog with JSON renderer
     structlog.configure(
         processors=[
             # Add log level
             structlog.processors.add_log_level,
-
             # Add timestamp in ISO format
             structlog.processors.TimeStamper(fmt="iso"),
-
             # Render as JSON
-            structlog.processors.JSONRenderer()
+            structlog.processors.JSONRenderer(),
         ],
-
         # Filtering wrapper (INFO level by default)
         wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
-
         # Use dict for context
         context_class=dict,
-
         # Use stdlib logging factory
         logger_factory=structlog.stdlib.LoggerFactory(),
-
         # Don't cache loggers (allow reconfiguration)
         cache_logger_on_first_use=False,
     )

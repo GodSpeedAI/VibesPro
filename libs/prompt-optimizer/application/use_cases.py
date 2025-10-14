@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from ..domain.entities import (
     FeedbackRecord,
@@ -28,6 +28,7 @@ from .ports import (
 @dataclass
 class AnalyzePromptCommand:
     """Command for analyzing a prompt."""
+
     content: str
     model: ModelType = ModelType.GPT_4
     store_result: bool = True
@@ -36,6 +37,7 @@ class AnalyzePromptCommand:
 @dataclass
 class OptimizePromptCommand:
     """Command for optimizing a prompt."""
+
     content: str
     goal: OptimizationGoal
     model: ModelType = ModelType.GPT_4
@@ -45,6 +47,7 @@ class OptimizePromptCommand:
 @dataclass
 class SubmitFeedbackCommand:
     """Command for submitting feedback on optimization results."""
+
     result_id: str
     user_satisfaction: float
     response_quality: float
@@ -60,7 +63,7 @@ class AnalyzePromptUseCase:
         prompt_repository: PromptRepositoryPort,
         temporal_db: TemporalDatabasePort,
         feature_extractor: PromptFeatureExtractor,
-        analyzer: PromptAnalyzer
+        analyzer: PromptAnalyzer,
     ):
         self.token_counter = token_counter
         self.prompt_repository = prompt_repository
@@ -71,20 +74,14 @@ class AnalyzePromptUseCase:
     async def execute(self, command: AnalyzePromptCommand) -> Prompt:
         """Execute prompt analysis."""
         # Create prompt entity
-        prompt = Prompt(
-            id=PromptId(),
-            content=command.content,
-            created_at=datetime.now(UTC)
-        )
+        prompt = Prompt(id=PromptId(), content=command.content, created_at=datetime.now(UTC))
 
         # Extract features
         features = self.feature_extractor.extract_features(prompt)
         prompt.update_features(features)
 
         # Count tokens accurately
-        token_count = await self.token_counter.count_tokens(
-            command.content, command.model
-        )
+        token_count = await self.token_counter.count_tokens(command.content, command.model)
         prompt.update_token_count(token_count)
 
         # Analyze effectiveness
@@ -94,9 +91,7 @@ class AnalyzePromptUseCase:
         # Store results if requested
         if command.store_result:
             await self.prompt_repository.save_prompt(prompt)
-            await self.temporal_db.store_prompt_analysis(
-                prompt, datetime.now(UTC)
-            )
+            await self.temporal_db.store_prompt_analysis(prompt, datetime.now(UTC))
 
         return prompt
 
@@ -110,7 +105,7 @@ class OptimizePromptUseCase:
         ml_model: MLModelPort,
         temporal_db: TemporalDatabasePort,
         notification: NotificationPort,
-        optimizer: PromptOptimizer
+        optimizer: PromptOptimizer,
     ):
         self.analyze_use_case = analyze_use_case
         self.ml_model = ml_model
@@ -122,9 +117,7 @@ class OptimizePromptUseCase:
         """Execute prompt optimization."""
         # First analyze the original prompt
         analyze_command = AnalyzePromptCommand(
-            content=command.content,
-            model=command.model,
-            store_result=True
+            content=command.content, model=command.model, store_result=True
         )
         original_prompt = await self.analyze_use_case.execute(analyze_command)
 
@@ -150,23 +143,20 @@ class OptimizePromptUseCase:
 
         # Analyze optimized version
         optimized_analyze = AnalyzePromptCommand(
-            content=optimized_content,
-            model=command.model,
-            store_result=False
+            content=optimized_content, model=command.model, store_result=False
         )
         optimized_prompt = await self.analyze_use_case.execute(optimized_analyze)
 
         # Calculate improvements
         token_savings = (
-            original_prompt.token_count.total_tokens -
-            optimized_prompt.token_count.total_tokens
+            original_prompt.token_count.total_tokens - optimized_prompt.token_count.total_tokens
             if original_prompt.token_count and optimized_prompt.token_count
             else 0
         )
 
         effectiveness_improvement = (
-            optimized_prompt.effectiveness_score.overall_score -
-            original_prompt.effectiveness_score.overall_score
+            optimized_prompt.effectiveness_score.overall_score
+            - original_prompt.effectiveness_score.overall_score
             if original_prompt.effectiveness_score and optimized_prompt.effectiveness_score
             else 0.0
         )
@@ -180,7 +170,7 @@ class OptimizePromptUseCase:
             effectiveness_improvement=effectiveness_improvement,
             alternative_versions=[],  # Would generate multiple alternatives
             optimization_goal=command.goal,
-            confidence_score=0.8  # Would be calculated by ML model
+            confidence_score=0.8,  # Would be calculated by ML model
         )
 
         # Notify completion
@@ -189,10 +179,7 @@ class OptimizePromptUseCase:
         return result
 
     async def _generate_optimized_content(
-        self,
-        prompt: Prompt,
-        goal: OptimizationGoal,
-        suggestions: list[str]
+        self, prompt: Prompt, goal: OptimizationGoal, suggestions: list[str]
     ) -> str:
         """Generate optimized content based on suggestions."""
         # This is a simplified implementation
@@ -203,8 +190,16 @@ class OptimizePromptUseCase:
         if goal == OptimizationGoal.CONCISENESS:
             # Remove filler words and redundancy
             filler_words = [
-                "basically", "actually", "really", "very", "quite",
-                "somewhat", "rather", "pretty", "fairly", "definitely"
+                "basically",
+                "actually",
+                "really",
+                "very",
+                "quite",
+                "somewhat",
+                "rather",
+                "pretty",
+                "fairly",
+                "definitely",
             ]
             for word in filler_words:
                 content = content.replace(f" {word} ", " ")
@@ -227,19 +222,12 @@ class OptimizePromptUseCase:
 class CreateOptimizationSessionUseCase:
     """Use case for creating and managing optimization sessions."""
 
-    def __init__(
-        self,
-        temporal_db: TemporalDatabasePort,
-        optimize_use_case: OptimizePromptUseCase
-    ):
+    def __init__(self, temporal_db: TemporalDatabasePort, optimize_use_case: OptimizePromptUseCase):
         self.temporal_db = temporal_db
         self.optimize_use_case = optimize_use_case
 
     async def execute(
-        self,
-        prompts: list[str],
-        goal: OptimizationGoal,
-        model: ModelType = ModelType.GPT_4
+        self, prompts: list[str], goal: OptimizationGoal, model: ModelType = ModelType.GPT_4
     ) -> PromptOptimizationSession:
         """Create and execute an optimization session."""
         session = PromptOptimizationSession(
@@ -247,16 +235,12 @@ class CreateOptimizationSessionUseCase:
             prompts=[],
             optimization_goal=goal,
             target_model=model,
-            started_at=datetime.now(UTC)
+            started_at=datetime.now(UTC),
         )
 
         # Optimize each prompt
         for prompt_content in prompts:
-            optimize_command = OptimizePromptCommand(
-                content=prompt_content,
-                goal=goal,
-                model=model
-            )
+            optimize_command = OptimizePromptCommand(content=prompt_content, goal=goal, model=model)
 
             result = await self.optimize_use_case.execute(optimize_command)
             session.add_prompt(result.original_prompt)
@@ -274,21 +258,17 @@ class CreateOptimizationSessionUseCase:
 class SubmitFeedbackUseCase:
     """Use case for collecting and processing user feedback."""
 
-    def __init__(
-        self,
-        ml_model: MLModelPort,
-        temporal_db: TemporalDatabasePort
-    ):
+    def __init__(self, ml_model: MLModelPort, temporal_db: TemporalDatabasePort):
         self.ml_model = ml_model
         self.temporal_db = temporal_db
 
     async def execute(self, command: SubmitFeedbackCommand) -> None:
         """Submit feedback for model improvement."""
         feedback = FeedbackRecord(
-            result_id=uuid4(),  # Would map to actual result ID
+            result_id=UUID(command.result_id),
             user_satisfaction=command.user_satisfaction,
             response_quality=command.response_quality,
-            comments=command.comments
+            comments=command.comments,
         )
 
         # Update ML model with feedback
@@ -299,9 +279,7 @@ class GetSimilarPromptsUseCase:
     """Use case for finding similar prompts based on content."""
 
     def __init__(
-        self,
-        temporal_db: TemporalDatabasePort,
-        feature_extractor: PromptFeatureExtractor
+        self, temporal_db: TemporalDatabasePort, feature_extractor: PromptFeatureExtractor
     ):
         self.temporal_db = temporal_db
         self.feature_extractor = feature_extractor
@@ -309,18 +287,13 @@ class GetSimilarPromptsUseCase:
     async def execute(self, content: str, limit: int = 5) -> list[Prompt]:
         """Find prompts similar to the given content."""
         # Create temporary prompt to extract features
-        temp_prompt = Prompt(
-            id=PromptId(),
-            content=content,
-            created_at=datetime.now(UTC)
-        )
+        temp_prompt = Prompt(id=PromptId(), content=content, created_at=datetime.now(UTC))
 
         features = self.feature_extractor.extract_features(temp_prompt)
 
         # Find similar prompts
         similar_prompts = await self.temporal_db.get_similar_prompts(
-            features.to_dict(),
-            similarity_threshold=0.7
+            features.to_dict(), similarity_threshold=0.7
         )
 
         return similar_prompts[:limit]

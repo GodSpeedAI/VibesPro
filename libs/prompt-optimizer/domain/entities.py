@@ -11,6 +11,7 @@ from uuid import UUID, uuid4
 
 class OptimizationGoal(StrEnum):
     """Enumeration of prompt optimization objectives."""
+
     CLARITY = "clarity"
     CONCISENESS = "conciseness"
     EFFECTIVENESS = "effectiveness"
@@ -19,6 +20,7 @@ class OptimizationGoal(StrEnum):
 
 class ModelType(StrEnum):
     """Supported AI model types for token counting."""
+
     GPT_4 = "gpt-4"
     GPT_4_TURBO = "gpt-4-turbo"
     GPT_3_5_TURBO = "gpt-3.5-turbo"
@@ -29,6 +31,7 @@ class ModelType(StrEnum):
 @dataclass(frozen=True)
 class PromptId:
     """Value object representing a unique prompt identifier."""
+
     value: UUID = field(default_factory=uuid4)
 
     def __str__(self) -> str:
@@ -38,6 +41,7 @@ class PromptId:
 @dataclass(frozen=True)
 class TokenCount:
     """Value object representing token counting results."""
+
     total_tokens: int
     model: ModelType
     estimated_cost: float
@@ -53,14 +57,19 @@ class TokenCount:
 @dataclass(frozen=True)
 class EffectivenessScore:
     """Value object representing prompt effectiveness metrics."""
+
     overall_score: float  # 0.0 to 100.0
     clarity_score: float
     specificity_score: float
     completeness_score: float
 
     def __post_init__(self) -> None:
-        scores = [self.overall_score, self.clarity_score,
-                 self.specificity_score, self.completeness_score]
+        scores = [
+            self.overall_score,
+            self.clarity_score,
+            self.specificity_score,
+            self.completeness_score,
+        ]
         for score in scores:
             if not 0.0 <= score <= 100.0:
                 raise ValueError(f"Score must be between 0.0 and 100.0, got {score}")
@@ -69,6 +78,7 @@ class EffectivenessScore:
 @dataclass(frozen=True)
 class PromptFeatures:
     """Value object containing extracted prompt features for ML analysis."""
+
     token_count: int
     sentence_count: int
     avg_sentence_length: float
@@ -85,24 +95,25 @@ class PromptFeatures:
     def to_dict(self) -> dict[str, Any]:
         """Convert features to dictionary for ML processing."""
         return {
-            'token_count': self.token_count,
-            'sentence_count': self.sentence_count,
-            'avg_sentence_length': self.avg_sentence_length,
-            'instruction_clarity': self.instruction_clarity,
-            'context_completeness': self.context_completeness,
-            'task_specificity': self.task_specificity,
-            'role_definition': float(self.role_definition),
-            'example_count': self.example_count,
-            'constraint_clarity': self.constraint_clarity,
-            'readability_score': self.readability_score,
-            'ambiguity_score': self.ambiguity_score,
-            'directive_strength': self.directive_strength,
+            "token_count": self.token_count,
+            "sentence_count": self.sentence_count,
+            "avg_sentence_length": self.avg_sentence_length,
+            "instruction_clarity": self.instruction_clarity,
+            "context_completeness": self.context_completeness,
+            "task_specificity": self.task_specificity,
+            "role_definition": float(self.role_definition),
+            "example_count": self.example_count,
+            "constraint_clarity": self.constraint_clarity,
+            "readability_score": self.readability_score,
+            "ambiguity_score": self.ambiguity_score,
+            "directive_strength": self.directive_strength,
         }
 
 
 @dataclass
 class Prompt:
     """Domain entity representing a prompt for optimization."""
+
     id: PromptId
     content: str
     created_at: datetime
@@ -135,16 +146,17 @@ class Prompt:
 
     def is_analyzed(self) -> bool:
         """Check if the prompt has been fully analyzed."""
-        return all([
-            self.features is not None,
-            self.token_count is not None,
-            self.effectiveness_score is not None
-        ])
+        return (
+            self.features is not None
+            and self.token_count is not None
+            and self.effectiveness_score is not None
+        )
 
 
 @dataclass(frozen=True)
 class OptimizationResult:
     """Value object representing the result of prompt optimization."""
+
     original_prompt: Prompt
     optimized_content: str
     improvements: list[str]
@@ -162,6 +174,7 @@ class OptimizationResult:
 @dataclass
 class PromptOptimizationSession:
     """Domain entity representing an optimization session."""
+
     id: UUID
     prompts: list[Prompt]
     optimization_goal: OptimizationGoal
@@ -191,6 +204,7 @@ class PromptOptimizationSession:
 @dataclass(frozen=True)
 class FeedbackRecord:
     """Value object for collecting user feedback on optimization results."""
+
     result_id: UUID
     user_satisfaction: float  # 0.0 to 10.0
     response_quality: float  # 0.0 to 10.0

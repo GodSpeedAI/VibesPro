@@ -19,7 +19,7 @@ async function walk(dir, list = []) {
 
 function titleFromFilename(fn) {
     const base = path.basename(fn, '.chatmode.md');
-    const parts = base.split(/[._\-]/).filter(Boolean);
+    const parts = base.split(/[._-]/).filter(Boolean);
     return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
 }
 
@@ -50,8 +50,7 @@ async function processFile(file) {
     const fmStart = firstDash + 3;
     const fmContent = text.slice(fmStart, secondDash).trim();
 
-    let rest = text.slice(secondDash + 3);
-    rest = rest.replace(/^\s*```[a-zA-Z0-9_-]*\n?/, '');
+    // no-op: we don't need the rest variable here; trailing content handled below
 
     let fmLines = fmContent.split(/\r?\n/).map(l => l.replace(/\r?\n$/, ''));
 
@@ -90,6 +89,7 @@ async function processFile(file) {
 
     const secondDashEnd = secondDash + 3;
     let trailing = text.slice(secondDashEnd);
+    // remove an immediate code-fence that might wrap the body
     trailing = trailing.replace(/^\s*```[a-zA-Z0-9_-]*\n?/, '');
 
     const newContent = normalized + trailing.trimStart();

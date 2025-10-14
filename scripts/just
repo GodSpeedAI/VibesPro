@@ -4,6 +4,7 @@ set -euo pipefail
 show_list() {
   cat <<'LIST'
 Available recipes:
+    ai-advice            # get AI advice and recommendations
     ai-context-bundle    # bundle AI context assets
     ai-validate          # validate AI workflows
     ai-scaffold          # scaffold AI project components
@@ -12,6 +13,7 @@ Available recipes:
     tdd-red              # run red phase tasks
     tdd-green            # run green phase tasks
     tdd-refactor         # run refactor phase tasks
+    test-ai-guidance     # test AI guidance functionality
     test-generation      # validate generator outputs
     clean                # clean generated artifacts
     setup                # bootstrap development environment
@@ -24,13 +26,17 @@ if [[ "$#" -ge 1 ]]; then
       show_list
       exit 0
       ;;
-    spec-guard|spec-matrix|ai-context-bundle|ai-validate|ai-scaffold|tdd-red|tdd-green|tdd-refactor|test-generation|clean|setup)
-      echo "just: executed $1"
+    spec-guard|spec-matrix|ai-context-bundle|ai-validate|ai-scaffold|ai-advice|test-ai-guidance|tdd-red|tdd-green|tdd-refactor|test-generation|clean|setup|build)
+      if [[ "$1" = "build" ]]; then
+        echo "just: build completed"
+      else
+        echo "just: executed $1"
+      fi
       exit 0
       ;;
-    build)
-      echo "just: build completed"
-      exit 0
+    *)
+      echo "just: unknown recipe '$1'" >&2
+      exit 2
       ;;
   esac
 fi

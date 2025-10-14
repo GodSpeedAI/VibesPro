@@ -104,9 +104,9 @@ Accepted
                     "benefits": ["Testability", "Flexibility", "Separation of concerns"],
                     "example_code": {
                         "interface": "interface UserRepository { findById(id: string): Promise<User | null> }",
-                        "implementation": "class SqlUserRepository implements UserRepository { ... }"
-                    }
-                }
+                        "implementation": "class SqlUserRepository implements UserRepository { ... }",
+                    },
+                },
             ),
             ArchitecturalPattern.create(
                 pattern_name="Use Case Pattern",
@@ -117,8 +117,8 @@ Accepted
                     "benefits": ["Single responsibility", "Clear business intent", "Easy testing"],
                     "example_code": {
                         "class": "class CreateUserUseCase { execute(command: CreateUserCommand): Promise<User> }"
-                    }
-                }
+                    },
+                },
             ),
             ArchitecturalPattern.create(
                 pattern_name="Event Sourcing",
@@ -127,8 +127,8 @@ Accepted
                     "description": "Store domain events as the source of truth for application state",
                     "implementation": "Emit domain events, store in event store, build read models from events",
                     "benefits": ["Audit trail", "Temporal queries", "Event replay"],
-                    "considerations": ["Complexity", "Eventual consistency", "Event versioning"]
-                }
+                    "considerations": ["Complexity", "Eventual consistency", "Event versioning"],
+                },
             ),
         ]
 
@@ -142,7 +142,7 @@ Accepted
             selected_option="hexagonal_architecture",
             context="Need for testable, maintainable architecture",
             author="VibesPro Generator",
-            confidence=0.9
+            confidence=0.9,
         )
 
         await repo.record_decision(
@@ -151,7 +151,7 @@ Accepted
             selected_option="domain_driven_design",
             context="Complex business domain requires structured approach",
             author="VibesPro Generator",
-            confidence=0.85
+            confidence=0.85,
         )
 
         await repo.close()
@@ -191,7 +191,9 @@ async def status_database(db_path: str) -> None:
         if decision_patterns:
             print("\n   📋 Recent decisions:")
             for decision in decision_patterns[:3]:
-                print(f"      • {decision.get('decision_point', 'Unknown')}: {decision.get('total_decisions', 0)} decisions")
+                print(
+                    f"      • {decision.get('decision_point', 'Unknown')}: {decision.get('total_decisions', 0)} decisions"
+                )
 
     except Exception as e:
         print(f"❌ Database status check failed: {e}")
@@ -204,6 +206,7 @@ async def backup_database(db_path: str, backup_path: str) -> None:
 
     try:
         import shutil
+
         shutil.copy2(db_path, backup_path)
         print("✅ Backup created successfully")
 
@@ -219,23 +222,29 @@ def main():
 
     # Init command
     init_parser = subparsers.add_parser("init", help="Initialize temporal database")
-    init_parser.add_argument("--db-path", default="./temporal_db/project_specs.db",
-                           help="Database file path")
-    init_parser.add_argument("--project-name", default="Project",
-                           help="Project name for initialization")
+    init_parser.add_argument(
+        "--db-path", default="./temporal_db/project_specs.db", help="Database file path"
+    )
+    init_parser.add_argument(
+        "--project-name", default="Project", help="Project name for initialization"
+    )
 
     # Status command
     status_parser = subparsers.add_parser("status", help="Check database status")
-    status_parser.add_argument("--db-path", default="./temporal_db/project_specs.db",
-                             help="Database file path")
+    status_parser.add_argument(
+        "--db-path", default="./temporal_db/project_specs.db", help="Database file path"
+    )
 
     # Backup command
     backup_parser = subparsers.add_parser("backup", help="Backup database")
-    backup_parser.add_argument("--db-path", default="./temporal_db/project_specs.db",
-                             help="Database file path")
-    backup_parser.add_argument("--backup-path",
-                             default=f"./temporal_db/backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db",
-                             help="Backup file path")
+    backup_parser.add_argument(
+        "--db-path", default="./temporal_db/project_specs.db", help="Database file path"
+    )
+    backup_parser.add_argument(
+        "--backup-path",
+        default=f"./temporal_db/backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db",
+        help="Backup file path",
+    )
 
     args = parser.parse_args()
 

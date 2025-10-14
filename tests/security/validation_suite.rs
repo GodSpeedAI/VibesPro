@@ -9,13 +9,13 @@ fn test_cargo_audit_passes() {
     // Verify no high/critical vulnerabilities in dependencies
     // Note: This test requires cargo-audit to be installed
     // In CI, it's installed separately. For local testing, install with: cargo install cargo-audit
-    
+
     // Check if cargo-audit is available
     let check_output = std::process::Command::new("cargo")
         .args(&["audit", "--version"])
         .current_dir("libs/security")
         .output();
-    
+
     match check_output {
         Ok(output) if output.status.success() => {
             // cargo-audit is installed, run the actual audit

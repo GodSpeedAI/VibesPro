@@ -265,21 +265,18 @@ curl script.sh | bash -s -- --arg
 ```
 
 ### 4. Prompt Frontmatter Requirements
-### 4. Prompt Frontmatter Requirements
-**Required Fields**:
-1. `description` - Brief description
-2. `kind` - Type (prompt/chatmode/instruction)
-3. `domain` - Domain area
-4. `task` - Specific task
-5. `thread` - Threading model (single/multi)
-6. `matrix_ids` - Traceability IDs (array)
-7. `budget` - Token budget (number)
-8. `model` - LLM model name
-9. `mode` - Execution mode (agent/chat/inline)
-10. `tools` - Available tools (array)
-
-**Optional Fields**:
-- `temperature` - LLM temperature setting
+**10 Required Fields** (plus 1 optional):
+1. `description` — Brief description
+2. `kind` — Type (prompt/chatmode/instruction)
+3. `domain` — Domain area
+4. `task` — Specific task
+5. `thread` — Threading model (single/multi)
+6. `matrix_ids` — Traceability IDs (array)
+7. `budget` — Token budget (number)
+8. `model` — LLM model name
+9. `mode` — Execution mode (agent/chat/inline)
+10. `tools` — Available tools (array)
+11. `temperature` (optional)
 ---
 
 ## PR Changes Summary

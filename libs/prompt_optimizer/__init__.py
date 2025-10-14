@@ -1,9 +1,9 @@
-"""Compatibility shim exposing the hyphenated prompt-optimizer library under a
-PEP 8 compliant module name.
+"""Runtime shim exposing the generated prompt implementation.
 
-This enables static type checkers and runtime imports to resolve
-``prompt_optimizer`` while re-using the canonical implementation stored in
-``libs/prompt-optimizer``.
+Prefer importing the PEP8-friendly package name ``prompt_optimizer``. If the
+scaffolder generated the implementation under a hyphenated directory
+``libs/prompt-optimizer``, this shim makes runtime imports work by extending
+the package path and forwarding public symbols.
 """
 
 from __future__ import annotations
@@ -11,17 +11,17 @@ from __future__ import annotations
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
-_HYPHEN_ROOT = Path(__file__).resolve().parent.parent / "prompt-optimizer"
+# If the scaffolder produced a hyphenated package directory (libs/prompt-optimizer),
+# add it as a submodule search location and forward public symbols from its
+# __init__.py. Keep this shim minimal to avoid linter/type-checker confusion.
+_hyphen_root = Path(__file__).resolve().parent.parent / "prompt-optimizer"
 
-__path__: list[str] = []
-
-if _HYPHEN_ROOT.exists():
-    __path__.append(str(_HYPHEN_ROOT))
-    init_path = _HYPHEN_ROOT / "__init__.py"
+if _hyphen_root.exists():
+    init_path = _hyphen_root / "__init__.py"
     spec = spec_from_file_location(
         "prompt_optimizer.__init__",
         init_path,
-        submodule_search_locations=[str(_HYPHEN_ROOT)],
+        submodule_search_locations=[str(_hyphen_root)],
     )
     if spec and spec.loader:
         module = module_from_spec(spec)

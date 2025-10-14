@@ -28,6 +28,7 @@ extend-exclude = [
     "tests/fixtures/**",
     "**/test-output/**",
     "**/*.j2",
+    "libs/prompt_optimizer/**",
 ]
 
 [tool.ruff.lint]
@@ -49,6 +50,7 @@ exclude = [
     "test-output/",
     ".*\\.j2$",
     "libs/prompt-optimizer/",
+    "libs/prompt_optimizer/",
     "libs/\\{\\{domain_name\\}\\}/",
 ]
 

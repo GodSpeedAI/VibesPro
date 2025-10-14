@@ -283,10 +283,10 @@ Is OTLP needed?
 
 ## 11. Governance & Cost Controls
 
-* **Sampling:** Defined in `vector.toml` (reduce noise).
-* **Redaction:** Apply VRL transforms to mask PII.
-* **Retention:** Managed in OpenObserve (default 90 days).
-* **Access:** Tokens managed via SOPS; distribution controlled per-environment.
+- **Sampling:** Defined in `vector.toml` (reduce noise).
+- **Redaction:** Apply VRL transforms to mask PII.
+- **Retention:** Managed in OpenObserve (default 90 days).
+- **Access:** Tokens managed via SOPS; distribution controlled per-environment.
 
 ### Logging Retention Policy
 
@@ -611,13 +611,13 @@ LIMIT 100;
 
 ## 12. References
 
-* [DEV-ADR-016](../dev_adr.md) — Architecture Decision
-* [DEV-SDS-017](../dev_sds.md) — System Design Specification
-* [DEV-PRD-017](../dev_prd.md) — Product Requirement
-* [dev_tdd_observability.md](../dev_tdd_observability.md) — TDD Phase Plan
-* [Vector Documentation](https://vector.dev/docs)
-* [OpenObserve Docs](https://openobserve.ai/docs)
-* [Tokio Tracing Crate](https://github.com/tokio-rs/tracing)
+- [DEV-ADR-016](../dev_adr.md) — Architecture Decision
+- [DEV-SDS-017](../dev_sds.md) — System Design Specification
+- [DEV-PRD-017](../dev_prd.md) — Product Requirement
+- [dev_tdd_observability.md](../dev_tdd_observability.md) — TDD Phase Plan
+- [Vector Documentation](https://vector.dev/docs)
+- [OpenObserve Docs](https://openobserve.ai/docs)
+- [Tokio Tracing Crate](https://github.com/tokio-rs/tracing)
 
 ---
 

@@ -374,11 +374,11 @@ log.warning("auth failed", category="security", action="auth_failure")
 
 | ID | Story | Acceptance Criteria |
 | --- | --- | --- |
-| PRD-018-A | As a backend developer, I get pattern suggestions that reference successful service designs when I start a new module. | Recommendation includes pattern name, originating ADR/commit, and ≥70% confidence. |
-| PRD-018-B | As a performance-focused engineer, I receive automated advisories when code generation exceeds baseline execution time. | Advisory highlights delta vs baseline, impacted spans, and suggested fix. |
-| PRD-018-C | As a developer invoking `just ai-context-bundle`, I see context sources ranked by historical success. | Bundle output lists confidence weight per source and stays under configured token budget. |
-| PRD-018-D | As a tech lead, I can audit why the assistant made a recommendation. | Every suggestion links to provenance metadata (tests, ADRs, commits). |
-| PRD-018-E | As a developer, I can opt out of temporal data usage for sensitive tasks. | Opt-out flag prevents that session's data from persisting and is logged for governance. |
+| PRD-019-A | As a backend developer, I get pattern suggestions that reference successful service designs when I start a new module. | Recommendation includes pattern name, originating ADR/commit, and ≥70% confidence. |
+| PRD-019-B | As a performance-focused engineer, I receive automated advisories when code generation exceeds baseline execution time. | Advisory highlights delta vs baseline, impacted spans, and suggested fix. |
+| PRD-019-C | As a developer invoking `just ai-context-bundle`, I see context sources ranked by historical success. | Bundle output lists confidence weight per source and stays under configured token budget. |
+| PRD-019-D | As a tech lead, I can audit why the assistant made a recommendation. | Every suggestion links to provenance metadata (tests, ADRs, commits). |
+| PRD-019-E | As a developer, I can opt out of temporal data usage for sensitive tasks. | Opt-out flag prevents that session's data from persisting and is logged for governance. |
 
 ### Functional Requirements
 - Temporal mining jobs run on a schedule (hourly/daily) and on-demand when major specs merge.

@@ -1,7 +1,6 @@
-
-
 class User:
     """User model"""
+
     id: str
     name: str
     email: str

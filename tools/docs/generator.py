@@ -19,7 +19,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, cast
 
-RUNNER = Path(__file__).parent / 'run_generator.js'
+RUNNER = Path(__file__).parent / "run_generator.js"
 
 
 def run_ts_generator(output_dir: str, context: dict[str, Any]) -> dict[str, Any]:
@@ -29,21 +29,24 @@ def run_ts_generator(output_dir: str, context: dict[str, Any]) -> dict[str, Any]
     Raises Exception on non-zero exit.
     """
     # Create a temporary file for the context
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         json.dump(context, f)
         context_file = f.name
 
     try:
-        result = subprocess.run([
-            'node', str(RUNNER), context_file, output_dir, 'generate'
-        ], capture_output=True, text=True, cwd=Path(__file__).parent)
+        result = subprocess.run(
+            ["node", str(RUNNER), context_file, output_dir, "generate"],
+            capture_output=True,
+            text=True,
+            cwd=Path(__file__).parent,
+        )
 
         if result.returncode != 0:
-            raise RuntimeError(result.stdout or result.stderr or 'unknown error')
+            raise RuntimeError(result.stdout or result.stderr or "unknown error")
 
-        payload: Any = json.loads(result.stdout or '{}')
+        payload: Any = json.loads(result.stdout or "{}")
         if not isinstance(payload, dict):
-            raise ValueError('Generator returned non-dict payload')
+            raise ValueError("Generator returned non-dict payload")
 
         return cast(dict[str, Any], payload)
 
@@ -56,30 +59,43 @@ def main() -> None:
         description="Generate comprehensive documentation for hexagonal architecture projects"
     )
 
-    parser.add_argument('--project-name', required=True, help='Name of the project')
+    parser.add_argument("--project-name", required=True, help="Name of the project")
     parser.add_argument(
-        '--description', default='A modern application built with hexagonal architecture', help='Project description'
+        "--description",
+        default="A modern application built with hexagonal architecture",
+        help="Project description",
     )
-    parser.add_argument('--domains', nargs='+', default=['core'], help='List of domain names')
-    parser.add_argument('--frameworks', nargs='+', default=['next'], help='List of frameworks used')
+    parser.add_argument("--domains", nargs="+", default=["core"], help="List of domain names")
+    parser.add_argument("--frameworks", nargs="+", default=["next"], help="List of frameworks used")
     parser.add_argument(
-        '--architecture', default='hexagonal', choices=['hexagonal', 'layered', 'microservices'], help='Architecture style'
+        "--architecture",
+        default="hexagonal",
+        choices=["hexagonal", "layered", "microservices"],
+        help="Architecture style",
     )
-    parser.add_argument('--include-ai', action='store_true', help='Include AI-enhanced features documentation')
-    parser.add_argument('--output-dir', default='./docs', help='Output directory for generated documentation')
-    parser.add_argument('--templates-dir', help='Generate templates in specified directory (for Copier usage)')
-    parser.add_argument('--validate', action='store_true', help='Validate generated documentation')
-    parser.add_argument('--format', choices=['markdown', 'html', 'docx', 'epub'], default='markdown')
+    parser.add_argument(
+        "--include-ai", action="store_true", help="Include AI-enhanced features documentation"
+    )
+    parser.add_argument(
+        "--output-dir", default="./docs", help="Output directory for generated documentation"
+    )
+    parser.add_argument(
+        "--templates-dir", help="Generate templates in specified directory (for Copier usage)"
+    )
+    parser.add_argument("--validate", action="store_true", help="Validate generated documentation")
+    parser.add_argument(
+        "--format", choices=["markdown", "html", "docx", "epub"], default="markdown"
+    )
 
     args = parser.parse_args()
 
     context: dict[str, Any] = {
-        'projectName': args.project_name,
-        'description': args.description,
-        'domains': args.domains,
-        'frameworks': args.frameworks,
-        'architecture': args.architecture,
-        'includeAI': args.include_ai,
+        "projectName": args.project_name,
+        "description": args.description,
+        "domains": args.domains,
+        "frameworks": args.frameworks,
+        "architecture": args.architecture,
+        "includeAI": args.include_ai,
     }
 
     output_path = Path(args.output_dir)
@@ -90,31 +106,31 @@ def main() -> None:
 
         result = run_ts_generator(str(output_path), context)
 
-        if not result.get('success'):
+        if not result.get("success"):
             print(f"❌ Error: {result.get('error', 'Unknown error')}")
             sys.exit(1)
 
-        docs = result.get('docs', {})
+        docs = result.get("docs", {})
 
         fmt = args.format
 
         def write_file(name: str, content: str) -> Path:
             md_path = output_path / f"{name}.md"
             md_path.write_text(content)
-            if fmt == 'markdown':
+            if fmt == "markdown":
                 return md_path
-            pandoc = shutil.which('pandoc')
+            pandoc = shutil.which("pandoc")
             if not pandoc:
                 print(f"⚠️  pandoc not found; falling back to writing markdown for {name}")
                 return md_path
-            out_ext = 'html' if fmt == 'html' else fmt
+            out_ext = "html" if fmt == "html" else fmt
             out_path = output_path / f"{name}.{out_ext}"
-            subprocess.run([pandoc, str(md_path), '-o', str(out_path)], check=False)
+            subprocess.run([pandoc, str(md_path), "-o", str(out_path)], check=False)
             return out_path
 
-        write_file('README', docs.get('readme', ''))
-        write_file('ARCHITECTURE', docs.get('architectureGuide', ''))
-        write_file('API-REFERENCE', docs.get('apiDocs', ''))
+        write_file("README", docs.get("readme", ""))
+        write_file("ARCHITECTURE", docs.get("architectureGuide", ""))
+        write_file("API-REFERENCE", docs.get("apiDocs", ""))
 
         print(f"✅ Documentation generated successfully in {output_path} (format: {fmt})")
 
@@ -123,13 +139,16 @@ def main() -> None:
             templates_path = Path(args.templates_dir)
             templates_path.mkdir(parents=True, exist_ok=True)
             # Create a real temporary JSON context file so the Node runner can read it
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as cf:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as cf:
                 json.dump({}, cf)
                 context_file = Path(cf.name).resolve()
             try:
-                t_result = subprocess.run([
-                    'node', str(RUNNER), str(context_file), str(templates_path), 'templates'
-                ], capture_output=True, text=True, cwd=Path(__file__).parent)
+                t_result = subprocess.run(
+                    ["node", str(RUNNER), str(context_file), str(templates_path), "templates"],
+                    capture_output=True,
+                    text=True,
+                    cwd=Path(__file__).parent,
+                )
                 if t_result.returncode == 0:
                     print(f"✅ Templates generated successfully in {templates_path}")
                 else:
@@ -139,25 +158,30 @@ def main() -> None:
 
         # Validation
         if args.validate:
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as vf:
-                json.dump({'docs': docs}, vf)
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as vf:
+                json.dump({"docs": docs}, vf)
                 validation_file = Path(vf.name)
-            v_result = subprocess.run([
-                'node', str(RUNNER), str(validation_file), str(output_path), 'validate'
-            ], capture_output=True, text=True, cwd=Path(__file__).parent)
+            v_result = subprocess.run(
+                ["node", str(RUNNER), str(validation_file), str(output_path), "validate"],
+                capture_output=True,
+                text=True,
+                cwd=Path(__file__).parent,
+            )
             validation_file.unlink(missing_ok=True)
             if v_result.returncode == 0:
-                validation_payload: Any = json.loads(v_result.stdout or '{}')
+                validation_payload: Any = json.loads(v_result.stdout or "{}")
                 if not isinstance(validation_payload, dict):
-                    raise ValueError('Validation payload must be a mapping')
+                    raise ValueError("Validation payload must be a mapping")
                 validation = cast(dict[str, Any], validation_payload)
-                if validation.get('isValid'):
-                    print(f"✅ Documentation validation passed (score: {validation.get('score', 0):.2f})")
+                if validation.get("isValid"):
+                    print(
+                        f"✅ Documentation validation passed (score: {validation.get('score', 0):.2f})"
+                    )
                 else:
                     print("❌ Documentation validation failed:")
-                    for section in validation.get('missingSection', []):
+                    for section in validation.get("missingSection", []):
                         print(f"  - Missing: {section}")
-                    for warning in validation.get('warnings', []):
+                    for warning in validation.get("warnings", []):
                         print(f"  - Warning: {warning}")
             else:
                 print(f"❌ Validation failed: {v_result.stdout or v_result.stderr}")
@@ -172,5 +196,5 @@ def main() -> None:
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

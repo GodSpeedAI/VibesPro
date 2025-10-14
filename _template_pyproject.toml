@@ -48,7 +48,7 @@ exclude = [
     "tests/fixtures/",
     "test-output/",
     ".*\\.j2$",
-    "libs/prompt-optimizer/",
+    "libs/prompt_optimizer/",
     "libs/\\{\\{domain_name\\}\\}/",
 ]
 

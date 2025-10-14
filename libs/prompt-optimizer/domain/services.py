@@ -23,8 +23,7 @@ class PromptFeatureExtractor:
         sentences = self._split_sentences(content)
         sentence_count = len(sentences)
         avg_sentence_length = (
-            sum(len(s.split()) for s in sentences) / sentence_count
-            if sentence_count > 0 else 0.0
+            sum(len(s.split()) for s in sentences) / sentence_count if sentence_count > 0 else 0.0
         )
 
         # Content analysis features
@@ -60,19 +59,25 @@ class PromptFeatureExtractor:
     def _split_sentences(self, text: str) -> list[str]:
         """Split text into sentences."""
         # Simple sentence splitting - could be enhanced with NLP library
-        sentences = re.split(r'[.!?]+', text)
+        sentences = re.split(r"[.!?]+", text)
         return [s.strip() for s in sentences if s.strip()]
 
     def _measure_instruction_clarity(self, content: str) -> float:
         """Measure how clear the instructions are (0.0 to 1.0)."""
         clarity_indicators = [
-            'please', 'must', 'should', 'need to', 'required',
-            'step by step', 'clearly', 'specifically', 'exactly'
+            "please",
+            "must",
+            "should",
+            "need to",
+            "required",
+            "step by step",
+            "clearly",
+            "specifically",
+            "exactly",
         ]
 
         content_lower = content.lower()
-        indicator_count = sum(1 for indicator in clarity_indicators
-                            if indicator in content_lower)
+        indicator_count = sum(1 for indicator in clarity_indicators if indicator in content_lower)
 
         # Normalize by content length and cap at 1.0
         clarity = min(indicator_count / max(len(content.split()) / 10, 1), 1.0)
@@ -81,17 +86,23 @@ class PromptFeatureExtractor:
     def _assess_context_completeness(self, content: str) -> float:
         """Assess how complete the context is (0.0 to 1.0)."""
         context_indicators = [
-            'context', 'background', 'given', 'assuming', 'consider',
-            'taking into account', 'based on', 'using'
+            "context",
+            "background",
+            "given",
+            "assuming",
+            "consider",
+            "taking into account",
+            "based on",
+            "using",
         ]
 
         content_lower = content.lower()
-        context_count = sum(1 for indicator in context_indicators
-                          if indicator in content_lower)
+        context_count = sum(1 for indicator in context_indicators if indicator in content_lower)
 
         # Check for examples or specific details
-        has_examples = any(marker in content_lower
-                          for marker in ['example', 'for instance', 'such as', 'like'])
+        has_examples = any(
+            marker in content_lower for marker in ["example", "for instance", "such as", "like"]
+        )
 
         completeness = min((context_count + (2 if has_examples else 0)) / 5, 1.0)
         return completeness
@@ -100,22 +111,35 @@ class PromptFeatureExtractor:
         """Evaluate how specific the task description is (0.0 to 1.0)."""
         # Look for specific action words
         action_words = [
-            'generate', 'create', 'write', 'analyze', 'summarize',
-            'explain', 'describe', 'list', 'compare', 'evaluate'
+            "generate",
+            "create",
+            "write",
+            "analyze",
+            "summarize",
+            "explain",
+            "describe",
+            "list",
+            "compare",
+            "evaluate",
         ]
 
         content_lower = content.lower()
-        action_count = sum(1 for action in action_words
-                          if action in content_lower)
+        action_count = sum(1 for action in action_words if action in content_lower)
 
         # Check for specific constraints or requirements
         constraints = [
-            'format', 'length', 'style', 'tone', 'audience',
-            'maximum', 'minimum', 'exactly', 'approximately'
+            "format",
+            "length",
+            "style",
+            "tone",
+            "audience",
+            "maximum",
+            "minimum",
+            "exactly",
+            "approximately",
         ]
 
-        constraint_count = sum(1 for constraint in constraints
-                             if constraint in content_lower)
+        constraint_count = sum(1 for constraint in constraints if constraint in content_lower)
 
         specificity = min((action_count + constraint_count) / 4, 1.0)
         return specificity
@@ -123,8 +147,13 @@ class PromptFeatureExtractor:
     def _has_role_definition(self, content: str) -> bool:
         """Check if the prompt defines a role for the AI."""
         role_indicators = [
-            'you are', 'act as', 'assume the role', 'pretend to be',
-            'imagine you are', 'as a', 'your role is'
+            "you are",
+            "act as",
+            "assume the role",
+            "pretend to be",
+            "imagine you are",
+            "as a",
+            "your role is",
         ]
 
         content_lower = content.lower()
@@ -133,8 +162,13 @@ class PromptFeatureExtractor:
     def _count_examples(self, content: str) -> int:
         """Count the number of examples in the prompt."""
         example_markers = [
-            'example:', 'for example', 'for instance', 'such as',
-            'e.g.', 'like this:', 'here\'s an example'
+            "example:",
+            "for example",
+            "for instance",
+            "such as",
+            "e.g.",
+            "like this:",
+            "here's an example",
         ]
 
         content_lower = content.lower()
@@ -143,13 +177,19 @@ class PromptFeatureExtractor:
     def _analyze_constraint_clarity(self, content: str) -> float:
         """Analyze how clearly constraints are specified (0.0 to 1.0)."""
         constraint_markers = [
-            'must', 'should', 'cannot', 'don\'t', 'avoid',
-            'ensure', 'make sure', 'remember to', 'important'
+            "must",
+            "should",
+            "cannot",
+            "don't",
+            "avoid",
+            "ensure",
+            "make sure",
+            "remember to",
+            "important",
         ]
 
         content_lower = content.lower()
-        constraint_count = sum(1 for marker in constraint_markers
-                             if marker in content_lower)
+        constraint_count = sum(1 for marker in constraint_markers if marker in content_lower)
 
         clarity = min(constraint_count / max(len(content.split()) / 20, 1), 1.0)
         return clarity
@@ -168,8 +208,9 @@ class PromptFeatureExtractor:
         # Simplified Flesch Reading Ease formula
         # Original: 206.835 - (1.015 * ASL) - (84.6 * ASW)
         # Normalized to 0-1 range
-        flesch_score = max(0, 206.835 - (1.015 * avg_words_per_sentence) -
-                          (84.6 * avg_syllables_per_word))
+        flesch_score = max(
+            0, 206.835 - (1.015 * avg_words_per_sentence) - (84.6 * avg_syllables_per_word)
+        )
 
         # Normalize to 0-1 range (assuming max score of ~100)
         return min(flesch_score / 100, 1.0)
@@ -182,8 +223,8 @@ class PromptFeatureExtractor:
         total_syllables = 0
         for word in words:
             # Simple syllable estimation
-            word = word.lower().strip('.,!?;:"\'')
-            vowels = 'aeiouy'
+            word = word.lower().strip(".,!?;:\"'")
+            vowels = "aeiouy"
             syllable_count = 0
             prev_char_was_vowel = False
 
@@ -193,7 +234,7 @@ class PromptFeatureExtractor:
                 prev_char_was_vowel = char in vowels
 
             # Adjust for silent 'e'
-            if word.endswith('e') and syllable_count > 1:
+            if word.endswith("e") and syllable_count > 1:
                 syllable_count -= 1
 
             # Minimum one syllable per word
@@ -205,16 +246,27 @@ class PromptFeatureExtractor:
     def _detect_ambiguity(self, content: str) -> float:
         """Detect ambiguous language (0.0 to 1.0, higher is more ambiguous)."""
         ambiguous_words = [
-            'maybe', 'perhaps', 'possibly', 'might', 'could',
-            'some', 'several', 'various', 'different', 'appropriate',
-            'suitable', 'relevant', 'good', 'better', 'best'
+            "maybe",
+            "perhaps",
+            "possibly",
+            "might",
+            "could",
+            "some",
+            "several",
+            "various",
+            "different",
+            "appropriate",
+            "suitable",
+            "relevant",
+            "good",
+            "better",
+            "best",
         ]
 
         content_lower = content.lower()
         words = content_lower.split()
 
-        ambiguous_count = sum(1 for word in words
-                            if word.strip('.,!?;:"\'') in ambiguous_words)
+        ambiguous_count = sum(1 for word in words if word.strip(".,!?;:\"'") in ambiguous_words)
 
         ambiguity = min(ambiguous_count / max(len(words) / 10, 1), 1.0)
         return ambiguity
@@ -222,22 +274,33 @@ class PromptFeatureExtractor:
     def _measure_directive_strength(self, content: str) -> float:
         """Measure strength of directives (0.0 to 1.0)."""
         strong_directives = [
-            'must', 'will', 'shall', 'required', 'mandatory',
-            'always', 'never', 'exactly', 'precisely'
+            "must",
+            "will",
+            "shall",
+            "required",
+            "mandatory",
+            "always",
+            "never",
+            "exactly",
+            "precisely",
         ]
 
         weak_directives = [
-            'should', 'could', 'might', 'try', 'consider',
-            'perhaps', 'maybe', 'possibly'
+            "should",
+            "could",
+            "might",
+            "try",
+            "consider",
+            "perhaps",
+            "maybe",
+            "possibly",
         ]
 
         content_lower = content.lower()
         words = content_lower.split()
 
-        strong_count = sum(1 for word in words
-                         if word.strip('.,!?;:"\'') in strong_directives)
-        weak_count = sum(1 for word in words
-                       if word.strip('.,!?;:"\'') in weak_directives)
+        strong_count = sum(1 for word in words if word.strip(".,!?;:\"'") in strong_directives)
+        weak_count = sum(1 for word in words if word.strip(".,!?;:\"'") in weak_directives)
 
         if strong_count + weak_count == 0:
             return 0.5  # Neutral
@@ -266,35 +329,31 @@ class PromptAnalyzer:
         completeness_score = self._calculate_completeness_score(features)
 
         # Calculate overall score as weighted average
-        overall_score = (
-            clarity_score * 0.3 +
-            specificity_score * 0.4 +
-            completeness_score * 0.3
-        )
+        overall_score = clarity_score * 0.3 + specificity_score * 0.4 + completeness_score * 0.3
 
         return EffectivenessScore(
             overall_score=overall_score,
             clarity_score=clarity_score,
             specificity_score=specificity_score,
-            completeness_score=completeness_score
+            completeness_score=completeness_score,
         )
 
     def _calculate_clarity_score(self, features: PromptFeatures) -> float:
         """Calculate clarity score from features."""
         score = (
-            features.instruction_clarity * 40 +
-            (1 - features.ambiguity_score) * 30 +
-            features.readability_score * 20 +
-            features.directive_strength * 10
+            features.instruction_clarity * 40
+            + (1 - features.ambiguity_score) * 30
+            + features.readability_score * 20
+            + features.directive_strength * 10
         )
         return score
 
     def _calculate_specificity_score(self, features: PromptFeatures) -> float:
         """Calculate specificity score from features."""
         score = (
-            features.task_specificity * 50 +
-            features.constraint_clarity * 30 +
-            min(features.example_count / 3, 1.0) * 20
+            features.task_specificity * 50
+            + features.constraint_clarity * 30
+            + min(features.example_count / 3, 1.0) * 20
         )
         return score
 
@@ -303,9 +362,9 @@ class PromptAnalyzer:
         role_bonus = 20.0 if features.role_definition else 0.0
 
         score = (
-            features.context_completeness * 60 +
-            role_bonus +
-            min(features.sentence_count / 5, 1.0) * 20
+            features.context_completeness * 60
+            + role_bonus
+            + min(features.sentence_count / 5, 1.0) * 20
         )
         return min(score, 100.0)
 
@@ -317,9 +376,7 @@ class PromptOptimizer:
         self.analyzer = analyzer
 
     def generate_optimization_suggestions(
-        self,
-        prompt: Prompt,
-        goal: OptimizationGoal
+        self, prompt: Prompt, goal: OptimizationGoal
     ) -> list[str]:
         """Generate optimization suggestions based on the goal."""
         if not prompt.effectiveness_score:
@@ -347,9 +404,7 @@ class PromptOptimizer:
             return suggestions
 
         if prompt.features.ambiguity_score > 0.3:
-            suggestions.append(
-                "Reduce ambiguous language - replace vague terms with specific ones"
-            )
+            suggestions.append("Reduce ambiguous language - replace vague terms with specific ones")
 
         if prompt.features.instruction_clarity < 0.5:
             suggestions.append(
@@ -357,9 +412,7 @@ class PromptOptimizer:
             )
 
         if prompt.features.readability_score < 0.6:
-            suggestions.append(
-                "Simplify sentence structure for better readability"
-            )
+            suggestions.append("Simplify sentence structure for better readability")
 
         if not prompt.features.role_definition:
             suggestions.append(
@@ -376,19 +429,13 @@ class PromptOptimizer:
             return suggestions
 
         if prompt.features.avg_sentence_length > 20:
-            suggestions.append(
-                "Break down long sentences into shorter, more focused ones"
-            )
+            suggestions.append("Break down long sentences into shorter, more focused ones")
 
         if prompt.features.token_count > 500:
-            suggestions.append(
-                "Consider removing redundant information to reduce token count"
-            )
+            suggestions.append("Consider removing redundant information to reduce token count")
 
         if prompt.features.sentence_count > 10:
-            suggestions.append(
-                "Combine related points to reduce overall length"
-            )
+            suggestions.append("Combine related points to reduce overall length")
 
         return suggestions
 
@@ -400,24 +447,16 @@ class PromptOptimizer:
             return suggestions
 
         if prompt.features.task_specificity < 0.6:
-            suggestions.append(
-                "Be more specific about the desired output format and requirements"
-            )
+            suggestions.append("Be more specific about the desired output format and requirements")
 
         if prompt.features.context_completeness < 0.5:
-            suggestions.append(
-                "Provide more context or background information"
-            )
+            suggestions.append("Provide more context or background information")
 
         if prompt.features.example_count == 0:
-            suggestions.append(
-                "Consider adding examples to clarify expectations"
-            )
+            suggestions.append("Consider adding examples to clarify expectations")
 
         if prompt.features.constraint_clarity < 0.4:
-            suggestions.append(
-                "Clearly specify constraints and limitations"
-            )
+            suggestions.append("Clearly specify constraints and limitations")
 
         return suggestions
 
@@ -429,17 +468,11 @@ class PromptOptimizer:
             return suggestions
 
         if prompt.token_count.total_tokens > 1000:
-            suggestions.append(
-                "Consider splitting into multiple shorter prompts"
-            )
+            suggestions.append("Consider splitting into multiple shorter prompts")
 
         if prompt.features.sentence_count > 8 and prompt.features.avg_sentence_length > 15:
-            suggestions.append(
-                "Use bullet points or numbered lists instead of long paragraphs"
-            )
+            suggestions.append("Use bullet points or numbered lists instead of long paragraphs")
 
-        suggestions.append(
-            "Remove filler words and focus on essential information"
-        )
+        suggestions.append("Remove filler words and focus on essential information")
 
         return suggestions

@@ -18,7 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MISE_NONINTERACTIVE: "1"
-
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,7 +38,9 @@ jobs:
       - name: Install SOPS
         run: |
           SOPS_VERSION="3.9.3"
+          SOPS_CHECKSUM="835ee92ef7269e1e40d69cbe5e1042975f3cd38044e8a0fa3c1a13543b7dcfaa"
           curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+          echo "${SOPS_CHECKSUM}  sops-v${SOPS_VERSION}.linux.amd64" | sha256sum -c -
           sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
           sudo chmod +x /usr/local/bin/sops
           sops --version
@@ -56,7 +59,7 @@ jobs:
 
       - name: Install Vector
         run: |
-          curl --proto '=https' --tlsv1.2 -sSfL https://sh.vector.dev | bash -s -- -y --prefix /usr/local
+          curl --proto '=https' --tlsv1.2 -sSfL https://sh.vector.dev | sudo bash -s -- -y --prefix /usr/local
           vector --version
 
       - name: Trust mise config
@@ -111,20 +114,27 @@ jobs:
           restore-keys: |
             pnpm-${{ runner.os }}-
 
-      - name: Decrypt secrets to ephemeral env (if key provided)
-        # Provide SOPS_AGE_KEY via repo/org Actions secrets (optional)
-        id: sops
-        continue-on-error: true
-        env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY || '' }}
+      - name: Decrypt secrets to ephemeral env (if provided)
         run: |
-          if [ -n "${SOPS_AGE_KEY}" ] && [ -f .secrets.env.sops ]; then
+          # GitHub injects secrets into the environment only for run steps; check at runtime.
+          if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
+            echo "SOPS_AGE_KEY present; attempting decryption"
             sops -d .secrets.env.sops > /tmp/ci.env
             set -a; source /tmp/ci.env; set +a
+          else
+            echo "No SOPS_AGE_KEY provided or .secrets.env.sops missing; skipping decryption."
+            exit 1
+          fi
+
+      - name: SOPS status
+        id: sops_status
+        run: |
+          if [ -f /tmp/ci.env ]; then
             echo "loaded=true" >> $GITHUB_OUTPUT
+            echo "SOPS_LOADED=true" >> $GITHUB_ENV
           else
             echo "loaded=false" >> $GITHUB_OUTPUT
-            echo "No SOPS_AGE_KEY provided or .secrets.env.sops not found; continuing without decrypted env."
+            echo "SOPS_LOADED=false" >> $GITHUB_ENV
           fi
 
       - name: Verify Node pins (mise vs Volta)

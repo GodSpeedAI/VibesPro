@@ -32,7 +32,7 @@ class TestTemporalDatabase:
     @pytest.fixture
     async def temp_db(self):
         """Create a temporary database for testing."""
-        with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
             db_path = f.name
 
         try:
@@ -45,7 +45,7 @@ class TestTemporalDatabase:
     @pytest.mark.asyncio
     async def test_database_initialization(self):
         """Test that database initializes successfully."""
-        with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
             db_path = f.name
 
         try:
@@ -122,8 +122,8 @@ class TestTemporalDatabase:
                 "description": "Data access abstraction pattern for testing",
                 "implementation": "interface + concrete class",
                 "benefits": ["Testability", "Flexibility", "Separation of concerns"],
-                "example": "interface UserRepository { findById(id: string): Promise<User | null> }"
-            }
+                "example": "interface UserRepository { findById(id: string): Promise<User | null> }",
+            },
         )
 
         await temp_db.store_architectural_pattern(pattern)
@@ -132,7 +132,9 @@ class TestTemporalDatabase:
         patterns = await temp_db.get_similar_patterns("repository", 0.1, 30)
 
         assert len(patterns) >= 1
-        found_pattern = next((p for p in patterns if p.pattern_name == "Test Repository Pattern"), None)
+        found_pattern = next(
+            (p for p in patterns if p.pattern_name == "Test Repository Pattern"), None
+        )
         assert found_pattern is not None
         assert found_pattern.pattern_type == PatternType.DOMAIN
 
@@ -174,12 +176,11 @@ class TestTemporalDatabase:
 
         # Check database choice pattern
         db_pattern = next(
-            (p for p in patterns if p.get('decision_point') == 'database_choice'),
-            None
+            (p for p in patterns if p.get("decision_point") == "database_choice"), None
         )
         assert db_pattern is not None
-        assert db_pattern['total_decisions'] == 2
-        assert db_pattern['selected_count'] >= 1  # At least one high confidence decision
+        assert db_pattern["total_decisions"] == 2
+        assert db_pattern["selected_count"] >= 1  # At least one high confidence decision
 
     @pytest.mark.asyncio
     async def test_pattern_usage_tracking(self, temp_db):
@@ -187,7 +188,7 @@ class TestTemporalDatabase:
         pattern = ArchitecturalPattern.create(
             pattern_name="Tracked Pattern",
             pattern_type=PatternType.APPLICATION,
-            pattern_definition={"test": "pattern"}
+            pattern_definition={"test": "pattern"},
         )
 
         # Use the pattern (simulate usage)
@@ -233,8 +234,7 @@ class TestTemporalDatabase:
 
         assert len(recent_patterns) >= 1
         testing_pattern = next(
-            (p for p in recent_patterns if p.get('decision_point') == 'testing_approach'),
-            None
+            (p for p in recent_patterns if p.get("decision_point") == "testing_approach"), None
         )
         assert testing_pattern is not None
 
@@ -312,8 +312,9 @@ class TestTemporalDatabase:
         # Verify all decisions are recorded
         patterns = await temp_db.analyze_decision_patterns(30)
         consistency_patterns = [
-            p for p in patterns
-            if p.get('spec_type') == 'SDS' and 'test_point_' in p.get('decision_point', '')
+            p
+            for p in patterns
+            if p.get("spec_type") == "SDS" and "test_point_" in p.get("decision_point", "")
         ]
 
         assert len(consistency_patterns) == 5
@@ -333,7 +334,7 @@ class TestTemporalDatabasePerformance:
         """Test that database initialization meets the 30-second target."""
         import time
 
-        with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
             db_path = f.name
 
         try:
@@ -343,7 +344,9 @@ class TestTemporalDatabasePerformance:
             init_time = time.time() - start_time
 
             # Should initialize in well under 30 seconds (target from MERGE-TASK-006)
-            assert init_time < 30.0, f"Database initialization took {init_time:.2f}s, expected < 30.0s"
+            assert (
+                init_time < 30.0
+            ), f"Database initialization took {init_time:.2f}s, expected < 30.0s"
 
         finally:
             os.unlink(db_path)
@@ -358,7 +361,7 @@ class TestTemporalDatabasePerformance:
         process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss
 
-        with tempfile.NamedTemporaryFile(suffix='.db', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
             db_path = f.name
 
         try:
@@ -370,7 +373,8 @@ class TestTemporalDatabasePerformance:
                     spec_type=SpecificationType.ADR,
                     identifier=f"ADR-MEM-{i:03d}",
                     title=f"Memory Test {i}",
-                    content=f"This is a memory test specification number {i}" * 10,  # Larger content
+                    content=f"This is a memory test specification number {i}"
+                    * 10,  # Larger content
                     author="memory_tester",
                 )
                 await repo.store_specification(spec)
@@ -381,7 +385,9 @@ class TestTemporalDatabasePerformance:
             await repo.close()
 
             # Memory increase should be reasonable (< 100MB for 100 specs)
-            assert memory_increase < 100 * 1024 * 1024, f"Memory increased by {memory_increase / 1024 / 1024:.1f}MB, expected < 100MB"
+            assert (
+                memory_increase < 100 * 1024 * 1024
+            ), f"Memory increased by {memory_increase / 1024 / 1024:.1f}MB, expected < 100MB"
 
         finally:
             os.unlink(db_path)

@@ -17,8 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+    # Do not map secrets at job-level to avoid static analysis warnings; access them at runtime in steps
     container:
       image: semgrep/semgrep
     steps:

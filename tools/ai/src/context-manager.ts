@@ -47,6 +47,15 @@ const DOMAIN_GLOSSARY: Record<string, string> = {
 
 const MIN_SCORE_THRESHOLD = 0.6;
 
+export interface AIContextManagerWeights {
+  relevance: number;
+  recency: number;
+  success: number;
+  priority: number;
+  patternConfidence: number;
+  performance: number;
+}
+
 interface TaskAnalysis {
   readonly keywords: readonly string[];
   readonly taskType: 'implementation' | 'analysis' | 'testing' | 'refactor' | 'documentation';
@@ -71,7 +80,14 @@ interface CachedContext {
   readonly content: string;
   readonly tokenCount: number;
   readonly relevanceScore: number;
-  readonly sources: Array<{ id: string; score: number; tokens: number }>;
+  readonly sources: Array<{
+    id: string;
+    score: number;
+    tokens: number;
+    confidence?: number;
+    provenance?: string;
+    performanceDelta?: number;
+  }>;
 }
 
 class SimpleTokenizer {
@@ -114,19 +130,30 @@ export interface ContextSource {
   readonly tags: readonly string[];
   readonly lastUpdated?: Date;
   readonly successRate?: number;
+  readonly patternConfidence?: number;
+  readonly provenance?: string;
+  readonly performanceDelta?: number;
   getContent(): Promise<string>;
 }
 
 export interface ContextSourceMetrics {
   readonly tokenCost: number;
   readonly score: number;
+  readonly confidence?: number;
 }
 
 export interface ContextSelectionResult {
   content: string;
   tokenCount: number;
   relevanceScore: number;
-  sources: Array<{ id: string; score: number; tokens: number }>;
+  sources: Array<{
+    id: string;
+    score: number;
+    tokens: number;
+    confidence?: number;
+    provenance?: string;
+    performanceDelta?: number;
+  }>;
   fromCache: boolean;
 }
 
@@ -134,6 +161,7 @@ export interface AIContextManagerConfig {
   maxTokens: number;
   reservedTokens?: number;
   cacheSize?: number;
+  weights?: Partial<AIContextManagerWeights>;
 }
 
 export class AIContextManager {
@@ -145,6 +173,7 @@ export class AIContextManager {
   private readonly cache = new Map<string, CachedContext>();
   private readonly cacheOrder: string[] = [];
   private readonly cacheSize: number;
+  private readonly weights: AIContextManagerWeights;
 
   constructor(config: AIContextManagerConfig) {
     if (config.maxTokens <= 0) {
@@ -158,6 +187,24 @@ export class AIContextManager {
     this.maxTokens = config.maxTokens;
     this.reservedTokens = config.reservedTokens ?? 0;
     this.cacheSize = Math.max(1, config.cacheSize ?? 32);
+
+    // Set default weights and merge with provided weights
+    const defaultWeights = {
+      relevance: 0.4,
+      recency: 0.15,
+      success: 0.15,
+      priority: 0.1,
+      patternConfidence: 0.15,
+      performance: 0.05,
+    };
+
+    this.weights = {
+      ...defaultWeights,
+      ...config.weights
+    };
+
+    // Validate weights
+    this.validateWeights(this.weights);
   }
 
   registerSource(source: ContextSource): void {
@@ -208,7 +255,10 @@ export class AIContextManager {
     const normalizedSources = selectedSources.map((entry) => ({
       id: entry.source.id,
       score: Number(entry.score.toFixed(4)),
-      tokens: entry.tokens
+      tokens: entry.tokens,
+      confidence: entry.source.patternConfidence,
+      provenance: entry.source.provenance,
+      performanceDelta: entry.source.performanceDelta
     }));
 
     const result: ContextSelectionResult = {
@@ -320,7 +370,15 @@ export class AIContextManager {
       const relevance = this.calculateRelevance(source, analysis, rawContent);
       const recency = this.getRecencyScore(source);
       const success = this.getSuccessScore(source);
-      const score = this.clamp(relevance * 0.5 + recency * 0.2 + success * 0.2 + source.priority * 0.1, 0, 1);
+      const patternConfidence = this.getPatternConfidenceScore(source);
+      const performancePenalty = this.getPerformancePenalty(source);
+      const weightedScore =
+        relevance * this.weights.relevance +
+        recency * this.weights.recency +
+        success * this.weights.success +
+        source.priority * this.weights.priority +
+        patternConfidence * this.weights.patternConfidence;
+      const score = this.clamp(weightedScore - performancePenalty * this.weights.performance, 0, 1);
 
       ranked.push({
         source,
@@ -331,7 +389,8 @@ export class AIContextManager {
 
       this.metrics.set(source.id, {
         tokenCost: tokens,
-        score
+        score,
+        confidence: patternConfidence
       });
     }
 
@@ -392,7 +451,9 @@ export class AIContextManager {
 
     const sections = selected.map((entry) => {
       const header = `### Source: ${entry.source.id}`;
-      return `${header}\n${entry.content.trim()}`;
+      const metadata = this.composeSourceMetadata(entry);
+      const body = metadata ? `${metadata}\n${entry.content.trim()}` : entry.content.trim();
+      return `${header}\n${body}`;
     });
 
     return sections.join('\n\n');
@@ -470,6 +531,22 @@ export class AIContextManager {
     return this.clamp(source.successRate, 0, 1);
   }
 
+  private getPatternConfidenceScore(source: ContextSource): number {
+    if (source.patternConfidence === undefined) {
+      return 0.5;
+    }
+
+    return this.clamp(source.patternConfidence, 0, 1);
+  }
+
+  private getPerformancePenalty(source: ContextSource): number {
+    if (source.performanceDelta === undefined || source.performanceDelta <= 0) {
+      return 0;
+    }
+
+    return this.clamp(source.performanceDelta, 0, 1);
+  }
+
   private expandTags(tags: readonly string[]): string[] {
     const expanded = new Set<string>();
 
@@ -492,6 +569,21 @@ export class AIContextManager {
     return this.clamp(priority, 0, 1);
   }
 
+  private validateWeights(weights: AIContextManagerWeights): void {
+    // Check that all weights are positive numbers
+    for (const [key, value] of Object.entries(weights)) {
+      if (!Number.isFinite(value) || value < 0) {
+        throw new Error(`Weight for ${key} must be a non-negative number, got ${value}`);
+      }
+    }
+
+    // Check that weights sum to approximately 1.0 (with some tolerance for floating point errors)
+    const sum = Object.values(weights).reduce((acc, val) => acc + val, 0);
+    if (Math.abs(sum - 1.0) > 0.001) {
+      throw new Error(`Weights must sum to 1.0, current sum is ${sum.toFixed(4)}`);
+    }
+  }
+
   private clamp(value: number, min: number, max: number): number {
     return Math.min(max, Math.max(min, value));
   }
@@ -502,7 +594,9 @@ export class AIContextManager {
       .map((source) => {
         const lastUpdated = source.lastUpdated ? source.lastUpdated.getTime() : 0;
         const success = source.successRate ?? 0;
-        return `${source.id}:${lastUpdated}:${success.toFixed(4)}`;
+        const confidence = source.patternConfidence ?? 0.5;
+        const performance = source.performanceDelta ?? 0;
+        return `${source.id}:${lastUpdated}:${success.toFixed(4)}:${confidence.toFixed(4)}:${performance.toFixed(4)}`;
       })
       .join('|');
 
@@ -526,5 +620,23 @@ export class AIContextManager {
 
     this.cache.set(cacheKey, snapshot);
     this.cacheOrder.push(cacheKey);
+  }
+
+  private composeSourceMetadata(entry: SelectedSource): string | null {
+    const fragments: string[] = [];
+    if (entry.source.provenance) {
+      fragments.push(`Provenance: ${entry.source.provenance}`);
+    }
+    if (entry.source.patternConfidence !== undefined) {
+      fragments.push(`Confidence: ${(entry.source.patternConfidence * 100).toFixed(1)}%`);
+    }
+    if (entry.source.successRate !== undefined) {
+      fragments.push(`Success Rate: ${(entry.source.successRate * 100).toFixed(1)}%`);
+    }
+    if (entry.source.performanceDelta !== undefined && entry.source.performanceDelta > 0) {
+      fragments.push(`Performance Delta: ${(entry.source.performanceDelta * 100).toFixed(1)}%`);
+    }
+
+    return fragments.length > 0 ? fragments.join(' | ') : null;
   }
 }

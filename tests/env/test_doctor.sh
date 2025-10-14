@@ -22,7 +22,7 @@ if ! echo "$output" | grep -qE "(Tool versions|Runtime versions|OS-level tool ve
 fi
 
 # Ensure no common secret patterns appear in output
-if echo "$output" | grep -iE '(secret|password|token|key)\s*=\s*["\047][^"\047]{8,}' ; then
+if echo "$output" | grep -iE '(secret|password|token|key)(_[a-z_]*)?[[:space:]]*=[[:space:]]*["\047][^"\047]{8,}' ; then
   echo "❌ Doctor output may contain secrets"
   exit 1
 fi

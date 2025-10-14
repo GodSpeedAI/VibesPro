@@ -139,9 +139,9 @@ test-generation:
 	copier copy . ../test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force
 	cd ../test-output && pnpm install && { \
 		echo "🏗️ Building all projects..."; \
-		pnpm build --if-present || { \
+		pnpm exec nx run-many --target=build --all || { \
 			echo "⚠️ Some build targets failed. Checking core domain libraries..."; \
-			if pnpm exec nx run test-domain-domain:build && pnpm exec nx run test-domain-application:build && pnpm exec nx run test-domain-infrastructure:build; then \
+			if pnpm exec nx run core:build; then \
 				echo "✅ Core domain libraries built successfully - MERGE-TASK-003 success criteria met"; \
 			else \
 				echo "❌ Core domain libraries failed to build"; \
@@ -440,6 +440,23 @@ ai-scaffold name="":
 		fi; \
 	fi
 
+ai-advice *ARGS:
+	@if command -v pnpm > /dev/null 2>&1; then \
+		pnpm exec tsx tools/ai/advice-cli.ts {{ARGS}}; \
+	else \
+		echo "❌ pnpm not found. Please install dependencies with 'just setup'."; \
+		exit 1; \
+	fi
+
+test-ai-guidance:
+	@echo "🔁 Running temporal recommendation tests..."
+	@python -m pytest tests/temporal/test_pattern_recommendations.py
+	@echo "🧪 Running performance + context vitest suites..."
+	@pnpm exec vitest run tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts
+	@echo "🧪 Running CLI smoke test..."
+	@tests/cli/test_ai_advice_command.sh
+	@echo "✅ AI guidance validation complete"
+
 # --- Specification Management ---
 
 # --- Security Validation ---
@@ -486,7 +503,7 @@ ai-suggest CONTEXT:
 observe-start:
 	@echo "🚀 Starting Vector pipeline with ops/vector/vector.toml..."
 	@command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found. Install from https://vector.dev/"; exit 1; }
-	@mkdir -p tmp/vector-data
+	@mkdir -p tmp/vector-data || { echo "❌ Failed to create tmp/vector-data"; exit 1; }
 	vector --config ops/vector/vector.toml --watch
 
 # Run OTLP integration tests with fake collector (Phase 3)
@@ -564,7 +581,7 @@ test-logs: test-logs-config test-logs-redaction test-logs-correlation
 
 observe-verify-span:
 	# Emits a synthetic span via a tiny Rust one-liner using the crate (or call your service's health endpoint)
-	RUST_LOG=info VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
+	@RUST_LOG=info VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
 	cargo test -p vibepro-observe --features otlp --test otlp_gate -- --nocapture
 
 # --- Observability: smoke binary ---
@@ -593,12 +610,14 @@ observe-verify:
 	@echo "Step 2: Testing OpenObserve sink configuration..."
 	@bash tests/ops/test_openobserve_sink.sh
 	@echo ""
-	@echo "Step 3: Starting Vector in background..."
-	@( just observe-start & ) ; \
+	@echo "Step 3: Starting Vector in background..." ; \
+	( just observe-start & ) ; \
+	VECTOR_PID=$! ; \
+	trap 'kill $VECTOR_PID 2>/dev/null || true' EXIT ; \
 	sleep 2 ; \
 	echo "" ; \
 	echo "Step 4: Running OTLP smoke test..." ; \
-	VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=$${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
+	VIBEPRO_OBSERVE=1 OTLP_ENDPOINT=${OTLP_ENDPOINT:-http://127.0.0.1:4317} \
 	cargo run --features otlp --manifest-path apps/observe-smoke/Cargo.toml ; \
 	sleep 1 ; \
 	echo "" ; \
@@ -609,6 +628,7 @@ observe-verify:
 	else \
 		echo "  ⚠️  No trace file found" ; \
 	fi ; \
+	kill $VECTOR_PID 2>/dev/null || true ; \
 	echo "" ; \
 	echo "✅ Phase 4 Complete: Trace ingested into OpenObserve" ; \
 	echo "" ; \

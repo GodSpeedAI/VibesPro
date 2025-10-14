@@ -17,5 +17,10 @@
     "**/node_modules": true,
     "test-output": true
   },
-  "nxConsole.generateAiAgentRules": true
+  "nxConsole.generateAiAgentRules": true,
+  "terminal.integrated.env.linux": {
+    "LC_ALL": "C.UTF-8",
+    "LANG": "C.UTF-8",
+    "LANGUAGE": "C.UTF-8"
+  }
 }
