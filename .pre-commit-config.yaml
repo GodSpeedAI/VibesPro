@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: check-agent-links
+        name: AGENT.md link checker
+        entry: python3 tools/check_agent_links.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]

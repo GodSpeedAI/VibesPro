@@ -385,9 +385,13 @@ debug-regress:
 
 # Validate code quality using available tooling
 # Safe to run: degrades gracefully if pnpm or Nx are not available
-# Runs: lint, typecheck, and tests (if configured)
+# Runs: AGENT link checker, pre-commit, lint, typecheck, and tests (if configured)
 ai-validate:
 	@echo "🔍 Validating project..."
+	@echo "Running AGENT.md link checker..."
+	@python3 tools/check_agent_links.py || true
+	@echo "Running pre-commit hooks..."
+	@uv run pre-commit run --all-files || true
 	@if command -v pnpm > /dev/null 2>&1; then \
 		if [ -f package.json ] && grep -q '"lint"' package.json; then \
 			echo "Running lint..."; \

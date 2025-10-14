@@ -265,7 +265,8 @@ curl script.sh | bash -s -- --arg
 ```
 
 ### 4. Prompt Frontmatter Requirements
-**11 Required Fields**:
+### 4. Prompt Frontmatter Requirements
+**Required Fields**:
 1. `description` - Brief description
 2. `kind` - Type (prompt/chatmode/instruction)
 3. `domain` - Domain area
@@ -276,8 +277,9 @@ curl script.sh | bash -s -- --arg
 8. `model` - LLM model name
 9. `mode` - Execution mode (agent/chat/inline)
 10. `tools` - Available tools (array)
-11. `temperature` (optional)
 
+**Optional Fields**:
+- `temperature` - LLM temperature setting
 ---
 
 ## PR Changes Summary

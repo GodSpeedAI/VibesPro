@@ -81,7 +81,7 @@ domain_name:
   help: Main business area/concept (lowercase-with-dashes, ONE ONLY - e.g., 'task-manager')
   placeholder: "task-manager"
   default: "{{ project_slug }}"
-  validator: "{% if ',' in domain_name %}Use the 'domains' field for multiple areas, this field is for ONE main domain only{% elif not domain_name.replace('-', '').replace('_', '').isalnum() or domain_name != domain_name.lower() %}Domain name must contain only lowercase letters, numbers, and dashes (no commas){% endif %}"
+  validator: "{% if ',' in domain_name %}Use the 'domains' field for multiple areas, this field is for ONE main domain only{% elif not domain_name.replace('-', '').isalnum() or domain_name != domain_name.lower() %}Domain name must contain only lowercase letters, numbers, and dashes (no commas){% endif %}"
 
 domains:
   type: str

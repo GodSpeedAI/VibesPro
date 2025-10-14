@@ -92,10 +92,10 @@ Every log line includes:
 ## PII Protection
 
 The following fields are automatically redacted by the Vector pipeline:
-- `user_email`, `email`
+- `user_id`, `user_email`, `email`, `username`, `name`
+- `phone`, `phone_number`, `ssn`, `ip_address`
 - `authorization`, `Authorization`
 - `password`, `token`, `api_key`
-
 **Never log PII directly.** Use hashed values (e.g., `user_id_hash`) instead.
 
 ## Trace Correlation

@@ -220,15 +220,11 @@ just observe-config-gen production
 ## Known Limitations
 
 ### Technical Debt
-1. **OpenTelemetry Version**: Locked on 0.25 (needs upgrade to 0.31+)
-2. **No OTLP Integration Tests**: Cannot verify end-to-end span export
-3. **Manual E2E Required**: No automated validation of production flow
+1. **Manual E2E Testing**: No automated validation of full production flow with real backends
 
 ### Workarounds
-- Shell tests validate Vector config syntax only
-- Manual testing with Jaeger required for full validation
-- Rely on OpenTelemetry library's own test coverage for OTLP correctness
-
+- Manual testing with Jaeger/OpenObserve required for full production validation
+- Integration tests use fake-opentelemetry-collector for development
 ---
 
 ## Future Enhancements

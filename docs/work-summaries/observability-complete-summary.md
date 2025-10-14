@@ -300,8 +300,8 @@ While the core system is complete, optional enhancements include:
 ## Impact Summary
 
 ### Development Velocity
-- **+15% faster debugging** with distributed traces
-- **-30% MTTR** (mean time to recovery) with observability
+- **~15% faster debugging (estimated)** with distributed traces
+- **~30% MTTR reduction (projected)** with observability
 - **Zero overhead** when disabled (no performance penalty)
 
 ### Operational Excellence

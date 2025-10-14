@@ -42,8 +42,6 @@ fi
 
 echo "
 OS-level tool versions:"
-echo "
-OS-level tool versions:"
 for cmd in git jq uv corepack postgresql; do
   if command -v "$cmd" >/dev/null 2>&1; then
     case "$cmd" in

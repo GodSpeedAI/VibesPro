@@ -346,6 +346,84 @@ log.warning("auth failed", category="security", action="auth_failure")
 - docs/ENVIRONMENT.md §9 — Logging Policy (to be added)
 - docs/observability/README.md §11 — Governance & Cost Controls (to be updated)
 
+## DEV-PRD-019 — AI pattern intelligence & performance co-pilot
+
+- Description: As a developer, I want the assistant to surface proven architecture patterns, performance insights, and curated context so that my next steps align with successful historical decisions.
+
+### EARS (Event → Action → Response)
+
+| Event | Action | Response |
+| --- | --- | --- |
+| Developer requests implementation guidance | Temporal engine queries historical ADRs, pattern recognitions, and success metrics | Assistant returns recommended patterns with confidence %, linked artifacts, and rationale |
+| Performance regression detected in telemetry | PerformanceMonitor compares spans against baselines | Assistant surfaces advisory with suggested remediation (e.g., prune context, cache results) |
+| Context bundle assembled for AI session | AIContextManager scores sources using temporal success + confidence metadata | Bundle includes high-value snippets while respecting token budget |
+| Developer dismisses suggestion | Feedback recorded in temporal DB | Confidence for similar future suggestions is reduced and rationale updated |
+
+### Goals
+- Provide proactive, high-confidence guidance that cites prior successful artifacts.
+- Automate performance advisories using telemetry deltas and heuristics.
+- Improve context relevance scores by incorporating historical usage success into bundling.
+- Keep developers in flow by delivering recommendations directly in CLI/UI touchpoints.
+
+### Non-Goals
+- Building an entirely new UI; leverage existing CLI/chat surfaces for surfacing insights.
+- Replacing human review of architectural changes; AI guidance remains assistive.
+- Ingesting ungoverned production data; scope limited to project telemetry stored in redb.
+
+### User Stories
+
+| ID | Story | Acceptance Criteria |
+| --- | --- | --- |
+| PRD-018-A | As a backend developer, I get pattern suggestions that reference successful service designs when I start a new module. | Recommendation includes pattern name, originating ADR/commit, and ≥70% confidence. |
+| PRD-018-B | As a performance-focused engineer, I receive automated advisories when code generation exceeds baseline execution time. | Advisory highlights delta vs baseline, impacted spans, and suggested fix. |
+| PRD-018-C | As a developer invoking `just ai-context-bundle`, I see context sources ranked by historical success. | Bundle output lists confidence weight per source and stays under configured token budget. |
+| PRD-018-D | As a tech lead, I can audit why the assistant made a recommendation. | Every suggestion links to provenance metadata (tests, ADRs, commits). |
+| PRD-018-E | As a developer, I can opt out of temporal data usage for sensitive tasks. | Opt-out flag prevents that session's data from persisting and is logged for governance. |
+
+### Functional Requirements
+- Temporal mining jobs run on a schedule (hourly/daily) and on-demand when major specs merge.
+- Pattern recommendations store `pattern_id`, `confidence`, `source_artifacts`, and `last_success_timestamp`.
+- Performance advisories trigger when spans exceed baseline by configurable percentage or percentile.
+- AIContextManager scoring weights incorporate `confidence` and `success_rate` inputs with tunable coefficients.
+- Recommendations surfaced through CLI (`just ai-advice`), VS Code task output, and chat responses include markdown summaries and quick actions.
+- Feedback loop records developer acceptance/dismissal to adjust future confidence.
+
+### Data & Telemetry Requirements
+- All stored temporal data must honor retention policy (default 90 days) with anonymized identifiers.
+- Governance layer enforces PII redaction before persistence and respects opt-out metadata.
+- Metrics exported via OpenTelemetry include success rate, adoption rate, and advisory effectiveness.
+
+### Dependencies
+- DEV-ADR-018 — Temporal AI intelligence fabric for guidance & optimization
+- DEV-SDS-021 — AI guidance fabric design (to be authored)
+- DEV-SDS-022 — Performance heuristics design (to be authored)
+- docs/dev_tdd_ai_guidance.md — TDD implementation roadmap
+- temporal_db schema migrations (crates/temporal or equivalent) adding recommendation/advisory tables
+
+### Acceptance Tests
+- `tests/temporal/test_pattern_recommendations.py` — Validates clustering output structure and confidence scoring.
+- `tests/perf/test_performance_advisories.spec.ts` — Ensures advisories trigger on baseline regressions and include remediation text.
+- `tests/context/test_context_manager_scoring.spec.ts` — Verifies scoring weights and token budget compliance.
+- `tests/cli/test_ai_advice_command.sh` — Exercises CLI surface for recommendations with mocked data.
+- `tests/security/test_temporal_opt_out.py` — Confirms opt-out sessions bypass persistence and redact identifiers.
+- `.github/workflows/ai-guidance.yml` — CI orchestrator running `nx run-many --target=test --projects temporal,performance,context` plus `just test-ai-guidance` wrapper.
+- `tests/compliance/test_sword_rubric.md` — Markdown-based smoke checklist ensuring Safety, Workflow Observability, Reliability, and Developer experience (S.W.O.R.D) guardrails are acknowledged per release.
+
+### Success Criteria
+- ≥80% of surfaced suggestions cite prior successful artifacts and link to provenance.
+- Performance advisories reduce repeat regressions for the same span by 25% over rolling 30 days.
+- Context bundle relevance score (per existing evaluation hooks) improves by ≥15% without exceeding token budgets.
+- Opt-out compliance rate = 100% (no persisted data when flag enabled).
+- Developer satisfaction (post-experiment survey) improves by 1.0 point on a 5-point scale.
+- CI workflow `ai-guidance.yml` remains green across merge queue with ≤2% flake rate, and S.W.O.R.D rubric sign-offs are captured in release notes.
+
+### Supported By
+- DEV-ADR-018 — Temporal AI intelligence fabric for guidance & optimization
+- DEV-SDS-021/022 — Design specifications (to be authored)
+- docs/dev_tdd_ai_guidance.md — TDD execution plan
+- Existing evaluation hooks (DEV-SDS-009) for measuring suggestion effectiveness
+- docs/dev_tdd_ai_guidance.md — CI workflow & S.W.O.R.D closure checklist
+
 ---
 
 ## Development environment requirements

@@ -19,3 +19,6 @@ Refs: docs/dev_prd.md
 
 ## DEV-PRD-010 — Evaluation hooks & budgets
 Refs: docs/dev_prd.md
+
+## DEV-PRD-018 — AI pattern intelligence & performance co-pilot
+Refs: docs/dev_prd.md

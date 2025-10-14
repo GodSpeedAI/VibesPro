@@ -27,7 +27,7 @@ async fn main() -> Result<()> {
     sleep(Duration::from_millis(123)).await;
 
     // Security warning example (for test purposes)
-    warn!(category = "security", action = "rate_limit", client_ip_hash = "192.168.1.1", "client throttled");
+    warn!(category = "security", action = "rate_limit", client_ip_hash = "a3f5c8e9b2d1a0f4", "client throttled");
 
     info!(category = "app", "observe-smoke completed iteration");
 

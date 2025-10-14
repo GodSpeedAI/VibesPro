@@ -33,7 +33,7 @@ if command -v devbox >/dev/null 2>&1; then
   echo "  ℹ️  Devbox detected, validating configuration..."
 
   # Test devbox can read the config (check for syntax errors)
-  if ! devbox info 2>&1 | grep -q "packages:" >/dev/null 2>&1; then
+  if ! devbox info 2>&1 | grep -q "packages:"; then
     echo "⚠️  devbox info command produced unexpected output"
     # Don't fail - devbox may not be fully initialized
   fi

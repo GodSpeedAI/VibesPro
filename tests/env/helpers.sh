@@ -13,7 +13,7 @@ assert_file_exists() {
 
 assert_cmd_succeeds() {
   local cmd="$1"
-  if ! bash -c "$cmd" >/dev/null 2>&1; then
+  if ! bash -c "$cmd" >/dev/null; then
     echo "❌ Command failed: $cmd" >&2
     exit 1
   fi

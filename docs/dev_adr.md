@@ -158,6 +158,7 @@ Adoption phases
 Related
 - DEV-PRD-017 — Observability Integration Story (to be authored after prototype)
 - docs/dev_tdd_observability.md (v1)
+
 - DEV-SDS-017 — Observability Design Spec (forthcoming)
 - Traceability: reference DEV-SDS-017 and DEV-PRD-017 in implementation commits
 
@@ -229,6 +230,60 @@ Validation
 - Tests validate: config correctness, redaction behavior, correlation fields
 
 ---
+
+## DEV-ADR-018 — Temporal AI intelligence fabric for guidance & optimization
+
+Status: Proposed
+
+Context
+- Enhanced AI pattern prediction, automated performance optimization, and deeper context awareness are top DX asks, but current capabilities operate independently (temporal DB, pattern recognizer, performance telemetry, and AIContextManager scoring).
+- redb already stores architecture decisions, performance spans, and AI guidance outcomes with timestamps, yet no feedback loop closes the gap between historical success and future recommendations.
+- Developers want proactive, confident suggestions without curating prompts by hand for every task.
+
+Decision
+- Treat the temporal database, ArchitecturalPatternRecognizer, PerformanceMonitor, and AIContextManager as a unified "AI guidance fabric" that mines historical outcomes to steer future assistance.
+- Establish shared contracts so that:
+  - Temporal snapshots feed clustering jobs that emit pattern recommendations with confidence scores and provenance metadata.
+  - Performance telemetry produces heuristics (baseline deltas, hotspot detection) that surface prescriptive tuning advice alongside raw metrics.
+  - AIContextManager scoring incorporates pattern confidence, performance advisories, and usage success rates when assembling bundles inside token budgets.
+- Ship the fabric in incremental phases with strict TDD coverage tracked in `docs/dev_tdd_ai_guidance.md`.
+
+Rationale
+- **Higher-confidence guidance:** Learning from past successful artifacts reduces generic answers and aligns suggestions with proven solutions.
+- **Operational awareness:** Performance heuristics turn telemetry into prescriptive advice, shrinking iteration loops when regressions appear.
+- **Context quality:** Injecting temporal success data into context scoring increases bundle relevance without exceeding budgets.
+- **Reuse existing assets:** Builds on the temporal DB, telemetry hooks, and context manager that already exist in the platform.
+
+Consequences
+
+| Area | Positive | Trade-off |
+| --- | --- | --- |
+| Developer DX | Proactive, context-aware recommendations with confidence metadata | Requires new UI/CLI surfacing for confidence + advisories |
+| Data | Unified governance for temporal insights and telemetry | Must harden retention/PII policies before expanding data usage |
+| Operations | Scheduled clustering jobs create predictable cadence | Background jobs add operational overhead and monitoring needs |
+| Performance | Automated hotspots caught earlier | Additional telemetry processing may add slight CPU/memory cost |
+| Implementation | Clear traceability via ADR → PRD → TDD plan | Coordination needed across Rust, Node, and TypeScript modules |
+
+Implementation Requirements
+1. Extend `ArchitecturalPatternRecognizer` (Python) to consume temporal DB snapshots, emit `pattern_recommendation` records, and persist confidence + provenance fields.
+2. Expand `PerformanceMonitor` (TypeScript/Node) spans to calculate baseline deltas and publish `performance_advisory` artifacts into redb.
+3. Update `AIContextManager` (TypeScript) scoring to weight context sources using temporal success metrics and pattern confidences.
+4. Add governance guards: retention policies, opt-out flags, and anonymization for sensitive fields prior to storage.
+5. Wire a consolidated CI workflow (`.github/workflows/ai-guidance.yml`) that runs `nx run-many --target=test --projects temporal,performance,context` and the new `just test-ai-guidance` wrapper before merge.
+6. Establish the S.W.O.R.D skill rubric (Safety, Workflow Observability, Reliability, Developer experience) and require every code path surfaced by the fabric to document how it satisfies the rubric within implementation PRs.
+7. Validate via the TDD plan in `docs/dev_tdd_ai_guidance.md`, covering unit, integration, and regression tests for each subsystem.
+
+Related Specs
+- DEV-PRD-018 — AI pattern intelligence & performance co-pilot
+- DEV-SDS-021 — AI guidance fabric design (to be authored)
+- DEV-SPEC-012 — Temporal database governance (existing)
+- docs/dev_tdd_ai_guidance.md — Phase-driven TDD execution plan (now including CI workflow + S.W.O.R.D closure tracking)
+
+Validation
+- Clustering jobs produce recommendations with confidence ≥ defined threshold and link back to source ADR/commit IDs.
+- Performance advisories highlight regressions > 20% over baseline and include remediation hints.
+- Context bundles include at least one high-confidence artifact in ≥80% of assistant responses.
+- Automated tests cover ingestion, scoring, and advisory generation per the TDD plan.
 
 ## Developer ergonomics considerations (summary)
 - Progressive disclosure of options; sensible defaults; opinionated naming.

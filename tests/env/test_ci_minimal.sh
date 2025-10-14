@@ -53,7 +53,7 @@ fi
 
 # Test 8: Workflow cleans up secrets
 echo "  ✓ Checking for secret cleanup..."
-if ! grep -q "rm.*ci.env\|Cleanup" .github/workflows/env-check.yml; then
+if ! grep -qE "(rm.*ci\.env|rm.*secrets|cleanup.*secret)" .github/workflows/env-check.yml; then
   echo "    ⚠️  Warning: CI workflow should clean up decrypted secrets"
 fi
 

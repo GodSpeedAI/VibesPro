@@ -20,6 +20,9 @@ async fn emits_json_logs_by_default() {
     // Not asserting output here; just ensuring no panic.
 }
 
+use serial_test::serial;
+
+#[serial]
 #[tokio::test]
 async fn respect_env_flag_without_otlp_feature() {
     // Even if VIBEPRO_OBSERVE=1, without `otlp` feature we must not panic.

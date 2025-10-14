@@ -9,11 +9,16 @@ mod otlp_enabled {
         env::set_var("VIBEPRO_OBSERVE", "1");
         env::set_var("OTLP_ENDPOINT", "http://127.0.0.1:4317");
 
-        let _ = init_tracing("otlp-test");
+        let result = init_tracing("otlp-test");
+        assert!(result.is_ok(), "init_tracing should succeed");
+
         record_metric("otlp.counter", 3.0);
+        // Add verification that metric was recorded if possible
 
         // Cleanup
         env::remove_var("VIBEPRO_OBSERVE");
         env::remove_var("OTLP_ENDPOINT");
+    }
+}
     }
 }
