@@ -78,3 +78,9 @@ libs/**/target/
 # Temporary docs output used by local generator smoke tests
 tmpdocs/
 tmpdocs-html/
+
+# tessl
+tessl.json
+RULES.md
+KNOWLEDGE.md
+.tessl/*

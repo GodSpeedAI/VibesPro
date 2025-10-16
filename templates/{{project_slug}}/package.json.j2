@@ -10,7 +10,16 @@
     "dev": "nx run-many --target=serve --all --parallel=5",
     "prompt:lint": "for f in .github/prompts/*.prompt.md; do node tools/prompt/lint.js \"$f\" || exit 1; done",
     "spec:matrix": "node tools/spec/matrix.js",
-    "test:node": "node tools/test/node-smoke.cjs"
+    "test:node": "node tools/test/node-smoke.cjs",
+    "typecheck": "nx run-many --target=typecheck --all",
+    "format": "nx run-many --target=format --all",
+    "lint:md": "markdownlint \"**/*.md\" --config .markdownlint.json",
+    "lint:shell": "shellcheck scripts/*.sh",
+    "docs:links": "node tools/docs/link_check.js",
+    "env:audit": "node tools/audit/env_audit.js",
+    "pr:comment": "node tools/ci/pr_comment.js",
+    "prompt:plan": "for f in .github/prompts/*.prompt.md; do node tools/prompt/plan_preview.js \"$f\" || exit 1; done",
+    "prompt:plan:accurate": "PROMPT_TOKENIZER=accurate for f in .github/prompts/*.prompt.md; do node tools/prompt/plan_preview.js --accurate \"$f\" || exit 1; done"
   },
   "workspaces": [
     "apps/*",

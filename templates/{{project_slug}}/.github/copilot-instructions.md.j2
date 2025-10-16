@@ -416,7 +416,7 @@ just build             # Via justfile orchestration
 
 - **meta.customize-instructions** - Customize these copilot instructions interactively
 
-[CUSTOMIZE: Add project-specific chat modes if you create them]
+[CUSTOMIZE: List based on those in the templates/{{project_slug}}/.github/chatmodes directory and add project-specific chat modes if you create them]
 
 ### Task-Specific Prompts
 
@@ -427,7 +427,7 @@ Key prompts in `.github/prompts/`:
 | `customize.copilot-instructions.prompt.md` | Customize these instructions |
 | `tdd.workflow.prompt.md`                   | TDD workflow guidance        |
 
-[CUSTOMIZE: Document additional prompts if you create them]
+[CUSTOMIZE: Document additional prompts based on the templates/{{project_slug}}/.github/prompts directory and add project-specific prompts if you create them]
 
 ### Context Generation
 

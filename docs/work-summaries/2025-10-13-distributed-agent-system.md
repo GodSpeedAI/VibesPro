@@ -307,8 +307,8 @@ Every file:
 
 **Related Documents:**
 - [copilot-instructions.md](/.github/copilot-instructions.md) - Master guidance (supreme authority)
-- [AGENT-MAP.md](/AGENT-MAP.md) - Navigation hub
-- [AGENTS.md](/AGENTS.md) - Nx-specific guidelines
+- [AGENT-MAP.md](../../AGENT-MAP.md) - Navigation hub
+- [AGENTS.md](../../AGENTS.md) - Nx-specific guidelines
 
 **Related Specs:**
 - Spec-driven development workflow (docs/AGENT.md)
