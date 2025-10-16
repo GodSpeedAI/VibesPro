@@ -43,6 +43,7 @@ Given a short request (e.g., “scaffold profiles endpoint” or “new invoice 
 
 6. **Output Shape**
    - Use the corresponding spec template sections verbatim (titles and order).
+   - Mirror the canonical skeleton in `docs/specs/generators/GENERATOR_SPEC.md`.
    - Include an explicit **Options Schema** summary (names/types/defaults).
    - Include **Acceptance Tests** and **Review Checklist** sections.
 
@@ -58,7 +59,7 @@ Include:
 
 - `.github/instructions/ai-workflows.instructions.md`
 - `.github/instructions/testing.instructions.md`
-- `docs/generators/*.spec.md` (templates)
+- `docs/specs/generators/*.generator.spec.md` (templates)
 - Relevant `AGENT.md`
 
 ---
@@ -76,6 +77,6 @@ just ai-validate
 
 ## References
 
-- `docs/generators/feature-slice.spec.md`
-- `docs/generators/route-contract.spec.md`
-- `docs/generators/data-access.spec.md`
+- `docs/specs/generators/feature-slice.generator.spec.md`
+- `docs/specs/generators/route-contract.generator.spec.md`
+- `docs/specs/generators/data-access.generator.spec.md`

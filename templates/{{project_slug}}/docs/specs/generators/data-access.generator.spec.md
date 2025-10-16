@@ -167,9 +167,11 @@ libs/<scope>/<directory?>/<entity>-data/src/lib/adapters/http/http-client.ts  # 
 
 ## 7) Implementation Hints (for future generator author)
 
-* `@nx/devkit` helpers for file gen and `project.json` updates.
-* If `backend` is SQL, optionally seed `README` with suggested ORM commands but **do not** create migrations here (separate generator/spec should handle it).
-* Idempotent; additive for new adapters under same entity.
+* Lean on `@nx/devkit` utilities (`generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `updateJson`) as outlined in `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` and `devkit-core.md`.
+* Build adapter-specific targets programmatically; use `createProjectGraphAsync` or `readProjectConfiguration` to confirm dependencies and tags after mutation.
+* If `backend` is SQL, mention ORM scaffolding expectations in README but avoid generating migrations or touching infrastructure generators.
+* Support incremental adapter creation: detect existing entity libs and add new adapters/tests without destructive changes.
+* Keep all generated code side-effect free and formatted via `formatFiles`.
 
 ---
 
@@ -181,6 +183,7 @@ libs/<scope>/<directory?>/<entity>-data/src/lib/adapters/http/http-client.ts  # 
 * If multiple adapters selected over time, contracts remain shared; tests pass for each.
 * Idempotency re-run = no diff.
 * Lint/module-boundaries pass.
+* Workspace graph (`pnpm nx graph --focus <entity>-data`) renders without missing dependencies; `project.json` includes expected tags and targets.
 
 ---
 

@@ -14,7 +14,8 @@ When invoked under `generator-spec` chatmode:
    - Note the classification decision in the output.
 
 2) **Produce a Generator Specification (spec-first)**
-   - Use the matching template sections and headings from `docs/generators/<type>.spec.md`.
+   - Use the matching template sections and headings from `docs/specs/generators/<type>.generator.spec.md`.
+   - Mirror the canonical structure defined in `docs/specs/generators/GENERATOR_SPEC.md`.
    - Fill concrete fields from the request: names, scope, paths, options, test focus, acceptance criteria.
    - Keep **placeholders** where inputs are unknown, clearly marked `TODO:`.
 
@@ -38,7 +39,7 @@ When invoked under `generator-spec` chatmode:
 - **Rationale**: `<1–2 sentences>`
 
 ### Spec Path & Plugin
-- **Spec Path (docs)**: `docs/generators/<type>-<name>.spec.md`
+- **Spec Path (docs)**: `docs/specs/generators/<type>-<name>.generator.spec.md`
 - **Owning Plugin (target)**: `@myorg/vibepro` (`tools/vibepro/`)
 - **Generator Name**: `<type>`
 - **Version Target**: `v1`

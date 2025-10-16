@@ -211,10 +211,11 @@ apps/api/src/routes/__tests__/<name>.spec.ts
 
 ## 7) Implementation Hints (for the future generator author)
 
-* Use `@nx/devkit`: `Tree`, `generateFiles`, `formatFiles`, `names`, `offsetFromRoot`, `updateJson`
-* Idempotent: bail or update in-place if project exists
-* Compose framework/library generators where possible
-* Provide `--dry-run` fidelity (exact file plan printed)
+* Use `@nx/devkit` helpers documented in `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` (e.g., `generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `readNxJson`, `readProjectConfiguration`).
+* Build tags and project definitions via the devkit rather than manual JSON edits; verify with `createProjectGraphAsync` for consistent dependency graphs.
+* Idempotent behavior is critical—detect existing libs/routes and update only when safe.
+* Compose other generators (service, route-contract) when options request API shells or additional adapters.
+* Ensure `--dry-run` output mirrors actual writes for AI workflow previews.
 
 ---
 
@@ -226,6 +227,7 @@ apps/api/src/routes/__tests__/<name>.spec.ts
 * **Targets**: `pnpm nx test <project>` and `pnpm nx build <project>` succeed
 * **Idempotency**: second run produces no diff
 * **Module boundaries**: lint rules pass (no illegal imports)
+* **Graph & config**: `pnpm nx graph --focus <project>` renders without missing deps; project tags/namedInputs set correctly
 * **API option**: if `withApi: true`, route + test created under `apps/api`
 
 ---

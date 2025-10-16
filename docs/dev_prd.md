@@ -438,3 +438,42 @@ log.warning("auth failed", category="security", action="auth_failure")
 - Build/open project time ≤ 30 seconds to first productive action.
 - Debugging round-trip ≤ 2 minutes for common flows.
 - Prompt change cycle ≤ 10 minutes from edit → test → merge.
+
+---
+
+## DEV-PRD-020 — End-to-End Type Safety from Database to UI
+
+- Description: As a developer, I want a single, unified type system that ensures data consistency from the PostgreSQL database schema through the FastAPI backend to the Next.js frontend so that I can prevent entire classes of bugs related to type mismatches.
+- EARS: When I update the database schema, the system shall automatically generate and propagate corresponding TypeScript and Pydantic types, causing compile-time errors in any part of the application that is not compliant with the new schema.
+- DX Metrics: Type-related runtime errors reduced by >90%; developer confidence in refactoring is high; zero manual synchronization of types between layers.
+- Supported by: DEV-ADR-019, DEV-ADR-020, DEV-SDS-019, DEV-SDS-020
+
+---
+
+## DEV-PRD-021 — Automated Scaffolding of Type-Safe Modules
+
+- Description: As a developer, I want to use a single Nx generator to scaffold new features or domains, including all necessary layers (domain, API, UI), so that I can create new modules quickly and consistently for the chosen frontend framework (Next.js, Remix, or Expo).
+- EARS: When I run the domain generator, the system shall create a full set of libraries for the domain, pre-populated with:
+    - A FastAPI backend API using `@nxlv/python`.
+    - Type-safe Shadcn UI components using `@nx-extend/shadcn-ui`.
+    - All layers connected to the unified type system.
+- DX Metrics: Time to create a new, fully-wired CRUD module < 15 minutes; 100% consistency in folder structure and naming conventions across domains.
+- Supported by: DEV-ADR-021, DEV-SDS-021, `copier.yml`
+
+---
+
+## DEV-PRD-023 — Decoupled and Testable Business Logic
+
+- Description: As a developer, I want the core business logic to be completely independent of external frameworks and services (like the database or UI) so that it can be tested in isolation and the external dependencies can be swapped out without rewriting the core logic.
+- EARS: When I write tests for an application service, I shall be able to provide a mock implementation of its data repository port so that the test runs without a live database connection.
+- DX Metrics: Unit test coverage for the `application` layer > 95%; time to write a new business logic test is low due to easy mocking of ports.
+- Supported by: DEV-ADR-022, DEV-SDS-022
+
+---
+
+## DEV-PRD-022 — Seamless Database Schema Migration and Type Regeneration
+
+- Description: As a developer, I want a simple, command-line driven workflow for creating database migrations and regenerating all associated types so that I can update data models with a single, atomic action.
+- EARS: When I run the `just db-migrate-and-gen` command, the system shall create a new SQL migration file, apply it to the local database, and trigger the full type generation and propagation pipeline.
+- DX Metrics: A complete schema-to-UI type update can be performed with a single command; migration and generation process completes in < 60 seconds.
+- Supported by: DEV-ADR-020, DEV-SDS-019, DEV-SDS-020
