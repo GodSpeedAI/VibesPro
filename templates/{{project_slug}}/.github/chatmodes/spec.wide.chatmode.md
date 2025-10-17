@@ -225,10 +225,10 @@ Does that match your prioritization?"
 
 ### File Generation
 Create files in `docs/` with clear naming:
-- `docs/adr.md`
-- `docs/prd.md`
-- `docs/sds.md`
-- `docs/technical-specifications.md`
+- `docs/specs/adr.md`
+- `docs/specs/prd.md`
+- `docs/specs/sds.md`
+- `docs/specs/technical-specifications.md`
 - `docs/traceability-matrix.md`
 
 ### Progressive Disclosure

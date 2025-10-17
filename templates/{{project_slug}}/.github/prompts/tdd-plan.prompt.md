@@ -9,7 +9,7 @@ precedence: high
 When this prompt is invoked under the `tdd-plan` chatmode:
 
 1. **Read Inputs**
-   - `docs/adr.md`, `docs/prd.md`, `docs/sds.md`, `docs/technical-specifications.md`, and `docs/traceability-matrix.md`.
+   - `docs/specs/adr.md`, `docs/specs/prd.md`, `docs/specs/sds.md`, `docs/specs/technical-specifications.md`, and `docs/specs/traceability-matrix.md`.
    - If any are missing, note them under *Phase 0 → Missing Inputs*.
 
 2. **Generate Output**

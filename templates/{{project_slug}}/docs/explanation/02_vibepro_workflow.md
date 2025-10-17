@@ -26,7 +26,7 @@
 
 ```text
 /tdd-plan
-→ Generates a full Nx-compatible plan from docs/prd.md
+→ Generates a full Nx-compatible plan from docs/specs/prd.md
 → Includes MERMAID dependency graphs, task tables, and MCP usage notes
 ```
 
