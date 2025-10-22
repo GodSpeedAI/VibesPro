@@ -1,0 +1,36 @@
+# CODEOWNERS — Nx-aware skeleton
+# Adjust teams/usernames to your org before enabling strict review rules.
+
+# Default owners (catch-all)
+*                                    @myorg/core-maintainers
+
+# --- Apps ---
+/apps/api/                            @myorg/backend @myorg/api-owners
+/apps/web/                            @myorg/frontend
+
+# --- E2E ---
+/apps/api-e2e/                        @myorg/qa @myorg/backend
+/apps/web-e2e/                        @myorg/qa @myorg/frontend
+
+# --- Libraries by scope ---
+/libs/api/**                          @myorg/backend
+/libs/store/**                        @myorg/frontend
+/libs/shared/**                       @myorg/platform
+/libs/data/**                         @myorg/data @myorg/backend
+
+# --- Tools & Generators ---
+/tools/vibepro/**                     @myorg/platform
+/tools/**                             @myorg/platform
+
+/generators/**                        @myorg/platform @myorg/architecture
+
+# --- Config & CI ---
+/.github/**                           @myorg/platform
+/nx.json                              @myorg/platform
+/tsconfig.base.json                   @myorg/platform
+/package.json                         @myorg/platform
+/pnpm-workspace.yaml                  @myorg/platform
+
+# --- Security-sensitive paths (extra eyes) ---
+/.github/workflows/**                 @myorg/platform @myorg/security
+/.mcp.json                            @myorg/platform @myorg/security

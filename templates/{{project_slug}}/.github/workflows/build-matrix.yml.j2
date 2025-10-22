@@ -1,0 +1,299 @@
+{# build-matrix workflow template #}
+{%- set node_versions = node_versions | default(['20']) -%}
+{%- set python_versions = python_versions | default(['3.12']) -%}
+{%- set rust_versions = rust_versions | default(['stable']) -%}
+
+name: build-matrix
+
+on:
+	push:
+		branches: [main]
+		tags: ["v*.*.*"]
+	pull_request:
+		branches: [main]
+
+permissions:
+	contents: read
+
+concurrency:
+	group: build-matrix-${{ github.ref }}
+	cancel-in-progress: true
+
+jobs:
+	prepare:
+		runs-on: ubuntu-latest
+		outputs:
+			mise_cache_key: ${{ steps.cache-key.outputs.mise_cache_key }}
+			node_version: ${{ steps.vers.outputs.node }}
+			python_version: ${{ steps.vers.outputs.python }}
+			rust_version: ${{ steps.vers.outputs.rust }}
+		steps:
+			- name: Checkout
+				uses: actions/checkout@v4
+
+			- name: Install mise (for version introspection)
+				run: |
+					curl https://mise.run | bash
+					echo "$HOME/.local/bin" >> $GITHUB_PATH
+					mise --version
+
+			- name: Resolve versions from .mise.toml
+				id: vers
+				shell: bash
+				run: |
+					J=$(mise ls --json || echo '{}')
+					get_version() {
+						echo "$J" | jq -r --arg tool "$1" '
+							(if type == "object" and has($tool) then .[$tool] else [] end)
+							| map(.version)
+							| first // empty
+						'
+					}
+					echo "node=$(get_version node)"     >> $GITHUB_OUTPUT
+					echo "python=$(get_version python)" >> $GITHUB_OUTPUT
+					echo "rust=$(get_version rust)"     >> $GITHUB_OUTPUT
+
+			- name: Compute mise cache key
+				id: cache-key
+				run: |
+					echo "mise_cache_key=mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}" >> $GITHUB_OUTPUT
+
+	build-test:
+		needs: prepare
+		strategy:
+			fail-fast: false
+			matrix:
+				os: [ubuntu-latest, macos-latest]
+				include:
+					- os: ubuntu-latest
+						pkg_mgr: apt
+					- os: macos-latest
+						pkg_mgr: brew
+		runs-on: ${{ matrix.os }}
+		env:
+			MISE_NONINTERACTIVE: "1"
+
+		steps:
+			- name: Checkout
+				uses: actions/checkout@v4
+
+			- name: Install base packages
+				shell: bash
+				run: |
+					if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
+						sudo apt-get update
+						sudo apt-get install -y --no-install-recommends age jq make
+					else
+						brew update
+						brew install age jq
+					fi
+
+			- name: Install just
+				shell: bash
+				run: |
+					if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
+						curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+						sudo chmod +x /usr/local/bin/just
+					else
+						brew install just
+					fi
+					just --version
+
+			- name: Install SOPS
+				shell: bash
+				run: |
+					SOPS_VERSION="3.9.3"
+					if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+						curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+						sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+						sudo chmod +x /usr/local/bin/sops
+					else
+						brew install sops
+					fi
+					sops --version
+
+			- name: Install Devbox
+				shell: bash
+				run: |
+					curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
+					echo "$HOME/.local/bin" >> $GITHUB_PATH
+					devbox version
+
+			- name: Install mise
+				run: |
+					curl https://mise.run | bash
+					echo "$HOME/.local/bin" >> $GITHUB_PATH
+					mise --version
+
+			- name: Trust mise config
+				run: mise trust --yes .mise.toml
+
+			- name: Cache mise runtimes
+				uses: actions/cache@v4
+				with:
+					path: |
+						~/.local/share/mise
+						~/.cache/mise
+					key: ${{ needs.prepare.outputs.mise_cache_key }}
+					restore-keys: |
+						mise-${{ runner.os }}-
+
+			- name: Install runtimes (Node/Python/Rust via mise)
+				run: mise install
+
+			- name: Enable corepack (optional)
+				run: corepack enable
+
+			- name: Cache pnpm store (optional)
+				if: hashFiles('pnpm-lock.yaml') != ''
+				uses: actions/cache@v4
+				with:
+					path: ~/.pnpm-store
+					key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+					restore-keys: |
+						pnpm-${{ runner.os }}-
+
+			- name: Decrypt secrets to ephemeral env (if SOPS_AGE_KEY secret provided)
+				id: sops
+				run: |
+					if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
+						echo "SOPS_AGE_KEY appears set; attempting decryption..."
+						sops -d .secrets.env.sops > /tmp/ci.env
+						set -a; source /tmp/ci.env; set +a
+						echo "loaded=true" >> $GITHUB_OUTPUT
+					else
+						echo "SOPS_AGE_KEY not set or .secrets.env.sops missing; skipping decryption."
+						echo "loaded=false" >> $GITHUB_OUTPUT
+					fi
+
+			- name: (noop) Ensure sops step produced an output
+				run: |
+					if [ -z "${{ steps.sops.outputs.loaded }}" ]; then
+						echo "loaded=false" >> $GITHUB_OUTPUT
+					fi
+
+			- name: SOPS status
+				id: sops_status
+				run: |
+					if [ -f /tmp/ci.env ]; then
+						echo "loaded=true" >> $GITHUB_OUTPUT
+						echo "SOPS_LOADED=true" >> $GITHUB_ENV
+					else
+						echo "loaded=false" >> $GITHUB_OUTPUT
+						echo "SOPS_LOADED=false" >> $GITHUB_ENV
+					fi
+
+			- name: Enforce required secrets
+				run: |
+					if [ "$REQUIRE_SOPS_SECRETS" = 'true' ] && [ "${{ steps.sops_status.outputs.loaded }}" != 'true' ]; then
+						echo "Required secrets are not available (REQUIRE_SOPS_SECRETS=true but SOPS not loaded)."
+						exit 1
+					else
+						echo "Secrets requirement satisfied or not required."
+					fi
+
+			- name: Verify Node pins (mise vs Volta)
+				run: just verify-node
+
+			- name: Install Node dependencies (pnpm)
+				if: hashFiles('pnpm-lock.yaml') != ''
+				run: pnpm install --frozen-lockfile
+
+			- name: Install uv (Python tool manager)
+				uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06
+
+			- name: Install Python dependencies (uv)
+				if: hashFiles('uv.lock') != '' || hashFiles('pyproject.toml') != ''
+				run: uv sync --frozen
+
+			- name: Fetch Rust dependencies (cargo)
+				if: hashFiles('Cargo.toml') != ''
+				run: cargo fetch
+
+			- name: Lint
+				run: |
+					if [ -f package.json ]; then pnpm run lint || pnpm run lint:ci || true; fi
+					if [ -f pyproject.toml ]; then just lint-python || true; fi
+					if [ -f Cargo.toml ]; then cargo clippy --all-targets -- -D warnings || true; fi
+
+			- name: Build
+				run: just build
+
+			- name: Test
+				run: just test
+
+			- name: Collect coverage (if any)
+				run: |
+					mkdir -p artifacts/coverage
+				if: always()
+
+			- name: Upload artifacts (logs/coverage/build)
+				if: always()
+				uses: actions/upload-artifact@v4
+				with:
+					name: build-${{ matrix.os }}-${{ github.sha }}
+					path: |
+						artifacts/**
+						dist/**
+						build/**
+						coverage/**
+						**/junit*.xml
+
+			- name: Cleanup secrets
+				if: always()
+				run: rm -f /tmp/ci.env
+
+	release:
+		if: startsWith(github.ref, 'refs/tags/v')
+		needs: [prepare, build-test]
+		runs-on: ubuntu-latest
+		env:
+			MISE_NONINTERACTIVE: "1"
+		steps:
+			- name: Checkout
+				uses: actions/checkout@v4
+
+			- name: Install base packages
+				run: |
+					sudo apt-get update
+					sudo apt-get install -y --no-install-recommends age jq make
+
+			- name: Install SOPS
+				run: |
+					SOPS_VERSION="3.9.3"
+					curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+					sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+					sudo chmod +x /usr/local/bin/sops
+					sops --version
+
+			- name: Install Devbox
+				run: |
+					curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
+					echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+			- name: Install mise
+				run: |
+					curl https://mise.run | bash
+					echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+			- name: Setup runtimes
+				run: mise install
+
+			- name: Decrypt release secrets (if provided)
+				run: |
+					if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
+						echo "SOPS_AGE_KEY present; decrypting release secrets"
+						sops -d .secrets.env.sops > /tmp/ci.env
+						set -a; source /tmp/ci.env; set +a
+						cat /tmp/ci.env >> $GITHUB_ENV
+					else
+						echo "No SOPS_AGE_KEY provided or .secrets.env.sops missing; skipping release secret decryption"
+					fi
+
+			- name: Build (release)
+				run: just build
+
+			- name: Cleanup secrets
+				if: always()
+				run: rm -f /tmp/ci.env
+

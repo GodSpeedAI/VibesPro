@@ -416,7 +416,7 @@ just build             # Via justfile orchestration
 
 - **meta.customize-instructions** - Customize these copilot instructions interactively
 
-[CUSTOMIZE: Add project-specific chat modes if you create them]
+[CUSTOMIZE: List based on those in the templates/{{project_slug}}/.github/chatmodes directory and add project-specific chat modes if you create them]
 
 ### Task-Specific Prompts
 
@@ -427,7 +427,7 @@ Key prompts in `.github/prompts/`:
 | `customize.copilot-instructions.prompt.md` | Customize these instructions |
 | `tdd.workflow.prompt.md`                   | TDD workflow guidance        |
 
-[CUSTOMIZE: Document additional prompts if you create them]
+[CUSTOMIZE: Document additional prompts based on the templates/{{project_slug}}/.github/prompts directory and add project-specific prompts if you create them]
 
 ### Context Generation
 
@@ -459,10 +459,10 @@ ADR → SDS/Technical Specs → PRD
 
 | Document     | Purpose                  | Location                           |
 | ------------ | ------------------------ | ---------------------------------- |
-| ADR          | Architectural decisions  | `docs/adr.md`                      |
-| PRD          | Product requirements     | `docs/prd.md`                      |
-| SDS          | Software design spec     | `docs/sds.md`                      |
-| TS           | Technical specifications | `docs/technical-specifications.md` |
+| ADR          | Architectural decisions  | `docs/specs/adr.md`                |
+| PRD          | Product requirements     | `docs/specs/prd.md`                |
+| SDS          | Software design spec     | `docs/specs/sds.md`                |
+| TS           | Technical specifications | `docs/specs/technical-specifications.md` |
 | Spec Index   | Specification catalog    | `docs/spec_index.md`               |
 | Traceability | Requirement mapping      | `docs/traceability_matrix.md`      |
 

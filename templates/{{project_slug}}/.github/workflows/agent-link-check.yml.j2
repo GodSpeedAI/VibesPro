@@ -1,0 +1,47 @@
+{# Agent link check workflow template #}
+{%- set branches = branches | default(['main']) -%}
+{%- set python_version = python_version | default('3.x') -%}
+
+name: AGENT Link Check
+
+on:
+	pull_request: {}
+	push:
+		branches:
+{% for b in branches %}
+			- {{ b }}
+{% endfor %}
+
+jobs:
+	check-agent-links:
+		runs-on: ubuntu-latest
+		steps:
+			- uses: actions/checkout@v4
+			- name: Set up Python
+				uses: actions/setup-python@v4
+				with:
+					python-version: "{{ python_version }}"
+			- name: Install requirements
+				run: |
+					python -m pip install --upgrade pip
+					pip install requests
+			- name: Run AGENT.md link checker (local links)
+				run: |
+					python3 tools/check_agent_links.py
+
+			- name: Install mise (provision runtimes & tools)
+				run: |
+					if ! command -v mise >/dev/null 2>&1; then
+						echo "Installing mise"
+						curl -fsSL https://mise.jdx.dev/install.sh | sh
+						export PATH="$HOME/.mise/bin:$PATH"
+					else
+						echo "mise already installed"
+					fi
+					mise install
+
+			- name: Run just ai-validate (via mise)
+				run: |
+					mise exec -- just ai-validate
+				shell: bash
+

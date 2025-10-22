@@ -289,3 +289,94 @@ Validation
 - Progressive disclosure of options; sensible defaults; opinionated naming.
 - Idempotent tasks; hot-reload for instructions and modes.
 - Clear precedence rules; consistent folder conventions; ready-to-run samples.
+
+---
+
+## DEV-ADR-019 — Supabase as Single Source of Truth for Schema & Types
+
+Status: Active
+
+Context: The project requires a consistent and reliable type system that spans across the database, backend (Python/FastAPI), and frontend (TypeScript/Next.js). Maintaining separate type definitions manually is error-prone and leads to drift.
+
+Decision: Use the Supabase PostgreSQL database schema as the single source of truth for all data models and types. Supabase's built-in type generation capabilities will be used to automatically create TypeScript types directly from the database schema. Python models (Pydantic) will be generated to mirror this schema for the backend.
+
+Rationale:
+- **Consistency:** Eliminates drift between frontend, backend, and database types.
+- **Reliability:** The database schema is the most rigid and reliable contract.
+- **Efficiency:** Automates the creation and maintenance of type definitions, reducing developer overhead.
+- **Tooling:** Leverages Supabase's mature and well-supported type generation features.
+
+Consequences:
+- All data model changes MUST start at the database schema level.
+- A robust workflow for schema migrations and subsequent type regeneration is required.
+- The development workflow becomes tightly coupled to the Supabase ecosystem.
+
+---
+
+## DEV-ADR-020 — Schema-First Development with Automated Type Propagation
+
+Status: Active
+
+Context: To leverage Supabase as the source of truth (DEV-ADR-019), a clear development workflow is needed. Changes to data models must be propagated throughout the entire system efficiently and safely.
+
+Decision: Adopt a strict "schema-first" development workflow. All changes to data models will be implemented as SQL database migrations. These migrations will trigger an automated pipeline that regenerates TypeScript and Python types, which are then consumed by the respective frontend and backend applications.
+
+Rationale:
+- **Traceability:** SQL migrations provide a clear, version-controlled history of all data model changes.
+- **Automation:** Reduces the risk of human error during type updates.
+- **Safety:** Compile-time errors in frontend and backend code will immediately flag any breaking changes resulting from a schema update.
+
+Consequences:
+- Developers need to be proficient in writing SQL migrations.
+- The CI/CD pipeline must include steps for running migrations and executing the type generation process.
+- Initial setup requires integrating the Supabase CLI and Nx generators into a cohesive pipeline.
+
+---
+
+## DEV-ADR-021 — Domain-Driven Structure with Nx Generators for Scaffolding
+
+Status: Active
+
+Context: The project's architecture needs to be scalable, maintainable, and enforce clear boundaries between different parts of the application. The creation of new features should be consistent and efficient.
+
+Decision: Organize the codebase using a Domain-Driven Design (DDD) structure within the Nx monorepo. Libraries will be structured by domain (e.g., `libs/<domain>`) and further subdivided into layers (`domain`, `application`, `infrastructure`, `ui`, `api`). A custom orchestrator generator (`@vibepro/domain`) will be created to scaffold the entire structure for a new domain. This generator will leverage specialized, off-the-shelf generators for specific layers:
+- **Backend API:** `@nxlv/python` will be used to scaffold FastAPI applications.
+- **UI Components:** `@nx-extend/shadcn-ui` will be used to generate type-safe UI components.
+- **Frontend Application:** The appropriate Nx plugin (`@nx/next`, `@nx/remix`, or `@nx/expo`) will be used based on the project configuration.
+
+Rationale:
+- **Scalability:** DDD provides clear boundaries, allowing teams to work on different domains in parallel.
+- **Consistency:** A primary generator orchestrating specialized generators ensures all domains follow the same structure and conventions.
+- **Efficiency:** Automates boilerplate creation, allowing developers to focus on business logic.
+- **Architectural Safety:** Nx dependency rules can be used to enforce boundaries between domains and layers.
+- **Leverages Ecosystem:** Uses well-maintained community generators, reducing custom code.
+
+Consequences:
+- Requires an upfront investment in building and maintaining the main `@vibepro/domain` orchestrator generator.
+- Developers need to be trained on the DDD structure and how to use the primary generator.
+- The project becomes dependent on the continued maintenance of the external Nx generators.
+
+---
+
+## DEV-ADR-022 — Hexagonal Architecture (Ports & Adapters) for Decoupling
+
+Status: Active
+
+Context: To ensure the application's core business logic is maintainable, testable, and independent of external technologies, a clear separation of concerns is required. The current domain-driven structure needs a more formal pattern for managing dependencies between the core logic and external systems like the database, APIs, and UIs.
+
+Decision: Formally adopt the Hexagonal (Ports & Adapters) architecture.
+- **Core Logic:** The `domain` and `application` layers will contain the core business logic and will have no dependencies on external technologies.
+- **Ports:** The application's boundaries will be defined by `ports`, which are technology-agnostic interfaces (or `protocol` types in Python using abstract base classes only where necessary) located within the `application` layer. These ports define the contracts for data persistence and other external interactions (e.g., `IUserRepository`).
+- **Adapters:** Concrete implementations of the ports are called `adapters`.
+    - **Driven Adapters:** These implement the ports for backend services. For example, a `SupabaseUserRepository` in the `infrastructure` layer will implement the `IUserRepository` port.
+    - **Driving Adapters:** These drive the application's core logic. For example, FastAPI controllers in the `api` layer or UI components in the `ui` layer will use the application services via their ports.
+
+Rationale:
+- **Decoupling:** The core logic is completely decoupled from the implementation details of external services.
+- **Testability:** The core logic can be tested in isolation by providing mock implementations of the ports.
+- **Flexibility:** External technologies can be swapped out by simply writing a new adapter (e.g., replacing Supabase with another database) without changing the core logic.
+
+Consequences:
+- Introduces a higher level of abstraction, which may increase the initial learning curve.
+- Results in a greater number of files and interfaces to manage.
+- Requires the consistent use of dependency injection to provide concrete adapters to the application's core.

@@ -1,0 +1,19 @@
+{# Security Scan workflow template #}
+name: Security Scan
+
+on:
+	push:
+		branches: [main]
+	pull_request:
+		branches: [main]
+
+jobs:
+	semgrep-scan:
+		runs-on: ubuntu-latest
+		steps:
+			- uses: actions/checkout@v4
+			- name: Run Semgrep
+				uses: returntocorp/semgrep-action@v1
+				with:
+					config: 'p/ci'
+

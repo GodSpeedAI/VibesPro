@@ -1,0 +1,72 @@
+{# AI Guidance Fabric workflow template #}
+{%- set python_versions = python_versions | default(['3.11']) -%}
+{%- set node_versions = node_versions | default(['20']) -%}
+
+name: AI Guidance Fabric
+
+on:
+	push:
+		branches:
+			- main
+		paths:
+			- "temporal_db/**"
+			- "tools/performance/**"
+			- "tools/ai/**"
+			- "tests/**"
+			- "justfile"
+			- ".github/workflows/ai-guidance.yml"
+			- "docs/dev_tdd_ai_guidance.md"
+	pull_request:
+		paths:
+			- "temporal_db/**"
+			- "tools/performance/**"
+			- "tools/ai/**"
+			- "tests/**"
+			- "justfile"
+			- ".github/workflows/ai-guidance.yml"
+			- "docs/dev_tdd_ai_guidance.md"
+
+jobs:
+	ai-guidance:
+		runs-on: ubuntu-latest
+		env:
+			LC_ALL: C.UTF-8
+			LANG: C.UTF-8
+		steps:
+			- uses: actions/checkout@v4
+
+			- uses: actions/setup-python@v5
+				with:
+					python-version: "{{ python_versions[0] }}"
+
+			- uses: pnpm/action-setup@v4
+				with:
+					run_install: false
+
+			- uses: actions/setup-node@v4
+				with:
+					node-version: "{{ node_versions[0] }}"
+					cache: "pnpm"
+
+			- name: Install dependencies
+				run: pnpm install --frozen-lockfile
+
+			- name: Install Python dependencies
+				shell: bash
+				run: |
+					python -m pip install --upgrade pip
+					if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+					pip install pytest
+
+			- name: Temporal recommendation tests
+				run: python -m pytest tests/temporal/test_pattern_recommendations.py
+
+			- name: Vitest suites
+				run: pnpm exec vitest run tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts
+
+			- name: CLI guidance smoke
+				run: bash tests/cli/test_ai_advice_command.sh
+
+			- name: Run AI guidance test suite
+				run: just test-ai-guidance
+

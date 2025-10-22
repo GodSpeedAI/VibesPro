@@ -25,13 +25,13 @@ describe('Template documentation tokens', () => {
         ];
 
         docs.forEach((fileName) => {
-            const target = readFileSync(join(docsRoot, fileName), 'utf8');
+            const target = readFileSync(join(docsRoot, 'specs', fileName), 'utf8');
             // Files use the metadata header partial which contains Copier variables
             expect(target).toContain("{% include 'docs/partials/_metadata_header.j2' %}");
         });
 
         // Verify the partial itself contains all required Copier variables
-        const partialPath = join(docsRoot, 'partials', '_metadata_header.j2');
+        const partialPath = join(docsRoot, 'specs', 'partials', '_metadata_header.j2');
         const partialContents = readFileSync(partialPath, 'utf8');
         expect(partialContents).toContain('project_name');
         expect(partialContents).toContain('project_slug');

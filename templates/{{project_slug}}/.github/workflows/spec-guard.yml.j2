@@ -1,3 +1,21 @@
+{# Spec guard workflow template #}
+name: Spec Guard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  spec-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate specs & prompts
+        run: |
+          just spec-guard || true
+
 # Spec Guard CI - Automated Specification and Quality Validation
 #
 # This workflow enforces specification-driven development by validating:

@@ -1,113 +1,199 @@
-# Repository-Wide Copilot Instructions
+# AI Agent Instructions for VibesPro
 
-> **Purpose**: Provide comprehensive, context-aware guidance to GitHub Copilot and VS Code AI chat features for optimal effectiveness in the Vibes-Pro project.
+> **Critical Context**: VibesPro is a **Copier template repository**, not an application. Generated projects live elsewhere. This distinction fundamentally shapes all development workflows.
 
----
+## 🎯 Quick Start for AI Agents
 
-## 🎯 Project Overview
+### What Is This Project?
 
-**Vibes-Pro** is a generator-first platform that creates complete, production-ready applications without runtime dependencies. The platform combines:
+**VibesPro generates production-ready applications** following hexagonal architecture + DDD. Think "cookie cutter" not "cookie"—you work on the **template**, not inside it.
 
-- **Hexagonal Architecture** (Ports & Adapters) with **Domain-Driven Design (DDD)**
-- **AI-Enhanced Development Workflows** via native VS Code and GitHub Copilot integration
-- **Zero-Configuration Setup** for immediate developer productivity
-- **Template-Based Generation** using Copier + Jinja2 with Nx monorepo orchestration
+**Key distinction:**
 
-### Primary Goal
+- **This repo** = Template with Jinja2 files in `templates/{{project_slug}}/`
+- **Generated projects** = Separate directories where users actually code (e.g., `../test-output`)
 
-Optimize developer experience through intelligent code generation, AI-assisted workflows, and spec-driven development—all integrated natively into VS Code tooling.
+### Three Golden Rules
 
----
+1. **Generator-First**: ALWAYS check `pnpm exec nx list` before writing code
+2. **Hexagonal Architecture**: Dependencies flow INWARD only (`domain ← application ← infrastructure`)
+3. **Spec-Driven**: Every commit references spec IDs (`feat(auth): add OAuth [DEV-PRD-023]`)
 
-## 🏗️ Architecture & Structure
+### Core Architecture Pattern
 
-### High-Level Architecture
-
-Vibes-Pro operates as a **generator-first platform** producing applications that follow hexagonal architecture principles. The system comprises five major interconnected layers:
-
-1. **Generator Core** (Copier + Jinja2 templates)
-2. **AI Enhancement Layer** (Temporal learning, context management, chat modes)
-3. **Build & Automation** (Nx, justfile orchestration)
-4. **Documentation Engine** (Spec-driven docs, traceability)
-5. **Type System** (Strict TypeScript/Python typing)
-
-### Key Directory Structure
+Every generated project follows strict hexagonal layers:
 
 ```
-.github/              # AI development system
-├── copilot-instructions.md
-├── instructions/     # Modular MECE instruction files
-├── prompts/          # Task-specific prompts (*.prompt.md)
-├── chatmodes/        # Specialized AI personas (*.chatmode.md)
-└── workflows/        # CI/CD automation
-
-apps/                 # Application interfaces (web, mobile, CLI, APIs)
-libs/                 # Business logic libraries
-├── {domain}/
-│   ├── domain/       # Pure business logic, entities, value objects
-│   ├── application/  # Use cases, application services, ports
-│   └── infrastructure/ # Repository implementations, adapters
-
-docs/                 # Project documentation
-├── dev_adr.md        # Architectural Decision Records
-├── dev_prd.md        # Product Requirements Document
-├── dev_sds.md        # Software Design Specification
-├── dev_technical-specifications.md
-├── spec_index.md     # Specification index
-├── dev_spec_index.md # Developer spec index
-└── traceability_matrix.md
-
-scripts/              # Orchestration helpers, token metrics, A/B wrappers
-tools/                # Development tools, type generators, AI context tools
-temporal_db/          # AI learning database (sled - Rust-based embedded DB)
+libs/{domain}/
+├── domain/          # Pure business logic, ZERO dependencies
+│   ├── entities/    # Objects with identity
+│   └── value-objects/  # Immutable data
+├── application/     # Use cases + orchestration
+│   ├── use-cases/   # Business workflows
+│   └── ports/       # Interfaces (IUserRepository)
+└── infrastructure/  # External adapters
+    ├── repositories/  # Port implementations
+    └── adapters/    # External connections
 ```
 
-### Core Technology Stack
+**Dependency rule violation = architectural failure**
 
-- **Languages**: TypeScript (strict mode), Python 3.12+, Rust (temporal DB)
-- **Runtime**: Node.js 18+ LTS, pnpm package manager
-- **Templating**: Copier, Jinja2
-- **Monorepo**: Nx workspace
-- **Orchestration**: justfile (task runner)
-- **AI Integration**: GitHub Copilot, VS Code native mechanisms
-- **Database**: PostgreSQL 14+ (optional), sled (temporal/learning DB)
+### Immediate Actions for Any Task
 
----
+**Before you write code:**
 
-## 🤝 Development Partnership Model
+```bash
+# 1. Check for generators (MANDATORY)
+pnpm exec nx list
+pnpm exec nx list @nx/react  # Check specific plugin
 
-### How We Work Together
+# 2. Scaffold first, customize second
+just ai-scaffold name=@nx/js:lib my-lib
+pnpm exec nx g @nx/react:component UserProfile
 
-**You (Copilot)** and **I (Developer)** build production code together:
+# 3. Understand specs
+# Look for DEV-ADR, DEV-SDS, DEV-PRD references in docs/
+```
 
-- **Developer**: Guides architecture, catches complexity early, makes decisions
-- **Copilot**: Handles implementation details, suggests patterns, validates approaches
+**After you write code:**
 
-### Core Workflow: Research → Plan → Implement → Validate
+```bash
+just ai-validate  # Lint + typecheck + tests
+just spec-guard   # Full quality gate
+```
 
-**Always start every feature with**: _"Let me research the codebase and create a plan before implementing."_
+**Common mistakes to avoid:**
 
-1. **Research** - Understand existing patterns and architecture
+- ❌ Creating libs/apps manually (use generators!)
+- ❌ Using `any` in TypeScript
+- ❌ Violating layer boundaries (domain importing infrastructure)
+- ❌ Skipping TDD for complex business logic
+- ❌ Modifying `.vscode/settings.json` without approval
 
-   - Use semantic search, grep, and file reads to gather context
-   - Identify related specs, ADRs, and existing implementations
+## 🏗️ Essential Architecture Knowledge
 
-2. **Plan** - Propose approach and verify with developer
+### Template vs. Generated Project (CRITICAL)
 
-   - Present 2-3 options when uncertainty exists
-   - Reference spec IDs and architectural constraints
-   - Get explicit approval before proceeding
+**This repository** = Template (Copier + Jinja2)
 
-3. **Implement** - Build with tests and error handling
+- Templates in `templates/{{project_slug}}/`
+- Test with `just test-generation` (generates to `../test-output`)
+- Configure in `copier.yml`
 
-   - Follow established patterns from codebase
-   - Match testing approach to code complexity
-   - Include traceability comments (spec IDs)
+**Generated projects** = What users work with
 
-4. **Validate** - ALWAYS run formatters, linters, and tests
-   - Execute `just ai-validate` after implementation
-   - Check for errors with get_errors tool
-   - Run relevant test suites
+- Separate directories with working Nx workspace
+- Have functional `build`, `test`, `lint` targets
+- **Mirror the template's environment setup** (Devbox, mise, SOPS, Just)
+- Each project gets its own isolated environment
+- Start from `just setup` → ready to code
+
+**Environment inheritance**: Generated projects include:
+
+- `devbox.json` - Isolated OS-level toolchain
+- `.mise.toml` - Runtime version management (Node, Python, Rust)
+- `.sops.yaml` + `.secrets.env.sops` - Encrypted secrets
+- `justfile` - Task orchestration
+- Same layered approach as described in `docs/ENVIRONMENT.md`
+
+### Hexagonal Architecture Enforcement
+
+```typescript
+// ❌ WRONG: Business logic depends on infrastructure
+class CreateUserUseCase {
+  async execute(data) {
+    return await db.users.insert(data); // Direct DB access!
+  }
+}
+
+// ✅ CORRECT: Use case depends on port (interface)
+class CreateUserUseCase {
+  constructor(private userRepo: UserRepository) {} // Port
+
+  async execute(dto: CreateUserDto): Promise<User> {
+    const user = User.create(dto); // Domain logic
+    await this.userRepo.save(user); // Through port
+    return user;
+  }
+}
+```
+
+**Layer boundaries must never reverse**:
+
+- Domain layer: ZERO external dependencies
+- Application layer: Depends only on domain
+- Infrastructure: Implements application ports
+
+### Generator-First Development (MANDATORY)
+
+**Before writing ANY code**:
+
+```bash
+# 1. Check what generators exist
+pnpm exec nx list
+pnpm exec nx list @nx/react
+
+# 2. Scaffold structure FIRST
+just ai-scaffold name=@nx/js:lib
+pnpm exec nx g @nx/react:component UserProfile
+
+# 3. THEN customize with business logic
+```
+
+**Why**: Ensures consistent structure, proper Nx config, hexagonal compliance
+
+### Temporal Database Context
+
+VibesPro learns from project history:
+
+```rust
+// temporal_db/ - Embedded redb database
+SPECIFICATIONS_TABLE  // ADRs, PRDs, SDS (spec:{id}:{timestamp_nanos})
+PATTERNS_TABLE        // Proven design patterns
+CHANGES_TABLE         // Time-series change tracking
+```
+
+**Use before major decisions**: Query historical architectural choices
+
+### Environment Setup (Layered Approach)
+
+Both this template repo and all generated projects use the same layered environment strategy:
+
+**Layer 1: Devbox** (OS-level isolation)
+
+- Each project gets its own `devbox.json`
+- Provides git, curl, jq, make, postgresql, etc.
+- No host system pollution
+
+**Layer 2: mise** (Runtime management)
+
+- Each project has its own `.mise.toml`
+- Pins Node, Python, Rust versions
+- Single tool replaces nvm/pyenv/rustup
+
+**Layer 3: SOPS** (Secret encryption)
+
+- Each project has `.sops.yaml` + `.secrets.env.sops`
+- Secrets encrypted at rest, decrypted at runtime
+- Never commit plaintext secrets
+
+**Layer 4: Just** (Task orchestration)
+
+- Each project has its own `justfile`
+- Common commands: `just setup`, `just dev`, `just test`
+- Works identically in local and CI
+
+**Setup flow for generated projects**:
+
+```bash
+# After copier generates the project
+cd my-generated-project
+just setup          # Installs all dependencies
+just doctor         # Verifies environment health
+just dev            # Start development
+```
+
+See `docs/ENVIRONMENT.md` for complete details on this approach.
 
 ---
 
@@ -201,31 +287,26 @@ export class UserController {
 ### Critical Security Rules
 
 1. **NEVER modify VS Code configuration files without explicit user confirmation**
-
    - `.vscode/settings.json`
    - `.vscode/tasks.json`
    - Rationale: Malicious changes can enable auto-approval (`chat.tools.autoApprove`) → Remote Code Execution
 
 2. **Always sanitize and validate ALL user inputs**
-
    - Never interpolate untrusted data into shell commands
    - Use prepared statements for SQL queries
    - Validate file paths, URLs, and external data
 
 3. **Respect VS Code workspace trust boundaries**
-
    - Do not run tasks or execute code in untrusted folders
    - Require user confirmation before executing external commands
 
 4. **Secret Management**
-
    - NEVER hardcode secrets in code or configuration
    - Use environment variables or secret stores
    - Expect `.env` files or external secret management
    - Never commit keys to version control
 
 5. **Cryptographic Standards**
-
    - Use `crypto/rand` for randomness (not Math.random)
    - Use modern crypto libraries (libsodium, Web Crypto API)
    - Follow current best practices for hashing, encryption
@@ -613,19 +694,16 @@ Risk: New attack surface - mitigated with OWASP controls
 ### AI-Enhanced Development
 
 1. **Temporal Learning System**
-
    - Records architectural decisions in `temporal_db/project_specs.db`
    - Learns from development patterns over time
    - Uses sled (Rust embedded database) for persistence
 
 2. **Context Management**
-
    - Token budget optimization
    - Relevance scoring for context inclusion
    - Dynamic context bundling
 
 3. **Custom Chat Modes**
-
    - 30+ specialized personas
    - Workflow-specific guidance (TDD, debugging, planning)
    - Product and technical modes
@@ -776,4 +854,4 @@ The `temporal_db/` stores:
 For detailed guidance on any topic, consult the modular instruction files in `.github/instructions/`.
 
 **Save and generated summaries in the docs/work-summaries/ folder for future reference.**
-**Always check which MCP tools are available and use them when appropriate.** (See [MCP Tools section](#-mcp-tools-optional) for details)
+**Always check which MCP tools are available and use them when appropriate.**
