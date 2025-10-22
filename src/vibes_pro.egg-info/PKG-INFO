@@ -7,6 +7,7 @@ License-File: LICENSE
 Requires-Dist: copier>=9.0.0
 Requires-Dist: jinja2>=3.1.0
 Requires-Dist: pyyaml>=6.0
+Requires-Dist: structlog>=23.0.0
 Provides-Extra: dev
 Requires-Dist: ruff>=0.6.0; extra == "dev"
 Requires-Dist: mypy>=1.11.0; extra == "dev"
