@@ -36,7 +36,7 @@ repos:
       # Run the linter
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
-        exclude: ^(.*\.j2|tests/fixtures/.*|libs/prompt_optimizer/.*)$
+        exclude: ^(.*\.j2|tests/fixtures/.*)$
       # Run the formatter
       - id: ruff-format
         exclude: ^(.*\.j2|tests/fixtures/.*)$
@@ -47,18 +47,18 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies: [types-PyYAML, types-requests]
-        # Exclude generated/template directories and known hyphenated-package
-        # locations so pre-commit mypy doesn't flag artifacts that are intentionally
-        # unnormalized or templated. Keep checks strict for committed files.
-        exclude: '(^.*\.j2$|^tests/fixtures/.*|^templates/.*|^tmp/copier-inspect/.*|^tmp/copier-inspect-noai/.*|^hooks/.*|^apps/.*|^docs/knowledgebase/archive/.*|^docs/update/.*|^libs/prompt_optimizer/.*|^templates/tools/prompt_optimizer/.*|^tools/temporal-db/.*|^tools/temporal_db/.*|.*\{\{.*\}\}.*)$'
+        # Exclude generated/template directories so pre-commit mypy doesn't flag
+        # artifacts that are intentionally unnormalized or templated. Keep checks
+        # strict for committed files (including libs/prompt_optimizer).
+        exclude: '(^.*\.j2$|^tests/fixtures/.*|^templates/.*|^tmp/copier-inspect/.*|^tmp/copier-inspect-noai/.*|^hooks/.*|^docs/knowledgebase/archive/.*|^docs/update/.*|^templates/tools/.*|^tools/temporal-db/.*|^tools/temporal_db/.*|.*\{\{.*\}\}.*)$'
         args:
           - --strict
           - --python-version=3.12
           - "--ignore-missing-imports"
           - .
         # Let mypy do its own discovery so the `exclude` regex in pyproject.toml
-        # is honored (this prevents pre-commit from passing test/template files
-        # explicitly which would bypass the exclude patterns).
+        # is honored. We run mypy on '.' (pass_filenames:false) so pyproject
+        # excludes apply consistently across environments.
         pass_filenames: false
 
   # Markdown linting

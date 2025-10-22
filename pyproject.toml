@@ -29,7 +29,6 @@ extend-exclude = [
     "tests/fixtures/**",
     "**/test-output/**",
     "**/*.j2",
-    "libs/prompt_optimizer/**",
     # End of excludes
 ]
 
@@ -52,7 +51,6 @@ exclude = [
     "test-output/",
     ".*\\.j2$",
     # Standard (underscored) prompt optimizer package path
-    "libs/prompt_optimizer/.*",
     # Project templates and generated artifacts
     "templates/.*",
     "tmp/copier-inspect/.*",
@@ -62,12 +60,10 @@ exclude = [
     # Temporal DB tooling (templates and generated)
     "tools/temporal-db/.*",
     "tools/temporal_db/.*",
-    # Hyphenated template/package paths (generated artifacts) -- exclude to avoid
-    # mypy treating them as real Python packages (invalid package-name chars)
-    "libs/prompt_optimizer/.*",
-    "templates/tools/prompt_optimizer/.*",
-    "tmp/copier-inspect/.*prompt_optimizer.*",
-    "tmp/copier-inspect-noai/.*prompt_optimizer.*",
+    # Hyphenated or templated generated artifacts - keep them excluded
+    "templates/tools/.*",
+    "tmp/copier-inspect/.*",
+    "tmp/copier-inspect-noai/.*",
     # Exclude copier-inspect generated trees (noai variant too)
     "tmp/copier-inspect-noai/.*",
     # Exclude any path that contains Jinja-style template braces to avoid
