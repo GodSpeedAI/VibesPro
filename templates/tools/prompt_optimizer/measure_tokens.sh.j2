@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+# {{ project_name }} - Enhanced Token Counter with ML-Powered Optimization
+# Generated from VibePro prompt_optimizer template
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+ENHANCED_SCRIPT="${SCRIPT_DIR}/measure_tokens_enhanced.py"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+show_help() {
+    cat << EOF
+{{ project_name }} - Enhanced Token Counter with ML-Powered Prompt Optimization
+
+USAGE:
+    $0 <prompt-file> [OPTIONS]
+
+OPTIONS:
+    --analyze                   Perform detailed prompt analysis (default)
+    --optimize                  Optimize the prompt for effectiveness
+    --goal <goal>              Optimization goal: clarity|conciseness|effectiveness|token_efficiency
+    --model <model>            AI model: gpt-4|gpt-4-turbo|gpt-3.5-turbo|claude-3-opus|claude-3-sonnet
+    --format <format>          Output format: human|json
+    --legacy                   Use legacy word-based estimation only
+    --help                     Show this help message
+
+EXAMPLES:
+    # Basic analysis with enhanced features
+    $0 my_prompt.txt
+
+    # Optimize for clarity
+    $0 my_prompt.txt --optimize --goal clarity
+
+    # Get JSON output for integration
+    $0 my_prompt.txt --analyze --format json
+
+    # Use legacy mode for simple word count
+    $0 my_prompt.txt --legacy
+
+The enhanced mode provides:
+• Accurate token counting using tiktoken
+• ML-powered effectiveness analysis
+• Prompt optimization suggestions
+• Cost estimation
+• Temporal learning from usage patterns
+• Integration with {{ project_name }} AI context system
+
+Generated with VibePro prompt_optimizer template
+EOF
+}
+
+check_dependencies() {
+    # Check if Python enhanced script exists
+    if [[ ! -f "${ENHANCED_SCRIPT}" ]]; then
+        printf "%bError: Enhanced script not found at %s%b\n" "${RED}" "${ENHANCED_SCRIPT}" "${NC}" >&2
+        return 1
+    fi
+
+    # Check if Python is available
+    if ! command -v python3 &> /dev/null; then
+        printf "%bWarning: Python3 not found, falling back to legacy mode%b\n" "${YELLOW}" "${NC}" >&2
+        return 1
+    fi
+
+    return 0
+}
+
+legacy_count() {
+    local prompt_file="$1"
+
+    if [[ ! -f "${prompt_file}" ]]; then
+        printf "%bError: prompt file '%s' does not exist.%b\n" "${RED}" "${prompt_file}" "${NC}" >&2
+        exit 1
+    fi
+
+    local word_count char_count
+    word_count=$(wc -w < "${prompt_file}")
+    char_count=$(wc -c < "${prompt_file}")
+
+    printf "%b[{{ project_name }}] Legacy Token Analysis for %s:%b\n" "${BLUE}" "${prompt_file}" "${NC}"
+    printf "  📊 Approximate word count: %b%s%b\n" "${GREEN}" "${word_count}" "${NC}"
+    printf "  📊 Character count: %b%s%b\n" "${GREEN}" "${char_count}" "${NC}"
+    printf "  🤖 Estimated tokens (rough): %b%s%b\n\n" "${GREEN}" "$((word_count * 4 / 3))" "${NC}"
+    printf "%b💡 For accurate token counting and optimization, install Python dependencies%b\n" "${YELLOW}" "${NC}"
+}
+
+enhanced_count() {
+    local prompt_file="$1"
+    shift
+    local args=("$@")
+
+    if [[ ! " ${args[*]} " =~ " --optimize " ]]; then
+        args=("analyze" "${args[@]}")
+    else
+        local new_args=()
+        local skip_next=false
+        for arg in "${args[@]}"; do
+            if [[ "${skip_next}" == true ]]; then
+                skip_next=false
+                continue
+            fi
+            if [[ "${arg}" == "--optimize" ]]; then
+                new_args+=("optimize")
+            elif [[ "${arg}" == "--goal" ]]; then
+                skip_next=true
+                new_args+=("${arg}")
+            else
+                new_args+=("${arg}")
+            fi
+        done
+        args=("${new_args[@]}")
+    fi
+
+    python3 "${ENHANCED_SCRIPT}" "${prompt_file}" "${args[@]}"
+}
+
+main() {
+    local prompt_file=""
+    local use_legacy=false
+    local remaining_args=()
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            --legacy)
+                use_legacy=true
+                shift
+                ;;
+            -*)
+                remaining_args+=("$1")
+                shift
+                ;;
+            *)
+                if [[ -z "${prompt_file}" ]]; then
+                    prompt_file="$1"
+                else
+                    remaining_args+=("$1")
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    if [[ -z "${prompt_file}" ]]; then
+        printf "%bError: prompt file argument is required.%b\n" "${RED}" "${NC}" >&2
+        show_help
+        exit 1
+    fi
+
+    if [[ ! -f "${prompt_file}" ]]; then
+        printf "%bError: prompt file '%s' does not exist.%b\n" "${RED}" "${prompt_file}" "${NC}" >&2
+        exit 1
+    fi
+
+    if [[ "${use_legacy}" == true ]]; then
+        legacy_count "${prompt_file}"
+    elif check_dependencies; then
+        printf "%b🚀 {{ project_name }} - Using enhanced ML-powered analysis...%b\n" "${BLUE}" "${NC}"
+        enhanced_count "${prompt_file}" "${remaining_args[@]}"
+    else
+        printf "%b⚠️  Falling back to legacy mode...%b\n" "${YELLOW}" "${NC}"
+        legacy_count "${prompt_file}"
+    fi
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi

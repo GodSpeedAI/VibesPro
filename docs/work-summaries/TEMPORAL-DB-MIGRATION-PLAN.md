@@ -26,8 +26,8 @@ Migrate the temporal database (`temporal_db/`) from sled to redb to maintain con
 
 - `temporal_db/repository.rs` - Core temporal repository using sled
 - `temporal_db/Cargo.toml` - Dependency management
-- Python adapters in `libs/prompt-optimizer/infrastructure/temporal_db.py`
-- Template references in `templates/tools/prompt-optimizer/`
+- Python adapters in `libs/prompt_optimizer/infrastructure/temporal_db.py`
+- Template references in `templates/tools/prompt_optimizer/`
 - Documentation updates
 
 ### Out of Scope
@@ -118,8 +118,8 @@ write_txn.commit()?;
 3. Maintain fallback to JSON/SQLite for compatibility
 
 **Files:**
-- [ ] `libs/prompt-optimizer/infrastructure/temporal_db.py`
-- [ ] `temporal_db/python/repository.py`
+ - [ ] `libs/prompt_optimizer/infrastructure/temporal_db.py`
+ - [ ] `temporal_db/python/repository.py`
 
 ### Phase 5: Template Updates (1 hour)
 
@@ -129,10 +129,10 @@ write_txn.commit()?;
 3. Update copier.yml database_type options
 
 **Files:**
-- [ ] `templates/tools/prompt-optimizer/README.md.j2`
-- [ ] `templates/tools/prompt-optimizer/requirements.txt.j2`
-- [ ] `templates/tools/prompt-optimizer/copier.yml`
-- [ ] `templates/tools/prompt-optimizer/libs/prompt_optimizer/__init__.py.j2`
+ - [ ] `templates/tools/prompt_optimizer/README.md.j2`
+ - [ ] `templates/tools/prompt_optimizer/requirements.txt.j2`
+ - [ ] `templates/tools/prompt_optimizer/copier.yml`
+ - [ ] `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`
 
 ### Phase 6: Testing (1-2 hours)
 

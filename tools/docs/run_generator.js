@@ -30,7 +30,7 @@ async function main() {
     } catch (e) {
         // Try dynamic import for ESM
         try {
-            // eslint-disable-next-line no-undef
+
             mod = await import(path.resolve(__dirname, 'generator.js'));
         } catch (err) {
             console.error(JSON.stringify({ success: false, error: 'failed to load generator module: ' + String(err) }));

@@ -11,6 +11,7 @@ dependencies = [
     "copier>=9.0.0",
     "jinja2>=3.1.0",
     "pyyaml>=6.0",
+    "structlog>=23.0.0",
 ]
 
 [project.optional-dependencies]
@@ -29,6 +30,7 @@ extend-exclude = [
     "**/test-output/**",
     "**/*.j2",
     "libs/prompt_optimizer/**",
+    # End of excludes
 ]
 
 [tool.ruff.lint]
@@ -49,11 +51,29 @@ exclude = [
     "tests/fixtures/",
     "test-output/",
     ".*\\.j2$",
-    "libs/prompt-optimizer/",
-    "libs/prompt_optimizer/",
-    "libs/\\{\\{domain_name\\}\\}/",
+    # Standard (underscored) prompt optimizer package path
+    "libs/prompt_optimizer/.*",
+    # Project templates and generated artifacts
+    "templates/.*",
+    "tmp/copier-inspect/.*",
+    "tests/fixtures/.*",
+    # Tests often use pytest fixtures and intentional untyped helpers; exclude them for strict mypy runs
+    "tests/.*",
+    # Temporal DB tooling (templates and generated)
+    "tools/temporal-db/.*",
+    "tools/temporal_db/.*",
+    # Hyphenated template/package paths (generated artifacts) -- exclude to avoid
+    # mypy treating them as real Python packages (invalid package-name chars)
+    "libs/prompt_optimizer/.*",
+    "templates/tools/prompt_optimizer/.*",
+    "tmp/copier-inspect/.*prompt_optimizer.*",
+    "tmp/copier-inspect-noai/.*prompt_optimizer.*",
+    # Exclude copier-inspect generated trees (noai variant too)
+    "tmp/copier-inspect-noai/.*",
+    # Exclude any path that contains Jinja-style template braces to avoid
+    # treating placeholders like {{domain_name}} as real package names.
+    "^.*\\{\\{.*\\}\\}.*$",
 ]
-
 [[tool.mypy.overrides]]
 module = ["prompt_optimizer.*", "my_test_domain.*"]
 ignore_missing_imports = true

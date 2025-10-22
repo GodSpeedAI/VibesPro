@@ -25,11 +25,12 @@ See DEV-PRD-018 for requirements.
 import logging
 import os
 import sys
+from typing import Any
 
 import structlog
 
 
-def configure_logger(service: str = None) -> structlog.BoundLogger:
+def configure_logger(service: str | None = None) -> Any:
     """
     Configure and return a structured logger instance.
 

@@ -4,7 +4,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-VECTOR_CONFIG="$ROOT_DIR/ops/vector/vector.toml"
+VECTOR_CONFIG="${ROOT_DIR}/ops/vector/vector.toml"
 
 log()  { printf "==> %s\n" "$*"; }
 die()  { printf "❌ %s\n" "$*" >&2; exit 1; }
@@ -16,42 +16,42 @@ ensure_tools() {
 
 test_vector_config_valid() {
   log "Validating Vector configuration"
-  vector validate "$VECTOR_CONFIG" || die "Vector config validation failed"
+  vector validate "${VECTOR_CONFIG}" || die "Vector config validation failed"
 }
 
 test_logs_source_exists() {
   log "Checking for OTLP source (unified for traces and logs)"
-  grep -q '\[sources\.otlp\]' "$VECTOR_CONFIG" || die "OTLP source not found"
-  grep -q 'type.*=.*"opentelemetry"' "$VECTOR_CONFIG" || die "OpenTelemetry source type not found"
+  grep -q '\[sources\.otlp\]' "${VECTOR_CONFIG}" || die "OTLP source not found"
+  grep -q 'type.*=.*"opentelemetry"' "${VECTOR_CONFIG}" || die "OpenTelemetry source type not found"
   # Check for both gRPC (4317) and HTTP (4318) endpoints
-  grep -q 'address.*=.*"0.0.0.0:4317"' "$VECTOR_CONFIG" || die "OTLP gRPC address not configured"
-  grep -q 'address.*=.*"0.0.0.0:4318"' "$VECTOR_CONFIG" || die "OTLP HTTP address not configured"
+  grep -q 'address.*=.*"0.0.0.0:4317"' "${VECTOR_CONFIG}" || die "OTLP gRPC address not configured"
+  grep -q 'address.*=.*"0.0.0.0:4318"' "${VECTOR_CONFIG}" || die "OTLP HTTP address not configured"
   # Verify logs stream is used
-  grep -q 'otlp\.logs' "$VECTOR_CONFIG" || die "OTLP logs stream not found in transforms"
+  grep -q 'otlp\.logs' "${VECTOR_CONFIG}" || die "OTLP logs stream not found in transforms"
 }
 
 test_pii_redaction_transform() {
   log "Checking for PII redaction transform"
-  grep -q '\[transforms\.logs_redact_pii\]' "$VECTOR_CONFIG" || die "PII redaction transform not found"
-  grep -q 'user_email.*REDACTED' "$VECTOR_CONFIG" || die "Email redaction rule not found"
-  grep -q 'authorization.*REDACTED' "$VECTOR_CONFIG" || die "Authorization redaction rule not found"
+  grep -q '\[transforms\.logs_redact_pii\]' "${VECTOR_CONFIG}" || die "PII redaction transform not found"
+  grep -q 'user_email.*REDACTED' "${VECTOR_CONFIG}" || die "Email redaction rule not found"
+  grep -q 'authorization.*REDACTED' "${VECTOR_CONFIG}" || die "Authorization redaction rule not found"
 }
 
 test_enrichment_transform() {
   log "Checking for enrichment transform"
-  grep -q '\[transforms\.logs_enrich\]' "$VECTOR_CONFIG" || die "Enrichment transform not found"
-  grep -q '\.service' "$VECTOR_CONFIG" || die "Service field enrichment not found"
-  grep -q '\.environment' "$VECTOR_CONFIG" || die "Environment field enrichment not found"
+  grep -q '\[transforms\.logs_enrich\]' "${VECTOR_CONFIG}" || die "Enrichment transform not found"
+  grep -q '\.service' "${VECTOR_CONFIG}" || die "Service field enrichment not found"
+  grep -q '\.environment' "${VECTOR_CONFIG}" || die "Environment field enrichment not found"
 }
 
 test_logs_sink_exists() {
   log "Checking for logs sinks"
   # Check for OpenObserve sink
-  grep -q '\[sinks\.logs_openobserve\]' "$VECTOR_CONFIG" || die "Logs OpenObserve sink not found"
-  grep -q 'inputs.*=.*\["logs_enrich"\]' "$VECTOR_CONFIG" || die "Logs sink input not connected to enrichment"
+  grep -q '\[sinks\.logs_openobserve\]' "${VECTOR_CONFIG}" || die "Logs OpenObserve sink not found"
+  grep -q 'inputs.*=.*\["logs_enrich"\]' "${VECTOR_CONFIG}" || die "Logs sink input not connected to enrichment"
   # Also check for console and file sinks for local debugging
-  grep -q '\[sinks\.logs_console\]' "$VECTOR_CONFIG" || log "Warning: logs_console sink not found (optional)"
-  grep -q '\[sinks\.logs_file\]' "$VECTOR_CONFIG" || log "Warning: logs_file sink not found (optional)"
+  grep -q '\[sinks\.logs_console\]' "${VECTOR_CONFIG}" || log "Warning: logs_console sink not found (optional)"
+  grep -q '\[sinks\.logs_file\]' "${VECTOR_CONFIG}" || log "Warning: logs_file sink not found (optional)"
 }
 
 main() {

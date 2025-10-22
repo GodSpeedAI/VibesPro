@@ -19,7 +19,7 @@ describe('Prompt Tools Tests', () => {
                 fs.rmSync(tmpDir, { recursive: true, force: true });
             } catch (err) {
                 // best effort cleanup; don't fail the test suite for cleanup errors
-                // eslint-disable-next-line no-console
+
                 console.warn('Could not remove temp fixtures dir:', String(err));
             }
         }

@@ -50,7 +50,7 @@ async function main() {
     console.log(`Discovered ${files.length} test file(s).`);
     const results = [];
     for (const f of files) {
-        // eslint-disable-next-line no-await-in-loop
+
         const r = await runTestFile(f);
         results.push(r);
         const status = r.ok ? 'PASS' : 'FAIL';

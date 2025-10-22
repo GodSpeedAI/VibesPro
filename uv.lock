@@ -144,6 +144,15 @@ wheels = [
 ]
 
 [[package]]
+name = "icdiff"
+version = "2.0.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/fa/e4/43341832be5f2bcae71eb3ef08a07aaef9b74f74fe0b3675f62bd12057fe/icdiff-2.0.7.tar.gz", hash = "sha256:f79a318891adbf59a45e3a7694f5e1f18c5407065264637072ac8363b759866f", size = 16394, upload-time = "2023-08-21T15:00:55.742Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/2a/b3178baa75a3ec75a33588252296c82a1332d2b83cd01061539b74bde9dd/icdiff-2.0.7-py3-none-any.whl", hash = "sha256:f05d1b3623223dd1c70f7848da7d699de3d9a2550b902a8234d9026292fb5762", size = 17018, upload-time = "2023-08-21T15:00:54.634Z" },
+]
+
+[[package]]
 name = "identify"
 version = "2.6.15"
 source = { registry = "https://pypi.org/simple" }
@@ -455,6 +464,46 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-copier"
+version = "0.4.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "copier" },
+    { name = "pytest" },
+    { name = "pytest-dir-equal" },
+    { name = "pytest-gitconfig" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/41/c6/2bb7d4e5eb3afa29fda074b4fd69a9577a2db2304b853fec9a7883940ae9/pytest_copier-0.4.1.tar.gz", hash = "sha256:db1bfc9fb9d48a30fe9569dca13cd068812b98dcb0066754e7515869ea60d8f8", size = 6095, upload-time = "2023-12-11T10:18:03.845Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/98/1d/6ceb45d28daf3265eeccc6f764198d547dd37c466412b6a32ccc14ff5b5a/pytest_copier-0.4.1-py3-none-any.whl", hash = "sha256:f92822aa7c49ff8e8f806ace28516f0915205ded7e2a7e4e867ad20d7c48420d", size = 6596, upload-time = "2023-12-11T10:18:02.252Z" },
+]
+
+[[package]]
+name = "pytest-dir-equal"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "icdiff" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d9/ca/8b58c05754c065b577cd8d63b480029a813ab22ec5fdd5784f78b9ae8a0e/pytest_dir_equal-0.2.1.tar.gz", hash = "sha256:16654c385a3b0946e9a38a9d8c2ac3074dcaf914bdd07facff3f85f4f03761d5", size = 5685, upload-time = "2023-12-11T09:51:04.104Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/63/73a6a31a9f501af54994e2daa0579b7861087fb1b58dd3f9f1a4fe4c9663/pytest_dir_equal-0.2.1-py3-none-any.whl", hash = "sha256:b0d75305374357afd5dea7ee9348a6668f3037b8f0e58e298c54a885a1540cb2", size = 6122, upload-time = "2023-12-11T09:51:02.479Z" },
+]
+
+[[package]]
+name = "pytest-gitconfig"
+version = "0.8.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/72/15772ecf297ba300bce701543369829b16970f31b8d634caaf58e6deabde/pytest_gitconfig-0.8.0.tar.gz", hash = "sha256:0dc72c2ce96b1ac6f26cb0375aa882ee017fb4833a864f64d0c11998912418dd", size = 9107, upload-time = "2025-10-12T16:59:17.574Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/59/35/2104dad540c9e44d7a1ab7f97f6acada58df46d6a54ab9c37e224004180f/pytest_gitconfig-0.8.0-py3-none-any.whl", hash = "sha256:db84b420b4cce6cab023af9f634e6b356d9db71f267c4a7e1efe6193d6d9ec6a", size = 6685, upload-time = "2025-10-12T16:59:14.444Z" },
+]
+
+[[package]]
 name = "pywin32"
 version = "311"
 source = { registry = "https://pypi.org/simple" }
@@ -550,6 +599,15 @@ wheels = [
 ]
 
 [[package]]
+name = "structlog"
+version = "25.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/79/b9/6e672db4fec07349e7a8a8172c1a6ae235c58679ca29c3f86a61b5e59ff3/structlog-25.4.0.tar.gz", hash = "sha256:186cd1b0a8ae762e29417095664adf1d6a31702160a46dacb7796ea82f7409e4", size = 1369138, upload-time = "2025-06-02T08:21:12.971Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/4a/97ee6973e3a73c74c8120d59829c3861ea52210667ec3e7a16045c62b64d/structlog-25.4.0-py3-none-any.whl", hash = "sha256:fe809ff5c27e557d14e613f45ca441aabda051d119ee5a0102aaba6ce40eed2c", size = 68720, upload-time = "2025-06-02T08:21:11.43Z" },
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -587,6 +645,7 @@ dependencies = [
     { name = "copier" },
     { name = "jinja2" },
     { name = "pyyaml" },
+    { name = "structlog" },
 ]
 
 [package.optional-dependencies]
@@ -603,6 +662,7 @@ dev = [
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "pytest-copier" },
     { name = "requests" },
     { name = "ruff" },
 ]
@@ -616,6 +676,7 @@ requires-dist = [
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6.0" },
+    { name = "structlog", specifier = ">=23.0.0" },
 ]
 provides-extras = ["dev"]
 
@@ -625,6 +686,7 @@ dev = [
     { name = "pre-commit", specifier = ">=4.0.0" },
     { name = "pytest", specifier = ">=8.4.2" },
     { name = "pytest-asyncio", specifier = ">=1.2.0" },
+    { name = "pytest-copier", specifier = ">=0.4.1" },
     { name = "requests", specifier = ">=2.32.0" },
     { name = "ruff", specifier = ">=0.13.1" },
 ]

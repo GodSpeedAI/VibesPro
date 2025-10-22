@@ -1,0 +1,10 @@
+# Template configuration (copied from hyphenated path) - kept minimal here
+_templates_suffix: .j2
+
+project_name:
+  type: str
+  placeholder: my-ai-project
+
+template_version:
+  type: str
+  default: "1.0.0"

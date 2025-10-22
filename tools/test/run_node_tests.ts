@@ -56,7 +56,7 @@ async function main() {
         const status = r.ok ? 'PASS' : 'FAIL';
         console.log(`${status} ${path.relative(ROOT, f)} (${r.ms} ms)`);
         if (!r.ok) {
-            // eslint-disable-next-line no-console
+
             const maybeError = (r as unknown) as { error?: unknown };
             const err = maybeError.error;
             if (err && typeof err === 'object') {

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: N999
 """
 structlog logger quick-start example
 Tests: DEV-SDS-018 (Python logging implementation)

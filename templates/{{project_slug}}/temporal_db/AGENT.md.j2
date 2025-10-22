@@ -1,0 +1,352 @@
+# temporal_db/ Agent Instructions
+
+## 📍 Context
+
+> **Purpose**: Temporal learning database for AI-assisted development - stores architectural decisions, patterns, and learning over time.
+> **When to use**: When querying project history, storing AI learning insights, or understanding past architectural decisions.
+
+## 🔗 Parent Context
+
+See [root copilot-instructions.md](/.github/copilot-instructions.md) for comprehensive project guidance and [AGENT-MAP.md](/AGENT-MAP.md) for navigation across contexts.
+
+## 🎯 Local Scope
+
+**This directory handles:**
+- Rust-based embedded database (sled)
+- Temporal learning storage for AI agents
+- Architectural decision history
+- Pattern recognition and anti-pattern tracking
+- Development insights over time
+- Project specification database
+
+**Technology**: [sled](https://github.com/spacejam/sled) - Embedded database in Rust
+
+## 📁 Key Files & Patterns
+
+### Directory Structure
+
+```
+temporal_db/
+├── Cargo.toml              # Rust dependencies and configuration
+├── Cargo.lock              # Locked dependency versions
+├── src/
+│   ├── lib.rs              # Library entry point
+│   ├── db.rs               # Database operations
+│   ├── models.rs           # Data models
+│   ├── query.rs            # Query interface
+│   └── learning.rs         # Learning algorithms
+├── tests/
+│   ├── integration.rs      # Integration tests
+│   └── fixtures/           # Test data
+├── benches/
+│   └── performance.rs      # Performance benchmarks
+├── project_specs.db/       # Generated database files (gitignored)
+└── README.md               # Database documentation
+```
+
+### Key Configuration Files
+
+#### Cargo.toml
+
+```toml
+[package]
+name = "temporal_db"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+
+[dependencies]
+sled = "0.34"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1.0"
+tracing = "0.1"
+
+[dev-dependencies]
+criterion = "0.5"
+tempfile = "3.8"
+
+[[bench]]
+name = "performance"
+harness = false
+```
+
+## 🧭 Routing Rules
+
+### Use This Context When:
+
+- [ ] Querying AI learning history
+- [ ] Storing architectural decisions programmatically
+- [ ] Implementing pattern recognition features
+- [ ] Working with Rust code in temporal_db
+- [ ] Benchmarking database performance
+- [ ] Understanding temporal learning system
+
+### Refer to Other Contexts When:
+
+| Context | When to Use |
+|---------|-------------|
+| [docs/AGENT.md](/docs/AGENT.md) | Reading ADRs and specifications (high-level) |
+| [tools/AGENT.md](/tools/AGENT.md) | Building tools that query temporal DB |
+| [.github/AGENT.md](/.github/AGENT.md) | AI workflows that use learning insights |
+| [architecture/AGENT.md](/architecture/AGENT.md) | Architectural patterns and CALM docs |
+
+## 🔧 Local Conventions
+
+### Rust Code Style
+
+**Follow Rust standard conventions:**
+- Use `rustfmt` for formatting
+- Use `clippy` for linting
+- Document all public APIs with `///` doc comments
+- Use `Result<T, E>` for error handling
+- Prefer `&str` over `String` for function parameters
+
+**Example module structure:**
+
+```rust
+// src/db.rs
+use sled::{Db, Tree};
+use std::path::Path;
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum DbError {
+    #[error("Database error: {0}")]
+    Sled(#[from] sled::Error),
+
+    #[error("Serialization error: {0}")]
+    Serialization(#[from] serde_json::Error),
+
+    #[error("Entry not found: {0}")]
+    NotFound(String),
+}
+
+pub type DbResult<T> = Result<T, DbError>;
+```
+
+```rust
+impl TemporalDb {
+    pub fn open<P: AsRef<Path>>(path: P) -> DbResult<Self> {
+        let db = sled::open(path)?;
+        Ok(Self { db })
+    }
+
+    pub fn store_spec(&self, spec: &Specification) -> DbResult<()> {
+        let tree = self.db.open_tree("specs")?;
+        let key = format!("{}:{}", spec.spec_type, spec.identifier);
+        let value = serde_json::to_vec(spec)?;
+        tree.insert(key.as_bytes(), value)?;
+        Ok(())
+    }
+}
+```
+
+### Python Adapter Style
+
+```python
+# adapters/temporal_db.py
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Iterable
+
+import aiofiles
+import json
+
+
+@dataclass
+class SpecificationRecord:
+    identifier: str
+    title: str
+    content: str
+    spec_type: str
+    created_at: datetime
+
+
+class TemporalDatabaseAdapter:
+    def __init__(self, db_path: Path) -> None:
+        self.db_path = db_path
+        self._specs_dir = db_path / "specs"
+        self._patterns_dir = db_path / "patterns"
+
+    async def _ensure_initialized(self) -> None:
+        for directory in [self.db_path, self._specs_dir, self._patterns_dir]:
+            directory.mkdir(parents=True, exist_ok=True)
+
+    async def store_specification(self, spec: SpecificationRecord) -> None:
+        await self._ensure_initialized()
+        filename = self._specs_dir / f"{spec.spec_type}-{spec.identifier}.json"
+        async with aiofiles.open(filename, "w") as file:
+            await file.write(json.dumps(spec.__dict__, default=str))
+```
+
+### Serialization Conventions
+
+- Use JSON for interchange between agents
+- Always serialize timestamps in ISO8601 with timezone (UTC)
+- Hash content using MD5 for change detection (good enough for non-security use)
+- Store spec metadata and template variables as flat dictionaries
+
+## 📊 Metrics & Logging
+
+- Use `tracing` crate for structured logging in Rust
+- Use `structlog` or `logging` with JSON formatter in Python
+- Context IDs should follow: `context::{spec_type}::{identifier}`
+
+### Log Fields
+
+| Field | Description |
+|-------|-------------|
+| `spec_id` | Unique identifier for specification |
+| `decision_point` | Decision point identifier |
+| `pattern_type` | Architectural pattern type |
+| `confidence` | Confidence score (0-1) |
+| `author` | Who made the change |
+| `timestamp` | ISO8601 timestamp |
+
+## 🧪 Testing Strategy
+
+### Rust
+
+- Use `cargo test` for unit tests
+- Integration tests under `tests/`
+- Benchmarks with `cargo bench`
+
+### Python
+
+- Use `pytest` with async support
+- Use fixtures for temporal DB state
+
+### Example Test (Rust)
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_store_specification() {
+        let temp_dir = TempDir::new().unwrap();
+        let db = TemporalDb::open(temp_dir.path()).unwrap();
+
+        let spec = Specification {
+            id: uuid::Uuid::new_v4().to_string(),
+            spec_type: "ADR".to_string(),
+            identifier: "ADR-001".to_string(),
+            title: "Event Sourcing".to_string(),
+            content: "Use event sourcing for AuditLog".to_string(),
+            created_at: chrono::Utc::now(),
+        };
+
+        db.store_spec(&spec).unwrap();
+    }
+}
+```
+
+## 🎯 Integration Patterns
+
+### With AI Tools
+
+**Query from TypeScript/Node.js:**
+```typescript
+import { querySpecs, getDecisions } from './tools/ai/query-temporal-db';
+
+// Get all ADRs
+const adrs = await querySpecs('ADR');
+
+// Get decisions
+const decisions = await getDecisions();
+```
+
+**Query from Python:**
+```python
+import subprocess
+import json
+
+def query_temporal_db(spec_type: str = None) -> list:
+    """Query temporal database from Python."""
+    cmd = ['cargo', 'run', '--manifest-path', 'temporal_db/Cargo.toml',
+           '--bin', 'query', '--']
+
+    if spec_type:
+        cmd.extend(['--type', spec_type])
+    else:
+        cmd.append('--all')
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    return json.loads(result.stdout)
+```
+
+### With AI Workflows
+
+**Store learning insights:**
+```rust
+// Called from post-generation hooks
+pub fn record_generation_insight(
+    db: &TemporalDb,
+    pattern_name: &str,
+    success: bool,
+) -> Result<()> {
+    let pattern_type = if success {
+        PatternType::Success
+    } else {
+        PatternType::AntiPattern
+    };
+
+    let pattern = Pattern {
+        id: uuid::Uuid::new_v4().to_string(),
+        name: pattern_name.to_string(),
+        pattern_type,
+        description: format!("Pattern observed during generation"),
+        examples: vec![],
+        frequency: 1,
+        last_seen: Utc::now(),
+    };
+
+    db.store_pattern(&pattern)?;
+    Ok(())
+}
+```
+
+## 🔄 Maintenance
+
+### Regular Tasks
+
+- **Weekly**: Check database size, consider compaction
+- **Monthly**: Review stored patterns, archive old data
+- **Quarterly**: Benchmark performance, optimize queries
+- **Per feature**: Update data models if schema changes
+
+### When to Update This AGENT.md
+
+- Rust version updates
+- sled library updates
+- Data model changes
+- New query patterns
+- Performance optimizations
+
+### Database Maintenance
+
+```bash
+# Check database size
+du -sh temporal_db/project_specs.db
+
+# Compact database (in Rust code)
+db.compact()?;
+
+# Backup database
+cp -r temporal_db/project_specs.db temporal_db/project_specs.db.backup
+
+# Export to JSON (for migration)
+cargo run --manifest-path temporal_db/Cargo.toml --bin export -- --output backup.json
+```
+
+---
+
+_Last updated: 2025-10-13 | Maintained by: VibesPro Project Team_
+_Parent context: [copilot-instructions.md](/.github/copilot-instructions.md) | Navigation: [AGENT-MAP.md](/AGENT-MAP.md)_

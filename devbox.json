@@ -1,16 +1,15 @@
 {
     "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/main/.schema/devbox.schema.json",
     "packages": [
-        "git",
         "curl",
         "just",
         "jq",
-        "make",
         "ffmpeg",
         "postgresql@15",
         "ripgrep",
         "fd",
-        "uv"
+        "uv",
+        "git@latest"
     ],
     "shell": {
         "init_hook": [

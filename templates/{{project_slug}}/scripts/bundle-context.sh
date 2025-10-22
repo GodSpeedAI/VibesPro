@@ -51,14 +51,14 @@ copy_md_with_prefix "$REPO_ROOT/docs/steering" "steering"
 # Fallback steering: common top-level filenames
 for name in product.md tech.md structure.md; do
   if [ -f "$REPO_ROOT/docs/$name" ]; then
-    cp "$REPO_ROOT/docs/$name" "$OUTPUT_DIR/steering-$name"
+    cp "$REPO_ROOT/docs/$name" "$OUTPUT_DIR/steering-${name}"
   fi
 done
 
 # 2) Steering updates (optional)
 if [ -d "$REPO_ROOT/docs/steering/updates" ]; then
   find "$REPO_ROOT/docs/steering/updates" -maxdepth 1 -type f -name '*.md' -print0 2>/dev/null | while IFS= read -r -d '' upd; do
-    cp "$upd" "$OUTPUT_DIR/$(basename "$upd")"
+    cp "${upd}" "${OUTPUT_DIR}/$(basename "${upd}")"
   done
 fi
 
@@ -66,12 +66,13 @@ fi
 if [ -d "$REPO_ROOT/architecture/calm" ]; then
   mkdir -p "$OUTPUT_DIR/architecture"
   # Copy preserving directory structure under calm/
-  cp -R "$REPO_ROOT/architecture/calm" "$OUTPUT_DIR/architecture/" 2>/dev/null || true
+  cp -R "${REPO_ROOT}/architecture/calm" "${OUTPUT_DIR}/architecture/" 2>/dev/null || true
 fi
 
 # 4) Tech stack definition
 if [ -f "$REPO_ROOT/techstack.yaml" ]; then
-  cp "$REPO_ROOT/techstack.yaml" "$OUTPUT_DIR/techstack.yaml"
+  cp "${REPO_ROOT}/techstack.yaml" "${OUTPUT_DIR}/techstack.yaml"
 fi
 
 echo "Context bundle created at: $OUTPUT_DIR"
+echo "Context bundle created at: ${OUTPUT_DIR}"

@@ -20,7 +20,7 @@ fi
 # Check for common secret patterns in staged content
 staged_content=$(git diff --cached --diff-filter=ACM)
 
-if echo "$staged_content" | grep -iE '(api_key|secret_key|password|token|private_key)\s*=\s*["\047][^"\047]{8,}'; then
+if echo "${staged_content}" | grep -iE '(api_key|secret_key|password|token|private_key)\s*=\s*["\047][^"\047]{8,}'; then
   echo "⚠️  WARNING: Possible plaintext secret detected in staged changes"
   echo ""
   echo "   Review your changes and ensure no secrets are committed."

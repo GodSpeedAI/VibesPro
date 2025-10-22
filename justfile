@@ -29,7 +29,20 @@ setup-node:
 
 setup-python:
 	@echo "🔧 Setting up Python environment..."
-	uv sync --dev
+	# Create a local venv and install dev tools directly. Avoids building the package
+	# during dependency sync which can fail on Python 3.12 (distutils removal).
+	# Ensure python3 exists
+	if ! command -v python3 >/dev/null 2>&1; then \
+		echo "Python3 not found on PATH"; exit 1; \
+	fi
+	# Create venv if missing
+	if [ ! -d ".venv" ]; then \
+		python3 -m venv .venv || exit 1; \
+	fi
+	# Install tooling using the venv's python and clearing PYTHONPATH to avoid
+	# repo-local packages from shadowing stdlib modules during installation.
+	PYTHONPATH= .venv/bin/python -m pip install --upgrade pip setuptools wheel || exit 1
+	PYTHONPATH= .venv/bin/python -m pip install --upgrade pre-commit structlog mypy ruff uv || exit 1
 
 setup-tools:
 	@echo "🔧 Setting up development tools..."

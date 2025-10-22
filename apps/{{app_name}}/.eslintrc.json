@@ -1,7 +1,9 @@
 {
   "extends": [
-    "next",
-    "next/core-web-vitals"
+    // Temporarily avoid extending Next.js configs to prevent ESLint circular-config loading errors.
+    // This keeps basic recommended and TypeScript rules while we align ESLint/plugin versions.
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "ignorePatterns": [
     "!**/*"

@@ -26,9 +26,9 @@ Successfully completed the temporal database migration from **sled 0.34** to **r
 
 ### Files Changed (14 files, +1195/-144 lines)
 - **Core Implementation**: `temporal_db/repository.rs`, `Cargo.toml`, `Cargo.lock`
-- **Python Adapters**: `libs/prompt-optimizer/infrastructure/temporal_db.py`
+-- **Python Adapters**: `libs/prompt_optimizer/infrastructure/temporal_db.py`
 - **Documentation**: `README.md`, `AGENTS.md`, `temporal_db/README.md`, 2 new migration docs
-- **Templates**: 4 files in `templates/tools/prompt-optimizer/`
+- **Templates**: 4 files in `templates/tools/prompt_optimizer/`
 - **Tracking**: `docs/aiassist/PHASE-006-CHECKLIST.md`
 
 ---

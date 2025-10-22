@@ -253,7 +253,7 @@ Based on my analysis of the VibePro project structure, I'll now design the ML-po
 
 Let me create the domain structure following the project's hexagonal architecture patterns:
 
-Created [](file:///home/sprime01/projects/VibesPro/libs/prompt-optimizer)
+Created [](file:///home/sprime01/projects/VibesPro/libs/prompt_optimizer)
 
 Created [](file:///home/sprime01/projects/VibesPro/libs/prompt-optimizer/domain)
 
@@ -595,7 +595,7 @@ Now let me create templates for generating prompt optimization tools in other pr
 
 Starting (7/8) *Add Copier Templates*
 
-Created [](file:///home/sprime01/projects/VibesPro/templates/tools/prompt-optimizer)
+Created [](file:///home/sprime01/projects/VibesPro/templates/tools/prompt_optimizer)
 
 Created [](file:///home/sprime01/projects/VibesPro/templates/tools/prompt-optimizer/measure_tokens.sh.j2)
 

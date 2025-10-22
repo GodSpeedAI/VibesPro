@@ -66,7 +66,7 @@ tokio = { version = "1", features = ["rt", "macros"] }  # For async tests
 
 ### Python Adapter
 
-**File:** `libs/prompt-optimizer/infrastructure/temporal_db.py`
+**File:** `libs/prompt_optimizer/infrastructure/temporal_db.py`
 
 - ✅ Renamed `SledTemporalDatabaseAdapter` → `RedbTemporalDatabaseAdapter`
 - ✅ Added backward compatibility alias:
@@ -189,7 +189,7 @@ db = RedbTemporalDatabaseAdapter("./temporal_db")
 ### REFACTOR Phase (Estimated: 2-3 hours)
 
 - [ ] Update remaining documentation references (README.md sled→redb)
-- [ ] Update template references in `templates/tools/prompt-optimizer/`
+- [ ] Update template references in `templates/tools/prompt_optimizer/`
 - [ ] Create data migration script for existing users
 - [ ] Performance benchmarking (compare sled vs redb)
 - [ ] Add `just temporal-db-benchmark` recipe
@@ -198,10 +198,10 @@ db = RedbTemporalDatabaseAdapter("./temporal_db")
 ### Template Updates
 
 Files requiring updates:
-- `templates/tools/prompt-optimizer/README.md.j2`
-- `templates/tools/prompt-optimizer/requirements.txt.j2`
-- `templates/tools/prompt-optimizer/libs/prompt_optimizer/__init__.py.j2`
-- `templates/tools/prompt-optimizer/measure_tokens_enhanced.py.j2`
+- `templates/tools/prompt_optimizer/README.md.j2`
+- `templates/tools/prompt_optimizer/requirements.txt.j2`
+- `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`
+- `templates/tools/prompt_optimizer/measure_tokens_enhanced.py.j2`
 - `templates/tools/prompt-optimizer/tests/test_end_to_end.py.j2`
 
 ---

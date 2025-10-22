@@ -29,7 +29,19 @@ EOF
 
 # Show minimal diagnostics
 echo "📊 Quick diagnostics:"
-echo "   PostgreSQL: $(command -v postgres >/dev/null 2>&1 && postgres --version | head -1 || echo 'not initialized')"
-echo "   Node/pnpm: managed by mise (run 'mise install' if needed)"
-echo "   Python: managed by mise + uv"
-echo ""
+POSTGRES_PATH=""
+if command -v postgres >/dev/null 2>&1; then
+  POSTGRES_PATH=$(command -v postgres)
+  POSTGRES_VERSION=$(postgres --version 2>/dev/null | head -1 || true)
+  if [[ -n "${POSTGRES_VERSION}" ]]; then
+    printf "   PostgreSQL: %s\n" "${POSTGRES_VERSION}"
+  else
+    printf "   PostgreSQL: installed (%s)\n" "${POSTGRES_PATH}"
+  fi
+else
+  printf "   PostgreSQL: not initialized\n"
+fi
+
+printf "   Node/pnpm: managed by mise (run 'mise install' if needed)\n"
+printf "   Python: managed by mise + uv\n"
+printf "\n"

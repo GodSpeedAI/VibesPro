@@ -88,7 +88,7 @@ The following patterns are excluded from various checks:
 - **`.j2` files**: Jinja2 templates (excluded from most checks)
 - **`tests/fixtures/`**: Test fixture files
 - **`node_modules/`, `.nx/`, `dist/`, `coverage/`**: Build artifacts
-- **`libs/prompt-optimizer/`, `libs/{{domain_name}}/`**: Generated code
+-- **`libs/prompt_optimizer/`, `libs/{{domain_name}}/`**: Generated code
 
 ### Hook Stages
 

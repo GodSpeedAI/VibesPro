@@ -37,7 +37,7 @@ SAMPLE_CONTEXT = {
 }
 
 
-def find_templates(root, subdir=None):
+def find_templates(root: str, subdir: str | None = None) -> list[str]:
     templates = []
     for dirpath, dirnames, filenames in os.walk(root):
         for f in filenames:
@@ -53,7 +53,7 @@ def find_templates(root, subdir=None):
     return sorted(templates)
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Check Jinja2 templates under templates/{{project_slug}} using StrictUndefined"
     )
