@@ -1,5 +1,13 @@
 creation_rules:
-  - path_regex: \.secrets\.env\.sops$
+  - path_regex: '.*\.sops$|.*\.env$|^\.secrets.*'
+    # Regex that targets typical secret variable names (customize for your repo)
+    encrypted_regex: '^(APP_|OPENAI|SUPABASE|OPENOBSERVE|OTLP|SMITHERY|SECRET|TOKEN|KEY|PASSWORD)'
+    key_groups:
+      - age: []
+
+  - path_regex: '^\.secrets\.env\.sops$'
     encrypted_regex: '^(.*)$'
-    age:
-      - age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    # your team AGE pubkey(s)
+    # Replace with your team/public age recipient(s). Example placeholder below.
+    key_groups:
+      - age:
+          - 'age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'

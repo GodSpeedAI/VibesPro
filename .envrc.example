@@ -1,0 +1,11 @@
+# Example .envrc for direnv + sops (do NOT commit a real .envrc with secrets)
+# Requires: direnv and sops installed locally
+
+# decrypt to a temp file and load into environment for this shell session
+export SOPS_FILE=".secrets.env.sops"
+if [ -f "$SOPS_FILE" ]; then
+  sops -d "$SOPS_FILE" > .secrets.env
+  export $(cat .secrets.env | xargs)
+  # optionally remove plaintext immediately if you prefer
+  # shred -u .secrets.env
+fi

@@ -1,0 +1,46 @@
+name: Decrypt secrets and test
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install sops
+        run: sudo apt-get update && sudo apt-get install -y sops
+
+      - name: Configure age key
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          if [ -z "${SOPS_AGE_KEY:-}" ]; then
+            echo "SOPS_AGE_KEY is not set; skipping decrypt (ensure secret is configured)" >&2
+            exit 1
+          fi
+          mkdir -p ~/.config/sops
+          printf "%s" "${SOPS_AGE_KEY}" > ~/.config/sops/age-key.txt
+          chmod 600 ~/.config/sops/age-key.txt
+          export SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt
+
+      - name: Decrypt secrets
+        run: |
+          set -euo pipefail
+          sops -d .secrets.env.sops > .secrets.env
+          chmod 600 .secrets.env
+
+      - name: Run tests
+        env:
+          # load minimal variables from .secrets.env if needed by tests
+          # Example: OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # avoid echoing secrets
+          # run your test/build commands here
+          echo "(secrets decrypted)"
+
+      - name: Cleanup
+        if: always()
+        run: shred -u .secrets.env || rm -f .secrets.env
