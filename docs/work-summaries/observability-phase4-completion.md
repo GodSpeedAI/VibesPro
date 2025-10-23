@@ -11,7 +11,9 @@ Successfully completed Phase 4 of the observability implementation by adding Ope
 ## TDD Cycle Completion
 
 ### ✅ RED Phase
+
 Created failing test `tests/ops/test_openobserve_sink.sh` that verified:
+
 - OpenObserve sink configuration exists in Vector config
 - HTTP sink type is properly configured
 - Environment variables are referenced (OPENOBSERVE_URL, OPENOBSERVE_TOKEN)
@@ -19,12 +21,15 @@ Created failing test `tests/ops/test_openobserve_sink.sh` that verified:
 - Optional endpoint reachability check
 
 Initial test failed as expected with:
+
 ```
 ❌ OpenObserve sink not found in Vector configuration
 ```
 
 ### ✅ GREEN Phase
+
 Implemented OpenObserve HTTP sink in `ops/vector/vector.toml`:
+
 - Added `[sinks.openobserve]` section with HTTP sink type
 - Configured OTLP endpoint: `${OPENOBSERVE_URL}/api/${OPENOBSERVE_ORG}/v1/traces`
 - Set up Basic Auth using environment variables
@@ -32,18 +37,22 @@ Implemented OpenObserve HTTP sink in `ops/vector/vector.toml`:
 - Used default values to allow Vector validation without secrets
 
 Updated `.secrets.env.sops` with comprehensive documentation:
+
 - `OPENOBSERVE_URL` - Base URL for OpenObserve instance
 - `OPENOBSERVE_TOKEN` - API token for authentication
 - `OPENOBSERVE_ORG` - Organization name (defaults to "default")
 - `OPENOBSERVE_USER` - User email for Basic Auth
 
 Test now passes:
+
 ```
 ✅ Phase 4: OpenObserve sink configuration test PASSED
 ```
 
 ### ✅ REFACTOR Phase
+
 Enhanced justfile with comprehensive verification:
+
 - Added `observe-test-openobserve` target for isolated Phase 4 testing
 - Updated `observe-test-all` to include OpenObserve sink test
 - Enhanced `observe-verify` target with step-by-step verification:
@@ -56,9 +65,11 @@ Enhanced justfile with comprehensive verification:
 ## Files Modified
 
 ### New Files
+
 - `tests/ops/test_openobserve_sink.sh` - Phase 4 TDD test (127 lines)
 
 ### Modified Files
+
 - `ops/vector/vector.toml` - Added OpenObserve HTTP sink configuration
 - `.secrets.env.sops` - Documented OpenObserve environment variables
 - `justfile` - Added Phase 4 test targets and enhanced verification
@@ -83,6 +94,7 @@ $ just observe-test-vector && just observe-test-openobserve
 ## Vector Configuration Details
 
 The OpenObserve sink is configured as an HTTP sink that:
+
 - Accepts OTLP traces from the `traces_sanitize` transform
 - Sends JSON-encoded traces to OpenObserve's OTLP endpoint
 - Uses Basic authentication with configurable credentials
@@ -90,6 +102,7 @@ The OpenObserve sink is configured as an HTTP sink that:
 - Gracefully degrades with default values when env vars not set
 
 Example Vector output:
+
 ```toml
 [sinks.openobserve]
 type = "http"
@@ -117,6 +130,7 @@ password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
 To complete the full observability pipeline:
 
 1. **Set OpenObserve credentials** in `.secrets.env.sops`:
+
    ```bash
    OPENOBSERVE_URL=https://observe.vibepro.dev:443
    OPENOBSERVE_TOKEN=<your-api-token>
@@ -125,16 +139,19 @@ To complete the full observability pipeline:
    ```
 
 2. **Source the secrets**:
+
    ```bash
    source .secrets.env.sops
    ```
 
 3. **Start Vector with OpenObserve sink**:
+
    ```bash
    just observe-start
    ```
 
 4. **Run verification**:
+
    ```bash
    just observe-verify
    ```
@@ -144,6 +161,7 @@ To complete the full observability pipeline:
 ## Phase 5 Preview
 
 Phase 5 will focus on CI validation, ensuring:
+
 - Vector validation runs in CI pipeline
 - Configuration is validated post-mise install
 - Vector binary is cached for faster CI runs

@@ -21,14 +21,17 @@ Validate that generated projects from the VibesPro template have properly config
 Created `tests/integration/generated-ci-regression.test.ts` with **7 comprehensive test scenarios**:
 
 1. **CI Workflow Alignment**
+
    - ✅ Execute spec-guard workflow steps in dry-run mode
    - ✅ Verify corepack and pnpm detection logic in workflows
 
 2. **Package Manager Configuration**
+
    - ✅ Detect pnpm via packageManager field
    - ✅ Verify lockfile presence for dependency freezing
 
 3. **Workflow Step Optimization**
+
    - ✅ Validate optimized step ordering (checkout first)
    - ✅ Confirm annotations linking failures to guardrail documentation
 
@@ -40,14 +43,17 @@ Created `tests/integration/generated-ci-regression.test.ts` with **7 comprehensi
 **Files Modified:**
 
 1. **`package.json.j2`** (Root Template)
+
    - Added `"packageManager": "pnpm@9.0.0"` field
    - Ensures corepack compatibility for generated projects
 
 2. **`templates/{{project_slug}}/.github/workflows/spec-guard.yml`**
+
    - Named checkout step explicitly: `- name: Checkout code`
    - Improves workflow step parsing and debugging
 
 3. **`templates/{{project_slug}}/package.json.j2`**
+
    - Added packageManager field for nested template consistency
 
 4. **Test Implementation Refinements**
@@ -94,6 +100,7 @@ Tests:       7 passed, 7 total
 **Challenge:** Tests initially failed because `packageManager` field wasn't being added to generated projects.
 
 **Root Cause:** VibesPro has TWO `package.json.j2` files:
+
 - `/package.json.j2` (Root - used by Copier for generation)
 - `/templates/{{project_slug}}/package.json.j2` (Nested template)
 
@@ -114,6 +121,7 @@ Tests:       7 passed, 7 total
 ### 3. **Context7 Integration for Documentation**
 
 **Success:** Used Context7 Copier documentation to understand:
+
 - Template structure best practices
 - `_subdirectory` configuration options
 - File suffix handling (`.j2`, `.jinja`)
@@ -126,18 +134,21 @@ Tests:       7 passed, 7 total
 ## 📊 Impact Assessment
 
 ### Test Coverage
+
 - **Integration Tests:** 7/7 passing
 - **CI Validation:** Full workflow execution validated
 - **Package Manager:** Corepack compatibility confirmed
 - **Traceability:** Idempotent matrix regeneration verified
 
 ### Risk Mitigation
+
 - ✅ Generated projects have correct package manager configuration
 - ✅ CI workflows execute successfully end-to-end
 - ✅ Workflow step ordering optimized for efficiency
 - ✅ Documentation annotations guide developers during failures
 
 ### Developer Experience
+
 - Clear error messages when CI fails
 - Proper package manager detection
 - Consistent workflow structure across generated projects
@@ -148,11 +159,13 @@ Tests:       7 passed, 7 total
 ## 🚀 Next Steps
 
 ### Immediate Actions
+
 1. ✅ Merge `feat/generated-ci-TASK-012` into `dev` branch
 2. ✅ Update PHASE-005 status in AI_TDD_PLAN.md (now 100% complete)
 3. ✅ Run final validation suite across all completed tasks
 
 ### Follow-up Tasks
+
 1. **Documentation:** Update main README with CI validation details
 2. **Monitoring:** Add CI execution metrics to project dashboard
 3. **Optimization:** Consider adding parallel CI job execution
@@ -163,6 +176,7 @@ Tests:       7 passed, 7 total
 ## 📝 Commits
 
 ### Main Implementation
+
 ```
 feat(ci): complete TASK-012 generated project CI validation
 
@@ -195,6 +209,7 @@ Files Modified:
 ```
 
 ### Documentation Update
+
 ```
 docs(task-012): update AI_TDD_PLAN with TASK-012 completion status
 
@@ -213,14 +228,14 @@ PHASE-005 now 100% complete (TASK-011 + TASK-012)
 
 ## 🏆 Success Metrics
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Test Coverage | 100% | 100% (7/7) | ✅ |
-| CI Execution | Pass | Pass | ✅ |
-| Package Manager Config | Correct | Verified | ✅ |
-| Workflow Optimization | Optimized | Confirmed | ✅ |
-| Traceability | Idempotent | Validated | ✅ |
-| Documentation | Complete | Complete | ✅ |
+| Metric                 | Target     | Actual     | Status |
+| ---------------------- | ---------- | ---------- | ------ |
+| Test Coverage          | 100%       | 100% (7/7) | ✅     |
+| CI Execution           | Pass       | Pass       | ✅     |
+| Package Manager Config | Correct    | Verified   | ✅     |
+| Workflow Optimization  | Optimized  | Confirmed  | ✅     |
+| Traceability           | Idempotent | Validated  | ✅     |
+| Documentation          | Complete   | Complete   | ✅     |
 
 ---
 

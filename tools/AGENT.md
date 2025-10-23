@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Development utilities and helper tools
 - Token measurement and metrics collection
 - Template validation and linting
@@ -26,6 +27,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 📁 Key Files & Patterns
 
 ### Directory Structure
+
 ```
 tools/
 ├── package.json                    # Node.js tools dependencies
@@ -72,25 +74,25 @@ tools/
 
 ### File Naming Conventions
 
-| File Type | Pattern | Example |
-|-----------|---------|---------|
-| **Node/TS Tools** | `*.ts`, `*.js` | `context_manager.ts` |
-| **Python Tools** | `*.py` | `token_metrics.py` |
-| **Test Files** | `*.test.ts`, `test_*.py` | `context_manager.test.ts` |
-| **CLI Scripts** | `*_cli.ts` | `dev_cli.ts` |
-| **Validators** | `validate_*.{ts,js,py}` | `validate_prompts.py` |
-| **Generators** | `generate_*.{ts,js,py}` | `generate_types.ts` |
+| File Type         | Pattern                  | Example                   |
+| ----------------- | ------------------------ | ------------------------- |
+| **Node/TS Tools** | `*.ts`, `*.js`           | `context_manager.ts`      |
+| **Python Tools**  | `*.py`                   | `token_metrics.py`        |
+| **Test Files**    | `*.test.ts`, `test_*.py` | `context_manager.test.ts` |
+| **CLI Scripts**   | `*_cli.ts`               | `dev_cli.ts`              |
+| **Validators**    | `validate_*.{ts,js,py}`  | `validate_prompts.py`     |
+| **Generators**    | `generate_*.{ts,js,py}`  | `generate_types.ts`       |
 
 ### Tool Categories
 
-| Category | Purpose | Primary Language |
-|----------|---------|-----------------|
-| **AI Tools** | Context management, token counting | TypeScript |
-| **Validation** | Template, prompt, spec validation | Python, TypeScript |
-| **Metrics** | Token usage, build metrics | Python, JavaScript |
-| **Generators** | Type generation, docs, fixtures | TypeScript |
-| **CLI** | Developer command-line tools | TypeScript |
-| **Documentation** | Link checking, API docs | JavaScript, TypeScript |
+| Category          | Purpose                            | Primary Language       |
+| ----------------- | ---------------------------------- | ---------------------- |
+| **AI Tools**      | Context management, token counting | TypeScript             |
+| **Validation**    | Template, prompt, spec validation  | Python, TypeScript     |
+| **Metrics**       | Token usage, build metrics         | Python, JavaScript     |
+| **Generators**    | Type generation, docs, fixtures    | TypeScript             |
+| **CLI**           | Developer command-line tools       | TypeScript             |
+| **Documentation** | Link checking, API docs            | JavaScript, TypeScript |
 
 ## 🧭 Routing Rules
 
@@ -107,19 +109,20 @@ tools/
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
+| Context                               | When to Use                               |
+| ------------------------------------- | ----------------------------------------- |
 | [scripts/AGENT.md](/scripts/AGENT.md) | Orchestration scripts or shell automation |
-| [tests/AGENT.md](/tests/AGENT.md) | Writing test cases for tools |
-| [.github/AGENT.md](/.github/AGENT.md) | AI workflows or prompt engineering |
-| [docs/AGENT.md](/docs/AGENT.md) | Documentation generation or spec parsing |
-| [libs/AGENT.md](/libs/AGENT.md) | Business logic (not tooling) |
+| [tests/AGENT.md](/tests/AGENT.md)     | Writing test cases for tools              |
+| [.github/AGENT.md](/.github/AGENT.md) | AI workflows or prompt engineering        |
+| [docs/AGENT.md](/docs/AGENT.md)       | Documentation generation or spec parsing  |
+| [libs/AGENT.md](/libs/AGENT.md)       | Business logic (not tooling)              |
 
 ## 🔧 Local Conventions
 
 ### Language Choice Guidelines
 
 **Use TypeScript/JavaScript when:**
+
 - Integrating with Nx workspace
 - Working with Node.js ecosystem
 - Building CLI tools with inquirer, commander
@@ -127,6 +130,7 @@ tools/
 - Type generation from schemas
 
 **Use Python when:**
+
 - Text processing or parsing
 - Data analysis or metrics
 - Template validation (Jinja2)
@@ -136,10 +140,11 @@ tools/
 ### Coding Standards
 
 #### TypeScript Tools
+
 ```typescript
 // Strict mode always enabled
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 // Export typed interfaces
 export interface ToolOptions {
@@ -157,15 +162,16 @@ export class ToolError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly details?: unknown
+    public readonly details?: unknown,
   ) {
     super(message);
-    this.name = 'ToolError';
+    this.name = "ToolError";
   }
 }
 ```
 
 #### Python Tools
+
 ```python
 """
 Module docstring with purpose and usage.
@@ -202,6 +208,7 @@ def process_files(
 ### Testing Requirements
 
 **All tools must have tests:**
+
 - Unit tests in `tests/unit/tools/`
 - Use `node:assert` for simple Node tests
 - Use `pytest` for Python tests
@@ -209,14 +216,15 @@ def process_files(
 - Test error conditions
 
 **Example test structure:**
+
 ```typescript
 // tests/unit/tools/context_manager.test.ts
-import assert from 'node:assert';
-import { describe, it } from 'node:test';
-import { ContextManager } from '../../../tools/ai/context_manager';
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import { ContextManager } from "../../../tools/ai/context_manager";
 
-describe('ContextManager', () => {
-  it('should bundle context files', () => {
+describe("ContextManager", () => {
+  it("should bundle context files", () => {
     // Arrange, Act, Assert
   });
 });
@@ -225,23 +233,24 @@ describe('ContextManager', () => {
 ### CLI Tool Conventions
 
 **Use consistent patterns:**
+
 ```typescript
 #!/usr/bin/env node
-import { Command } from 'commander';
-import { version } from '../package.json';
+import { Command } from "commander";
+import { version } from "../package.json";
 
 const program = new Command();
 
 program
-  .name('dev-cli')
-  .description('Developer CLI for VibesPro')
+  .name("dev-cli")
+  .description("Developer CLI for VibesPro")
   .version(version);
 
 program
-  .command('validate')
-  .description('Validate project files')
-  .option('-v, --verbose', 'Verbose output')
-  .option('--dry-run', 'Dry run mode')
+  .command("validate")
+  .description("Validate project files")
+  .option("-v, --verbose", "Verbose output")
+  .option("--dry-run", "Dry run mode")
   .action((options) => {
     // Implementation
   });
@@ -252,16 +261,18 @@ program.parse();
 ### Error Handling & Logging
 
 **Structured logging:**
+
 ```typescript
-import { createLogger } from './logging/structured_logger';
+import { createLogger } from "./logging/structured_logger";
 
-const logger = createLogger('tool-name');
+const logger = createLogger("tool-name");
 
-logger.info('Processing files', { count: 5, path: '/some/path' });
-logger.error('Failed to process', { error: err, context: { file: 'x.ts' } });
+logger.info("Processing files", { count: 5, path: "/some/path" });
+logger.error("Failed to process", { error: err, context: { file: "x.ts" } });
 ```
 
 **Exit codes:**
+
 ```typescript
 // Success
 process.exit(0);
@@ -279,6 +290,7 @@ process.exit(3);
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in tools
 - [.github/instructions/style.frontend.instructions.md](/.github/instructions/style.frontend.instructions.md) - TypeScript style
@@ -286,6 +298,7 @@ process.exit(3);
 - [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance guidelines
 
 **Relevant prompts:**
+
 - [.github/prompts/tool.techstack.sync.prompt.md](/.github/prompts/tool.techstack.sync.prompt.md) - Techstack synchronization
 
 ## 💡 Examples
@@ -294,8 +307,8 @@ process.exit(3);
 
 ```typescript
 // tools/validate/validate_config.ts
-import { readFileSync } from 'node:fs';
-import { z } from 'zod';
+import { readFileSync } from "node:fs";
+import { z } from "zod";
 
 // Define schema
 const ConfigSchema = z.object({
@@ -308,27 +321,27 @@ export type Config = z.infer<typeof ConfigSchema>;
 
 export function validateConfig(filePath: string): Config {
   try {
-    const content = readFileSync(filePath, 'utf-8');
+    const content = readFileSync(filePath, "utf-8");
     const json = JSON.parse(content);
     return ConfigSchema.parse(json);
   } catch (error) {
     throw new ValidationError(
       `Invalid config file: ${filePath}`,
-      'INVALID_CONFIG',
-      { originalError: error }
+      "INVALID_CONFIG",
+      { originalError: error },
     );
   }
 }
 
 // CLI wrapper
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const [,, filePath] = process.argv;
+  const [, , filePath] = process.argv;
   try {
     const config = validateConfig(filePath);
-    console.log('✅ Config is valid');
+    console.log("✅ Config is valid");
     process.exit(0);
   } catch (error) {
-    console.error('❌ Validation failed:', error.message);
+    console.error("❌ Validation failed:", error.message);
     process.exit(1);
   }
 }
@@ -390,22 +403,22 @@ if __name__ == "__main__":
 
 ```typescript
 // tools/type-generator/generate_schema_types.ts
-import { compile } from 'json-schema-to-typescript';
-import { readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { compile } from "json-schema-to-typescript";
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 export async function generateTypes(
   schemaPath: string,
-  outputPath: string
+  outputPath: string,
 ): Promise<void> {
-  const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'));
+  const schema = JSON.parse(readFileSync(schemaPath, "utf-8"));
 
-  const types = await compile(schema, schema.title || 'Schema', {
-    bannerComment: '/* Generated by generate_schema_types.ts - DO NOT EDIT */',
+  const types = await compile(schema, schema.title || "Schema", {
+    bannerComment: "/* Generated by generate_schema_types.ts - DO NOT EDIT */",
     style: {
       semi: true,
       singleQuote: true,
-      trailingComma: 'es5',
+      trailingComma: "es5",
     },
   });
 
@@ -415,9 +428,9 @@ export async function generateTypes(
 
 // CLI usage
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const [,, schemaPath, outputPath] = process.argv;
+  const [, , schemaPath, outputPath] = process.argv;
   generateTypes(schemaPath, outputPath).catch((err) => {
-    console.error('❌ Generation failed:', err);
+    console.error("❌ Generation failed:", err);
     process.exit(1);
   });
 }
@@ -427,9 +440,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
 ```typescript
 // tools/ai/context_manager.ts
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join, relative } from 'node:path';
-import { glob } from 'glob';
+import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { join, relative } from "node:path";
+import { glob } from "glob";
 
 export interface ContextBundle {
   files: Map<string, string>;
@@ -447,19 +460,19 @@ export class ContextManager {
     const files = new Map<string, string>();
 
     // Collect CALM docs
-    const calmFiles = await glob('architecture/calm/**/*.md', {
+    const calmFiles = await glob("architecture/calm/**/*.md", {
       cwd: this.rootDir,
     });
 
     // Collect specs
-    const specFiles = await glob('docs/dev_*.md', {
+    const specFiles = await glob("docs/dev_*.md", {
       cwd: this.rootDir,
     });
 
     // Read and bundle
     for (const file of [...calmFiles, ...specFiles]) {
       const fullPath = join(this.rootDir, file);
-      const content = readFileSync(fullPath, 'utf-8');
+      const content = readFileSync(fullPath, "utf-8");
       files.set(file, content);
     }
 
@@ -468,7 +481,7 @@ export class ContextManager {
 
     for (const [file, content] of files) {
       const outPath = join(outputDir, file);
-      mkdirSync(join(outPath, '..'), { recursive: true });
+      mkdirSync(join(outPath, ".."), { recursive: true });
       writeFileSync(outPath, content);
     }
 
@@ -484,8 +497,10 @@ export class ContextManager {
 
   private estimateTokens(files: Map<string, string>): number {
     // Rough estimate: ~4 chars per token
-    const totalChars = Array.from(files.values())
-      .reduce((sum, content) => sum + content.length, 0);
+    const totalChars = Array.from(files.values()).reduce(
+      (sum, content) => sum + content.length,
+      0,
+    );
     return Math.ceil(totalChars / 4);
   }
 }
@@ -549,26 +564,31 @@ mypy tools/
 ### Key Tools by Category
 
 #### AI & Context
+
 - `ai/context_manager.ts` - Bundle AI context
 - `ai/token_counter.ts` - Count tokens
 - `prompt/render_prompt.js` - Render prompts
 
 #### Validation
+
 - `prompt/validate_prompts.py` - Validate prompt files
 - `ci/validate_workflows.js` - Validate GitHub Actions
 - `check_templates.py` - Validate Jinja2 templates
 
 #### Metrics
+
 - `metrics/token_metrics.py` - Track token usage
 - `metrics/build_metrics.js` - Build performance
 - `performance/profiler.js` - Performance profiling
 
 #### Generation
+
 - `type-generator/generate_schema_types.ts` - Generate types
 - `docs/generate_api_docs.ts` - Generate API docs
 - `test/fixture_generator.py` - Generate test fixtures
 
 #### Documentation
+
 - `docs/link_check.js` - Check markdown links
 - `calm/generate_calm.py` - Generate CALM diagrams
 
@@ -584,19 +604,20 @@ mypy tools/
 - ⚠️ Audit dependencies regularly: `just audit`
 
 **Example secure file access:**
+
 ```typescript
-import { resolve, relative, dirname } from 'node:path';
+import { resolve, relative, dirname } from "node:path";
 
 function safeReadFile(basePath: string, userPath: string): string {
   const resolved = resolve(basePath, userPath);
   const rel = relative(basePath, resolved);
 
   // Prevent path traversal
-  if (rel.startsWith('..') || resolve(rel) !== resolved) {
-    throw new Error('Invalid path: path traversal detected');
+  if (rel.startsWith("..") || resolve(rel) !== resolved) {
+    throw new Error("Invalid path: path traversal detected");
   }
 
-  return readFileSync(resolved, 'utf-8');
+  return readFileSync(resolved, "utf-8");
 }
 ```
 
@@ -660,22 +681,23 @@ Register tools as Nx targets in `project.json`:
 5. **Performance** - Benchmark for large inputs
 
 **Example test:**
-```typescript
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
-import { validateConfig } from '../../../tools/validate/validate_config';
 
-describe('validateConfig', () => {
-  it('should validate correct config', () => {
-    const result = validateConfig('tests/fixtures/valid_config.json');
+```typescript
+import { describe, it } from "node:test";
+import assert from "node:assert";
+import { validateConfig } from "../../../tools/validate/validate_config";
+
+describe("validateConfig", () => {
+  it("should validate correct config", () => {
+    const result = validateConfig("tests/fixtures/valid_config.json");
     assert.ok(result);
-    assert.strictEqual(result.version, '1.0.0');
+    assert.strictEqual(result.version, "1.0.0");
   });
 
-  it('should throw on invalid config', () => {
+  it("should throw on invalid config", () => {
     assert.throws(
-      () => validateConfig('tests/fixtures/invalid_config.json'),
-      /Invalid config/
+      () => validateConfig("tests/fixtures/invalid_config.json"),
+      /Invalid config/,
     );
   });
 });

@@ -4,11 +4,11 @@ import {
   installPackagesTask,
   joinPathFragments,
   names,
-} from '@nx/devkit';
-import { libraryGenerator as jsLibraryGenerator } from '@nx/js';
-import { componentGenerator as reactComponentGenerator } from '@nx/react';
-import { Feature } from './schema';
-import { getNpmScope } from '../utils/npm';
+} from "@nx/devkit";
+import { libraryGenerator as jsLibraryGenerator } from "@nx/js";
+import { componentGenerator as reactComponentGenerator } from "@nx/react";
+import { Feature } from "./schema";
+import { getNpmScope } from "../utils/npm";
 
 export default async function (tree: Tree, options: Feature) {
   const npmScope = getNpmScope(tree);
@@ -36,15 +36,15 @@ export default async function (tree: Tree, options: Feature) {
 
   const componentPath = joinPathFragments(
     featureDirectory,
-    'src/lib',
+    "src/lib",
     featureName,
-    `${featureName}.tsx`
+    `${featureName}.tsx`,
   );
 
   await reactComponentGenerator(tree, {
     name: featureName,
     path: componentPath,
-    style: 'scss',
+    style: "scss",
     export: true,
   });
 

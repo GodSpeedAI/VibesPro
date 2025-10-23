@@ -1,94 +1,103 @@
 /* Frontmatter parsing utilities (shared)
  * Provide extractFrontmatter and related helpers so other tools can reuse parsing logic.
  */
-const fs = require('node:fs');
+const fs = require("node:fs");
 
 function stripQuotes(value) {
-    if (!value || typeof value !== 'string') return value;
-    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-        return value.slice(1, -1);
-    }
-    return value;
+  if (!value || typeof value !== "string") return value;
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1);
+  }
+  return value;
 }
 
 function parseFrontmatterArray(line, fields) {
-    const arrayMatch = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*\[([^\]]*)\]\s*$/);
-    if (!arrayMatch) {
-        return false;
-    }
+  const arrayMatch = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*\[([^\]]*)\]\s*$/);
+  if (!arrayMatch) {
+    return false;
+  }
 
-    const key = arrayMatch[1].trim();
-    const rawItems = arrayMatch[2].trim();
+  const key = arrayMatch[1].trim();
+  const rawItems = arrayMatch[2].trim();
 
-    if (!rawItems) {
-        fields[key] = [];
-        return true;
-    }
-
-    const items = rawItems
-        .split(',')
-        .map(item => stripQuotes(item.trim()))
-        .filter(item => item.length > 0);
-
-    fields[key] = items;
+  if (!rawItems) {
+    fields[key] = [];
     return true;
+  }
+
+  const items = rawItems
+    .split(",")
+    .map((item) => stripQuotes(item.trim()))
+    .filter((item) => item.length > 0);
+
+  fields[key] = items;
+  return true;
 }
 
 function parseFrontmatterSimple(line, fields) {
-    const simpleMatch = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*(.+)$/);
-    if (simpleMatch) {
-        const key = simpleMatch[1].trim();
-        let val = simpleMatch[2].trim();
+  const simpleMatch = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*(.+)$/);
+  if (simpleMatch) {
+    const key = simpleMatch[1].trim();
+    let val = simpleMatch[2].trim();
 
-        val = val.replace(/^['"]|['"]$/g, '');
+    val = val.replace(/^['"]|['"]$/g, "");
 
-        if (key && key.length > 0 && val !== undefined) {
-            fields[key] = val;
-        }
+    if (key && key.length > 0 && val !== undefined) {
+      fields[key] = val;
     }
+  }
 }
 
 function extractFrontmatter(text) {
-    if (!text || typeof text !== 'string') {
-        return { raw: null, fields: {} };
+  if (!text || typeof text !== "string") {
+    return { raw: null, fields: {} };
+  }
+
+  const m = text.match(/^---\n([\s\S]*?)\n---/m);
+  if (!m) return { raw: null, fields: {} };
+
+  const raw = m[1];
+  const fields = {};
+
+  if (!raw || raw.trim().length === 0) {
+    return { raw, fields: {} };
+  }
+
+  for (const line of raw.split(/\r?\n/)) {
+    const trimmedLine = line.trim();
+    if (!trimmedLine || trimmedLine.startsWith("#")) {
+      continue;
     }
 
-    const m = text.match(/^---\n([\s\S]*?)\n---/m);
-    if (!m) return { raw: null, fields: {} };
-
-    const raw = m[1];
-    const fields = {};
-
-    if (!raw || raw.trim().length === 0) {
-        return { raw, fields: {} };
-    }
-
-    for (const line of raw.split(/\r?\n/)) {
-        const trimmedLine = line.trim();
-        if (!trimmedLine || trimmedLine.startsWith('#')) {
-            continue;
-        }
-
-        if (parseFrontmatterArray(line, fields)) continue;
-        parseFrontmatterSimple(line, fields);
-    }
-    return { raw, fields };
+    if (parseFrontmatterArray(line, fields)) continue;
+    parseFrontmatterSimple(line, fields);
+  }
+  return { raw, fields };
 }
 
 function extractIdsFromFrontmatter(filePath) {
-    if (!fs.existsSync(filePath)) return [];
+  if (!fs.existsSync(filePath)) return [];
 
-    const text = fs.readFileSync(filePath, 'utf8');
-    const { fields } = extractFrontmatter(text);
-    const ids = [];
+  const text = fs.readFileSync(filePath, "utf8");
+  const { fields } = extractFrontmatter(text);
+  const ids = [];
 
-    if (fields.matrix_ids && Array.isArray(fields.matrix_ids)) {
-        for (const id of fields.matrix_ids) {
-            ids.push({ id, type: id.split('-')[0], source: filePath });
-        }
+  if (fields.matrix_ids && Array.isArray(fields.matrix_ids)) {
+    for (const id of fields.matrix_ids) {
+      ids.push({ id, type: id.split("-")[0], source: filePath });
     }
+  }
 
-    return ids;
+  return ids;
 }
 
-module.exports = { extractFrontmatter, parseFrontmatterArray, parseFrontmatterSimple, extractIdsFromFrontmatter, stripQuotes };
+module.exports = {
+  extractFrontmatter,
+  parseFrontmatterArray,
+  parseFrontmatterSimple,
+  extractIdsFromFrontmatter,
+  stripQuotes,
+};

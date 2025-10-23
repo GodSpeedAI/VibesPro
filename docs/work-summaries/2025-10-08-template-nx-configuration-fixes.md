@@ -14,39 +14,47 @@ Incorporating fixes from the SEA project generation to prevent Nx and TypeScript
 ### Critical Configuration Missing
 
 1. **nx.json.j2**: Missing `namedInputs` section
+
    - Causes: Nx daemon crashes with "invalid fileset" errors
    - Impact: Build, test, and lint commands fail completely
 
 2. **libs/core/project.json**: Missing entirely
+
    - Causes: Nx cannot detect the core library as a project
    - Impact: Project not recognized in Nx graph, no task execution
 
 3. **TypeScript Configurations**: Missing lib and spec configs
+
    - `libs/core/tsconfig.json` - missing
    - `libs/core/tsconfig.lib.json` - missing
    - `libs/core/tsconfig.spec.json` - missing
    - Causes: Module resolution conflicts, no test compilation setup
 
 4. **libs/core/index.ts**: Missing library entry point
+
    - Causes: Path mappings have no target file
    - Impact: Imports fail
 
 5. **pnpm-workspace.yaml**: Missing
+
    - Causes: pnpm warnings about workspace configuration
    - Impact: Suboptimal monorepo setup
 
 6. **ESLint Configuration**: Missing
+
    - Root `.eslintrc.json` - missing
    - `libs/core/.eslintrc.json` - missing
-   - Packages: @nx/eslint, eslint, @typescript-eslint/* - missing
+   - Packages: @nx/eslint, eslint, @typescript-eslint/\* - missing
 
 7. **Jest Configuration**: Missing
+
    - Root `jest.config.js` - missing
    - Root `jest.preset.js` - missing
    - `libs/core/jest.config.ts` - missing
    - Packages: @nx/jest, jest, ts-jest, @types/jest - missing
 
 8. **Dependencies**: Missing critical packages
+
    - `tslib` - required by `importHelpers: true`
    - ESLint packages
    - Jest packages
@@ -65,10 +73,7 @@ Incorporating fixes from the SEA project generation to prevent Nx and TypeScript
   "version": 2,
   "npmScope": "{{ project_slug }}",
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
@@ -76,9 +81,7 @@ Incorporating fixes from the SEA project generation to prevent Nx and TypeScript
       "!{projectRoot}/jest.config.[jt]s",
       "!{projectRoot}/.eslintrc.json"
     ],
-    "sharedGlobals": [
-      "{workspaceRoot}/babel.config.json"
-    ]
+    "sharedGlobals": ["{workspaceRoot}/babel.config.json"]
   },
   "affected": {
     "defaultBase": "origin/main"
@@ -135,6 +138,7 @@ Simple workspace configuration for pnpm.
 ### 7. Update package.json.j2 Dependencies
 
 Add missing packages:
+
 ```json
 {
   "devDependencies": {
@@ -161,6 +165,7 @@ Add missing packages:
 ### 8. Update tsconfig.base.json.j2
 
 Add path mapping:
+
 ```json
 {
   "paths": {
@@ -201,6 +206,7 @@ After implementing fixes:
 ## Expected Outcomes
 
 ✅ Generated projects will have:
+
 - Working Nx project detection
 - Functional build, lint, and test targets
 - Proper TypeScript compilation

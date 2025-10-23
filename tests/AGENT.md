@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Unit tests (Node.js/TypeScript, Python)
 - Integration tests (full workflow testing)
 - Shell tests (ShellSpec for scripts)
@@ -25,6 +26,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 📁 Key Files & Patterns
 
 ### Directory Structure
+
 ```
 tests/
 ├── unit/                       # Unit tests
@@ -54,22 +56,22 @@ tests/
 
 ### File Naming Conventions
 
-| Test Type | Pattern | Location | Example |
-|-----------|---------|----------|---------|
-| **Node Unit** | `*.test.ts`, `*.test.js` | `tests/unit/**` | `context-manager.test.ts` |
-| **Python Unit** | `test_*.py` | `tests/unit/**` | `test_spec_parser.py` |
-| **Integration** | `*.test.ts` | `tests/integration/` | `template-smoke.test.ts` |
-| **Shell Spec** | `*_spec.sh` | `tests/shell/` | `run_prompt_spec.sh` |
-| **Fixtures** | Various | `tests/fixtures/` | `valid_config.json` |
+| Test Type       | Pattern                  | Location             | Example                   |
+| --------------- | ------------------------ | -------------------- | ------------------------- |
+| **Node Unit**   | `*.test.ts`, `*.test.js` | `tests/unit/**`      | `context-manager.test.ts` |
+| **Python Unit** | `test_*.py`              | `tests/unit/**`      | `test_spec_parser.py`     |
+| **Integration** | `*.test.ts`              | `tests/integration/` | `template-smoke.test.ts`  |
+| **Shell Spec**  | `*_spec.sh`              | `tests/shell/`       | `run_prompt_spec.sh`      |
+| **Fixtures**    | Various                  | `tests/fixtures/`    | `valid_config.json`       |
 
 ### Test Organization by Layer
 
-| Layer | Test Location | Focus |
-|-------|---------------|-------|
-| **Domain** | `tests/unit/libs/{domain}/domain/` | Pure business logic, no dependencies |
-| **Application** | `tests/unit/libs/{domain}/application/` | Use cases, mock ports |
-| **Infrastructure** | `tests/integration/` | Repository implementations, adapters |
-| **Interface** | `tests/integration/` | Controllers, CLI, API endpoints |
+| Layer              | Test Location                           | Focus                                |
+| ------------------ | --------------------------------------- | ------------------------------------ |
+| **Domain**         | `tests/unit/libs/{domain}/domain/`      | Pure business logic, no dependencies |
+| **Application**    | `tests/unit/libs/{domain}/application/` | Use cases, mock ports                |
+| **Infrastructure** | `tests/integration/`                    | Repository implementations, adapters |
+| **Interface**      | `tests/integration/`                    | Controllers, CLI, API endpoints      |
 
 ## 🧭 Routing Rules
 
@@ -85,14 +87,14 @@ tests/
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [.github/AGENT.md](/.github/AGENT.md) | Using TDD chat modes or workflows |
-| [libs/AGENT.md](/libs/AGENT.md) | Testing business logic following hexagonal architecture |
-| [apps/AGENT.md](/apps/AGENT.md) | Testing application interfaces |
-| [tools/AGENT.md](/tools/AGENT.md) | Testing development tools |
-| [scripts/AGENT.md](/scripts/AGENT.md) | Writing ShellSpec tests for scripts |
-| [docs/AGENT.md](/docs/AGENT.md) | Tracing tests to specifications |
+| Context                               | When to Use                                             |
+| ------------------------------------- | ------------------------------------------------------- |
+| [.github/AGENT.md](/.github/AGENT.md) | Using TDD chat modes or workflows                       |
+| [libs/AGENT.md](/libs/AGENT.md)       | Testing business logic following hexagonal architecture |
+| [apps/AGENT.md](/apps/AGENT.md)       | Testing application interfaces                          |
+| [tools/AGENT.md](/tools/AGENT.md)     | Testing development tools                               |
+| [scripts/AGENT.md](/scripts/AGENT.md) | Writing ShellSpec tests for scripts                     |
+| [docs/AGENT.md](/docs/AGENT.md)       | Tracing tests to specifications                         |
 
 ## 🔧 Local Conventions
 
@@ -100,43 +102,45 @@ tests/
 
 **Match testing approach to code complexity:**
 
-| Scenario | Approach | Rationale |
-|----------|----------|-----------|
-| **Complex business logic** | **TDD (Test-First)** | High confidence, clear requirements |
-| **Simple CRUD operations** | **Code-First, Then Tests** | Avoid over-engineering |
-| **Hot paths / Performance** | **Benchmarks after implementation** | Measure before optimizing |
-| **Security-sensitive code** | **TDD + Security Review** | Zero tolerance for vulnerabilities |
+| Scenario                    | Approach                            | Rationale                           |
+| --------------------------- | ----------------------------------- | ----------------------------------- |
+| **Complex business logic**  | **TDD (Test-First)**                | High confidence, clear requirements |
+| **Simple CRUD operations**  | **Code-First, Then Tests**          | Avoid over-engineering              |
+| **Hot paths / Performance** | **Benchmarks after implementation** | Measure before optimizing           |
+| **Security-sensitive code** | **TDD + Security Review**           | Zero tolerance for vulnerabilities  |
 
 ### TDD Workflow (Red-Green-Refactor)
 
 **Red Phase** (Write Failing Test):
+
 ```typescript
 // tests/unit/libs/auth/domain/user.test.ts
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
-import { User } from '../../../../libs/auth/domain/user';
+import { describe, it } from "node:test";
+import assert from "node:assert";
+import { User } from "../../../../libs/auth/domain/user";
 
-describe('User', () => {
-  it('should validate email format', () => {
+describe("User", () => {
+  it("should validate email format", () => {
     // Arrange
-    const invalidEmail = 'not-an-email';
+    const invalidEmail = "not-an-email";
 
     // Act & Assert
     assert.throws(
       () => new User({ email: invalidEmail }),
-      /Invalid email format/
+      /Invalid email format/,
     );
   });
 });
 ```
 
 **Green Phase** (Make It Pass):
+
 ```typescript
 // libs/auth/domain/user.ts
 export class User {
   constructor(private readonly email: string) {
     if (!this.isValidEmail(email)) {
-      throw new Error('Invalid email format');
+      throw new Error("Invalid email format");
     }
   }
 
@@ -147,6 +151,7 @@ export class User {
 ```
 
 **Refactor Phase** (Improve):
+
 ```typescript
 // Extract email validation to value object
 export class Email {
@@ -154,7 +159,7 @@ export class Email {
 
   static create(email: string): Email {
     if (!Email.isValid(email)) {
-      throw new Error('Invalid email format');
+      throw new Error("Invalid email format");
     }
     return new Email(email);
   }
@@ -170,31 +175,33 @@ export class Email {
 #### TypeScript/JavaScript (Jest/Node)
 
 **Use `node:assert` for simple tests:**
-```typescript
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
 
-describe('ContextManager', () => {
-  it('should bundle context files', () => {
+```typescript
+import { describe, it } from "node:test";
+import assert from "node:assert";
+
+describe("ContextManager", () => {
+  it("should bundle context files", () => {
     // Arrange
-    const manager = new ContextManager('/path/to/root');
+    const manager = new ContextManager("/path/to/root");
 
     // Act
-    const result = manager.bundleContext('/output');
+    const result = manager.bundleContext("/output");
 
     // Assert
     assert.ok(result.files.size > 0);
-    assert.strictEqual(typeof result.metadata.totalTokens, 'number');
+    assert.strictEqual(typeof result.metadata.totalTokens, "number");
   });
 });
 ```
 
 **Use Jest for complex scenarios:**
-```typescript
-import { jest } from '@jest/globals';
 
-describe('AuthService', () => {
-  it('should call repository when authenticating', async () => {
+```typescript
+import { jest } from "@jest/globals";
+
+describe("AuthService", () => {
+  it("should call repository when authenticating", async () => {
     // Arrange
     const mockRepo = {
       findByEmail: jest.fn().mockResolvedValue(mockUser),
@@ -202,10 +209,10 @@ describe('AuthService', () => {
     const service = new AuthService(mockRepo);
 
     // Act
-    await service.authenticate('user@example.com', 'password');
+    await service.authenticate("user@example.com", "password");
 
     // Assert
-    expect(mockRepo.findByEmail).toHaveBeenCalledWith('user@example.com');
+    expect(mockRepo.findByEmail).toHaveBeenCalledWith("user@example.com");
   });
 });
 ```
@@ -255,32 +262,33 @@ def sample_spec():
 ### Integration Test Standards
 
 **Test full workflows:**
+
 ```typescript
 // tests/integration/template-smoke.test.ts
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
-import { execSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { describe, it } from "node:test";
+import assert from "node:assert";
+import { execSync } from "node:child_process";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
-describe('Template Generation', () => {
-  it('should generate project from template', () => {
+describe("Template Generation", () => {
+  it("should generate project from template", () => {
     // Arrange
-    const tempDir = mkdtempSync(join(tmpdir(), 'test-'));
+    const tempDir = mkdtempSync(join(tmpdir(), "test-"));
 
     try {
       // Act
-      execSync('pnpm generate', {
+      execSync("pnpm generate", {
         cwd: tempDir,
         env: {
           ...process.env,
-          CI: 'true',
+          CI: "true",
         },
       });
 
       // Assert
-      const packageJson = join(tempDir, 'package.json');
+      const packageJson = join(tempDir, "package.json");
       assert.ok(existsSync(packageJson));
     } finally {
       // Cleanup
@@ -293,6 +301,7 @@ describe('Template Generation', () => {
 ### Shell Test Standards (ShellSpec)
 
 **Mirror script structure:**
+
 ```bash
 # tests/shell/scripts/run_prompt_spec.sh
 Describe 'run_prompt.sh'
@@ -333,9 +342,10 @@ End
 ### Test Isolation & Cleanup
 
 **Always clean up after tests:**
+
 ```typescript
 // Use .tmp-tests/ for temporary files
-const testDir = '.tmp-tests';
+const testDir = ".tmp-tests";
 
 beforeEach(() => {
   mkdirSync(testDir, { recursive: true });
@@ -347,15 +357,16 @@ afterEach(() => {
 ```
 
 **Mock external dependencies:**
+
 ```typescript
 // Mock file system
-jest.mock('node:fs', () => ({
+jest.mock("node:fs", () => ({
   readFileSync: jest.fn(),
   writeFileSync: jest.fn(),
 }));
 
 // Mock HTTP requests
-jest.mock('node:http', () => ({
+jest.mock("node:http", () => ({
   request: jest.fn(),
 }));
 ```
@@ -363,12 +374,14 @@ jest.mock('node:http', () => ({
 ### Test Coverage Requirements
 
 **Coverage targets:**
+
 - **Domain logic**: 100% coverage (no exceptions)
 - **Application layer**: 90%+ coverage
 - **Infrastructure**: 80%+ coverage (mock external systems)
 - **Interface**: 70%+ coverage (integration tests)
 
 **Generate coverage reports:**
+
 ```bash
 # Node/TypeScript
 pnpm test:jest:coverage
@@ -384,15 +397,18 @@ open htmlcov/index.html
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security testing
 - [.github/instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - TDD workflows
 
 **Relevant prompts:**
+
 - [.github/prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
 - [.github/prompts/test-hardening.prompt.md](/.github/prompts/test-hardening.prompt.md) - Test hardening
 
 **Related chat modes:**
+
 - `tdd.red` - Write failing tests
 - `tdd.green` - Make tests pass
 - `tdd.refactor` - Improve code quality
@@ -404,16 +420,16 @@ open htmlcov/index.html
 
 ```typescript
 // tests/unit/libs/orders/domain/order.test.ts
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
-import { Order, OrderStatus } from '../../../../libs/orders/domain/order';
-import { OrderId } from '../../../../libs/orders/domain/order-id';
+import { describe, it } from "node:test";
+import assert from "node:assert";
+import { Order, OrderStatus } from "../../../../libs/orders/domain/order";
+import { OrderId } from "../../../../libs/orders/domain/order-id";
 
-describe('Order (Domain)', () => {
-  it('should create order with pending status', () => {
+describe("Order (Domain)", () => {
+  it("should create order with pending status", () => {
     // Arrange
     const orderId = OrderId.create();
-    const items = [{ productId: '1', quantity: 2 }];
+    const items = [{ productId: "1", quantity: 2 }];
 
     // Act
     const order = Order.create(orderId, items);
@@ -423,19 +439,19 @@ describe('Order (Domain)', () => {
     assert.strictEqual(order.items.length, 2);
   });
 
-  it('should not allow negative quantities', () => {
+  it("should not allow negative quantities", () => {
     // Arrange
     const orderId = OrderId.create();
-    const items = [{ productId: '1', quantity: -1 }];
+    const items = [{ productId: "1", quantity: -1 }];
 
     // Act & Assert
     assert.throws(
       () => Order.create(orderId, items),
-      /Quantity must be positive/
+      /Quantity must be positive/,
     );
   });
 
-  it('should transition from pending to confirmed', () => {
+  it("should transition from pending to confirmed", () => {
     // Arrange
     const order = Order.create(OrderId.create(), []);
 
@@ -446,16 +462,13 @@ describe('Order (Domain)', () => {
     assert.strictEqual(order.status, OrderStatus.Confirmed);
   });
 
-  it('should not allow confirming cancelled order', () => {
+  it("should not allow confirming cancelled order", () => {
     // Arrange
     const order = Order.create(OrderId.create(), []);
     order.cancel();
 
     // Act & Assert
-    assert.throws(
-      () => order.confirm(),
-      /Cannot confirm cancelled order/
-    );
+    assert.throws(() => order.confirm(), /Cannot confirm cancelled order/);
   });
 });
 ```
@@ -464,11 +477,11 @@ describe('Order (Domain)', () => {
 
 ```typescript
 // tests/unit/libs/orders/application/create-order.test.ts
-import { describe, it, beforeEach } from 'node:test';
-import assert from 'node:assert';
-import { CreateOrderUseCase } from '../../../../libs/orders/application/create-order';
+import { describe, it, beforeEach } from "node:test";
+import assert from "node:assert";
+import { CreateOrderUseCase } from "../../../../libs/orders/application/create-order";
 
-describe('CreateOrderUseCase', () => {
+describe("CreateOrderUseCase", () => {
   let useCase: CreateOrderUseCase;
   let mockOrderRepo: any;
   let mockProductRepo: any;
@@ -481,21 +494,22 @@ describe('CreateOrderUseCase', () => {
     };
 
     mockProductRepo = {
-      findById: (id: string) => Promise.resolve({
-        id,
-        name: 'Product',
-        price: 100,
-      }),
+      findById: (id: string) =>
+        Promise.resolve({
+          id,
+          name: "Product",
+          price: 100,
+        }),
     };
 
     useCase = new CreateOrderUseCase(mockOrderRepo, mockProductRepo);
   });
 
-  it('should create order successfully', async () => {
+  it("should create order successfully", async () => {
     // Arrange
     const input = {
-      userId: 'user-1',
-      items: [{ productId: 'prod-1', quantity: 2 }],
+      userId: "user-1",
+      items: [{ productId: "prod-1", quantity: 2 }],
     };
 
     // Act
@@ -503,21 +517,21 @@ describe('CreateOrderUseCase', () => {
 
     // Assert
     assert.ok(result.orderId);
-    assert.strictEqual(result.status, 'pending');
+    assert.strictEqual(result.status, "pending");
   });
 
-  it('should throw when product not found', async () => {
+  it("should throw when product not found", async () => {
     // Arrange
     mockProductRepo.findById = () => Promise.resolve(null);
     const input = {
-      userId: 'user-1',
-      items: [{ productId: 'invalid', quantity: 2 }],
+      userId: "user-1",
+      items: [{ productId: "invalid", quantity: 2 }],
     };
 
     // Act & Assert
     await assert.rejects(
       async () => await useCase.execute(input),
-      /Product not found/
+      /Product not found/,
     );
   });
 });
@@ -527,13 +541,13 @@ describe('CreateOrderUseCase', () => {
 
 ```typescript
 // tests/integration/order-repository.test.ts
-import { describe, it, beforeAll, afterAll } from 'node:test';
-import assert from 'node:assert';
-import { PostgresOrderRepository } from '../../libs/orders/infrastructure/postgres-order-repository';
-import { Order } from '../../libs/orders/domain/order';
-import { setupTestDatabase, teardownTestDatabase } from '../helpers/db';
+import { describe, it, beforeAll, afterAll } from "node:test";
+import assert from "node:assert";
+import { PostgresOrderRepository } from "../../libs/orders/infrastructure/postgres-order-repository";
+import { Order } from "../../libs/orders/domain/order";
+import { setupTestDatabase, teardownTestDatabase } from "../helpers/db";
 
-describe('PostgresOrderRepository (Integration)', () => {
+describe("PostgresOrderRepository (Integration)", () => {
   let repository: PostgresOrderRepository;
   let db: any;
 
@@ -546,7 +560,7 @@ describe('PostgresOrderRepository (Integration)', () => {
     await teardownTestDatabase(db);
   });
 
-  it('should save and retrieve order', async () => {
+  it("should save and retrieve order", async () => {
     // Arrange
     const order = Order.create(/* ... */);
 
@@ -642,16 +656,19 @@ def test_count_tokens_parametrized(token_counter, text, expected_min):
 ### TDD Cycle Checklist:
 
 **Red Phase:**
+
 - [ ] Write failing test for next requirement
 - [ ] Run test to confirm it fails
 - [ ] Verify failure message is meaningful
 
 **Green Phase:**
+
 - [ ] Write minimal code to pass test
 - [ ] Run test to confirm it passes
 - [ ] Don't add extra functionality
 
 **Refactor Phase:**
+
 - [ ] Improve code quality
 - [ ] Remove duplication
 - [ ] Ensure tests still pass
@@ -696,6 +713,7 @@ cargo test --manifest-path temporal_db/Cargo.toml
 ### Test Runner Configuration
 
 **Jest** (`jest.config.json`):
+
 ```json
 {
   "preset": "ts-jest",
@@ -714,6 +732,7 @@ cargo test --manifest-path temporal_db/Cargo.toml
 ```
 
 **pytest** (`pytest.ini`):
+
 ```ini
 [pytest]
 testpaths = tests
@@ -728,6 +747,7 @@ markers =
 ```
 
 **ShellSpec** (`.shellspec`):
+
 ```
 --shell bash
 --pattern '*_spec.sh'
@@ -746,12 +766,12 @@ markers =
 
 ### Test Types by Scope
 
-| Type | Scope | Speed | Dependencies |
-|------|-------|-------|--------------|
-| **Unit** | Single function/class | Fast | Mocked |
-| **Integration** | Multiple components | Medium | Real (when safe) |
-| **End-to-End** | Full system | Slow | Real |
-| **Shell** | Script behavior | Fast | Isolated |
+| Type            | Scope                 | Speed  | Dependencies     |
+| --------------- | --------------------- | ------ | ---------------- |
+| **Unit**        | Single function/class | Fast   | Mocked           |
+| **Integration** | Multiple components   | Medium | Real (when safe) |
+| **End-to-End**  | Full system           | Slow   | Real             |
+| **Shell**       | Script behavior       | Fast   | Isolated         |
 
 ## 🛡️ Security Considerations
 
@@ -765,28 +785,29 @@ markers =
 - ⚠️ **Security regression tests**: Add test for each security fix
 
 **Example security test:**
+
 ```typescript
-describe('UserController (Security)', () => {
-  it('should not expose password in error messages', async () => {
+describe("UserController (Security)", () => {
+  it("should not expose password in error messages", async () => {
     // Arrange
-    const invalidCredentials = { email: 'user@test.com', password: 'wrong' };
+    const invalidCredentials = { email: "user@test.com", password: "wrong" };
 
     // Act
-    const error = await controller.login(invalidCredentials).catch(e => e);
+    const error = await controller.login(invalidCredentials).catch((e) => e);
 
     // Assert
-    assert.ok(!error.message.includes('wrong')); // Password not in error
-    assert.strictEqual(error.message, 'Invalid credentials');
+    assert.ok(!error.message.includes("wrong")); // Password not in error
+    assert.strictEqual(error.message, "Invalid credentials");
   });
 
-  it('should prevent SQL injection in email field', async () => {
+  it("should prevent SQL injection in email field", async () => {
     // Arrange
     const maliciousEmail = "'; DROP TABLE users; --";
 
     // Act & Assert
     await assert.rejects(
       async () => await controller.findByEmail(maliciousEmail),
-      /Invalid email format/
+      /Invalid email format/,
     );
   });
 });
@@ -799,12 +820,14 @@ describe('UserController (Security)', () => {
 **Use chat modes for TDD phases:**
 
 1. **tdd.red**: Write failing test
+
    ```bash
    # Activate tdd.red chat mode
    # Describe feature → AI generates failing test
    ```
 
 2. **tdd.green**: Implement minimal solution
+
    ```bash
    # Activate tdd.green chat mode
    # AI implements just enough to pass test
@@ -819,16 +842,17 @@ describe('UserController (Security)', () => {
 ### Spec-Driven Testing
 
 **Link tests to specifications:**
+
 ```typescript
 // DEV-PRD-042, DEV-SDS-015: User authentication
-describe('AuthService', () => {
+describe("AuthService", () => {
   // DEV-PRD-042: Must support OAuth2
-  it('should authenticate via OAuth2', () => {
+  it("should authenticate via OAuth2", () => {
     // Test implementation
   });
 
   // DEV-SDS-015: Must validate email format
-  it('should reject invalid email formats', () => {
+  it("should reject invalid email formats", () => {
     // Test implementation
   });
 });
@@ -837,6 +861,7 @@ describe('AuthService', () => {
 ### CI/CD Integration
 
 Tests run automatically in CI:
+
 ```yaml
 # .github/workflows/test.yml
 - name: Run unit tests
@@ -855,24 +880,28 @@ Tests run automatically in CI:
 ## 📊 Testing Strategy by Architecture Layer
 
 ### Domain Layer Testing
+
 - **Pure unit tests** - No mocks needed
 - **100% coverage** - No exceptions
 - **Focus**: Business rules, invariants, value objects
 - **No dependencies**: Test in isolation
 
 ### Application Layer Testing
+
 - **Unit tests with mocks** - Mock repositories (ports)
 - **90%+ coverage**
 - **Focus**: Use case orchestration, validation
 - **Mock all ports**: Repository, external services
 
 ### Infrastructure Layer Testing
+
 - **Integration tests** - Use real dependencies when safe
 - **80%+ coverage**
 - **Focus**: Repository implementations, adapters
 - **Test databases**: Use test containers or in-memory
 
 ### Interface Layer Testing
+
 - **Integration tests** - Test full request/response
 - **70%+ coverage**
 - **Focus**: Controllers, CLI, API endpoints
@@ -899,6 +928,7 @@ Tests run automatically in CI:
 ### Managing Test Debt
 
 **Signs of test debt:**
+
 - Flaky tests (intermittent failures)
 - Slow test suite
 - Low coverage in critical areas
@@ -906,6 +936,7 @@ Tests run automatically in CI:
 - Duplicate test logic
 
 **Remediation:**
+
 - Stabilize flaky tests or remove
 - Parallelize slow tests
 - Add tests for uncovered critical paths

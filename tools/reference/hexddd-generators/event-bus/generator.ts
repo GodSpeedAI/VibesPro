@@ -1,8 +1,5 @@
-import {
-  Tree,
-  formatFiles,
-} from '@nx/devkit';
-import { EventBusGeneratorSchema } from './schema';
+import { Tree, formatFiles } from "@nx/devkit";
+import { EventBusGeneratorSchema } from "./schema";
 
 /**
  * Generates the TypeScript files for the Event Bus.
@@ -49,8 +46,14 @@ export class EventBusInMemoryAdapter implements IEventBus<unknown> {
 }
 `;
 
-  tree.write(`libs/${options.domain}/domain/src/lib/ports/event-bus.port.ts`, eventBusInterfaceContent);
-  tree.write(`libs/${options.domain}/infrastructure/src/lib/adapters/event-bus.in-memory.adapter.ts`, inMemoryAdapterContent);
+  tree.write(
+    `libs/${options.domain}/domain/src/lib/ports/event-bus.port.ts`,
+    eventBusInterfaceContent,
+  );
+  tree.write(
+    `libs/${options.domain}/infrastructure/src/lib/adapters/event-bus.in-memory.adapter.ts`,
+    inMemoryAdapterContent,
+  );
 }
 
 /**
@@ -59,7 +62,7 @@ export class EventBusInMemoryAdapter implements IEventBus<unknown> {
  * @param options The generator options.
  */
 function addPyFiles(tree: Tree, options: EventBusGeneratorSchema) {
-  const snakeCaseDomain = options.domain.replace(/-/g, '_');
+  const snakeCaseDomain = options.domain.replace(/-/g, "_");
 
   const eventBusProtocolContent = `from typing import Protocol, Type, Callable
 
@@ -89,17 +92,23 @@ class EventBusInMemoryAdapter(IEventBus):
         self._handlers[event_type].append(handler)
 `;
 
-  tree.write(`libs/${options.domain}/domain/src/lib/ports/event_bus_port.py`, eventBusProtocolContent);
-  tree.write(`libs/${options.domain}/infrastructure/src/lib/adapters/event_bus_in_memory_adapter.py`, inMemoryAdapterContent);
+  tree.write(
+    `libs/${options.domain}/domain/src/lib/ports/event_bus_port.py`,
+    eventBusProtocolContent,
+  );
+  tree.write(
+    `libs/${options.domain}/infrastructure/src/lib/adapters/event_bus_in_memory_adapter.py`,
+    inMemoryAdapterContent,
+  );
 }
 
 export async function eventBusGenerator(
   tree: Tree,
-  options: EventBusGeneratorSchema
+  options: EventBusGeneratorSchema,
 ) {
-  if (options.language === 'ts') {
+  if (options.language === "ts") {
     addTsFiles(tree, options);
-  } else if (options.language === 'py') {
+  } else if (options.language === "py") {
     addPyFiles(tree, options);
   }
 

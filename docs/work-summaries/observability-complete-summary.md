@@ -15,11 +15,13 @@ The complete observability pipeline for VibesPro has been successfully implement
 A **3-layer observability architecture**:
 
 1. **Instrumentation Layer**: `vibepro-observe` Rust crate
+
    - OpenTelemetry tracing integration
    - Runtime feature flag control (`VIBEPRO_OBSERVE`)
    - Minimal overhead (<1µs per span)
 
 2. **Data Pipeline Layer**: Vector
+
    - OTLP ingestion (gRPC port 4317, HTTP port 4318)
    - VRL-based PII redaction and sampling
    - Multiple sinks: console, file, OpenObserve
@@ -31,14 +33,14 @@ A **3-layer observability architecture**:
 
 ### All 6 Phases Complete
 
-| Phase | Focus | Key Deliverable | Status |
-|-------|-------|-----------------|--------|
-| 1 | Instrumentation Layer | `vibepro-observe` crate with OTLP export | ✅ Complete |
-| 2 | Data Pipeline Layer | Vector configuration with sources/transforms/sinks | ✅ Complete |
-| 3 | Integration Testing | Tracing → Vector smoke tests | ✅ Complete |
-| 4 | Storage & Analytics | OpenObserve HTTP sink with auth | ✅ Complete |
-| 5 | CI Validation | Automated Vector validation in workflows | ✅ Complete |
-| 6 | Feature Flags & Docs | Runtime control + comprehensive documentation | ✅ Complete |
+| Phase | Focus                 | Key Deliverable                                    | Status      |
+| ----- | --------------------- | -------------------------------------------------- | ----------- |
+| 1     | Instrumentation Layer | `vibepro-observe` crate with OTLP export           | ✅ Complete |
+| 2     | Data Pipeline Layer   | Vector configuration with sources/transforms/sinks | ✅ Complete |
+| 3     | Integration Testing   | Tracing → Vector smoke tests                       | ✅ Complete |
+| 4     | Storage & Analytics   | OpenObserve HTTP sink with auth                    | ✅ Complete |
+| 5     | CI Validation         | Automated Vector validation in workflows           | ✅ Complete |
+| 6     | Feature Flags & Docs  | Runtime control + comprehensive documentation      | ✅ Complete |
 
 ## Test Results (All Passing)
 
@@ -55,23 +57,27 @@ $ just observe-test-all
 ## Key Features
 
 ### Runtime Control
+
 - **Feature Flag**: `VIBEPRO_OBSERVE=1` enables/disables OTLP export
 - **Zero Overhead**: No performance impact when disabled
 - **Flexible Deployment**: Control via environment variables
 
 ### Security & Privacy
+
 - **PII Redaction**: Automatic removal of emails, tokens in Vector
 - **Encrypted Secrets**: SOPS-encrypted `.secrets.env.sops`
 - **Token-Based Auth**: Basic auth with OpenObserve
 - **Opt-In Model**: Telemetry disabled by default
 
 ### Performance
+
 - **Instrumentation**: <1µs overhead per span
 - **Vector CPU**: <3% at 1k spans/s
 - **Sampling**: Configurable via VRL transforms
 - **Async Export**: Non-blocking trace emission
 
 ### Developer Experience
+
 - **Simple Setup**: `just observe-start` to begin
 - **Clear Documentation**: 500+ lines of guides and examples
 - **Testing Tools**: 5 automated test suites
@@ -82,6 +88,7 @@ $ just observe-test-all
 ### New Files Created (Phases 1-6)
 
 **Tests** (5 files):
+
 - `tests/ops/test_vector_config.sh` (Phase 2)
 - `tests/ops/test_tracing_vector.sh` (Phase 3)
 - `tests/ops/test_openobserve_sink.sh` (Phase 4)
@@ -89,6 +96,7 @@ $ just observe-test-all
 - `tests/ops/test_observe_flag.sh` (Phase 6)
 
 **Documentation** (6 files):
+
 - `docs/work-summaries/observability-phase1-completion.md`
 - `docs/work-summaries/observability-phase2-completion.md`
 - `docs/work-summaries/observability-phase3-completion.md`
@@ -97,6 +105,7 @@ $ just observe-test-all
 - `docs/work-summaries/observability-phase6-completion.md`
 
 **Implementation**:
+
 - `crates/vibepro-observe/` - Full Rust crate with OTLP support
 - `ops/vector/vector.toml` - Complete Vector configuration
 
@@ -112,6 +121,7 @@ $ just observe-test-all
 ## Commands Reference
 
 ### Quick Start
+
 ```bash
 # Install and validate
 just setup
@@ -128,6 +138,7 @@ just observe-verify
 ```
 
 ### Testing
+
 ```bash
 # Test individual phases
 just observe-test-vector        # Phase 3
@@ -140,6 +151,7 @@ just observe-test-all
 ```
 
 ### Development
+
 ```bash
 # Logs only (no telemetry)
 cargo run
@@ -157,15 +169,18 @@ just observe-stop
 ## Documentation Structure
 
 ### User Documentation
+
 - **`docs/ENVIRONMENT.md` § 8**: Setup and configuration guide
 - **`docs/observability/README.md`**: Comprehensive architecture and usage
 
 ### Developer Documentation
+
 - **`docs/dev_adr.md`**: DEV-ADR-016 - Architecture decisions
 - **`docs/dev_sds.md`**: DEV-SDS-017 - System design specification
 - **`docs/tmp/dev_tdd_observability.md`**: TDD implementation plan
 
 ### Implementation Notes
+
 - **`docs/work-summaries/observability-phase*.md`**: Detailed phase completion docs
 
 ## Production Deployment
@@ -189,29 +204,31 @@ OPENOBSERVE_USER=root@example.com
 ### Build Configuration
 
 **Dockerfile**:
+
 ```dockerfile
 # Build with OTLP support
 RUN cargo build --release --features otlp
 ```
 
 **Kubernetes**:
+
 ```yaml
 env:
-- name: VIBEPRO_OBSERVE
-  value: "1"
-- name: OTLP_ENDPOINT
-  value: "http://vector.observability.svc:4317"
+  - name: VIBEPRO_OBSERVE
+    value: "1"
+  - name: OTLP_ENDPOINT
+    value: "http://vector.observability.svc:4317"
 ```
 
 ## Performance Characteristics
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Span emission overhead | <1µs | ~800ns |
-| Vector CPU usage | <3% at 1k spans/s | 2.1% |
-| Ingestion latency (p95) | <250ms | ~180ms |
-| Data retention | ≥90 days | 90 days |
-| Sampling efficiency | ~4:1 | 4.2:1 |
+| Metric                  | Target            | Actual  |
+| ----------------------- | ----------------- | ------- |
+| Span emission overhead  | <1µs              | ~800ns  |
+| Vector CPU usage        | <3% at 1k spans/s | 2.1%    |
+| Ingestion latency (p95) | <250ms            | ~180ms  |
+| Data retention          | ≥90 days          | 90 days |
+| Sampling efficiency     | ~4:1              | 4.2:1   |
 
 ## Security Posture
 
@@ -225,12 +242,14 @@ env:
 ## CI/CD Integration
 
 ### Automated Validation
+
 - ✅ Vector configuration validated on every PR
 - ✅ Vector binary cached (saves ~28s per run)
 - ✅ Rust crate tests with/without OTLP feature
 - ✅ Feature flag behavior validated
 
 ### CI Workflow
+
 ```
 Install mise → Install Vector → Cache → Install runtimes →
 Validate Vector → Run crate tests → Validate feature flags
@@ -248,16 +267,16 @@ Every implementation decision is traceable:
 
 ## Success Metrics
 
-| Category | Status |
-|----------|--------|
-| **Completeness** | ✅ All 6 phases implemented |
-| **Test Coverage** | ✅ 100% of exit criteria met |
-| **Documentation** | ✅ 500+ lines of comprehensive docs |
-| **Performance** | ✅ All targets met or exceeded |
-| **Security** | ✅ All controls implemented |
-| **CI Integration** | ✅ Fully automated |
-| **Feature Flags** | ✅ Runtime and compile-time control |
-| **Maintainability** | ✅ Clear structure and validation |
+| Category            | Status                              |
+| ------------------- | ----------------------------------- |
+| **Completeness**    | ✅ All 6 phases implemented         |
+| **Test Coverage**   | ✅ 100% of exit criteria met        |
+| **Documentation**   | ✅ 500+ lines of comprehensive docs |
+| **Performance**     | ✅ All targets met or exceeded      |
+| **Security**        | ✅ All controls implemented         |
+| **CI Integration**  | ✅ Fully automated                  |
+| **Feature Flags**   | ✅ Runtime and compile-time control |
+| **Maintainability** | ✅ Clear structure and validation   |
 
 ## Known Limitations
 
@@ -278,6 +297,7 @@ While the core system is complete, optional enhancements include:
 ## Production Readiness Checklist
 
 ### Core System (Complete)
+
 - [x] Phase 1: Instrumentation Layer
 - [x] Phase 2: Data Pipeline Layer
 - [x] Phase 3: Integration Testing
@@ -289,6 +309,7 @@ While the core system is complete, optional enhancements include:
 - [x] Security controls implemented
 
 ### Deployment-Specific (Per Environment)
+
 - [ ] Production secrets encrypted and stored
 - [ ] OpenObserve instance provisioned
 - [ ] Vector deployed to Kubernetes/Docker
@@ -300,17 +321,20 @@ While the core system is complete, optional enhancements include:
 ## Impact Summary
 
 ### Development Velocity
+
 - **~15% faster debugging (estimated)** with distributed traces
 - **~30% MTTR reduction (projected)** with observability
 - **Zero overhead** when disabled (no performance penalty)
 
 ### Operational Excellence
+
 - **Full visibility** into application behavior
 - **Proactive monitoring** with alerting
 - **Cost control** via sampling and feature flags
 - **Compliance ready** with PII redaction
 
 ### Technical Debt
+
 - **Minimal technical debt**: Implemented via TDD with documented limitations
 - **100% test coverage**: All exit criteria met
 - **Production-grade**: Security, performance, reliability
@@ -322,6 +346,7 @@ While the core system is complete, optional enhancements include:
 The observability pipeline for VibesPro is **complete and production-ready**!
 
 **Total Implementation**:
+
 - 6 phases completed
 - 5 test suites created
 - 500+ lines of documentation
@@ -329,6 +354,7 @@ The observability pipeline for VibesPro is **complete and production-ready**!
 - Full traceability to specs
 
 **Key Achievements**:
+
 - ✅ Rust-native, low-overhead instrumentation
 - ✅ Vector-based flexible data pipeline
 - ✅ OpenObserve storage and analytics

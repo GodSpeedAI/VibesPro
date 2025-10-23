@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - CALM (Continuous Architecture with Living Models) documentation
 - System architecture diagrams (C4 model, sequence, component)
 - Architectural Decision Records (ADRs) - high-level strategic
@@ -101,12 +102,12 @@ Level 4: Code
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [docs/AGENT.md](/docs/AGENT.md) | Detailed specs (PRD, SDS, TS) - implementation level |
-| [libs/AGENT.md](/libs/AGENT.md) | Implementing hexagonal architecture in code |
-| [temporal_db/AGENT.md](/temporal_db/AGENT.md) | Storing ADRs in temporal database |
-| [.github/AGENT.md](/.github/AGENT.md) | Architecture-related prompts and chat modes |
+| Context                                       | When to Use                                          |
+| --------------------------------------------- | ---------------------------------------------------- |
+| [docs/AGENT.md](/docs/AGENT.md)               | Detailed specs (PRD, SDS, TS) - implementation level |
+| [libs/AGENT.md](/libs/AGENT.md)               | Implementing hexagonal architecture in code          |
+| [temporal_db/AGENT.md](/temporal_db/AGENT.md) | Storing ADRs in temporal database                    |
+| [.github/AGENT.md](/.github/AGENT.md)         | Architecture-related prompts and chat modes          |
 
 ## 🔧 Local Conventions
 
@@ -306,6 +307,7 @@ sequenceDiagram
 ## Core Domains
 
 ### Orders Context
+
 - **Responsibility**: Order management and fulfillment
 - **Language**: Order, OrderItem, OrderStatus, Customer
 - **Relationships**:
@@ -313,12 +315,14 @@ sequenceDiagram
   - **Downstream**: Shipping Context (Customer-Supplier)
 
 ### Products Context
+
 - **Responsibility**: Product catalog and inventory
 - **Language**: Product, SKU, Category, Inventory
 - **Relationships**:
   - **Downstream**: Orders Context (Published Language)
 
 ### Users Context
+
 - **Responsibility**: User authentication and authorization
 - **Language**: User, Role, Permission, Session
 - **Relationships**:
@@ -335,14 +339,17 @@ sequenceDiagram
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/docs.instructions.md](/.github/instructions/docs.instructions.md) - Documentation standards
 - [.github/instructions/general.instructions.md](/.github/instructions/general.instructions.md) - General guidelines
 
 **Relevant prompts:**
+
 - [.github/prompts/spec.plan.adr.prompt.md](/.github/prompts/spec.plan.adr.prompt.md) - Generate ADRs
 - [.github/prompts/docs.generate.prompt.md](/.github/prompts/docs.generate.prompt.md) - Generate architecture docs
 
 **Related chat modes:**
+
 - `persona.system-architect` - Architectural guidance
 - `spec.wide` - Comprehensive spec generation
 
@@ -361,6 +368,7 @@ sequenceDiagram
 ## Context
 
 We need a clean architecture that:
+
 - Separates business logic from infrastructure concerns
 - Enables independent testing of domain logic
 - Allows switching infrastructure implementations
@@ -430,7 +438,7 @@ Dependency rule: Domain ← Application ← Infrastructure (inward only).
 
 ### Example 2: System Context Diagram
 
-```markdown
+````markdown
 # System Context (C4 Level 1)
 
 ## Overview
@@ -468,6 +476,7 @@ graph TB
     class Gen,Templates,TempDB system
     class GitHub,Copier external
 ```
+````
 
 ## Actors
 
@@ -484,7 +493,8 @@ graph TB
 
 - **GitHub**: Source control and CI/CD
 - **Copier**: Template engine (Python)
-```
+
+````
 
 ### Example 3: Component Diagram for Orders Domain
 
@@ -529,7 +539,7 @@ graph TB
     Order --> OrderItem
     Order --> OrderStatus
     Order -.emits.-> OrderEvent
-```
+````
 
 ## Components
 
@@ -552,7 +562,8 @@ graph TB
 - **PostgresOrderRepository**: Production persistence
 - **InMemoryOrderRepository**: Testing persistence
 - **EventBusAdapter**: Event publishing implementation
-```
+
+````
 
 ### Example 4: Deployment Architecture
 
@@ -594,8 +605,9 @@ graph TB
 
     Dev -->|Develops with| VSCode
     VSCode -->|Uses| LocalDB
-```
-```
+````
+
+````
 
 ## ✅ Checklist
 
@@ -639,26 +651,26 @@ node tools/docs/validate-adrs.js
 
 # Update AI context bundle (includes architecture docs)
 just ai-context-bundle
-```
+````
 
 ### C4 Model Quick Reference
 
-| Level | Focus | Examples |
-|-------|-------|----------|
-| 1: Context | System boundaries | Users, external systems |
-| 2: Containers | Deployable units | Web app, API, database |
-| 3: Components | Modules/packages | Domain, application, infrastructure |
-| 4: Code | Classes/functions | Entities, repositories, use cases |
+| Level         | Focus             | Examples                            |
+| ------------- | ----------------- | ----------------------------------- |
+| 1: Context    | System boundaries | Users, external systems             |
+| 2: Containers | Deployable units  | Web app, API, database              |
+| 3: Components | Modules/packages  | Domain, application, infrastructure |
+| 4: Code       | Classes/functions | Entities, repositories, use cases   |
 
 ### Mermaid Diagram Types
 
-| Type | Use Case | Syntax |
-|------|----------|--------|
-| `graph` | Structure, relationships | `graph TB` (top-bottom) |
-| `sequenceDiagram` | Interactions over time | `sequenceDiagram` |
-| `classDiagram` | Class relationships | `classDiagram` |
-| `stateDiagram` | State machines | `stateDiagram-v2` |
-| `erDiagram` | Database schema | `erDiagram` |
+| Type              | Use Case                 | Syntax                  |
+| ----------------- | ------------------------ | ----------------------- |
+| `graph`           | Structure, relationships | `graph TB` (top-bottom) |
+| `sequenceDiagram` | Interactions over time   | `sequenceDiagram`       |
+| `classDiagram`    | Class relationships      | `classDiagram`          |
+| `stateDiagram`    | State machines           | `stateDiagram-v2`       |
+| `erDiagram`       | Database schema          | `erDiagram`             |
 
 ## 🛡️ Security Considerations
 
@@ -700,6 +712,7 @@ graph LR
 ### Generate ADRs with AI
 
 **Using chat mode:**
+
 ```
 @workspace /new-chat persona.system-architect
 
@@ -715,10 +728,10 @@ Context:
 
 ```typescript
 // tools/architecture/store-adr.ts
-import { TemporalDb } from '../temporal_db';
+import { TemporalDb } from "../temporal_db";
 
 async function storeADR(adrFile: string) {
-  const content = await readFile(adrFile, 'utf-8');
+  const content = await readFile(adrFile, "utf-8");
   const adr = parseADR(content);
 
   await TemporalDb.storeDecision({
@@ -753,6 +766,7 @@ async function storeADR(adrFile: string) {
 ### Keeping Diagrams Current
 
 **Automation strategies:**
+
 - Generate diagrams from code (where possible)
 - Use tests to validate diagram accuracy
 - Include diagram review in PR checklist

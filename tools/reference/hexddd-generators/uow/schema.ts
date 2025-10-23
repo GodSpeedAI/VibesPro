@@ -1,4 +1,4 @@
 export interface UowGeneratorSchema {
   domain: string;
-  language: 'ts' | 'py';
+  language: "ts" | "py";
 }

@@ -6,18 +6,22 @@ Welcome to the all-in-one guide for using VS Code + GitHub Copilot in this templ
 
 ## Quick start 🚀
 
-1) Bundle context (CALM + tech stack)
+1. Bundle context (CALM + tech stack)
+
 - Run: `just ai-context-bundle`
 - Output: `docs/ai_context_bundle/`
 
-2) Pick a mode
+2. Pick a mode
+
 - TDD phases: tdd.red → tdd.green → tdd.refactor
 - Debug phases: debug.start → repro → isolate → fix → refactor → regress
 
-3) Validate
+3. Validate
+
 - Run: `just ai-validate` (safe NO-OP if scripts/projects missing)
 
-4) Scaffold (optional)
+4. Scaffold (optional)
+
 - Run: `just ai-scaffold name=@nx/js:lib`
 
 ---
@@ -32,6 +36,7 @@ Welcome to the all-in-one guide for using VS Code + GitHub Copilot in this templ
 Use the sidebar below to jump to what you need.
 
 ### Contents
+
 - Tutorials
   - Getting started with TDD + Copilot → `tutorials/getting-started-tdd.md`
 - How-to guides
@@ -52,6 +57,7 @@ Use the sidebar below to jump to what you need.
 ---
 
 ## Best practices ✅
+
 - Always start from spec IDs; keep changes small and traceable.
 - Stay Lean; escalate only when ambiguity spans multiple specs.
 - Keep tests close to code and run them frequently.

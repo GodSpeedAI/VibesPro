@@ -9,9 +9,11 @@
 ## Problem Identified
 
 **User Feedback**:
+
 > "Before engaging in the flipped interaction discussion, the AI should audit the project as some of those questions may be answerable simply by looking through the project to see how it's configured or looking at the answers to the initial copier questions so the user won't have to keep giving the same info over and over or need to answer obvious questions that AI could have figured out itself."
 
 **Issues with Original Flipped Interaction**:
+
 1. ❌ AI asks ~10 questions, many obvious from project files
 2. ❌ User re-states info already in `package.json`, `.copier-answers.yml`, etc.
 3. ❌ Time-consuming for user (answering 10 questions)
@@ -53,6 +55,7 @@ graph TD
 **AI automatically reads and analyzes:**
 
 1. **`.copier-answers.yml`** or `copier.yml`
+
    - Project name: `{{ project_name }}`
    - Project description
    - Chosen architecture: `{{ architecture_style }}`
@@ -60,6 +63,7 @@ graph TD
    - Initial tech stack choices
 
 2. **`package.json`** (Node.js projects)
+
    - Framework detection:
      - `next` → Next.js + version
      - `@remix-run/react` → Remix
@@ -71,15 +75,18 @@ graph TD
    - Auth: `next-auth`, `passport`
 
 3. **`pyproject.toml`** (Python projects)
+
    - Framework: `fastapi`, `django`, `flask`
    - Dependencies: `sqlalchemy`, `pydantic`, `pytest`
 
 4. **`nx.json`**
+
    - Workspace structure
    - Number of apps, libs
    - Configured generators
 
 5. **Directory Scan**
+
    - `apps/` → List application types
    - `libs/` → Understand domain organization
    - `tests/` → Testing setup (unit, integration, e2e)
@@ -160,12 +167,14 @@ AI: ✅ **Customization Summary:**
 ### Files Modified
 
 1. **`templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`**
+
    - Added "Phase 1: Automatic Project Audit" section
    - Detailed audit checklist (what files to read, what to extract)
    - Audit summary template
    - Reordered workflow: Audit → Targeted Questions → Update
 
 2. **`templates/{{project_slug}}/.github/chatmodes/meta.customize-instructions.chatmode.md`**
+
    - Added "Phase 1: Silent Audit" instructions
    - "Phase 2: Present Audit Results" template
    - "Phase 3: Targeted Questions" (only for gaps)
@@ -173,6 +182,7 @@ AI: ✅ **Customization Summary:**
    - Added edge case: "Nothing to ask (all auto-detected)"
 
 3. **`docs/workdocs/copilot-instructions-template-enhancement.md`**
+
    - Updated "Flipped Interaction Prompt" section with audit details
    - Updated "Interactive Chat Mode" section with audit flow
    - Enhanced "Flipped Interaction Pattern" comparison
@@ -201,6 +211,7 @@ AI: ✅ **Customization Summary:**
 🔍 Project Audit Results:
 
 Based on my analysis, I've detected:
+
 - Project Name: {from copier answers}
 - Project Type: {inferred from apps/}
 - Tech Stack: {from package.json/pyproject.toml}
@@ -211,6 +222,7 @@ Based on my analysis, I've detected:
 - Deployment: {from copier answers if available}
 
 I still need to know:
+
 1. {only unknown critical info}
 2. {only unknown optional info}
 ```
@@ -221,32 +233,32 @@ I still need to know:
 
 ### What AI Can Auto-Detect (70-80% of info)
 
-| Information | Detection Method | Confidence |
-|-------------|------------------|------------|
-| Project name | `.copier-answers.yml` → `project_name` | 100% |
-| Project description | `.copier-answers.yml` → `project_description` | 100% |
-| Architecture style | `.copier-answers.yml` → `architecture_style` | 100% |
-| Framework | `package.json` → detect Next.js, Remix, FastAPI | 95% |
-| Language | `tsconfig.json` exists → TypeScript | 100% |
-| Testing framework | `package.json` devDeps → Jest, Vitest, pytest | 100% |
-| Database | `package.json` deps → pg, mongodb, prisma | 90% |
-| Auth library | `package.json` deps → next-auth, passport | 90% |
-| Deployment target | Scripts, config files → Vercel, AWS, Docker | 70% |
-| Nx workspace | `nx.json` + `apps/`, `libs/` → structure | 100% |
-| Project type | `apps/` analysis → web app, API, mobile | 85% |
+| Information         | Detection Method                                | Confidence |
+| ------------------- | ----------------------------------------------- | ---------- |
+| Project name        | `.copier-answers.yml` → `project_name`          | 100%       |
+| Project description | `.copier-answers.yml` → `project_description`   | 100%       |
+| Architecture style  | `.copier-answers.yml` → `architecture_style`    | 100%       |
+| Framework           | `package.json` → detect Next.js, Remix, FastAPI | 95%        |
+| Language            | `tsconfig.json` exists → TypeScript             | 100%       |
+| Testing framework   | `package.json` devDeps → Jest, Vitest, pytest   | 100%       |
+| Database            | `package.json` deps → pg, mongodb, prisma       | 90%        |
+| Auth library        | `package.json` deps → next-auth, passport       | 90%        |
+| Deployment target   | Scripts, config files → Vercel, AWS, Docker     | 70%        |
+| Nx workspace        | `nx.json` + `apps/`, `libs/` → structure        | 100%       |
+| Project type        | `apps/` analysis → web app, API, mobile         | 85%        |
 
 ### What AI Must Still Ask (20-30% of info)
 
-| Information | Why Can't Detect | Priority | Typical Answer |
-|-------------|------------------|----------|----------------|
-| Business domain | Not in code/config files | Critical | "E-commerce", "Healthcare" |
-| Domain details | High-level only in copier | Important | "B2C vs B2B", "Physical vs Digital" |
-| Testing philosophy | Tools ≠ approach | Important | "TDD", "Test-after", "Hybrid" |
-| Team size | Not in project files | Optional | "2-5", "10+", "Solo" |
-| Team experience | Not in project files | Optional | "Junior", "Senior", "Mixed" |
-| Compliance | Security context not in code | Optional | "PCI-DSS", "HIPAA", "GDPR" |
-| Performance needs | Not explicitly stated | Optional | "Real-time", "High-throughput" |
-| Domain entities | Could infer but needs validation | Optional | "Product, Order, Payment" |
+| Information        | Why Can't Detect                 | Priority  | Typical Answer                      |
+| ------------------ | -------------------------------- | --------- | ----------------------------------- |
+| Business domain    | Not in code/config files         | Critical  | "E-commerce", "Healthcare"          |
+| Domain details     | High-level only in copier        | Important | "B2C vs B2B", "Physical vs Digital" |
+| Testing philosophy | Tools ≠ approach                 | Important | "TDD", "Test-after", "Hybrid"       |
+| Team size          | Not in project files             | Optional  | "2-5", "10+", "Solo"                |
+| Team experience    | Not in project files             | Optional  | "Junior", "Senior", "Mixed"         |
+| Compliance         | Security context not in code     | Optional  | "PCI-DSS", "HIPAA", "GDPR"          |
+| Performance needs  | Not explicitly stated            | Optional  | "Real-time", "High-throughput"      |
+| Domain entities    | Could infer but needs validation | Optional  | "Product, Order, Payment"           |
 
 ---
 
@@ -255,11 +267,13 @@ I still need to know:
 ### Time Savings
 
 **Before (Original Flipped Interaction)**:
+
 - AI asks ~10 questions
 - User answers all 10 (even obvious ones)
 - Estimated time: 5-10 minutes
 
 **After (Audit-First)**:
+
 - AI audits automatically (silent, 5-10 seconds)
 - AI asks ~2-5 targeted questions
 - User answers only gaps
@@ -291,6 +305,7 @@ I still need to know:
 ### Scenario 1: Next.js E-commerce Project
 
 **Audit Detects**:
+
 - Project: "ShopFast" - Online marketplace
 - Stack: Next.js 15 + TypeScript + Prisma + PostgreSQL
 - Architecture: Hexagonal (from copier)
@@ -299,6 +314,7 @@ I still need to know:
 - Nx: 2 apps (web, admin), 5 libs
 
 **AI Only Asks**:
+
 1. "I see 'marketplace' - is it B2C, B2B, or C2C?"
 2. "Testing approach: TDD, test-after, or hybrid?"
 3. "Any compliance? (PCI-DSS for payments, GDPR for EU?)"
@@ -308,6 +324,7 @@ I still need to know:
 ### Scenario 2: FastAPI Microservice
 
 **Audit Detects**:
+
 - Project: "UserService" - Authentication microservice
 - Stack: FastAPI + Python 3.12 + SQLAlchemy + PostgreSQL
 - Architecture: Hexagonal (from copier)
@@ -316,6 +333,7 @@ I still need to know:
 - Nx: 1 app, 3 libs (domain, application, infrastructure)
 
 **AI Only Asks**:
+
 1. "Business domain: Is this for B2B SaaS, consumer app, or internal?"
 2. "Any specific auth requirements? (OAuth, SSO, MFA?)"
 3. "Compliance needs? (SOC2, HIPAA, or none?)"
@@ -325,6 +343,7 @@ I still need to know:
 ### Scenario 3: Mobile App (React Native)
 
 **Audit Detects**:
+
 - Project: "FitTracker" - Fitness tracking app
 - Stack: React Native + TypeScript + Expo
 - Architecture: Layered (from copier)
@@ -333,6 +352,7 @@ I still need to know:
 - Nx: 1 app, 4 libs (screens, components, services, utils)
 
 **AI Only Asks**:
+
 1. "Target platforms: iOS only, Android only, or both?"
 2. "Offline-first or requires connectivity?"
 3. "Any health data? (If yes, HIPAA compliance needed?)"
@@ -342,6 +362,7 @@ I still need to know:
 ### Scenario 4: Fully Auto-Detected (Edge Case)
 
 **Audit Detects**:
+
 - Project: "BlogCMS" - Simple blog CMS (well-described in copier)
 - Stack: Next.js + TypeScript
 - Domain: "Content management for blogs" (in copier)
@@ -351,6 +372,7 @@ I still need to know:
 - Compliance: None (public content)
 
 **AI Only Asks**:
+
 - "I've detected everything! Here's the summary... Apply updates? (yes/no)"
 
 **Questions reduced**: 10 → 0 (100% reduction - just confirmation)
@@ -364,6 +386,7 @@ I still need to know:
 **Problem**: Copier says "hexagonal" but directory structure looks "layered"
 
 **Solution**:
+
 ```
 AI: I detected a conflict:
     - Copier answers say: Hexagonal architecture
@@ -377,6 +400,7 @@ AI: I detected a conflict:
 **Problem**: Can detect framework (Next.js) but not specific variant (Pages vs App Router)
 
 **Solution**:
+
 ```
 AI: Detected: Next.js 15 + TypeScript
 
@@ -388,6 +412,7 @@ AI: Detected: Next.js 15 + TypeScript
 **Problem**: Copier says "Platform" but doesn't specify type
 
 **Solution**:
+
 ```
 AI: Detected project type: "Platform" (from copier)
 
@@ -400,6 +425,7 @@ AI: Detected project type: "Platform" (from copier)
 **Problem**: `.copier-answers.yml` not found
 
 **Solution**:
+
 ```
 AI: I couldn't find .copier-answers.yml
 
@@ -413,6 +439,7 @@ AI: I couldn't find .copier-answers.yml
 **Problem**: Nothing to ask
 
 **Solution**:
+
 ```
 AI: 🔍 Project Audit Complete
 
@@ -434,10 +461,12 @@ AI: 🔍 Project Audit Complete
 ### Phase 2: Enhanced Detection
 
 1. **Git History Analysis**
+
    - Detect actual testing patterns from commit history
    - Infer domain from file/class names
 
 2. **AI-Powered Inference**
+
    - Use LLM to infer domain from code
    - Detect architectural patterns from imports
 
@@ -448,10 +477,12 @@ AI: 🔍 Project Audit Complete
 ### Phase 3: Smart Suggestions
 
 1. **Based on Stack**
+
    - "I see Next.js + Prisma → suggest adding DB best practices?"
    - "FastAPI detected → add async/await guidelines?"
 
 2. **Based on Scale**
+
    - "3 apps, 10 libs → suggest monorepo best practices?"
    - "Solo developer → suggest simpler workflow?"
 
@@ -504,6 +535,7 @@ This makes the flipped interaction truly intelligent - the AI does the heavy lif
 ## Spec Traceability
 
 **Aligns with**:
+
 - DEV-PRD: AI-enhanced development workflows
 - DEV-SDS: Intelligent template customization
 - UX Best Practices: Reduce cognitive load, respect user time

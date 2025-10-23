@@ -42,6 +42,7 @@ Updated to match maintainer version's comprehensive structure with:
 - 🎯 **Quick Reference Card** - At-a-glance checklist
 
 **Key Features**:
+
 - Uses `[CUSTOMIZE: ...]` placeholders throughout for project-specific sections
 - Includes example content to guide customization
 - Preserves non-negotiable principles (generator-first, security-first)
@@ -55,12 +56,14 @@ Updated to match maintainer version's comprehensive structure with:
 A comprehensive prompt that implements the **intelligent flipped interaction** technique:
 
 **Phase 1: Automatic Audit** (AI does this first)
+
 - **AI reads project files** to auto-detect configuration
 - Analyzes: `.copier-answers.yml`, `package.json`, `pyproject.toml`, `nx.json`, directory structure
 - Detects: project type, tech stack, architecture, testing setup, deployment hints
 - **Benefits**: Reduces repetitive questions, user doesn't re-state obvious info
 
 **Phase 2: Targeted Questions** (AI asks only what it couldn't detect)
+
 - **1-2 questions at a time** to avoid overwhelming the user
 - **Progressive information gathering** across 3 priority levels
 - **Smart questioning**: Only asks for critical gaps
@@ -68,10 +71,12 @@ A comprehensive prompt that implements the **intelligent flipped interaction** t
 **Priority Levels**:
 
 1. **Critical** (If Not Auto-Detected)
+
    - Domain/business context (usually can't auto-detect from code)
    - Project type clarification (if ambiguous)
 
 2. **Important** (Ask if Unknown)
+
    - Team size and experience level
    - Testing philosophy (can detect tools, not approach)
    - Deployment target (might be in copier answers)
@@ -109,6 +114,7 @@ A comprehensive prompt that implements the **intelligent flipped interaction** t
 A conversational chat mode that provides an intelligent, audit-first UX:
 
 **Phase 1: Silent Audit** (AI does automatically)
+
 - Reads `.copier-answers.yml` for initial template choices
 - Analyzes `package.json` / `pyproject.toml` for dependencies
 - Inspects `nx.json` for workspace structure
@@ -116,35 +122,42 @@ A conversational chat mode that provides an intelligent, audit-first UX:
 - Reviews existing `copilot-instructions.md` for placeholders
 
 **Phase 2: Present Audit Results**
+
 - Shows what was auto-detected
 - Lists only the gaps that need user input
 - Provides clear summary before asking questions
 
 **Phase 3: Conversation Flow**
-  1. **Core Questions** (only for critical gaps)
-     - Domain/business context (can't auto-detect from code)
-     - Architecture clarification (if ambiguous)
 
-  2. **Team & Testing** (if not obvious)
-     - Team size and experience
-     - Testing philosophy (TDD vs test-after)
-     - Deployment target
+1. **Core Questions** (only for critical gaps)
 
-  3. **Optional Details** (ask permission first)
-     - Security/compliance requirements
-     - Performance constraints
-     - Domain entities
+   - Domain/business context (can't auto-detect from code)
+   - Architecture clarification (if ambiguous)
 
-  4. **Confirmation** - Show what will be customized, ask for approval
-  5. **Execute Updates** - Apply changes to copilot-instructions.md
+2. **Team & Testing** (if not obvious)
+
+   - Team size and experience
+   - Testing philosophy (TDD vs test-after)
+   - Deployment target
+
+3. **Optional Details** (ask permission first)
+
+   - Security/compliance requirements
+   - Performance constraints
+   - Domain entities
+
+4. **Confirmation** - Show what will be customized, ask for approval
+5. **Execute Updates** - Apply changes to copilot-instructions.md
 
 **Edge Case Handling**:
+
 - User is unsure → Provide examples, suggest defaults based on detected stack
 - User gives vague answer → Ask clarifying follow-up
 - User wants to skip optional sections → Allow gracefully
 - Nothing to ask (all auto-detected) → Confirm and apply updates
 
 **Example Conversation**:
+
 ```
 AI: 👋 Hi! Let me analyze your project first...
 
@@ -209,6 +222,7 @@ just customize-instructions
 ```
 
 **What it does**:
+
 - Prints friendly introduction
 - Explains what will be customized
 - Offers two options:
@@ -216,6 +230,7 @@ just customize-instructions
   2. Display the full prompt for copy-paste into AI chat
 
 **Usage**:
+
 ```bash
 # In generated project
 cd my-generated-project
@@ -234,11 +249,13 @@ just customize-instructions
 ### Created
 
 1. `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
+
    - Flipped interaction prompt (350+ lines)
    - 3-phase questioning approach
    - Template for updated instructions
 
 2. `templates/{{project_slug}}/.github/chatmodes/meta.customize-instructions.chatmode.md`
+
    - Interactive chat mode (220+ lines)
    - Conversational flow with examples
    - Edge case handling
@@ -248,6 +265,7 @@ just customize-instructions
 ### Modified
 
 1. `templates/{{project_slug}}/.github/copilot-instructions.md`
+
    - **Before**: 80 lines, minimal generic guidance
    - **After**: 600+ lines, comprehensive with customization placeholders
    - Matches maintainer version's structure and depth
@@ -295,27 +313,27 @@ just customize-instructions
 
 **What the Audit Detects**:
 
-| Information | Source | Detection Method |
-|-------------|--------|------------------|
-| Project name, description | `.copier-answers.yml` | Parse YAML |
-| Architecture style | `.copier-answers.yml` | Parse template choices |
-| Framework | `package.json` dependencies | Detect Next.js, Remix, etc. |
-| Language | `package.json`, `tsconfig.json` | TypeScript vs JavaScript |
-| Testing tools | `package.json` devDependencies | Jest, Vitest, pytest |
-| Python framework | `pyproject.toml` | FastAPI, Django, Flask |
-| Workspace structure | `nx.json`, `apps/`, `libs/` | Count apps/libs, identify types |
-| Deployment hints | `.copier-answers.yml`, scripts | Vercel, AWS, Docker |
+| Information               | Source                          | Detection Method                |
+| ------------------------- | ------------------------------- | ------------------------------- |
+| Project name, description | `.copier-answers.yml`           | Parse YAML                      |
+| Architecture style        | `.copier-answers.yml`           | Parse template choices          |
+| Framework                 | `package.json` dependencies     | Detect Next.js, Remix, etc.     |
+| Language                  | `package.json`, `tsconfig.json` | TypeScript vs JavaScript        |
+| Testing tools             | `package.json` devDependencies  | Jest, Vitest, pytest            |
+| Python framework          | `pyproject.toml`                | FastAPI, Django, Flask          |
+| Workspace structure       | `nx.json`, `apps/`, `libs/`     | Count apps/libs, identify types |
+| Deployment hints          | `.copier-answers.yml`, scripts  | Vercel, AWS, Docker             |
 
 **What AI Still Needs to Ask**:
 
-| Information | Why Can't Auto-Detect | Priority |
-|-------------|----------------------|----------|
-| Business domain | Not in code/config | Critical |
-| Testing philosophy | Can detect tools, not approach (TDD vs test-after) | Important |
-| Team size/experience | Not in project files | Important |
-| Compliance requirements | Security context not in code | Optional |
-| Performance priorities | Not explicitly stated | Optional |
-| Domain entities | Could infer but needs validation | Optional |
+| Information             | Why Can't Auto-Detect                              | Priority  |
+| ----------------------- | -------------------------------------------------- | --------- |
+| Business domain         | Not in code/config                                 | Critical  |
+| Testing philosophy      | Can detect tools, not approach (TDD vs test-after) | Important |
+| Team size/experience    | Not in project files                               | Important |
+| Compliance requirements | Security context not in code                       | Optional  |
+| Performance priorities  | Not explicitly stated                              | Optional  |
+| Domain entities         | Could infer but needs validation                   | Optional  |
 
 **Impact**: Reduces questions from ~10 to ~2-5, saving developer time and improving UX.
 
@@ -326,12 +344,14 @@ just customize-instructions
 ### Flipped Interaction Pattern
 
 **Traditional prompt engineering:**
+
 ```
 User: "Customize my copilot instructions. Here's my project: [wall of text]"
 AI: "Here's your updated instructions..."
 ```
 
 **Intelligent flipped interaction (with audit):**
+
 ```
 User: "Customize my copilot instructions"
 
@@ -357,6 +377,7 @@ AI: ✨ Done! [shows changes]
 ```
 
 **Why intelligent flipped interaction is better**:
+
 - **Audit-first reduces questions** - AI detects 70-80% of info automatically
 - **Less cognitive load** - User only answers what AI couldn't figure out
 - **No repetition** - User doesn't re-state info already in project files
@@ -369,11 +390,13 @@ AI: ✨ Done! [shows changes]
 Format: `[CUSTOMIZE: guidance]`
 
 Examples:
+
 - `[CUSTOMIZE: project type - web app, API, mobile app, etc.]`
 - `[CUSTOMIZE: Your actual tech stack]`
 - `[CUSTOMIZE: Add compliance requirements if applicable - HIPAA, SOC2, PCI-DSS, GDPR]`
 
 These are **intentionally visible** so users can:
+
 - Manually edit if they prefer
 - Know what needs customization
 - Have guidance on what to include
@@ -398,18 +421,21 @@ These sections are included verbatim in all generated projects.
 ### For Project Generators (Developers Using the Template)
 
 1. **Generate Project**:
+
    ```bash
    copier copy gh:your-org/VibesPro my-new-project
    # ... answer template questions ...
    ```
 
 2. **Customize Instructions**:
+
    ```bash
    cd my-new-project
    just customize-instructions
    ```
 
 3. **Interactive Customization** (via chat mode):
+
    - In VS Code: Open GitHub Copilot chat
    - Type: `@meta.customize-instructions`
    - Answer 1-2 questions at a time
@@ -417,6 +443,7 @@ These sections are included verbatim in all generated projects.
    - Confirm to apply
 
 4. **Verify**:
+
    - Open `.github/copilot-instructions.md`
    - Check that placeholders are replaced
    - Verify project-specific content is accurate
@@ -512,6 +539,7 @@ The flipped interaction technique makes customization accessible to all users, r
 ## Spec Traceability
 
 **Aligns with**:
+
 - DEV-PRD: AI-enhanced development workflows
 - DEV-SDS: Template generation and customization
 - DEV-TS: Copilot integration, prompt engineering

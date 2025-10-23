@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Pre-generation validation (pre_gen.py)
 - Post-generation automation (post_gen.py)
 - Input validation and sanitization
@@ -73,12 +74,12 @@ Complete ✅
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [templates/AGENT.md](/templates/AGENT.md) | Understanding Copier templates and variables |
-| [scripts/AGENT.md](/scripts/AGENT.md) | Writing shell scripts for automation |
-| [generators/AGENT.md](/generators/AGENT.md) | Nx generators (different from Copier hooks) |
-| [.github/AGENT.md](/.github/AGENT.md) | AI-assisted generation workflows |
+| Context                                     | When to Use                                  |
+| ------------------------------------------- | -------------------------------------------- |
+| [templates/AGENT.md](/templates/AGENT.md)   | Understanding Copier templates and variables |
+| [scripts/AGENT.md](/scripts/AGENT.md)       | Writing shell scripts for automation         |
+| [generators/AGENT.md](/generators/AGENT.md) | Nx generators (different from Copier hooks)  |
+| [.github/AGENT.md](/.github/AGENT.md)       | AI-assisted generation workflows             |
 
 ## 🔧 Local Conventions
 
@@ -481,11 +482,13 @@ if __name__ == "__main__":
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing hooks
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - **Security in hooks**
 - [.github/instructions/style.python.instructions.md](/.github/instructions/style.python.instructions.md) - Python style
 
 **Relevant documentation:**
+
 - [Copier hooks](https://copier.readthedocs.io/en/stable/creating/#the-tasks-key)
 - [Python subprocess](https://docs.python.org/3/library/subprocess.html)
 

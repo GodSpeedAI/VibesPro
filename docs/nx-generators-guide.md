@@ -46,6 +46,7 @@ pnpm exec nx g @nx/js:library user-domain --directory=libs/domain/user
 ```
 
 **Common use cases**:
+
 - Domain entities and value objects
 - Business logic services
 - Shared utilities (date formatting, validation, etc.)
@@ -80,6 +81,7 @@ pnpm exec nx g @nx/react:redux auth --project=state-management
 ```
 
 **Common use cases**:
+
 - Design system components (Button, Input, Card, etc.)
 - Feature-specific UI (UserProfile, OrderList, etc.)
 - Custom hooks (useAuth, useFetch, useLocalStorage, etc.)
@@ -102,6 +104,7 @@ pnpm exec nx g @nx/node:application api --directory=apps
 ```
 
 **Common use cases**:
+
 - REST APIs
 - GraphQL servers
 - CLI applications
@@ -250,14 +253,17 @@ Check `generators/*/schema.json` for available options.
 ### With TDD
 
 **Red Phase**:
+
 1. Check if new module/component needed → use generator first
 2. Generator creates test scaffold → customize for spec requirements
 3. Run test → should fail
 
 **Green Phase**:
+
 - Implement logic in generated structure
 
 **Refactor Phase**:
+
 - Improve within generated boundaries
 
 ### With Spec Implementation
@@ -273,27 +279,29 @@ Check `generators/*/schema.json` for available options.
 
 ## Quick Reference
 
-| Need | Generator | Command |
-|------|-----------|---------|
-| Shared utilities | `@nx/js:library` | `just ai-scaffold name=@nx/js:library` |
-| React component | `@nx/react:component` | `pnpm exec nx g @nx/react:component MyComponent` |
-| React library | `@nx/react:library` | `just ai-scaffold name=@nx/react:library` |
-| Custom hook | `@nx/react:hook` | `pnpm exec nx g @nx/react:hook useMyHook` |
-| Node.js API | `@nx/node:application` | `pnpm exec nx g @nx/node:application api` |
-| Next.js app | `@nx/next:application` | `pnpm exec nx g @nx/next:application web` |
-| Mobile app | `@nx/expo:application` | `pnpm exec nx g @nx/expo:application mobile` |
-| Python API | `@nxlv/python:application` | `pnpm exec nx g @nxlv/python:application api --type=fastapi` |
+| Need             | Generator                  | Command                                                      |
+| ---------------- | -------------------------- | ------------------------------------------------------------ |
+| Shared utilities | `@nx/js:library`           | `just ai-scaffold name=@nx/js:library`                       |
+| React component  | `@nx/react:component`      | `pnpm exec nx g @nx/react:component MyComponent`             |
+| React library    | `@nx/react:library`        | `just ai-scaffold name=@nx/react:library`                    |
+| Custom hook      | `@nx/react:hook`           | `pnpm exec nx g @nx/react:hook useMyHook`                    |
+| Node.js API      | `@nx/node:application`     | `pnpm exec nx g @nx/node:application api`                    |
+| Next.js app      | `@nx/next:application`     | `pnpm exec nx g @nx/next:application web`                    |
+| Mobile app       | `@nx/expo:application`     | `pnpm exec nx g @nx/expo:application mobile`                 |
+| Python API       | `@nxlv/python:application` | `pnpm exec nx g @nxlv/python:application api --type=fastapi` |
 
 ---
 
 ## Best Practices
 
 1. **Always use generators for new projects/libraries**
+
    - Ensures consistent structure
    - Configures build/test automatically
    - Sets up Nx project graph correctly
 
 2. **Specify `--directory` for organization**
+
    ```bash
    # Good: organized by domain
    pnpm exec nx g @nx/js:library user-service --directory=libs/domain/user
@@ -303,11 +311,13 @@ Check `generators/*/schema.json` for available options.
    ```
 
 3. **Use `--dry-run` to preview**
+
    ```bash
    pnpm exec nx g @nx/react:component Button --dry-run
    ```
 
 4. **Customize after generation**
+
    - Generators create scaffolds, not complete solutions
    - Add your business logic, tests, documentation after
 
@@ -320,14 +330,17 @@ Check `generators/*/schema.json` for available options.
 ## Troubleshooting
 
 ### "Cannot find generator"
+
 - Ensure plugin is installed: `pnpm add -D @nx/<plugin>`
 - Check spelling: `pnpm exec nx list`
 
 ### "Missing required parameter"
+
 - Check schema: `pnpm exec nx g @nx/js:library --help`
 - Or use interactive mode: `pnpm exec nx g @nx/js:library` (prompts for inputs)
 
 ### "Project already exists"
+
 - Choose different name or remove existing project
 - Use `--dry-run` to preview first
 

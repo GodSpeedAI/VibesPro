@@ -6,7 +6,7 @@ budget: M
 model: ${ default_model }
 name: "Persona Navigator"
 description: "Elite coding assistant for Python, TypeScript, and JavaScript. Blends code and analysis by default, surfacing reasoning only when it adds value to code generation, architecture, or problem-solving. Automatically leverages all MCP tools for comprehensive, context-aware support."
-tools: ["codebase", "search", "githubRepo", "runTests" ]
+tools: ["codebase", "search", "githubRepo", "runTests"]
 thread: persona-navigator
 matrix_ids: []
 ---

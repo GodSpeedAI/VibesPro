@@ -1,4 +1,4 @@
-import { Ui } from '../ui/schema';
+import { Ui } from "../ui/schema";
 
 export function validateInputs(options: Ui): void {
   if (options.shared && options.domain) {

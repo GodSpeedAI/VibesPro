@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - **Production-Ready Observability Stack** (PR #29 / feature/observability-pack):
+
   - Complete 6-phase implementation following TDD methodology
   - Rust-native instrumentation with `vibepro-observe` crate (DEV-ADR-016, DEV-SDS-017, DEV-PRD-017)
   - OpenTelemetry tracing integration with runtime feature flags (`VIBEPRO_OBSERVE`)
@@ -24,6 +25,7 @@ All notable changes to this project will be documented in this file.
   - Complete documentation in `docs/observability/README.md`
 
 - **New Observability Components**:
+
   - `crates/vibepro-observe/`: Rust instrumentation crate with OTLP export
   - `apps/observe-smoke/`: Smoke test application for tracing validation
   - `libs/node-logging/`: Structured JSON logging for Node.js with trace correlation
@@ -32,6 +34,7 @@ All notable changes to this project will be documented in this file.
   - `tools/logging/`: Quick-start examples for Pino and structlog
 
 - **Just Recipes for Observability**:
+
   - `just observe-start`: Start Vector edge collector
   - `just observe-stop`: Stop Vector gracefully
   - `just observe-test-all`: Run complete observability test suite
@@ -69,7 +72,6 @@ All notable changes to this project will be documented in this file.
 - SOPS-encrypted credentials (`.secrets.env.sops`)
 - Token-based authentication with OpenObserve
 - Opt-in telemetry model (disabled by default)
-
 
 ## [0.2.0] - 2025-10-11
 

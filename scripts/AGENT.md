@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Shell scripts for automation and orchestration
 - Justfile integration and task runners
 - Build and deployment scripts
@@ -25,6 +26,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 📁 Key Files & Patterns
 
 ### Directory Structure
+
 ```
 scripts/
 ├── bundle-context.sh              # Bundle AI context files
@@ -48,23 +50,23 @@ scripts/
 
 ### File Naming Conventions
 
-| File Type | Pattern | Example |
-|-----------|---------|---------|
-| **Shell Scripts** | `*.sh` | `run_prompt.sh` |
-| **Node Scripts** | `*.mjs`, `*.cjs` | `copier.mjs` |
-| **Python Scripts** | `*.py` | `measure_tokens_enhanced.py` |
-| **Templates** | `*.sh.j2` | `sync_techstack.sh.j2` |
-| **Wrappers** | No extension | `just`, `copier` |
+| File Type          | Pattern          | Example                      |
+| ------------------ | ---------------- | ---------------------------- |
+| **Shell Scripts**  | `*.sh`           | `run_prompt.sh`              |
+| **Node Scripts**   | `*.mjs`, `*.cjs` | `copier.mjs`                 |
+| **Python Scripts** | `*.py`           | `measure_tokens_enhanced.py` |
+| **Templates**      | `*.sh.j2`        | `sync_techstack.sh.j2`       |
+| **Wrappers**       | No extension     | `just`, `copier`             |
 
 ### Script Categories
 
-| Category | Purpose | Primary Language |
-|----------|---------|-----------------|
-| **AI Scripts** | Context bundling, token measurement | Shell, Python |
-| **Development** | Environment setup, health checks | Shell |
-| **Validation** | Chat mode checking, model linting | Node.js |
-| **Orchestration** | Justfile integration, task runners | Shell |
-| **Templates** | Template generation, cleanup | Shell, Jinja2 |
+| Category          | Purpose                             | Primary Language |
+| ----------------- | ----------------------------------- | ---------------- |
+| **AI Scripts**    | Context bundling, token measurement | Shell, Python    |
+| **Development**   | Environment setup, health checks    | Shell            |
+| **Validation**    | Chat mode checking, model linting   | Node.js          |
+| **Orchestration** | Justfile integration, task runners  | Shell            |
+| **Templates**     | Template generation, cleanup        | Shell, Jinja2    |
 
 ## 🧭 Routing Rules
 
@@ -80,18 +82,19 @@ scripts/
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [tools/AGENT.md](/tools/AGENT.md) | Building development utilities (not scripts) |
-| [.github/AGENT.md](/.github/AGENT.md) | Working with GitHub workflows or actions |
-| [tests/AGENT.md](/tests/AGENT.md) | Writing ShellSpec tests for scripts |
-| [templates/AGENT.md](/templates/AGENT.md) | Creating Jinja2 templates |
+| Context                                   | When to Use                                  |
+| ----------------------------------------- | -------------------------------------------- |
+| [tools/AGENT.md](/tools/AGENT.md)         | Building development utilities (not scripts) |
+| [.github/AGENT.md](/.github/AGENT.md)     | Working with GitHub workflows or actions     |
+| [tests/AGENT.md](/tests/AGENT.md)         | Writing ShellSpec tests for scripts          |
+| [templates/AGENT.md](/templates/AGENT.md) | Creating Jinja2 templates                    |
 
 ## 🔧 Local Conventions
 
 ### Shell Script Standards
 
 **POSIX compliance where possible:**
+
 ```bash
 #!/usr/bin/env bash
 # Script: script_name.sh
@@ -147,6 +150,7 @@ fi
 ### Error Handling
 
 **Robust error handling:**
+
 ```bash
 # Trap errors and cleanup
 cleanup() {
@@ -192,6 +196,7 @@ shellcheck -S style -o all scripts/*.sh
 ```
 
 **Common ShellCheck rules:**
+
 - SC2086: Quote variables to prevent word splitting
 - SC2046: Quote command substitution to prevent word splitting
 - SC2155: Separate declaration and assignment
@@ -238,9 +243,9 @@ End
 // Script: script_name.mjs
 // Purpose: Brief description
 
-import { readFileSync, writeFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -253,10 +258,10 @@ const EXIT_USAGE = 2;
 function main(args) {
   try {
     // Script logic
-    console.log('✅ Success');
+    console.log("✅ Success");
     process.exit(EXIT_SUCCESS);
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error("❌ Error:", error.message);
     process.exit(EXIT_ERROR);
   }
 }
@@ -324,11 +329,13 @@ if __name__ == "__main__":
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - ShellSpec testing
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Script security
 - [.github/instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - AI script patterns
 
 **Related contexts:**
+
 - [tests/AGENT.md](/tests/AGENT.md) - Writing ShellSpec tests
 - [tools/AGENT.md](/tools/AGENT.md) - Development tools (not scripts)
 
@@ -678,16 +685,16 @@ source "$(dirname "$0")/../lib/common.sh"
 
 ### Key Scripts Reference
 
-| Script | Purpose | Language |
-|--------|---------|----------|
-| `run_prompt.sh` | Execute prompts with context | Shell |
-| `measure_tokens.sh` | Token measurement (wrapper) | Shell |
-| `measure_tokens_enhanced.py` | Token measurement (impl) | Python |
-| `bundle-context.sh` | Bundle AI context files | Shell |
-| `doctor.sh` | Environment health check | Shell |
-| `check_all_chatmodes.mjs` | Validate chat modes | Node.js |
-| `lint_chatmodes.cjs` | Lint chat mode files | Node.js |
-| `template-cleanup.sh` | Clean template artifacts | Shell |
+| Script                       | Purpose                      | Language |
+| ---------------------------- | ---------------------------- | -------- |
+| `run_prompt.sh`              | Execute prompts with context | Shell    |
+| `measure_tokens.sh`          | Token measurement (wrapper)  | Shell    |
+| `measure_tokens_enhanced.py` | Token measurement (impl)     | Python   |
+| `bundle-context.sh`          | Bundle AI context files      | Shell    |
+| `doctor.sh`                  | Environment health check     | Shell    |
+| `check_all_chatmodes.mjs`    | Validate chat modes          | Node.js  |
+| `lint_chatmodes.cjs`         | Lint chat mode files         | Node.js  |
+| `template-cleanup.sh`        | Clean template artifacts     | Shell    |
 
 ## 🛡️ Security Considerations
 
@@ -702,6 +709,7 @@ source "$(dirname "$0")/../lib/common.sh"
 - ⚠️ Be cautious with `curl` or `wget` - validate URLs
 
 **Example secure command execution:**
+
 ```bash
 # BAD - Command injection vulnerability
 file="$1"
@@ -789,6 +797,7 @@ Scripts can be Nx targets:
 5. **Output** - Check stdout/stderr format
 
 **Test organization:**
+
 ```
 tests/shell/
 └── scripts/

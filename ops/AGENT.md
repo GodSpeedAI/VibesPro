@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Infrastructure as Code (IaC)
 - Deployment automation and scripts
 - CI/CD pipeline configuration
@@ -91,12 +92,12 @@ ops/
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [.github/AGENT.md](/.github/AGENT.md) | GitHub Actions workflows and CI/CD |
-| [scripts/AGENT.md](/scripts/AGENT.md) | Build and development scripts |
-| [docs/AGENT.md](/docs/AGENT.md) | Operational documentation and runbooks |
-| [architecture/AGENT.md](/architecture/AGENT.md) | Deployment architecture diagrams |
+| Context                                         | When to Use                            |
+| ----------------------------------------------- | -------------------------------------- |
+| [.github/AGENT.md](/.github/AGENT.md)           | GitHub Actions workflows and CI/CD     |
+| [scripts/AGENT.md](/scripts/AGENT.md)           | Build and development scripts          |
+| [docs/AGENT.md](/docs/AGENT.md)                 | Operational documentation and runbooks |
+| [architecture/AGENT.md](/architecture/AGENT.md) | Deployment architecture diagrams       |
 
 ## 🔧 Local Conventions
 
@@ -151,7 +152,7 @@ CMD ["node", "server.js"]
 
 ```yaml
 # ops/docker/docker-compose.yml
-version: '3.9'
+version: "3.9"
 
 services:
   web:
@@ -437,7 +438,7 @@ rule_files:
 
 scrape_configs:
   # Application metrics
-  - job_name: 'vibespro-api'
+  - job_name: "vibespro-api"
     kubernetes_sd_configs:
       - role: pod
         namespaces:
@@ -452,17 +453,17 @@ scrape_configs:
         regex: api
 
   # Node metrics
-  - job_name: 'node-exporter'
+  - job_name: "node-exporter"
     kubernetes_sd_configs:
       - role: node
     relabel_configs:
       - source_labels: [__address__]
-        regex: '(.*):10250'
-        replacement: '${1}:9100'
+        regex: "(.*):10250"
+        replacement: "${1}:9100"
         target_label: __address__
 
   # PostgreSQL metrics
-  - job_name: 'postgres'
+  - job_name: "postgres"
     static_configs:
       - targets:
           - postgres-exporter:9187
@@ -511,11 +512,13 @@ groups:
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - **Security in infrastructure (CRITICAL)**
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Infrastructure testing
 - [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance monitoring
 
 **Relevant documentation:**
+
 - [Docker best practices](https://docs.docker.com/develop/dev-best-practices/)
 - [Kubernetes patterns](https://kubernetes.io/docs/concepts/)
 - [Terraform documentation](https://www.terraform.io/docs)
@@ -523,6 +526,7 @@ groups:
 ## 💡 Examples
 
 See inline examples above for:
+
 - Multi-stage Dockerfile
 - docker-compose.yml for local development
 - Kubernetes deployment with health checks
@@ -639,25 +643,25 @@ terraform destroy
 
 ### Docker Commands
 
-| Command | Purpose |
-|---------|---------|
-| `docker build -t name .` | Build image |
-| `docker run -p 3000:3000 name` | Run container |
-| `docker ps` | List running containers |
-| `docker logs <container>` | View logs |
-| `docker exec -it <container> sh` | Execute shell |
-| `docker-compose up` | Start all services |
+| Command                          | Purpose                 |
+| -------------------------------- | ----------------------- |
+| `docker build -t name .`         | Build image             |
+| `docker run -p 3000:3000 name`   | Run container           |
+| `docker ps`                      | List running containers |
+| `docker logs <container>`        | View logs               |
+| `docker exec -it <container> sh` | Execute shell           |
+| `docker-compose up`              | Start all services      |
 
 ### Kubernetes Commands
 
-| Command | Purpose |
-|---------|---------|
-| `kubectl get pods` | List pods |
-| `kubectl describe pod <name>` | Pod details |
-| `kubectl logs -f <pod>` | Stream logs |
-| `kubectl exec -it <pod> -- sh` | Execute shell |
-| `kubectl apply -f file.yaml` | Apply config |
-| `kubectl delete -f file.yaml` | Delete resources |
+| Command                        | Purpose          |
+| ------------------------------ | ---------------- |
+| `kubectl get pods`             | List pods        |
+| `kubectl describe pod <name>`  | Pod details      |
+| `kubectl logs -f <pod>`        | Stream logs      |
+| `kubectl exec -it <pod> -- sh` | Execute shell    |
+| `kubectl apply -f file.yaml`   | Apply config     |
+| `kubectl delete -f file.yaml`  | Delete resources |
 
 ## 🛡️ Security Considerations (CRITICAL)
 
@@ -703,6 +707,7 @@ spec:
 ### Infrastructure Testing
 
 **Test Docker builds:**
+
 ```bash
 # Build and test locally
 docker build -t test-image .
@@ -713,6 +718,7 @@ docker-compose -f docker-compose.test.yml up --abort-on-container-exit
 ```
 
 **Test Kubernetes manifests:**
+
 ```bash
 # Dry-run to validate YAML
 kubectl apply --dry-run=client -f ops/kubernetes/
@@ -722,6 +728,7 @@ kubeval ops/kubernetes/**/*.yaml
 ```
 
 **Test Terraform:**
+
 ```bash
 # Validate configuration
 terraform validate

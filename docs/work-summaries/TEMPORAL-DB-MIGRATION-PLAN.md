@@ -43,24 +43,29 @@ Migrate the temporal database (`temporal_db/`) from sled to redb to maintain con
 ### Phase 1: Documentation & Specification Updates (30 min)
 
 **Tasks:**
+
 1. Update PHASE-006-CHECKLIST.md with TASK-017
 2. Create migration specification document
 3. Update architecture diagrams if needed
 
 **Deliverables:**
+
 - [x] TEMPORAL-DB-MIGRATION-PLAN.md (this document)
 - [x] Updated PHASE-006-CHECKLIST.md
 - [x] Migration decision record
 
 **Architecture Analysis:**
+
 - temporal_db is a module in root Cargo.toml (not a separate workspace crate)
 - Current structure:
+
   - `temporal_db/lib.rs` - Module exports and high-level API
   - `temporal_db/repository.rs` - Core TemporalRepository using sled
   - `temporal_db/schema.rs` - Data structures
   - `temporal_db/python/` - Python bindings (uses SledTemporalDatabaseAdapter)
 
 - Key sled usage patterns identified:
+
   - Implicit transactions: `db.insert()`, `db.scan_prefix()`
   - Key prefixes for namespace separation: `spec:`, `pattern:`, `change:`
   - Time-series keys: `{prefix}:{id}:{timestamp_nanos}`
@@ -73,21 +78,25 @@ Migrate the temporal database (`temporal_db/`) from sled to redb to maintain con
 ### Phase 2: Cargo.toml Updates (10 min)
 
 **Tasks:**
+
 1. Update `temporal_db/Cargo.toml`: sled → redb
 2. Verify dependency resolution
 
 **Files:**
+
 - [ ] `temporal_db/Cargo.toml`
 
 ### Phase 3: Repository Implementation (2-3 hours)
 
 **Tasks:**
+
 1. Update `temporal_db/repository.rs` to use redb API
 2. Convert from implicit transactions (sled) to explicit transactions (redb)
 3. Define table schemas using redb's TableDefinition
 4. Update error handling
 
 **Key Changes:**
+
 ```rust
 // Before (sled)
 use sled::{Db, IVec};
@@ -107,42 +116,49 @@ write_txn.commit()?;
 ```
 
 **Files:**
+
 - [ ] `temporal_db/repository.rs`
 - [ ] `temporal_db/lib.rs` (if needed)
 
 ### Phase 4: Python Adapter Updates (1 hour)
 
 **Tasks:**
+
 1. Update `SledTemporalDatabaseAdapter` → `RedbTemporalDatabaseAdapter`
 2. Update import statements and class names
 3. Maintain fallback to JSON/SQLite for compatibility
 
 **Files:**
- - [ ] `libs/prompt_optimizer/infrastructure/temporal_db.py`
- - [ ] `temporal_db/python/repository.py`
+
+- [ ] `libs/prompt_optimizer/infrastructure/temporal_db.py`
+- [ ] `temporal_db/python/repository.py`
 
 ### Phase 5: Template Updates (1 hour)
 
 **Tasks:**
+
 1. Update template references from sled to redb
 2. Update requirements.txt templates
 3. Update copier.yml database_type options
 
 **Files:**
- - [ ] `templates/tools/prompt_optimizer/README.md.j2`
- - [ ] `templates/tools/prompt_optimizer/requirements.txt.j2`
- - [ ] `templates/tools/prompt_optimizer/copier.yml`
- - [ ] `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`
+
+- [ ] `templates/tools/prompt_optimizer/README.md.j2`
+- [ ] `templates/tools/prompt_optimizer/requirements.txt.j2`
+- [ ] `templates/tools/prompt_optimizer/copier.yml`
+- [ ] `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`
 
 ### Phase 6: Testing (1-2 hours)
 
 **Tasks:**
+
 1. Write unit tests for temporal repository with redb
 2. Test Python adapter compatibility
 3. Integration tests for temporal database operations
 4. Performance benchmarks
 
 **Test Coverage:**
+
 - [ ] Temporal repository CRUD operations
 - [ ] Time-series queries
 - [ ] Pattern matching
@@ -152,12 +168,14 @@ write_txn.commit()?;
 ### Phase 7: Documentation (1 hour)
 
 **Tasks:**
+
 1. Update README.md temporal database section
 2. Update AGENTS.md references
 3. Create migration guide for existing users
 4. Update API documentation
 
 **Files:**
+
 - [ ] `README.md`
 - [ ] `AGENTS.md`
 - [ ] `temporal_db/README.md`
@@ -186,21 +204,23 @@ const DECISIONS_TABLE: TableDefinition<&str, &[u8]> =
 
 ### Key Spaces (sled → redb mapping)
 
-| sled key prefix | redb table | Notes |
-|----------------|------------|-------|
-| `spec:*` | SPECIFICATIONS_TABLE | Specification records |
-| `pattern:*` | PATTERNS_TABLE | Architectural patterns |
-| `change:*` | CHANGES_TABLE | Time-series changes |
-| `decision:*` | DECISIONS_TABLE | Decision points |
+| sled key prefix | redb table           | Notes                  |
+| --------------- | -------------------- | ---------------------- |
+| `spec:*`        | SPECIFICATIONS_TABLE | Specification records  |
+| `pattern:*`     | PATTERNS_TABLE       | Architectural patterns |
+| `change:*`      | CHANGES_TABLE        | Time-series changes    |
+| `decision:*`    | DECISIONS_TABLE      | Decision points        |
 
 ### Migration Strategy
 
 **Option 1: Clean Migration (Recommended)**
+
 - New installations use redb from the start
 - Existing users migrate data manually (provide script)
 - Simplest implementation
 
 **Option 2: Automatic Migration**
+
 - Detect sled database on startup
 - Migrate data to redb automatically
 - More complex, better UX
@@ -213,12 +233,12 @@ const DECISIONS_TABLE: TableDefinition<&str, &[u8]> =
 
 ### Risks
 
-| Risk | Probability | Impact | Mitigation |
-|------|------------|--------|------------|
-| Breaking existing temporal data | Medium | High | Provide data migration script |
-| Python adapter compatibility | Low | Medium | Maintain JSON/SQLite fallback |
-| Performance regression | Low | Low | Benchmark before/after |
-| Template generation failures | Low | Medium | Comprehensive testing |
+| Risk                            | Probability | Impact | Mitigation                    |
+| ------------------------------- | ----------- | ------ | ----------------------------- |
+| Breaking existing temporal data | Medium      | High   | Provide data migration script |
+| Python adapter compatibility    | Low         | Medium | Maintain JSON/SQLite fallback |
+| Performance regression          | Low         | Low    | Benchmark before/after        |
+| Template generation failures    | Low         | Medium | Comprehensive testing         |
 
 ### Rollback Plan
 
@@ -246,28 +266,30 @@ cargo build
 
 ## Timeline
 
-| Phase | Estimated Time | Status |
-|-------|----------------|--------|
-| Phase 1: Documentation | 30 min | ⏳ In Progress |
-| Phase 2: Cargo.toml | 10 min | ⏳ Not Started |
-| Phase 3: Repository | 2-3 hours | ⏳ Not Started |
-| Phase 4: Python Adapters | 1 hour | ⏳ Not Started |
-| Phase 5: Templates | 1 hour | ⏳ Not Started |
-| Phase 6: Testing | 1-2 hours | ⏳ Not Started |
-| Phase 7: Documentation | 1 hour | ⏳ Not Started |
-| **Total** | **6-9 hours** | |
+| Phase                    | Estimated Time | Status         |
+| ------------------------ | -------------- | -------------- |
+| Phase 1: Documentation   | 30 min         | ⏳ In Progress |
+| Phase 2: Cargo.toml      | 10 min         | ⏳ Not Started |
+| Phase 3: Repository      | 2-3 hours      | ⏳ Not Started |
+| Phase 4: Python Adapters | 1 hour         | ⏳ Not Started |
+| Phase 5: Templates       | 1 hour         | ⏳ Not Started |
+| Phase 6: Testing         | 1-2 hours      | ⏳ Not Started |
+| Phase 7: Documentation   | 1 hour         | ⏳ Not Started |
+| **Total**                | **6-9 hours**  |                |
 
 ---
 
 ## Validation Checklist
 
 ### Pre-Migration
+
 - [x] Create migration branch
 - [ ] Review temporal database usage patterns
 - [ ] Identify all sled dependencies
 - [ ] Create comprehensive test suite
 
 ### During Migration
+
 - [ ] Update dependencies
 - [ ] Migrate repository implementation
 - [ ] Update Python adapters
@@ -275,6 +297,7 @@ cargo build
 - [ ] Run all tests
 
 ### Post-Migration
+
 - [ ] Performance benchmarks
 - [ ] Integration testing
 - [ ] Documentation review

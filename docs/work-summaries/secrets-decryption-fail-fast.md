@@ -26,12 +26,14 @@ Changed the secrets decryption step to fail-fast when the `SOPS_AGE_KEY` secret 
 
 ## Follow-ups
 
- - If other jobs or steps rely on `steps.sops.outputs.loaded`, validate they handle the case where the decryption step was skipped (i.e., use `if: steps.sops.outcome == 'skipped'` or check the output when available).
- - This workflow now also includes a `SOPS status` step which always runs and emits a stable step output (`steps.sops_status.outputs.loaded`) and an environment variable (`SOPS_LOADED`) that downstream shell steps can read. Prefer checking `steps.sops_status.outputs.loaded == 'true'` or `env.SOPS_LOADED == 'true'` in your `if:` guards.
- - Consider adding a job-level check to fail early when required secrets are not present (e.g., `if: needs.prepare.outputs.some_flag == 'true' && secrets.SOPS_AGE_KEY == ''`), depending on project policy.
+- If other jobs or steps rely on `steps.sops.outputs.loaded`, validate they handle the case where the decryption step was skipped (i.e., use `if: steps.sops.outcome == 'skipped'` or check the output when available).
+- This workflow now also includes a `SOPS status` step which always runs and emits a stable step output (`steps.sops_status.outputs.loaded`) and an environment variable (`SOPS_LOADED`) that downstream shell steps can read. Prefer checking `steps.sops_status.outputs.loaded == 'true'` or `env.SOPS_LOADED == 'true'` in your `if:` guards.
+- Consider adding a job-level check to fail early when required secrets are not present (e.g., `if: needs.prepare.outputs.some_flag == 'true' && secrets.SOPS_AGE_KEY == ''`), depending on project policy.
 
 ## Files changed
+
 - `.github/workflows/build-matrix.yml`
 
 ## Notes
+
 - The change intentionally enforces fail-fast behavior for secret decryption to avoid deploying or testing with missing secrets.

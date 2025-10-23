@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Rust-based embedded database (sled)
 - Temporal learning storage for AI agents
 - Architectural decision history
@@ -85,18 +86,19 @@ harness = false
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [docs/AGENT.md](/docs/AGENT.md) | Reading ADRs and specifications (high-level) |
-| [tools/AGENT.md](/tools/AGENT.md) | Building tools that query temporal DB |
-| [.github/AGENT.md](/.github/AGENT.md) | AI workflows that use learning insights |
-| [architecture/AGENT.md](/architecture/AGENT.md) | Architectural patterns and CALM docs |
+| Context                                         | When to Use                                  |
+| ----------------------------------------------- | -------------------------------------------- |
+| [docs/AGENT.md](/docs/AGENT.md)                 | Reading ADRs and specifications (high-level) |
+| [tools/AGENT.md](/tools/AGENT.md)               | Building tools that query temporal DB        |
+| [.github/AGENT.md](/.github/AGENT.md)           | AI workflows that use learning insights      |
+| [architecture/AGENT.md](/architecture/AGENT.md) | Architectural patterns and CALM docs         |
 
 ## 🔧 Local Conventions
 
 ### Rust Code Style
 
 **Follow Rust standard conventions:**
+
 - Use `rustfmt` for formatting
 - Use `clippy` for linting
 - Document all public APIs with `///` doc comments
@@ -307,11 +309,13 @@ impl<'a> QueryBuilder<'a> {
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in database operations
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing Rust code
 - [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance benchmarking
 
 **Relevant documentation:**
+
 - [sled documentation](https://docs.rs/sled/)
 - [Rust book](https://doc.rust-lang.org/book/)
 - [Cargo book](https://doc.rust-lang.org/cargo/)
@@ -418,8 +422,8 @@ fn record_success_pattern(
 
 ```typescript
 // tools/ai/query-temporal-db.ts
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { exec } from "child_process";
+import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
@@ -433,9 +437,7 @@ interface Specification {
 /**
  * Query temporal database for specifications.
  */
-export async function querySpecs(
-  specType?: string
-): Promise<Specification[]> {
+export async function querySpecs(specType?: string): Promise<Specification[]> {
   const cmd = specType
     ? `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --type ${specType}`
     : `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --all`;
@@ -449,7 +451,7 @@ export async function querySpecs(
  */
 export async function getDecisions(): Promise<any[]> {
   const { stdout } = await execAsync(
-    'cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --decisions'
+    "cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --decisions",
   );
   return JSON.parse(stdout);
 }
@@ -679,17 +681,19 @@ criterion_main!(benches);
 ### With AI Tools
 
 **Query from TypeScript/Node.js:**
+
 ```typescript
-import { querySpecs, getDecisions } from './tools/ai/query-temporal-db';
+import { querySpecs, getDecisions } from "./tools/ai/query-temporal-db";
 
 // Get all ADRs
-const adrs = await querySpecs('ADR');
+const adrs = await querySpecs("ADR");
 
 // Get decisions
 const decisions = await getDecisions();
 ```
 
 **Query from Python:**
+
 ```python
 import subprocess
 import json
@@ -711,6 +715,7 @@ def query_temporal_db(spec_type: str = None) -> list:
 ### With AI Workflows
 
 **Store learning insights:**
+
 ```rust
 // Called from post-generation hooks
 pub fn record_generation_insight(

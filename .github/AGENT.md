@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Modular instruction files (MECE principle)
 - Task-specific prompts for common workflows
 - Specialized AI personas via chat modes
@@ -23,6 +24,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 📁 Key Files & Patterns
 
 ### Directory Structure
+
 ```
 .github/
 ├── copilot-instructions.md    # Master AI guidance (supreme authority)
@@ -49,21 +51,22 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 ### File Naming Conventions
 
-| File Type | Pattern | Location | Example |
-|-----------|---------|----------|---------|
-| **Instructions** | `*.instructions.md` | `instructions/` | `security.instructions.md` |
-| **Prompts** | `*.prompt.md` | `prompts/` | `tdd.workflow.prompt.md` |
-| **Chat Modes** | `domain.task.chatmode.md` | `chatmodes/` | `tdd.red.chatmode.md` |
-| **Workflows** | `*.yml` or `*.yaml` | `workflows/` | `ci.yml` |
+| File Type        | Pattern                   | Location        | Example                    |
+| ---------------- | ------------------------- | --------------- | -------------------------- |
+| **Instructions** | `*.instructions.md`       | `instructions/` | `security.instructions.md` |
+| **Prompts**      | `*.prompt.md`             | `prompts/`      | `tdd.workflow.prompt.md`   |
+| **Chat Modes**   | `domain.task.chatmode.md` | `chatmodes/`    | `tdd.red.chatmode.md`      |
+| **Workflows**    | `*.yml` or `*.yaml`       | `workflows/`    | `ci.yml`                   |
 
 ### Instruction File Frontmatter
+
 ```yaml
 ---
 description: "Brief description"
-applyTo: "**"              # or specific glob pattern
+applyTo: "**" # or specific glob pattern
 kind: instructions
 domain: security|testing|general|etc
-precedence: 10-50          # Lower = higher priority
+precedence: 10-50 # Lower = higher priority
 ---
 ```
 
@@ -80,12 +83,12 @@ precedence: 10-50          # Lower = higher priority
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [docs/AGENT.md](/docs/AGENT.md) | Implementing from specifications or updating specs |
-| [tests/AGENT.md](/tests/AGENT.md) | Writing test cases or following TDD workflow |
-| [tools/AGENT.md](/tools/AGENT.md) | Building development tools or utilities |
-| [scripts/AGENT.md](/scripts/AGENT.md) | Creating automation scripts |
+| Context                               | When to Use                                        |
+| ------------------------------------- | -------------------------------------------------- |
+| [docs/AGENT.md](/docs/AGENT.md)       | Implementing from specifications or updating specs |
+| [tests/AGENT.md](/tests/AGENT.md)     | Writing test cases or following TDD workflow       |
+| [tools/AGENT.md](/tools/AGENT.md)     | Building development tools or utilities            |
+| [scripts/AGENT.md](/scripts/AGENT.md) | Creating automation scripts                        |
 
 ## 🔧 Local Conventions
 
@@ -100,18 +103,20 @@ precedence: 10-50          # Lower = higher priority
 5. **testing.instructions.md** (35) - Testing strategies
 6. **general.instructions.md** (50) - General guidelines
 7. **performance.instructions.md** (34) - Performance considerations
-8. **style.*.instructions.md** (varies) - Language-specific styles
+8. **style.\*.instructions.md** (varies) - Language-specific styles
 
 **Critical Rule**: Security guidelines override ALL other guidelines.
 
 ### Chat Mode Organization
 
 **Workflow Modes:**
+
 - `tdd.red` → `tdd.green` → `tdd.refactor` (Test-Driven Development cycle)
 - `debug.start` → `debug.repro` → `debug.isolate` → `debug.fix` → `debug.refactor` → `debug.regress`
 - `spec.lean` / `spec.wide` / `spec.nfr` (Specification generation)
 
 **Persona Modes:**
+
 - `persona.navigator` - Elite multi-language coding assistant with MCP
 - `persona.system-architect` - Architectural guidance
 - `persona.senior-backend` - Backend best practices
@@ -119,6 +124,7 @@ precedence: 10-50          # Lower = higher priority
 - `persona.qa` - Testing strategies
 
 **Product Modes:**
+
 - `product.manager` - Product planning
 - `product.elevator-pitch` - Value proposition
 - `product.features-list` - Feature breakdown
@@ -126,6 +132,7 @@ precedence: 10-50          # Lower = higher priority
 ### Prompt Engineering Patterns
 
 **Prompt Structure:**
+
 1. **Context Section**: Describe the scenario
 2. **Task Section**: Define what needs to be done
 3. **Examples Section**: Show expected patterns
@@ -133,9 +140,10 @@ precedence: 10-50          # Lower = higher priority
 5. **References Section**: Link to specs, instructions, or other prompts
 
 **Variable Usage:**
+
 ```markdown
 ${selection}      # Current editor selection
-${fileBasename}   # Current file name
+${fileBasename} # Current file name
 ${workspaceFolder} # Workspace root path
 ```
 
@@ -148,6 +156,7 @@ ${workspaceFolder} # Workspace root path
 ## 📚 Related Instructions
 
 **Core instruction files:**
+
 - [instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security guidelines (HIGHEST PRIORITY)
 - [instructions/ai-workflows.constitution.instructions.md](/.github/instructions/ai-workflows.constitution.instructions.md) - Workflow constitution
 - [instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - Workflow policies
@@ -156,6 +165,7 @@ ${workspaceFolder} # Workspace root path
 - [instructions/general.instructions.md](/.github/instructions/general.instructions.md) - General conventions
 
 **Key prompts:**
+
 - [prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
 - [prompts/debug.workflow.prompt.md](/.github/prompts/debug.workflow.prompt.md) - Debug workflow
 - [prompts/sec.review.prompt.md](/.github/prompts/sec.review.prompt.md) - Security audit
@@ -223,11 +233,13 @@ This mode is used when [scenario]...
 ### Example 3: TDD Workflow
 
 **Sequence:**
+
 1. Start with `tdd.red` chat mode → Write failing test
 2. Switch to `tdd.green` chat mode → Implement minimal code to pass
 3. Switch to `tdd.refactor` chat mode → Improve code quality
 
 **Commands:**
+
 ```bash
 # Run AI validation after implementation
 just ai-validate
@@ -239,6 +251,7 @@ just ai-context-bundle
 ### Example 4: Debug Workflow
 
 **Sequence:**
+
 1. `debug.start` → Understand the issue
 2. `debug.repro` → Create minimal reproduction
 3. `debug.isolate` → Narrow down the root cause
@@ -300,12 +313,12 @@ node scripts/normalize_chatmodes.mjs
 
 ### Validation Tools
 
-| Tool | Purpose | Location |
-|------|---------|----------|
-| `prompt-lint` | Validate prompt frontmatter and structure | justfile |
-| `check_all_chatmodes.mjs` | Validate chat mode definitions | scripts/ |
-| `normalize_chatmodes.mjs` | Standardize chat mode format | scripts/ |
-| `check_model_lint.mjs` | Validate model references | scripts/ |
+| Tool                      | Purpose                                   | Location |
+| ------------------------- | ----------------------------------------- | -------- |
+| `prompt-lint`             | Validate prompt frontmatter and structure | justfile |
+| `check_all_chatmodes.mjs` | Validate chat mode definitions            | scripts/ |
+| `normalize_chatmodes.mjs` | Standardize chat mode format              | scripts/ |
+| `check_model_lint.mjs`    | Validate model references                 | scripts/ |
 
 ## 🛡️ Security Considerations
 
@@ -334,6 +347,7 @@ When creating AI guidance, always:
 ### Generator-First Approach
 
 Before writing custom AI guidance:
+
 - Check if existing instruction files can be extended
 - Look for similar chat modes or prompts
 - Consult [instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md)

@@ -25,23 +25,23 @@ The overhead comes from:
 
 ### Historical Performance Evolution
 
-| Version | Database | Overhead | Notes |
-|---------|----------|----------|-------|
-| v0.1.0 | sled | 800-950% | Baseline with per-op counter persistence |
-| v0.1.1 | sled | 720-750% | TASK-016: Counter batching (10-14% improvement) |
-| v0.2.0 | **redb** | **8.4%** | Migration to redb + in-memory counter |
+| Version | Database | Overhead | Notes                                           |
+| ------- | -------- | -------- | ----------------------------------------------- |
+| v0.1.0  | sled     | 800-950% | Baseline with per-op counter persistence        |
+| v0.1.1  | sled     | 720-750% | TASK-016: Counter batching (10-14% improvement) |
+| v0.2.0  | **redb** | **8.4%** | Migration to redb + in-memory counter           |
 
 ### Real-World Impact
 
 **What 8.4% overhead means in practice:**
 
-| Operations | Plain Time | Encrypted Time | Added Latency |
-|------------|-----------|----------------|---------------|
-| 10 ops | 6.7ms | 7.3ms | +0.6ms |
-| 100 ops | 67ms | 73ms | +6ms |
-| 1,000 ops | 670ms | 730ms | +60ms |
-| 10,000 ops | 6.7s | 7.3s | +0.6s |
-| 100,000 ops | 67s | 73s | **+6s** |
+| Operations  | Plain Time | Encrypted Time | Added Latency |
+| ----------- | ---------- | -------------- | ------------- |
+| 10 ops      | 6.7ms      | 7.3ms          | +0.6ms        |
+| 100 ops     | 67ms       | 73ms           | +6ms          |
+| 1,000 ops   | 670ms      | 730ms          | +60ms         |
+| 10,000 ops  | 6.7s       | 7.3s           | +0.6s         |
+| 100,000 ops | 67s        | 73s            | **+6s**       |
 
 **Key Takeaway:** The overhead is now **minimal** for most use cases. The redb migration with in-memory counter management provides production-ready performance.
 
@@ -54,6 +54,7 @@ The overhead comes from:
 **Solution:** Batch counter persistence - write to disk every 10 operations instead of every operation.
 
 **Impact:**
+
 - Reduced counter writes from 1000 to 100 (10x reduction)
 - Improved performance by ~10-14% (800% → 720-750% overhead)
 - Limited effectiveness due to sled's implicit transaction model
@@ -61,16 +62,19 @@ The overhead comes from:
 ### redb Migration + In-Memory Counter (v0.2.0)
 
 **Problem:**
+
 - sled is unmaintained (perpetual beta since 2020)
 - Per-operation transaction overhead in redb worse than sled
 - Needed to eliminate counter persistence overhead entirely
 
 **Solution:**
+
 1. Migrate from sled to redb (stable, actively maintained, pure Rust)
 2. Keep nonce counter in memory, only persist on flush()
 3. Use explicit transactions effectively
 
 **Implementation:**
+
 ```rust
 fn allocate_nonce(&self) -> SecureDbResult<([u8; 24], XNonce)> {
     let mut guard = self.counter.lock()?;
@@ -88,11 +92,13 @@ pub fn flush(&self) -> SecureDbResult<()> {
 ```
 
 **Impact:**
+
 - **Eliminated transaction overhead** from counter updates
 - **Overhead reduced from 720-750% to 8.4%** (99% improvement)
 - **Fair comparison:** Both encrypted and plain versions use redb with identical transaction patterns
 
 **Trade-off:**
+
 - On crash, all nonces since last flush() may need to be skipped
 - **Mitigation:** Call `flush()` periodically and before shutdown
 - **Security:** Cryptographically safe - nonce uniqueness guaranteed by UUID+counter combination
@@ -137,6 +143,7 @@ thread_local! {
 ### 3. SIMD Optimizations (Platform-dependent)
 
 The `chacha20poly1305` crate already uses hardware acceleration (AES-NI) when available. Further gains would require:
+
 - Platform-specific SIMD intrinsics
 - Custom cipher implementation (high risk, not recommended)
 
@@ -145,12 +152,14 @@ The `chacha20poly1305` crate already uses hardware acceleration (AES-NI) when av
 ### For Application Developers
 
 1. **Call flush() before closing:** Ensures counter is persisted
+
    ```rust
    db.flush()?;
    drop(db);
    ```
 
 2. **Flush periodically for crash recovery:** Persist counter at checkpoints
+
    ```rust
    for chunk in data.chunks(10000) {
        // ... process chunk ...
@@ -172,6 +181,7 @@ The `chacha20poly1305` crate already uses hardware acceleration (AES-NI) when av
 ## Acceptable Use Cases
 
 SecureDb v0.2.0 is appropriate for:
+
 - ✅ Configuration storage (low-medium throughput, high security)
 - ✅ API key management (small data, infrequent access)
 - ✅ User credential storage (security > performance)
@@ -182,6 +192,7 @@ SecureDb v0.2.0 is appropriate for:
 - ✅ **Production-ready for most applications**
 
 SecureDb may NOT be appropriate for:
+
 - ❌ Ultra-high-throughput data pipelines (>100k ops/sec)
 - ❌ Hard real-time systems (sub-microsecond latency required)
 - ❌ Applications where ANY overhead is unacceptable

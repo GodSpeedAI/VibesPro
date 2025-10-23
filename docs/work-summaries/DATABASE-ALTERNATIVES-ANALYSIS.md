@@ -7,6 +7,7 @@
 ## Executive Summary
 
 **Current Performance Crisis:**
+
 - **Sled + Encryption:** ~800-950% overhead (8-10x slower than plain)
 - **Real Impact:** 1,000 ops = 90ms (vs 9ms plain) | 100,000 ops = 9s (vs 0.9s plain)
 - **Bottleneck Breakdown:**
@@ -21,13 +22,13 @@
 
 ## Database Comparison Matrix
 
-| Database | Type | Performance | Encryption | ACID | Status | Recommendation |
-|----------|------|------------|------------|------|--------|----------------|
-| **Sled** | LSM-tree | Good | External | ✅ | ⚠️ Beta/Unmaintained | ❌ Current (problematic) |
-| **redb** | B-tree | Excellent | External | ✅ | ✅ v2.2+ Stable | ✅ **TOP CHOICE** |
-| **RocksDB** | LSM-tree | Excellent | External | ✅ | ✅ Production-proven | ✅ Alternative |
-| **fjall** | LSM-tree | Good | External | ✅ | ✅ Post-1.0 | ⚠️ Newer |
-| **LMDB** | B-tree | Good (small) | External | ✅ | ✅ Mature | ⚠️ Large dataset issues |
+| Database    | Type     | Performance  | Encryption | ACID | Status               | Recommendation           |
+| ----------- | -------- | ------------ | ---------- | ---- | -------------------- | ------------------------ |
+| **Sled**    | LSM-tree | Good         | External   | ✅   | ⚠️ Beta/Unmaintained | ❌ Current (problematic) |
+| **redb**    | B-tree   | Excellent    | External   | ✅   | ✅ v2.2+ Stable      | ✅ **TOP CHOICE**        |
+| **RocksDB** | LSM-tree | Excellent    | External   | ✅   | ✅ Production-proven | ✅ Alternative           |
+| **fjall**   | LSM-tree | Good         | External   | ✅   | ✅ Post-1.0          | ⚠️ Newer                 |
+| **LMDB**    | B-tree   | Good (small) | External   | ✅   | ✅ Mature            | ⚠️ Large dataset issues  |
 
 ---
 
@@ -46,6 +47,7 @@
 ✅ **Embedded** - Single file database
 
 **Performance Characteristics:**
+
 ```rust
 // redb is typically 20-50% faster than sled for reads
 // Similar or better write performance
@@ -54,6 +56,7 @@
 ```
 
 **Migration Path:**
+
 ```rust
 // Current (sled-based):
 pub struct SecureDb {
@@ -71,6 +74,7 @@ pub struct SecureDb {
 ```
 
 **Expected Improvement:**
+
 - **Database overhead:** ~20-30% reduction (B-tree vs LSM)
 - **Overall:** ~750-850% overhead → ~550-650% (still encrypted)
 - **Without encryption:** Should match or beat sled baseline
@@ -95,12 +99,14 @@ pub struct SecureDb {
 ❌ **Write amplification** - LSM architecture trade-off
 
 **When to Choose:**
+
 - Need to scale beyond 100GB
 - Require advanced features (column families, merge operators)
 - Already have C++ build infrastructure
 - Write-heavy workloads
 
 **Expected Performance:**
+
 - Similar to redb for your use case
 - Better for very large datasets (100GB+)
 - Slightly higher overhead due to FFI
@@ -116,6 +122,7 @@ pub struct SecureDb {
 ❌ **LSM overhead** - Compaction, write amplification
 
 **Current State:**
+
 - 8.7k stars but development stalled
 - Last significant update: 2023
 - Community maintains forks but fragmented
@@ -135,6 +142,7 @@ pub struct SecureDb {
 ⚠️ **Smaller community** - Fewer resources
 
 **When to Consider:**
+
 - Want pure Rust
 - Write-heavy workloads
 - Can tolerate newer library
@@ -149,6 +157,7 @@ pub struct SecureDb {
 ❌ **CoW B-tree** - Write amplification
 
 **Only Use If:**
+
 - Very small dataset (<1M keys)
 - Read-heavy workload
 - Need proven C library
@@ -158,6 +167,7 @@ pub struct SecureDb {
 ## Performance Projections
 
 ### Current (Sled + Encryption)
+
 ```
 Overhead: ~800-950%
 1,000 ops:   9ms → 90ms   (81ms penalty)
@@ -166,6 +176,7 @@ Overhead: ~800-950%
 ```
 
 ### With redb + Encryption (Projected)
+
 ```
 Overhead: ~550-650% (25-35% improvement)
 1,000 ops:   9ms → 60ms   (51ms penalty)
@@ -174,6 +185,7 @@ Overhead: ~550-650% (25-35% improvement)
 ```
 
 ### With RocksDB + Encryption (Projected)
+
 ```
 Overhead: ~600-700% (similar to redb)
 1,000 ops:   9ms → 65ms   (56ms penalty)
@@ -182,6 +194,7 @@ Overhead: ~600-700% (similar to redb)
 ```
 
 ### Baseline (No Encryption) - Any DB
+
 ```
 Overhead: ~0%
 1,000 ops:   9ms
@@ -205,6 +218,7 @@ The ~800% overhead is NOT primarily from sled. It's from:
 4. **Database operations** (5-10% of overhead)
 
 **This means:**
+
 - Switching databases will only reduce ~5-10% of the overhead
 - Expected improvement: 800% → 720-750% (switching DB alone)
 - **To get under 100% overhead, you need to eliminate encryption**
@@ -242,6 +256,7 @@ The ~800% overhead is NOT primarily from sled. It's from:
 ❌ Not embedded
 
 **Use When:**
+
 - Can accept client-server architecture
 - Need <50% encryption overhead
 - Have ops team to manage database
@@ -261,6 +276,7 @@ The ~800% overhead is NOT primarily from sled. It's from:
 ❌ Not portable (deployment-specific)
 
 **Use When:**
+
 - Control deployment environment
 - Can use OS-level encryption
 - Want minimal performance impact
@@ -300,15 +316,18 @@ impl HybridSecureDb {
 ## Recommended Action Plan
 
 ### Phase 1: Quick Win (2-4 hours)
+
 **Migrate from Sled to redb**
 
 1. Update dependencies:
+
    ```toml
    [dependencies]
    redb = "2.2"  # Replace sled
    ```
 
 2. Update SecureDb implementation:
+
    - Replace `sled::Db` with `redb::Database`
    - Adapt API calls (very similar)
    - Keep encryption logic unchanged
@@ -324,6 +343,7 @@ impl HybridSecureDb {
 > "We can reduce overhead from 800% to ~700% by switching databases. To get under 100%, we need to change the encryption approach. What are the requirements?"
 
 **Options:**
+
 1. **Accept 700% overhead** - Security-first, embedded database
 2. **Use PostgreSQL/MySQL with TDE** - ~20% overhead, requires external DB
 3. **Use filesystem encryption** - ~10% overhead, requires OS-level access
@@ -332,12 +352,14 @@ impl HybridSecureDb {
 ### Phase 3: Implementation (Based on Phase 2 decision)
 
 **If staying with embedded + full encryption:**
+
 - Optimize in-place encryption (est. 20-30% improvement)
 - Implement buffer pooling (est. 10-15% improvement)
 - Add batch operations API (est. 30-40% improvement)
 - **Best case:** ~350-450% overhead (still 4-5x slower)
 
 **If switching architectures:**
+
 - PostgreSQL/MySQL with TDE: ~20% overhead
 - Filesystem encryption: ~10% overhead
 - Hybrid approach: ~200-400% overhead
@@ -347,14 +369,17 @@ impl HybridSecureDb {
 ## Benchmarks from Community
 
 **Reddit Discussion (2024-07):**
+
 > "RocksDB is still king for raw key-value storage. LMDB sounds good but IME it will crap itself at any meaningful amount of keys (over a few tens of millions)."
 
 **sled-vs-rocksdb Benchmark:**
+
 - RocksDB: Generally faster for large datasets
 - Sled: Competitive for small-medium workloads
 - redb: Not in old benchmarks (too new) but reports show ~20% faster than sled
 
 **RocksDB 10.2 Benchmarks (2025-05):**
+
 - Significant improvements in recent versions
 - Hyperclock cache better than LRU for CPU-bound
 - Production-proven at TB+ scale
@@ -423,17 +448,18 @@ impl SecureDb {
 
 ## Decision Matrix
 
-| Requirement | redb | RocksDB | PostgreSQL | Filesystem | Current |
-|-------------|------|---------|------------|------------|---------|
-| Embedded | ✅ | ✅ | ❌ | ✅ | ✅ |
-| Pure Rust | ✅ | ❌ | ❌ | ✅ | ✅ |
-| <100% overhead | ❌ | ❌ | ✅ | ✅ | ❌ |
-| Full encryption | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Easy migration | ✅ | ⚠️ | ❌ | ⚠️ | - |
-| Production ready | ✅ | ✅ | ✅ | ✅ | ⚠️ |
-| Maintenance | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Requirement      | redb | RocksDB | PostgreSQL | Filesystem | Current |
+| ---------------- | ---- | ------- | ---------- | ---------- | ------- |
+| Embedded         | ✅   | ✅      | ❌         | ✅         | ✅      |
+| Pure Rust        | ✅   | ❌      | ❌         | ✅         | ✅      |
+| <100% overhead   | ❌   | ❌      | ✅         | ✅         | ❌      |
+| Full encryption  | ✅   | ✅      | ✅         | ✅         | ✅      |
+| Easy migration   | ✅   | ⚠️      | ❌         | ⚠️         | -       |
+| Production ready | ✅   | ✅      | ✅         | ✅         | ⚠️      |
+| Maintenance      | ✅   | ✅      | ✅         | ✅         | ❌      |
 
 **Score:**
+
 - redb: 6/7 (Only misses <100% overhead)
 - RocksDB: 5/7
 - PostgreSQL: 4/7
@@ -445,16 +471,19 @@ impl SecureDb {
 ## Conclusion
 
 **Short-term (Immediate):**
+
 1. ✅ **Migrate to redb** - 2-4 hour effort, ~10-25% improvement
 2. ✅ Keep current encryption approach
 3. ✅ Update documentation
 
 **Medium-term (Next sprint):**
+
 1. 🤔 **Architecture decision** - Discuss with stakeholders
 2. 🤔 **Acceptable overhead?** - 700% vs 20% vs 10%
 3. 🤔 **Deployment constraints?** - Embedded vs client-server
 
 **Long-term (If needed):**
+
 1. ⚠️ **Hybrid encryption** - Only encrypt sensitive fields
 2. ⚠️ **PostgreSQL/MySQL** - If <100% overhead required
 3. ⚠️ **Filesystem encryption** - If OS-level access available
@@ -462,12 +491,14 @@ impl SecureDb {
 ---
 
 **Next Steps:**
+
 1. Get stakeholder input on acceptable overhead
 2. Implement redb migration (quick win)
 3. Re-benchmark and compare
 4. Make architecture decision based on requirements
 
 **Questions for Discussion:**
+
 1. Is 700% overhead acceptable for security-critical operations?
 2. Can we use PostgreSQL/MySQL instead of embedded DB?
 3. Can we use OS-level filesystem encryption?

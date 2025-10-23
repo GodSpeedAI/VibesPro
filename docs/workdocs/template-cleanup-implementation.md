@@ -31,12 +31,14 @@ Replaced pre-generated spec files with user-friendly starters that include:
 - **Inline documentation** guiding users through the workflow
 
 **Files Created**:
+
 - `templates/{{project_slug}}/docs/dev_adr.md.j2.new` (69 lines)
 - `templates/{{project_slug}}/docs/dev_prd.md.j2.new` (106 lines)
 - `templates/{{project_slug}}/docs/dev_sds.md.j2.new` (147 lines)
 - `templates/{{project_slug}}/docs/dev_technical-specifications.md.j2.new` (178 lines)
 
 Each file follows this structure:
+
 1. Header with metadata (project, date, thread)
 2. Purpose statement in callout box
 3. Instructions on how to use chat modes/prompts
@@ -49,6 +51,7 @@ Each file follows this structure:
 **File**: `scripts/template-cleanup.sh` (executable)
 
 **Features**:
+
 - ✅ **Safe**: Idempotent - can be run multiple times safely
 - ✅ **Verbose**: Color-coded output with clear progress indicators
 - ✅ **Comprehensive**: Removes 18+ maintainer-specific files/directories
@@ -59,6 +62,7 @@ Each file follows this structure:
 **What It Removes**:
 
 1. **Maintainer-specific docs** (12 files):
+
    - dev_devkit-integration-plan.md
    - dev_implementation_plan.md
    - devkit-prompts-instructions-integration.md
@@ -73,6 +77,7 @@ Each file follows this structure:
    - work-summaries/
 
 2. **Test artifacts** (6 directories in docs/specs/):
+
    - 10914THREAD_VALUE/
    - 11409THREAD_VALUE/
    - 9336THREAD/
@@ -108,6 +113,7 @@ template-cleanup-force:
 ```
 
 **Usage**:
+
 ```bash
 # Interactive with confirmation
 just template-cleanup
@@ -181,6 +187,7 @@ templates/{{project_slug}}/docs/
 ```
 
 **What's Gone**:
+
 - ❌ dev_devkit-integration-plan.md
 - ❌ dev_implementation_plan.md
 - ❌ devkit-prompts-instructions-integration.md
@@ -249,6 +256,7 @@ just template-cleanup
 ```
 
 Output:
+
 ```
 🧹 Cleaning up template files...
 ⚠️  This will remove maintainer-specific files and replace spec files with minimal starters
@@ -401,6 +409,7 @@ Testing: Run 'just template-cleanup' then 'pnpm generate'
 ### Q: Why not just delete the old spec files?
 
 **A**: Users need guidance on how to create specs. Empty files would be confusing. The minimal starters provide:
+
 - Clear purpose statements
 - Instructions on using chat modes/prompts
 - Template structures to follow
@@ -421,6 +430,7 @@ Testing: Run 'just template-cleanup' then 'pnpm generate'
 ### Q: How do we prevent maintainer files from being added again?
 
 **A**: Consider adding:
+
 1. Pre-commit hook to detect maintainer files
 2. CI validation step
 3. Template validation script

@@ -12,6 +12,7 @@
 ```
 
 ### Issues
+
 - ❌ Single combined step - unclear which manager failed
 - ❌ `|| true` masks Python dependency failures
 - ❌ Shell-based conditionals less idiomatic
@@ -40,6 +41,7 @@
 ```
 
 ### Improvements
+
 - ✅ Three explicit steps - clear failure identification
 - ✅ No `|| true` - failures stop the build (fail-fast)
 - ✅ GitHub Actions `if:` conditions - idiomatic and reliable
@@ -51,21 +53,25 @@
 ## GitHub Actions UI Comparison
 
 ### Before
+
 ```
 ✅ Install dependencies (3s)
    - Node: installed
    - Python: ERROR (but masked by || true)
    - Rust: fetched
 ```
+
 → Build appears successful even with broken Python deps
 
 ### After
+
 ```
 ✅ Install Node dependencies (pnpm) (2s)
 ❌ Install Python dependencies (uv) (1s)
    uv sync failed: dependency resolution error
 ⏭️ Fetch Rust dependencies (cargo) (skipped - stopped on failure)
 ```
+
 → Build fails immediately, clearly showing Python deps are broken
 
 ---
@@ -75,6 +81,7 @@
 ### Scenario: Python dependency conflict
 
 **Before**:
+
 ```
 Installing dependencies...
   ✅ pnpm install: success
@@ -87,6 +94,7 @@ Installing dependencies...
 ```
 
 **After**:
+
 ```
   ✅ Install Node dependencies (pnpm): success
   ❌ Install Python dependencies (uv): dependency conflict
@@ -101,11 +109,13 @@ Installing dependencies...
 ## Cost Savings
 
 ### CI Time Saved Per Failed Build
+
 - **Before**: Full workflow runs despite broken deps (~10-15 min)
 - **After**: Fails in dependency phase (~2-3 min)
 - **Savings**: 7-12 minutes per failed build
 
 ### Developer Time Saved
+
 - **Before**: Debug mysterious runtime failures in deployed code
 - **After**: Clear dependency error message, fix before merge
 - **Savings**: Hours of debugging time
@@ -115,6 +125,7 @@ Installing dependencies...
 ## Summary
 
 The new approach provides:
+
 1. **Better observability**: Clear which package manager failed
 2. **Fail-fast**: Don't waste time on broken builds
 3. **Explicit intent**: Each dependency's requirements are clear

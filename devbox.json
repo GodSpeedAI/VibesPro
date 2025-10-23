@@ -1,19 +1,17 @@
 {
-    "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/main/.schema/devbox.schema.json",
-    "packages": [
-        "curl",
-        "just",
-        "jq",
-        "ffmpeg",
-        "postgresql@15",
-        "ripgrep",
-        "fd",
-        "uv",
-        "git@latest"
-    ],
-    "shell": {
-        "init_hook": [
-            "bash scripts/devbox_boot.sh"
-        ]
-    }
+  "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/main/.schema/devbox.schema.json",
+  "packages": [
+    "curl",
+    "just",
+    "jq",
+    "ffmpeg",
+    "postgresql@15",
+    "ripgrep",
+    "fd",
+    "uv",
+    "git@latest"
+  ],
+  "shell": {
+    "init_hook": ["bash scripts/devbox_boot.sh"]
+  }
 }

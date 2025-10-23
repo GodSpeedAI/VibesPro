@@ -17,75 +17,89 @@ PR #27 adds comprehensive development environment infrastructure across 6 phases
 ## Chronological Fix History
 
 ### Fix #1: SOPS Installation from GitHub Releases ✅
+
 **Commit**: fa90592
 **Date**: January 11, 2025
 
 **Problem**: Ubuntu apt repositories don't include SOPS package
+
 ```
 E: Unable to locate package sops
 ```
 
 **Solution**:
+
 - Install SOPS v3.9.3 from GitHub releases instead of apt
 - Platform-specific installation (GitHub releases for Ubuntu, brew for macOS)
 - Added version verification step
 
 **Files Modified**:
+
 - `.github/workflows/env-check.yml`
 - `.github/workflows/build-matrix.yml`
 
 ---
 
 ### Fix #2: SOPS Secret Handling Consistency ✅
+
 **Commit**: f1814dd
 **Date**: January 11, 2025
 
 **Problem**: Inconsistent SOPS_AGE_KEY handling between workflows
 
 **Solution**:
+
 - Made secret handling consistent across workflows
 - Added `continue-on-error: true` for optional secrets
 - Added output flag to track if secrets were loaded
 - Improved error messaging
 
 **Files Modified**:
+
 - `.github/workflows/env-check.yml`
 - `.github/workflows/build-matrix.yml`
 
 ---
 
 ### Fix #3: Missing pyproject.toml ✅
+
 **Commit**: 8f79be7
 **Date**: January 11, 2025
 
 **Problem**: `docs-generator` workflow failed with:
+
 ```
 No `pyproject.toml` found
 ```
 
 **Solution**:
+
 - Created `pyproject.toml` from `_template_pyproject.toml`
 - Configured for uv dependency management
 - Includes ruff, mypy, and pytest configuration
 
 **Files Created**:
+
 - `pyproject.toml`
 
 ---
 
 ### Fix #4: Integration Test Failures ✅
+
 **Commit**: ed5f7ae
 **Date**: January 11, 2025
 
 **Problem**: Tests failed due to template refactoring (removed `dev_` prefix, changed architecture_style format)
 
 **Solution**:
+
 - Updated template doc filenames (removed `dev_` prefix)
 - Fixed `architecture_style` choices format handling (now object with descriptions)
 - Removed `dev_spec_index.md` references
 - Updated spec_index expectations
 
 **Files Modified**:
+
 - `tests/integration/template-docs.test.ts`
 - `tests/integration/docs-emission.spec.ts`
 - `tests/integration/project-structure.test.ts`
@@ -95,21 +109,25 @@ No `pyproject.toml` found
 ---
 
 ### Fix #5: Smoke Test Frontmatter & VCS Ref ✅
+
 **Commit**: 72c96db
 **Date**: January 11, 2025
 
 **Problem**: `template-smoke.test.ts` failed with `prompt:lint` returning status 1
 
 **Root Cause**:
+
 1. `customize.copilot-instructions.prompt.md` missing 6 required frontmatter fields
 2. Copier wasn't applying template changes due to `_skip_if_exists: ["*.md"]`
 
 **Solution**:
+
 - Added 6 missing frontmatter fields (kind, domain, task, thread, matrix_ids, budget)
 - Added `--vcs-ref=HEAD` flag to Copier command to include staged changes
 - Now picks up uncommitted template changes during testing
 
 **Files Modified**:
+
 - `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
 - `tests/utils/generation-smoke.ts`
 
@@ -118,10 +136,12 @@ No `pyproject.toml` found
 ---
 
 ### Fix #6: Devbox Non-Interactive Installation ✅
+
 **Commit**: a89a23b
 **Date**: January 11, 2025
 
 **Problem**: Devbox installation failing in all CI workflows with:
+
 ```
 bash: line 121: /dev/tty: No such device or address
 ✘ Error reading from prompt (re-run with '-f' flag to auto select Yes if running in a script)
@@ -130,16 +150,19 @@ bash: line 121: /dev/tty: No such device or address
 **Root Cause**: Devbox installer tries to prompt for confirmation via `/dev/tty`, which doesn't exist in CI environments
 
 **Solution**:
+
 - Added `-f` (force) flag to devbox installation script in all CI workflows
 - Changed: `curl -fsSL https://get.jetpack.io/devbox | bash`
 - To: `curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f`
 - Auto-accepts installation prompt
 
 **Files Modified**:
+
 - `.github/workflows/env-check.yml` (1 occurrence)
 - `.github/workflows/build-matrix.yml` (2 occurrences: build-test job + release job)
 
 **Affected Workflows**:
+
 - env-check
 - build-test (ubuntu-latest)
 - build-test (macos-latest)
@@ -148,14 +171,14 @@ bash: line 121: /dev/tty: No such device or address
 
 ## Summary of All Fixes
 
-| Fix # | Commit | Problem | Solution | Files Modified |
-|-------|--------|---------|----------|----------------|
-| 1 | fa90592 | SOPS not in apt | Install from GitHub releases | 2 workflow files |
-| 2 | f1814dd | Inconsistent secrets | Standardize handling | 2 workflow files |
-| 3 | 8f79be7 | Missing pyproject.toml | Create from template | 1 new file |
-| 4 | ed5f7ae | Template refactoring | Update test expectations | 3 test files |
-| 5 | 72c96db | Frontmatter + VCS ref | Add fields + --vcs-ref=HEAD | 2 files |
-| 6 | a89a23b | Devbox interactive prompt | Add -f flag | 2 workflow files |
+| Fix # | Commit  | Problem                   | Solution                     | Files Modified   |
+| ----- | ------- | ------------------------- | ---------------------------- | ---------------- |
+| 1     | fa90592 | SOPS not in apt           | Install from GitHub releases | 2 workflow files |
+| 2     | f1814dd | Inconsistent secrets      | Standardize handling         | 2 workflow files |
+| 3     | 8f79be7 | Missing pyproject.toml    | Create from template         | 1 new file       |
+| 4     | ed5f7ae | Template refactoring      | Update test expectations     | 3 test files     |
+| 5     | 72c96db | Frontmatter + VCS ref     | Add fields + --vcs-ref=HEAD  | 2 files          |
+| 6     | a89a23b | Devbox interactive prompt | Add -f flag                  | 2 workflow files |
 
 **Total Files Modified**: 12 unique files
 **Total Commits**: 6
@@ -166,6 +189,7 @@ bash: line 121: /dev/tty: No such device or address
 ## CI Workflow Status
 
 ### Before Fixes
+
 - ❌ env-check - SOPS installation failure
 - ❌ docs-generator - Missing pyproject.toml
 - ❌ template-smoke - Frontmatter validation
@@ -174,6 +198,7 @@ bash: line 121: /dev/tty: No such device or address
 - ❌ build-test (macos) - Multiple issues
 
 ### After All Fixes
+
 - ✅ test-docs-generator
 - ✅ markdownlint
 - ✅ lint-markdown
@@ -195,7 +220,9 @@ bash: line 121: /dev/tty: No such device or address
 ## Test Status
 
 ### Environment Tests
+
 All 9 environment tests passing:
+
 ```bash
 $ just test-env
 ✅ test_sanity.sh
@@ -212,22 +239,26 @@ $ just test-env
 ```
 
 ### Integration Tests
+
 13/14 test suites passing:
+
 - ✅ template-smoke.test.ts (fixed)
 - ✅ template-docs.test.ts (fixed)
 - ✅ docs-emission.spec.ts (fixed)
 - ✅ project-structure.test.ts (fixed)
-- ⚠️  performance.test.ts (1 flaky test - temp dir cleanup race, non-blocking)
+- ⚠️ performance.test.ts (1 flaky test - temp dir cleanup race, non-blocking)
 
 ---
 
 ## Key Technical Learnings
 
 ### 1. Copier Template Testing
+
 **Discovery**: Template files without `.j2` suffix are copied as-is, NOT templated
 **Implication**: Use `--vcs-ref=HEAD` for TDD workflow to test uncommitted changes
 
 **Workflow**:
+
 ```bash
 # 1. Modify template file
 # 2. Stage changes: git add
@@ -236,10 +267,12 @@ $ just test-env
 ```
 
 ### 2. CI Non-Interactive Execution
+
 **Issue**: Installation scripts that work locally can fail in CI due to lack of TTY
 **Solution**: Always use force/yes flags for package installations in CI
 
 **Common Patterns**:
+
 ```bash
 # Devbox
 curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
@@ -253,6 +286,7 @@ installer --non-interactive
 ```
 
 ### 3. Script Piping with Arguments
+
 **Issue**: Piping to bash doesn't allow passing arguments by default
 **Solution**: Use `bash -s -- <args>` to pass arguments through stdin pipe
 
@@ -265,7 +299,9 @@ curl script.sh | bash -s -- --arg
 ```
 
 ### 4. Prompt Frontmatter Requirements
+
 **10 Required Fields** (plus 1 optional):
+
 1. `description` — Brief description
 2. `kind` — Type (prompt/chatmode/instruction)
 3. `domain` — Domain area
@@ -277,11 +313,13 @@ curl script.sh | bash -s -- --arg
 9. `mode` — Execution mode (agent/chat/inline)
 10. `tools` — Available tools (array)
 11. `temperature` (optional)
+
 ---
 
 ## PR Changes Summary
 
 ### Major Features Added (All 6 Phases)
+
 1. **Devbox Integration** (Phases 1 & 2)
 2. **mise Runtime Management** (Phase 2)
 3. **SOPS Secret Management** (Phase 3)
@@ -290,6 +328,7 @@ curl script.sh | bash -s -- --arg
 6. **Just Task Environment Awareness** (Phase 6)
 
 ### Total Changes
+
 - **Files Changed**: 45 files
 - **Insertions**: 7,670+ lines
 - **Deletions**: 43 lines
@@ -302,10 +341,13 @@ curl script.sh | bash -s -- --arg
 ## Semantic Versioning Recommendation
 
 ### Analysis
+
 **Current Version**: 0.1.0
 
 **Changes Include**:
+
 1. **New Features** (minor version bump):
+
    - Devbox integration
    - mise integration
    - SOPS secret management
@@ -314,6 +356,7 @@ curl script.sh | bash -s -- --arg
    - Environment testing infrastructure
 
 2. **Bug Fixes** (patch version bump):
+
    - SOPS installation fixes
    - pyproject.toml creation
    - Test updates
@@ -327,6 +370,7 @@ curl script.sh | bash -s -- --arg
 ### Recommended Version: **v0.2.0**
 
 **Rationale**:
+
 - Significant new features (6 phases of environment infrastructure)
 - No breaking changes to existing APIs or workflows
 - Follows semantic versioning: MAJOR.MINOR.PATCH
@@ -338,12 +382,14 @@ curl script.sh | bash -s -- --arg
 ### Recommended: **Squash and Merge**
 
 **Reasons**:
+
 - Cleaner main branch history
 - Single commit represents complete feature set
 - Easier to revert if needed
 - Maintains atomic changesets
 
 **Commit Message Template**:
+
 ```
 feat: add comprehensive development environment infrastructure [DEV-SPEC-ENV]
 
@@ -380,11 +426,13 @@ Breaking: None - all changes are additive and backward compatible
 ## Next Steps
 
 ### Immediate (Current)
+
 1. ⏳ **Awaiting CI Re-Run** - Monitoring env-check and build-matrix workflows
 2. ✅ **All Fixes Committed** - 6 commits total
 3. ✅ **All Fixes Pushed** - Latest commit a89a23b
 
 ### After CI Passes
+
 1. ✅ Confirm all workflows green
 2. 🏷️ Create release tag `v0.2.0`
 3. 🔀 Squash and merge to main
@@ -392,6 +440,7 @@ Breaking: None - all changes are additive and backward compatible
 5. 📢 Announce new version
 
 ### Post-Merge
+
 1. Update README with version badge
 2. Create migration guide for existing projects
 3. Update contributor documentation
@@ -402,6 +451,7 @@ Breaking: None - all changes are additive and backward compatible
 ## Traceability
 
 **Specifications**:
+
 - DEV-SDS-ENV (Environment setup specification)
 - DEV-SPEC-SOPS (Secret management specification)
 - DEV-SPEC-CI (CI workflow specification)
@@ -441,16 +491,19 @@ Breaking: None - all changes are additive and backward compatible
 ## Metrics
 
 ### Code Changes
+
 - **Total Commits**: 6 fix commits
 - **Lines Modified**: 7,670 insertions(+), 43 deletions(-)
 - **Files Changed**: 45 files (original PR) + 12 files (fixes)
 
 ### Testing
+
 - **Environment Tests**: 9/9 passing (100%)
 - **Integration Tests**: 13/14 passing (98%)
 - **Test Coverage**: Complete for infrastructure
 
 ### Time Investment
+
 - **Initial Implementation**: 6 phases (documented separately)
 - **Debugging & Fixes**: ~2 hours
 - **Documentation**: ~1 hour
@@ -468,7 +521,7 @@ Breaking: None - all changes are additive and backward compatible
 
 ---
 
-*Generated*: January 11, 2025
-*Author*: GitHub Copilot (AI Assistant)
-*Last Updated*: After Devbox fix (commit a89a23b)
-*Status*: Awaiting final CI confirmation
+_Generated_: January 11, 2025
+_Author_: GitHub Copilot (AI Assistant)
+_Last Updated_: After Devbox fix (commit a89a23b)
+_Status_: Awaiting final CI confirmation

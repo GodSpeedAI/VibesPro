@@ -1,8 +1,5 @@
-import {
-  Tree,
-  formatFiles,
-} from '@nx/devkit';
-import { UowGeneratorSchema } from './schema';
+import { Tree, formatFiles } from "@nx/devkit";
+import { UowGeneratorSchema } from "./schema";
 
 /**
  * Generates the TypeScript files for the UoW.
@@ -24,8 +21,14 @@ export class UnitOfWorkInMemoryAdapter implements IUnitOfWork {
 }
 `;
 
-  tree.write(`libs/${options.domain}/domain/src/lib/ports/unit-of-work.port.ts`, uowInterfaceContent);
-  tree.write(`libs/${options.domain}/infrastructure/src/lib/adapters/unit-of-work.in-memory.adapter.ts`, inMemoryAdapterContent);
+  tree.write(
+    `libs/${options.domain}/domain/src/lib/ports/unit-of-work.port.ts`,
+    uowInterfaceContent,
+  );
+  tree.write(
+    `libs/${options.domain}/infrastructure/src/lib/adapters/unit-of-work.in-memory.adapter.ts`,
+    inMemoryAdapterContent,
+  );
 }
 
 /**
@@ -34,7 +37,7 @@ export class UnitOfWorkInMemoryAdapter implements IUnitOfWork {
  * @param options The generator options.
  */
 function addPyFiles(tree: Tree, options: UowGeneratorSchema) {
-  const snakeCaseDomain = options.domain.replace(/-/g, '_');
+  const snakeCaseDomain = options.domain.replace(/-/g, "_");
 
   const uowProtocolContent = `from typing import Protocol, TypeVar, Callable, Awaitable
 
@@ -60,17 +63,20 @@ class UnitOfWorkSQLAlchemyAdapter(IUnitOfWork):
             return await work()
 `;
 
-  tree.write(`libs/${options.domain}/domain/src/lib/ports/unit_of_work_port.py`, uowProtocolContent);
-  tree.write(`libs/${options.domain}/infrastructure/src/lib/adapters/unit_of_work_sqlalchemy_adapter.py`, sqlalchemyAdapterContent);
+  tree.write(
+    `libs/${options.domain}/domain/src/lib/ports/unit_of_work_port.py`,
+    uowProtocolContent,
+  );
+  tree.write(
+    `libs/${options.domain}/infrastructure/src/lib/adapters/unit_of_work_sqlalchemy_adapter.py`,
+    sqlalchemyAdapterContent,
+  );
 }
 
-export async function uowGenerator(
-  tree: Tree,
-  options: UowGeneratorSchema
-) {
-  if (options.language === 'ts') {
+export async function uowGenerator(tree: Tree, options: UowGeneratorSchema) {
+  if (options.language === "ts") {
     addTsFiles(tree, options);
-  } else if (options.language === 'py') {
+  } else if (options.language === "py") {
     addPyFiles(tree, options);
   }
 

@@ -1,1 +1,1 @@
-export { webAppGenerator as default } from './generator';
+export { webAppGenerator as default } from "./generator";

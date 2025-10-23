@@ -29,9 +29,9 @@ Vector receives **OTLP** traffic from services, performs **sampling/redaction/en
 
 **Defaults**
 
-* **4317** → OTLP/gRPC (preferred)
-* **4318** → OTLP/HTTP
-* Outbound: HTTPS to `${OPENOBSERVE_URL}` with bearer `${OPENOBSERVE_TOKEN}`
+- **4317** → OTLP/gRPC (preferred)
+- **4318** → OTLP/HTTP
+- Outbound: HTTPS to `${OPENOBSERVE_URL}` with bearer `${OPENOBSERVE_TOKEN}`
 
 ---
 
@@ -79,12 +79,13 @@ just observe:verify
 
 ## 5. Validation & CI
 
-* **Local syntax check**
+- **Local syntax check**
 
   ```bash
   vector validate ops/vector/vector.toml
   ```
-* **CI**: `.github/workflows/env-check.yml` runs `vector validate` and the smoke test:
+
+- **CI**: `.github/workflows/env-check.yml` runs `vector validate` and the smoke test:
 
   ```yaml
   - name: Validate Vector config
@@ -230,11 +231,11 @@ Target budgets (staging guidance): CPU < **3%** per core at ~1k spans/s; memory 
 
 ## 9. Security & Governance
 
-* **Secrets**: Only in `.secrets.env.sops` (`OPENOBSERVE_URL`, `OPENOBSERVE_TOKEN`).
-* **Redaction**: Enforce VRL rules for PII before the sink.
-* **Activation**: Application export is gated by `VIBEPRO_OBSERVE=1`.
-* **Audit**: Keep `vector.toml` changes in PRs; CI validates syntax to prevent misroutes.
-* **Networking**: Restrict ingress to 4317/4318 on localhost where possible; egress to the OpenObserve domain only.
+- **Secrets**: Only in `.secrets.env.sops` (`OPENOBSERVE_URL`, `OPENOBSERVE_TOKEN`).
+- **Redaction**: Enforce VRL rules for PII before the sink.
+- **Activation**: Application export is gated by `VIBEPRO_OBSERVE=1`.
+- **Audit**: Keep `vector.toml` changes in PRs; CI validates syntax to prevent misroutes.
+- **Networking**: Restrict ingress to 4317/4318 on localhost where possible; egress to the OpenObserve domain only.
 
 ---
 
@@ -270,18 +271,18 @@ observe:logs:
 
 ## 12. References
 
-* [DEV-ADR-016](../../docs/dev_adr.md) — Adoption decision
-* [DEV-SDS-017](../../docs/dev_sds.md) — System design
-* [DEV-PRD-017](../../docs/dev_prd.md) — Product requirements
-* [Observability Guide](../../docs/observability/README.md) — Developer how-to
-* Vector docs: [https://vector.dev/docs/](https://vector.dev/docs/)
-* OpenObserve docs: [https://openobserve.ai/docs/](https://openobserve.ai/docs/)
+- [DEV-ADR-016](../../docs/dev_adr.md) — Adoption decision
+- [DEV-SDS-017](../../docs/dev_sds.md) — System design
+- [DEV-PRD-017](../../docs/dev_prd.md) — Product requirements
+- [Observability Guide](../../docs/observability/README.md) — Developer how-to
+- Vector docs: [https://vector.dev/docs/](https://vector.dev/docs/)
+- OpenObserve docs: [https://openobserve.ai/docs/](https://openobserve.ai/docs/)
 
 ---
 
 ## 13. Exit Criteria (for ops readiness)
 
-* `vector validate` passes locally and in CI.
-* `just observe:start` exposes 4317/4318 and forwards spans.
-* `just observe:verify` succeeds; OpenObserve shows incoming traces.
-* Sampling + redaction rules reviewed and signed off by security.
+- `vector validate` passes locally and in CI.
+- `just observe:start` exposes 4317/4318 and forwards spans.
+- `just observe:verify` succeeds; OpenObserve shows incoming traces.
+- Sampling + redaction rules reviewed and signed off by security.

@@ -129,10 +129,10 @@ interface AIContextManager {
 
 ```typescript
 interface TokenAllocation {
-  currentTask: number;        // 40% - immediate context
+  currentTask: number; // 40% - immediate context
   architecturalContext: number; // 25% - structural patterns
-  historicalPatterns: number;   // 20% - learned behaviors
-  codeContext: number;         // 15% - relevant code snippets
+  historicalPatterns: number; // 20% - learned behaviors
+  codeContext: number; // 15% - relevant code snippets
 }
 ```
 
@@ -305,24 +305,24 @@ _ai-context-injection:
 interface BuildDecision {
   isMonorepo: boolean;
   hasInterdependencies: boolean;
-  taskComplexity: 'simple' | 'medium' | 'complex';
+  taskComplexity: "simple" | "medium" | "complex";
   aiIntegration: boolean;
 }
 
 function selectBuildStrategy(decision: BuildDecision): BuildStrategy {
-  if (!decision.isMonorepo && decision.taskComplexity === 'simple') {
-    return 'direct-tools';
+  if (!decision.isMonorepo && decision.taskComplexity === "simple") {
+    return "direct-tools";
   }
 
-  if (decision.hasInterdependencies || decision.taskComplexity === 'complex') {
-    return 'nx-orchestration';
+  if (decision.hasInterdependencies || decision.taskComplexity === "complex") {
+    return "nx-orchestration";
   }
 
   if (decision.aiIntegration) {
-    return 'ai-enhanced';
+    return "ai-enhanced";
   }
 
-  return 'direct-tools';
+  return "direct-tools";
 }
 ```
 
@@ -350,27 +350,29 @@ graph LR
 ```typescript
 // Custom ESLint rules for hexagonal architecture
 export const hexagonalArchitectureRules = {
-  'hex/no-infrastructure-in-domain': {
+  "hex/no-infrastructure-in-domain": {
     create(context) {
       return {
         ImportDeclaration(node) {
-          if (isDomainFile(context.getFilename()) &&
-              isInfrastructureImport(node.source.value)) {
+          if (
+            isDomainFile(context.getFilename()) &&
+            isInfrastructureImport(node.source.value)
+          ) {
             context.report({
               node,
-              message: 'Domain layer cannot import from infrastructure layer'
+              message: "Domain layer cannot import from infrastructure layer",
             });
           }
-        }
+        },
       };
-    }
+    },
   },
 
-  'hex/port-adapter-compliance': {
+  "hex/port-adapter-compliance": {
     create(context) {
       // Validate port/adapter pattern compliance
-    }
-  }
+    },
+  },
 };
 ```
 
@@ -442,12 +444,14 @@ interface TypeGenerator {
 
   validateParity(
     tsTypes: TypeScriptTypes,
-    pyTypes: PythonTypes
+    pyTypes: PythonTypes,
   ): ValidationResult;
 }
 
 class UnifiedTypeGenerator implements TypeGenerator {
-  async generateFromSupabase(connectionString: string): Promise<GenerationResult> {
+  async generateFromSupabase(
+    connectionString: string,
+  ): Promise<GenerationResult> {
     const schema = await this.introspectSchema(connectionString);
 
     const tsResult = this.generateTypeScript(schema);
@@ -462,7 +466,7 @@ class UnifiedTypeGenerator implements TypeGenerator {
     return {
       typescript: tsResult,
       python: pyResult,
-      validation
+      validation,
     };
   }
 }
@@ -486,7 +490,7 @@ class HexagonalAIGenerator implements AICodeGenerator {
   constructor(
     private aiContext: AIContextManager,
     private patterns: ArchitecturalPatterns,
-    private templates: CodeTemplates
+    private templates: CodeTemplates,
   ) {}
 
   async generateDomain(requirements: DomainRequirements): Promise<DomainCode> {
@@ -494,15 +498,22 @@ class HexagonalAIGenerator implements AICodeGenerator {
     const patterns = this.patterns.getDomainPatterns();
 
     // AI-assisted generation with pattern compliance
-    const entities = await this.generateEntities(requirements, context, patterns);
+    const entities = await this.generateEntities(
+      requirements,
+      context,
+      patterns,
+    );
     const valueObjects = await this.generateValueObjects(requirements, context);
-    const domainServices = await this.generateDomainServices(requirements, context);
+    const domainServices = await this.generateDomainServices(
+      requirements,
+      context,
+    );
 
     return {
       entities,
       valueObjects,
       domainServices,
-      aggregates: this.combineIntoAggregates(entities, valueObjects)
+      aggregates: this.combineIntoAggregates(entities, valueObjects),
     };
   }
 }
@@ -557,16 +568,19 @@ class PerformanceOptimizer {
 ## Implementation Priority
 
 ### Phase 1: Core Infrastructure
+
 - SDS-MERGE-001: Copier template system
 - SDS-MERGE-004: Hybrid build system
 - Basic validation pipeline
 
 ### Phase 2: AI Integration
+
 - SDS-MERGE-002: AI context management
 - SDS-MERGE-003: Temporal learning system
 - SDS-MERGE-005: Enhanced validation
 
 ### Phase 3: Advanced Features
+
 - SDS-MERGE-006: Type generation
 - SDS-MERGE-007: AI code generation
 - SDS-MERGE-008: Performance optimization
@@ -574,12 +588,14 @@ class PerformanceOptimizer {
 ## Quality Assurance
 
 **Testing Strategy**:
+
 - Unit tests for all core components
 - Integration tests for template generation
 - Performance benchmarks for AI systems
 - End-to-end validation of generated projects
 
 **Monitoring**:
+
 - AI context performance metrics
 - Template generation success rates
 - User adoption and satisfaction metrics

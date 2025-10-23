@@ -21,7 +21,7 @@
  * @see DEV-PRD-018 for requirements
  */
 
-const pino = require('pino');
+const pino = require("pino");
 
 /**
  * Create a structured logger instance.
@@ -29,52 +29,52 @@ const pino = require('pino');
  * @param {string} [service] - Service name (defaults to SERVICE_NAME env var or 'vibepro-node')
  * @returns {pino.Logger} Configured pino logger
  */
-function logger(service = process.env.SERVICE_NAME || 'vibepro-node') {
-    return pino({
-        // Base fields included in every log line
-        base: {
-            service,
-            environment: process.env.APP_ENV || 'local',
-            application_version: process.env.APP_VERSION || 'dev',
-        },
+function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
+  return pino({
+    // Base fields included in every log line
+    base: {
+      service,
+      environment: process.env.APP_ENV || "local",
+      application_version: process.env.APP_VERSION || "dev",
+    },
 
-        // Use 'message' as the message key for consistency
-        messageKey: 'message',
+    // Use 'message' as the message key for consistency
+    messageKey: "message",
 
-        // ISO 8601 timestamps
-        timestamp: pino.stdTimeFunctions.isoTime,
+    // ISO 8601 timestamps
+    timestamp: pino.stdTimeFunctions.isoTime,
 
-        // Custom formatters
-        formatters: {
-            // Format level as string (not number)
-            level(label) {
-                return { level: label };
-            },
+    // Custom formatters
+    formatters: {
+      // Format level as string (not number)
+      level(label) {
+        return { level: label };
+      },
 
-            // Inject trace context and ensure category exists
-            log(obj) {
-                const result = {
-                    ...obj,
-                    trace_id: obj.trace_id || '',
-                    span_id: obj.span_id || '',
-                    category: obj.category || 'app',
-                };
+      // Inject trace context and ensure category exists
+      log(obj) {
+        const result = {
+          ...obj,
+          trace_id: obj.trace_id || "",
+          span_id: obj.span_id || "",
+          category: obj.category || "app",
+        };
 
-                // Clean up duplicates from base
-                delete result.service;
-                delete result.environment;
-                delete result.application_version;
+        // Clean up duplicates from base
+        delete result.service;
+        delete result.environment;
+        delete result.application_version;
 
-                return result;
-            }
-        },
+        return result;
+      },
+    },
 
-        // Serialize errors with stack traces
-        serializers: {
-            err: pino.stdSerializers.err,
-            error: pino.stdSerializers.err,
-        }
-    });
+    // Serialize errors with stack traces
+    serializers: {
+      err: pino.stdSerializers.err,
+      error: pino.stdSerializers.err,
+    },
+  });
 }
 
 module.exports = { logger };

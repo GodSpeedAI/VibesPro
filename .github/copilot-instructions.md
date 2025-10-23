@@ -245,7 +245,7 @@ export class User {
   constructor(
     private readonly id: UserId,
     private readonly email: Email,
-    private readonly profile: UserProfile
+    private readonly profile: UserProfile,
   ) {}
 
   // Domain methods - no infrastructure dependencies

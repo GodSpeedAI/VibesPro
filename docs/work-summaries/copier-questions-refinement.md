@@ -7,18 +7,22 @@ This document describes the improvements made to `copier.yml` to make it accessi
 ## Problems with Original Questions
 
 ### 1. Technical Jargon
+
 - **Before:** "Project slug (kebab-case, used for directories)"
 - **Issue:** Non-developers don't know what "kebab-case" or "slug" means
 
 ### 2. No Context or Examples
+
 - **Before:** "Primary domain contexts (comma-separated)"
 - **Issue:** Users don't know what to enter or why it matters
 
 ### 3. Unclear Consequences
+
 - **Before:** "Include AI-enhanced development workflows"
 - **Issue:** Users don't understand what they'll get or lose
 
 ### 4. Missing Guidance for Defaults
+
 - **Before:** Questions with defaults but no explanation of when to change them
 - **Issue:** Users don't know if they should accept or customize
 
@@ -41,6 +45,7 @@ SECTION 7: Security Features (Advanced - Optional)
 ### 2. Friendly Language with Explanations
 
 **Before:**
+
 ```yaml
 project_slug:
   type: str
@@ -48,6 +53,7 @@ project_slug:
 ```
 
 **After:**
+
 ```yaml
 project_slug:
   type: str
@@ -67,12 +73,14 @@ project_slug:
 ### 3. Concrete Examples for Every Question
 
 Every question now includes:
+
 - **What it is** (plain English explanation)
 - **Why it matters** (what it's used for)
 - **Examples** (good and bad examples where applicable)
 - **When to change it** (guidance on defaults)
 
 **Example:**
+
 ```yaml
 project_purpose:
   help: |
@@ -90,6 +98,7 @@ project_purpose:
 ### 4. Better Choice Descriptions
 
 **Before:**
+
 ```yaml
 app_framework:
   choices:
@@ -99,6 +108,7 @@ app_framework:
 ```
 
 **After:**
+
 ```yaml
 app_framework:
   choices:
@@ -138,11 +148,13 @@ enable_security_hardening:
 ### 7. Friendly Error Messages
 
 **Before:**
+
 ```yaml
 validator: "{% if not project_slug.replace('-', '').isalnum() %}Invalid project slug{% endif %}"
 ```
 
 **After:**
+
 ```yaml
 validator: "{% if not project_slug.replace('-', '').isalnum() %}Project slug must contain only letters, numbers, and dashes (no spaces or special characters){% endif %}"
 ```
@@ -150,6 +162,7 @@ validator: "{% if not project_slug.replace('-', '').isalnum() %}Project slug mus
 ### 8. Progressive Disclosure
 
 Questions are ordered from simple to advanced:
+
 - Basic information comes first
 - Technical details are marked "(Advanced)"
 - Optional features are clearly labeled
@@ -158,40 +171,47 @@ Questions are ordered from simple to advanced:
 ## Specific Improvements by Section
 
 ### Basic Project Information
+
 - ✅ Plain language explanations
 - ✅ Concrete examples for project naming
 - ✅ Email validation with friendly error
 - ✅ Automatic slug generation explained
 
 ### Project Purpose
+
 - ✅ "Explain to a friend" framing
 - ✅ Three diverse, concrete examples
 - ✅ Clear placeholder text
 
 ### Domain Configuration
+
 - ✅ Explained "business area" instead of "domain"
 - ✅ Guidance on when to use multiple domains
 - ✅ Permission to skip if unsure
 
 ### Technology Choices
+
 - ✅ Each framework explained in user terms
 - ✅ Clear use cases for each option
 - ✅ Explicit recommendations
 - ✅ "If you're building X, choose Y" guidance
 
 ### AI Features
+
 - ✅ Explained benefits in concrete terms
 - ✅ "Like having an assistant" analogy
 - ✅ Clear recommendation (YES) with reasoning
 - ✅ When to choose NO
 
 ### Advanced Code Structure
+
 - ✅ Labeled as "Advanced"
 - ✅ Explained what each option does
 - ✅ Safe defaults provided
 - ✅ Guidance on when to change
 
 ### Security Features
+
 - ✅ Clearly marked optional
 - ✅ Specific use cases listed
 - ✅ "Most projects can skip this" reassurance
@@ -200,26 +220,31 @@ Questions are ordered from simple to advanced:
 ## Best Practices Applied
 
 ### 1. Conversational Tone
+
 - Uses "we" and "you" pronouns
 - Asks questions naturally
 - Sounds like a helpful guide, not a form
 
 ### 2. No Assumptions
+
 - Defines all technical terms
 - Provides context for every choice
 - Explains consequences clearly
 
 ### 3. Confidence Building
+
 - "Don't worry" reassurances where appropriate
 - "If unsure" guidance provided
 - Clear defaults with explanations
 
 ### 4. Safety Rails
+
 - Bad examples shown alongside good ones
 - Validator errors are helpful, not cryptic
 - Advanced options clearly marked
 
 ### 5. Learning Path
+
 - Simple questions first
 - Complexity increases gradually
 - Advanced sections can be skipped
@@ -228,24 +253,28 @@ Questions are ordered from simple to advanced:
 ## Technical Debt Prevention
 
 ### No Functionality Removed
+
 - ✅ All original questions preserved
 - ✅ All validators intact
 - ✅ All conditional logic maintained
 - ✅ All defaults preserved
 
 ### Maintained Compatibility
+
 - ✅ Same variable names
 - ✅ Same types
 - ✅ Same validation rules
 - ✅ Same conditional dependencies
 
 ### No New Dependencies
+
 - ✅ Pure YAML improvements
 - ✅ No new libraries required
 - ✅ No changes to hooks
 - ✅ No changes to templates
 
 ### Testability Preserved
+
 - ✅ Can still use data files
 - ✅ Validator logic unchanged
 - ✅ Default values still work
@@ -256,18 +285,21 @@ Questions are ordered from simple to advanced:
 ### Test Cases
 
 1. **Complete Beginner**
+
    - Can understand every question
    - Knows what to enter
    - Confident using defaults
    - Successful generation
 
 2. **Non-Technical User**
+
    - Skips advanced options confidently
    - Makes informed technology choices
    - Understands what they're building
    - Happy with results
 
 3. **Technical User**
+
    - Still gets all advanced options
    - Can customize everything
    - Appreciates clear organization
@@ -282,6 +314,7 @@ Questions are ordered from simple to advanced:
 ### Validation
 
 Run the same test suite as before:
+
 ```bash
 # Test with defaults
 copier copy . /tmp/test-default --defaults --trust
@@ -313,6 +346,7 @@ just test-generation
 ### For Users
 
 **No changes needed!**
+
 - Existing data files still work
 - Automation scripts unchanged
 - Same variables, better questions
@@ -320,6 +354,7 @@ just test-generation
 ### For Documentation
 
 Update the following docs to reference improved questions:
+
 - `docs/wiki/v2/1.md` - Copier chapter
 - `docs/knowledgebase/how-to/` - Any Copier guides
 - `README.md` - Quick start section
@@ -329,6 +364,7 @@ Update the following docs to reference improved questions:
 ### Journey 1: "I want to build a web app"
 
 **Questions they'll confidently answer:**
+
 1. ✅ Project name: "My Task Manager"
 2. ✅ Purpose: "A task manager for small teams"
 3. ✅ Framework: Next.js (websites - recommended)
@@ -342,6 +378,7 @@ Update the following docs to reference improved questions:
 ### Journey 2: "I want to build a mobile app"
 
 **Questions they'll confidently answer:**
+
 1. ✅ Project name: "Fitness Tracker"
 2. ✅ Purpose: "Mobile app for tracking workouts"
 3. ✅ Framework: Expo (mobile apps for iOS & Android)
@@ -355,6 +392,7 @@ Update the following docs to reference improved questions:
 ### Journey 3: "I'm a developer migrating a project"
 
 **Questions they'll customize:**
+
 1. ✅ Project name: "Legacy CRM Migration"
 2. ✅ Purpose: "CRM system rewrite"
 3. ✅ Domain: "crm" (custom)
@@ -384,6 +422,7 @@ A: Documentation now clarifies which choices are easy to change vs. locked in.
 ### Future Improvements
 
 Based on user feedback, we can add:
+
 1. Interactive tutorial mode (wizard with categories)
 2. Project templates (e.g., "E-commerce", "SaaS", "Internal Tool")
 3. Visual examples (screenshots of what you'll get)
@@ -393,12 +432,14 @@ Based on user feedback, we can add:
 ## Summary
 
 **Before:**
+
 - Technical jargon throughout
 - No examples
 - Unclear consequences
 - Intimidating for beginners
 
 **After:**
+
 - ✅ Plain English everywhere
 - ✅ Concrete examples for every question
 - ✅ Clear recommendations

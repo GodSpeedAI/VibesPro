@@ -15,6 +15,7 @@ project_slug:
 ```
 
 **Problems:**
+
 - "kebab-case" - What's that?
 - "used for directories" - Why does that matter?
 - No examples of good vs bad
@@ -41,6 +42,7 @@ project_slug:
 ```
 
 **Improvements:**
+
 - ✅ Plain English explanation
 - ✅ Concrete examples (good AND bad)
 - ✅ Helpful placeholder
@@ -64,6 +66,7 @@ app_framework:
 ```
 
 **Problems:**
+
 - No context for what each is
 - No guidance on which to choose
 - Assumes you know what these are
@@ -92,6 +95,7 @@ app_framework:
 ```
 
 **Improvements:**
+
 - ✅ Explains what each option is for
 - ✅ Clear use cases
 - ✅ Explicit recommendation
@@ -115,6 +119,7 @@ architecture_style:
 ```
 
 **Problems:**
+
 - Assumes knowledge of architecture patterns
 - No explanation of what each means
 - No guidance on which to choose
@@ -142,6 +147,7 @@ architecture_style:
 ```
 
 **Improvements:**
+
 - ✅ "Don't worry" reassurance
 - ✅ Plain English explanation of each
 - ✅ Clear recommendation with reasoning
@@ -161,6 +167,7 @@ include_ai_workflows:
 ```
 
 **Problems:**
+
 - What does "AI-enhanced workflows" mean?
 - What will I get if I say yes?
 - What will I lose if I say no?
@@ -186,6 +193,7 @@ include_ai_workflows:
 ```
 
 **Improvements:**
+
 - ✅ Lists specific benefits
 - ✅ Clear recommendation
 - ✅ When to choose "no"
@@ -209,6 +217,7 @@ database_type:
 ```
 
 **Problems:**
+
 - No context for differences
 - No guidance on which to use when
 - Assumes database knowledge
@@ -237,6 +246,7 @@ database_type:
 ```
 
 **Improvements:**
+
 - ✅ Clear use cases for each
 - ✅ Recommendation with reasoning
 - ✅ Different advice for different scenarios
@@ -256,6 +266,7 @@ enable_security_hardening:
 ```
 
 **Problems:**
+
 - What is "security hardening"?
 - What does TPM-backed encryption mean?
 - When would I need this?
@@ -284,6 +295,7 @@ enable_security_hardening:
 ```
 
 **Improvements:**
+
 - ✅ Plain language description
 - ✅ Specific "choose yes if..." criteria
 - ✅ Specific "choose no if..." criteria
@@ -309,6 +321,7 @@ bounded_context:
 ```
 
 **Problems:**
+
 - What is a "domain" in this context?
 - What is a "bounded context"?
 - No examples
@@ -341,6 +354,7 @@ bounded_context:
 ```
 
 **Improvements:**
+
 - ✅ "Business area" instead of "domain"
 - ✅ Examples of common domains
 - ✅ Permission to use default
@@ -374,6 +388,7 @@ project_purpose:
 ```
 
 **Benefits:**
+
 - ✅ Sets context for all other questions
 - ✅ Makes generated documentation meaningful
 - ✅ Helps AI understand project goals
@@ -390,6 +405,7 @@ validator: "{% if '@' not in author_email %}Invalid email format{% endif %}"
 ```
 
 **Shown to user:**
+
 ```
 Invalid email format
 ```
@@ -401,11 +417,13 @@ validator: "{% if '@' not in author_email %}Please enter a valid email address (
 ```
 
 **Shown to user:**
+
 ```
 Please enter a valid email address (must contain @)
 ```
 
 **Improvements:**
+
 - ✅ Polite tone ("Please")
 - ✅ Explains what's wrong
 - ✅ Shows what's needed
@@ -425,6 +443,7 @@ include_domain_entities:
 ```
 
 **Problems:**
+
 - Beginners don't know what "domain entities" are
 - No indication this is advanced
 - No permission to skip
@@ -448,6 +467,7 @@ include_domain_entities:
 ```
 
 **Improvements:**
+
 - ✅ Section header warns it's advanced
 - ✅ "Safe to Use Defaults" reassurance
 - ✅ Explains what entities are
@@ -460,25 +480,25 @@ include_domain_entities:
 
 ### Quantitative Improvements
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Average help text length | 1 line | 5-8 lines | +400% |
-| Examples provided | 0 | 40+ | +∞ |
-| Concrete placeholders | Few | All | +100% |
-| Recommendation clarity | Vague | Explicit | +100% |
-| Error message clarity | Low | High | +200% |
+| Metric                   | Before | After     | Change |
+| ------------------------ | ------ | --------- | ------ |
+| Average help text length | 1 line | 5-8 lines | +400%  |
+| Examples provided        | 0      | 40+       | +∞     |
+| Concrete placeholders    | Few    | All       | +100%  |
+| Recommendation clarity   | Vague  | Explicit  | +100%  |
+| Error message clarity    | Low    | High      | +200%  |
 
 ### Qualitative Improvements
 
-| Aspect | Before | After |
-|--------|--------|-------|
-| **Tone** | Technical manual | Helpful guide |
-| **Audience** | Developers only | Everyone |
-| **Confidence** | Intimidating | Empowering |
-| **Clarity** | Assume knowledge | Explain everything |
-| **Guidance** | Implicit | Explicit |
-| **Examples** | Rare | Abundant |
-| **Errors** | Cryptic | Actionable |
+| Aspect         | Before           | After              |
+| -------------- | ---------------- | ------------------ |
+| **Tone**       | Technical manual | Helpful guide      |
+| **Audience**   | Developers only  | Everyone           |
+| **Confidence** | Intimidating     | Empowering         |
+| **Clarity**    | Assume knowledge | Explain everything |
+| **Guidance**   | Implicit         | Explicit           |
+| **Examples**   | Rare             | Abundant           |
+| **Errors**     | Cryptic          | Actionable         |
 
 ---
 

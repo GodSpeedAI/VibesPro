@@ -19,6 +19,7 @@
 ## Pre-Implementation Setup (30 minutes)
 
 - [ ] **Review Documentation**
+
   - [ ] Read AI_SECURITY_HARDENING.md (20 min)
   - [ ] Read AI_ADR-006 (5 min)
   - [ ] Review PHASE-006 task breakdown (5 min)
@@ -26,9 +27,15 @@
 - [x] **Update copier.yml** (15 min)
   ```yaml
   # Add these 3 variables:
-  enable_security_hardening: {type: bool, default: false}
-  encryption_backend: {type: str, default: "xchacha20poly1305", when: "{{ enable_security_hardening }}"}
-  tpm_enabled: {type: bool, default: false, when: "{{ enable_security_hardening }}"}
+  enable_security_hardening: { type: bool, default: false }
+  encryption_backend:
+    {
+      type: str,
+      default: "xchacha20poly1305",
+      when: "{{ enable_security_hardening }}",
+    }
+  tpm_enabled:
+    { type: bool, default: false, when: "{{ enable_security_hardening }}" }
   ```
 
 ---
@@ -41,6 +48,7 @@
 ### RED Phase (1 hour)
 
 - [x] **Create Directory Structure**
+
   ```bash
   mkdir -p libs/security/{src,tests/unit}
   ```
@@ -53,10 +61,12 @@
 ### GREEN Phase (5-6 hours)
 
 - [x] **Setup Dependencies**
+
   - [x] Create `libs/security/Cargo.toml`
   - [x] Add dependencies: redb, chacha20poly1305, hkdf, sha2, zeroize, anyhow, uuid
 
 - [x] **Copy Implementation**
+
   - [x] Copy SecureDb from AI_SECURITY_HARDENING.md Section 5.2
   - [x] Create `libs/security/src/lib.rs` (re-exports)
   - [x] Create `libs/security/src/secure_db.rs` (main implementation)
@@ -75,6 +85,7 @@
 ### REFACTOR Phase (2-3 hours)
 
 - [x] **Automation Enhancements**
+
   - [x] Created comprehensive CI workflow with 5 jobs
   - [x] Added performance regression detection (threshold: 300% for GREEN phase)
   - [x] Implemented binary size tracking and artifact upload
@@ -105,11 +116,13 @@
 ### GREEN Phase (3-4 hours)
 
 - [x] **Create Template Structure**
+
   ```bash
   mkdir -p templates/{{project_slug}}/libs/security/{src,tests}
   ```
 
 - [x] **Copy and Convert Templates**
+
   - [x] Copy Dockerfile from AI_SECURITY_HARDENING.md Section 5.3
   - [x] Add Jinja2 conditionals → `templates/{{project_slug}}/Dockerfile.j2`
   - [x] Copy docker-compose.yml from Section 5.3
@@ -120,8 +133,10 @@
     - [x] `src/secure_db.rs.j2`
 
 - [x] **Update Generation Hooks**
+
   - [x] Edit `hooks/post_gen.py`
   - [x] Add conditional removal logic for security libs when disabled
+
   ```python
   if not context['enable_security_hardening']:
       shutil.rmtree(project_path / 'libs' / 'security', ignore_errors=True)
@@ -139,12 +154,15 @@
 ### REFACTOR Phase (2-3 hours)
 
 - [x] **Documentation**
+
   - [x] Add comments to Jinja2 conditionals
   - [x] Create example `.env.j2` with key generation instructions
   - [x] Create `templates/{{project_slug}}/docs/security/ENCRYPTION.md.j2`
 
 - [x] **Template Validation**
+
   - [x] Validate all `.j2` syntax
+
   ```bash
   python3 - <<'PY'
   from pathlib import Path
@@ -170,7 +188,9 @@
       env.parse(Path(file).read_text())
   PY
   ```
+
   - [x] Test generation with both flag values
+
   ```bash
   COPIER_SKIP_PROJECT_SETUP=1 COPIER_ENABLE_SECURITY_HARDENING=true copier copy . /tmp/test-secure \
     --data-file tests/fixtures/test-data.yml --data enable_security_hardening=true --defaults --force --trust
@@ -189,6 +209,7 @@
 ### RED Phase (2 hours)
 
 - [x] **Create Rust Validation Tests**
+
   - [x] Create `tests/security/validation_suite.rs`
   - [x] Copy 3 test cases from AI_SECURITY_HARDENING.md TASK-015 RED section
     - [x] `test_cargo_audit_passes`
@@ -209,11 +230,13 @@
 ### GREEN Phase (2-3 hours)
 
 - [x] **Implement Validation Scripts**
+
   - [x] Add `just security-audit` recipe (runs `cargo audit`)
   - [x] Add `just security-benchmark` recipe (runs performance tests)
   - [x] Create binary size tracking script (`scripts/track-binary-size.sh`)
 
 - [x] **Create CI Workflow**
+
   - [x] Create `.github/workflows/security-scan.yml`
   - [x] Add cargo audit check
   - [x] Add performance benchmark job
@@ -235,6 +258,7 @@
 ### REFACTOR Phase (2-3 hours)
 
 - [x] **Automation Enhancements**
+
   - [x] Created comprehensive CI workflow with 5 jobs
   - [x] Added performance regression detection (threshold: 300% for GREEN phase)
   - [x] Implemented binary size tracking and artifact upload
@@ -258,6 +282,7 @@
 ### Analysis (30 min)
 
 - [x] **Measured Baseline Performance**
+
   - [x] Current overhead: ~800% (encrypted: 79ms, plain: 9ms for 1000 ops)
   - [x] Bottleneck: Nonce counter persisted to disk on every insert (doubles I/O)
 
@@ -268,6 +293,7 @@
 ### Implementation (1.5 hours)
 
 - [x] **Priority 1: Batch Nonce Counter Persistence**
+
   - [x] Modify `allocate_nonce()` to persist counter every 10 operations (modulo check)
   - [x] Update `flush()` to always persist current counter value
   - [x] Add comments documenting crash behavior (up to 10 nonces may be skipped)
@@ -281,16 +307,20 @@
 ### Validation (1 hour)
 
 - [x] **Run Unit Tests**
+
   ```bash
   cd libs/security && cargo test
   ```
+
   - [x] All 5 tests pass
   - [x] Nonce monotonicity preserved (with explicit flush call)
 
 - [x] **Run Performance Tests**
+
   ```bash
   cargo test test_performance_overhead --test validation_suite -- --nocapture
   ```
+
   - [x] Measured overhead: ~690% (down from ~800%)
   - [x] ~14% improvement from counter batching (100 writes vs 1000 writes)
   - [ ] Further optimization requires profiling/different approach
@@ -311,6 +341,7 @@
 ### Findings & Next Steps
 
 **Current Status:**
+
 - Implemented counter batching (10x reduction in counter persistence I/O)
 - Achieved ~14% performance improvement (800% → 690% overhead)
 - The remaining overhead (~690%) is primarily from:
@@ -319,6 +350,7 @@
   3. Memory allocations for ciphertext
 
 **Future Optimization Opportunities (Beyond TASK-016 Scope):**
+
 1. Use `encrypt_in_place` API to eliminate ciphertext allocation
 2. Implement buffer pooling to reuse allocations
 3. Batch multiple operations before encryption
@@ -341,10 +373,12 @@
 ### Generated Project Validation
 
 - [ ] **With Hardening Enabled**
+
   ```bash
   copier copy . /tmp/secure-project --data enable_security_hardening=true
   cd /tmp/secure-project
   ```
+
   - [ ] Project builds successfully: `cargo build --release`
   - [ ] All tests pass: `cargo test`
   - [ ] Security audit clean: `cargo audit`
@@ -426,27 +460,28 @@ When all checkboxes are ✅:
 
 ## Time Tracking
 
-| Task | Estimated | Actual | Notes |
-|------|-----------|--------|-------|
-| TASK-013 RED | 1h | 0.5h | Completed |
-| TASK-013 GREEN | 5-6h | 6h | Completed |
-| TASK-013 REFACTOR | 2-3h | 2h | Completed |
-| TASK-014 RED | 1h | 1h | Completed |
-| TASK-014 GREEN | 3-4h | 4h | Completed |
-| TASK-014 REFACTOR | 2-3h | 2.5h | Completed |
-| TASK-015 RED | 2h | 1.5h | Tests created and integrated |
-| TASK-015 GREEN | 2-3h | 2.5h | All validation passing |
-| TASK-015 REFACTOR | 2-3h | 2h | Documentation complete |
-| TASK-016 Analysis | 30m | 30m | Baseline measured, strategy identified |
-| TASK-016 Implementation | 2h | 1.5h | Counter batching implemented |
-| TASK-016 Validation | 1h | 30m | Tests updated and passing |
-| **TOTAL** | **20-26h** | **24.5h** | All tasks complete |
+| Task                    | Estimated  | Actual    | Notes                                  |
+| ----------------------- | ---------- | --------- | -------------------------------------- |
+| TASK-013 RED            | 1h         | 0.5h      | Completed                              |
+| TASK-013 GREEN          | 5-6h       | 6h        | Completed                              |
+| TASK-013 REFACTOR       | 2-3h       | 2h        | Completed                              |
+| TASK-014 RED            | 1h         | 1h        | Completed                              |
+| TASK-014 GREEN          | 3-4h       | 4h        | Completed                              |
+| TASK-014 REFACTOR       | 2-3h       | 2.5h      | Completed                              |
+| TASK-015 RED            | 2h         | 1.5h      | Tests created and integrated           |
+| TASK-015 GREEN          | 2-3h       | 2.5h      | All validation passing                 |
+| TASK-015 REFACTOR       | 2-3h       | 2h        | Documentation complete                 |
+| TASK-016 Analysis       | 30m        | 30m       | Baseline measured, strategy identified |
+| TASK-016 Implementation | 2h         | 1.5h      | Counter batching implemented           |
+| TASK-016 Validation     | 1h         | 30m       | Tests updated and passing              |
+| **TOTAL**               | **20-26h** | **24.5h** | All tasks complete                     |
 
 ---
 
 **Next Action:** ✅ PHASE-006 COMPLETE - All four tasks (TASK-013, TASK-014, TASK-015, TASK-016) finished + redb migration
 
 **Final Status:**
+
 - ✅ TASK-013: SecureDb encrypted wrapper implemented and tested (5/5 tests passing)
 - ✅ TASK-014: Security-hardened Copier templates created (5/5 tests passing)
 - ✅ TASK-015: Security validation suite complete (4/5 tests passing, 1 ignored)

@@ -76,12 +76,15 @@ tool_timeout_sec = 60
 ## Key Configuration Details
 
 ### 1. Experimental RMCP Client
+
 **CRITICAL**: Must be enabled at the top level of `config.toml`:
+
 ```toml
 experimental_use_rmcp_client = true
 ```
 
 ### 2. Authentication
+
 Instead of embedding API keys in URLs (insecure), use environment variables:
 
 ```toml
@@ -89,16 +92,19 @@ bearer_token_env_var = "SMITHERY_API_KEY"
 ```
 
 Then set the environment variable:
+
 ```bash
 export SMITHERY_API_KEY="cc369a4a-eaf7-47a4-b6ba-61fae9e9e628"
 ```
 
 ### 3. Server Names
+
 - Use simple, lowercase names (e.g., `context7`, `ref`, `memory`)
 - Avoid spaces and special characters
 - Names should match the table headers: `[mcp_servers.NAME]`
 
 ### 4. Optional Configurations
+
 - `startup_timeout_sec`: Default is 10s, increased to 20s for reliability
 - `tool_timeout_sec`: Default is 60s (can be adjusted per server)
 - `enabled`: Set to `false` to disable a server without removing it
@@ -113,6 +119,7 @@ export SMITHERY_API_KEY="cc369a4a-eaf7-47a4-b6ba-61fae9e9e628"
 ```
 
 Then reload:
+
 ```bash
 source ~/.zshrc
 ```
@@ -120,22 +127,26 @@ source ~/.zshrc
 ## Managing MCP Servers
 
 ### List configured servers
+
 ```bash
 codex mcp list
 codex mcp list --json
 ```
 
 ### View specific server details
+
 ```bash
 codex mcp get context7
 ```
 
 ### Remove a server
+
 ```bash
 codex mcp remove context7
 ```
 
 ### OAuth login (if supported)
+
 ```bash
 codex mcp login deepwiki
 ```
@@ -143,12 +154,14 @@ codex mcp login deepwiki
 ## Notes from Original Configuration
 
 Your original configuration had several issues:
+
 1. ❌ Used `"type": "http"` (not needed for Codex)
 2. ❌ Embedded API keys and profile params in URLs (insecure)
 3. ❌ Used `"gallery"` and `"version"` fields (not applicable to Codex)
 4. ❌ Missing `experimental_use_rmcp_client = true`
 
 The corrected configuration:
+
 1. ✅ Uses proper Codex TOML format
 2. ✅ Separates auth tokens into environment variables
 3. ✅ Enables experimental RMCP client

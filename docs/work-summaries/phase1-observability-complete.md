@@ -19,6 +19,7 @@ Successfully implemented Phase 1 of the observability system following strict TD
 **Location**: `crates/vibepro-observe/`
 
 **Features**:
+
 - Default: JSON logging via `tracing_subscriber`
 - Optional `otlp` feature: OTLP exporter to Vector/OpenObserve
 - Feature-gated initialization with runtime flag (`VIBEPRO_OBSERVE=1`)
@@ -26,6 +27,7 @@ Successfully implemented Phase 1 of the observability system following strict TD
 - Global tracer provider management
 
 **Key Functions**:
+
 - `init_tracing(service_name: &str)` - Initialize tracing with optional OTLP export
 - `record_metric(key: &str, value: f64)` - Simple metric recording as structured events
 
@@ -48,10 +50,12 @@ opentelemetry_sdk = "0.25" (optional, rt-tokio)
 **Location**: `crates/vibepro-observe/tests/`
 
 All tests passing ✅:
+
 - `tracing_init.rs` - Basic initialization tests (3 tests)
 - `otlp_gates.rs` - OTLP feature gate tests (1 test)
 
 **Test Coverage**:
+
 - Idempotent initialization
 - JSON logging by default
 - Environment flag handling (with/without OTLP feature)
@@ -63,11 +67,11 @@ All tests passing ✅:
 
 ### TDD Cycles Completed
 
-| Cycle | Step | Status |
-|-------|------|--------|
-| RED | Write failing test for `init_tracing()` | ✅ |
-| GREEN | Implement `init_tracing()` with `EnvFilter` | ✅ |
-| REFACTOR | Add `record_metric()` + `otlp` feature flag | ✅ |
+| Cycle    | Step                                        | Status |
+| -------- | ------------------------------------------- | ------ |
+| RED      | Write failing test for `init_tracing()`     | ✅     |
+| GREEN    | Implement `init_tracing()` with `EnvFilter` | ✅     |
+| REFACTOR | Add `record_metric()` + `otlp` feature flag | ✅     |
 
 ### Architecture Decisions
 
@@ -79,14 +83,17 @@ All tests passing ✅:
 ### Key Challenges Resolved
 
 1. **Version Compatibility**:
+
    - Initial attempt with OpenTelemetry 0.24 failed due to type mismatches
    - Solution: Upgraded to OpenTelemetry 0.25 to match `tracing-opentelemetry` 0.26 requirements
 
 2. **Type System Issues**:
+
    - BoxedTracer from `global::tracer()` doesn't implement `PreSampledTracer`
    - Solution: Return `opentelemetry_sdk::trace::Tracer` directly from provider before setting global
 
 3. **Test Execution**:
+
    - Parallel tests trying to initialize global subscriber
    - Solution: Use `try_init()` instead of `init()` and guard with `OnceCell`
 
@@ -110,12 +117,14 @@ All tests passing ✅:
 ## Files Created/Modified
 
 ### Created
+
 - `crates/vibepro-observe/Cargo.toml`
 - `crates/vibepro-observe/src/lib.rs`
 - `crates/vibepro-observe/tests/tracing_init.rs`
 - `crates/vibepro-observe/tests/otlp_gates.rs`
 
 ### Modified
+
 - None (new crate)
 
 ---
@@ -125,6 +134,7 @@ All tests passing ✅:
 Per `docs/tmp/dev_tdd_observability.md`, Phase 2 focuses on:
 
 1. **Data Pipeline Layer (Vector)**
+
    - Add Vector configuration: `ops/vector/vector.toml`
    - Add shell test: `tests/ops/test_vector_config.sh`
    - Add Just recipe: `just observe:start`

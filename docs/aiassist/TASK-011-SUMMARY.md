@@ -25,23 +25,28 @@ Update template CI workflows to include comprehensive automation steps and impro
 Created comprehensive integration tests in `tests/ci/template-ci.test.ts`:
 
 - **Workflow File Structure Tests (3)**:
+
   - Verify spec-guard.yml exists
   - Verify node-tests.yml exists
   - Verify markdownlint.yml exists
 
 - **Spec Guard Workflow Steps Tests (3)**:
+
   - Validate `just test-generation` command
   - Validate `pnpm prompt:lint` command
   - Validate `pnpm spec:matrix` command
 
 - **Caching Configuration Tests (2)**:
+
   - Verify pnpm cache in spec-guard workflow
   - Verify pnpm cache in node-tests workflow
 
 - **Environment Variable Documentation Tests (1)**:
+
   - Verify workflow comments document environment variables
 
 - **Node.js Version Consistency Tests (1)**:
+
   - Verify Node.js 20.x used consistently
 
 - **Permissions Configuration Tests (1)**:
@@ -54,6 +59,7 @@ Created comprehensive integration tests in `tests/ci/template-ci.test.ts`:
 Implemented minimal working solution:
 
 1. **Updated spec-guard.yml**:
+
    - Added comprehensive header documentation with environment variables
    - Added `just test-generation` step after unit tests
    - Documented traceability IDs
@@ -70,6 +76,7 @@ Enhanced workflow structure and maintainability:
 #### Composite Actions Created
 
 1. **`.github/actions/setup-node-pnpm/action.yml`**:
+
    - Reusable Node.js and pnpm setup
    - Configurable Node.js version (default: 20)
    - Automatic dependency installation
@@ -85,6 +92,7 @@ Enhanced workflow structure and maintainability:
 #### Workflows Refactored
 
 1. **spec-guard.yml**:
+
    - Migrated to use composite actions
    - Reduced duplication from ~15 lines to ~3 lines for setup
    - Improved readability and maintainability
@@ -123,6 +131,7 @@ Verified system integrity:
 ### Workflows Enhanced
 
 - `templates/{{project_slug}}/.github/workflows/spec-guard.yml`:
+
   - Added test-generation step
   - Added comprehensive documentation
   - Migrated to composite actions
@@ -176,10 +185,12 @@ All 11 TASK-011 tests passing:
 ## Environment Variables Documented
 
 **Spec Guard CI**:
+
 - `PROMPT_TOKENIZER`: Set to 'accurate' for precise token counting
 - `NODE_ENV`: Set to 'test' during CI runs
 
 **Node Tests**:
+
 - `NODE_ENV`: Set to 'test' during CI runs
 
 ## Performance Improvements
@@ -213,6 +224,7 @@ All 11 TASK-011 tests passing:
 ## Next Steps
 
 1. **TASK-012**: Generated Project CI Validation
+
    - Agent: Agent B
    - Dependencies: TASK-011 (completed)
    - Tests: `tests/integration/generated-ci-regression.test.ts`

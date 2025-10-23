@@ -1,38 +1,29 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "module": "CommonJS",
-        "target": "ES2022",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "types": [
-            "jest",
-            "jest-extended",
-            "node"
-        ],
-        "noEmit": false,
-        "declaration": false,
-        "sourceMap": true,
-        "incremental": true,
-        "isolatedModules": false,
-        "strict": true,
-        "skipLibCheck": true
-    },
-    "include": [
-        "tests/**/*.ts",
-        "tools/**/*.test.ts",
-        "tools/**/*.spec.ts",
-        "generators/**/*.test.ts",
-        "generators/**/*.spec.ts",
-        "generators/**/*.ts",
-        "jest.setup.js",
-        "jest.d.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "coverage",
-        ".nx"
-    ]
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["jest", "jest-extended", "node"],
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": true,
+    "incremental": true,
+    "isolatedModules": false,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "tests/**/*.ts",
+    "tools/**/*.test.ts",
+    "tools/**/*.spec.ts",
+    "generators/**/*.test.ts",
+    "generators/**/*.spec.ts",
+    "generators/**/*.ts",
+    "jest.setup.js",
+    "jest.d.ts"
+  ],
+  "exclude": ["node_modules", "dist", "coverage", ".nx"]
 }

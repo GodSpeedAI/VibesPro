@@ -1,1 +1,5 @@
-{"language":"python","backendFramework":"fastapi","packageManager":"pnpm"}
+{
+  "language": "python",
+  "backendFramework": "fastapi",
+  "packageManager": "pnpm"
+}

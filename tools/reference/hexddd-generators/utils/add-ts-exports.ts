@@ -1,4 +1,4 @@
-import { Tree } from '@nx/devkit';
+import { Tree } from "@nx/devkit";
 
 /**
  * addTsExport
@@ -8,9 +8,9 @@ import { Tree } from '@nx/devkit';
 export function addTsExport(
   tree: Tree,
   filePath: string,
-  filesToExport: string[]
+  filesToExport: string[],
 ): void {
-  let content = tree.read(filePath) + '\n';
+  let content = tree.read(filePath) + "\n";
 
   for (const file of filesToExport) {
     content += `export * from '${file}';\n`;

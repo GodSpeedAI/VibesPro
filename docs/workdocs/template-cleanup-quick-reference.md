@@ -16,12 +16,14 @@
 ## 🚀 How to Use
 
 ### Option 1: Interactive (Recommended)
+
 ```bash
 just template-cleanup
 # Asks for confirmation before executing
 ```
 
 ### Option 2: Force (CI/Automation)
+
 ```bash
 just template-cleanup-force
 # Runs without confirmation
@@ -32,11 +34,13 @@ just template-cleanup-force
 ## 📋 What the Script Does
 
 ### Removes (22+ items)
+
 - 12 maintainer-specific docs
 - 6 test artifact directories
 - work-summaries/ folder
 
 ### Replaces (4 files)
+
 - dev_adr.md.j2 → minimal starter with instructions
 - dev_prd.md.j2 → minimal starter with instructions
 - dev_sds.md.j2 → minimal starter with instructions
@@ -47,6 +51,7 @@ just template-cleanup-force
 ## 📊 Before & After
 
 ### Before Cleanup
+
 ```
 User generates project →
 Gets pre-filled VibesPro specs →
@@ -55,6 +60,7 @@ Has to delete and recreate
 ```
 
 ### After Cleanup
+
 ```
 User generates project →
 Gets minimal starters with clear instructions →
@@ -67,15 +73,18 @@ Clear, correct workflow
 ## 🎯 Next Steps
 
 1. **Review** implementation in these docs:
+
    - `docs/workdocs/template-cleanup-implementation.md` (detailed)
    - `docs/work-summaries/2025-10-08-template-cleanup.md` (summary)
 
 2. **Execute** the cleanup:
+
    ```bash
    just template-cleanup
    ```
 
 3. **Test** generation:
+
    ```bash
    pnpm generate
    # Check that specs are minimal starters

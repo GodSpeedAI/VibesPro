@@ -9,25 +9,30 @@ This map shows the distributed AGENT.md system that replicates the semantic rout
 ## Context Hierarchy
 
 ### 🏠 Root Level
+
 - [AGENTS.md](/AGENTS.md) - Nx-specific guidelines (auto-generated)
 - [.github/copilot-instructions.md](/.github/copilot-instructions.md) - Master instructions (supreme authority)
 
 ### 🎯 Core Infrastructure (Phase 1)
+
 - [.github/AGENT.md](/.github/AGENT.md) - AI Development System (prompts, instructions, chat modes)
 - [docs/AGENT.md](/docs/AGENT.md) - Documentation & Specifications (ADR, PRD, SDS, traceability)
 - [tools/AGENT.md](/tools/AGENT.md) - Development Tools (utilities, generators, metrics)
 - [scripts/AGENT.md](/scripts/AGENT.md) - Orchestration Scripts (shell automation, justfile integration)
 
 ### 🏗️ Application Architecture (Phase 2)
+
 - [apps/AGENT.md](/apps/AGENT.md) - Application Interfaces (web, mobile, CLI, API)
 - [libs/AGENT.md](/libs/AGENT.md) - Business Logic Libraries (hexagonal architecture)
 - [generators/AGENT.md](/generators/AGENT.md) - Code Generators (Nx generators, scaffolding)
 - [templates/AGENT.md](/templates/AGENT.md) - Jinja2 Templates (Copier project generation)
 
 ### 🧪 Quality & Testing (Phase 2)
+
 - [tests/AGENT.md](/tests/AGENT.md) - Testing Infrastructure (unit, integration, shell tests)
 
 ### 🔬 Specialized Contexts (Phase 3)
+
 - [temporal_db/AGENT.md](/temporal_db/AGENT.md) - AI Learning Database (Rust, sled)
 - [architecture/AGENT.md](/architecture/AGENT.md) - Architecture Documentation (CALM)
 - [ops/AGENT.md](/ops/AGENT.md) - Operations & Deployment
@@ -37,36 +42,36 @@ This map shows the distributed AGENT.md system that replicates the semantic rout
 
 ### 📋 By Task Type
 
-| Task | Primary Context | Supporting Contexts |
-|------|----------------|---------------------|
-| **Implementing from spec** | [docs/AGENT.md](/docs/AGENT.md) | [libs/AGENT.md](/libs/AGENT.md), [tests/AGENT.md](/tests/AGENT.md) |
-| **Writing tests** | [tests/AGENT.md](/tests/AGENT.md) | [.github/AGENT.md](/.github/AGENT.md) (TDD chat modes) |
-| **Creating generators** | [generators/AGENT.md](/generators/AGENT.md) | [templates/AGENT.md](/templates/AGENT.md) |
-| **Building tools** | [tools/AGENT.md](/tools/AGENT.md) | [scripts/AGENT.md](/scripts/AGENT.md) |
-| **AI workflows** | [.github/AGENT.md](/.github/AGENT.md) | [docs/AGENT.md](/docs/AGENT.md) (specs) |
-| **Security audit** | [.github/AGENT.md](/.github/AGENT.md) | All contexts (security applies everywhere) |
-| **Performance analysis** | [tools/AGENT.md](/tools/AGENT.md) | [tests/AGENT.md](/tests/AGENT.md) (benchmarks) |
-| **Template generation** | [templates/AGENT.md](/templates/AGENT.md) | [generators/AGENT.md](/generators/AGENT.md) |
-| **Documentation** | [docs/AGENT.md](/docs/AGENT.md) | Context-specific AGENT.md files |
+| Task                       | Primary Context                             | Supporting Contexts                                                |
+| -------------------------- | ------------------------------------------- | ------------------------------------------------------------------ |
+| **Implementing from spec** | [docs/AGENT.md](/docs/AGENT.md)             | [libs/AGENT.md](/libs/AGENT.md), [tests/AGENT.md](/tests/AGENT.md) |
+| **Writing tests**          | [tests/AGENT.md](/tests/AGENT.md)           | [.github/AGENT.md](/.github/AGENT.md) (TDD chat modes)             |
+| **Creating generators**    | [generators/AGENT.md](/generators/AGENT.md) | [templates/AGENT.md](/templates/AGENT.md)                          |
+| **Building tools**         | [tools/AGENT.md](/tools/AGENT.md)           | [scripts/AGENT.md](/scripts/AGENT.md)                              |
+| **AI workflows**           | [.github/AGENT.md](/.github/AGENT.md)       | [docs/AGENT.md](/docs/AGENT.md) (specs)                            |
+| **Security audit**         | [.github/AGENT.md](/.github/AGENT.md)       | All contexts (security applies everywhere)                         |
+| **Performance analysis**   | [tools/AGENT.md](/tools/AGENT.md)           | [tests/AGENT.md](/tests/AGENT.md) (benchmarks)                     |
+| **Template generation**    | [templates/AGENT.md](/templates/AGENT.md)   | [generators/AGENT.md](/generators/AGENT.md)                        |
+| **Documentation**          | [docs/AGENT.md](/docs/AGENT.md)             | Context-specific AGENT.md files                                    |
 
 ### 🏛️ By Architecture Layer
 
-| Layer | Context | Description |
-|-------|---------|-------------|
-| **Interface** | [apps/AGENT.md](/apps/AGENT.md) | User-facing applications (web, mobile, CLI) |
-| **Application** | [libs/AGENT.md](/libs/AGENT.md#application-layer) | Use cases, application services, ports |
-| **Domain** | [libs/AGENT.md](/libs/AGENT.md#domain-layer) | Pure business logic, entities, value objects |
-| **Infrastructure** | [libs/AGENT.md](/libs/AGENT.md#infrastructure-layer) | Repository implementations, adapters |
+| Layer              | Context                                              | Description                                  |
+| ------------------ | ---------------------------------------------------- | -------------------------------------------- |
+| **Interface**      | [apps/AGENT.md](/apps/AGENT.md)                      | User-facing applications (web, mobile, CLI)  |
+| **Application**    | [libs/AGENT.md](/libs/AGENT.md#application-layer)    | Use cases, application services, ports       |
+| **Domain**         | [libs/AGENT.md](/libs/AGENT.md#domain-layer)         | Pure business logic, entities, value objects |
+| **Infrastructure** | [libs/AGENT.md](/libs/AGENT.md#infrastructure-layer) | Repository implementations, adapters         |
 
 ### 🔧 By Technology
 
-| Technology | Primary Context | Notes |
-|------------|----------------|-------|
-| **TypeScript/JavaScript** | [libs/AGENT.md](/libs/AGENT.md), [apps/AGENT.md](/apps/AGENT.md) | Strict mode, no `any` types |
-| **Python** | [tools/AGENT.md](/tools/AGENT.md), [libs/AGENT.md](/libs/AGENT.md) | mypy strict mode, type hints everywhere |
-| **Rust** | [temporal_db/AGENT.md](/temporal_db/AGENT.md) | Sled database, temporal learning |
-| **Shell/Bash** | [scripts/AGENT.md](/scripts/AGENT.md) | ShellSpec tests, ShellCheck validation |
-| **Jinja2** | [templates/AGENT.md](/templates/AGENT.md) | Copier templates, variable conventions |
+| Technology                | Primary Context                                                    | Notes                                   |
+| ------------------------- | ------------------------------------------------------------------ | --------------------------------------- |
+| **TypeScript/JavaScript** | [libs/AGENT.md](/libs/AGENT.md), [apps/AGENT.md](/apps/AGENT.md)   | Strict mode, no `any` types             |
+| **Python**                | [tools/AGENT.md](/tools/AGENT.md), [libs/AGENT.md](/libs/AGENT.md) | mypy strict mode, type hints everywhere |
+| **Rust**                  | [temporal_db/AGENT.md](/temporal_db/AGENT.md)                      | Sled database, temporal learning        |
+| **Shell/Bash**            | [scripts/AGENT.md](/scripts/AGENT.md)                              | ShellSpec tests, ShellCheck validation  |
+| **Jinja2**                | [templates/AGENT.md](/templates/AGENT.md)                          | Copier templates, variable conventions  |
 
 ## Routing Strategy
 
@@ -132,13 +137,13 @@ graph TD
 
 ### How AGENT.md Files Complement copilot-instructions.md
 
-| Aspect | copilot-instructions.md | AGENT.md Files |
-|--------|------------------------|----------------|
-| **Scope** | Repository-wide master guidance | Directory-specific context |
-| **Authority** | Supreme - sets standards | Local - applies standards |
+| Aspect           | copilot-instructions.md          | AGENT.md Files                  |
+| ---------------- | -------------------------------- | ------------------------------- |
+| **Scope**        | Repository-wide master guidance  | Directory-specific context      |
+| **Authority**    | Supreme - sets standards         | Local - applies standards       |
 | **Detail Level** | High-level principles & patterns | Concrete examples & conventions |
-| **Routing** | Workflow & persona routing | File & directory routing |
-| **Maintenance** | Central authority updates | Distributed team updates |
+| **Routing**      | Workflow & persona routing       | File & directory routing        |
+| **Maintenance**  | Central authority updates        | Distributed team updates        |
 
 ### Modular Instruction Stacking
 
@@ -197,6 +202,7 @@ AI Development (implementation)
 ### When to Create New AGENT.md
 
 ✅ **Create when:**
+
 - Directory has distinct purpose/domain
 - Local conventions differ meaningfully
 - Routing logic would benefit from clarity
@@ -204,6 +210,7 @@ AI Development (implementation)
 - Onboarding would be significantly easier
 
 ❌ **Don't create when:**
+
 - Directory is purely organizational (no code)
 - No distinct conventions exist
 - Would duplicate parent context without adding value
@@ -212,6 +219,7 @@ AI Development (implementation)
 ### Updating AGENT.MAP.md
 
 **Update this map when:**
+
 - New AGENT.md file is created
 - Directory structure changes significantly
 - New task types or routing patterns emerge
@@ -227,6 +235,7 @@ AI Development (implementation)
 ## Quick Command Reference
 
 ### Context Generation
+
 ```bash
 # Generate AI context bundle (includes CALM, specs, techstack)
 just ai-context-bundle
@@ -242,6 +251,7 @@ just spec-guard
 ```
 
 ### Navigation Commands
+
 ```bash
 # Find AGENT.md files
 find . -name "AGENT.md" -type f

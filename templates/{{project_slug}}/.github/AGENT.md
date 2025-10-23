@@ -1,4 +1,5 @@
 {# Full AGENT.md content copied from repository canonical file. #}
+
 > **Purpose**: AI Development System - Prompts, instructions, chat modes, and workflows for AI-assisted development.
 > **When to use**: When working with AI assistance features, prompt engineering, instruction files, chat modes, or CI/CD workflows.
 
@@ -48,22 +49,22 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 ### File Naming Conventions
 
-| File Type | Pattern | Location | Example |
-|-----------|---------|----------|---------|
-| **Instructions** | `*.instructions.md` | `instructions/` | `security.instructions.md` |
-| **Prompts** | `*.prompt.md` | `prompts/` | `tdd.workflow.prompt.md` |
-| **Chat Modes** | `domain.task.chatmode.md` | `chatmodes/` | `tdd.red.chatmode.md` |
-| **Workflows** | `*.yml` or `*.yaml` | `workflows/` | `ci.yml` |
+| File Type        | Pattern                   | Location        | Example                    |
+| ---------------- | ------------------------- | --------------- | -------------------------- |
+| **Instructions** | `*.instructions.md`       | `instructions/` | `security.instructions.md` |
+| **Prompts**      | `*.prompt.md`             | `prompts/`      | `tdd.workflow.prompt.md`   |
+| **Chat Modes**   | `domain.task.chatmode.md` | `chatmodes/`    | `tdd.red.chatmode.md`      |
+| **Workflows**    | `*.yml` or `*.yaml`       | `workflows/`    | `ci.yml`                   |
 
 ### Instruction File Frontmatter
 
 ```yaml
 ---
 description: "Brief description"
-applyTo: "**"              # or specific glob pattern
+applyTo: "**" # or specific glob pattern
 kind: instructions
 domain: security|testing|general|etc
-precedence: 10-50          # Lower = higher priority
+precedence: 10-50 # Lower = higher priority
 ---
 ```
 
@@ -80,12 +81,12 @@ precedence: 10-50          # Lower = higher priority
 
 ### Refer to Other Contexts When
 
-| Context | When to Use |
-|---------|-------------|
-| [docs/AGENT.md](/docs/AGENT.md) | Implementing from specifications or updating specs |
-| [tests/AGENT.md](/tests/AGENT.md) | Writing test cases or following TDD workflow |
-| [tools/AGENT.md](/tools/AGENT.md) | Building development tools or utilities |
-| [scripts/AGENT.md](/scripts/AGENT.md) | Creating automation scripts |
+| Context                               | When to Use                                        |
+| ------------------------------------- | -------------------------------------------------- |
+| [docs/AGENT.md](/docs/AGENT.md)       | Implementing from specifications or updating specs |
+| [tests/AGENT.md](/tests/AGENT.md)     | Writing test cases or following TDD workflow       |
+| [tools/AGENT.md](/tools/AGENT.md)     | Building development tools or utilities            |
+| [scripts/AGENT.md](/scripts/AGENT.md) | Creating automation scripts                        |
 
 ## 🔧 Local Conventions
 
@@ -100,7 +101,7 @@ precedence: 10-50          # Lower = higher priority
 5. **testing.instructions.md** (35) - Testing strategies
 6. **general.instructions.md** (50) - General guidelines
 7. **performance.instructions.md** (34) - Performance considerations
-8. **style.*.instructions.md** (varies) - Language-specific styles
+8. **style.\*.instructions.md** (varies) - Language-specific styles
 
 **Critical Rule**: Security guidelines override ALL other guidelines.
 
@@ -140,7 +141,7 @@ precedence: 10-50          # Lower = higher priority
 
 ```markdown
 ${selection}      # Current editor selection
-${fileBasename}   # Current file name
+${fileBasename} # Current file name
 ${workspaceFolder} # Workspace root path
 ```
 
@@ -311,12 +312,12 @@ node scripts/normalize_chatmodes.mjs
 
 ### Validation Tools
 
-| Tool | Purpose | Location |
-|------|---------|----------|
-| `prompt-lint` | Validate prompt frontmatter and structure | justfile |
-| `check_all_chatmodes.mjs` | Validate chat mode definitions | scripts/ |
-| `normalize_chatmodes.mjs` | Standardize chat mode format | scripts/ |
-| `check_model_lint.mjs` | Validate model references | scripts/ |
+| Tool                      | Purpose                                   | Location |
+| ------------------------- | ----------------------------------------- | -------- |
+| `prompt-lint`             | Validate prompt frontmatter and structure | justfile |
+| `check_all_chatmodes.mjs` | Validate chat mode definitions            | scripts/ |
+| `normalize_chatmodes.mjs` | Standardize chat mode format              | scripts/ |
+| `check_model_lint.mjs`    | Validate model references                 | scripts/ |
 
 ## 🛡️ Security Considerations
 
@@ -394,7 +395,7 @@ just ai-context-bundle
 _Last updated: 2025-10-13 | Maintained by: VibesPro Project Team_
 _Parent context: [copilot-instructions.md](/.github/copilot-instructions.md) | Navigation: [AGENT-MAP.md](/AGENT-MAP.md)_
 
-````<!-- Copied from repository .github/AGENT.md -->
+```<!-- Copied from repository .github/AGENT.md -->
 # .github/ Agent Instructions
 
 ## 📍 Context
@@ -403,3 +404,4 @@ _Parent context: [copilot-instructions.md](/.github/copilot-instructions.md) | N
 > **When to use**: When working with AI assistance features, prompt engineering, instruction files, chat modes, or CI/CD workflows.
 
 Refer to the repo `.github/AGENT.md` for the canonical content. This file is included in the project template for generated projects.
+```

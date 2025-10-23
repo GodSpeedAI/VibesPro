@@ -30,6 +30,7 @@ All phases followed strict TDD methodology: **RED → GREEN → REFACTOR**
 **Purpose:** Establish test infrastructure foundation
 
 **Deliverables:**
+
 - ✅ `tests/env/run.sh` - Test discovery and execution
 - ✅ `tests/env/helpers.sh` - Reusable test utilities
 - ✅ `test_sanity.sh` - Basic validation
@@ -45,11 +46,13 @@ All phases followed strict TDD methodology: **RED → GREEN → REFACTOR**
 **Purpose:** Optional reproducible environment layer
 
 **Deliverables:**
+
 - ✅ `devbox.json` - Devbox configuration
 - ✅ `test_devbox.sh` - Devbox validation test
 - ✅ Documentation in ENVIRONMENT.md
 
 **Key Features:**
+
 - Optional installation (not required)
 - Provides just, jq, shellcheck, other tools
 - Works alongside mise seamlessly
@@ -63,11 +66,13 @@ All phases followed strict TDD methodology: **RED → GREEN → REFACTOR**
 **Purpose:** Authoritative multi-language version manager
 
 **Deliverables:**
+
 - ✅ `.mise.toml` - Runtime version configuration
 - ✅ `test_mise_versions.sh` - mise validation test
 - ✅ Documentation for Node 20.11.1, Python 3.12.5, Rust 1.80.1
 
 **Key Features:**
+
 - Single source of truth for runtime versions
 - Automatic version switching per directory
 - Superior to Volta for polyglot projects
@@ -81,12 +86,14 @@ All phases followed strict TDD methodology: **RED → GREEN → REFACTOR**
 **Purpose:** Secure secret management with AGE encryption
 
 **Deliverables:**
+
 - ✅ `.sops.yaml` - SOPS configuration (AGE key)
 - ✅ `.secrets.env.sops` - Encrypted secrets template
 - ✅ `test_sops_local.sh` - SOPS validation test
 - ✅ Comprehensive encryption/decryption documentation
 
 **Key Features:**
+
 - AGE encryption (modern, secure)
 - Git-safe encrypted files
 - CI integration via GitHub secrets
@@ -101,12 +108,14 @@ All phases followed strict TDD methodology: **RED → GREEN → REFACTOR**
 **Purpose:** Automated environment validation in CI
 
 **Deliverables:**
+
 - ✅ `.github/workflows/env-check.yml` - Environment validation workflow
 - ✅ `.github/workflows/build-matrix.yml` - Cross-platform build validation
 - ✅ `test_ci_minimal.sh` - CI workflow validation test
 - ✅ CI workflow documentation (~400 lines)
 
 **Key Features:**
+
 - SOPS secret decryption in CI
 - mise installation and runtime setup
 - No direnv usage (mise only)
@@ -121,12 +130,14 @@ All phases followed strict TDD methodology: **RED → GREEN → REFACTOR**
 **Purpose:** Detect and prevent Node version conflicts
 
 **Deliverables:**
+
 - ✅ `scripts/verify-node.sh` - Version conflict detection (existing)
 - ✅ `test_volta_mise_guard.sh` - Volta/mise alignment test
 - ✅ CI workflow integration (verify-node step)
 - ✅ Volta migration documentation (~150 lines)
 
 **Key Features:**
+
 - Detects major version mismatches
 - Allows same major version (20.x compatible)
 - mise-only configuration supported
@@ -141,12 +152,14 @@ All phases followed strict TDD methodology: **RED → GREEN → REFACTOR**
 **Purpose:** Validate task orchestration and runtime integration
 
 **Deliverables:**
+
 - ✅ `test_just_env_awareness.sh` - Task validation test
 - ✅ Just task documentation (~400 lines)
 - ✅ 27 tasks documented with runtime requirements
 - ✅ Graceful degradation patterns documented
 
 **Key Features:**
+
 - All tasks check tool availability
 - Clear error messages with installation instructions
 - Degrades gracefully when tools unavailable
@@ -160,21 +173,22 @@ All phases followed strict TDD methodology: **RED → GREEN → REFACTOR**
 
 ### Complete Test Suite (9 tests)
 
-| # | Test File | Purpose | Lines | Status |
-|---|-----------|---------|-------|--------|
-| 1 | `test_sanity.sh` | Basic harness validation | ~20 | ✅ Pass |
-| 2 | `test_doctor.sh` | Doctor script validation | ~30 | ✅ Pass |
-| 3 | `test_harness.sh` | Test discovery mechanism | ~40 | ✅ Pass |
-| 4 | `test_devbox.sh` | Devbox configuration | ~60 | ✅ Pass |
-| 5 | `test_mise_versions.sh` | mise runtime versions | ~80 | ✅ Pass |
-| 6 | `test_sops_local.sh` | SOPS encryption setup | ~70 | ✅ Pass |
-| 7 | `test_ci_minimal.sh` | CI workflow validation | ~100 | ✅ Pass |
-| 8 | `test_volta_mise_guard.sh` | Volta/mise alignment | ~130 | ✅ Pass |
-| 9 | `test_just_env_awareness.sh` | Just task checks | ~150 | ✅ Pass |
+| #   | Test File                    | Purpose                  | Lines | Status  |
+| --- | ---------------------------- | ------------------------ | ----- | ------- |
+| 1   | `test_sanity.sh`             | Basic harness validation | ~20   | ✅ Pass |
+| 2   | `test_doctor.sh`             | Doctor script validation | ~30   | ✅ Pass |
+| 3   | `test_harness.sh`            | Test discovery mechanism | ~40   | ✅ Pass |
+| 4   | `test_devbox.sh`             | Devbox configuration     | ~60   | ✅ Pass |
+| 5   | `test_mise_versions.sh`      | mise runtime versions    | ~80   | ✅ Pass |
+| 6   | `test_sops_local.sh`         | SOPS encryption setup    | ~70   | ✅ Pass |
+| 7   | `test_ci_minimal.sh`         | CI workflow validation   | ~100  | ✅ Pass |
+| 8   | `test_volta_mise_guard.sh`   | Volta/mise alignment     | ~130  | ✅ Pass |
+| 9   | `test_just_env_awareness.sh` | Just task checks         | ~150  | ✅ Pass |
 
 **Total Test Coverage:** ~680 lines of comprehensive validation
 
 **Run all tests:**
+
 ```bash
 just test-env
 # ✅ All env tests passed (9/9)
@@ -191,23 +205,27 @@ Total size: **~1,800 lines** of comprehensive documentation
 **Sections:**
 
 1. **Quick Start** (~100 lines)
+
    - Installation steps
    - Basic usage
    - Common commands
 
 2. **Devbox (Phase 1)** (~200 lines)
+
    - Installation
    - Configuration
    - Usage patterns
    - Troubleshooting
 
 3. **mise (Phase 2)** (~250 lines)
+
    - Installation
    - Runtime configuration
    - Version management
    - Tool integration
 
 4. **SOPS Secrets (Phase 3)** (~300 lines)
+
    - AGE key setup
    - Encryption/decryption
    - CI integration
@@ -215,6 +233,7 @@ Total size: **~1,800 lines** of comprehensive documentation
    - Troubleshooting
 
 5. **CI Workflows (Phase 4)** (~400 lines)
+
    - Workflow architecture
    - Secret injection
    - mise integration
@@ -222,6 +241,7 @@ Total size: **~1,800 lines** of comprehensive documentation
    - Best practices
 
 6. **Volta Coexistence (Phase 5)** (~150 lines)
+
    - Conflict detection
    - Migration strategies
    - Why mise over Volta
@@ -251,16 +271,19 @@ Detailed phase completion documents:
 Every phase followed strict TDD:
 
 ### RED Phase
+
 - Write failing test first
 - Test validates desired behavior
 - Run test → should fail
 
 ### GREEN Phase
+
 - Implement minimal solution
 - Make test pass
 - Verify all tests still passing
 
 ### REFACTOR Phase
+
 - Improve code quality
 - Add documentation
 - Update traceability
@@ -273,24 +296,29 @@ Every phase followed strict TDD:
 ## Key Technologies
 
 ### Runtime Management
+
 - **mise 2024.10.x** - Multi-language version manager (authoritative)
 - **Node.js 20.11.1** - JavaScript runtime (via mise)
 - **Python 3.12.5** - Python runtime (via mise)
 - **Rust 1.80.1** - Systems programming (via mise)
 
 ### Package Managers
+
 - **pnpm 9.x** - Node.js package manager (via corepack)
 - **uv 0.x** - Python package manager (fast, Rust-based)
 - **cargo 1.80.x** - Rust package manager (via Rust)
 
 ### Secret Management
+
 - **SOPS 3.x** - Secret encryption tool
 - **AGE** - Modern encryption (successor to PGP)
 
 ### Task Orchestration
+
 - **Just 1.x** - Command runner (better Make)
 
 ### Optional Tools
+
 - **Devbox 0.x** - Reproducible environments (optional)
 - **Volta 1.x** - Node version manager (deprecated, optional)
 
@@ -299,6 +327,7 @@ Every phase followed strict TDD:
 ## File Inventory
 
 ### Configuration Files
+
 - `.mise.toml` - Runtime versions (Node, Python, Rust)
 - `devbox.json` - Devbox configuration (optional)
 - `.sops.yaml` - SOPS encryption rules (AGE key)
@@ -306,6 +335,7 @@ Every phase followed strict TDD:
 - `justfile` - Task orchestration (27 tasks)
 
 ### Test Files (tests/env/)
+
 - `run.sh` - Test discovery and execution
 - `helpers.sh` - Reusable test utilities
 - `test_sanity.sh` - Basic validation
@@ -319,15 +349,18 @@ Every phase followed strict TDD:
 - `test_just_env_awareness.sh` - Just task validation
 
 ### CI Workflows (.github/workflows/)
+
 - `env-check.yml` - Environment validation
 - `build-matrix.yml` - Cross-platform builds
 
 ### Scripts
+
 - `scripts/verify-node.sh` - Node version conflict detection
 - `scripts/doctor.sh` - Environment diagnostic tool
 - `scripts/bundle-context.sh` - AI context bundling
 
 ### Documentation
+
 - `docs/ENVIRONMENT.md` - Main environment guide (~1,800 lines)
 - `docs/work-summaries/phase-*-complete.md` - Phase completion docs (~2,100 lines)
 
@@ -340,6 +373,7 @@ Every phase followed strict TDD:
 ### GitHub Actions Workflows
 
 **env-check.yml:**
+
 - Runs on: Ubuntu, macOS
 - Triggers: Push, PR
 - Steps:
@@ -351,6 +385,7 @@ Every phase followed strict TDD:
   6. Cleanup secrets
 
 **build-matrix.yml:**
+
 - Runs on: Ubuntu, macOS
 - Matrix: Node 20.x, Python 3.12.x
 - Steps:
@@ -369,6 +404,7 @@ Every phase followed strict TDD:
 ### From Volta to mise
 
 **Gradual Migration (Recommended):**
+
 1. Add `.mise.toml` with current Node version
 2. Keep `package.json` volta section matching
 3. Team members install mise individually
@@ -376,6 +412,7 @@ Every phase followed strict TDD:
 5. Remove Volta section after full migration
 
 **Clean Migration (Fast):**
+
 1. Ensure `.mise.toml` has Node version
 2. Remove `volta` section from `package.json`
 3. Commit changes
@@ -392,12 +429,14 @@ Every phase followed strict TDD:
 
 **Issue:** "command not found: mise"
 **Solution:**
+
 ```bash
 curl https://mise.jdx.dev/install.sh | sh
 ```
 
 **Issue:** "Node version mismatch"
 **Solution:**
+
 ```bash
 just verify-node  # Shows mismatch details
 # Follow resolution steps in output
@@ -405,6 +444,7 @@ just verify-node  # Shows mismatch details
 
 **Issue:** "SOPS decryption failed"
 **Solution:**
+
 ```bash
 # Check AGE key exists
 cat ~/.config/sops/age/keys.txt
@@ -415,6 +455,7 @@ sops -e -i .secrets.env.sops
 
 **Issue:** "just command not found"
 **Solution:**
+
 ```bash
 # Install via mise
 mise install just
@@ -446,17 +487,20 @@ just verify-node
 ### For Developers
 
 1. **Run setup first in new environments**
+
    ```bash
    just setup
    ```
 
 2. **Validate environment regularly**
+
    ```bash
    just test-env     # Full validation
    just verify-node  # Node version check
    ```
 
 3. **Use mise for version management**
+
    ```bash
    mise install     # Install all runtimes
    mise use node@20 # Switch Node version
@@ -471,16 +515,19 @@ just verify-node
 ### For CI/CD
 
 1. **Install mise first**
+
    ```yaml
    - uses: jdx/mise-action@v2
    ```
 
 2. **Run environment tests**
+
    ```yaml
    - run: just test-env
    ```
 
 3. **Verify Node alignment**
+
    ```yaml
    - run: just verify-node
    ```
@@ -522,16 +569,19 @@ just verify-node
 ### Potential Phase 7+
 
 1. **Docker Integration**
+
    - Containerized development environment
    - Docker Compose for local services
    - CI container caching
 
 2. **Performance Monitoring**
+
    - Track setup time metrics
    - Monitor test execution time
    - Optimize slow tasks
 
 3. **Cross-Platform Testing**
+
    - Windows support validation
    - Linux distro matrix
    - macOS version matrix

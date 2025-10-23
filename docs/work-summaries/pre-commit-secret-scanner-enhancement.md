@@ -25,6 +25,7 @@ The original implementation had several critical weaknesses:
 Implemented a three-tier detection strategy:
 
 #### Tier 1: Gitleaks (Primary)
+
 - Industry-standard secret scanner
 - Detects 100+ secret types
 - Uses entropy analysis and pattern matching
@@ -32,6 +33,7 @@ Implemented a three-tier detection strategy:
 - Auto-detects if installed
 
 #### Tier 2: detect-secrets (Secondary)
+
 - Python-based secret scanner from Yelp
 - Scans staged files only
 - Uses baseline methodology
@@ -39,15 +41,18 @@ Implemented a three-tier detection strategy:
 - Falls back if gitleaks not available
 
 #### Tier 3: Enhanced Heuristics (Fallback)
+
 When no dedicated scanner is available, uses improved regex patterns:
 
 **Patterns Detected**:
+
 - Quoted assignments: `key="value"` or `key='value'`
 - JSON style: `"key": "value"`
 - YAML style: `key: value`
 - Unquoted assignments: `key=value`
 
 **Sensitive Keys**:
+
 - `api_key`, `api-key`
 - `secret_key`, `secret-key`
 - `password`
@@ -60,11 +65,13 @@ When no dedicated scanner is available, uses improved regex patterns:
 
 **False Positive Filtering**:
 Excludes common non-secret patterns:
+
 - `example`, `sample`, `test`, `dummy`, `placeholder`
 - `your_`, `<`, `>`, `${`, `{{`
 - `TODO`, `FIXME`, `xxx+`
 
 **Improvements over original**:
+
 - ✅ Detects JSON/YAML formats
 - ✅ Detects unquoted assignments
 - ✅ No minimum length requirement (more flexible)
@@ -105,6 +112,7 @@ The hook now provides helpful installation instructions when dedicated scanners 
 **Change Type**: Enhancement
 
 **Benefits**:
+
 - ✅ Significantly reduces false negatives
 - ✅ Industry-standard detection when available
 - ✅ Better coverage of secret formats (JSON/YAML/unquoted)
@@ -112,6 +120,7 @@ The hook now provides helpful installation instructions when dedicated scanners 
 - ✅ Encourages installation of professional tools
 
 **Mitigation**:
+
 - Maintains backward compatibility
 - Provides clear error messages
 - Includes bypass instructions (emergency use only)
@@ -126,6 +135,7 @@ The hook now provides helpful installation instructions when dedicated scanners 
 ## Future Enhancements
 
 Consider adding:
+
 1. Configuration file (`.gitleaks.toml` or `.secrets.baseline`) for customization
 2. Integration with CI/CD pipeline for double-check
 3. Pre-push hook for additional safety layer

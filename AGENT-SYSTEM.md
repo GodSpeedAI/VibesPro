@@ -54,12 +54,12 @@ A **semantic routing network** of AGENT.md files throughout the project that pro
 
 ## Integration with Existing System
 
-| File | Role | Authority Level |
-|------|------|----------------|
-| `.github/copilot-instructions.md` | Master guidance | **Supreme** |
-| `.github/instructions/*.md` | Modular rules (MECE) | **High** |
-| `AGENT-MAP.md` | Navigation hub | Reference |
-| `*/AGENT.md` | Local context | **Local** |
+| File                              | Role                 | Authority Level |
+| --------------------------------- | -------------------- | --------------- |
+| `.github/copilot-instructions.md` | Master guidance      | **Supreme**     |
+| `.github/instructions/*.md`       | Modular rules (MECE) | **High**        |
+| `AGENT-MAP.md`                    | Navigation hub       | Reference       |
+| `*/AGENT.md`                      | Local context        | **Local**       |
 
 **Note**: copilot-instructions.md remains the supreme authority. AGENT.md files provide complementary local context.
 
@@ -97,18 +97,18 @@ New Task → AGENT-MAP.md → Relevant AGENT.md → Local Conventions + Examples
 Each AGENT.md follows this structure:
 
 ```markdown
-📍 Context              (Purpose and when to use)
-🔗 Parent Context       (Link to parent/navigation)
-🎯 Local Scope          (What this directory handles)
+📍 Context (Purpose and when to use)
+🔗 Parent Context (Link to parent/navigation)
+🎯 Local Scope (What this directory handles)
 📁 Key Files & Patterns (Directory structure, naming)
-🧭 Routing Rules        (When to use vs refer elsewhere)
-🔧 Local Conventions    (Specific guidelines)
+🧭 Routing Rules (When to use vs refer elsewhere)
+🔧 Local Conventions (Specific guidelines)
 📚 Related Instructions (Modular instructions that apply)
-💡 Examples             (Real-world patterns)
-✅ Checklist            (Before/after actions)
-🔍 Quick Reference      (Commands, concepts)
-🛡️ Security            (Security considerations)
-🔄 Maintenance          (When to update)
+💡 Examples (Real-world patterns)
+✅ Checklist (Before/after actions)
+🔍 Quick Reference (Commands, concepts)
+🛡️ Security (Security considerations)
+🔄 Maintenance (When to update)
 ```
 
 ## Commands
@@ -130,6 +130,7 @@ just validate-agent-files  # TODO: Add to justfile
 ## Maintenance
 
 **When to update AGENT.md:**
+
 - New patterns emerge in the directory
 - Conventions change
 - Examples become outdated
@@ -137,6 +138,7 @@ just validate-agent-files  # TODO: Add to justfile
 - Security best practices evolve
 
 **How to update:**
+
 1. Edit relevant AGENT.md file
 2. Update cross-references if structure changes
 3. Validate links still work
@@ -152,6 +154,7 @@ just validate-agent-files  # TODO: Add to justfile
 ## Feedback
 
 This is a living system. If you find:
+
 - Missing contexts that would be valuable
 - Outdated information
 - Unclear routing logic

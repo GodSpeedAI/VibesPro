@@ -6,9 +6,11 @@
 ## Commits Pushed
 
 ### 1. Main Feature (9e47189)
+
 **Message**: `feat(template): comprehensive copilot instructions with intelligent customization & onboarding`
 
 **Changes**:
+
 - ✨ Created comprehensive copilot-instructions.md template (80 → 600+ lines)
 - 🤖 Implemented audit-first customization prompt
 - 💬 Created interactive customization chatmode
@@ -17,6 +19,7 @@
 - 📖 Complete documentation suite (5 docs)
 
 **Files**:
+
 - NEW: `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
 - NEW: `templates/{{project_slug}}/.github/chatmodes/meta.customize-instructions.chatmode.md`
 - NEW: `docs/workdocs/copilot-instructions-template-enhancement.md`
@@ -29,14 +32,17 @@
 - MODIFIED: `templates/{{project_slug}}/justfile.j2`
 
 ### 2. Documentation Reorganization (5f94cc1)
+
 **Message**: `chore(docs): reorganize documentation into workdocs folder`
 
 **Changes**:
+
 - 📁 Moved 8 working documents to `docs/workdocs/`
 - 🗑️ Deleted obsolete `vibelog.txt`
 - 🧹 Cleaned up root `docs/` for user-facing documentation
 
 **Files Moved**:
+
 - `API-REFERENCE.md`
 - `ARCHITECTURE.md`
 - `DATABASE-ALTERNATIVES-ANALYSIS.md`
@@ -49,10 +55,12 @@
 ## Key Innovations
 
 ### 1. Audit-First Customization (60-70% Question Reduction)
+
 **Before**: AI asks ~10 questions about project setup  
 **After**: AI auto-detects from files, asks only 2-5 gap questions
 
 **Auto-Detection Sources**:
+
 - `.copier-answers.yml` → project_name, project_slug
 - `package.json` → framework (Next.js, React, Vue)
 - `pyproject.toml` → Python tools (FastAPI, Django)
@@ -60,7 +68,9 @@
 - Directory scan → architecture patterns
 
 ### 2. Flipped Interaction Pattern
+
 **Conversational customization flow**:
+
 1. Silent audit (read project files)
 2. Present findings to user
 3. Ask targeted questions for gaps
@@ -68,7 +78,9 @@
 5. Update copilot-instructions.md
 
 ### 3. Interactive Onboarding
+
 **User-driven exploration**:
+
 - "Show me available recipes" → Lists just recipes with when/why
 - "What chatmodes exist?" → Explains TDD, debug, customization modes
 - "Tell me about prompts" → Describes task-specific prompts
@@ -78,20 +90,21 @@
 
 The following workflows will run automatically:
 
-| Workflow | Purpose | Expected |
-|----------|---------|----------|
-| **ci.yml** | Main CI pipeline | ✅ Pass |
-| **markdownlint.yml** | Markdown linting | ✅ Pass |
-| **node-tests.yml** | Node.js test suite | ✅ Pass |
-| **spec-guard.yml** | Spec validation | ✅ Pass |
-| **integration-tests.yml** | Integration tests | ✅ Pass |
-| **generation-smoke-tests.yml** | Template generation | ✅ Pass |
-| **docs-generator.yml** | Documentation build | ✅ Pass |
-| **security-scan.yml** | Security checks | ✅ Pass |
+| Workflow                       | Purpose             | Expected |
+| ------------------------------ | ------------------- | -------- |
+| **ci.yml**                     | Main CI pipeline    | ✅ Pass  |
+| **markdownlint.yml**           | Markdown linting    | ✅ Pass  |
+| **node-tests.yml**             | Node.js test suite  | ✅ Pass  |
+| **spec-guard.yml**             | Spec validation     | ✅ Pass  |
+| **integration-tests.yml**      | Integration tests   | ✅ Pass  |
+| **generation-smoke-tests.yml** | Template generation | ✅ Pass  |
+| **docs-generator.yml**         | Documentation build | ✅ Pass  |
+| **security-scan.yml**          | Security checks     | ✅ Pass  |
 
 ## Merge Strategy
 
 Since we committed directly to `main`:
+
 - ✅ Commits are already on main branch
 - ✅ No PR needed
 - ⏳ Waiting for CI to pass
@@ -101,6 +114,7 @@ Since we committed directly to `main`:
 ## Monitoring CI
 
 **Check CI status**:
+
 ```bash
 # Via GitHub CLI (if authenticated)
 gh run list --limit 5 --branch main
@@ -143,9 +157,11 @@ git push origin main
 ## Usage Examples
 
 ### For Template Maintainers
+
 No action needed - template is already enhanced.
 
 ### For Generated Project Users
+
 After generating a new project:
 
 ```bash
@@ -162,12 +178,14 @@ just customize-instructions
 ## Impact
 
 **Before This Update**:
+
 - Template copilot-instructions: 80 lines, outdated
 - No customization mechanism
 - No interactive onboarding
 - Users had to manually update instructions
 
 **After This Update**:
+
 - Template copilot-instructions: 600+ lines, comprehensive
 - Intelligent audit-first customization
 - Interactive onboarding with walkthroughs

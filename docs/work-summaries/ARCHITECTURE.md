@@ -27,14 +27,12 @@ graph TD
 
 ### Bounded Contexts
 
-
 #### Core Domain
 
 - **Entities**: Core business objects with identity
 - **Value Objects**: Immutable data structures
 - **Domain Services**: Complex business operations
 - **Repository Interfaces**: Data access abstractions
-
 
 #### User Domain
 
@@ -43,14 +41,12 @@ graph TD
 - **Domain Services**: Complex business operations
 - **Repository Interfaces**: Data access abstractions
 
-
 #### Billing Domain
 
 - **Entities**: Core business objects with identity
 - **Value Objects**: Immutable data structures
 - **Domain Services**: Complex business operations
 - **Repository Interfaces**: Data access abstractions
-
 
 ## Layer Structure
 

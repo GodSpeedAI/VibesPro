@@ -15,6 +15,7 @@ Implement Phase 0 of the environment setup roadmap: establish test harness, fixt
 Created a lightweight, portable test framework for validating environment setup:
 
 **Files Created:**
+
 - `tests/env/README.md` – Documentation for the test harness
 - `tests/env/helpers.sh` – Reusable shell helpers (assertions, temp dirs)
 - `tests/env/run.sh` – Test discovery and execution runner
@@ -24,6 +25,7 @@ Created a lightweight, portable test framework for validating environment setup:
 - `tests/env/test_harness.sh` – Validates test discovery mechanism
 
 **Key Features:**
+
 - Automatic test discovery (finds `test_*.sh` files)
 - Portable shell helpers for common assertions
 - Fail-fast execution (stops on first error)
@@ -35,11 +37,13 @@ Created a lightweight, portable test framework for validating environment setup:
 Created `scripts/doctor.sh` to provide quick environment health checks:
 
 **What It Reports:**
+
 - Current user and OS information
 - Shell and PATH configuration (first 6 entries)
 - Tool availability and versions (git, node, pnpm, python, rust, cargo, uv, etc.)
 
 **Security Features:**
+
 - Intentionally avoids printing environment variables
 - Never echoes secrets or sensitive configuration
 - Safe to run in any environment
@@ -49,10 +53,12 @@ Created `scripts/doctor.sh` to provide quick environment health checks:
 Created `.githooks/pre-commit` to prevent secret leakage:
 
 **Protection Against:**
+
 - Committing plaintext `.env` or `.env.local` files
 - Committing content with common secret patterns (API keys, tokens, passwords)
 
 **Allows:**
+
 - Encrypted secrets (`.secrets.env.sops`)
 - Environment variable references
 - Bypass with `git commit --no-verify` (with warning)
@@ -113,6 +119,7 @@ Sanity OK
 ### New Files (10 total)
 
 **Test Infrastructure:**
+
 - `tests/env/README.md`
 - `tests/env/helpers.sh`
 - `tests/env/run.sh`
@@ -122,12 +129,15 @@ Sanity OK
 - `tests/env/test_harness.sh`
 
 **Scripts:**
+
 - `scripts/doctor.sh`
 
 **Git Hooks:**
+
 - `.githooks/pre-commit`
 
 **Documentation:**
+
 - `docs/ENVIRONMENT.md`
 
 ### Modified Files (2 total)
@@ -188,6 +198,7 @@ This implementation fulfills Phase 0 requirements from `docs/tmp/devenv.md`:
 - ✅ **0.3** Added pre-commit secret leak guard
 
 Maps to specifications:
+
 - **PRD-011..016** (Environment setup strategy)
 - **DEV-SPEC-006** (CI posture and security)
 - **DEV-SPEC-008** (Testing strategy)
@@ -197,29 +208,35 @@ Maps to specifications:
 The foundation is complete. Next phases can now add:
 
 ### Phase 1 – Devbox Integration
+
 - Create `devbox.json`
 - Add `tests/env/test_devbox.sh`
 - Document devbox usage
 
 ### Phase 2 – mise Runtime Management
+
 - Create `.mise.toml`
 - Add `tests/env/test_mise_versions.sh`
 - Remove `.python-version` (mise becomes authoritative)
 
 ### Phase 3 – SOPS Secrets
+
 - Create `.sops.yaml` and `.secrets.env.sops`
 - Add `tests/env/test_sops_local.sh`
 - Document secret rotation
 
 ### Phase 4 – Minimal CI
+
 - Add `.github/workflows/env-check.yml`
 - Add `tests/env/test_ci_minimal.sh`
 
 ### Phase 5 – Volta Coexistence
+
 - Add `tests/env/test_volta_mise_guard.sh`
 - Document deprecation timeline
 
 ### Phase 6 – Just Task Awareness
+
 - Add `tests/env/test_just_tasks.sh`
 - Ensure all tasks work in local + CI
 
@@ -261,6 +278,7 @@ The test harness is production-ready and can be extended with additional tests a
 ---
 
 **Traceability:**
+
 - PRD-011: Devbox as OS boundary (ready for implementation)
 - PRD-012: mise as runtime manager (ready for implementation)
 - PRD-013: SOPS for secrets (infrastructure ready)

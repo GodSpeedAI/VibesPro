@@ -1,16 +1,16 @@
-import { getCategory } from './stack';
+import { getCategory } from "./stack";
 
 export type ServiceDefaults = {
-    language: 'python' | 'typescript';
-    backendFramework: 'fastapi' | 'express' | 'nest' | 'none';
-    packageManager: 'pnpm' | 'npm' | 'yarn';
+  language: "python" | "typescript";
+  backendFramework: "fastapi" | "express" | "nest" | "none";
+  packageManager: "pnpm" | "npm" | "yarn";
 };
 
-const frameworkToLanguage: Record<string, ServiceDefaults['language']> = {
-    express: 'typescript',
-    nest: 'typescript',
-    '@nestjs': 'typescript',
-    fastapi: 'python',
+const frameworkToLanguage: Record<string, ServiceDefaults["language"]> = {
+  express: "typescript",
+  nest: "typescript",
+  "@nestjs": "typescript",
+  fastapi: "python",
 };
 
 /**
@@ -18,27 +18,27 @@ const frameworkToLanguage: Record<string, ServiceDefaults['language']> = {
  * Pure function; safe to use in dry-runs and planning.
  */
 export function deriveServiceDefaults(stack: unknown | null): ServiceDefaults {
-    const defaults: ServiceDefaults = {
-        language: 'python',
-        backendFramework: 'none',
-        packageManager: 'pnpm',
-    };
+  const defaults: ServiceDefaults = {
+    language: "python",
+    backendFramework: "none",
+    packageManager: "pnpm",
+  };
 
-    const core = getCategory(stack, 'core_application_dependencies');
-    if (core && typeof core === 'object') {
-        const coreRec = core as Record<string, unknown>;
-        const webFrameworks = coreRec['web_frameworks'];
-        if (Array.isArray(webFrameworks)) {
-            const lower = webFrameworks.map(String).map((s) => s.toLowerCase());
-            for (const fw of lower) {
-                if (frameworkToLanguage[fw]) {
-                    defaults.backendFramework = fw as ServiceDefaults['backendFramework'];
-                    defaults.language = frameworkToLanguage[fw];
-                    break; // First match wins
-                }
-            }
+  const core = getCategory(stack, "core_application_dependencies");
+  if (core && typeof core === "object") {
+    const coreRec = core as Record<string, unknown>;
+    const webFrameworks = coreRec["web_frameworks"];
+    if (Array.isArray(webFrameworks)) {
+      const lower = webFrameworks.map(String).map((s) => s.toLowerCase());
+      for (const fw of lower) {
+        if (frameworkToLanguage[fw]) {
+          defaults.backendFramework = fw as ServiceDefaults["backendFramework"];
+          defaults.language = frameworkToLanguage[fw];
+          break; // First match wins
         }
+      }
     }
+  }
 
-    return defaults;
+  return defaults;
 }

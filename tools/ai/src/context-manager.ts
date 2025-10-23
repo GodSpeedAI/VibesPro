@@ -1,48 +1,48 @@
 const STOP_WORDS = new Set([
-  'the',
-  'a',
-  'an',
-  'and',
-  'or',
-  'with',
-  'for',
-  'from',
-  'into',
-  'onto',
-  'about',
-  'without',
-  'to',
-  'of',
-  'in',
-  'on',
-  'by',
-  'is',
-  'are',
-  'be',
-  'create',
-  'build',
-  'make'
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "with",
+  "for",
+  "from",
+  "into",
+  "onto",
+  "about",
+  "without",
+  "to",
+  "of",
+  "in",
+  "on",
+  "by",
+  "is",
+  "are",
+  "be",
+  "create",
+  "build",
+  "make",
 ]);
 
 const DOMAIN_GLOSSARY: Record<string, string> = {
-  account: 'user',
-  accounts: 'user',
-  billing: 'billing',
-  customer: 'user',
-  customers: 'user',
-  event: 'events',
-  events: 'events',
-  inventory: 'inventory',
-  order: 'order',
-  orders: 'order',
-  payment: 'billing',
-  payments: 'billing',
-  project: 'project',
-  projects: 'project',
-  specification: 'specifications',
-  specs: 'specifications',
-  user: 'user',
-  users: 'user'
+  account: "user",
+  accounts: "user",
+  billing: "billing",
+  customer: "user",
+  customers: "user",
+  event: "events",
+  events: "events",
+  inventory: "inventory",
+  order: "order",
+  orders: "order",
+  payment: "billing",
+  payments: "billing",
+  project: "project",
+  projects: "project",
+  specification: "specifications",
+  specs: "specifications",
+  user: "user",
+  users: "user",
 };
 
 const MIN_SCORE_THRESHOLD = 0.6;
@@ -58,8 +58,13 @@ export interface AIContextManagerWeights {
 
 interface TaskAnalysis {
   readonly keywords: readonly string[];
-  readonly taskType: 'implementation' | 'analysis' | 'testing' | 'refactor' | 'documentation';
-  readonly complexity: 'low' | 'medium' | 'high';
+  readonly taskType:
+    | "implementation"
+    | "analysis"
+    | "testing"
+    | "refactor"
+    | "documentation";
+  readonly complexity: "low" | "medium" | "high";
   readonly domains: readonly string[];
   readonly requiredPatterns: readonly string[];
 }
@@ -108,7 +113,7 @@ class SimpleTokenizer {
 
   trim(text: string, maxTokens: number): { content: string; tokens: number } {
     if (maxTokens <= 0) {
-      return { content: '', tokens: 0 };
+      return { content: "", tokens: 0 };
     }
 
     const tokens = this.tokenize(text);
@@ -118,8 +123,8 @@ class SimpleTokenizer {
 
     const trimmedTokens = tokens.slice(0, maxTokens);
     return {
-      content: trimmedTokens.join(' '),
-      tokens: trimmedTokens.length
+      content: trimmedTokens.join(" "),
+      tokens: trimmedTokens.length,
     };
   }
 }
@@ -177,11 +182,11 @@ export class AIContextManager {
 
   constructor(config: AIContextManagerConfig) {
     if (config.maxTokens <= 0) {
-      throw new Error('maxTokens must be greater than zero');
+      throw new Error("maxTokens must be greater than zero");
     }
 
     if (config.reservedTokens && config.reservedTokens >= config.maxTokens) {
-      throw new Error('reservedTokens must be less than maxTokens');
+      throw new Error("reservedTokens must be less than maxTokens");
     }
 
     this.maxTokens = config.maxTokens;
@@ -200,7 +205,7 @@ export class AIContextManager {
 
     this.weights = {
       ...defaultWeights,
-      ...config.weights
+      ...config.weights,
     };
 
     // Validate weights
@@ -210,7 +215,7 @@ export class AIContextManager {
   registerSource(source: ContextSource): void {
     this.sources.set(source.id, {
       ...source,
-      priority: this.normalizePriority(source.priority)
+      priority: this.normalizePriority(source.priority),
     });
     this.clearCache();
   }
@@ -241,7 +246,7 @@ export class AIContextManager {
     if (cached) {
       return {
         ...cached,
-        fromCache: true
+        fromCache: true,
       };
     }
 
@@ -258,7 +263,7 @@ export class AIContextManager {
       tokens: entry.tokens,
       confidence: entry.source.patternConfidence,
       provenance: entry.source.provenance,
-      performanceDelta: entry.source.performanceDelta
+      performanceDelta: entry.source.performanceDelta,
     }));
 
     const result: ContextSelectionResult = {
@@ -266,7 +271,7 @@ export class AIContextManager {
       tokenCount,
       relevanceScore: Number(relevanceScore.toFixed(4)),
       sources: normalizedSources,
-      fromCache: false
+      fromCache: false,
     };
 
     this.storeInCache(cacheKey, result);
@@ -282,40 +287,50 @@ export class AIContextManager {
       taskType: this.classifyTask(uniqueTokens),
       complexity: this.assessComplexity(tokens.length),
       domains: this.extractDomains(uniqueTokens),
-      requiredPatterns: this.identifyPatterns(uniqueTokens)
+      requiredPatterns: this.identifyPatterns(uniqueTokens),
     };
   }
 
-  private classifyTask(keywords: readonly string[]): TaskAnalysis['taskType'] {
-    if (keywords.some((token) => token.includes('test') || token.includes('validate'))) {
-      return 'testing';
+  private classifyTask(keywords: readonly string[]): TaskAnalysis["taskType"] {
+    if (
+      keywords.some(
+        (token) => token.includes("test") || token.includes("validate"),
+      )
+    ) {
+      return "testing";
     }
 
-    if (keywords.some((token) => token.includes('refactor'))) {
-      return 'refactor';
+    if (keywords.some((token) => token.includes("refactor"))) {
+      return "refactor";
     }
 
-    if (keywords.some((token) => token.includes('doc') || token.includes('write'))) {
-      return 'documentation';
+    if (
+      keywords.some((token) => token.includes("doc") || token.includes("write"))
+    ) {
+      return "documentation";
     }
 
-    if (keywords.some((token) => token.includes('analyse') || token.includes('analyze'))) {
-      return 'analysis';
+    if (
+      keywords.some(
+        (token) => token.includes("analyse") || token.includes("analyze"),
+      )
+    ) {
+      return "analysis";
     }
 
-    return 'implementation';
+    return "implementation";
   }
 
-  private assessComplexity(tokenCount: number): TaskAnalysis['complexity'] {
+  private assessComplexity(tokenCount: number): TaskAnalysis["complexity"] {
     if (tokenCount <= 8) {
-      return 'low';
+      return "low";
     }
 
     if (tokenCount <= 20) {
-      return 'medium';
+      return "medium";
     }
 
-    return 'high';
+    return "high";
   }
 
   private extractDomains(keywords: readonly string[]): string[] {
@@ -335,23 +350,23 @@ export class AIContextManager {
     const patterns = new Set<string>();
 
     const keywordSet = new Set(keywords);
-    if (keywordSet.has('entity')) {
-      patterns.add('entity');
+    if (keywordSet.has("entity")) {
+      patterns.add("entity");
     }
-    if (keywordSet.has('value') && keywordSet.has('object')) {
-      patterns.add('value-object');
+    if (keywordSet.has("value") && keywordSet.has("object")) {
+      patterns.add("value-object");
     }
-    if (keywordSet.has('event') || keywordSet.has('events')) {
-      patterns.add('domain-event');
+    if (keywordSet.has("event") || keywordSet.has("events")) {
+      patterns.add("domain-event");
     }
-    if (keywordSet.has('port') || keywordSet.has('adapter')) {
-      patterns.add('port-adapter');
+    if (keywordSet.has("port") || keywordSet.has("adapter")) {
+      patterns.add("port-adapter");
     }
-    if (keywordSet.has('aggregate')) {
-      patterns.add('aggregate');
+    if (keywordSet.has("aggregate")) {
+      patterns.add("aggregate");
     }
-    if (keywordSet.has('use') && keywordSet.has('case')) {
-      patterns.add('use-case');
+    if (keywordSet.has("use") && keywordSet.has("case")) {
+      patterns.add("use-case");
     }
 
     return Array.from(patterns);
@@ -361,7 +376,7 @@ export class AIContextManager {
     const ranked: RankedSource[] = [];
 
     for (const source of this.sources.values()) {
-      const rawContent = (await source.getContent())?.trim() ?? '';
+      const rawContent = (await source.getContent())?.trim() ?? "";
       if (!rawContent) {
         continue;
       }
@@ -378,19 +393,23 @@ export class AIContextManager {
         success * this.weights.success +
         source.priority * this.weights.priority +
         patternConfidence * this.weights.patternConfidence;
-      const score = this.clamp(weightedScore - performancePenalty * this.weights.performance, 0, 1);
+      const score = this.clamp(
+        weightedScore - performancePenalty * this.weights.performance,
+        0,
+        1,
+      );
 
       ranked.push({
         source,
         score,
         tokens,
-        content: rawContent
+        content: rawContent,
       });
 
       this.metrics.set(source.id, {
         tokenCost: tokens,
         score,
-        confidence: patternConfidence
+        confidence: patternConfidence,
       });
     }
 
@@ -420,7 +439,7 @@ export class AIContextManager {
           selected.push({
             ...entry,
             content: compressed.content,
-            tokens: compressed.tokens
+            tokens: compressed.tokens,
           });
           remainingTokens -= compressed.tokens;
         }
@@ -429,15 +448,18 @@ export class AIContextManager {
 
     if (selected.length === 0 && ranked.length > 0) {
       const best = ranked[0];
-      const capped = best.tokens <= availableTokens ? best : {
-        ...best,
-        ...this.tokenizer.trim(best.content, availableTokens)
-      };
+      const capped =
+        best.tokens <= availableTokens
+          ? best
+          : {
+              ...best,
+              ...this.tokenizer.trim(best.content, availableTokens),
+            };
 
       selected.push({
         ...best,
         content: capped.content,
-        tokens: capped.tokens
+        tokens: capped.tokens,
       });
     }
 
@@ -446,17 +468,19 @@ export class AIContextManager {
 
   private composeContext(selected: SelectedSource[]): string {
     if (selected.length === 0) {
-      return '';
+      return "";
     }
 
     const sections = selected.map((entry) => {
       const header = `### Source: ${entry.source.id}`;
       const metadata = this.composeSourceMetadata(entry);
-      const body = metadata ? `${metadata}\n${entry.content.trim()}` : entry.content.trim();
+      const body = metadata
+        ? `${metadata}\n${entry.content.trim()}`
+        : entry.content.trim();
       return `${header}\n${body}`;
     });
 
-    return sections.join('\n\n');
+    return sections.join("\n\n");
   }
 
   private calculateAggregateScore(selected: SelectedSource[]): number {
@@ -464,36 +488,64 @@ export class AIContextManager {
       return 0;
     }
 
-    const totalTokens = selected.reduce((accumulator, entry) => accumulator + entry.tokens, 0);
+    const totalTokens = selected.reduce(
+      (accumulator, entry) => accumulator + entry.tokens,
+      0,
+    );
     if (totalTokens === 0) {
       return 0;
     }
 
-    const weightedScore = selected.reduce((accumulator, entry) => accumulator + entry.score * entry.tokens, 0);
+    const weightedScore = selected.reduce(
+      (accumulator, entry) => accumulator + entry.score * entry.tokens,
+      0,
+    );
     return weightedScore / totalTokens;
   }
 
-  private calculateRelevance(source: ContextSource, analysis: TaskAnalysis, content: string): number {
+  private calculateRelevance(
+    source: ContextSource,
+    analysis: TaskAnalysis,
+    content: string,
+  ): number {
     const keywords = new Set([
       ...analysis.keywords,
       ...analysis.domains,
-      ...analysis.requiredPatterns
+      ...analysis.requiredPatterns,
     ]);
 
     const normalizedTags = this.expandTags(source.tags);
     const tagMatches = normalizedTags.filter((tag) => keywords.has(tag));
-    const tagCoverage = normalizedTags.length === 0 ? 0.4 : tagMatches.length / normalizedTags.length;
+    const tagCoverage =
+      normalizedTags.length === 0
+        ? 0.4
+        : tagMatches.length / normalizedTags.length;
 
     const contentTokens = new Set(this.tokenizer.tokenize(content));
-    const contentMatches = Array.from(contentTokens).filter((token) => keywords.has(token)).length;
+    const contentMatches = Array.from(contentTokens).filter((token) =>
+      keywords.has(token),
+    ).length;
     const keywordBaseline = keywords.size === 0 ? 1 : keywords.size;
     const contentScore = Math.min(1, contentMatches / keywordBaseline);
 
-    const domainAffinity = analysis.domains.some((domain) => normalizedTags.includes(domain)) ? 0.1 : 0;
-    const patternAffinity = analysis.requiredPatterns.filter((pattern) => normalizedTags.includes(pattern)).length > 0 ? 0.05 : 0;
+    const domainAffinity = analysis.domains.some((domain) =>
+      normalizedTags.includes(domain),
+    )
+      ? 0.1
+      : 0;
+    const patternAffinity =
+      analysis.requiredPatterns.filter((pattern) =>
+        normalizedTags.includes(pattern),
+      ).length > 0
+        ? 0.05
+        : 0;
 
-    let base = tagCoverage * 0.7 + contentScore * 0.3 + domainAffinity + patternAffinity;
-    if (normalizedTags.length > 0 && tagMatches.length === normalizedTags.length) {
+    let base =
+      tagCoverage * 0.7 + contentScore * 0.3 + domainAffinity + patternAffinity;
+    if (
+      normalizedTags.length > 0 &&
+      tagMatches.length === normalizedTags.length
+    ) {
       base += 0.15;
     }
 
@@ -573,14 +625,18 @@ export class AIContextManager {
     // Check that all weights are positive numbers
     for (const [key, value] of Object.entries(weights)) {
       if (!Number.isFinite(value) || value < 0) {
-        throw new Error(`Weight for ${key} must be a non-negative number, got ${value}`);
+        throw new Error(
+          `Weight for ${key} must be a non-negative number, got ${value}`,
+        );
       }
     }
 
     // Check that weights sum to approximately 1.0 (with some tolerance for floating point errors)
     const sum = Object.values(weights).reduce((acc, val) => acc + val, 0);
     if (Math.abs(sum - 1.0) > 0.001) {
-      throw new Error(`Weights must sum to 1.0, current sum is ${sum.toFixed(4)}`);
+      throw new Error(
+        `Weights must sum to 1.0, current sum is ${sum.toFixed(4)}`,
+      );
     }
   }
 
@@ -592,13 +648,17 @@ export class AIContextManager {
     const fingerprint = Array.from(this.sources.values())
       .sort((a, b) => a.id.localeCompare(b.id))
       .map((source) => {
-        const lastUpdated = source.lastUpdated ? source.lastUpdated.getTime() : 0;
+        const lastUpdated = source.lastUpdated
+          ? source.lastUpdated.getTime()
+          : 0;
         const success = source.successRate ?? 0;
         const confidence = source.patternConfidence ?? 0.5;
         const performance = source.performanceDelta ?? 0;
-        return `${source.id}:${lastUpdated}:${success.toFixed(4)}:${confidence.toFixed(4)}:${performance.toFixed(4)}`;
+        return `${source.id}:${lastUpdated}:${success.toFixed(
+          4,
+        )}:${confidence.toFixed(4)}:${performance.toFixed(4)}`;
       })
-      .join('|');
+      .join("|");
 
     return `${task.toLowerCase().trim()}::${fingerprint}`;
   }
@@ -615,7 +675,7 @@ export class AIContextManager {
       content: result.content,
       tokenCount: result.tokenCount,
       relevanceScore: result.relevanceScore,
-      sources: result.sources
+      sources: result.sources,
     };
 
     this.cache.set(cacheKey, snapshot);
@@ -628,15 +688,26 @@ export class AIContextManager {
       fragments.push(`Provenance: ${entry.source.provenance}`);
     }
     if (entry.source.patternConfidence !== undefined) {
-      fragments.push(`Confidence: ${(entry.source.patternConfidence * 100).toFixed(1)}%`);
+      fragments.push(
+        `Confidence: ${(entry.source.patternConfidence * 100).toFixed(1)}%`,
+      );
     }
     if (entry.source.successRate !== undefined) {
-      fragments.push(`Success Rate: ${(entry.source.successRate * 100).toFixed(1)}%`);
+      fragments.push(
+        `Success Rate: ${(entry.source.successRate * 100).toFixed(1)}%`,
+      );
     }
-    if (entry.source.performanceDelta !== undefined && entry.source.performanceDelta > 0) {
-      fragments.push(`Performance Delta: ${(entry.source.performanceDelta * 100).toFixed(1)}%`);
+    if (
+      entry.source.performanceDelta !== undefined &&
+      entry.source.performanceDelta > 0
+    ) {
+      fragments.push(
+        `Performance Delta: ${(entry.source.performanceDelta * 100).toFixed(
+          1,
+        )}%`,
+      );
     }
 
-    return fragments.length > 0 ? fragments.join(' | ') : null;
+    return fragments.length > 0 ? fragments.join(" | ") : null;
   }
 }

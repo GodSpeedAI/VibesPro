@@ -1,23 +1,23 @@
 {
-    "name": "@vibepro/node-logging",
-    "version": "0.1.0",
-    "description": "Structured JSON logging with trace correlation for VibePro Node applications",
-    "main": "logger.js",
-    "type": "commonjs",
-    "scripts": {
-        "test": "node test.js"
-    },
-    "keywords": [
-        "logging",
-        "structured",
-        "tracing",
-        "observability",
-        "pino"
-    ],
-    "author": "VibePro",
-    "license": "MIT",
-    "dependencies": {
-        "pino": "^8.0.0"
-    },
-    "devDependencies": {}
+  "name": "@vibepro/node-logging",
+  "version": "0.1.0",
+  "description": "Structured JSON logging with trace correlation for VibePro Node applications",
+  "main": "logger.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "logging",
+    "structured",
+    "tracing",
+    "observability",
+    "pino"
+  ],
+  "author": "VibePro",
+  "license": "MIT",
+  "dependencies": {
+    "pino": "^8.0.0"
+  },
+  "devDependencies": {}
 }

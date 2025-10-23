@@ -6,6 +6,7 @@ Scope: Design for discoverability, usability, and maintainability
 ---
 
 ## DEV-SDS-001 — Repository layout for discoverability (addresses DEV-PRD-001, DEV-PRD-007)
+
 - Principle: Put the obvious things in obvious places.
 - Design:
   - `.github/copilot-instructions.md` — repo-wide guidance.
@@ -17,6 +18,7 @@ Scope: Design for discoverability, usability, and maintainability
 - DX Effect: Zero-hunt for files; predictable imports; fast onboarding.
 
 ## DEV-SDS-002 — Instruction stacking algorithm (addresses DEV-PRD-002, DEV-PRD-006)
+
 - Contract: Ordered list of instruction files → concatenated with precedence.
 - Rules:
   - Order: repo-wide → mode → prompt; later items may override earlier ones only where documented.
@@ -24,31 +26,38 @@ Scope: Design for discoverability, usability, and maintainability
 - Error modes: Missing file, circular include, token overflow; provide clear messages.
 
 ## DEV-SDS-003 — Persona chat modes (addresses DEV-PRD-003)
+
 - Structure: Frontmatter (name, description, tools, model) + body instructions + synergy section (links to security/perf/style instructions).
 - UX: One-click selection; consistent output format; guidance for handoffs between roles.
 
 ## DEV-SDS-004 — Tasks orchestrator pattern (addresses DEV-PRD-004, DEV-PRD-010)
+
 - Inputs: prompt file, variant flag, target selection (file/folder), metrics toggle.
 - Outputs: logged token/latency; variant label.
 - Behavior: Run prompt, collect metrics, optionally split traffic 50/50 for A/B.
 
 ## DEV-SDS-005 — Security defaults and trust (addresses DEV-PRD-005)
+
 - Defaults: Disable chat.tools.autoApprove; honor workspace trust; prepend safety instructions.
 - Validation: CI job verifies settings.json posture and presence of safety instructions in stacks.
 
 ## DEV-SDS-006 — Prompt-as-code lifecycle (addresses DEV-PRD-007)
+
 - Stages: Edit → Lint → Plan (preview effective prompt) → Run (A/B) → Evaluate → Merge.
 - Artifacts: Lint report, plan diff, metrics dashboard.
 
 ## DEV-SDS-007 — CALM/Wasp/Nx bridging (addresses DEV-PRD-008)
+
 - Contract: Wasp-style spec drives features; CALM defines interfaces/controls; Nx generators output reversible services.
 - Validation: CALM controls run pre-generation; fail fast on violations.
 
 ## DEV-SDS-008 — Declarative-first with hooks (addresses DEV-PRD-009)
+
 - Design: Keep configuration declarative; expose hooks in tasks for retrieval, branching, and post-processing.
 - Guardrails: Limit hook scope and sanitize inputs.
 
 ## DEV-SDS-009 — Evaluation hooks and token budgets (addresses DEV-PRD-010)
+
 - Design: Token/latency logging always on when tasks run; optional quality/safety post-processing.
 - Budgets: Per-mode budgets with warnings and hard caps; configurable thresholds.
 
@@ -84,7 +93,7 @@ Preflight: a just verify:node task checks node --version vs .mise.toml and (if p
 
 Error modes: Partial installs, PATH shadowing (Volta vs mise), missing shims. just doctor prints active versions.
 
-Artifacts: .mise.toml, Justfile targets verify:*, docs updates.
+Artifacts: .mise.toml, Justfile targets verify:\*, docs updates.
 
 ## DEV-SDS-012 — Secrets with SOPS (local & CI) (addresses DEV-PRD-013, DEV-PRD-015)
 
@@ -142,7 +151,7 @@ Cleanup ephemeral files (/tmp/ci.env).
 
 Error modes: Secret failure, cache miss for runtimes, PATH conflicts (Volta). Fail fast with explicit diagnostics.
 
-Artifacts: .github/workflows/* snippets, CI docs.
+Artifacts: .github/workflows/\* snippets, CI docs.
 
 ## DEV-SDS-015 — Volta coexistence & enforcement (addresses DEV-PRD-016)
 
@@ -177,20 +186,22 @@ Artifacts: Chezmoi templates (outside repo), docs pointer only.
 ## DEV-SDS-017 — Rust‑Native Observability Pipeline (Tracing → Vector → OpenObserve)
 
 ### Principle
+
 Observability is native, structured, and AI‑enriched by design — not bolted on. The stack must produce high‑fidelity, low‑overhead telemetry usable for diagnostics, optimization, and AI‑assisted pattern discovery.
 
 ---
 
 ### Design overview
 
-| Layer | Component | Role | Implementation artifacts |
-|---|---:|---|---|
-| Instrumentation | tracing / tracing‑opentelemetry | Emit structured spans, metrics, and logs from Rust services | crates/vibepro-observe/src/lib.rs |
-| Pipeline | Vector | Receive OTLP, sample, redact, enrich | ops/vector/vector.toml |
-| Storage & Analytics | OpenObserve | Columnar unified store + SQL/UI | External service (staging/prod) |
-| Integration | Just + CI | Local run, validation, CI checks | Justfile, .github/workflows/env-check.yml |
+| Layer               |                       Component | Role                                                        | Implementation artifacts                  |
+| ------------------- | ------------------------------: | ----------------------------------------------------------- | ----------------------------------------- |
+| Instrumentation     | tracing / tracing‑opentelemetry | Emit structured spans, metrics, and logs from Rust services | crates/vibepro-observe/src/lib.rs         |
+| Pipeline            |                          Vector | Receive OTLP, sample, redact, enrich                        | ops/vector/vector.toml                    |
+| Storage & Analytics |                     OpenObserve | Columnar unified store + SQL/UI                             | External service (staging/prod)           |
+| Integration         |                       Just + CI | Local run, validation, CI checks                            | Justfile, .github/workflows/env-check.yml |
 
 Architecture (logical flow)
+
 ```
 Rust App (tracing macros, tracing_subscriber, tracing_opentelemetry)
   └─OTLP/gRPC→ Vector (host binary: otel sources, VRL transforms, otlp sink)
@@ -201,13 +212,16 @@ Rust App (tracing macros, tracing_subscriber, tracing_opentelemetry)
 
 ### Design details
 
-1) Instrumentation layer (Rust)
+1. Instrumentation layer (Rust)
+
 - Crates: tracing, tracing-core, tracing-subscriber, tracing-opentelemetry, opentelemetry-otlp, anyhow, once_cell.
 - Public API (example)
+
 ```rust
 pub fn init_tracing(service: &str) -> Result<(), anyhow::Error>;
 pub fn record_metric(key: &str, value: f64);
 ```
+
 - Config (env flags):
   - VIBEPRO_OBSERVE=1
   - OTLP_ENDPOINT=http://127.0.0.1:4317
@@ -215,12 +229,14 @@ pub fn record_metric(key: &str, value: f64);
   - If VIBEPRO_OBSERVE=1 → install OTLP exporter (OTLP/gRPC).
   - Otherwise → default to fmt::Subscriber with JSON stdout.
 
-2) Data pipeline layer (Vector)
+2. Data pipeline layer (Vector)
+
 - Deployment:
   - Install via Devbox/mise (vector binary) or package manager.
   - Run locally: `just observe-start` (Just target).
 - Config path: `ops/vector/vector.toml`
 - Example vector.toml (snippets)
+
 ```toml
 [sources.otel_traces]
 type    = "opentelemetry"
@@ -245,15 +261,18 @@ inputs   = ["redact_email"]
 endpoint = "${OPENOBSERVE_URL}"
 auth     = { strategy = "bearer", token = "${OPENOBSERVE_TOKEN}" }
 ```
+
 - Purpose:
   - Local buffering, sampling, PII redaction, enrichment (app version, host, region).
   - Enforce opt‑in (env var) and host-level controls.
 
-3) Storage & analytics (OpenObserve)
+3. Storage & analytics (OpenObserve)
+
 - Ingestion: standard OTLP/gRPC or OTLP/HTTP (4317/4318).
 - Auth: API token via `.secrets.env.sops` (OPENOBSERVE_TOKEN).
 - Data model: unified schema for logs, metrics, traces; columnar (Parquet) storage for fast analytics.
 - Example query:
+
 ```sql
 SELECT service.name, COUNT(*), AVG(duration_ms)
 FROM traces
@@ -264,6 +283,7 @@ GROUP BY service.name;
 ---
 
 ### Security & compliance
+
 - Secrets: OPENOBSERVE_TOKEN & OPENOBSERVE_URL kept in `.secrets.env.sops` (SOPS).
 - PII redaction: VRL transform in `vector.toml` (runtime enforcement).
 - Opt‑in activation: controlled by VIBEPRO_OBSERVE env var.
@@ -273,6 +293,7 @@ GROUP BY service.name;
 ---
 
 ### Error modes & recovery
+
 - OpenObserve unreachable → retries, memory‑backed buffer, backpressure. Mitigation: Vector retry + buffer config.
 - Invalid VRL transform → Vector refuses to start. Mitigation: `just observe-validate` and CI `vector validate`.
 - Missing token → sink disabled with warning; fallback to JSON stdout.
@@ -281,6 +302,7 @@ GROUP BY service.name;
 ---
 
 ### Artifacts & source control
+
 - Rust instrumentation crate: `crates/vibepro-observe/`
 - Vector config: `ops/vector/vector.toml`
 - Docs: `docs/observability/README.md`, `docs/ENVIRONMENT.md` § 8
@@ -303,6 +325,7 @@ GROUP BY service.name;
 **Implementation Status**: ✅ Complete (All 6 phases finished as of 2025-10-12)
 
 **Feature Flags**:
+
 - Runtime: `VIBEPRO_OBSERVE=1` enables OTLP export
 - Compile-time: `features = ["otlp"]` enables OTLP capability
 - Default: JSON logs only (no network export)
@@ -310,6 +333,7 @@ GROUP BY service.name;
 ---
 
 ### Performance & benchmark goals (targets)
+
 - Trace emission overhead: < 1 µs per span (criterion bench in vibepro-observe)
 - Vector CPU: < 3% per core at 1k spans/s (staging)
 - Data retention: ≥ 90 days (OpenObserve policy)
@@ -319,6 +343,7 @@ GROUP BY service.name;
 ---
 
 ### Implementation dependencies
+
 - Rust crates: tracing, tracing-opentelemetry, opentelemetry-otlp, anyhow, once_cell.
 - System tools: `vector` binary (Devbox/mise).
 - Secrets: OPENOBSERVE_URL, OPENOBSERVE_TOKEN in `.secrets.env.sops`.
@@ -326,6 +351,7 @@ GROUP BY service.name;
 ---
 
 ### Cross-references
+
 - DEV-ADR-016 — Architecture decision for adoption
 - DEV-TDD-OBSERVABILITY.md — Implementation test plan
 - DEV-PRD-017 — Product requirement (to be authored)
@@ -335,6 +361,7 @@ GROUP BY service.name;
 ---
 
 ### Exit criteria
+
 - `cargo test -p vibepro-observe` passes.
 - `vector validate ops/vector/vector.toml` returns 0.
 - `just observe-verify` ingests a sample trace into OpenObserve successfully.
@@ -346,22 +373,24 @@ GROUP BY service.name;
 ## DEV-SDS-018 — Structured Logging with Trace Correlation (Multi-Language)
 
 ### Principle
+
 Logging is structured-first (JSON), trace-aware by default, and consistent across all languages. All logs carry correlation metadata (`trace_id`, `span_id`, `service`, `environment`, `version`) and flow through Vector for PII redaction before storage.
 
 ---
 
 ### Design overview
 
-| Layer | Component | Role | Implementation artifacts |
-|---|---:|---|---|
-| Rust | tracing events | Emit structured log events via `info!()`, `warn!()`, `error!()` | crates/vibepro-observe (already in place) |
-| Node | pino | JSON logger with trace context injection | libs/node-logging/logger.ts |
-| Python | structlog | JSON logger with context binding | libs/python/vibepro_logging.py |
-| Pipeline | Vector | OTLP logs source, PII redaction, enrichment | ops/vector/vector.toml (logs section) |
-| Storage | OpenObserve | Unified log storage with trace correlation | External service (staging/prod) |
-| Validation | Shell tests | Config validation, PII redaction, correlation | tests/ops/test_vector_logs_*.sh |
+| Layer      |      Component | Role                                                            | Implementation artifacts                  |
+| ---------- | -------------: | --------------------------------------------------------------- | ----------------------------------------- |
+| Rust       | tracing events | Emit structured log events via `info!()`, `warn!()`, `error!()` | crates/vibepro-observe (already in place) |
+| Node       |           pino | JSON logger with trace context injection                        | libs/node-logging/logger.ts               |
+| Python     |      structlog | JSON logger with context binding                                | libs/python/vibepro_logging.py            |
+| Pipeline   |         Vector | OTLP logs source, PII redaction, enrichment                     | ops/vector/vector.toml (logs section)     |
+| Storage    |    OpenObserve | Unified log storage with trace correlation                      | External service (staging/prod)           |
+| Validation |    Shell tests | Config validation, PII redaction, correlation                   | tests/ops/test*vector_logs*\*.sh          |
 
 Architecture (logical flow)
+
 ```
 App Code (Rust/Node/Python structured loggers)
   └─JSON to stdout (local) or OTLP (observe-on)
@@ -374,6 +403,7 @@ App Code (Rust/Node/Python structured loggers)
 ### Log schema (mandatory fields)
 
 Every log line MUST include:
+
 ```json
 {
   "timestamp": "2025-10-12T16:00:00.000Z",
@@ -389,6 +419,7 @@ Every log line MUST include:
 ```
 
 **Field definitions:**
+
 - `timestamp`: ISO 8601 with timezone
 - `level`: one of `error`, `warn`, `info`, `debug` (no `trace` level—use spans)
 - `message`: Human-readable description
@@ -404,6 +435,7 @@ Every log line MUST include:
 ### Design details by language
 
 #### 1) Rust (tracing events)
+
 Already implemented via `vibepro-observe`. Use `tracing` events for logs:
 
 ```rust
@@ -423,6 +455,7 @@ error!(category = "app", code = 500, "upstream timeout");
 **Transport:** stdout JSON (default) or OTLP (when `VIBEPRO_OBSERVE=1` + `--features otlp`)
 
 #### 2) Node (pino wrapper)
+
 Create `libs/node-logging/logger.ts`:
 
 ```typescript
@@ -437,7 +470,9 @@ export function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
     },
     messageKey: "message",
     formatters: {
-      level(label) { return { level: label }; },
+      level(label) {
+        return { level: label };
+      },
       log(obj) {
         return {
           trace_id: obj.trace_id,
@@ -445,13 +480,14 @@ export function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
           category: obj.category || "app",
           ...obj,
         };
-      }
-    }
+      },
+    },
   });
 }
 ```
 
 **Usage:**
+
 ```typescript
 import { logger } from "@vibepro/node-logging/logger";
 const log = logger();
@@ -465,6 +501,7 @@ log.error({ category: "app", code: 500 }, "upstream timeout");
 **Transport:** stdout JSON → Vector OTLP logs source or HTTP ingestion
 
 #### 3) Python (structlog wrapper)
+
 Create `libs/python/vibepro_logging.py`:
 
 ```python
@@ -490,6 +527,7 @@ def configure_logger(service=os.getenv("SERVICE_NAME","vibepro-py")):
 ```
 
 **Usage:**
+
 ```python
 from libs.python.vibepro_logging import configure_logger
 log = configure_logger()
@@ -546,11 +584,13 @@ auth     = { strategy = "bearer", token = "${OPENOBSERVE_TOKEN}" }
 ```
 
 **PII redaction rules:**
+
 - `user_email`, `email` → `[REDACTED]`
 - `authorization`, `Authorization` → `[REDACTED]`
 - `password`, `token`, `api_key` → `[REDACTED]`
 
 **Enrichment:**
+
 - `service`: from `SERVICE_NAME` env var
 - `environment`: from `APP_ENV` env var
 - `application_version`: from `APP_VERSION` env var
@@ -560,9 +600,11 @@ auth     = { strategy = "bearer", token = "${OPENOBSERVE_TOKEN}" }
 ### Log levels & categories
 
 **Levels:** `error`, `warn`, `info`, `debug`
+
 - No `trace` level—use tracing spans for operation-level detail
 
 **Categories:**
+
 - `app` (default): Application behavior, business logic
 - `audit`: Compliance/audit trail (longer retention)
 - `security`: Security events (immediate alerting)
@@ -584,6 +626,7 @@ Configured per OpenObserve stream/index based on `category` field.
 ### Testing strategy
 
 #### 1) Vector config validation (`tests/ops/test_vector_logs_config.sh`)
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -597,6 +640,7 @@ echo "✅ Vector logs config valid"
 ```
 
 #### 2) PII redaction test (`tests/ops/test_log_redaction.sh`)
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -618,6 +662,7 @@ echo "✅ PII redaction works"
 ```
 
 #### 3) Trace correlation test (`tests/ops/test_log_trace_correlation.sh`)
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -636,19 +681,24 @@ echo "✅ Log-trace correlation valid"
 ### Quick-start validation tools
 
 #### Node (`tools/logging/test_pino.js`)
-```javascript
-const { logger } = require('../../libs/node-logging/logger');
-const log = logger('test-service');
 
-log.info({
-  trace_id: 'abc123def456',
-  span_id: '789ghi',
-  category: 'app',
-  user_email: 'test@example.com',  // Should be redacted
-}, 'test log message');
+```javascript
+const { logger } = require("../../libs/node-logging/logger");
+const log = logger("test-service");
+
+log.info(
+  {
+    trace_id: "abc123def456",
+    span_id: "789ghi",
+    category: "app",
+    user_email: "test@example.com", // Should be redacted
+  },
+  "test log message",
+);
 ```
 
 #### Python (`tools/logging/test_structlog.py`)
+
 ```python
 import sys
 sys.path.insert(0, 'libs/python')
@@ -667,6 +717,7 @@ log.info(
 ---
 
 ### Security & compliance
+
 - **PII redaction:** Enforced at Vector layer (before storage)
 - **Secrets:** `OPENOBSERVE_TOKEN` stored in `.secrets.env.sops`
 - **Network:** TLS for Vector → OpenObserve connections
@@ -676,6 +727,7 @@ log.info(
 ---
 
 ### Error modes & recovery
+
 - **Missing trace context:** Logs still valid; correlation fields may be empty
 - **Vector unavailable:** Logs continue to stdout; no data loss (just no forwarding)
 - **PII redaction failure:** Vector refuses to start if VRL syntax is invalid
@@ -684,6 +736,7 @@ log.info(
 ---
 
 ### Artifacts & source control
+
 - Rust instrumentation: `crates/vibepro-observe/` (already exists)
 - Node logger: `libs/node-logging/logger.ts` (to be created)
 - Python logger: `libs/python/vibepro_logging.py` (to be created)
@@ -702,6 +755,7 @@ log.info(
 ---
 
 ### Performance targets
+
 - Log emission overhead: < 100 µs per log line
 - Vector CPU: < 2% per core at 1k logs/s
 - PII redaction latency: < 10 µs per log line
@@ -710,6 +764,7 @@ log.info(
 ---
 
 ### Implementation dependencies
+
 - Rust: `tracing` crate (already in use)
 - Node: `pino` package (to be added to libs/node-logging/package.json)
 - Python: `structlog` package (to be added to requirements.txt or pyproject.toml)
@@ -719,6 +774,7 @@ log.info(
 ---
 
 ### Cross-references
+
 - DEV-ADR-017 — JSON-First Structured Logging architecture decision
 - DEV-PRD-018 — Structured Logging product requirements
 - DEV-SDS-017 — Rust-Native Observability Pipeline (foundation)
@@ -727,6 +783,7 @@ log.info(
 ---
 
 ### Exit criteria
+
 - `vector validate ops/vector/vector.toml` passes with logs section
 - `tests/ops/test_vector_logs_config.sh` passes
 - `tests/ops/test_log_redaction.sh` passes (PII redacted)
@@ -738,15 +795,18 @@ log.info(
 ---
 
 ## Documentation-as-code specs
+
 - Markdown style: headers, lists, mermaid diagrams; frontmatter optional for metadata.
 - Cross-references: Use relative links and DEV-PRD/ADR/SDS IDs.
 - Linters: Markdown lint; link check; schema checks for frontmatter.
 
 ## API design for developer usability
+
 - Human-first: function/task names describe intent; minimal required args; sensible defaults.
 - Error handling: actionable messages; suggestions for remediation; link to docs.
 
 ## Code organization
+
 - Feature-oriented structure for generators and scripts; shared utils for token metrics and plan diffs.
 - Naming: kebab-case files, clear suffixes (.prompt.md, .instructions.md, .chatmode.md).
 
@@ -800,9 +860,11 @@ log.info(
 
 - Principle: The application's core logic depends on abstractions (ports), not on concrete implementations. Adapters provide the concrete implementations for these abstractions.
 - Design:
+
   - **Port Definition:** Ports will be defined as technology-agnostic interfaces within the `libs/<domain>/application` directory. To facilitate testing and dependency inversion, each port will be defined as an abstract contract.
 
     Example:
+
   - Structural implementation (preferred — no inheritance needed)
 
     ```python
@@ -821,6 +883,7 @@ log.info(
     ```
 
     - Explicit inheritance (use only if needed)
+
     ```python
     # libs/auth/infrastructure/adapters/supabase_user_repository.py
     from __future__ import annotations
@@ -836,10 +899,13 @@ log.info(
     ```
 
     Notes:
+
     - Keep return type User | None (or Optional[User]) to satisfy strict typing.
     - Use @runtime_checkable on the Protocol only if you plan to call isinstance()/issubclass() checks at runtime.
     - Ensure import paths match the monorepo layout and run mypy/ruff as part of the TDD/validation workflow.
     - **Driving (API/UI) Adapters:** FastAPI routes (`api` layer) and UI components (`ui` layer) will act as driving adapters. They will depend on the application services, which are injected with the port interfaces.
+
   - **Dependency Injection:** Application services will be initialized with implementations of the ports. This will be managed by the application's main entry point or a dependency injection framework.
+
 - Artifacts: New `ports` subdirectories within each domain's `application` layer; new `adapters` subdirectories within the `infrastructure` layer.
 - Cross-references: DEV-ADR-022, DEV-PRD-023

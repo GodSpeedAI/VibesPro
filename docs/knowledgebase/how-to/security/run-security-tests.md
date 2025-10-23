@@ -18,22 +18,26 @@ This document describes the security testing and validation procedures for Vibes
 **Test Cases:**
 
 1. **Cargo Audit (`test_cargo_audit_passes`)**
+
    - Verifies no HIGH/CRITICAL security vulnerabilities in dependencies
    - Runs automatically in CI on every commit
    - Command: `cargo audit`
 
 2. **Performance Overhead (`test_performance_overhead`)**
+
    - Measures encryption/decryption performance impact
    - Current overhead: ~200% (acceptable for security-critical applications)
    - Future optimization target: < 10%
    - Command: `just security-benchmark`
 
 3. **Plaintext Detection (`test_no_plaintext_in_encrypted_db`)**
+
    - Ensures no plaintext data is discoverable in database files
    - Critical security property
    - Must pass for all releases
 
 4. **Startup Time (`test_startup_time_overhead`)**
+
    - Ensures database initialization is fast (< 100ms)
    - Current performance: ~4ms
    - Validates edge-device suitability
@@ -63,18 +67,22 @@ cargo test --test validation_suite --release -- --nocapture --test-threads=1
 **Test Cases:**
 
 1. **SecureDb Inclusion**
+
    - Verifies `libs/security/src/secure_db.rs` exists when `enable_security_hardening=true`
    - Checks `Cargo.toml` contains required cryptographic dependencies
 
 2. **Security Exclusion**
+
    - Verifies `libs/security/` is absent when `enable_security_hardening=false`
    - Ensures zero overhead for non-hardened projects
 
 3. **Distroless Dockerfile**
+
    - Validates use of `gcr.io/distroless/cc` base image
    - Confirms non-root user (UID 65532)
 
 4. **Docker Compose Security Options**
+
    - Checks for `no-new-privileges:true`
    - Validates capability dropping (`cap_drop: ALL`)
 
@@ -101,21 +109,25 @@ pnpm test tests/integration/
 **Jobs:**
 
 1. **cargo-audit**
+
    - Runs weekly and on every PR
    - Fails on HIGH/CRITICAL vulnerabilities
    - Updates advisory database automatically
 
 2. **performance-benchmark**
+
    - Tracks encryption overhead over time
    - Reports metrics as artifacts
    - Fails if overhead > 300% (current threshold)
 
 3. **binary-size-tracking**
+
    - Monitors size impact of security features
    - Uploads size reports as artifacts
    - Fails if increase > 2.5MB
 
 4. **security-validation**
+
    - Runs full validation suite
    - Includes both Rust and TypeScript tests
    - Must pass for merge to main
@@ -181,14 +193,17 @@ cargo build --release
 ### Optimization Strategies
 
 1. **Batch Operations**
+
    - Buffer multiple operations before flushing
    - Reduce per-operation overhead
 
 2. **Lazy Key Derivation**
+
    - Cache derived keys for session
    - Reduce HKDF calls
 
 3. **Parallel Encryption**
+
    - Use Rayon for parallel batch encryption
    - Leverage multi-core processors
 
@@ -209,6 +224,7 @@ cargo build --release
 ### Regression Detection
 
 CI fails automatically if:
+
 - New HIGH/CRITICAL vulnerabilities detected
 - Performance overhead > 300%
 - Binary size increase > 2.5MB
@@ -257,16 +273,16 @@ pnpm test tests/integration/security/ --runInBand --testTimeout=60000
 
 ## Appendix A: Test Coverage Matrix
 
-| Security Property | Rust Test | Integration Test | CI Job |
-|------------------|-----------|------------------|---------|
-| No plaintext at rest | ✅ | - | ✅ |
-| No CVEs | ✅ | - | ✅ |
-| Performance acceptable | ✅ | - | ✅ |
-| Size acceptable | ✅ | - | ✅ |
-| Fast startup | ✅ | - | - |
-| Correct generation | - | ✅ | ✅ |
-| Docker security | - | ✅ | ✅ |
-| Documentation | - | ✅ | ✅ |
+| Security Property      | Rust Test | Integration Test | CI Job |
+| ---------------------- | --------- | ---------------- | ------ |
+| No plaintext at rest   | ✅        | -                | ✅     |
+| No CVEs                | ✅        | -                | ✅     |
+| Performance acceptable | ✅        | -                | ✅     |
+| Size acceptable        | ✅        | -                | ✅     |
+| Fast startup           | ✅        | -                | -      |
+| Correct generation     | -         | ✅               | ✅     |
+| Docker security        | -         | ✅               | ✅     |
+| Documentation          | -         | ✅               | ✅     |
 
 ## Appendix B: References
 

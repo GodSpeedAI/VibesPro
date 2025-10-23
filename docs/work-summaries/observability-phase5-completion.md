@@ -11,7 +11,9 @@ Successfully completed Phase 5 of the observability implementation by adding com
 ## TDD Cycle Completion
 
 ### ✅ RED Phase
+
 Created failing test `tests/ops/test_ci_observability.sh` that verified:
+
 - Vector installation step exists in CI workflow
 - Vector validation step exists in CI workflow
 - Steps are in correct order: Install Vector → Install mise → Validate Vector config
@@ -19,15 +21,18 @@ Created failing test `tests/ops/test_ci_observability.sh` that verified:
 - Validation command references correct config path (`ops/vector/vector.toml`)
 
 Initial test failed as expected with:
+
 ```
 ❌ 'Install Vector' step not found in CI workflow
    Vector must be installed before validation can occur
 ```
 
 ### ✅ GREEN Phase
+
 Updated `.github/workflows/env-check.yml` to add:
 
 1. **Vector Installation Step** (after mise, before trust step):
+
    ```yaml
    - name: Install Vector
      run: |
@@ -36,6 +41,7 @@ Updated `.github/workflows/env-check.yml` to add:
    ```
 
 2. **Vector Binary Caching**:
+
    ```yaml
    - name: Cache Vector binary
      uses: actions/cache@v4
@@ -47,6 +53,7 @@ Updated `.github/workflows/env-check.yml` to add:
    ```
 
 3. **Vector Validation Step** (after mise install):
+
    ```yaml
    - name: Validate Vector config
      run: |
@@ -56,6 +63,7 @@ Updated `.github/workflows/env-check.yml` to add:
    ```
 
 4. **Crate Tests** (after validation):
+
    ```yaml
    - name: Crate tests (no otlp)
      run: cargo test --manifest-path crates/vibepro-observe/Cargo.toml
@@ -65,19 +73,23 @@ Updated `.github/workflows/env-check.yml` to add:
    ```
 
 Test now passes:
+
 ```
 ✅ Phase 5: CI observability validation test PASSED
 ```
 
 ### ✅ REFACTOR Phase
+
 Enhanced development workflow:
 
 1. **Added justfile target** for Phase 5 testing:
+
    ```bash
    just observe-test-ci  # Run CI validation test
    ```
 
 2. **Updated comprehensive test suite**:
+
    ```bash
    just observe-test-all  # Now includes all 5 phases
    ```
@@ -91,9 +103,11 @@ Enhanced development workflow:
 ## Files Modified
 
 ### New Files
+
 - `tests/ops/test_ci_observability.sh` - Phase 5 CI validation test (95 lines)
 
 ### Modified Files
+
 - `.github/workflows/env-check.yml` - Added Vector installation, caching, and validation
 - `justfile` - Added `observe-test-ci` target and updated `observe-test-all`
 - `docs/ENVIRONMENT.md` - Added Section 8: Observability & Monitoring (150+ lines)
@@ -157,6 +171,7 @@ $ just observe-test-all
 ## CI Performance Improvements
 
 With Vector binary caching:
+
 - **First run**: ~30s to download and install Vector
 - **Cached runs**: ~2s to restore Vector from cache
 - **Cache key**: Invalidates when `ops/vector/vector.toml` changes
@@ -168,26 +183,32 @@ With Vector binary caching:
 Comprehensive observability documentation including:
 
 1. **Architecture Overview**
+
    - 3-layer architecture explanation
    - Component roles and responsibilities
 
 2. **Quick Start Guide**
+
    - Installation commands
    - Basic usage examples
 
 3. **Configuration**
+
    - Environment variables reference
    - Vector configuration overview
 
 4. **Testing**
+
    - All phase test commands
    - Integration with existing test suite
 
 5. **CI Integration**
+
    - Workflow validation explanation
    - CI log output examples
 
 6. **Feature Flags**
+
    - Rust crate feature flag usage
    - Runtime control via environment variables
 
@@ -209,13 +230,14 @@ Comprehensive observability documentation including:
 ## CI Validation Features
 
 The test validates:
+
 - ✅ Workflow file exists and is readable
 - ✅ Vector installation step present
 - ✅ Vector validation step present
 - ✅ Steps in correct execution order
 - ✅ Validation command uses correct syntax
 - ✅ Config path references `ops/vector/vector.toml`
-- ⚠️  Cache step present (warning only, not mandatory)
+- ⚠️ Cache step present (warning only, not mandatory)
 
 ## Next Steps
 
@@ -226,6 +248,7 @@ With Phase 5 complete, the observability pipeline is fully integrated into CI/CD
 While basic documentation is complete, Phase 6 could include:
 
 1. **Runtime Feature Flag Testing**:
+
    ```bash
    # Test that spans only export when flag is set
    VIBEPRO_OBSERVE=0 cargo run  # No export
@@ -233,6 +256,7 @@ While basic documentation is complete, Phase 6 could include:
    ```
 
 2. **Enhanced Documentation**:
+
    - API reference for `vibepro-observe` crate
    - Vector VRL cookbook for custom transforms
    - OpenObserve dashboard templates
@@ -289,18 +313,21 @@ just observe-verify
 ## Impact Assessment
 
 ### Developer Experience
+
 - ✅ Automatic validation in CI prevents broken configs
 - ✅ Fast feedback on observability pipeline health
 - ✅ Clear error messages when validation fails
 - ✅ Comprehensive documentation for troubleshooting
 
 ### CI/CD Performance
+
 - ✅ Vector binary cached (saves ~28s per run)
 - ✅ Configuration validated before runtime
 - ✅ Parallel test execution maintained
 - ✅ No impact on existing workflow steps
 
 ### Maintenance
+
 - ✅ Centralized validation logic
 - ✅ Automated dependency updates via cache key
 - ✅ Self-documenting workflow steps
@@ -315,6 +342,7 @@ just observe-verify
 **All 5 phases of the observability TDD implementation are now complete! 🎉**
 
 The observability pipeline is:
+
 - ✅ Instrumented (Phase 1)
 - ✅ Configured (Phase 2)
 - ✅ Integrated (Phase 3)

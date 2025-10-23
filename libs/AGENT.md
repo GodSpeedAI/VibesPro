@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Business logic libraries organized by bounded context
 - Hexagonal architecture implementation (Domain, Application, Infrastructure layers)
 - Domain-Driven Design (DDD) patterns
@@ -81,6 +82,7 @@ Nothing (Pure business logic)
 ```
 
 **Rules:**
+
 - ✅ Domain depends on NOTHING (pure TypeScript/Python)
 - ✅ Application depends ONLY on Domain
 - ✅ Infrastructure depends on Application + Domain
@@ -90,17 +92,17 @@ Nothing (Pure business logic)
 
 ### File Naming Conventions
 
-| Layer | File Type | Pattern | Example |
-|-------|-----------|---------|---------|
-| **Domain** | Entity | `*.entity.ts` | `user.entity.ts` |
-| **Domain** | Value Object | `*.vo.ts` | `email.vo.ts` |
-| **Domain** | Aggregate | `*.aggregate.ts` | `order.aggregate.ts` |
-| **Domain** | Event | `*.event.ts` | `user-created.event.ts` |
-| **Application** | Use Case | `*.use-case.ts` | `create-user.use-case.ts` |
-| **Application** | Port | `*.port.ts` | `user-repository.port.ts` |
-| **Application** | Service | `*.service.ts` | `email-notification.service.ts` |
-| **Infrastructure** | Repository | `*.repository.ts` | `postgres-user.repository.ts` |
-| **Infrastructure** | Adapter | `*.adapter.ts` | `sendgrid-email.adapter.ts` |
+| Layer              | File Type    | Pattern           | Example                         |
+| ------------------ | ------------ | ----------------- | ------------------------------- |
+| **Domain**         | Entity       | `*.entity.ts`     | `user.entity.ts`                |
+| **Domain**         | Value Object | `*.vo.ts`         | `email.vo.ts`                   |
+| **Domain**         | Aggregate    | `*.aggregate.ts`  | `order.aggregate.ts`            |
+| **Domain**         | Event        | `*.event.ts`      | `user-created.event.ts`         |
+| **Application**    | Use Case     | `*.use-case.ts`   | `create-user.use-case.ts`       |
+| **Application**    | Port         | `*.port.ts`       | `user-repository.port.ts`       |
+| **Application**    | Service      | `*.service.ts`    | `email-notification.service.ts` |
+| **Infrastructure** | Repository   | `*.repository.ts` | `postgres-user.repository.ts`   |
+| **Infrastructure** | Adapter      | `*.adapter.ts`    | `sendgrid-email.adapter.ts`     |
 
 ## 🧭 Routing Rules
 
@@ -115,13 +117,13 @@ Nothing (Pure business logic)
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [apps/AGENT.md](/apps/AGENT.md) | Building user interfaces or controllers |
-| [tests/AGENT.md](/tests/AGENT.md) | Writing tests for domain/application logic |
-| [generators/AGENT.md](/generators/AGENT.md) | Scaffolding new libraries or domains |
-| [docs/AGENT.md](/docs/AGENT.md) | Documenting domain models or specifications |
-| [.github/AGENT.md](/.github/AGENT.md) | Using TDD workflows or architecture guidance |
+| Context                                     | When to Use                                  |
+| ------------------------------------------- | -------------------------------------------- |
+| [apps/AGENT.md](/apps/AGENT.md)             | Building user interfaces or controllers      |
+| [tests/AGENT.md](/tests/AGENT.md)           | Writing tests for domain/application logic   |
+| [generators/AGENT.md](/generators/AGENT.md) | Scaffolding new libraries or domains         |
+| [docs/AGENT.md](/docs/AGENT.md)             | Documenting domain models or specifications  |
+| [.github/AGENT.md](/.github/AGENT.md)       | Using TDD workflows or architecture guidance |
 
 ## 🔧 Local Conventions
 
@@ -130,6 +132,7 @@ Nothing (Pure business logic)
 **Purpose**: Encapsulate business rules, invariants, and domain knowledge.
 
 **Characteristics:**
+
 - ✅ No external dependencies (no frameworks, no infrastructure)
 - ✅ Pure TypeScript/Python
 - ✅ 100% test coverage
@@ -140,23 +143,23 @@ Nothing (Pure business logic)
 
 ```typescript
 // libs/orders/domain/src/entities/order.entity.ts
-import { OrderId } from '../value-objects/order-id.vo';
-import { OrderItem } from '../value-objects/order-item.vo';
-import { OrderStatus } from '../enums/order-status.enum';
-import { DomainException } from '../exceptions/domain.exception';
+import { OrderId } from "../value-objects/order-id.vo";
+import { OrderItem } from "../value-objects/order-item.vo";
+import { OrderStatus } from "../enums/order-status.enum";
+import { DomainException } from "../exceptions/domain.exception";
 
 export class Order {
   private constructor(
     private readonly _id: OrderId,
     private _items: OrderItem[],
     private _status: OrderStatus,
-    private readonly _createdAt: Date
+    private readonly _createdAt: Date,
   ) {}
 
   // Factory method
   static create(id: OrderId, items: OrderItem[]): Order {
     if (items.length === 0) {
-      throw new DomainException('Order must have at least one item');
+      throw new DomainException("Order must have at least one item");
     }
 
     return new Order(id, items, OrderStatus.Pending, new Date());
@@ -182,10 +185,10 @@ export class Order {
   // Business methods (behavior)
   confirm(): void {
     if (this._status === OrderStatus.Cancelled) {
-      throw new DomainException('Cannot confirm a cancelled order');
+      throw new DomainException("Cannot confirm a cancelled order");
     }
     if (this._status === OrderStatus.Confirmed) {
-      throw new DomainException('Order already confirmed');
+      throw new DomainException("Order already confirmed");
     }
 
     this._status = OrderStatus.Confirmed;
@@ -193,7 +196,7 @@ export class Order {
 
   cancel(): void {
     if (this._status === OrderStatus.Shipped) {
-      throw new DomainException('Cannot cancel a shipped order');
+      throw new DomainException("Cannot cancel a shipped order");
     }
 
     this._status = OrderStatus.Cancelled;
@@ -201,7 +204,7 @@ export class Order {
 
   addItem(item: OrderItem): void {
     if (this._status !== OrderStatus.Pending) {
-      throw new DomainException('Cannot add items to non-pending order');
+      throw new DomainException("Cannot add items to non-pending order");
     }
 
     this._items.push(item);
@@ -245,6 +248,7 @@ export class Email {
 **Purpose**: Orchestrate domain logic, define ports (interfaces) for infrastructure.
 
 **Characteristics:**
+
 - ✅ Depends ONLY on domain layer
 - ✅ Contains use cases (application services)
 - ✅ Defines ports (interfaces) for repositories, external services
@@ -255,7 +259,7 @@ export class Email {
 
 ```typescript
 // libs/orders/application/src/ports/order-repository.port.ts
-import { Order, OrderId } from '@my-app/orders-domain';
+import { Order, OrderId } from "@my-app/orders-domain";
 
 export interface OrderRepository {
   save(order: Order): Promise<void>;
@@ -352,6 +356,7 @@ export class CreateOrderUseCase {
 **Purpose**: Implement ports with specific technologies (database, HTTP, etc.).
 
 **Characteristics:**
+
 - ✅ Implements ports defined in application layer
 - ✅ Contains specific technology choices (Postgres, MongoDB, etc.)
 - ✅ Adapters for external services (email, payment, etc.)
@@ -361,9 +366,9 @@ export class CreateOrderUseCase {
 
 ```typescript
 // libs/orders/infrastructure/src/repositories/postgres-order.repository.ts
-import { Order, OrderId } from '@my-app/orders-domain';
-import { OrderRepository } from '@my-app/orders-application';
-import { Pool } from 'pg';
+import { Order, OrderId } from "@my-app/orders-domain";
+import { OrderRepository } from "@my-app/orders-application";
+import { Pool } from "pg";
 
 export class PostgresOrderRepository implements OrderRepository {
   constructor(private readonly pool: Pool) {}
@@ -372,7 +377,7 @@ export class PostgresOrderRepository implements OrderRepository {
     const client = await this.pool.connect();
 
     try {
-      await client.query('BEGIN');
+      await client.query("BEGIN");
 
       // Insert order
       await client.query(
@@ -387,7 +392,7 @@ export class PostgresOrderRepository implements OrderRepository {
           order.status,
           order.createdAt,
           order.total,
-        ]
+        ],
       );
 
       // Insert order items
@@ -395,24 +400,23 @@ export class PostgresOrderRepository implements OrderRepository {
         await client.query(
           `INSERT INTO order_items (order_id, product_id, quantity, price)
            VALUES ($1, $2, $3, $4)`,
-          [order.id.value, item.productId, item.quantity, item.price]
+          [order.id.value, item.productId, item.quantity, item.price],
         );
       }
 
-      await client.query('COMMIT');
+      await client.query("COMMIT");
     } catch (error) {
-      await client.query('ROLLBACK');
-      throw new InfrastructureException('Failed to save order', error);
+      await client.query("ROLLBACK");
+      throw new InfrastructureException("Failed to save order", error);
     } finally {
       client.release();
     }
   }
 
   async findById(id: OrderId): Promise<Order | null> {
-    const result = await this.pool.query(
-      `SELECT * FROM orders WHERE id = $1`,
-      [id.value]
-    );
+    const result = await this.pool.query(`SELECT * FROM orders WHERE id = $1`, [
+      id.value,
+    ]);
 
     if (result.rows.length === 0) {
       return null;
@@ -429,7 +433,7 @@ export class PostgresOrderRepository implements OrderRepository {
       OrderId.from(row.id),
       row.items,
       row.status,
-      new Date(row.created_at)
+      new Date(row.created_at),
     );
   }
 }
@@ -439,8 +443,8 @@ export class PostgresOrderRepository implements OrderRepository {
 
 ```typescript
 // libs/notifications/infrastructure/src/adapters/sendgrid-email.adapter.ts
-import { EmailService } from '@my-app/notifications-application';
-import sgMail from '@sendgrid/mail';
+import { EmailService } from "@my-app/notifications-application";
+import sgMail from "@sendgrid/mail";
 
 export class SendGridEmailAdapter implements EmailService {
   constructor(apiKey: string) {
@@ -451,12 +455,12 @@ export class SendGridEmailAdapter implements EmailService {
     try {
       await sgMail.send({
         to,
-        from: 'noreply@example.com',
+        from: "noreply@example.com",
         subject,
         html: body,
       });
     } catch (error) {
-      throw new InfrastructureException('Failed to send email', error);
+      throw new InfrastructureException("Failed to send email", error);
     }
   }
 }
@@ -465,14 +469,15 @@ export class SendGridEmailAdapter implements EmailService {
 ### Shared Libraries
 
 **Shared domain concepts:**
+
 ```typescript
 // libs/shared/domain/src/value-objects/id.vo.ts
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export abstract class Id {
   protected constructor(private readonly _value: string) {
     if (!Id.isValid(_value)) {
-      throw new Error('Invalid ID format');
+      throw new Error("Invalid ID format");
     }
   }
 
@@ -481,7 +486,9 @@ export abstract class Id {
   }
 
   static isValid(value: string): boolean {
-    return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    );
   }
 
   get value(): string {
@@ -497,6 +504,7 @@ export abstract class Id {
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Scaffold with Nx generators
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategy per layer
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in domain logic
@@ -504,9 +512,11 @@ export abstract class Id {
 - [.github/instructions/style.python.instructions.md](/.github/instructions/style.python.instructions.md) - Python style
 
 **Relevant prompts:**
+
 - [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Implement from specs
 
 **Related chat modes:**
+
 - `persona.system-architect` - Architectural guidance
 - `persona.senior-backend` - Backend patterns
 - `tdd.red`, `tdd.green`, `tdd.refactor` - TDD workflow
@@ -514,6 +524,7 @@ export abstract class Id {
 ## 💡 Examples
 
 See inline examples above for:
+
 - Domain Entity (Order)
 - Value Object (Email)
 - Port Interface (OrderRepository)
@@ -646,7 +657,9 @@ pnpm exec nx affected:test
     "paths": {
       "@my-app/orders-domain": ["libs/orders/domain/src/index.ts"],
       "@my-app/orders-application": ["libs/orders/application/src/index.ts"],
-      "@my-app/orders-infrastructure": ["libs/orders/infrastructure/src/index.ts"],
+      "@my-app/orders-infrastructure": [
+        "libs/orders/infrastructure/src/index.ts"
+      ],
       "@my-app/shared-domain": ["libs/shared/domain/src/index.ts"]
     }
   }
@@ -678,13 +691,14 @@ pnpm exec nx affected:test
 - ⚠️ **Sensitive data**: Mark PII, encrypt at infrastructure layer
 
 **Example:**
+
 ```typescript
 export class User {
   private constructor(
     private readonly _id: UserId,
     private readonly _email: Email,
-    private _hashedPassword: string,  // Never expose raw password
-    private readonly _roles: Role[]
+    private _hashedPassword: string, // Never expose raw password
+    private readonly _roles: Role[],
   ) {}
 
   // No getPassword() method - password never leaves entity
@@ -702,23 +716,25 @@ export class User {
 ## 🎯 Testing Strategy by Layer
 
 ### Domain Layer
+
 - **Pure unit tests** - No mocks
 - **100% coverage** - No exceptions
 - **Test business rules** - Invariants, state transitions
 - **Test value object equality**
 
 ```typescript
-describe('Order (Domain)', () => {
-  it('should not allow confirming cancelled order', () => {
+describe("Order (Domain)", () => {
+  it("should not allow confirming cancelled order", () => {
     const order = Order.create(/* ... */);
     order.cancel();
 
-    expect(() => order.confirm()).toThrow('Cannot confirm cancelled order');
+    expect(() => order.confirm()).toThrow("Cannot confirm cancelled order");
   });
 });
 ```
 
 ### Application Layer
+
 - **Unit tests with mocks** - Mock ports
 - **90%+ coverage**
 - **Test use case orchestration**
@@ -738,14 +754,15 @@ describe('CreateOrderUseCase', () => {
 ```
 
 ### Infrastructure Layer
+
 - **Integration tests** - Use real dependencies when safe
 - **80%+ coverage**
 - **Test adapter implementations**
 - **Test database queries**
 
 ```typescript
-describe('PostgresOrderRepository', () => {
-  it('should save and retrieve order', async () => {
+describe("PostgresOrderRepository", () => {
+  it("should save and retrieve order", async () => {
     const repo = new PostgresOrderRepository(testDb);
     const order = Order.create(/* ... */);
 
@@ -777,6 +794,7 @@ describe('PostgresOrderRepository', () => {
 ### Managing Technical Debt
 
 **Signs of architectural debt:**
+
 - Domain logic leaking into infrastructure
 - Circular dependencies between layers
 - Anemic domain models (just getters/setters)
@@ -784,6 +802,7 @@ describe('PostgresOrderRepository', () => {
 - Ports with too many methods
 
 **Remediation:**
+
 - Extract business logic to domain layer
 - Break circular deps, respect hierarchy
 - Add behavior to entities

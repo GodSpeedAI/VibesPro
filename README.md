@@ -22,7 +22,7 @@ Think of VibesPro as a **cookie cutter** 🍪—you don't work inside the cookie
 
 ## 🎬 Picture This...
 
-It's Monday morning. Your team just got greenlit to build a new service. You know the business logic inside and out, but the thought of setting up *yet another* codebase makes you weary. Copy-pasting from the last project? Risky. Starting from scratch? Days of boilerplate await.
+It's Monday morning. Your team just got greenlit to build a new service. You know the business logic inside and out, but the thought of setting up _yet another_ codebase makes you weary. Copy-pasting from the last project? Risky. Starting from scratch? Days of boilerplate await.
 
 **What if, instead, you could describe what you need and have a perfectly structured, production-ready application appear—architecture solid, tests included, documentation written—all in the time it takes to grab a coffee?**
 
@@ -46,6 +46,7 @@ Think of it as a **GPS for software architecture**—you tell it where you want 
 ## ✨ How It Works (The Human Way)
 
 ### Step 1: **Generate Your Project from the Template**
+
 ```bash
 copier copy gh:GodSpeedAI/VibesPro my-project-name
 # Answer a few friendly questions about your project
@@ -54,6 +55,7 @@ copier copy gh:GodSpeedAI/VibesPro my-project-name
 Imagine ordering a custom coffee: "I'd like a web API with user authentication, using TypeScript and PostgreSQL." VibesPro captures your vision, just like that barista who remembers your usual order.
 
 ### Step 2: **Watch Your Project Take Shape**
+
 ```bash
 cd my-project-name
 just setup
@@ -63,6 +65,7 @@ just setup
 Behind the scenes, intelligent templates assemble your application like an expert chef preparing a dish—each layer (interface, business logic, database) perfectly placed, nothing missing, nothing extra.
 
 **What you get:**
+
 - 📂 A complete, organized workspace (think: a well-organized kitchen, not a junk drawer)
 - ✅ Tests already written (your safety net is built-in)
 - 📚 Documentation that actually explains things (imagine instructions that make sense)
@@ -72,6 +75,7 @@ Behind the scenes, intelligent templates assemble your application like an exper
 - 🔄 **Production-ready from day one** – Build, lint, and test targets work out of the box
 
 ### Step 3: **Start Building What Matters**
+
 ```bash
 pnpm dev
 # Your app is running. Really.
@@ -90,6 +94,7 @@ Every project you create teaches it something. Made a decision about how to hand
 It's like muscle memory for your entire team. New developer joins? They inherit the wisdom of every project that came before, automatically.
 
 **Powered by temporal intelligence:**
+
 - 🕰️ Tracks decisions across time
 - 🎯 Suggests patterns that worked before
 - 🔄 Improves recommendations with each project
@@ -100,14 +105,17 @@ It's like muscle memory for your entire team. New developer joins? They inherit 
 ## 🎯 What This Means For You
 
 ### Instead of Days, Think Minutes
+
 - **Before:** Week one: setup, configurations, folder structure, testing framework...
 - **After:** Hour one: writing actual business logic
 
 ### Instead of Chaos, Think Clarity
+
 - **Before:** Every project looks different; new dev needs a week to understand the layout
 - **After:** Consistent architecture across all projects; new dev productive on day one
 
 ### Instead of Debt, Think Foundation
+
 - **Before:** Technical debt accumulates from day one (cutting corners to ship faster)
 - **After:** Best practices embedded from the start; you're building on solid ground
 
@@ -118,21 +126,25 @@ It's like muscle memory for your entire team. New developer joins? They inherit 
 Think of your application like a **modern building**:
 
 **🏛️ Interface Layer** (The Lobby)
+
 - Where users and systems enter
 - Web pages, API endpoints, command-line tools
 - First impression matters; this layer makes it welcoming
 
 **🎯 Application Layer** (The Concierge)
+
 - Coordinates everything
 - Routes requests to the right place
 - Handles the "what happens when" logic
 
 **💎 Domain Layer** (The Vault)
+
 - Your business rules and logic
 - The crown jewels that make your app unique
 - Protected, pure, and portable
 
 **🔌 Infrastructure Layer** (The Utilities)
+
 - Databases, external services, technical plumbing
 - Swappable and upgradeable without touching business logic
 
@@ -161,16 +173,17 @@ Developer quickstart (venv)
 
 If you're contributing to the template itself (editing files in this repo), we recommend creating a local Python virtual environment (`.venv`) and following the quickstart venv steps in `docs/QUICKSTART.md` (see the "Recommended: Python dev tools" section). After creating the venv, run `pnpm run typecheck` and `just ai-validate` to verify mypy, linters and pre-commit hooks are working locally.
 
-
 ## 🎁 What's In The Box?
 
 ### For Product Teams
+
 - ⚡ **Launch in hours, not weeks** – Complete applications generated in minutes
 - 🎯 **Stay aligned** – Everyone follows the same proven architecture patterns
 - 📈 **Ship with confidence** – Built-in testing and security guardrails
 - ✅ **No setup friction** – Every generated project works immediately after `pnpm install`
 
 ### For Developers
+
 - 🧰 **Stop reinventing** – Reusable templates for common patterns
 - 🔍 **Find answers fast** – Documentation generated alongside code
 - 🤝 **Onboard quickly** – Consistent structure across all projects
@@ -178,6 +191,7 @@ If you're contributing to the template itself (editing files in this repo), we r
 - ⚡ **Instant productivity** – Run `npx nx build`, `lint`, `test` immediately—no setup needed
 
 ### For Architects
+
 - 🏛️ **Enforce standards** – Hexagonal architecture and DDD built-in
 - 📊 **Track decisions** – Temporal database captures architectural choices
 - 🔄 **Evolve patterns** – AI learns from your team's wisdom
@@ -187,15 +201,15 @@ If you're contributing to the template itself (editing files in this repo), we r
 
 ## 🛠️ Essential Commands (Your Daily Tools)
 
-| What You Want | What You Type | What Happens |
-|---------------|---------------|--------------|
-| **Generate a new project** | `copier copy gh:GodSpeedAI/VibesPro my-project` | Creates a new project from the template |
-| **Set up generated project** | `cd my-project && just setup` | Installs all tools and dependencies in your new project |
-| **Check environment health** | `just doctor` | Reports tool versions and PATH configuration |
-| **Run environment tests** | `just test-env` | Validates development environment setup |
-| **Check quality before pushing** | `just spec-guard` | Runs all validators—like spell-check for architecture |
-| **Test the template** | `just test-generation` | Makes sure generated projects actually work (for contributors) |
-| **Run all tests** | `pnpm nx run-many --target=test` | Confidence that nothing broke |
+| What You Want                    | What You Type                                   | What Happens                                                   |
+| -------------------------------- | ----------------------------------------------- | -------------------------------------------------------------- |
+| **Generate a new project**       | `copier copy gh:GodSpeedAI/VibesPro my-project` | Creates a new project from the template                        |
+| **Set up generated project**     | `cd my-project && just setup`                   | Installs all tools and dependencies in your new project        |
+| **Check environment health**     | `just doctor`                                   | Reports tool versions and PATH configuration                   |
+| **Run environment tests**        | `just test-env`                                 | Validates development environment setup                        |
+| **Check quality before pushing** | `just spec-guard`                               | Runs all validators—like spell-check for architecture          |
+| **Test the template**            | `just test-generation`                          | Makes sure generated projects actually work (for contributors) |
+| **Run all tests**                | `pnpm nx run-many --target=test`                | Confidence that nothing broke                                  |
 
 > 📝 **For Template Contributors:** If you're developing VibesPro itself, clone this repo and run `just setup` to set up the development environment. Most users should use Copier to generate projects instead.
 >
@@ -205,9 +219,10 @@ If you're contributing to the template itself (editing files in this repo), we r
 
 ## 📖 The Story of Quality
 
-We don't just generate code—we generate *confidence*.
+We don't just generate code—we generate _confidence_.
 
 **Every template goes through:**
+
 - ✅ **Type safety checks** (TypeScript, Python, Rust—all verified)
 - ✅ **Architecture validation** (hexagonal patterns enforced)
 - ✅ **Security scanning** (vulnerabilities caught before they ship)
@@ -238,6 +253,7 @@ Comprehensive development environment setup with automated validation:
 ✅ **Complete Documentation** – New `docs/ENVIRONMENT.md` with setup and troubleshooting guides
 
 **What This Means:**
+
 ```bash
 # Clone or generate a project
 copier copy gh:GodSpeedAI/VibesPro my-project
@@ -253,18 +269,21 @@ pnpm dev             ✅ Development server starts instantly
 ```
 
 **No more:**
+
 - ❌ "Node version mismatch" errors between team members
 - ❌ Missing tools breaking CI builds
 - ❌ Hours debugging PATH and environment variables
 - ❌ Secrets accidentally committed to version control
 
 **Just:**
+
 - ✅ Consistent environments across all machines
 - ✅ CI pipelines that actually pass
 - ✅ One-command setup and validation
 - ✅ Secure secret management out of the box
 
 **Technical Details:**
+
 - Added `devbox.json`, `.mise.toml`, `.sops.yaml` configuration files
 - Created 11+ shell test suites for environment validation
 - Implemented `scripts/doctor.sh` and `scripts/devbox_boot.sh` helpers
@@ -294,6 +313,7 @@ A **complete observability pipeline** following industry best practices (OpenTel
 ✅ **Complete Documentation** – 630+ lines in `docs/observability/README.md`
 
 **What This Means:**
+
 ```bash
 # Start the observability pipeline
 just observe-start
@@ -312,23 +332,27 @@ just observe-test-all
 ```
 
 **Performance:**
+
 - 🚀 **<1µs overhead** per trace span
 - 📊 **<3% CPU usage** in Vector at 1k spans/s
 - ⚡ **Zero impact** when `VIBEPRO_OBSERVE=0`
 - 🔄 **Async export** – non-blocking trace emission
 
 **Architecture (3 Layers):**
+
 1. **Instrumentation** – Emit structured spans from Rust code via `tracing` crate
 2. **Collection** – Vector buffers, samples, redacts, and enriches telemetry
 3. **Storage** – OpenObserve indexes and stores for querying and analysis
 
 **Security & Privacy:**
+
 - 🔒 PII redaction removes emails, tokens, and secrets automatically
 - 🔐 SOPS-encrypted credentials in `.secrets.env.sops`
 - 🎯 Opt-in telemetry (disabled by default)
 - 🛡️ Token-based authentication with OpenObserve
 
 **Just Recipes:**
+
 ```bash
 just observe-start        # Start Vector edge collector
 just observe-stop         # Stop Vector gracefully
@@ -338,6 +362,7 @@ just observe-test-all     # Run all observability tests
 ```
 
 **New Components:**
+
 - `crates/vibepro-observe/` – Rust instrumentation library
 - `apps/observe-smoke/` – Smoke test application
 - `libs/node-logging/` – Node.js structured logging
@@ -346,6 +371,7 @@ just observe-test-all     # Run all observability tests
 - `tests/ops/` – 8 comprehensive test suites
 
 **Technical Specs:**
+
 - Implemented across 6 TDD phases (DEV-ADR-016, DEV-SDS-017, DEV-PRD-017)
 - OpenTelemetry 0.31.0+ with OTLP/gRPC and HTTP
 - Vector 0.43.0+ with VRL transforms
@@ -372,6 +398,7 @@ Generated projects now include **complete, production-ready development infrastr
 ✅ **Error Handling Patterns** – TypeScript strict mode examples included
 
 **What This Means:**
+
 ```bash
 # After generating a project from VibesPro
 copier copy gh:GodSpeedAI/VibesPro my-project
@@ -386,6 +413,7 @@ npx nx show projects   ✅ Projects detected instantly
 ```
 
 **No more:**
+
 - ❌ "production is an invalid fileset" errors
 - ❌ Module resolution conflicts
 - ❌ Missing tslib dependency errors
@@ -393,11 +421,13 @@ npx nx show projects   ✅ Projects detected instantly
 - ❌ Copy-pasting configs from other projects
 
 **Just:**
+
 - ✅ `pnpm install` and start building
 - ✅ Complete development workflow ready
 - ✅ Professional setup from second one
 
 **Technical Details:**
+
 - Upgraded Nx packages: 19.8.4 → 21.6.4
 - Added 10+ development dependencies
 - Created 13 configuration files in template
@@ -411,6 +441,7 @@ See: `docs/workdocs/template-nx-fixes-complete.md` for full details.
 ## 🗺️ Your Journey Ahead
 
 ### ✅ **v0.3.0 – Shipped!** (October 2025)
+
 - 📊 **Production-ready observability stack** – Complete 3-layer architecture
 - 🦀 **Rust-native instrumentation** – `vibepro-observe` crate with OpenTelemetry
 - 📡 **Vector data pipeline** – OTLP ingestion, transformation, and routing
@@ -422,6 +453,7 @@ See: `docs/workdocs/template-nx-fixes-complete.md` for full details.
 - 📚 **Complete documentation** – 630+ lines of operational guides
 
 ### ✅ **v0.2.0 – Shipped!** (October 2025)
+
 - 🛠️ **Complete development environment setup** – Devbox, Mise, SOPS integration
 - 🔄 **CI/CD improvements** – Environment validation workflows and build matrix
 - ✅ **Environment testing suite** – Comprehensive validation in `tests/env/`
@@ -431,6 +463,7 @@ See: `docs/workdocs/template-nx-fixes-complete.md` for full details.
 - 🚦 **Tool conflict guards** – Volta/Mise coexistence checks
 
 ### ✅ **v0.1.0 – Foundation** (October 2025)
+
 - ✨ Complete project generation with hexagonal architecture
 - 🤖 AI-powered temporal knowledge base
 - 💻 TypeScript, Python, and Rust support
@@ -442,17 +475,20 @@ See: `docs/workdocs/template-nx-fixes-complete.md` for full details.
 - 📚 Interactive onboarding for generated projects
 
 ### 🔜 **v0.4.0 – AI Enhancements** (Q1 2026)
+
 - 🧠 **Enhanced AI pattern prediction** – Smarter suggestions based on project context
 - ⚡ **Performance optimization toolkit** – Automated performance analysis and recommendations
 - 🎯 **Extended context awareness** – Deeper understanding of project architecture and patterns
 
 ### 🏗️ **v0.5.0 – Ecosystem Expansion** (Q2 2026)
+
 - 🏪 **Template marketplace** – Share your patterns with the community
 - 🎨 **Additional domain generators** – E-commerce, auth, analytics, and more
 - 🔌 **Plugin system** – Extend VibesPro with custom generators
 - 🌐 **Multi-cloud support** – AWS, Azure, GCP deployment templates
 
 ### 🏆 **v1.0 – Production Ready** (Q3 2026)
+
 - 🎓 **Enterprise certification** – Battle-tested at scale
 - 📖 **Complete documentation refresh** – Comprehensive guides and tutorials
 - 🔒 **Security hardening** – Full security audit and certification
@@ -501,6 +537,7 @@ Software development shouldn't feel like starting from zero every time. The same
 **VibesPro changes that.**
 
 Imagine a world where:
+
 - Junior developers inherit senior-level architecture from day one
 - Teams ship faster because the foundation is already solid
 - Best practices spread automatically, not through painful meetings
@@ -534,7 +571,7 @@ We follow what we call **"The Photoshop Rule"** — a simple way to understand h
 >
 > You can use Photoshop to design, paint, or build anything — logos, posters, full digital worlds. You can sell your art, keep it private, or use it inside your company.
 >
-> What you *can't* do is **sell Photoshop itself** or offer "Photoshop as a service."
+> What you _can't_ do is **sell Photoshop itself** or offer "Photoshop as a service."
 
 It's the same with VibesPro:
 
@@ -570,4 +607,4 @@ just setup
 
 ---
 
-*"The best architecture is the one you don't have to think about—until you need to change it. Then it welcomes you like an old friend."*
+_"The best architecture is the one you don't have to think about—until you need to change it. Then it welcomes you like an old friend."_

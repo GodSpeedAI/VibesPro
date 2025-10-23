@@ -1,31 +1,31 @@
 {
-    "performance_targets": {
-        "generation_time_ms": 30000,
-        "build_time_ms": 120000,
-        "memory_usage_bytes": 536870912,
-        "max_file_count": 1000,
-        "min_file_count": 10
+  "performance_targets": {
+    "generation_time_ms": 30000,
+    "build_time_ms": 120000,
+    "memory_usage_bytes": 536870912,
+    "max_file_count": 1000,
+    "min_file_count": 10
+  },
+  "benchmarks": {
+    "minimal_project": {
+      "expected_generation_time_ms": 5000,
+      "expected_file_count": 25,
+      "expected_memory_mb": 50
     },
-    "benchmarks": {
-        "minimal_project": {
-            "expected_generation_time_ms": 5000,
-            "expected_file_count": 25,
-            "expected_memory_mb": 50
-        },
-        "hexagonal_project": {
-            "expected_generation_time_ms": 15000,
-            "expected_file_count": 75,
-            "expected_memory_mb": 150
-        },
-        "ai_enabled_project": {
-            "expected_generation_time_ms": 25000,
-            "expected_file_count": 125,
-            "expected_memory_mb": 300
-        }
+    "hexagonal_project": {
+      "expected_generation_time_ms": 15000,
+      "expected_file_count": 75,
+      "expected_memory_mb": 150
     },
-    "regression_thresholds": {
-        "generation_time_increase_percent": 20,
-        "memory_increase_percent": 25,
-        "file_count_increase_percent": 15
+    "ai_enabled_project": {
+      "expected_generation_time_ms": 25000,
+      "expected_file_count": 125,
+      "expected_memory_mb": 300
     }
+  },
+  "regression_thresholds": {
+    "generation_time_increase_percent": 20,
+    "memory_increase_percent": 25,
+    "file_count_increase_percent": 15
+  }
 }

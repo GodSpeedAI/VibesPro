@@ -18,14 +18,14 @@ precedence: 15
 
 ### 📝 Commit Message Structure
 
-| Section         | Guidance                                                                                   |
-|-----------------|-------------------------------------------------------------------------------------------|
-| **Subject**     | ≤ 72 chars, imperative mood (“Add”, “Fix”, “Refactor”). Summarize the main action.        |
-| **Body**        | Wrap at 72–100 cols. Explain **what** changed and **why** (not just how).                 |
-| **Traceability**| Reference spec/issue IDs (e.g., PRD-xxx, ADR-xxx, SDS-xxx, TS-xxx, DEV-*, AI_*).         |
-| **Emojis**      | Use a small, documented set for quick scanning (e.g., ✨, 🐛,♻️, ⚠️). No decorative use.  |
-| **Risks**       | Call out security, performance, UX, or operational risks and how you mitigated them.      |
-| **Validation**  | Note updated tests, docs, or scripts. Mention deferred follow-ups and mitigation plans.   |
+| Section          | Guidance                                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| **Subject**      | ≤ 72 chars, imperative mood (“Add”, “Fix”, “Refactor”). Summarize the main action.       |
+| **Body**         | Wrap at 72–100 cols. Explain **what** changed and **why** (not just how).                |
+| **Traceability** | Reference spec/issue IDs (e.g., PRD-xxx, ADR-xxx, SDS-xxx, TS-xxx, DEV-\_, AI\_\_).      |
+| **Emojis**       | Use a small, documented set for quick scanning (e.g., ✨, 🐛,♻️, ⚠️). No decorative use. |
+| **Risks**        | Call out security, performance, UX, or operational risks and how you mitigated them.     |
+| **Validation**   | Note updated tests, docs, or scripts. Mention deferred follow-ups and mitigation plans.  |
 
 ---
 
@@ -93,11 +93,11 @@ Refs: ADR-102, PRD-45
 
 ### 📋 Quick Reference Table
 
-| Element         | Why It Matters                                                                                 |
-|-----------------|-----------------------------------------------------------------------------------------------|
-| **Subject**     | Fast scan, enables automation, sets context                                                    |
-| **Body**        | Captures intent, rationale, and value for future readers                                       |
-| **Traceability**| Links code to specs/issues, supports audits and automation                                     |
-| **Emojis**      | Boosts scanability, signals change type                                                        |
-| **Risks**       | Surfaces potential issues, supports safe deployment                                            |
-| **Validation**  | Documents testing, docs, and follow-ups for accountability                                     |
+| Element          | Why It Matters                                             |
+| ---------------- | ---------------------------------------------------------- |
+| **Subject**      | Fast scan, enables automation, sets context                |
+| **Body**         | Captures intent, rationale, and value for future readers   |
+| **Traceability** | Links code to specs/issues, supports audits and automation |
+| **Emojis**       | Boosts scanability, signals change type                    |
+| **Risks**        | Surfaces potential issues, supports safe deployment        |
+| **Validation**   | Documents testing, docs, and follow-ups for accountability |

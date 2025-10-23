@@ -1,14 +1,14 @@
 // Jest setup file - runs before each test file
 // Global test utilities and configurations
 
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
 
 const {
   isPathSafe,
   sanitizePathInput,
-} = require('./tools/type-generator/utils/pathSecurity');
+} = require("./tools/type-generator/utils/pathSecurity");
 
 const WORKSPACE_ROOT = (() => {
   const cwd = path.resolve(process.cwd());
@@ -28,7 +28,7 @@ const TEMP_ROOT = (() => {
   }
 })();
 
-const SCRIPTS_DIR = path.join(WORKSPACE_ROOT, 'scripts');
+const SCRIPTS_DIR = path.join(WORKSPACE_ROOT, "scripts");
 if (process.env.PATH) {
   if (!process.env.PATH.split(path.delimiter).includes(SCRIPTS_DIR)) {
     process.env.PATH = `${SCRIPTS_DIR}${path.delimiter}${process.env.PATH}`;
@@ -36,12 +36,12 @@ if (process.env.PATH) {
 } else {
   process.env.PATH = SCRIPTS_DIR;
 }
-process.env.COPIER_COMMAND = path.join(SCRIPTS_DIR, 'copier');
-process.env.JUST_COMMAND = path.join(SCRIPTS_DIR, 'just');
+process.env.COPIER_COMMAND = path.join(SCRIPTS_DIR, "copier");
+process.env.JUST_COMMAND = path.join(SCRIPTS_DIR, "just");
 
 function isWithinAllowedRoots(targetPath, roots) {
   const normalizedTarget = path.resolve(targetPath);
-  return roots.some(root => {
+  return roots.some((root) => {
     const normalizedRoot = path.resolve(root);
     const rootWithSep = normalizedRoot.endsWith(path.sep)
       ? normalizedRoot
@@ -64,23 +64,29 @@ function resolveSafeTestPath(inputPath, label, { allowTemp = false } = {}) {
     ? normalized
     : path.resolve(WORKSPACE_ROOT, normalized);
 
-  const allowedRoots = allowTemp ? [WORKSPACE_ROOT, TEMP_ROOT] : [WORKSPACE_ROOT];
+  const allowedRoots = allowTemp
+    ? [WORKSPACE_ROOT, TEMP_ROOT]
+    : [WORKSPACE_ROOT];
 
   if (!isWithinAllowedRoots(absolute, allowedRoots)) {
-    throw new Error(`${label} must reside within the workspace or approved temp directory: ${inputPath}`);
+    throw new Error(
+      `${label} must reside within the workspace or approved temp directory: ${inputPath}`,
+    );
   }
 
   let realPath = absolute;
   try {
     realPath = fs.realpathSync(absolute);
   } catch (error) {
-    if (error.code !== 'ENOENT') {
+    if (error.code !== "ENOENT") {
       throw new Error(`Unable to resolve ${label}: ${absolute}`);
     }
   }
 
   if (!isWithinAllowedRoots(realPath, allowedRoots)) {
-    throw new Error(`${label} must reside within the workspace or approved temp directory: ${inputPath}`);
+    throw new Error(
+      `${label} must reside within the workspace or approved temp directory: ${inputPath}`,
+    );
   }
 
   return realPath;
@@ -99,11 +105,15 @@ function ensureDirectory(targetPath, label, options = {}) {
         : [WORKSPACE_ROOT];
 
       if (!isWithinAllowedRoots(actual, allowedRoots)) {
-        throw new Error(`${label} symlink must resolve within allowed roots: ${safePath}`);
+        throw new Error(
+          `${label} symlink must resolve within allowed roots: ${safePath}`,
+        );
       }
 
       if (!fs.statSync(actual).isDirectory()) {
-        throw new Error(`${label} symlink must resolve to a directory: ${safePath}`);
+        throw new Error(
+          `${label} symlink must resolve to a directory: ${safePath}`,
+        );
       }
 
       return actual;
@@ -126,9 +136,9 @@ jest.setTimeout(30000);
 // Mock console methods in tests by default
 beforeEach(() => {
   // Suppress console.log/warn/error in tests unless explicitly needed
-  jest.spyOn(console, 'log').mockImplementation(() => {});
-  jest.spyOn(console, 'warn').mockImplementation(() => {});
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, "log").mockImplementation(() => {});
+  jest.spyOn(console, "warn").mockImplementation(() => {});
+  jest.spyOn(console, "error").mockImplementation(() => {});
 });
 
 afterEach(() => {
@@ -140,15 +150,15 @@ afterEach(() => {
 global.testUtils = {
   // Helper to create temporary directories for testing
   createTempDir: () => {
-    const tempDir = fs.mkdtempSync(path.join(TEMP_ROOT, 'vibes-pro-test-'));
-    return resolveSafeTestPath(tempDir, 'temporary directory', {
+    const tempDir = fs.mkdtempSync(path.join(TEMP_ROOT, "vibes-pro-test-"));
+    return resolveSafeTestPath(tempDir, "temporary directory", {
       allowTemp: true,
     });
   },
 
   // Helper to clean up temporary directories
-  cleanupTempDir: dirPath => {
-    const safeDir = resolveSafeTestPath(dirPath, 'temporary directory', {
+  cleanupTempDir: (dirPath) => {
+    const safeDir = resolveSafeTestPath(dirPath, "temporary directory", {
       allowTemp: true,
     });
 
@@ -160,7 +170,9 @@ global.testUtils = {
     const target = stats.isSymbolicLink() ? fs.realpathSync(safeDir) : safeDir;
 
     if (!isWithinAllowedRoots(target, [TEMP_ROOT, WORKSPACE_ROOT])) {
-      throw new Error(`Refusing to remove directory outside allowed roots: ${target}`);
+      throw new Error(
+        `Refusing to remove directory outside allowed roots: ${target}`,
+      );
     }
 
     if (!fs.existsSync(target)) {
@@ -169,7 +181,9 @@ global.testUtils = {
 
     const targetStats = fs.lstatSync(target);
     if (!targetStats.isDirectory()) {
-      throw new Error(`Temporary directory must resolve to a directory: ${target}`);
+      throw new Error(
+        `Temporary directory must resolve to a directory: ${target}`,
+      );
     }
 
     fs.rmSync(target, { recursive: true, force: true });
@@ -177,28 +191,36 @@ global.testUtils = {
 
   // Helper to create mock file system structure
   createMockFiles: (baseDir, structure) => {
-    const safeBaseDir = ensureDirectory(baseDir, 'mock file base directory', {
+    const safeBaseDir = ensureDirectory(baseDir, "mock file base directory", {
       allowTemp: true,
     });
 
     Object.entries(structure).forEach(([filePath, content]) => {
-      const sanitizedPath = sanitizePathInput(filePath, 'mock file path');
+      const sanitizedPath = sanitizePathInput(filePath, "mock file path");
       if (!isPathSafe(sanitizedPath)) {
-        throw new Error(`mock file path contains invalid characters: ${filePath}`);
+        throw new Error(
+          `mock file path contains invalid characters: ${filePath}`,
+        );
       }
 
       const normalizedRelative = path.normalize(sanitizedPath);
-      if (normalizedRelative.startsWith('..')) {
-        throw new Error(`mock file path may not traverse directories: ${filePath}`);
+      if (normalizedRelative.startsWith("..")) {
+        throw new Error(
+          `mock file path may not traverse directories: ${filePath}`,
+        );
       }
 
       const fullPath = path.join(safeBaseDir, normalizedRelative);
-      const safeFullPath = resolveSafeTestPath(fullPath, 'mock file destination', {
-        allowTemp: true,
-      });
+      const safeFullPath = resolveSafeTestPath(
+        fullPath,
+        "mock file destination",
+        {
+          allowTemp: true,
+        },
+      );
 
       const dir = path.dirname(safeFullPath);
-      ensureDirectory(dir, 'mock file directory', { allowTemp: true });
+      ensureDirectory(dir, "mock file directory", { allowTemp: true });
 
       fs.writeFileSync(safeFullPath, content);
     });
@@ -208,7 +230,7 @@ global.testUtils = {
 // Add custom matchers for file system testing
 expect.extend({
   toBeFile(received) {
-    const safePath = resolveSafeTestPath(received, 'expected file path', {
+    const safePath = resolveSafeTestPath(received, "expected file path", {
       allowTemp: true,
     });
     const pass = fs.existsSync(safePath) && fs.statSync(safePath).isFile();
@@ -223,7 +245,7 @@ expect.extend({
   },
 
   toBeDirectory(received) {
-    const safePath = resolveSafeTestPath(received, 'expected directory path', {
+    const safePath = resolveSafeTestPath(received, "expected directory path", {
       allowTemp: true,
     });
     const pass = fs.existsSync(safePath) && fs.statSync(safePath).isDirectory();
@@ -238,10 +260,14 @@ expect.extend({
   },
 
   toHaveValidTypeScript(received) {
-    const ts = require('typescript');
-    const safePath = resolveSafeTestPath(received, 'TypeScript validation path', {
-      allowTemp: true,
-    });
+    const ts = require("typescript");
+    const safePath = resolveSafeTestPath(
+      received,
+      "TypeScript validation path",
+      {
+        allowTemp: true,
+      },
+    );
 
     if (!fs.existsSync(safePath)) {
       return {
@@ -250,16 +276,16 @@ expect.extend({
       };
     }
 
-    const content = fs.readFileSync(safePath, 'utf-8');
+    const content = fs.readFileSync(safePath, "utf-8");
     const sourceFile = ts.createSourceFile(
       safePath,
       content,
       ts.ScriptTarget.Latest,
-      true
+      true,
     );
 
     const diagnostics = ts.getPreEmitDiagnostics(
-      ts.createProgram([safePath], { strict: true })
+      ts.createProgram([safePath], { strict: true }),
     );
 
     const pass = diagnostics.length === 0;
@@ -270,8 +296,8 @@ expect.extend({
         pass
           ? `expected ${safePath} to have TypeScript errors`
           : `expected ${safePath} to be valid TypeScript, but found errors: ${diagnostics
-              .map(d => d.messageText)
-              .join(', ')}`,
+              .map((d) => d.messageText)
+              .join(", ")}`,
     };
   },
 });

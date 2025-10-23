@@ -9,22 +9,27 @@
 ## Quick Start (Choose Your Path)
 
 ### 🎯 **I Want to Understand the Feature**
+
 → Start with: [`SECURITY_HARDENING_SUMMARY.md`](./SECURITY_HARDENING_SUMMARY.md)
 ⏱️ 5-10 minutes reading time
 
 ### 📋 **I Want to Implement This**
+
 → Start with: [`PHASE-006-CHECKLIST.md`](./PHASE-006-CHECKLIST.md)
 ⏱️ Follow step-by-step (20-26 hours total)
 
 ### 🏗️ **I Need Architectural Context**
+
 → Start with: [`AI_ADR.md`](./AI_ADR.md#ai_adr-006--optional-security-hardening-with-tpm-backed-encryption-at-rest)
 ⏱️ 5 minutes reading time
 
 ### 🔬 **I Need Technical Specifications**
+
 → Start with: [`AI_SECURITY_HARDENING.md`](./AI_SECURITY_HARDENING.md)
 ⏱️ 30-45 minutes reading time
 
 ### 🛠️ **I Need Integration Guidance**
+
 → Start with: [`SECURITY_INTEGRATION_GUIDE.md`](./SECURITY_INTEGRATION_GUIDE.md)
 ⏱️ 15-20 minutes reading time
 
@@ -255,6 +260,7 @@ graph TD
 ## Key Concepts Quick Reference
 
 ### Cryptographic Stack
+
 - **AEAD Cipher:** XChaCha20-Poly1305 (192-bit nonce, nonce-misuse resistant)
 - **KDF:** HKDF-SHA256 (domain separation: `db-key`, `audit-key`, `transport-key`)
 - **Master Key:** 256-bit, TPM-sealed or file-based
@@ -262,19 +268,22 @@ graph TD
 - **Storage:** `[24-byte nonce || ciphertext || 16-byte auth tag]` per record
 
 ### Feature Flags
+
 ```yaml
-enable_security_hardening: false  # Default = OFF (zero impact)
-encryption_backend: "xchacha20poly1305"  # or "aes256gcm"
-tpm_enabled: false  # TPM sealing optional
+enable_security_hardening: false # Default = OFF (zero impact)
+encryption_backend: "xchacha20poly1305" # or "aes256gcm"
+tpm_enabled: false # TPM sealing optional
 ```
 
 ### Performance Targets
+
 - **Encryption overhead:** < 5%
 - **Binary size increase:** < 2MB
 - **Memory overhead:** < 10MB
 - **Startup time:** < 100ms (TPM unseal + DB open)
 
 ### TDD Workflow
+
 1. **RED:** Write failing tests (1 hour per task)
 2. **GREEN:** Implement minimal code to pass (3-6 hours per task)
 3. **REFACTOR:** Improve quality, maintain green (2-3 hours per task)
@@ -283,15 +292,15 @@ tpm_enabled: false  # TPM sealing optional
 
 ## Code Reuse Map
 
-| What You Need | Where to Find It | Action |
-|---------------|------------------|--------|
-| **SecureDb implementation** | `AI_SECURITY_HARDENING.md` §5.2 | Copy → `libs/security/src/secure_db.rs` |
-| **Cargo dependencies** | `AI_SECURITY_HARDENING.md` §5.1 | Copy → `libs/security/Cargo.toml` |
-| **Dockerfile** | `AI_SECURITY_HARDENING.md` §5.3 | Copy → `templates/.../Dockerfile.j2` |
-| **docker-compose.yml** | `AI_SECURITY_HARDENING.md` §5.3 | Copy → `templates/.../docker-compose.yml.j2` |
-| **Unit tests** | `AI_SECURITY_HARDENING.md` §7.1 | Copy → `libs/security/tests/unit/` |
-| **Integration tests** | `AI_SECURITY_HARDENING.md` §7.2 | Copy → `tests/integration/security/` |
-| **Security tests** | `AI_SECURITY_HARDENING.md` §7.3 | Copy → `tests/security/` |
+| What You Need               | Where to Find It                | Action                                       |
+| --------------------------- | ------------------------------- | -------------------------------------------- |
+| **SecureDb implementation** | `AI_SECURITY_HARDENING.md` §5.2 | Copy → `libs/security/src/secure_db.rs`      |
+| **Cargo dependencies**      | `AI_SECURITY_HARDENING.md` §5.1 | Copy → `libs/security/Cargo.toml`            |
+| **Dockerfile**              | `AI_SECURITY_HARDENING.md` §5.3 | Copy → `templates/.../Dockerfile.j2`         |
+| **docker-compose.yml**      | `AI_SECURITY_HARDENING.md` §5.3 | Copy → `templates/.../docker-compose.yml.j2` |
+| **Unit tests**              | `AI_SECURITY_HARDENING.md` §7.1 | Copy → `libs/security/tests/unit/`           |
+| **Integration tests**       | `AI_SECURITY_HARDENING.md` §7.2 | Copy → `tests/integration/security/`         |
+| **Security tests**          | `AI_SECURITY_HARDENING.md` §7.3 | Copy → `tests/security/`                     |
 
 **Total lines to copy:** ~330
 **Hours saved:** ~22 hours (vs. writing from scratch)
@@ -301,56 +310,64 @@ tpm_enabled: false  # TPM sealing optional
 ## Common Questions
 
 ### Q: Where do I start?
+
 **A:** Read [`SECURITY_HARDENING_SUMMARY.md`](./SECURITY_HARDENING_SUMMARY.md) (10 min), then jump to your role-specific path above.
 
 ### Q: Which document has the code I need to copy?
+
 **A:** [`AI_SECURITY_HARDENING.md`](./AI_SECURITY_HARDENING.md) has all reference implementations in Section 5 and all test cases in Section 7.
 
 ### Q: How do I implement TASK-013?
+
 **A:** Follow [`PHASE-006-CHECKLIST.md`](./PHASE-006-CHECKLIST.md) step-by-step. It has checkboxes for every action.
 
 ### Q: What are the success criteria?
+
 **A:** See [`AI_TDD_PLAN.md#PHASE-006`](./AI_TDD_PLAN.md#phase-006--security-hardening--encryption-at-rest) "Exit Quality Gates" section.
 
 ### Q: How do I roll back if something goes wrong?
+
 **A:** See [`PHASE-006-CHECKLIST.md`](./PHASE-006-CHECKLIST.md) "Rollback Triggers & Procedure" section (5-minute rollback).
 
 ### Q: Is this production-ready?
+
 **A:** The specification is production-grade. Implementation will be validated through TDD, security audits, and benchmarks before production use.
 
 ---
 
 ## Status Dashboard
 
-| Deliverable | Status | Completion Date |
-|-------------|--------|-----------------|
-| **Documentation** | | |
-| AI_SECURITY_HARDENING.md | ✅ Complete | 2025-10-03 |
-| AI_ADR-006 | ✅ Complete | 2025-10-03 |
-| AI_TDD_PLAN PHASE-006 | ✅ Complete | 2025-10-03 |
-| SECURITY_INTEGRATION_GUIDE.md | ✅ Complete | 2025-10-03 |
-| PHASE-006-CHECKLIST.md | ✅ Complete | 2025-10-03 |
-| SECURITY_HARDENING_SUMMARY.md | ✅ Complete | 2025-10-03 |
-| SECURITY_HARDENING_INDEX.md | ✅ Complete | 2025-10-03 |
-| **Implementation** | | |
-| TASK-013: Encrypted Sled Wrapper | ⏳ Pending | - |
-| TASK-014: Security Templates | ⏳ Pending | - |
-| TASK-015: Validation Suite | ⏳ Pending | - |
-| **Integration** | | |
-| Generated Project Validation | ⏳ Pending | - |
-| Performance Benchmarks | ⏳ Pending | - |
-| Security Audit | ⏳ Pending | - |
+| Deliverable                      | Status      | Completion Date |
+| -------------------------------- | ----------- | --------------- |
+| **Documentation**                |             |                 |
+| AI_SECURITY_HARDENING.md         | ✅ Complete | 2025-10-03      |
+| AI_ADR-006                       | ✅ Complete | 2025-10-03      |
+| AI_TDD_PLAN PHASE-006            | ✅ Complete | 2025-10-03      |
+| SECURITY_INTEGRATION_GUIDE.md    | ✅ Complete | 2025-10-03      |
+| PHASE-006-CHECKLIST.md           | ✅ Complete | 2025-10-03      |
+| SECURITY_HARDENING_SUMMARY.md    | ✅ Complete | 2025-10-03      |
+| SECURITY_HARDENING_INDEX.md      | ✅ Complete | 2025-10-03      |
+| **Implementation**               |             |                 |
+| TASK-013: Encrypted Sled Wrapper | ⏳ Pending  | -               |
+| TASK-014: Security Templates     | ⏳ Pending  | -               |
+| TASK-015: Validation Suite       | ⏳ Pending  | -               |
+| **Integration**                  |             |                 |
+| Generated Project Validation     | ⏳ Pending  | -               |
+| Performance Benchmarks           | ⏳ Pending  | -               |
+| Security Audit                   | ⏳ Pending  | -               |
 
 ---
 
 ## Next Actions
 
 ### For Project Stakeholders
+
 1. ✅ Review [`SECURITY_HARDENING_SUMMARY.md`](./SECURITY_HARDENING_SUMMARY.md)
 2. ✅ Approve architecture via [`AI_ADR.md#ADR-006`](./AI_ADR.md#ai_adr-006--optional-security-hardening-with-tpm-backed-encryption-at-rest)
 3. ⏳ Assign agents to tasks (A → TASK-013, B → TASK-014, C → TASK-015)
 
 ### For Implementing Agents
+
 1. ⏳ Read [`PHASE-006-CHECKLIST.md`](./PHASE-006-CHECKLIST.md)
 2. ⏳ Update `copier.yml` (add 3 feature flags)
 3. ⏳ Start TASK-013 RED phase (create failing tests)

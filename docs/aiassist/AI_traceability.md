@@ -1,12 +1,12 @@
 # AI-Assisted Integration Traceability Matrix
 
-| PRD ID | Supported ADR IDs | Implementing SDS IDs | Detailing TS IDs |
-| --- | --- | --- | --- |
+| PRD ID     | Supported ADR IDs                  | Implementing SDS IDs   | Detailing TS IDs                |
+| ---------- | ---------------------------------- | ---------------------- | ------------------------------- |
 | AI_PRD-001 | AI_ADR-001, AI_ADR-002, AI_ADR-005 | AI_SDS-001, AI_SDS-004 | AI_TS-001, AI_TS-002, AI_TS-003 |
-| AI_PRD-002 | AI_ADR-001, AI_ADR-003 | AI_SDS-002 | AI_TS-002, AI_TS-005 |
-| AI_PRD-003 | AI_ADR-001, AI_ADR-004 | AI_SDS-001, AI_SDS-003 | AI_TS-001, AI_TS-004 |
-| AI_PRD-004 | AI_ADR-002, AI_ADR-004 | AI_SDS-003 | AI_TS-002, AI_TS-003 |
-| AI_PRD-005 | AI_ADR-001, AI_ADR-005 | AI_SDS-004 | AI_TS-003, AI_TS-004, AI_TS-005 |
+| AI_PRD-002 | AI_ADR-001, AI_ADR-003             | AI_SDS-002             | AI_TS-002, AI_TS-005            |
+| AI_PRD-003 | AI_ADR-001, AI_ADR-004             | AI_SDS-001, AI_SDS-003 | AI_TS-001, AI_TS-004            |
+| AI_PRD-004 | AI_ADR-002, AI_ADR-004             | AI_SDS-003             | AI_TS-002, AI_TS-003            |
+| AI_PRD-005 | AI_ADR-001, AI_ADR-005             | AI_SDS-004             | AI_TS-003, AI_TS-004, AI_TS-005 |
 
 ## Summary
 
