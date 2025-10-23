@@ -13,6 +13,7 @@
         "test:integration:watch": "jest --config jest.config.json --testPathPatterns=tests/integration --watch",
         "test:e2e": "jest --config jest.config.json tests/integration/end-to-end.test.ts --timeout=300000",
         "lint": "nx run-many --target=lint --all",
+    "typecheck": "sh tools/check_mypy.sh",
         "dev": "nx run-many --target=serve --all --parallel=5",
         "generate": "copier copy . ../test-output",
         "test-generation": "copier copy . ../test-output && cd ../test-output && pnpm install && pnpm build",
