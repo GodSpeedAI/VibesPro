@@ -82,7 +82,7 @@ describe('type-generator verify command', () => {
       const result = await runCliCommand(['verify', tsDir, pyDir, '--fix']);
       expect(result.exitCode).toBe(0);
 
-      const pythonFixturePath = path.join(pyDir, 'User.py');
+      const pythonFixturePath = path.join(pyDir, 'user.py');
       const updatedPython = await fs.readFile(pythonFixturePath, 'utf-8');
       expect(updatedPython).toContain('isActive: bool');
       expect(updatedPython).toContain('createdAt: str | None');
@@ -102,7 +102,7 @@ describe('type-generator verify command', () => {
     await copyFixtureDirectory(path.join(fixturesRoot, 'py'), pyDir);
 
     // Introduce a type mismatch by changing the Python age type
-    const pythonFixturePath = path.join(pyDir, 'User.py');
+    const pythonFixturePath = path.join(pyDir, 'user.py');
     const pythonContent = await fs.readFile(pythonFixturePath, 'utf-8');
     const modifiedPython = pythonContent.replace('age: int', 'age: str');
     await fs.writeFile(pythonFixturePath, modifiedPython);
@@ -124,7 +124,7 @@ describe('type-generator verify command', () => {
     await copyFixtureDirectory(path.join(fixturesRoot, 'py'), pyDir);
 
     // Remove the Python file
-    const pythonFixturePath = path.join(pyDir, 'User.py');
+    const pythonFixturePath = path.join(pyDir, 'user.py');
     await fs.unlink(pythonFixturePath);
 
     try {

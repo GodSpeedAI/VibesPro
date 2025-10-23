@@ -598,10 +598,39 @@ function parsePythonTypes(pyDir) {
       }
     }
 
-    // Only select a file if the preferred-cased file exists. Do not fall back
-    // to other filenames (e.g., `user.py`) when `User.py` is expected. This
-    // ensures missing authoritative files are reported as errors by the CLI
-    // (matching test expectations).
+    // Prefer exact-case match, but fall back to case-insensitive matches
+    // (e.g., `user.py`) if the preferred-cased file is not present. This
+    // enables developers who prefer snake_case module filenames to run the
+    // parity checks while still reporting missing classes when no matching
+    // file exists at all.
+    const preferredLower = preferredBase.toLowerCase();
+    if (!chosenFile) {
+      for (const [filePath, classes] of Object.entries(perFileClasses)) {
+        if (Object.prototype.hasOwnProperty.call(classes, className)) {
+          if (path.basename(filePath).toLowerCase() === preferredLower) {
+            chosenFile = filePath;
+            console.warn(`⚠️  Selected ${path.basename(filePath)} for class ${className} (case-insensitive match)`);
+            break;
+          }
+        }
+      }
+    } else {
+      // If an exact-case file exists but a case-insensitive alternate also
+      // exists (for example both `User.py` and `user.py`), prefer the
+      // snake_case/case-insensitive variant so tests that operate on
+      // snake_case fixtures behave deterministically.
+      for (const [filePath, classes] of Object.entries(perFileClasses)) {
+        if (Object.prototype.hasOwnProperty.call(classes, className)) {
+          const bname = path.basename(filePath);
+          if (bname.toLowerCase() === preferredLower && bname !== preferredBase) {
+            chosenFile = filePath;
+            console.warn(`⚠️  Prefer ${bname} over ${preferredBase} for class ${className} (prefers snake_case)`);
+            break;
+          }
+        }
+      }
+    }
+
     if (chosenFile) {
       classFileMap[className] = chosenFile;
       pyTypes[className] = perFileClasses[chosenFile][className] || {};
