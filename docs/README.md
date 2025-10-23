@@ -34,16 +34,17 @@ This project implements **Hexagonal Architecture** with **Domain-Driven Design**
 ## Technology Stack
 
 ### Frameworks
+
 - next
 - fastapi
 
-
 ### AI-Enhanced Features
+
 This project includes AI-enhanced development workflows for:
+
 - Automated code generation
 - Architecture pattern suggestions
 - Development assistance
-
 
 ## Development
 

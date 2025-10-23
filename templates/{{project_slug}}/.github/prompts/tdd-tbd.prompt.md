@@ -5,13 +5,16 @@ precedence: high
 ---
 
 ## Instructions
+
 When invoked under `tdd-tbd` chatmode, **implement a TDD plan via Trunk-Based Development** as follows:
 
-1) **Inputs**
+1. **Inputs**
+
    - Read the provided TDD plan (or generate from ADR/PRD/SDS if absent).
    - Identify tasks (`TASK-###`) and their Nx project ownership.
 
-2) **Create a Branching & PR Plan**
+2. **Create a Branching & PR Plan**
+
    - Ensure `dev` exists; if not, create from `main`.
    - For each task:
      - Create `dev/task/<task-key>-<slug>` from `dev` (Draft PR → `dev`).
@@ -20,8 +23,9 @@ When invoked under `tdd-tbd` chatmode, **implement a TDD plan via Trunk-Based De
      - If generator specs are required, create `.../gen/<generator-name>` PRs → task branch.
    - Define commit naming, labels, reviewers, and required checks.
 
-3) **MCP Action List (GitHub)**
+3. **MCP Action List (GitHub)**
    For each branch/PR, list **exact MCP operations**:
+
    - `ensureBranch({ name, fromRef })`
    - `openPullRequest({ base, head, title, body, draft: true })`
    - `setLabels({ pr, labels: [...] })`
@@ -31,23 +35,25 @@ When invoked under `tdd-tbd` chatmode, **implement a TDD plan via Trunk-Based De
    - `mergePullRequest({ pr })` once checks pass
    - `protectBranch({ name, requiredChecks: [...] })` (if missing)
 
-4) **Per-Cycle Work Template**
-For each task, output a block like this:
+4. **Per-Cycle Work Template**
+   For each task, output a block like this:
 
-```markdown
+````markdown
 ### TASK-<key> — <title> (Nx Owners: <projects>)
 
 **Branches**
+
 - Task: `dev/task/<key>-<slug>`
 - Cycles:
-  - RED:        `dev/task/<key>-<slug>/red`
-  - GREEN:      `dev/task/<key>-<slug>/green`
-  - REFACTOR:   `dev/task/<key>-<slug>/refactor`
+  - RED: `dev/task/<key>-<slug>/red`
+  - GREEN: `dev/task/<key>-<slug>/green`
+  - REFACTOR: `dev/task/<key>-<slug>/refactor`
   - REGRESSION: `dev/task/<key>-<slug>/regression`
 - (Optional) Generator Specs:
   - `dev/task/<key>-<slug>/gen/<generator-name>`
 
 **MCP (GitHub) Actions**
+
 1. ensureBranch(task) → open Draft PR to `dev` (`[TASK <key>] init branch`)
 2. ensureBranch(red) → open Draft PR to task; label: `tdd:red`, `size/S`
 3. ensureBranch(green) → PR to task; label: `tdd:green`
@@ -56,17 +62,20 @@ For each task, output a block like this:
 6. (If needed) ensureBranch(gen/<name>) → PR to task; label: `generator-spec`
 
 **Tests & Checks**
+
 - RED: add failing tests only; confirm failure reason.
 - GREEN: minimal code to pass.
 - REFACTOR: structure only; tests remain green.
 - REGRESSION: full suite; perf baseline; coverage threshold.
 
 **Nx / just Commands**
+
 ```bash
 just ai-context-bundle
 pnpm nx test <project> -- --runTestsByPath <path>     # RED/GREEN focus
 pnpm nx run-many -t test -p <affected-projects>       # REGRESSION
 just ai-validate
+```
 ````
 
 **Exit Criteria**
@@ -103,3 +112,4 @@ Produce a **Branching & PR Execution Plan** for all tasks, with the Per-Cycle Wo
 |------|-------------|----------------|--------------------|-----------|---------|
 
 End with the exact list of MCP actions in execution order.
+```

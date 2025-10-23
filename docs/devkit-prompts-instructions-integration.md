@@ -23,23 +23,27 @@ Refs: DEV-PRD-001, DEV-ADR-001, DEV-SDS-001, DEV-TS-001
 
 ## Decisions (copy vs compose)
 
-1) Instructions
+1. Instructions
+
 - Keep vibePDK’s existing instruction set as the base.
 - Import devkit’s docs/dev-docs/src/security instructions as additional modules.
 - Compose via discovery (no explicit list in settings) with precedence/ordering encoded in instruction texts:
-  1. ADR > SDS/Technical Specs > PRD (product) > DEV-* specs > general/style/perf/testing.
+  1. ADR > SDS/Technical Specs > PRD (product) > DEV-\* specs > general/style/perf/testing.
 - Avoid editing `.vscode/settings.json` directly (security policy). If explicit ordering is later required, gate it behind a manual settings change in a separate PR.
 
-2) Prompts
+2. Prompts
+
 - Bring in devkit prompts that add clear value:
   - bootstrap-dev-platform, implement-feature, change-feature, traceability-matrix, test-hardening, transcript-to-spec, transcript-to-devspec, spec-housekeeping, generate-ai-docs, load-spec-items.
 - Normalize frontmatter/title and budgets; keep prompts small and token-efficient.
 
-3) Chat modes
+3. Chat modes
+
 - Add `spec.wide.chatmode.md` and `spec.lean.chatmode.md` into vibePDK’s `.github/chatmodes/`.
 - Keep existing personas; spec-driven modes become “how to work” overlays rather than replacing personas.
 
-4) Settings
+4. Settings
+
 - Do not auto-modify `.vscode/settings.json`.
 - Add a new repository instruction file for commit messages (see below) to convey commit guidance without touching settings.
 - Keep `chat.tools.autoApprove=false`.
@@ -47,34 +51,40 @@ Refs: DEV-PRD-001, DEV-ADR-001, DEV-SDS-001, DEV-TS-001
 ## Step-by-step plan
 
 1. [x] Instructions import and de-dup
+
 - Copy devkit instruction files into `vibePDK/.github/instructions/` with names preserved:
   - `docs.instructions.md`, `dev-docs.instructions.md`, `src.instructions.md`, `security.instructions.md`.
-- Adjust links to vibePDK’s docs (PRD/ADR/SDS/TS and DEV-* counterparts). If a doc is missing, add a short “Spec Gaps” note in the instruction file with resolution options.
+- Adjust links to vibePDK’s docs (PRD/ADR/SDS/TS and DEV-\* counterparts). If a doc is missing, add a short “Spec Gaps” note in the instruction file with resolution options.
 - Keep vibePDK’s `security.instructions.md` as canonical; merge any non-overlapping guidance from devkit’s security file and add a pointer to the canonical one.
 
 2. [x] Copilot instructions merge
+
 - Merge high-value devkit guidance into `vibePDK/.github/copilot-instructions.md`:
-  - Spec-first behavior and traceability references (PRD-xxx, ADR-xxx, SDS-xxx, TS-xxx, DEV-* IDs).
+  - Spec-first behavior and traceability references (PRD-xxx, ADR-xxx, SDS-xxx, TS-xxx, DEV-\* IDs).
   - Optional MCP section already present: align naming and environment variable requirements (no secrets in code).
   - Cross-link to the new commit message instruction file.
 
 3. [x] New commit message instruction
+
 - Add `.github/instructions/commit-msg.instructions.md` covering:
   - Include spec IDs when applicable; summarize change, rationale, risk/mitigations.
   - Keep <72 char subject, wrap body at ~72‑100 cols; use imperative mood.
   - Aligns with existing Husky `commit-msg` hook that requires a spec ID.
 
 4. [x] Prompts
+
 - Copy selected devkit prompts to `vibePDK/.github/prompts/`.
 - Ensure each prompt passes prompt lint and budget plan (token estimate).
 - Add minimal README lines at the top of each prompt explaining when to use.
 
 5. [x] Chat modes
+
 - Move devkit chat mode files into `vibePDK/.github/chatmodes/`.
 - Verify discovery in chat: titles, constraints, and references to instruction files.
 - Add a short NOTE in each mode about budget discipline and tool safety.
 
 6. Validation and guardrails
+
 - [x] Pre-commit: prompt lint + plan already wired; ensure new files conform.
 - [ ] CI: spec-guard workflow runs matrix/link/lint/plan/tests; ensure links updated.
 - [ ] Run a smoke test: use `prompt_lifecycle` CLI with “implement-feature.prompt.md”, confirm transcript logging and matrix updates.
@@ -94,7 +104,7 @@ Refs: DEV-PRD-001, DEV-ADR-001, DEV-SDS-001, DEV-TS-001
 
 ## Rollout & rollback
 
-- Rollout in a single PR with clear commit messages referencing DEV-* IDs.
+- Rollout in a single PR with clear commit messages referencing DEV-\* IDs.
 - If needed, rollback by removing imported prompts/chat modes and reverting merged instruction sections; no settings changes means low blast radius.
 
 ## Acceptance criteria

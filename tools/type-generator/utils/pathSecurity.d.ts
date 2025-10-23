@@ -1,6 +1,9 @@
 export declare const SAFE_PATH_SEGMENT_REGEX: RegExp;
 
-export declare function sanitizePathInput(input: unknown, label: string): string;
+export declare function sanitizePathInput(
+  input: unknown,
+  label: string,
+): string;
 
 export declare function isPathSafe(inputPath: unknown): inputPath is string;
 
@@ -9,7 +12,7 @@ export declare function ensureWithinWorkspace(
   workspace: string,
   options?: {
     allowedRoots?: string[];
-  }
+  },
 ): boolean;
 
 export declare function resolvePathWithinWorkspace(
@@ -18,7 +21,10 @@ export declare function resolvePathWithinWorkspace(
   description: string,
   options?: {
     allowedRoots?: string[];
-  }
+  },
 ): string;
 
-export declare function assertFilenameSafe(filename: string, label?: string): void;
+export declare function assertFilenameSafe(
+  filename: string,
+  label?: string,
+): void;

@@ -6,15 +6,15 @@
  *
  * Traceability: AI_ADR-004, AI_PRD-004, AI_SDS-003, AI_TS-002
  */
-import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 /**
  * Resolved tech stack structure
  */
 export interface ResolvedStack {
-    categories: Record<string, any>;
-    [key: string]: any;
+  categories: Record<string, any>;
+  [key: string]: any;
 }
 
 /**
@@ -38,28 +38,34 @@ export interface ResolvedStack {
  * Default Path: tools/transformers/.derived/techstack.resolved.json
  */
 export function loadResolvedStack(root: string): ResolvedStack | null {
-    const override = process.env.VIBEPRO_TECHSTACK_RESOLVED;
-    const defaultPath = join(root, 'tools', 'transformers', '.derived', 'techstack.resolved.json');
-    const stackPath = override || defaultPath;
+  const override = process.env.VIBEPRO_TECHSTACK_RESOLVED;
+  const defaultPath = join(
+    root,
+    "tools",
+    "transformers",
+    ".derived",
+    "techstack.resolved.json",
+  );
+  const stackPath = override || defaultPath;
 
-    if (!existsSync(stackPath)) {
-        return null;
+  if (!existsSync(stackPath)) {
+    return null;
+  }
+
+  try {
+    const content = readFileSync(stackPath, "utf8");
+    const parsed = JSON.parse(content);
+
+    // Validate basic structure
+    if (!parsed || typeof parsed !== "object") {
+      return null;
     }
 
-    try {
-        const content = readFileSync(stackPath, 'utf8');
-        const parsed = JSON.parse(content);
-
-        // Validate basic structure
-        if (!parsed || typeof parsed !== 'object') {
-            return null;
-        }
-
-        return parsed as ResolvedStack;
-    } catch (error) {
-        // Invalid JSON or read error
-        return null;
-    }
+    return parsed as ResolvedStack;
+  } catch (error) {
+    // Invalid JSON or read error
+    return null;
+  }
 }
 
 /**
@@ -78,15 +84,18 @@ export function loadResolvedStack(root: string): ResolvedStack | null {
  *   console.log('Web frameworks:', core.web_frameworks);
  * }
  */
-export function getCategory(stack: ResolvedStack | null, name: string): any | null {
-    if (!stack || typeof stack !== 'object') {
-        return null;
-    }
+export function getCategory(
+  stack: ResolvedStack | null,
+  name: string,
+): any | null {
+  if (!stack || typeof stack !== "object") {
+    return null;
+  }
 
-    const categories = stack.categories;
-    if (!categories || typeof categories !== 'object') {
-        return null;
-    }
+  const categories = stack.categories;
+  if (!categories || typeof categories !== "object") {
+    return null;
+  }
 
-    return categories[name] ?? null;
+  return categories[name] ?? null;
 }

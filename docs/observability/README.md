@@ -351,10 +351,10 @@ vector validate ops/vector/vector.toml
 
 The observability stack uses a **runtime feature flag** to control span export behavior:
 
-| Environment Variable | Behavior |
-|:---------------------|:---------|
-| `VIBEPRO_OBSERVE=1` | **Enabled**: Spans exported to OTLP endpoint (requires `--features otlp`) |
-| `VIBEPRO_OBSERVE=0` or unset | **Disabled**: JSON logs only, no OTLP export |
+| Environment Variable         | Behavior                                                                  |
+| :--------------------------- | :------------------------------------------------------------------------ |
+| `VIBEPRO_OBSERVE=1`          | **Enabled**: Spans exported to OTLP endpoint (requires `--features otlp`) |
+| `VIBEPRO_OBSERVE=0` or unset | **Disabled**: JSON logs only, no OTLP export                              |
 
 ### 8.2 Cargo Feature Flags
 
@@ -372,18 +372,21 @@ vibepro-observe = "0.1"
 ### 8.3 Usage Patterns
 
 **Development (OTLP disabled)**:
+
 ```bash
 # Logs to stdout in JSON format, no network export
 cargo run
 ```
 
 **Development (OTLP enabled)**:
+
 ```bash
 # Export spans to local Vector instance
 VIBEPRO_OBSERVE=1 cargo run --features otlp
 ```
 
 **Production**:
+
 ```bash
 # Controlled via environment variable in deployment config
 # Dockerfile, Kubernetes manifests, etc. set VIBEPRO_OBSERVE=1
@@ -400,6 +403,7 @@ bash tests/ops/test_observe_flag.sh
 ```
 
 Verifies:
+
 - ✅ Flag logic present in `lib.rs`
 - ✅ Feature gates properly configured
 - ✅ Tests pass with and without `otlp` feature
@@ -423,14 +427,14 @@ Is OTLP needed?
 
 ## 9. Common Just Targets
 
-| Command               | Description                                                      |
-| :-------------------- | :--------------------------------------------------------------- |
-| `just observe-start`  | Run Vector locally with current config                           |
-| `just observe-verify` | Send a synthetic test trace and confirm ingestion                |
-| `just observe-test-flag` | Test feature flag implementation (Phase 6)                    |
-| `just observe-logs`   | Tail Vector logs for debugging                                   |
-| `just observe-stop`   | Gracefully stop Vector process                                   |
-| `just doctor`         | Show active versions, OTLP endpoint, and observation flag status |
+| Command                  | Description                                                      |
+| :----------------------- | :--------------------------------------------------------------- |
+| `just observe-start`     | Run Vector locally with current config                           |
+| `just observe-verify`    | Send a synthetic test trace and confirm ingestion                |
+| `just observe-test-flag` | Test feature flag implementation (Phase 6)                       |
+| `just observe-logs`      | Tail Vector logs for debugging                                   |
+| `just observe-stop`      | Gracefully stop Vector process                                   |
+| `just doctor`            | Show active versions, OTLP endpoint, and observation flag status |
 
 ---
 
@@ -468,14 +472,17 @@ Is OTLP needed?
 > **Specification References:** DEV-ADR-017, DEV-PRD-018, DEV-SDS-018
 
 **Logs vs. Traces:**
+
 - **Logs:** 14–30 days retention (higher volume, lower retention cost)
 - **Traces:** 30–90 days retention (lower volume, higher analytical value)
 
 Configure separate OpenObserve streams/indices:
+
 - `vibepro-logs-prod` (30-day retention)
 - `vibepro-traces-prod` (90-day retention)
 
 **Cost optimization:**
+
 - Logs are more verbose → shorter retention
 - Traces enable deep debugging → longer retention
 - Use `category` field to route critical logs to longer retention if needed
@@ -491,22 +498,26 @@ VibePro implements **structured, trace-aware logging** across all languages (Rus
 ### Core Logging Principles
 
 **1. JSON-First Format:**
+
 - All logs MUST be emitted as JSON (machine-parseable)
 - No printf-style logs in production code
 - Consistent schema across Rust, Node.js, and Python
 
 **2. Trace Correlation:**
+
 - Every log line includes `trace_id` and `span_id`
 - Enables correlation between logs and distributed traces
 - Full request lifecycle visibility in OpenObserve
 
 **3. PII Protection:**
+
 - Never log raw PII (email, phone, IP addresses, auth tokens)
 - Use hashed identifiers: `user_id_hash`, `client_ip_hash`
 - Vector redacts accidental PII at the edge before storage
 - Redaction rules in `ops/vector/vector.toml` → `transforms.logs_redact_pii`
 
 **4. Log Levels:**
+
 - `error` – Actionable failures requiring immediate investigation
 - `warn` – Degraded behavior, potential issues
 - `info` – Normal operational events (default)
@@ -514,6 +525,7 @@ VibePro implements **structured, trace-aware logging** across all languages (Rus
 - ❌ **No `trace` level** – use tracing spans for fine-grained instrumentation
 
 **5. Log Categories:**
+
 - `app` – General application logs (default)
 - `audit` – User actions requiring compliance tracking
 - `security` – Auth failures, rate limiting, suspicious activity
@@ -546,38 +558,38 @@ error!(category = "app", code = 500, "upstream timeout");
 Library: `libs/node-logging/logger.js`
 
 ```javascript
-const { logger } = require('@vibepro/node-logging/logger');
-const log = logger('my-service');
+const { logger } = require("@vibepro/node-logging/logger");
+const log = logger("my-service");
 
 // App log
 log.info(
-    {
-        category: 'app',
-        user_id_hash: 'abc123',
-        trace_id: req.traceId,
-        span_id: req.spanId
-    },
-    'request accepted'
+  {
+    category: "app",
+    user_id_hash: "abc123",
+    trace_id: req.traceId,
+    span_id: req.spanId,
+  },
+  "request accepted",
 );
 
 // Security warning
 log.warn(
-    {
-        category: 'security',
-        action: 'rate_limit',
-        client_ip_hash: hashIP(req.ip)
-    },
-    'client throttled'
+  {
+    category: "security",
+    action: "rate_limit",
+    client_ip_hash: hashIP(req.ip),
+  },
+  "client throttled",
 );
 
 // Error log
 log.error(
-    {
-        category: 'app',
-        code: 500,
-        error: 'ECONNREFUSED'
-    },
-    'upstream timeout'
+  {
+    category: "app",
+    code: 500,
+    error: "ECONNREFUSED",
+  },
+  "upstream timeout",
 );
 ```
 
@@ -619,6 +631,7 @@ log.error(
 ### Required Log Fields
 
 **Mandatory (every log line):**
+
 - `timestamp` (ISO 8601)
 - `level` (error|warn|info|debug)
 - `message` or `event`
@@ -628,6 +641,7 @@ log.error(
 - `category` (app|audit|security)
 
 **Contextual (when available):**
+
 - `trace_id` – OpenTelemetry trace ID
 - `span_id` – Current span ID
 - `user_id_hash` – Hashed user identifier (never raw ID)
@@ -642,6 +656,7 @@ log.error(
 See `ops/vector/vector.toml`:
 
 **OTLP Logs Source:**
+
 ```toml
 [sources.otel_logs]
 type = "opentelemetry"
@@ -650,6 +665,7 @@ protocols = ["logs"]
 ```
 
 **PII Redaction Transform:**
+
 ```toml
 [transforms.logs_redact_pii]
 type = "remap"
@@ -661,6 +677,7 @@ source = '''
 ```
 
 **Enrichment Transform:**
+
 ```toml
 [transforms.logs_enrich]
 type = "remap"
@@ -673,6 +690,7 @@ source = '''
 ```
 
 **OpenObserve Sink:**
+
 ```toml
 [sinks.logs_otlp]
 type = "opentelemetry"
@@ -684,6 +702,7 @@ auth = { strategy = "bearer", token = "${OPENOBSERVE_TOKEN}" }
 ### Testing the Logging Pipeline
 
 **Quick-start examples:**
+
 ```bash
 # Rust
 cargo run --manifest-path apps/observe-smoke/Cargo.toml
@@ -696,6 +715,7 @@ python3 tools/logging/structlog-quickstart.py
 ```
 
 **Validation tests:**
+
 ```bash
 # Test Vector logs configuration
 sh -eu tests/ops/test_vector_logs_config.sh
@@ -713,14 +733,17 @@ just test:logs
 ### OpenObserve Setup for Logs
 
 1. **Create separate streams:**
+
    - `vibepro-logs-{env}` for application logs
    - `vibepro-traces-{env}` for distributed traces
 
 2. **Configure retention:**
+
    - Logs: 14–30 days (higher volume)
    - Traces: 30–90 days (lower volume, higher value)
 
 3. **Set up alerts:**
+
    - `category="security"` AND `level="warn"`
    - `code=500` AND `environment="prod"`
    - `action="auth_failure"` rate threshold
@@ -734,6 +757,7 @@ just test:logs
 ### Querying Logs with Traces
 
 **Find all logs for a specific trace:**
+
 ```sql
 SELECT timestamp, level, message, attributes
 FROM vibepro_logs_prod
@@ -742,6 +766,7 @@ ORDER BY timestamp ASC;
 ```
 
 **Correlate high-latency requests with errors:**
+
 ```sql
 SELECT l.trace_id, l.message, t.duration_ms
 FROM vibepro_logs_prod l
@@ -750,6 +775,7 @@ WHERE t.duration_ms > 1000 AND l.level = 'error';
 ```
 
 **Security events by category:**
+
 ```sql
 SELECT timestamp, attributes.action, attributes.user_id_hash
 FROM vibepro_logs_prod
@@ -761,22 +787,26 @@ LIMIT 100;
 ### Troubleshooting Logging
 
 **Logs not appearing in OpenObserve:**
+
 1. Verify Vector is running: `just observe-start`
 2. Check Vector logs: `just observe-logs`
 3. Test OTLP endpoint: `nc -zv 127.0.0.1 4318`
 4. Validate Vector config: `vector validate ops/vector/vector.toml`
 
 **PII appearing in logs:**
+
 1. Add redaction rules to `transforms.logs_redact_pii`
 2. Use `*_hash` suffixes for sensitive fields
 3. Never log raw: emails, IPs, tokens, passwords
 
 **Missing trace correlation:**
+
 1. Ensure OpenTelemetry context propagation is enabled
 2. Verify `trace_id` and `span_id` are injected from active span
 3. Check language-specific logger configuration
 
 **Performance impact:**
+
 - JSON logging overhead: ~2-5% vs printf
 - Use `debug` level sparingly in hot paths
 - Vector handles sampling/filtering at the edge

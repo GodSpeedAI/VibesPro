@@ -10,6 +10,7 @@
 ## The Problem
 
 When running `just template-cleanup`, the script would:
+
 1. Ask for confirmation
 2. On answering "y", show "❌ Cleanup cancelled"
 3. OR run but exit with code 1 midway through execution
@@ -28,6 +29,7 @@ REMOVED_COUNT=0
 ```
 
 When `REMOVED_COUNT` is 0:
+
 - `((REMOVED_COUNT++))` increments the variable to 1
 - But RETURNS the old value (0)
 - With `set -e`, a return value of 0 causes immediate exit
@@ -36,16 +38,19 @@ When `REMOVED_COUNT` is 0:
 ## The Fix
 
 Changed all occurrences from:
+
 ```bash
 ((REMOVED_COUNT++))
 ```
 
 To:
+
 ```bash
 REMOVED_COUNT=$((REMOVED_COUNT + 1))
 ```
 
 This form:
+
 - Increments the counter
 - Returns the NEW value (1, 2, 3, etc.)
 - Never returns 0, so `set -e` doesn't trigger
@@ -58,6 +63,7 @@ This form:
 ## Testing
 
 ### Before Fix
+
 ```bash
 $ bash scripts/template-cleanup.sh
 [INFO] Removing: specs/test-feature-direct/
@@ -65,6 +71,7 @@ $ bash scripts/template-cleanup.sh
 ```
 
 ### After Fix
+
 ```bash
 $ bash scripts/template-cleanup.sh
 [INFO] Removing: specs/test-feature-direct/
@@ -75,6 +82,7 @@ $ bash scripts/template-cleanup.sh
 ```
 
 ### Just Recipe Test
+
 ```bash
 $ printf "y\n" | just template-cleanup
 🧹 Cleaning up template files...

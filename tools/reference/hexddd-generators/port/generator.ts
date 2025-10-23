@@ -1,9 +1,5 @@
-import {
-  Tree,
-  formatFiles,
-  names,
-} from '@nx/devkit';
-import { PortGeneratorSchema } from './schema';
+import { Tree, formatFiles, names } from "@nx/devkit";
+import { PortGeneratorSchema } from "./schema";
 
 /**
  * Generates the TypeScript files for the port and adapter.
@@ -26,8 +22,14 @@ export class ${classifiedName}InMemoryAdapter implements I${classifiedName} {
 }
 `;
 
-  tree.write(`libs/${options.domain}/domain/src/lib/ports/${propertyName}.port.ts`, portInterfaceContent);
-  tree.write(`libs/${options.domain}/infrastructure/src/lib/adapters/${propertyName}.in-memory.adapter.ts`, inMemoryAdapterContent);
+  tree.write(
+    `libs/${options.domain}/domain/src/lib/ports/${propertyName}.port.ts`,
+    portInterfaceContent,
+  );
+  tree.write(
+    `libs/${options.domain}/infrastructure/src/lib/adapters/${propertyName}.in-memory.adapter.ts`,
+    inMemoryAdapterContent,
+  );
 }
 
 /**
@@ -37,8 +39,8 @@ export class ${classifiedName}InMemoryAdapter implements I${classifiedName} {
  */
 function addPyFiles(tree: Tree, options: PortGeneratorSchema) {
   const classifiedName = names(options.name).className;
-  const snakeCaseName = names(options.name).fileName.replace(/-/g, '_');
-  const snakeCaseDomain = options.domain.replace(/-/g, '_');
+  const snakeCaseName = names(options.name).fileName.replace(/-/g, "_");
+  const snakeCaseDomain = options.domain.replace(/-/g, "_");
 
   const portProtocolContent = `from typing import Protocol
 
@@ -54,17 +56,20 @@ class ${classifiedName}FakeAdapter(I${classifiedName}):
     pass
 `;
 
-  tree.write(`libs/${options.domain}/domain/src/lib/ports/${snakeCaseName}_port.py`, portProtocolContent);
-  tree.write(`libs/${options.domain}/infrastructure/src/lib/adapters/${snakeCaseName}_fake_adapter.py`, fakeAdapterContent);
+  tree.write(
+    `libs/${options.domain}/domain/src/lib/ports/${snakeCaseName}_port.py`,
+    portProtocolContent,
+  );
+  tree.write(
+    `libs/${options.domain}/infrastructure/src/lib/adapters/${snakeCaseName}_fake_adapter.py`,
+    fakeAdapterContent,
+  );
 }
 
-export async function portGenerator(
-  tree: Tree,
-  options: PortGeneratorSchema
-) {
-  if (options.language === 'ts') {
+export async function portGenerator(tree: Tree, options: PortGeneratorSchema) {
+  if (options.language === "ts") {
     addTsFiles(tree, options);
-  } else if (options.language === 'py') {
+  } else if (options.language === "py") {
     addPyFiles(tree, options);
   }
 

@@ -13,11 +13,13 @@ All components of the structured logging system have been successfully implement
 ### 📋 Deliverables
 
 #### 1. **Specifications**
+
 - ✅ **DEV-ADR-017**: Architectural Decision Record for JSON-first logging
 - ✅ **DEV-PRD-018**: Product Requirements for structured logging with correlation and PII redaction
 - ✅ **DEV-SDS-018**: Software Design Specification covering Vector config and language-specific loggers
 
 #### 2. **Vector Configuration** (`ops/vector/vector.toml`)
+
 - ✅ OTLP unified source for logs and traces (ports 4317 gRPC, 4318 HTTP)
 - ✅ PII redaction transform (`logs_redact_pii`)
   - Redacts: user_email, email, authorization, password, token, api_key
@@ -33,23 +35,27 @@ All components of the structured logging system have been successfully implement
 #### 3. **Language-Specific Logging Libraries**
 
 **Rust (via `tracing` crate)**
+
 - ✅ Updated `apps/observe-smoke/src/main.rs` with category fields
 - ✅ Examples of app, audit, and security categories
 - ✅ Structured logging via `tracing::info!`, `warn!`, `error!` macros
 
 **Node.js (via `pino`)**
+
 - ✅ Created `libs/node-logging/logger.js`
 - ✅ Automatic enrichment with service, environment, application_version
 - ✅ Trace correlation fields (trace_id, span_id)
 - ✅ Package: `@vibepro/node-logging` v0.1.0
 
 **Python (via `structlog`)**
+
 - ✅ Created `libs/python/vibepro_logging.py`
 - ✅ JSON output with ISO timestamps
 - ✅ Bound context for service metadata
 - ✅ Type-annotated for mypy strict mode
 
 #### 4. **Documentation**
+
 - ✅ **Appendix added to `docs/ENVIRONMENT.md`**: Logging Policy
   - Core principles (JSON, correlation, PII protection, levels, categories)
   - Language-specific usage examples
@@ -66,6 +72,7 @@ All components of the structured logging system have been successfully implement
 #### 5. **Testing**
 
 **Test Scripts:**
+
 - ✅ `tests/ops/test_vector_logs_config.sh`: Validates Vector configuration
   - Checks OTLP source configuration
   - Verifies PII redaction transform exists
@@ -81,10 +88,12 @@ All components of the structured logging system have been successfully implement
   - Category field presence
 
 **Quick-Start Tools:**
+
 - ✅ `tools/logging/pino-quickstart.js`: Node.js logging demo
 - ✅ `tools/logging/structlog-quickstart.py`: Python logging demo
 
 **Justfile Recipes:**
+
 - ✅ `just observe-logs`: Tail Vector log file
 - ✅ `just observe-validate`: Validate Vector configuration
 - ✅ `just test-logs-config`: Run Vector logs config test
@@ -93,6 +102,7 @@ All components of the structured logging system have been successfully implement
 - ✅ `just test-logs`: Run all logging tests (aggregate)
 
 #### 6. **Configuration & Tooling**
+
 - ✅ Created root `.eslintrc.json` with `ecmaVersion: "latest"` (ES2024+)
   - Modern JavaScript/Node.js support
   - TypeScript configuration with project references
@@ -135,22 +145,26 @@ $ just test-logs
 ## 📊 Core Principles Implemented
 
 ### 1. JSON-First Format
+
 - All logs emitted as machine-parseable JSON
 - Consistent schema across Rust, Node.js, and Python
 - No printf-style logging in production code
 
 ### 2. Trace Correlation
+
 - Every log includes `trace_id` and `span_id` when available
 - Enables full request lifecycle visibility
 - Automatic correlation with distributed traces
 
 ### 3. PII Protection
+
 - Raw PII never logged from application code
 - Hashed identifiers used (`user_id_hash`, `client_ip_hash`)
 - Vector redacts accidental PII at the edge before storage
 - Comprehensive redaction rules in Vector config
 
 ### 4. Log Levels
+
 - `error`: Actionable failures requiring investigation
 - `warn`: Degraded behavior, potential issues
 - `info`: Normal operational events (default)
@@ -158,13 +172,16 @@ $ just test-logs
 - ❌ No `trace` level (use tracing spans instead)
 
 ### 5. Log Categories
+
 - `app`: General application logs (default)
 - `audit`: User actions requiring compliance tracking
 - `security`: Auth, authorization, rate limiting events
 - Category field used for classification, not log level
 
 ### 6. Required Fields
+
 Every log line contains:
+
 - `timestamp` (ISO 8601)
 - `level` (error|warn|info|debug)
 - `message` or `event`
@@ -179,6 +196,7 @@ Every log line contains:
 ## 🚀 Usage Examples
 
 ### Rust
+
 ```rust
 use tracing::{info, warn, error};
 
@@ -193,16 +211,18 @@ error!(category = "app", code = 500, "upstream timeout");
 ```
 
 ### Node.js
-```javascript
-const { logger } = require('@vibepro/node-logging/logger');
-const log = logger('my-service');
 
-log.info({ category: 'app', user_id_hash: 'abc123' }, 'request accepted');
-log.warn({ category: 'security', action: 'rate_limit' }, 'client throttled');
-log.error({ category: 'app', code: 500 }, 'upstream timeout');
+```javascript
+const { logger } = require("@vibepro/node-logging/logger");
+const log = logger("my-service");
+
+log.info({ category: "app", user_id_hash: "abc123" }, "request accepted");
+log.warn({ category: "security", action: "rate_limit" }, "client throttled");
+log.error({ category: "app", code: 500 }, "upstream timeout");
 ```
 
 ### Python
+
 ```python
 from libs.python.vibepro_logging import configure_logger
 
@@ -240,38 +260,46 @@ just test-logs-correlation
 ## 📁 File Inventory
 
 ### Specifications
+
 - `docs/dev_adr.md` (DEV-ADR-017: lines 574-635)
 - `docs/dev_prd.md` (DEV-PRD-018: lines 570-651)
 - `docs/dev_sds.md` (DEV-SDS-018: lines 627-776)
 
 ### Configuration
+
 - `ops/vector/vector.toml` (lines 93-193: logs pipeline)
 - `.eslintrc.json` (root ESLint config with ES2024+)
 
 ### Libraries
+
 - `libs/node-logging/logger.js` (81 lines)
 - `libs/node-logging/package.json`
 - `libs/python/vibepro_logging.py` (90 lines)
 
 ### Examples
+
 - `apps/observe-smoke/src/main.rs` (updated with category fields)
 - `apps/observe-smoke/Cargo.toml` (added tracing dependency)
 
 ### Tests
+
 - `tests/ops/test_vector_logs_config.sh` (67 lines)
 - `tests/ops/test_log_redaction.sh` (80 lines)
 - `tests/ops/test_log_trace_correlation.sh` (86 lines)
 - `tests/ops/test_observe_smoke.sh` (updated: justfile → justfile)
 
 ### Tools
+
 - `tools/logging/pino-quickstart.js` (48 lines)
 - `tools/logging/structlog-quickstart.py` (72 lines)
 
 ### Documentation
+
 - `docs/ENVIRONMENT.md` (Appendix: Logging Policy, ~200 lines)
 - `docs/observability/README.md` (§11.5: Structured Logging, ~300 lines)
 
 ### Build System
+
 - `justfile` (added 7 new recipes: lines 523-560)
 
 ---

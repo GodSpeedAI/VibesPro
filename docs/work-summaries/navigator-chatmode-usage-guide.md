@@ -2,26 +2,29 @@
 
 ## Chat Mode Comparison
 
-| Chat Mode | Best For | Focus | MCP Tools |
-|-----------|----------|-------|-----------|
-| **persona.navigator** | General coding tasks across Python/TypeScript/JS | Code-first with adaptive analysis | ✅ All tools |
-| persona.senior-backend | Backend architecture, APIs, data layers | Spec-driven server implementation | Partial |
-| persona.senior-frontend | UI/UX, React, responsive design | Client-side patterns | Partial |
-| persona.system-architect | System design, architectural decisions | High-level architecture | Partial |
-| spec.lean | Quick spec generation | Minimal documentation | No |
-| spec.wide | Comprehensive specs | Detailed documentation | No |
-| tdd.red/green/refactor | Test-driven development | TDD workflow phases | No |
-| debug.* | Bug investigation and fixes | Debugging workflow | Partial |
+| Chat Mode                | Best For                                         | Focus                             | MCP Tools    |
+| ------------------------ | ------------------------------------------------ | --------------------------------- | ------------ |
+| **persona.navigator**    | General coding tasks across Python/TypeScript/JS | Code-first with adaptive analysis | ✅ All tools |
+| persona.senior-backend   | Backend architecture, APIs, data layers          | Spec-driven server implementation | Partial      |
+| persona.senior-frontend  | UI/UX, React, responsive design                  | Client-side patterns              | Partial      |
+| persona.system-architect | System design, architectural decisions           | High-level architecture           | Partial      |
+| spec.lean                | Quick spec generation                            | Minimal documentation             | No           |
+| spec.wide                | Comprehensive specs                              | Detailed documentation            | No           |
+| tdd.red/green/refactor   | Test-driven development                          | TDD workflow phases               | No           |
+| debug.\*                 | Bug investigation and fixes                      | Debugging workflow                | Partial      |
 
 ## Navigator Unique Strengths
 
 ### 1. Implicit Meta-Prompting
+
 - **Default behavior:** Code + concise analysis blended together
 - **Adapts to complexity:** Shows reasoning for hard problems, stays quiet for simple tasks
 - **Code-only mode:** Responds to "code only" trigger phrases
 
 ### 2. MCP Tool Integration
+
 Automatically leverages all available MCP servers:
+
 - **context7:** Up-to-date library documentation
 - **ref:** API references and best practices
 - **mem0:** Recall similar past solutions
@@ -31,6 +34,7 @@ Automatically leverages all available MCP servers:
 - **nx:** Nx workspace operations
 
 ### 3. Multi-Language Expertise
+
 - **Python:** Modern features (3.8+), type hints, async/await, FastAPI/Django/Flask
 - **TypeScript:** ES6+, strict typing, React/Vue/Node.js
 - **JavaScript:** Functional patterns, performance optimization
@@ -38,6 +42,7 @@ Automatically leverages all available MCP servers:
 ## When to Choose Navigator
 
 ### ✅ Use Navigator When:
+
 - Working across multiple languages (Python + TypeScript)
 - Need proactive suggestions (libraries, optimizations, security)
 - Want smart context awareness without explicitly requesting it
@@ -46,6 +51,7 @@ Automatically leverages all available MCP servers:
 - Need MCP tool integration (docs, memory, search)
 
 ### ⚠️ Use Other Modes When:
+
 - **TDD workflow:** Use `tdd.red`, `tdd.green`, `tdd.refactor`
 - **Debugging:** Use `debug.start`, `debug.isolate`, `debug.fix`
 - **Spec generation:** Use `spec.lean` or `spec.wide`
@@ -55,9 +61,11 @@ Automatically leverages all available MCP servers:
 ## Example Scenarios
 
 ### Scenario 1: New Feature Implementation
+
 **Task:** Implement OAuth2 authentication
 
 **Navigator approach:**
+
 1. Searches for existing auth patterns (via exa)
 2. Fetches latest OAuth2 docs (via context7)
 3. Recalls similar implementations (via mem0)
@@ -71,9 +79,11 @@ Automatically leverages all available MCP servers:
 **Output:** Working code + brief security notes + testing recommendations
 
 ### Scenario 2: Quick Utility Function
+
 **Task:** Write a function to parse CSV
 
 **Navigator approach:**
+
 1. Generates clean Python code using built-in csv module
 2. Adds type hints
 3. Minimal explanation (straightforward task)
@@ -82,9 +92,11 @@ Automatically leverages all available MCP servers:
 **Output:** Just the code (implicit mode for simple tasks)
 
 ### Scenario 3: Complex Algorithm
+
 **Task:** Implement rate limiter with token bucket
 
 **Navigator approach:**
+
 1. Explains token bucket algorithm (educational value)
 2. Compares with alternatives (sliding window, fixed window)
 3. Implements chosen approach
@@ -97,7 +109,9 @@ Automatically leverages all available MCP servers:
 ## Triggering Behaviors
 
 ### Code-Only Mode
+
 Trigger phrases:
+
 - "code only"
 - "just the code"
 - "no explanation"
@@ -106,7 +120,9 @@ Trigger phrases:
 **Result:** Clean code without analysis
 
 ### Deep Analysis Mode
+
 Navigator automatically provides deeper analysis for:
+
 - Complex algorithms
 - Security-sensitive code
 - Performance optimizations
@@ -118,12 +134,14 @@ Navigator automatically provides deeper analysis for:
 ## Integration with Workflows
 
 ### Works Well With:
+
 - **Nx generators:** Navigator will suggest using generators first
 - **GitHub context:** Pulls in PR/issue context automatically
 - **Memory system:** Learns from past interactions
 - **Documentation:** Always references latest docs
 
 ### Complements:
+
 - **TDD modes:** Use Navigator for implementation after `tdd.green`
 - **Debug modes:** Use Navigator after `debug.fix` for refactoring
 - **Spec modes:** Use Navigator to implement from specs generated by `spec.wide`
@@ -131,6 +149,7 @@ Navigator automatically provides deeper analysis for:
 ## Configuration
 
 ### Default Settings
+
 ```yaml
 domain: persona
 task: navigator
@@ -140,7 +159,9 @@ tools: ["codebase", "search", "githubRepo", "runTests"]
 ```
 
 ### Customization
+
 To customize, create a personal variant:
+
 1. Copy `.github/chatmodes/persona.navigator.chatmode.md`
 2. Rename to `persona.navigator-custom.chatmode.md`
 3. Adjust behavior in the body content
@@ -157,6 +178,7 @@ To customize, create a personal variant:
 ## Summary
 
 **Navigator is your default general-purpose coding assistant** when you need:
+
 - Multi-language support (Python/TypeScript/JavaScript)
 - Smart, adaptive responses
 - MCP tool integration

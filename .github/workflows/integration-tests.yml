@@ -18,9 +18,9 @@ on:
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Reason for triggering workflow'
+        description: "Reason for triggering workflow"
         required: false
-        default: 'Manual testing for hanging issue investigation'
+        default: "Manual testing for hanging issue investigation"
 # Run integration matrix only for pushes to main/develop to save CI for PRs
 # Pull requests will still run lighter-weight checks (unit/node/docs)
 

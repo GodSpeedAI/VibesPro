@@ -38,14 +38,14 @@ graph TD
 
 ## 3. Phase Overview Matrix
 
-| Phase | Duration | Parallel Agents | Dependencies | Critical Path | Status |
-| --- | --- | --- | --- | --- | --- |
-| PHASE-001 | 2-3 days | Up to 3 agents (A, B, C) | None | ✅ Yes | ✅ **COMPLETE** (All 3 tasks passing) |
-| PHASE-002 | 2 days | 2 agents (A, C) | PHASE-001 | ✅ Yes | ✅ **COMPLETE** (Both tasks passing) |
-| PHASE-003 | 2-3 days | 3 agents (A, B, C) | PHASE-001 | ✅ Yes | ✅ **COMPLETE** (All 3 tasks passing) |
-| PHASE-004 | 3 days | 2 agents (B, C) | PHASE-001, PHASE-003 | ✅ Yes | ✅ **COMPLETE** (Both tasks passing) |
-| PHASE-005 | 1-2 days | 1-2 agents (A, B) | PHASE-001 → PHASE-004 | ✅ Yes | 🔄 Partial (TASK-011 ✅, TASK-012 pending) |
-| PHASE-006 | 3-4 days | 2-3 agents (A, B, C) | PHASE-001 | No (optional) | □ Not Started |
+| Phase     | Duration | Parallel Agents          | Dependencies          | Critical Path | Status                                     |
+| --------- | -------- | ------------------------ | --------------------- | ------------- | ------------------------------------------ |
+| PHASE-001 | 2-3 days | Up to 3 agents (A, B, C) | None                  | ✅ Yes        | ✅ **COMPLETE** (All 3 tasks passing)      |
+| PHASE-002 | 2 days   | 2 agents (A, C)          | PHASE-001             | ✅ Yes        | ✅ **COMPLETE** (Both tasks passing)       |
+| PHASE-003 | 2-3 days | 3 agents (A, B, C)       | PHASE-001             | ✅ Yes        | ✅ **COMPLETE** (All 3 tasks passing)      |
+| PHASE-004 | 3 days   | 2 agents (B, C)          | PHASE-001, PHASE-003  | ✅ Yes        | ✅ **COMPLETE** (Both tasks passing)       |
+| PHASE-005 | 1-2 days | 1-2 agents (A, B)        | PHASE-001 → PHASE-004 | ✅ Yes        | 🔄 Partial (TASK-011 ✅, TASK-012 pending) |
+| PHASE-006 | 3-4 days | 2-3 agents (A, B, C)     | PHASE-001             | No (optional) | □ Not Started                              |
 
 ---
 
@@ -238,14 +238,14 @@ Scenario: "Generated project includes merged Copilot instructions"
 
 - [x] Create generation test verifying doc files exist & include AI onboarding section
 - [x] Test file properly structured
-- [x] Fixed hardcoded 'templates/test-project/' paths after _subdirectory configuration
+- [x] Fixed hardcoded 'templates/test-project/' paths after \_subdirectory configuration
 
 #### ✅ GREEN — TASK-005 Minimal Implementation
 
 - [x] Copy and adapt doc templates replacing references with VibesPro context
-- [x] Documentation files verified: README.md, commit_message_guidelines.md, dev_* files
+- [x] Documentation files verified: README.md, commit*message_guidelines.md, dev*\* files
 - [x] AI onboarding content integrated
-- [x] Updated test paths to match copier _subdirectory configuration (files at workspace root, not nested)
+- [x] Updated test paths to match copier \_subdirectory configuration (files at workspace root, not nested)
 
 #### ✅ REFACTOR — TASK-005 Code Quality
 
@@ -561,13 +561,13 @@ gantt
 
 ### Coordination Points
 
-| Sync Point | Tasks Converging | Integration Required | Agent Handoff |
-| --- | --- | --- | --- |
-| SYNC-001 | TASK-001, TASK-002, TASK-003 | Generated `.github` + workflows + smoke tests | A → C |
-| SYNC-002 | TASK-004, TASK-005 | Maintainer vs template docs alignment | A ↔ C |
-| SYNC-003 | TASK-006, TASK-007, TASK-008 | Ensure justfile recipes reference scripts and package commands | A → B → C |
-| SYNC-004 | TASK-009, TASK-010 | Generators reference MCP descriptors | B → C |
-| SYNC-005 | TASK-011, TASK-012 | Template & generated CI parity | A ↔ B |
+| Sync Point | Tasks Converging             | Integration Required                                           | Agent Handoff |
+| ---------- | ---------------------------- | -------------------------------------------------------------- | ------------- |
+| SYNC-001   | TASK-001, TASK-002, TASK-003 | Generated `.github` + workflows + smoke tests                  | A → C         |
+| SYNC-002   | TASK-004, TASK-005           | Maintainer vs template docs alignment                          | A ↔ C        |
+| SYNC-003   | TASK-006, TASK-007, TASK-008 | Ensure justfile recipes reference scripts and package commands | A → B → C     |
+| SYNC-004   | TASK-009, TASK-010           | Generators reference MCP descriptors                           | B → C         |
+| SYNC-005   | TASK-011, TASK-012           | Template & generated CI parity                                 | A ↔ B        |
 
 ---
 
@@ -591,31 +591,31 @@ gantt
 
 ## 11. Task Granularity & Test Matrix
 
-| Task ID | Requirements | Planned Tests | Files Modified | Agent | Parallel? | Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| TASK-001 | AI_ADR-001, AI_PRD-001, AI_SDS-001 | 3 integration | 5+ | A | ✅ | ✅ Impl Complete (copier blocker) |
-| TASK-002 | AI_ADR-002, AI_PRD-001, AI_SDS-004 | 2 integration, 1 contract | 3 | B | ✅ | ✅ Impl Complete (copier blocker) |
-| TASK-003 | AI_ADR-005, AI_PRD-005, AI_SDS-004 | 2 integration | 2 | C | ✅ | ✅ Test Created (copier blocker) |
-| TASK-004 | AI_ADR-003, AI_PRD-002, AI_SDS-002 | 2 unit | 4 | A | ✅ | ✅ Complete (5/5 tests ✅) |
-| TASK-005 | AI_ADR-003, AI_PRD-002, AI_SDS-002 | 2 integration | 5 | C | ✅ | ✅ Impl Complete (copier blocker) |
-| TASK-006 | AI_ADR-004, AI_PRD-003, AI_SDS-003 | 3 unit | 3 | A | ✅ | 🔄 Partial (1/12 tests) |
-| TASK-007 | AI_ADR-004, AI_PRD-003, AI_SDS-003 | 2 integration | 4 | B | ✅ | ✅ Complete (8/8 tests ✅) |
-| TASK-008 | AI_ADR-004, AI_PRD-003, AI_SDS-003 | 2 unit | 2 | C | ✅ | 🔄 Partial (14/16 tests) |
-| TASK-009 | AI_ADR-002, AI_PRD-004, AI_SDS-003 | 3 unit | 3 | B | ✅ | ✅ Complete (13/13 tests ✅) |
-| TASK-010 | AI_ADR-004, AI_PRD-004, AI_SDS-003 | 3 unit, 1 integration | 4 | C | ✅ | ✅ Complete (3/3 tests ✅) |
-| TASK-011 | AI_ADR-005, AI_PRD-005, AI_SDS-004 | 2 integration | 3 | A | ✅ | ✅ Complete (11/11 tests ✅) |
-| TASK-012 | AI_ADR-005, AI_PRD-005, AI_SDS-004 | 2 integration | 2 | B | ✅ | 🔄 Pending |
+| Task ID  | Requirements                       | Planned Tests             | Files Modified | Agent | Parallel? | Status                            |
+| -------- | ---------------------------------- | ------------------------- | -------------- | ----- | --------- | --------------------------------- |
+| TASK-001 | AI_ADR-001, AI_PRD-001, AI_SDS-001 | 3 integration             | 5+             | A     | ✅        | ✅ Impl Complete (copier blocker) |
+| TASK-002 | AI_ADR-002, AI_PRD-001, AI_SDS-004 | 2 integration, 1 contract | 3              | B     | ✅        | ✅ Impl Complete (copier blocker) |
+| TASK-003 | AI_ADR-005, AI_PRD-005, AI_SDS-004 | 2 integration             | 2              | C     | ✅        | ✅ Test Created (copier blocker)  |
+| TASK-004 | AI_ADR-003, AI_PRD-002, AI_SDS-002 | 2 unit                    | 4              | A     | ✅        | ✅ Complete (5/5 tests ✅)        |
+| TASK-005 | AI_ADR-003, AI_PRD-002, AI_SDS-002 | 2 integration             | 5              | C     | ✅        | ✅ Impl Complete (copier blocker) |
+| TASK-006 | AI_ADR-004, AI_PRD-003, AI_SDS-003 | 3 unit                    | 3              | A     | ✅        | 🔄 Partial (1/12 tests)           |
+| TASK-007 | AI_ADR-004, AI_PRD-003, AI_SDS-003 | 2 integration             | 4              | B     | ✅        | ✅ Complete (8/8 tests ✅)        |
+| TASK-008 | AI_ADR-004, AI_PRD-003, AI_SDS-003 | 2 unit                    | 2              | C     | ✅        | 🔄 Partial (14/16 tests)          |
+| TASK-009 | AI_ADR-002, AI_PRD-004, AI_SDS-003 | 3 unit                    | 3              | B     | ✅        | ✅ Complete (13/13 tests ✅)      |
+| TASK-010 | AI_ADR-004, AI_PRD-004, AI_SDS-003 | 3 unit, 1 integration     | 4              | C     | ✅        | ✅ Complete (3/3 tests ✅)        |
+| TASK-011 | AI_ADR-005, AI_PRD-005, AI_SDS-004 | 2 integration             | 3              | A     | ✅        | ✅ Complete (11/11 tests ✅)      |
+| TASK-012 | AI_ADR-005, AI_PRD-005, AI_SDS-004 | 2 integration             | 2              | B     | ✅        | 🔄 Pending                        |
 
 ---
 
 ## 12. Test Categories & Timing Targets
 
-| Test Type | Max Duration | Scope | Owner |
-| --- | --- | --- | --- |
-| Unit | ≤ 100 ms | Individual functions/scripts | Task owner |
-| Integration | ≤ 1 s | Generated project behaviors | Task owner |
-| Contract | ≤ 500 ms | Workflow & MCP descriptors | Interface owner |
-| E2E | ≤ 5 s | `just test-generation` pipeline | Shared during regression |
+| Test Type   | Max Duration | Scope                           | Owner                    |
+| ----------- | ------------ | ------------------------------- | ------------------------ |
+| Unit        | ≤ 100 ms     | Individual functions/scripts    | Task owner               |
+| Integration | ≤ 1 s        | Generated project behaviors     | Task owner               |
+| Contract    | ≤ 500 ms     | Workflow & MCP descriptors      | Interface owner          |
+| E2E         | ≤ 5 s        | `just test-generation` pipeline | Shared during regression |
 
 ---
 
@@ -688,6 +688,7 @@ gantt
 ### Critical Blockers
 
 **⚠️ Copier Template Variables Missing** (Affects TASK-001, 002, 003, 005):
+
 - Need to add to `copier.yml`:
   - `primary_domains` (used in copilot-instructions.md.j2)
   - `project_purpose` (used in copilot-instructions.md.j2)
@@ -698,13 +699,13 @@ gantt
 ### Remaining Work
 
 **High Priority:**
+
 1. ⚠️ **Add missing copier.yml variables** (unblocks 5 test suites)
 2. TASK-006: Add missing justfile recipes (11 recipes needed)
 3. TASK-008: Add `test:node` script to package.json
 4. TASK-012: Implement Generated Project CI Validation
 
-**Low Priority:**
-5. Clean up obsolete snapshot files (3 files from stack_defaults tests)
+**Low Priority:** 5. Clean up obsolete snapshot files (3 files from stack_defaults tests)
 
 ### Final Verification (Upon All Tasks Complete)
 
@@ -717,12 +718,14 @@ gantt
 ### Current Focus Areas
 
 **Immediate Actions:**
+
 1. 🔥 Fix copier.yml: Add `primary_domains`, `project_purpose`, `tech_stack_summary`
 2. Complete TASK-006: Import justfile recipes from VibePDK
 3. Complete TASK-008: Add test:node script
 4. Start TASK-012: Generated Project CI Validation
 
 **Test Status Summary:**
+
 - ✅ **Fully Passing:** 5 tasks (TASK-004, 007, 009, 010, 011) = 40/40 tests
 - 🔄 **Partial:** 2 tasks (TASK-006: 1/12, TASK-008: 14/16) = 15/28 tests
 - ⚠️ **Blocked by Copier:** 4 tasks (TASK-001, 002, 003, 005) = 0/10 tests (implementation complete)
@@ -731,7 +734,7 @@ gantt
 **Overall Implementation Progress: 10/12 tasks have code complete (83%)**
 **Overall Test Success: 55/78 tests passing (70%, excluding copier-blocked tests)**
 
-```
+````
 
 ---
 
@@ -852,7 +855,7 @@ fn test_concurrent_inserts() {
         assert!(db.get(&format!("key{}", i).into_bytes()).unwrap().is_some());
     }
 }
-```
+````
 
 - Checklist:
   - [ ] Create `libs/security/` directory structure
@@ -870,6 +873,7 @@ fn test_concurrent_inserts() {
 - [ ] All 5 tests passing
 
 **Key Files:**
+
 - `libs/security/Cargo.toml`
 - `libs/security/src/lib.rs`
 - `libs/security/src/secure_db.rs`
@@ -900,55 +904,67 @@ fn test_concurrent_inserts() {
 **Test File:** `tests/integration/security/template_generation_test.ts`
 
 ```typescript
-import { runCopierGeneration } from '../../utils/generation-smoke';
-import * as fs from 'fs';
-import * as path from 'path';
+import { runCopierGeneration } from "../../utils/generation-smoke";
+import * as fs from "fs";
+import * as path from "path";
 
-describe('Security-Hardened Template Generation', () => {
-  test('Generated project with hardening enabled includes SecureDb', async () => {
+describe("Security-Hardened Template Generation", () => {
+  test("Generated project with hardening enabled includes SecureDb", async () => {
     const tmpDir = await runCopierGeneration({
-      project_name: 'test-secure-project',
+      project_name: "test-secure-project",
       enable_security_hardening: true,
-      encryption_backend: 'xchacha20poly1305',
+      encryption_backend: "xchacha20poly1305",
     });
 
-    const secureDbPath = path.join(tmpDir, 'libs', 'security', 'src', 'secure_db.rs');
+    const secureDbPath = path.join(
+      tmpDir,
+      "libs",
+      "security",
+      "src",
+      "secure_db.rs",
+    );
     expect(fs.existsSync(secureDbPath)).toBe(true);
 
-    const cargoToml = fs.readFileSync(path.join(tmpDir, 'Cargo.toml'), 'utf-8');
-    expect(cargoToml).toContain('chacha20poly1305');
+    const cargoToml = fs.readFileSync(path.join(tmpDir, "Cargo.toml"), "utf-8");
+    expect(cargoToml).toContain("chacha20poly1305");
   });
 
-  test('Generated project without hardening excludes security libs', async () => {
+  test("Generated project without hardening excludes security libs", async () => {
     const tmpDir = await runCopierGeneration({
-      project_name: 'test-plain-project',
+      project_name: "test-plain-project",
       enable_security_hardening: false,
     });
 
-    const securityDir = path.join(tmpDir, 'libs', 'security');
+    const securityDir = path.join(tmpDir, "libs", "security");
     expect(fs.existsSync(securityDir)).toBe(false);
   });
 
-  test('Dockerfile uses distroless and non-root user', async () => {
+  test("Dockerfile uses distroless and non-root user", async () => {
     const tmpDir = await runCopierGeneration({
-      project_name: 'test-docker',
+      project_name: "test-docker",
       enable_security_hardening: true,
     });
 
-    const dockerfile = fs.readFileSync(path.join(tmpDir, 'Dockerfile'), 'utf-8');
-    expect(dockerfile).toContain('gcr.io/distroless/cc');
-    expect(dockerfile).toContain('USER 65532:65532');
+    const dockerfile = fs.readFileSync(
+      path.join(tmpDir, "Dockerfile"),
+      "utf-8",
+    );
+    expect(dockerfile).toContain("gcr.io/distroless/cc");
+    expect(dockerfile).toContain("USER 65532:65532");
   });
 
-  test('docker-compose.yml has security options', async () => {
+  test("docker-compose.yml has security options", async () => {
     const tmpDir = await runCopierGeneration({
-      project_name: 'test-compose',
+      project_name: "test-compose",
       enable_security_hardening: true,
     });
 
-    const compose = fs.readFileSync(path.join(tmpDir, 'docker-compose.yml'), 'utf-8');
-    expect(compose).toContain('no-new-privileges:true');
-    expect(compose).toContain('cap_drop:');
+    const compose = fs.readFileSync(
+      path.join(tmpDir, "docker-compose.yml"),
+      "utf-8",
+    );
+    expect(compose).toContain("no-new-privileges:true");
+    expect(compose).toContain("cap_drop:");
   });
 });
 ```
@@ -1051,33 +1067,33 @@ fn test_binary_size_increase() {
 **Test File:** `tests/integration/security/e2e_security_test.ts`
 
 ```typescript
-describe('End-to-End Security Validation', () => {
-  test('Generated project passes security lint', async () => {
+describe("End-to-End Security Validation", () => {
+  test("Generated project passes security lint", async () => {
     const tmpDir = await runCopierGeneration({
-      project_name: 'e2e-secure',
+      project_name: "e2e-secure",
       enable_security_hardening: true,
     });
 
-    const result = execSync('cargo clippy -- -D warnings', {
+    const result = execSync("cargo clippy -- -D warnings", {
       cwd: tmpDir,
-      encoding: 'utf-8',
+      encoding: "utf-8",
     });
-    expect(result).not.toContain('error');
+    expect(result).not.toContain("error");
   });
 
-  test('Docker container runs with least privilege', async () => {
+  test("Docker container runs with least privilege", async () => {
     const tmpDir = await runCopierGeneration({
-      project_name: 'docker-secure',
+      project_name: "docker-secure",
       enable_security_hardening: true,
     });
 
     // Build and inspect container
-    execSync('docker-compose build', { cwd: tmpDir });
+    execSync("docker-compose build", { cwd: tmpDir });
     const inspect = execSync(
       'docker inspect vibes-pro | jq ".[0].Config.User"',
-      { cwd: tmpDir, encoding: 'utf-8' }
+      { cwd: tmpDir, encoding: "utf-8" },
     );
-    expect(inspect.trim()).toContain('65532');
+    expect(inspect.trim()).toContain("65532");
   });
 });
 ```

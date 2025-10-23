@@ -13,6 +13,7 @@ Enhanced the onboarding chatmode to provide optional interactive walkthroughs of
 ## Problem Statement
 
 The original onboarding chatmode was:
+
 - Static list of links and quick tips
 - No interactive exploration
 - Limited guidance on when/why to use tools
@@ -24,10 +25,12 @@ The original onboarding chatmode was:
 ### New Approach
 
 **Two-Track System:**
+
 1. **Quick Overview** - Fast start for experienced developers
 2. **Interactive Walkthroughs** - Deep dives for those who want to learn
 
 **User-Driven Exploration:**
+
 - User chooses what to explore
 - Progressive disclosure (start simple, go deep)
 - Context-specific guidance (when/why to use each tool)
@@ -55,11 +58,13 @@ What would you like to explore?
 ### 1. Just Recipes Walkthrough
 
 **Categories:**
+
 - **Development** (`just dev`, `just setup`)
 - **Code Quality** (`just lint`, `just test`, `just ai-validate`)
 - **AI Workflows** (`just ai-scaffold`, `just customize-instructions`, `just ai-context-bundle`)
 
 **Format for Each Recipe:**
+
 ```
 - `just <command>` - Description
   **When**: Specific trigger/situation
@@ -67,6 +72,7 @@ What would you like to explore?
 ```
 
 **Example:**
+
 ```
 - `just ai-scaffold name=<generator>` - Run Nx generator
   **When**: Creating new components/libs/apps
@@ -78,19 +84,23 @@ What would you like to explore?
 **Organized by Workflow:**
 
 **TDD Workflow:**
+
 - `tdd.red` → `tdd.green` → `tdd.refactor`
 - Explains the cycle
 - Shows when to use each phase
 
 **Debug Workflow:**
+
 - `debug.start` → `debug.repro` → `debug.fix`
 - Structured debugging approach
 
 **Customization:**
+
 - `meta.customize-instructions`
 - Audit-first customization
 
 **Usage Instructions:**
+
 ```
 Usage in VS Code:
 1. Open GitHub Copilot chat
@@ -101,9 +111,11 @@ Usage in VS Code:
 ### 3. Prompts Walkthrough
 
 **Key Prompts:**
+
 - `customize.copilot-instructions.prompt.md` - Intelligent customization
 
 **How to Use:**
+
 1. Via Chat (copy prompt content)
 2. Via Just (recipes invoke prompts)
 3. Via Chatmode (modes reference prompts)
@@ -113,17 +125,21 @@ Usage in VS Code:
 **MCP Servers by Category:**
 
 **Documentation:**
+
 - Context7 - Library docs
 - Microsoft Docs - Azure/TypeScript docs
 
 **Search & Analysis:**
+
 - Exa Code - Code search
 
 **Development:**
+
 - Nx MCP - Nx workspace operations
 - Pylance MCP - Python language server
 
 **Format:**
+
 ```
 - **Tool Name** - Description
   **When**: Use case
@@ -135,15 +151,18 @@ Usage in VS Code:
 **Core Workflows:**
 
 1. **Generator-First** (CRITICAL)
+
    - Always check generators first
    - Example commands
    - Reference to instructions
 
 2. **Research → Plan → Implement → Validate**
+
    - Each phase explained
    - When to use
 
 3. **TDD Workflow**
+
    - Red → Green → Refactor cycle
    - When/why to use
 
@@ -154,16 +173,19 @@ Usage in VS Code:
 ## Adaptive Approach
 
 ### For New Users
+
 - Start with Quick Overview
 - Suggest `just setup`
 - Recommend reading copilot-instructions.md
 
 ### For Experienced Developers
+
 - Go straight to requested walkthrough
 - Provide commands and file paths
 - Less explanation, more actionable info
 
 ### For Overwhelmed Users
+
 - Simplify to 3 key takeaways:
   1. Run `just setup`
   2. Use `just ai-scaffold` before writing code
@@ -293,6 +315,7 @@ AI: [Displays customize.copilot-instructions.prompt.md workflow]
 **Location**: `templates/{{project_slug}}/.github/chatmodes/onboarding.overview.chatmode.md`
 
 **Sections:**
+
 1. Role & Approach
 2. Opening Message (interactive menu)
 3. Quick Overview (default)
@@ -337,6 +360,7 @@ tools: ["codebase", "search"]
 ### First-Time Setup
 
 Recommended sequence:
+
 1. Use `@onboarding.overview` → choose "overview"
 2. Run `just setup` (from overview)
 3. Read `.github/copilot-instructions.md` (from overview)
@@ -345,6 +369,7 @@ Recommended sequence:
 ### As Reference
 
 User can return anytime:
+
 - "Show me just recipes again"
 - "Explain TDD workflow"
 - "What MCP tools are available?"
@@ -354,11 +379,13 @@ User can return anytime:
 ### Phase 2: Context-Aware Onboarding
 
 1. **Detect User Progress**
+
    - Check if `just setup` was run
    - See if user has created files
    - Adjust recommendations accordingly
 
 2. **Role-Based Onboarding**
+
    - Frontend developer → React, UI tools
    - Backend developer → API, database tools
    - Full-stack → comprehensive walkthrough
@@ -370,11 +397,13 @@ User can return anytime:
 ### Phase 3: Interactive Tutorials
 
 1. **Guided Tasks**
+
    - "Create your first component"
    - "Write your first test"
    - "Use a generator"
 
 2. **Validation**
+
    - Check if user completed task
    - Provide feedback
 
@@ -420,6 +449,7 @@ This creates a more engaging, educational, and effective onboarding experience t
 ## Spec Traceability
 
 **Aligns with**:
+
 - DEV-PRD: AI-enhanced development workflows
 - UX Best Practices: Progressive disclosure, user-driven exploration
 - Education: Learn by doing, contextual guidance

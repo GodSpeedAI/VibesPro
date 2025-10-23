@@ -90,15 +90,30 @@ tools/vibepro/
   "type": "object",
   "properties": {
     "name": { "type": "string", "$default": { "$source": "argv", "index": 0 } },
-    "method": { "type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+    "method": {
+      "type": "string",
+      "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    },
     "path": { "type": "string" },
     "scope": { "type": "string", "enum": ["api", "shared"], "default": "api" },
     "directory": { "type": "string" },
-    "validator": { "type": "string", "enum": ["zod", "valibot", "none"], "default": "zod" },
+    "validator": {
+      "type": "string",
+      "enum": ["zod", "valibot", "none"],
+      "default": "zod"
+    },
     "statusCodes": { "type": "string" },
     "withE2E": { "type": "boolean", "default": false },
-    "client": { "type": "string", "enum": ["typescript", "none"], "default": "typescript" },
-    "unitTestRunner": { "type": "string", "enum": ["vitest", "jest"], "default": "vitest" },
+    "client": {
+      "type": "string",
+      "enum": ["typescript", "none"],
+      "default": "typescript"
+    },
+    "unitTestRunner": {
+      "type": "string",
+      "enum": ["vitest", "jest"],
+      "default": "vitest"
+    },
     "tags": { "type": "string" }
   },
   "required": ["name", "method", "path"]
@@ -110,15 +125,15 @@ tools/vibepro/
 ```ts
 export interface RouteContractSchema {
   name: string;
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   path: string;
-  scope?: 'api' | 'shared';
+  scope?: "api" | "shared";
   directory?: string;
-  validator?: 'zod' | 'valibot' | 'none';
+  validator?: "zod" | "valibot" | "none";
   statusCodes?: string;
   withE2E?: boolean;
-  client?: 'typescript' | 'none';
-  unitTestRunner?: 'vitest' | 'jest';
+  client?: "typescript" | "none";
+  unitTestRunner?: "vitest" | "jest";
   tags?: string;
 }
 ```

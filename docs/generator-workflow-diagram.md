@@ -16,7 +16,7 @@ graph TD
     J --> K[Add Tests via TDD]
     K --> L[Update Traceability]
     H --> J
-    
+
     style C fill:#90EE90
     style G fill:#87CEEB
     style I fill:#FFD700
@@ -32,18 +32,18 @@ graph LR
         R2 --> R4[Customize Test Scaffold]
         R4 --> R5[Run Test - Should FAIL]
     end
-    
+
     subgraph "Green Phase"
         R5 --> G1[Implement in Generated Structure]
         G1 --> G2[Run Test - Should PASS]
     end
-    
+
     subgraph "Refactor Phase"
         G2 --> RF1[Improve Within Boundaries]
         RF1 --> RF2[Keep Nx Project Graph Intact]
         RF2 --> RF3[Re-run Tests]
     end
-    
+
     style R2 fill:#FFD700
     style G1 fill:#90EE90
     style RF1 fill:#87CEEB
@@ -59,17 +59,17 @@ graph TD
     S3 -->|Component| L2[@nx/react:component]
     S3 -->|App| L3[@nx/node:application]
     S3 -->|Hook| L4[@nx/react:hook]
-    
+
     L1 --> S4[just ai-scaffold]
     L2 --> S4
     L3 --> S4
     L4 --> S4
-    
+
     S4 --> S5[Generator Creates Structure]
     S5 --> S6[Implement Business Logic]
     S6 --> S7[Add Tests]
     S7 --> S8[Update Traceability Matrix]
-    
+
     style S4 fill:#FFD700
     style S5 fill:#90EE90
 ```
@@ -83,10 +83,10 @@ graph TD
     C --> D[Precedence 25: context.instructions.md]
     D --> E[Precedence 32: src.instructions.md]
     E --> F[Precedence 50: general.instructions.md]
-    
+
     B -.references.-> G[nx.instructions.md<br/>Nx MCP Server]
     B -.uses.-> H[justfile<br/>ai-scaffold recipe]
-    
+
     style B fill:#FFD700
     style G fill:#87CEEB
     style H fill:#90EE90
@@ -102,14 +102,14 @@ graph LR
     GF --> |referenced by| SP[spec.implement.prompt.md]
     GF --> |referenced by| TP[tdd.workflow.prompt.md]
     GF --> |referenced by| TC[tdd.red.chatmode.md]
-    
+
     GF --> |references| NX[nx.instructions.md]
     GF --> |references| JF[justfile ai-scaffold]
-    
+
     NG[nx-generators-guide.md] --> |references| GF
     NG --> |references| NX
     NG --> |references| JF
-    
+
     style GF fill:#FFD700
     style NG fill:#90EE90
 ```
@@ -119,7 +119,7 @@ graph LR
 ```mermaid
 graph TD
     A[Need to Create Something] --> B{What are you creating?}
-    
+
     B -->|Shared utilities, domain logic| C[@nx/js:library]
     B -->|React component| D[@nx/react:component]
     B -->|React library| E[@nx/react:library]
@@ -128,7 +128,7 @@ graph TD
     B -->|Next.js app| H[@nx/next:application<br/>Install: pnpm add -D @nx/next]
     B -->|Mobile app| I[@nx/expo:application<br/>Install: pnpm add -D @nx/expo]
     B -->|Python API| J[@nxlv/python:application<br/>Install: pnpm add -D @nxlv/python]
-    
+
     C --> K[just ai-scaffold name=@nx/js:library]
     D --> L[pnpm exec nx g @nx/react:component MyComponent]
     E --> K
@@ -137,7 +137,7 @@ graph TD
     H --> O[pnpm exec nx g @nx/next:application web]
     I --> P[pnpm exec nx g @nx/expo:application mobile]
     J --> Q[pnpm exec nx g @nxlv/python:application api --type=fastapi]
-    
+
     K --> R[Customize with Business Logic]
     L --> R
     M --> R
@@ -145,7 +145,7 @@ graph TD
     O --> R
     P --> R
     Q --> R
-    
+
     style K fill:#90EE90
     style R fill:#FFD700
 ```
@@ -161,7 +161,7 @@ graph LR
     B --> D[src/components/Button.test.tsx]
     B --> E[Manual config]
     E --> F[Inconsistent structure]
-    
+
     style F fill:#FF6B6B
 ```
 
@@ -179,7 +179,7 @@ graph LR
     F --> I[Consistent structure]
     G --> I
     H --> I
-    
+
     style I fill:#90EE90
 ```
 

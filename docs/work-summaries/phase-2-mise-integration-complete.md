@@ -16,6 +16,7 @@ Implement Phase 2 of the environment setup roadmap: establish mise as the single
 Created `tests/env/test_mise_versions.sh` to validate mise configuration:
 
 **Test Coverage:**
+
 - ✅ Validates `.mise.toml` exists at repo root
 - ✅ Ensures `.python-version` is absent (mise is authoritative)
 - ✅ Checks mise can read configuration
@@ -44,12 +45,14 @@ rust = "1.80.1"
 Confirmed `.python-version` was already marked for deletion in git
 
 **Fixed Test Logic:**
+
 - Updated test to properly parse TOML file (grep for `^node =` pattern)
 - Made version checks graceful (warns if not installed, doesn't fail)
 - Provides clear installation guidance
 
 **Documentation Added:**
 Updated `docs/ENVIRONMENT.md` with comprehensive mise section:
+
 - What is mise and when to use it
 - Installation and activation instructions
 - Usage examples (install, ls, current, exec, use)
@@ -61,6 +64,7 @@ Updated `docs/ENVIRONMENT.md` with comprehensive mise section:
 
 **Created Node Verification Script:**
 Added `scripts/verify-node.sh` to detect Volta/mise conflicts:
+
 - Compares Node versions between `.mise.toml` and `package.json` Volta section
 - Warns on major version mismatch
 - Provides clear guidance on resolution
@@ -68,6 +72,7 @@ Added `scripts/verify-node.sh` to detect Volta/mise conflicts:
 
 **Added Just Target:**
 Created `verify-node` recipe in `justfile`:
+
 ```make
 verify-node:
     @echo "🔍 Verifying Node version alignment..."
@@ -113,9 +118,11 @@ $ just test-env
 ### New Files (2 total)
 
 **Tests:**
+
 - `tests/env/test_mise_versions.sh` - mise configuration validation
 
 **Scripts:**
+
 - `scripts/verify-node.sh` - Volta/mise conflict detection
 
 ### Modified Files (4 total)
@@ -189,6 +196,7 @@ OS-level tool versions:
 mise replaces multiple version managers with a single tool:
 
 **Before (multiple tools):**
+
 ```bash
 nvm use 20             # Node
 pyenv local 3.12       # Python
@@ -196,6 +204,7 @@ rustup default stable  # Rust
 ```
 
 **After (mise only):**
+
 ```bash
 mise install           # All runtimes
 ```
@@ -221,6 +230,7 @@ This implementation fulfills Phase 2 requirements from `docs/tmp/devenv.md`:
 - ✅ **2.3 REFACTOR** - Added verify-node, enhanced doctor
 
 Maps to specifications:
+
 - **PRD-012** (mise as single runtime manager) ✅
 - **PRD-016** (Volta coexistence, mise authority) ✅
 - **DEV-SPEC-006** (CI posture) - Foundation ready
@@ -301,6 +311,7 @@ just dev
 With devbox (OS) and mise (runtimes) providing reproducible environments, Phase 3 will add secrets management:
 
 ### Phase 3 - SOPS Secret Encryption
+
 - Create `.sops.yaml` (encryption configuration)
 - Create `.secrets.env.sops` (encrypted secrets)
 - Create `.envrc` for local development (direnv integration)
@@ -309,6 +320,7 @@ With devbox (OS) and mise (runtimes) providing reproducible environments, Phase 
 - Ensure no plaintext secrets in repo
 
 ### Expected Flow
+
 ```bash
 devbox shell              # OS tools (Phase 1)
 mise install              # Runtimes (Phase 2)
@@ -365,6 +377,7 @@ The mise integration provides a unified, fast, and reliable way to manage Node, 
 ---
 
 **Traceability:**
+
 - PRD-012: mise as runtime manager ✅
 - PRD-016: Volta coexistence ✅
 - Phase 0: Test harness ✅

@@ -107,14 +107,14 @@ test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured
 
 ### Key Differences: sled vs redb
 
-| Aspect | sled | redb |
-|--------|------|------|
-| **Transactions** | Implicit (auto-commit) | Explicit (begin_write/commit) |
-| **Table Model** | Key prefixes (namespaces) | Named tables (TableDefinition) |
-| **Read API** | `scan_prefix()` | `range()` on table |
-| **Value Type** | `IVec` | `&[u8]` slices |
-| **Flush** | Manual `flush()` | Automatic on drop |
-| **Error Handling** | `sled::Error` | `redb::Error` |
+| Aspect             | sled                      | redb                           |
+| ------------------ | ------------------------- | ------------------------------ |
+| **Transactions**   | Implicit (auto-commit)    | Explicit (begin_write/commit)  |
+| **Table Model**    | Key prefixes (namespaces) | Named tables (TableDefinition) |
+| **Read API**       | `scan_prefix()`           | `range()` on table             |
+| **Value Type**     | `IVec`                    | `&[u8]` slices                 |
+| **Flush**          | Manual `flush()`          | Automatic on drop              |
+| **Error Handling** | `sled::Error`             | `redb::Error`                  |
 
 ### Migration Pattern
 
@@ -159,11 +159,13 @@ db = RedbTemporalDatabaseAdapter("./temporal_db")
 **Note:** This migration creates a **new database format**. Existing sled databases will not be automatically migrated.
 
 **For Production Systems:**
+
 1. Export data from sled database (use temporal-db CLI tools)
 2. Re-import into redb database
 3. Verify data integrity
 
 **For Development:**
+
 - Clean start recommended
 - Re-seed temporal database with baseline specifications
 
@@ -180,7 +182,7 @@ db = RedbTemporalDatabaseAdapter("./temporal_db")
 
 ### Benchmarks
 
-*(To be added during REFACTOR phase)*
+_(To be added during REFACTOR phase)_
 
 ---
 
@@ -198,6 +200,7 @@ db = RedbTemporalDatabaseAdapter("./temporal_db")
 ### Template Updates
 
 Files requiring updates:
+
 - `templates/tools/prompt_optimizer/README.md.j2`
 - `templates/tools/prompt_optimizer/requirements.txt.j2`
 - `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`

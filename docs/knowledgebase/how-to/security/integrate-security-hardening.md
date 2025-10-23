@@ -9,6 +9,7 @@
 This guide explains how to incorporate security hardening features into the VibesPro project **without adding technical debt**. The approach leverages existing code through copy/paste strategies, maintains TDD discipline, and uses feature flags to ensure zero impact on non-hardened projects.
 
 **Key Principles:**
+
 1. ✅ **Opt-in via feature flags** - No mandatory complexity
 2. ✅ **Copy existing code** - Minimize new code generation
 3. ✅ **TDD from day one** - RED → GREEN → REFACTOR
@@ -20,16 +21,16 @@ This guide explains how to incorporate security hardening features into the Vibe
 
 ### 1. Core Specification Documents (Created)
 
-| Document | Purpose | Location |
-|----------|---------|----------|
+| Document                     | Purpose                          | Location                                  |
+| ---------------------------- | -------------------------------- | ----------------------------------------- |
 | **AI_SECURITY_HARDENING.md** | Complete technical specification | `/docs/aiassist/AI_SECURITY_HARDENING.md` |
-| **AI_ADR-006** | Architectural decision record | `/docs/aiassist/AI_ADR.md` (appended) |
-| **AI_TDD_PLAN PHASE-006** | Implementation task breakdown | `/docs/aiassist/AI_TDD_PLAN.md` (added) |
+| **AI_ADR-006**               | Architectural decision record    | `/docs/aiassist/AI_ADR.md` (appended)     |
+| **AI_TDD_PLAN PHASE-006**    | Implementation task breakdown    | `/docs/aiassist/AI_TDD_PLAN.md` (added)   |
 
 ### 2. Source Material (Reference)
 
-| Document | Purpose | Location |
-|----------|---------|----------|
+| Document         | Purpose                     | Location                 |
+| ---------------- | --------------------------- | ------------------------ |
 | **hardening.md** | Original hardening proposal | `/docs/tmp/hardening.md` |
 
 ---
@@ -39,12 +40,14 @@ This guide explains how to incorporate security hardening features into the Vibe
 ### Phase 1: Documentation (COMPLETE ✅)
 
 **What was done:**
+
 1. ✅ Created `AI_SECURITY_HARDENING.md` with complete specification
 2. ✅ Added `AI_ADR-006` to architectural decision records
 3. ✅ Added `PHASE-006` to `AI_TDD_PLAN.md` with 3 tasks (TASK-013, 014, 015)
 4. ✅ Extracted and formalized code examples from `hardening.md`
 
 **No technical debt created because:**
+
 - All documentation follows existing patterns (ADR, PRD, SDS, TS structure)
 - Feature is opt-in via `enable_security_hardening` flag in `copier.yml`
 - Specifications complete before any implementation begins (spec-driven)
@@ -59,6 +62,7 @@ This guide explains how to incorporate security hardening features into the Vibe
 **Agent Assignment:** Agent A
 
 **Copy/Paste Strategy:**
+
 ```bash
 # 1. Create directory structure
 mkdir -p libs/security/{src,tests/unit}
@@ -74,6 +78,7 @@ mkdir -p libs/security/{src,tests/unit}
 ```
 
 **TDD Workflow:**
+
 1. **RED**: Copy test cases from AI_SECURITY_HARDENING.md Section 7.1 → tests fail
 2. **GREEN**: Copy SecureDb implementation from Section 5.2 → tests pass
 3. **REFACTOR**: Extract modules, improve error handling
@@ -86,6 +91,7 @@ mkdir -p libs/security/{src,tests/unit}
 **Agent Assignment:** Agent B
 
 **Copy/Paste Strategy:**
+
 ```bash
 # 1. Update copier.yml (add 3 variables)
 # 2. Create template directory structure
@@ -100,6 +106,7 @@ mkdir -p templates/{{project_slug}}/libs/security/{src,tests}
 ```
 
 **Template Conversion Example:**
+
 ```dockerfile
 # Original (from AI_SECURITY_HARDENING.md):
 FROM rust:1.76 as builder
@@ -122,6 +129,7 @@ FROM rust:1.76
 **Agent Assignment:** Agent C
 
 **Copy/Paste Strategy:**
+
 ```bash
 # Copy test cases from AI_SECURITY_HARDENING.md Sections 7.2 and 7.3
 # Add to existing test infrastructure (tests/security/, tests/integration/security/)
@@ -135,14 +143,14 @@ FROM rust:1.76
 
 ### Existing Code to Copy (Reduces Implementation Burden)
 
-| Source | Destination | Lines | Effort Saved |
-|--------|-------------|-------|--------------|
-| AI_SECURITY_HARDENING.md §5.2 | `libs/security/src/secure_db.rs` | ~120 | 8 hours |
-| AI_SECURITY_HARDENING.md §5.3 | `templates/.../Dockerfile.j2` | ~25 | 2 hours |
-| AI_SECURITY_HARDENING.md §5.3 | `templates/.../docker-compose.yml.j2` | ~15 | 1 hour |
-| AI_SECURITY_HARDENING.md §5.4 | Example usage / docs | ~20 | 1 hour |
-| AI_SECURITY_HARDENING.md §7.1-7.3 | Test suite | ~150 | 10 hours |
-| **TOTAL** | | **~330 lines** | **~22 hours** |
+| Source                            | Destination                           | Lines          | Effort Saved  |
+| --------------------------------- | ------------------------------------- | -------------- | ------------- |
+| AI_SECURITY_HARDENING.md §5.2     | `libs/security/src/secure_db.rs`      | ~120           | 8 hours       |
+| AI_SECURITY_HARDENING.md §5.3     | `templates/.../Dockerfile.j2`         | ~25            | 2 hours       |
+| AI_SECURITY_HARDENING.md §5.3     | `templates/.../docker-compose.yml.j2` | ~15            | 1 hour        |
+| AI_SECURITY_HARDENING.md §5.4     | Example usage / docs                  | ~20            | 1 hour        |
+| AI_SECURITY_HARDENING.md §7.1-7.3 | Test suite                            | ~150           | 10 hours      |
+| **TOTAL**                         |                                       | **~330 lines** | **~22 hours** |
 
 **Actual new code to write:** ~50 lines (Jinja2 conditionals, post-gen hooks)
 
@@ -156,7 +164,7 @@ FROM rust:1.76
 # Add these 3 variables to copier.yml
 enable_security_hardening:
   type: bool
-  default: false  # ← Defaults to OFF
+  default: false # ← Defaults to OFF
   help: "Enable TPM-backed encryption and security hardening features?"
 
 encryption_backend:
@@ -177,11 +185,11 @@ tpm_enabled:
 
 ### Impact Analysis
 
-| Project Type | Flag Value | Impact |
-|--------------|------------|--------|
-| **Development** | `false` (default) | Zero overhead, no security libs generated |
-| **Production** | `false` (default) | Zero overhead, no security libs generated |
-| **Edge Secure** | `true` (opt-in) | Full security stack, +1.5MB binary, <5% latency |
+| Project Type    | Flag Value        | Impact                                          |
+| --------------- | ----------------- | ----------------------------------------------- |
+| **Development** | `false` (default) | Zero overhead, no security libs generated       |
+| **Production**  | `false` (default) | Zero overhead, no security libs generated       |
+| **Edge Secure** | `true` (opt-in)   | Full security stack, +1.5MB binary, <5% latency |
 
 **Key Insight:** 99% of projects will use default (`false`) and experience **zero changes**.
 
@@ -281,21 +289,25 @@ echo "⚠️ Security hardening features are archived pending fixes" >> docs/aia
 ### Recommended Parallel Execution
 
 **Agent A (Critical Path):**
+
 1. TASK-013: Implement SecureDb library (8-10 hours)
 2. Review TASK-014 templates for correctness
 3. Coordinate integration testing
 
 **Agent B (Parallel to A):**
+
 1. TASK-014: Create Copier templates (6-8 hours)
 2. Update copier.yml with feature flags
 3. Write post-gen hook logic
 
 **Agent C (After A completes GREEN):**
+
 1. TASK-015: Build security validation suite (6-8 hours)
 2. Run benchmarks and performance tests
 3. Generate first hardened project for validation
 
 **Synchronization Points:**
+
 1. After TASK-013 GREEN: Agent B can reference working library
 2. After TASK-014 GREEN: Agent C can test template generation
 3. Before PHASE-006 complete: All agents review documentation
@@ -307,11 +319,13 @@ echo "⚠️ Security hardening features are archived pending fixes" >> docs/aia
 ### Immediate Actions (Priority Order)
 
 1. **Add Copier Variables** (15 minutes)
+
    ```bash
    # Edit copier.yml, add 3 variables from Section "Feature Flag Strategy"
    ```
 
 2. **Create Library Structure** (30 minutes)
+
    ```bash
    mkdir -p libs/security/{src,tests/unit}
    touch libs/security/Cargo.toml
@@ -319,12 +333,14 @@ echo "⚠️ Security hardening features are archived pending fixes" >> docs/aia
    ```
 
 3. **Copy Test Cases** (1 hour)
+
    ```bash
    # Copy from AI_SECURITY_HARDENING.md Section 7.1
    # Paste into libs/security/tests/unit/secure_db_test.rs
    ```
 
 4. **Copy Implementation** (2 hours)
+
    ```bash
    # Copy from AI_SECURITY_HARDENING.md Section 5.2
    # Paste into libs/security/src/secure_db.rs
@@ -332,6 +348,7 @@ echo "⚠️ Security hardening features are archived pending fixes" >> docs/aia
    ```
 
 5. **Create Templates** (4 hours)
+
    ```bash
    # Copy Dockerfile from Section 5.3
    # Copy docker-compose.yml from Section 5.3

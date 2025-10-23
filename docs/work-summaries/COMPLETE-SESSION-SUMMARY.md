@@ -17,6 +17,7 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 **File**: `templates/{{project_slug}}/.github/copilot-instructions.md`
 
 **Changes**:
+
 - Upgraded from 80 lines → 600+ lines
 - Matches maintainer version's comprehensive structure
 - Includes all key sections:
@@ -41,6 +42,7 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 **Key Features**:
 
 **Phase 1: Automatic Audit** (AI executes silently)
+
 - Reads `.copier-answers.yml` for template choices
 - Analyzes `package.json` / `pyproject.toml` for dependencies
 - Inspects `nx.json` for workspace structure
@@ -48,6 +50,7 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 - Reviews existing `copilot-instructions.md` for placeholders
 
 **Auto-Detects (70-80% of info)**:
+
 - Project name, description
 - Architecture style
 - Framework (Next.js, FastAPI, etc.)
@@ -58,6 +61,7 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 - Nx workspace structure
 
 **Phase 2: Targeted Questions** (only for gaps)
+
 - Business domain (can't auto-detect from code)
 - Testing philosophy (TDD vs test-after)
 - Team size/experience
@@ -71,6 +75,7 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 **File**: `templates/{{project_slug}}/.github/chatmodes/meta.customize-instructions.chatmode.md`
 
 **Workflow**:
+
 1. **Silent Audit** - AI analyzes project files
 2. **Present Results** - Show what was detected
 3. **Targeted Questions** - Ask only for gaps
@@ -78,12 +83,14 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 5. **Apply Updates** - Modify copilot-instructions.md
 
 **Edge Cases Handled**:
+
 - Detection conflicts (ask user to clarify)
 - Missing files (graceful fallback)
 - 100% detection (just confirm)
 - User unsure (suggest defaults based on stack)
 
 **Example Flow**:
+
 ```
 User: @meta.customize-instructions
 
@@ -117,6 +124,7 @@ AI: ✨ Done!
 **Added**: `just customize-instructions` command
 
 **What It Does**:
+
 - Prints friendly introduction
 - Explains customization process
 - Directs to `meta.customize-instructions` chatmode
@@ -129,6 +137,7 @@ AI: ✨ Done!
 **New Capabilities**:
 
 **Interactive Walkthroughs**:
+
 - 🔧 **Just Recipes** - Orchestration commands with when/why guidance
 - 💬 **Chat Modes** - AI personas for different tasks
 - 📋 **Prompts** - Task-specific AI workflows
@@ -136,12 +145,14 @@ AI: ✨ Done!
 - 🚀 **Workflows** - TDD, Debug, Spec-driven development
 
 **Adaptive Approach**:
+
 - Quick Overview for fast start
 - Deep dives for learning
 - Context-specific guidance (when/why to use)
 - Progressive disclosure (user chooses depth)
 
 **Example Interaction**:
+
 ```
 User: @onboarding.overview
 
@@ -166,18 +177,21 @@ AI: 🔧 Just Recipes - Orchestration Commands
 **Created Documents**:
 
 1. **`docs/workdocs/copilot-instructions-template-enhancement.md`**
+
    - Complete enhancement overview
    - Flipped interaction explanation
    - Usage examples
    - Testing plan
 
 2. **`docs/workdocs/audit-first-customization-summary.md`**
+
    - Detailed audit-first approach
    - Detection capabilities table
    - Scenario examples (Next.js, FastAPI, React Native)
    - Edge cases and future enhancements
 
 3. **`docs/workdocs/onboarding-chatmode-enhancement.md`**
+
    - Interactive onboarding explanation
    - Walkthrough formats
    - Example interaction flows
@@ -199,6 +213,7 @@ AI: 🔧 Just Recipes - Orchestration Commands
 **After**: AI audits project → detects 70-80% automatically → asks 2-5 targeted questions
 
 **Impact**:
+
 - 60-70% reduction in questions
 - 50%+ time savings
 - No repetition of info already in project files
@@ -207,12 +222,14 @@ AI: 🔧 Just Recipes - Orchestration Commands
 ### 2. Intelligent Flipped Interaction
 
 **Traditional Prompt Engineering**:
+
 ```
 User: "Customize my instructions. Here's all my project info..."
 AI: "Here's your updated instructions"
 ```
 
 **Our Approach**:
+
 ```
 User: "Customize my instructions"
 AI: [audits] "Detected Next.js + TypeScript. Just need: business domain?"
@@ -221,6 +238,7 @@ AI: "Apply updates? (yes/no)"
 ```
 
 **Benefits**:
+
 - Less cognitive load (AI guides conversation)
 - Progressive disclosure (1-2 questions at a time)
 - Intelligent detection (respect user's time)
@@ -231,6 +249,7 @@ AI: "Apply updates? (yes/no)"
 **Achievement**: Template version matches maintainer version's quality (600+ lines comprehensive) while supporting project-specific customization.
 
 **How**:
+
 - `[CUSTOMIZE: ...]` placeholders for variable content
 - Non-negotiable sections preserved (generator-first, security-first)
 - Audit-first customization fills placeholders intelligently
@@ -242,6 +261,7 @@ AI: "Apply updates? (yes/no)"
 **Our Approach**: "What would you like to learn? I'll guide you with when/why context"
 
 **Features**:
+
 - User-driven exploration (choose topics)
 - When/why guidance (not just what)
 - Progressive depth (overview or deep dive)
@@ -351,26 +371,26 @@ just dev
 
 ### What AI Auto-Detects (70-80% of info)
 
-| Information | Source | Confidence |
-|-------------|--------|------------|
-| Project name, description | `.copier-answers.yml` | 100% |
-| Architecture style | `.copier-answers.yml` | 100% |
-| Framework | `package.json` deps | 95% |
-| Language | `tsconfig.json`, file extensions | 100% |
-| Testing tools | `package.json` devDeps | 100% |
-| Database | `package.json` deps | 90% |
-| Workspace structure | `nx.json`, directories | 100% |
-| Deployment hints | Scripts, config files | 70% |
+| Information               | Source                           | Confidence |
+| ------------------------- | -------------------------------- | ---------- |
+| Project name, description | `.copier-answers.yml`            | 100%       |
+| Architecture style        | `.copier-answers.yml`            | 100%       |
+| Framework                 | `package.json` deps              | 95%        |
+| Language                  | `tsconfig.json`, file extensions | 100%       |
+| Testing tools             | `package.json` devDeps           | 100%       |
+| Database                  | `package.json` deps              | 90%        |
+| Workspace structure       | `nx.json`, directories           | 100%       |
+| Deployment hints          | Scripts, config files            | 70%        |
 
 ### What AI Must Ask (20-30% of info)
 
-| Information | Why Can't Detect | Priority |
-|-------------|------------------|----------|
-| Business domain | Not in code/config | Critical |
-| Testing philosophy | Tools ≠ approach | Important |
-| Team size/experience | Not in project files | Optional |
-| Compliance requirements | Security context not in code | Optional |
-| Performance priorities | Not explicitly stated | Optional |
+| Information             | Why Can't Detect             | Priority  |
+| ----------------------- | ---------------------------- | --------- |
+| Business domain         | Not in code/config           | Critical  |
+| Testing philosophy      | Tools ≠ approach             | Important |
+| Team size/experience    | Not in project files         | Optional  |
+| Compliance requirements | Security context not in code | Optional  |
+| Performance priorities  | Not explicitly stated        | Optional  |
 
 ---
 
@@ -381,6 +401,7 @@ just dev
 **Audit Detects**: Next.js 15 + TypeScript + Prisma, Hexagonal architecture, Jest + Playwright, Vercel deployment
 
 **AI Asks**:
+
 1. "Business domain: B2C, B2B, or marketplace?"
 2. "Testing: TDD or test-after?"
 3. "Compliance: PCI-DSS, GDPR, or skip?"
@@ -392,6 +413,7 @@ just dev
 **Audit Detects**: FastAPI + Python 3.12 + SQLAlchemy, Hexagonal, pytest, Docker
 
 **AI Asks**:
+
 1. "Domain: B2B SaaS, consumer, or internal?"
 2. "Auth requirements: OAuth, SSO, MFA?"
 3. "Compliance: SOC2, HIPAA, or none?"
@@ -403,6 +425,7 @@ just dev
 **Audit Detects**: React Native + TypeScript + Expo, Layered architecture, Jest + Detox
 
 **AI Asks**:
+
 1. "Platforms: iOS, Android, or both?"
 2. "Offline-first or connectivity required?"
 3. "Health data (HIPAA if yes)?"
@@ -424,6 +447,7 @@ just dev
 ### Manual Testing Checklist
 
 **Customization Workflow**:
+
 - [ ] Generate test project from template
 - [ ] Run `just customize-instructions`
 - [ ] Use `@meta.customize-instructions` chatmode
@@ -435,6 +459,7 @@ just dev
 - [ ] Test GitHub Copilot with customized instructions
 
 **Onboarding Workflow**:
+
 - [ ] Use `@onboarding.overview` chatmode
 - [ ] Request "overview" → verify quick start shown
 - [ ] Request "recipes" → verify just commands with when/why
@@ -444,6 +469,7 @@ just dev
 - [ ] Request "workflows" → verify development processes explained
 
 **Edge Cases**:
+
 - [ ] Missing `.copier-answers.yml` (graceful fallback)
 - [ ] Detection conflicts (asks user to clarify)
 - [ ] 100% auto-detection (skips questions, confirms)
@@ -453,12 +479,14 @@ just dev
 ### Success Metrics
 
 **Customization**:
+
 - Questions reduced: 60-70% (10 → 3-4 average)
 - Time saved: 50%+ reduction
 - User satisfaction: "AI seems smart" feedback
 - Accuracy: 95%+ correct detection
 
 **Onboarding**:
+
 - Engagement: Users explore 2+ walkthroughs
 - Comprehension: Correct command usage after onboarding
 - Retention: Users return for reference

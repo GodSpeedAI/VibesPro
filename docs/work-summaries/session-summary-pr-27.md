@@ -21,10 +21,12 @@
 ### 1. Template Smoke Test Fix ✅
 
 **Problem Identified**:
+
 - `template-smoke.test.ts` failing with `prompt:lint` returning status 1
 - Root cause: `customize.copilot-instructions.prompt.md` missing required frontmatter fields
 
 **Investigation Process**:
+
 1. Ran smoke test to identify failure point
 2. Analyzed prompt linter requirements (11 required frontmatter fields)
 3. Checked generated project's customize prompt file
@@ -35,7 +37,9 @@
 8. Found solution: Use `--vcs-ref=HEAD` flag to include staged changes
 
 **Solution Implemented**:
+
 - **File**: `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
+
   - Added 6 missing frontmatter fields
   - Total fields: 11 (kind, domain, task, thread, matrix_ids, budget, description, model, mode, tools, temperature)
 
@@ -55,6 +59,7 @@
 **Purpose**: Understand Copier's `_skip_if_exists` behavior and `--force` flag semantics
 
 **Key Findings**:
+
 - `_skip_if_exists` patterns are ALWAYS honored (no CLI override)
 - `--force` = `--defaults` + `--overwrite` BUT doesn't override `_skip_if_exists`
 - `--vcs-ref=HEAD` includes staged but uncommitted changes
@@ -67,6 +72,7 @@
 **Created**: `docs/work-summaries/pr-27-resolution-complete.md`
 
 **Content**:
+
 - Executive summary of all fixes
 - Detailed issue resolution documentation
 - Test status (9/9 environment tests passing)
@@ -79,6 +85,7 @@
 ### 4. Semantic Versioning Analysis ✅
 
 **Analysis**:
+
 - Current version: 0.1.0
 - Changes: 6 phases of environment infrastructure (new features)
 - Bug fixes: SOPS installation, pyproject.toml, tests, frontmatter
@@ -87,6 +94,7 @@
 **Recommendation**: **v0.2.0**
 
 **Rationale**:
+
 - Significant new features (Devbox, mise, SOPS, testing, CI, Just tasks)
 - No breaking changes (all additive)
 - Follows semantic versioning (MINOR version for new features)
@@ -98,6 +106,7 @@
 ### 1. Copier Template Behavior
 
 **Discovery**: Files without `.j2` suffix are copied as-is, NOT templated
+
 - Template files need `.j2` suffix to use Jinja2 variables
 - Plain markdown files are literal copies
 - `_skip_if_exists` prevents overwriting during generation
@@ -108,6 +117,7 @@
 ### 2. Prompt Linter Requirements
 
 **11 Required Frontmatter Fields**:
+
 1. `description` - Brief description
 2. `kind` - Type (prompt/chatmode/instruction)
 3. `domain` - Domain area
@@ -125,12 +135,14 @@
 ### 3. Test-Driven Template Development
 
 **Workflow**:
+
 1. Modify template file
 2. Stage changes (`git add`)
 3. Run tests with `--vcs-ref=HEAD` to pick up changes
 4. Commit after tests pass
 
 **Benefits**:
+
 - Immediate feedback on template changes
 - No need to commit broken templates
 - Safe iteration cycle
@@ -140,17 +152,21 @@
 ## Files Modified This Session
 
 ### Templates
+
 - `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
   - Added 6 missing frontmatter fields
   - Now passes prompt:lint validation
 
 ### Tests
+
 - `tests/utils/generation-smoke.ts`
   - Added `--vcs-ref=HEAD` flag to Copier command
   - Enables testing of uncommitted template changes
 
 ### Documentation
+
 - `docs/work-summaries/pr-27-resolution-complete.md` (new)
+
   - Comprehensive PR resolution documentation
   - Merge strategy and version recommendation
 
@@ -162,26 +178,30 @@
 ## Test Results
 
 ### Before Session
+
 - ❌ `template-smoke.test.ts` failing (prompt:lint status 1)
 - ❌ Generated projects had invalid frontmatter
 
 ### After Session
+
 - ✅ `template-smoke.test.ts` passing
 - ✅ Generated projects have complete frontmatter
 - ✅ All 9 environment tests passing
 - ✅ Integration tests passing (13/14 suites)
-- ⚠️  1 flaky performance test (non-blocking)
+- ⚠️ 1 flaky performance test (non-blocking)
 
 ---
 
 ## CI Status
 
 ### Final State
+
 - ✅ 12+ workflows passing
 - ⏳ 4 workflows running (env-check, build-matrix, build-and-test)
 - 🎯 Expecting all to pass with latest commit
 
 ### Key Workflows Validated
+
 - ✅ Security scans (Semgrep, plaintext detection)
 - ✅ Linting (markdown, shell)
 - ✅ Documentation generation
@@ -202,16 +222,19 @@
 ## Knowledge Artifacts Created
 
 ### 1. Copier Workaround Documentation
+
 - How to test template changes before committing
 - Understanding `_skip_if_exists` behavior
 - When to use `--vcs-ref=HEAD`
 
 ### 2. Prompt Frontmatter Requirements
+
 - Complete list of required fields
 - Validation rules
 - How linter checks templates
 
 ### 3. PR Resolution Process
+
 - Issue tracking and resolution
 - Testing validation
 - Version recommendation process
@@ -222,18 +245,21 @@
 ## Recommendations for Future
 
 ### Development Process
+
 1. **Always use `--vcs-ref=HEAD` in template tests** during development
 2. **Validate frontmatter** before committing prompt files
 3. **Run smoke tests** after any template changes
 4. **Check CI status** before requesting review
 
 ### Template Development
+
 1. Consider adding frontmatter validation to pre-commit hook
 2. Document `--vcs-ref=HEAD` requirement in contributor guide
 3. Add frontmatter template snippets to reduce errors
 4. Consider template linting in CI
 
 ### Testing
+
 1. Keep smoke test fast (currently ~3s)
 2. Add more template validation tests
 3. Consider golden tests for generated files
@@ -244,17 +270,20 @@
 ## Next Steps (For User)
 
 ### Immediate (Before Merge)
+
 1. **Verify CI passes**: Wait for running workflows to complete
 2. **Review PR diff**: Ensure all changes are intentional
 3. **Test locally**: Run `just test-env && just test` one final time
 
 ### Merge Process
+
 1. **Squash and merge** using recommended commit message
 2. **Create release tag**: `git tag v0.2.0 && git push origin v0.2.0`
 3. **Create GitHub release**: Use changelog from PR description
 4. **Announce**: Share in team channels
 
 ### Post-Merge
+
 1. **Update documentation**: Reflect new version in README
 2. **Migration guide**: Help existing projects adopt new features
 3. **Monitor**: Watch for any issues in generated projects
@@ -264,11 +293,13 @@
 ## Metrics
 
 ### Lines of Code
+
 - **Added**: ~20 lines (frontmatter fields + VCS ref flag)
 - **Documentation**: ~400 lines (session summaries)
 - **Impact**: Fixed critical test failure blocking merge
 
 ### Time Investment
+
 - **Investigation**: ~45 minutes (smoke test debugging)
 - **Context7 Research**: ~15 minutes (Copier documentation)
 - **Implementation**: ~10 minutes (frontmatter + VCS ref)
@@ -276,6 +307,7 @@
 - **Total**: ~2 hours
 
 ### Test Coverage
+
 - **Before**: 48/50 tests passing (96%)
 - **After**: 49/50 tests passing (98%)
 - **Flaky test**: 1 (performance test - temp dir cleanup)
@@ -300,7 +332,7 @@ PR #27 is **ready for merge** with all CI failures resolved and comprehensive do
 
 ---
 
-*Session End*: January 11, 2025
-*Total Commits*: 1 (72c96db)
-*Tests Fixed*: 1 (template-smoke.test.ts)
-*Documentation Created*: 2 files (~600 lines)
+_Session End_: January 11, 2025
+_Total Commits_: 1 (72c96db)
+_Tests Fixed_: 1 (template-smoke.test.ts)
+_Documentation Created_: 2 files (~600 lines)

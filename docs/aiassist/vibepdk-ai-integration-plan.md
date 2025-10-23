@@ -6,7 +6,7 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 ## Template vs Generated Scope
 
-- **Template repository (`VibesPro/…`)** – This codebase is the Copier *source*. Any assets we import or modify must land inside the template directories (for example, `templates/{{project_slug}}/.github/`, `templates/docs/`, `templates/{{project_slug}}/tools/…`) so every future generation picks them up automatically.
+- **Template repository (`VibesPro/…`)** – This codebase is the Copier _source_. Any assets we import or modify must land inside the template directories (for example, `templates/{{project_slug}}/.github/`, `templates/docs/`, `templates/{{project_slug}}/tools/…`) so every future generation picks them up automatically.
 - **Generated project** – When Copier renders the template, the emitted repo should already contain the AI guardrails (.github instructions, prompts, chat modes, spec tooling, just recipes, MCP descriptors, etc.). The integration plan below focuses on wiring these assets into the template, then validating that the generated project inherits them without post-processing.
 - **Maintainer documentation (`docs/aiassist/`)** – Files under `docs/aiassist/` describe how to evolve the template itself; they are not copied into generated workspaces unless we add explicit templates.
 
@@ -23,7 +23,7 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 ### 2. `docs/` (spec-driven knowledge base)
 
-- **Spec corpus** – ADR/PRD/SDS/TS documents plus DEV-* counterparts with matrix IDs.
+- **Spec corpus** – ADR/PRD/SDS/TS documents plus DEV-\* counterparts with matrix IDs.
 - **`specs/THREAD/...` scaffolding** – templated specs, plans, and task lists generated via `just spec-*` commands.
 - **Traceability assets** – `spec_index.md`, `dev_spec_index.md`, `traceability_matrix.md`, plus onboarding/how-to/how-it-works guides.
 - **AI context bundle** – generated into `docs/ai_context_bundle/` for chat modes.
@@ -49,15 +49,15 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 ## Current VibesPro Snapshot
 
-| Template Area | Current State | Notes |
-| --- | --- | --- |
-| `templates/{{project_slug}}/.github` | Mirrors only a subset of merger guidance; lacks modular instructions, prompts, chat modes, models manifest, and spec-guard workflows. | Need to import VibePDK `.github` assets and reconcile with merger-specific instructions before regeneration. |
-| Template docs (`templates/docs/**` & `templates/{{project_slug}}/docs/**`) | High-level architecture docs exist, but there’s no AI workflow bundle or spec lifecycle runbooks. | Extend templates to emit AI context bundle docs and usage guides; keep maintainer copies under `docs/aiassist/`. |
-| Root docs (`docs/**`) | Extensive spec documents + this integration folder. | Use as authoritative guidance for template maintainers; optionally expose curated versions via templates. |
-| Automation (`justfile`, scripts) | Root `justfile` is rich for maintainers, but template `justfile.j2` lacks spec/AI recipes. | Port VibePDK recipes into `justfile.j2` and ensure scripts referenced exist under `templates/{{project_slug}}/scripts/` (or add new ones). |
-| MCP (`templates/{{project_slug}}/mcp/`) | Directory absent. | Add MCP descriptors and document `.vscode/mcp.json` configuration for generated repos. |
-| Generators | Copier Jinja templates and supporting tools exist, but no stack-aware Nx generator like VibePDK’s. | Import/adapt VibePDK generator utilities so generated workspaces can scaffold services with stack defaults. |
-| CI workflows (`.github/workflows` in template) | Generated project currently inherits minimal workflows. | Expand template workflows with prompt lint, spec guard, markdown lint, and Nx tests to match VibePDK’s enforcement. |
+| Template Area                                                              | Current State                                                                                                                         | Notes                                                                                                                                      |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `templates/{{project_slug}}/.github`                                       | Mirrors only a subset of merger guidance; lacks modular instructions, prompts, chat modes, models manifest, and spec-guard workflows. | Need to import VibePDK `.github` assets and reconcile with merger-specific instructions before regeneration.                               |
+| Template docs (`templates/docs/**` & `templates/{{project_slug}}/docs/**`) | High-level architecture docs exist, but there’s no AI workflow bundle or spec lifecycle runbooks.                                     | Extend templates to emit AI context bundle docs and usage guides; keep maintainer copies under `docs/aiassist/`.                           |
+| Root docs (`docs/**`)                                                      | Extensive spec documents + this integration folder.                                                                                   | Use as authoritative guidance for template maintainers; optionally expose curated versions via templates.                                  |
+| Automation (`justfile`, scripts)                                           | Root `justfile` is rich for maintainers, but template `justfile.j2` lacks spec/AI recipes.                                            | Port VibePDK recipes into `justfile.j2` and ensure scripts referenced exist under `templates/{{project_slug}}/scripts/` (or add new ones). |
+| MCP (`templates/{{project_slug}}/mcp/`)                                    | Directory absent.                                                                                                                     | Add MCP descriptors and document `.vscode/mcp.json` configuration for generated repos.                                                     |
+| Generators                                                                 | Copier Jinja templates and supporting tools exist, but no stack-aware Nx generator like VibePDK’s.                                    | Import/adapt VibePDK generator utilities so generated workspaces can scaffold services with stack defaults.                                |
+| CI workflows (`.github/workflows` in template)                             | Generated project currently inherits minimal workflows.                                                                               | Expand template workflows with prompt lint, spec guard, markdown lint, and Nx tests to match VibePDK’s enforcement.                        |
 
 ## Integration Plan
 

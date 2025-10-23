@@ -9,6 +9,7 @@
 ## Problem Identified
 
 You discovered that while the project has:
+
 - ✅ Nx MCP server integration (`.github/instructions/nx.instructions.md`)
 - ✅ `ai-scaffold` just recipe (line 376-398 in `justfile`)
 - ✅ Multiple Nx generators installed (@nx/js, @nx/react, @nx/node, @nx/jest, @nx/workspace)
@@ -24,6 +25,7 @@ This meant AI assistants would write custom code directly instead of using the p
 ### 1. Created Core Policy Document
 
 **File:** `.github/instructions/generators-first.instructions.md`
+
 - **Precedence:** 15 (higher than general instructions at 50)
 - **Scope:** Applies to all files (`**`)
 - **Content:**
@@ -39,23 +41,28 @@ This meant AI assistants would write custom code directly instead of using the p
 **Files Modified:**
 
 1. **`.github/copilot-instructions.md`**
+
    - Added: "**Generator-First Requirement**: Before writing any new code, ALWAYS check if an Nx generator exists"
    - Cross-references generators-first.instructions.md and nx.instructions.md
 
 2. **`.github/instructions/ai-workflows.instructions.md`** (precedence 20)
+
    - Added "Generator-First Policy" section at top
    - References generators-first.instructions.md and nx.instructions.md
 
 3. **`.github/instructions/src.instructions.md`** (precedence 32)
+
    - Added generator-first requirement before code creation
    - Cross-references both generator instruction files
 
 4. **`.github/prompts/spec.implement.prompt.md`**
+
    - Added **Step 0: Check for Nx Generators (REQUIRED FIRST STEP)**
    - Instructions to run `pnpm exec nx list` and `just ai-scaffold`
    - "Only proceed to manual implementation if no appropriate generator exists"
 
 5. **`.github/prompts/tdd.workflow.prompt.md`**
+
    - Updated **Red Phase** to check generators FIRST if creating new module/component
    - References generators-first.instructions.md
 
@@ -69,6 +76,7 @@ This meant AI assistants would write custom code directly instead of using the p
 **File:** `docs/nx-generators-guide.md`
 
 **Content:**
+
 - Generator-first philosophy explanation
 - Complete list of installed generators:
   - @nx/js (TypeScript/JavaScript libraries)
@@ -97,14 +105,17 @@ This meant AI assistants would write custom code directly instead of using the p
 ### For TDD Workflow
 
 **Red Phase:**
+
 1. If new module/component needed → use generator to scaffold
 2. Generator creates test scaffold → customize for spec requirements
 3. Run test → should fail (no implementation)
 
 **Green Phase:**
+
 - Implement logic in generated structure
 
 **Refactor Phase:**
+
 - Improve within generated boundaries
 
 ### For Spec Implementation
@@ -162,15 +173,16 @@ nx-generators-guide.md (docs)
 
 ## Available Generators Quick Reference
 
-| Generator | Purpose | Command |
-|-----------|---------|---------|
-| `@nx/js:library` | TypeScript/JS libs, utilities, domain logic | `just ai-scaffold name=@nx/js:library` |
-| `@nx/react:library` | React component libraries | `just ai-scaffold name=@nx/react:library` |
-| `@nx/react:component` | Individual React components | `pnpm exec nx g @nx/react:component MyComponent` |
-| `@nx/react:hook` | Custom React hooks | `pnpm exec nx g @nx/react:hook useMyHook` |
-| `@nx/node:application` | Node.js apps, APIs, CLIs | `pnpm exec nx g @nx/node:application api` |
+| Generator              | Purpose                                     | Command                                          |
+| ---------------------- | ------------------------------------------- | ------------------------------------------------ |
+| `@nx/js:library`       | TypeScript/JS libs, utilities, domain logic | `just ai-scaffold name=@nx/js:library`           |
+| `@nx/react:library`    | React component libraries                   | `just ai-scaffold name=@nx/react:library`        |
+| `@nx/react:component`  | Individual React components                 | `pnpm exec nx g @nx/react:component MyComponent` |
+| `@nx/react:hook`       | Custom React hooks                          | `pnpm exec nx g @nx/react:hook useMyHook`        |
+| `@nx/node:application` | Node.js apps, APIs, CLIs                    | `pnpm exec nx g @nx/node:application api`        |
 
 **Not yet installed (add with `pnpm add -D`):**
+
 - @nx/next (Next.js apps)
 - @nx/remix (Remix apps)
 - @nx/nest (NestJS apps)
@@ -185,15 +197,19 @@ nx-generators-guide.md (docs)
 To verify AI assistants now use generators:
 
 1. **Ask AI to create a new component:**
+
    ```
    "Create a new Button component for the design system"
    ```
+
    Expected: AI should first run `pnpm exec nx list`, then use generator
 
 2. **Ask AI to implement from spec:**
+
    ```
    "Implement the user authentication feature from PRD-042"
    ```
+
    Expected: AI should check generators as step 0 before coding
 
 3. **Start TDD workflow:**
@@ -218,15 +234,18 @@ To verify AI assistants now use generators:
 ## Next Steps (Optional Enhancements)
 
 1. **Add more chat modes:**
+
    - Update `tdd.green.chatmode.md` and `tdd.refactor.chatmode.md`
    - Update debug chatmodes (`debug.*.chatmode.md`)
 
 2. **Create custom generators:**
+
    - Domain entity generator (hexagonal architecture)
    - API adapter generator
    - Feature library generator with standard structure
 
 3. **Enhance ai-scaffold recipe:**
+
    - Interactive mode (prompt for generator selection)
    - Validation (ensure generator exists before running)
    - Logging (record which generators were used)

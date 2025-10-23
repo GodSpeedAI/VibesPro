@@ -114,11 +114,11 @@ VibesPro migrated to redb in TASK-017 for better maintenance and stability.
 
 ### Key Differences
 
-| Aspect | sled/tsink | redb |
-|--------|------------|------|
-| **Transactions** | Implicit | Explicit (begin_write/commit) |
-| **Table Model** | Key prefixes | Named tables (TableDefinition) |
-| **Maintenance** | Unmaintained | Actively maintained |
+| Aspect           | sled/tsink   | redb                           |
+| ---------------- | ------------ | ------------------------------ |
+| **Transactions** | Implicit     | Explicit (begin_write/commit)  |
+| **Table Model**  | Key prefixes | Named tables (TableDefinition) |
+| **Maintenance**  | Unmaintained | Actively maintained            |
 
 See `/docs/TEMPORAL-DB-MIGRATION-SUMMARY.md` for complete migration details.
 

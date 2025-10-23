@@ -22,6 +22,7 @@ Phase 3 successfully created integration tests using `fake-opentelemetry-collect
 ## What Was Attempted
 
 ### Initial Approach
+
 1. Added `fake-opentelemetry-collector = "0.32"` as a dev dependency
 2. Created `tests/otlp_integration.rs` with multiple test scenarios:
    - Basic span export verification
@@ -33,14 +34,15 @@ Phase 3 successfully created integration tests using `fake-opentelemetry-collect
 
 #### Version Conflict Matrix
 
-| Component | OpenTelemetry Version | Source |
-|-----------|-----------------------|--------|
-| `vibepro-observe` | 0.25.0 | Direct dependency |
-| `opentelemetry-otlp` | 0.25.0 | OTLP exporter |
-| `fake-opentelemetry-collector` | 0.31.0/0.32.0 | Test harness |
-| Resulting conflict | **Incompatible traits** | Multiple versions in dep graph |
+| Component                      | OpenTelemetry Version   | Source                         |
+| ------------------------------ | ----------------------- | ------------------------------ |
+| `vibepro-observe`              | 0.25.0                  | Direct dependency              |
+| `opentelemetry-otlp`           | 0.25.0                  | OTLP exporter                  |
+| `fake-opentelemetry-collector` | 0.31.0/0.32.0           | Test harness                   |
+| Resulting conflict             | **Incompatible traits** | Multiple versions in dep graph |
 
 **Error Pattern**:
+
 ```
 error[E0599]: no method named `tracer` found for struct `SdkTracerProvider`
 note: there are multiple different versions of crate `opentelemetry` in the dependency graph
@@ -65,21 +67,25 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 ### What Exists
 
 1. **Integration Tests** (Complete ✅)
+
    - Location: `crates/vibepro-observe/tests/otlp_integration.rs`
    - Validates: OTLP span export, span attributes, metadata
    - Status: ✅ PASSING with fake-opentelemetry-collector
 
 2. **Vector Integration Test** (Complete ✅)
+
    - Location: `crates/vibepro-observe/tests/tracing_vector.rs`
    - Validates: Span emission with redactable fields
    - Status: ✅ PASSING
 
 3. **Shell Test** (Smoke Test)
+
    - Location: `tests/ops/test_tracing_vector.sh`
    - Validates: Vector configuration file syntax and startup
    - Status: ✅ PASSING
 
 4. **Just Recipe**
+
    - `just observe-test`: Runs Rust integration tests with OTLP feature
    - Status: ✅ WORKING - All tests passing
 
@@ -121,12 +127,14 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 **Benefit**: Access to latest features + compatible test harness
 
 **Steps**:
+
 1. Upgrade `opentelemetry`, `opentelemetry-otlp`, `opentelemetry_sdk` to 0.31+
 2. Update API calls to match new trait signatures
 3. Re-run Phase 1 & 2 tests to confirm no regressions
 4. Implement Phase 3 integration tests with `fake-opentelemetry-collector` 0.32
 
 **Trade-offs**:
+
 - ✅ Future-proof with latest OpenTelemetry APIs
 - ✅ Compatible with modern tooling
 - ⚠️ May introduce breaking changes in user code
@@ -139,12 +147,14 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 **Benefit**: Full control, version-independent
 
 **Steps**:
+
 1. Use Docker Compose to spin up real OTLP Collector in tests
 2. Configure collector to output to JSON file
 3. Parse JSON and assert on span data
 4. Tear down after tests
 
 **Trade-offs**:
+
 - ✅ Version-independent solution
 - ✅ Tests against real collector behavior
 - ⚠️ Requires Docker in CI
@@ -158,11 +168,13 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 **Benefit**: Lightweight, fast tests
 
 **Steps**:
+
 1. Use `mockito` or `wiremock` to mock OTLP HTTP endpoint
 2. Verify requests are sent with correct protobuf payloads
 3. Parse and assert on protobuf data
 
 **Trade-offs**:
+
 - ✅ Fast, lightweight tests
 - ✅ No version conflicts
 - ⚠️ Doesn't test full OTLP serialization
@@ -175,12 +187,14 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 **Benefit**: Unblocks current work
 
 **Steps**:
+
 1. Document manual E2E testing procedure
 2. Create example app that emits spans
 3. Verify spans in Jaeger/Tempo manually
 4. Defer automated tests to future iteration
 
 **Trade-offs**:
+
 - ✅ Unblocks immediate progress
 - ✅ Real-world validation
 - ⚠️ No CI safety net
@@ -193,12 +207,14 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 **Proceed with Option 1 (Upgrade to OpenTelemetry 0.31+)**
 
 **Rationale**:
+
 1. Staying on OpenTelemetry 0.25 is technical debt—it's from 2023
 2. Ecosystem tooling (fake-collector, examples) has moved to 0.31+
 3. Medium effort with high long-term value
 4. Enables proper Phase 3 completion
 
 **Next Steps**:
+
 1. Create upgrade branch: `feature/observability-otel-0.31-upgrade`
 2. Update Cargo.toml dependencies
 3. Fix compilation errors (likely minimal API changes)
@@ -211,17 +227,18 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 ### Current Coverage
 
-| Test Type | Status | Coverage |
-|-----------|--------|----------|
-| Unit tests (Phase 1) | ✅ Pass | Initialization, configuration parsing |
-| Unit tests (Phase 2) | ✅ Pass | Vector config generation |
-| Shell tests | ✅ Pass | Vector config validation, startup |
-| Integration tests (OTLP) | ✅ Pass | Span export, attributes, metadata |
-| E2E tests | ❌ None | **MISSING** |
+| Test Type                | Status  | Coverage                              |
+| ------------------------ | ------- | ------------------------------------- |
+| Unit tests (Phase 1)     | ✅ Pass | Initialization, configuration parsing |
+| Unit tests (Phase 2)     | ✅ Pass | Vector config generation              |
+| Shell tests              | ✅ Pass | Vector config validation, startup     |
+| Integration tests (OTLP) | ✅ Pass | Span export, attributes, metadata     |
+| E2E tests                | ❌ None | **MISSING**                           |
 
 ### Risk Assessment
 
 **With Complete OTLP Integration Tests**:
+
 - ✅ **LOW RISK**: Verification that spans actually reach Vector (TESTED)
 - ✅ **LOW RISK**: Breaking changes to OTLP export will be detected (TESTED)
 - ✅ **LOW RISK**: Configuration and initialization well-tested
@@ -231,18 +248,21 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 ## Files Modified
 
 ### Added
+
 - `crates/vibepro-observe/tests/otlp_integration.rs` (✅ COMPLETE)
 - `tests/ops/test_tracing_vector.sh` (shell smoke test)
 - `docs/work-summaries/observability-phase3-completion.md` (this file)
 - `docs/work-summaries/opentelemetry-0.31-upgrade-complete.md` (upgrade details)
 
 ### Modified
+
 - `crates/vibepro-observe/Cargo.toml` - Updated OpenTelemetry to 0.31+
 - `crates/vibepro-observe/src/lib.rs` - Updated API calls for 0.31+
 - `justfile` - Added `observe-test` recipe
 - `tests/tracing_vector.rs` - Updated for 0.31+ compatibility
 
 ### Completed ✅
+
 - Integration tests (PASSING)
 - OTLP export verification (PASSING)
 - Vector integration test (PASSING)
@@ -257,6 +277,7 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 **Status**: ✅ **COMPLETED** - Upgrade successfully completed on 2025-01-12
 
 **Resolution**: All Phase 3 deliverables are now complete:
+
 - ✅ Integration tests passing with fake-opentelemetry-collector
 - ✅ Verified span export to OTLP endpoint
 - ✅ Validated span attributes and metadata

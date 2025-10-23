@@ -1,10 +1,9 @@
 # Tutorial: Vibes-Pro
 
-Vibes-Pro is an **AI-enhanced platform** that *accelerates* software development by generating
+Vibes-Pro is an **AI-enhanced platform** that _accelerates_ software development by generating
 **production-ready applications**. It seamlessly integrates **robust architectural patterns** like
 Hexagonal Architecture and Domain-Driven Design with **intelligent AI assistance** that learns
 from past decisions and enforces quality through automated checks.
-
 
 ## Visual Overview
 

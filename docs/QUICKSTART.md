@@ -15,6 +15,7 @@ VibesPro is a project generator that creates a complete, professional applicatio
 ## Before You Start
 
 ### What You Need
+
 - A computer (Mac, Windows, or Linux)
 - Basic familiarity with the command line (Terminal/Command Prompt)
 - An idea of what you want to build
@@ -60,11 +61,13 @@ just ai-validate     # runs pre-commit checks, linters, typecheck and tests
 ```
 
 Notes:
+
 - The project includes a helper `tools/check_mypy.sh` which prefers `.venv/bin/mypy` when present and falls back to PATH mypy. Using the `.venv` created above ensures consistent results.
 - `mypy --install-types` will attempt to fetch type stubs automatically when pip is available in the venv. If network access is restricted, install the listed type packages manually.
 - Consider adding `.venv/` to your global `~/.gitignore` or the repo `.gitignore` to avoid checking the venv into source control.
 
 ### What You DON'T Need
+
 - Deep programming knowledge
 - Understanding of complex architecture
 - Experience with all the technologies
@@ -88,24 +91,28 @@ The generator will ask you a series of questions. Here's what to expect:
 ### Basic Information (Easy!)
 
 **"What should we call your project?"**
+
 ```
 Example: Task Manager Pro
 Just type what you want people to call your app!
 ```
 
 **"What's the technical name for your project?"**
+
 ```
 We'll suggest one like: task-manager-pro
 Press Enter to accept it, or type your own (lowercase with dashes).
 ```
 
 **"Who's creating this project?"**
+
 ```
 Example: Jane Smith
 Your name or company name.
 ```
 
 **"What email should we use?"**
+
 ```
 Example: jane@example.com
 This goes in documentation, not for signup.
@@ -114,6 +121,7 @@ This goes in documentation, not for signup.
 ### What Your Project Does
 
 **"What does this project do?"**
+
 ```
 Example: A task manager that helps small teams organize their work
 
@@ -123,6 +131,7 @@ Explain it like you're telling a friend! 1-2 sentences is perfect.
 ### Technology Choices (Pick What You Know)
 
 **"How should we organize your code?"**
+
 ```
 Choices:
 → Hexagonal (Recommended - clean and flexible) ← Choose this if unsure!
@@ -131,6 +140,7 @@ Choices:
 ```
 
 **"What kind of user interface do you need?"**
+
 ```
 Choices:
 → Next.js (Websites & web apps - recommended) ← For most people
@@ -139,6 +149,7 @@ Choices:
 ```
 
 **"What technology should power your backend?"**
+
 ```
 Choices:
 → FastAPI (Modern & fast - recommended) ← Choose this if unsure!
@@ -147,6 +158,7 @@ Choices:
 ```
 
 **"Where should we store your data?"**
+
 ```
 Choices:
 → PostgreSQL (Professional - recommended) ← For real projects
@@ -155,6 +167,7 @@ Choices:
 ```
 
 **"Include Supabase integration?"**
+
 ```
 → Yes ← Gives you auth, real-time data, storage for free!
   No
@@ -163,12 +176,14 @@ Choices:
 ### AI Features (Recommended!)
 
 **"Include AI-assisted development tools?"**
+
 ```
 → Yes ← Makes coding easier with smart suggestions!
   No
 ```
 
 **"Enable AI learning system?"**
+
 ```
 → Yes ← AI gets smarter as you work!
   No
@@ -177,6 +192,7 @@ Choices:
 ### Advanced Options (You Can Skip These!)
 
 For the remaining questions:
+
 - If it says "(Advanced)" → **just press Enter to accept the default**
 - If you're unsure → **press Enter to accept the default**
 
@@ -204,6 +220,7 @@ code .
 Your project includes:
 
 ### AI-Powered Features
+
 - Open the GitHub Copilot chat
 - Select a chat mode (like "Navigator" for general coding help)
 - Start asking questions or requesting features!
@@ -241,6 +258,7 @@ Don't worry! Most choices can be changed later. The important thing is to get st
 ### "What if I don't understand a question?"
 
 Look for these clues in the question:
+
 - **(Recommended)** → That's the safe choice
 - **"If unsure, choose..."** → Follow that advice
 - **"Advanced"** → Just press Enter to skip
@@ -262,6 +280,7 @@ Yes! The file `copier.yml` in your project remembers your choices. You can updat
 Let's walk through creating a task management app:
 
 **Session:**
+
 ```
 What should we call your project?
 → Team Task Manager
@@ -317,6 +336,7 @@ Include AI tools?
 ### Included Free Services
 
 - **Supabase** (if you chose it):
+
   - User login/signup
   - Database hosting
   - Real-time updates
@@ -332,11 +352,13 @@ Include AI tools?
 ### What to Build Next
 
 1. **Customize the example pages**
+
    - Look in `apps/your-app-name/`
    - Modify the sample components
    - Add your own pages
 
 2. **Add your business logic**
+
    - Create entities in `libs/your-domain/domain/`
    - Add use cases in `libs/your-domain/application/`
    - Implement adapters in `libs/your-domain/infrastructure/`
@@ -350,21 +372,27 @@ Include AI tools?
 ## Tips for Success
 
 ### 🎯 Start Simple
+
 Don't try to build everything at once. Start with one feature and expand.
 
 ### 💬 Use the AI Chat
+
 The AI modes are incredibly helpful! Don't be shy:
+
 - "How do I add a new page?"
 - "Create a user profile component"
 - "What's the best way to handle form validation?"
 
 ### 📚 Read the Generated Docs
+
 Your project includes documentation explaining how everything works. Check `docs/` folder!
 
 ### 🧪 Test as You Go
+
 Run `just test` frequently to catch issues early.
 
 ### 🔄 Iterate Quickly
+
 Make small changes, test them, repeat. The AI helps with this!
 
 ## Getting Help
@@ -385,6 +413,7 @@ just docs
 ### AI Chat Modes
 
 Open VS Code's chat and select:
+
 - **Navigator** - General coding questions
 - **TDD** - Test-driven development
 - **Debug** - When something's broken
@@ -409,6 +438,7 @@ Open VS Code's chat and select:
 ### Most Common Choices
 
 **For a web application:**
+
 ```
 Frontend: Next.js
 Backend: FastAPI
@@ -418,6 +448,7 @@ AI: Yes
 ```
 
 **For a mobile app:**
+
 ```
 Frontend: Expo
 Backend: FastAPI
@@ -427,6 +458,7 @@ AI: Yes
 ```
 
 **For learning/practicing:**
+
 ```
 Frontend: Next.js
 Backend: Flask
@@ -438,6 +470,7 @@ AI: Yes
 ### Safe Defaults
 
 When in doubt, these work great:
+
 - Architecture: Hexagonal
 - Frontend: Next.js
 - Backend: FastAPI

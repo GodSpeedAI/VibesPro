@@ -3,6 +3,7 @@
 This index lists prompts and chat modes with their taxonomy fields (domain, task, phase). Files carry YAML frontmatter with these values.
 
 ## Prompts
+
 - spec.implement (file: `.github/prompts/spec.implement.prompt.md`) — domain: spec, task: implement
 - spec.change (file: `.github/prompts/spec.change.prompt.md`) — domain: spec, task: change
 - spec.traceability.update (file: `.github/prompts/spec.traceability.update.prompt.md`) — domain: spec, task: traceability
@@ -21,6 +22,7 @@ This index lists prompts and chat modes with their taxonomy fields (domain, task
 - testing.hardening (file: `.github/prompts/test-hardening.prompt.md`) — domain: testing, task: hardening
 
 ## Chat Modes
+
 - spec.lean (file: `.github/chatmodes/spec.lean.chatmode.md`) — domain: spec, task: mode, phase: lean
 - spec.wide (file: `.github/chatmodes/spec.wide.chatmode.md`) — domain: spec, task: mode, phase: wide
 - tdd.red (file: `.github/chatmodes/tdd.red.chatmode.md`) — domain: tdd, task: workflow, phase: red

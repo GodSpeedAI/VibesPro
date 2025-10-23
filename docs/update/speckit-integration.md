@@ -25,36 +25,43 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
 ## 3) Comparative Analysis (High-Level)
 
 - Prompts
+
   - Current: Broad set under `.github/prompts/*.prompt.md`.
   - spec-kit: Phase-gated spec/plan/tasks with gates.
   - Verdict: Merge. Keep coverage; adopt phase-gated structure and checks. Add family-specific plan prompts (e.g., `spec.plan.prd.prompt.md`).
 
 - Chat modes
+
   - Current: Persona/product/debug/TDD.
   - spec-kit: Complementary.
   - Verdict: Keep; ensure modes reference centralized models/instructions.
 
 - Instructions
+
   - Current: Modular safety/testing posture.
   - spec-kit: Constitution/gates guidance.
   - Verdict: Merge. Add “Constitution & Gates” instruction and reference it.
 
 - Traceability
+
   - Current: `tools/spec/matrix.js` + docs.
   - spec-kit: Discipline + gating.
   - Verdict: Merge. Extend matrix to understand multipart IDs and spec threads.
 
 - Context bundling
+
   - Current: CALM/techstack bundle.
   - spec-kit: Compatible.
   - Verdict: Keep; reference where useful.
 
 - Tooling
+
   - Current: Node scripts (lint/matrix), pytest hooks.
   - spec-kit: CLI concepts (/plan, /tasks), numbering, paths.
   - Verdict: Adopt selectively. Implement flows as Just recipes (delegating to pnpm/Nx/bash).
 
 - CI
+
   - Current: Lint/tests via Node/Python.
   - spec-kit: Aligns.
   - Verdict: Merge. Add taxonomy/frontmatter checks; ramp to errors.
@@ -67,24 +74,29 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
 ## 4) Gap Matrix
 
 - Phase-gated templates (spec → plan → tasks)
+
   - Value: Predictable flow; clear gates.
   - Complexity: Low—add templates/recipes; update linter.
   - Risk: Adoption friction—phase rollout.
 
 - Constitution Check and gating
+
   - Value: Less tech debt via simplicity/TDD.
   - Complexity: Medium—encode checks; docs.
   - Risk: Overstrict—ramp warnings → errors.
 
 - Numbered, parallelizable tasks
+
   - Value: Clear execution/concurrency.
   - Complexity: Low—template-driven.
 
 - Family-specific plan prompts (ADR/ARD, PRD, SDS, TS, TASK)
+
   - Value: Domain-appropriate guidance per artifact.
   - Complexity: Low—derive from base plan template.
 
 - Central model config usage
+
   - Value: Single source of truth.
   - Complexity: Low—validate references.
 
@@ -96,13 +108,16 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
 ## 5) Adoption Decisions
 
 - Adopt spec-kit’s spec/plan/tasks templates, with family-specific plan prompts.
+
   - Files: `spec.feature.template.md`, `spec.plan.{adr|prd|sds|ts|task}.prompt.md`, `spec.tasks.template.md`.
   - Benefits: Clear, testable artifacts per family; consistent gates.
 
 - Add “Constitution & Gates” instruction and reference in prompts/modes.
+
   - File: `ai-workflows.constitution.instructions.md`.
 
 - Enforce frontmatter + naming via linter/CI; multipart ID support.
+
   - Required frontmatter (minimum):
     - title, description
     - domain, task, kind; phase (optional)
@@ -112,6 +127,7 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
     - thread: stable slug tying spec/plan/tasks (e.g., `auth-0007`)
 
 - Replace spec-kit CLI flows with Just recipes (primary UX).
+
   - Recipes delegate to pnpm, Nx, or bash.
 
 - Centralize model selection via `.github/models.yaml`.
@@ -119,6 +135,7 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
 ## 6) Integration Design
 
 - File-level changes (taxonomy + frontmatter)
+
   - Add to `{{ project_slug }}/.github/prompts`:
     - `spec.feature.template.md`
     - `spec.plan.adr.prompt.md` (ADR/ARD)
@@ -134,6 +151,7 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
     - Required keys listed above.
 
 - Tooling updates
+
   - Extend `tools/prompt/lint.js`:
     - Filename taxonomy: <domain>.<task>[.<phase>].<kind>.md
     - Required frontmatter keys
@@ -144,6 +162,7 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
     - Optional: size/budget checks; Constitution gate warnings → errors on schedule
 
 - Traceability updates
+
   - Enhance `tools/spec/matrix.js` to:
     - Parse `thread` and `matrix_ids` from frontmatter
     - Link spec/plan/tasks triplets by `thread`
@@ -152,6 +171,7 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
     - Respect docs-only specs (`docs_only: true` or `phase: docs`)
 
 - Just recipes (primary), delegating to pnpm/Nx/bash
+
   - Add to `justfile`:
     - `spec-feature THREAD=`: scaffold `/docs/specs/{THREAD}/spec.md` from `spec.feature.template.md`
     - `spec-plan THREAD= FAMILY=`: scaffold `/docs/specs/{THREAD}/plan.{FAMILY}.md` using `spec.plan.{family}.prompt.md`
@@ -163,15 +183,19 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
     - pnpm scripts (portable), Nx targets, or bash
 
 - Optional pnpm scripts (secondary)
+
   - Mirror Just actions in `package.json` for CI or direct use.
 
 - Model selection centralization
+
   - Prompts/modes use `model: <key>`; linter validates against `.github/models.yaml`.
 
 - Docs-only support
+
   - `docs_only: true` (or `phase: docs`) allows no `tasks.md`; matrix handles accordingly.
 
 - CI
+
   - Run `just prompt-lint` and `just spec-matrix`.
   - Constitution gating ramps: warnings → errors after grace period.
 
@@ -183,16 +207,19 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
 ## 7) Rollout Plan (Phased, Low-Risk)
 
 - Phase 1: Introduce metadata and linter (warnings only)
+
   - Add templates + Constitution instructions.
   - Add `thread` and `matrix_ids` to new artifacts.
   - CI runs `just prompt-lint` (non-blocking).
 
 - Phase 2: Naming taxonomy and Just-first workflows
+
   - New/changed files must follow taxonomy/frontmatter (errors for changed files; legacy warned).
   - Adopt family-specific plan prompts.
   - Just is canonical interface; pnpm/Nx/bash are implementations.
 
 - Phase 3: Cleanup
+
   - Migrate legacy files; remove stubs/duplicates.
   - Linter errors for all violations.
 
@@ -202,12 +229,15 @@ Adopt spec-kit’s phase-gated workflow (spec → plan → tasks) and validation
 ## 8) Risks and Mitigations
 
 - Token budget drift
+
   - Mitigation: concise templates; size checks.
 
 - Naming fragmentation during transition
+
   - Mitigation: phased rollout; redirects and docs.
 
 - CI breakage from stricter rules
+
   - Mitigation: warnings first; scope to changed files; timed escalation.
 
 - Ergonomics

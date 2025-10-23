@@ -3,6 +3,7 @@
 ## Summary
 
 Successfully implemented the hybrid approach for dynamic project context in generated Copilot instructions, combining:
+
 1. **Copier variables** for initial context (project_purpose, primary_domains, tech_stack_summary)
 2. **Jinja2 templating** for dynamic interpolation in generated projects
 3. **Conversational refinement prompt** for post-generation context updates
@@ -11,11 +12,13 @@ Successfully implemented the hybrid approach for dynamic project context in gene
 ## Files Changed
 
 ### Modified Files
+
 1. `copier.yml` - Added 3 new context variables
 2. `hooks/post_gen.py` - Added helpful post-generation message
 3. `{{project_slug}}/.github/copilot-instructions.md.j2` - Updated with dynamic interpolation
 
 ### New Files
+
 1. `{{project_slug}}/.github/prompts/project.describe-context.prompt.md` - Interview-style prompt
 2. `{{project_slug}}/docs/how-to/refine-project-context.md` - Comprehensive guide
 3. `docs/implementation-hybrid-context.md` - Implementation summary
@@ -117,6 +120,7 @@ rm -rf /tmp/test-hybrid-context
 ## Risk Assessment
 
 **Low Risk** - Changes are isolated to:
+
 - Template files (only affect new generations)
 - Optional Copier variables (have sensible defaults)
 - New documentation (no breaking changes)
@@ -125,6 +129,7 @@ rm -rf /tmp/test-hybrid-context
 ## Rollback Plan
 
 If issues arise:
+
 1. Remove new variables from copier.yml
 2. Revert .j2 template to static text
 3. Remove new prompt and documentation files

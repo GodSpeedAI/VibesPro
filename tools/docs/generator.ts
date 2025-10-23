@@ -3,74 +3,91 @@
  * Traceability: PRD-MERGE-006, ADR-MERGE-008
  */
 
-import { existsSync, mkdirSync } from 'node:fs';
-import type { GeneratedDocs, ProjectContext, ValidationResult } from './types.js';
+import { existsSync, mkdirSync } from "node:fs";
+import type {
+  GeneratedDocs,
+  ProjectContext,
+  ValidationResult,
+} from "./types.js";
 
 export class DocumentationGenerator {
-    constructor(private readonly outputDir: string) {
-        if (!existsSync(outputDir)) {
-            mkdirSync(outputDir, { recursive: true });
-        }
+  constructor(private readonly outputDir: string) {
+    if (!existsSync(outputDir)) {
+      mkdirSync(outputDir, { recursive: true });
+    }
+  }
+
+  async generateDocumentation(context: ProjectContext): Promise<GeneratedDocs> {
+    const readme = this.renderReadme(context);
+    const apiDocs = this.renderApiDocs(context);
+    const architectureGuide = this.renderArchitectureGuide(context);
+
+    return { readme, apiDocs, architectureGuide };
+  }
+
+  async validateDocumentation(docs: GeneratedDocs): Promise<ValidationResult> {
+    const missingSection: string[] = [];
+    const warnings: string[] = [];
+    const brokenLinks: string[] = [];
+
+    if (!docs.readme.includes("Getting Started")) {
+      missingSection.push("README → Getting Started");
+    }
+    if (!docs.readme.includes("## Architecture")) {
+      missingSection.push("README → Architecture overview");
+    }
+    if (!docs.apiDocs.trim()) {
+      missingSection.push("API reference content");
+    }
+    if (!docs.architectureGuide.includes("Hexagonal Architecture")) {
+      missingSection.push(
+        "Architecture guide → Hexagonal Architecture section",
+      );
     }
 
-    async generateDocumentation(context: ProjectContext): Promise<GeneratedDocs> {
-        const readme = this.renderReadme(context);
-        const apiDocs = this.renderApiDocs(context);
-        const architectureGuide = this.renderArchitectureGuide(context);
+    const totalChecks = 8;
+    const score = Math.max(
+      0,
+      (totalChecks - missingSection.length) / totalChecks,
+    );
 
-        return { readme, apiDocs, architectureGuide };
-    }
+    return {
+      isValid: missingSection.length === 0,
+      missingSection,
+      brokenLinks,
+      score,
+      warnings,
+    };
+  }
 
-    async validateDocumentation(docs: GeneratedDocs): Promise<ValidationResult> {
-        const missingSection: string[] = [];
-        const warnings: string[] = [];
-        const brokenLinks: string[] = [];
+  private renderReadme(context: ProjectContext): string {
+    const domainList = context.domains.length
+      ? context.domains
+          .map((domain) => `- **${formatTitle(domain)}** domain`)
+          .join("\n")
+      : "- Define your first bounded context to start building business logic";
 
-        if (!docs.readme.includes('Getting Started')) {
-            missingSection.push('README → Getting Started');
-        }
-        if (!docs.readme.includes('## Architecture')) {
-            missingSection.push('README → Architecture overview');
-        }
-        if (!docs.apiDocs.trim()) {
-            missingSection.push('API reference content');
-        }
-        if (!docs.architectureGuide.includes('Hexagonal Architecture')) {
-            missingSection.push('Architecture guide → Hexagonal Architecture section');
-        }
+    const frameworkList = context.frameworks.length
+      ? context.frameworks.map((item) => `- ${formatTitle(item)}`).join("\n")
+      : "- Add preferred frameworks in copier answers to customise this section";
 
-        const totalChecks = 8;
-        const score = Math.max(0, (totalChecks - missingSection.length) / totalChecks);
+    const repoBadge = context.repository
+      ? `[![Repository](https://img.shields.io/badge/repository-${encodeURIComponent(
+          context.projectName,
+        )}-blue.svg)](${context.repository})`
+      : "";
 
-        return {
-            isValid: missingSection.length === 0,
-            missingSection,
-            brokenLinks,
-            score,
-            warnings
-        };
-    }
+    const versionBadge = context.version
+      ? `![Version](https://img.shields.io/badge/version-${encodeURIComponent(
+          context.version,
+        )}-brightgreen.svg)`
+      : "";
 
-    private renderReadme(context: ProjectContext): string {
-        const domainList = context.domains.length
-            ? context.domains.map(domain => `- **${formatTitle(domain)}** domain`).join('\n')
-            : '- Define your first bounded context to start building business logic';
+    const authorLine = context.author
+      ? `Maintained by **${context.author}**.`
+      : "";
 
-        const frameworkList = context.frameworks.length
-            ? context.frameworks.map(item => `- ${formatTitle(item)}`).join('\n')
-            : '- Add preferred frameworks in copier answers to customise this section';
-
-        const repoBadge = context.repository
-            ? `[![Repository](https://img.shields.io/badge/repository-${encodeURIComponent(context.projectName)}-blue.svg)](${context.repository})`
-            : '';
-
-        const versionBadge = context.version
-            ? `![Version](https://img.shields.io/badge/version-${encodeURIComponent(context.version)}-brightgreen.svg)`
-            : '';
-
-        const authorLine = context.author ? `Maintained by **${context.author}**.` : '';
-
-        return `# ${context.projectName}
+    return `# ${context.projectName}
 
 ${repoBadge} ${versionBadge}
 
@@ -110,11 +127,15 @@ ${domainList}
 
 ${frameworkList}
 
-${context.includeAI ? `### AI-Enhanced Workflow
+${
+  context.includeAI
+    ? `### AI-Enhanced Workflow
 - Pattern-aware code suggestions via temporal database
 - Automated context capture for architectural decisions
 - Reusable prompts and generators for bounded contexts
-` : ''}
+`
+    : ""
+}
 
 ## Development Commands
 
@@ -143,18 +164,18 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines, coding stand
 
 ## License
 
-${context.license ?? 'MIT License'}
+${context.license ?? "MIT License"}
 `;
-    }
+  }
 
-    private renderApiDocs(context: ProjectContext): string {
-        const domainSections = context.domains.length
-            ? context.domains
-                .map(domain => {
-                    const resource = domain.toLowerCase();
-                    const title = formatTitle(domain);
+  private renderApiDocs(context: ProjectContext): string {
+    const domainSections = context.domains.length
+      ? context.domains
+          .map((domain) => {
+            const resource = domain.toLowerCase();
+            const title = formatTitle(domain);
 
-                    return `## ${title} API
+            return `## ${title} API
 
 ### Endpoints
 
@@ -168,11 +189,11 @@ ${context.license ?? 'MIT License'}
 
 Use the shared type definitions generated in \`libs/shared/database-types\` for request and response contracts.
 `;
-                })
-                .join('\n')
-            : '## Domains\n\nDefine at least one bounded context to unlock detailed API documentation.';
+          })
+          .join("\n")
+      : "## Domains\n\nDefine at least one bounded context to unlock detailed API documentation.";
 
-        return `# ${context.projectName} API Reference
+    return `# ${context.projectName} API Reference
 
 This document describes the public API surface for the generated project. All endpoints follow the ports-and-adapters paradigm and map directly to application services.
 
@@ -215,16 +236,21 @@ All endpoints return a consistent error envelope:
 - 1000 requests per hour per client ID by default
 - Configure per-environment limits in \`apps/api-gateway\`
 `;
-    }
+  }
 
-    private renderArchitectureGuide(context: ProjectContext): string {
-        const domainMatrix = context.domains.length
-            ? context.domains
-                .map(domain => `| ${formatTitle(domain)} | libs/${domain}/domain | libs/${domain}/application | libs/${domain}/infrastructure |`)
-                .join('\n')
-            : '| Pending | libs/example/domain | libs/example/application | libs/example/infrastructure |';
+  private renderArchitectureGuide(context: ProjectContext): string {
+    const domainMatrix = context.domains.length
+      ? context.domains
+          .map(
+            (domain) =>
+              `| ${formatTitle(
+                domain,
+              )} | libs/${domain}/domain | libs/${domain}/application | libs/${domain}/infrastructure |`,
+          )
+          .join("\n")
+      : "| Pending | libs/example/domain | libs/example/application | libs/example/infrastructure |";
 
-        return `# Architecture Guide
+    return `# Architecture Guide
 
 ${context.projectName} adopts a strict **Hexagonal Architecture** to separate core business logic from external concerns. This guide explains the structural decisions and how to extend the system safely.
 
@@ -270,16 +296,16 @@ ${domainMatrix}
 3. Implement application ports before adding infrastructure adapters.
 4. Record new architectural decisions in the temporal database for traceability.
 `;
-    }
+  }
 }
 
 function formatTitle(input: string): string {
-    if (!input) {
-        return '';
-    }
-    return input
-        .split(/[-_/\s]+/u)
-        .filter(Boolean)
-        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(' ');
+  if (!input) {
+    return "";
+  }
+  return input
+    .split(/[-_/\s]+/u)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }

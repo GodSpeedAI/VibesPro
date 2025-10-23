@@ -59,8 +59,6 @@ Interface Layer (User/System Interfaces)
 - **Task Automation**: justfile (cross-platform, intelligent strategy detection)
 - **Monorepo**: Nx (code generation, dependency graph, caching)
 
-
-
 **Template System**:
 
 - **Generator**: Copier (single source for project scaffolding with direct Jinja2 variable syntax)
@@ -449,7 +447,6 @@ Key success factors:
 
 The autonomous agents working on this project should coordinate effectively, maintain quality standards, and always prioritize the long-term maintainability and extensibility of the platform. The ultimate goal is to create a development platform that makes building high-quality, architecturally sound applications both faster and more enjoyable.
 
-
 # MCP Server Tools Reference
 
 You have access to the following MCP servers. **Use these tools proactively** to provide accurate, efficient, and contextually-aware assistance.
@@ -469,15 +466,18 @@ You have access to the following MCP servers. **Use these tools proactively** to
 ## Tool Descriptions
 
 ### Context7 (Upstash)
+
 **Purpose**: Real-time, version-specific code documentation and API references
 
 **Use when:**
+
 - Verifying exact API signatures or method parameters
 - Working with specific package versions
 - Need to avoid outdated or hallucinated API information
 - Looking for official code examples from package documentation
 
 **Don't use when:**
+
 - Asking general conceptual questions
 - Working with proprietary/internal APIs
 - Need custom implementation patterns (not covered in official docs)
@@ -487,15 +487,18 @@ You have access to the following MCP servers. **Use these tools proactively** to
 ---
 
 ### Ref Tools
+
 **Purpose**: Token-efficient search and retrieval across technical documentation
 
 **Use when:**
+
 - Searching across multiple documentation sources simultaneously
 - Need specific sections from lengthy technical docs
 - Looking for comparative information across different APIs
 - Want efficient extraction without loading entire documentation pages
 
 **Don't use when:**
+
 - Need real-time code execution
 - Require bleeding-edge documentation (< 24 hours old)
 - Working with dynamic/interactive documentation
@@ -505,9 +508,11 @@ You have access to the following MCP servers. **Use these tools proactively** to
 ---
 
 ### Memory Tool (Mem0)
+
 **Purpose**: Persistent storage for user preferences, project context, and decisions
 
 **Use when:**
+
 - Maintaining context across multiple sessions
 - Storing project-specific conventions or patterns
 - Remembering user coding preferences (style, frameworks, etc.)
@@ -515,6 +520,7 @@ You have access to the following MCP servers. **Use these tools proactively** to
 - Building cumulative understanding of a codebase
 
 **Don't use when:**
+
 - Storing credentials or sensitive data (use secure vaults instead)
 - Managing large datasets (use proper databases)
 - Replacing version control systems
@@ -525,9 +531,11 @@ You have access to the following MCP servers. **Use these tools proactively** to
 ---
 
 ### Exa Search
+
 **Purpose**: Advanced web search optimized for technical and programming content
 
 **Use when:**
+
 - Finding real-world code examples and implementations
 - Searching for community solutions to specific problems
 - Discovering technical blog posts and tutorials
@@ -535,6 +543,7 @@ You have access to the following MCP servers. **Use these tools proactively** to
 - Finding GitHub repositories and open-source projects
 
 **Don't use when:**
+
 - Searching private repositories
 - Need official/canonical documentation (use Context7 or Ref Tools instead)
 - Looking for company-specific internal docs
@@ -544,9 +553,11 @@ You have access to the following MCP servers. **Use these tools proactively** to
 ---
 
 ### Microsoft Docs MCP
+
 **Purpose**: Direct access to official Microsoft documentation
 
 **Use when:**
+
 - Working with Azure services or Azure SDK
 - Using .NET, C#, or other Microsoft frameworks
 - Developing for Windows platforms
@@ -554,6 +565,7 @@ You have access to the following MCP servers. **Use these tools proactively** to
 - Implementing Microsoft Graph or Office integrations
 
 **Don't use when:**
+
 - Working with non-Microsoft technologies
 - Need community workarounds (official docs may not cover edge cases)
 - Looking for third-party alternatives to Microsoft solutions
@@ -563,9 +575,11 @@ You have access to the following MCP servers. **Use these tools proactively** to
 ---
 
 ### DeepWiki (CognitionAI)
+
 **Purpose**: Comprehensive knowledge base for technical concepts and patterns
 
 **Use when:**
+
 - Need deep dives into architectural patterns
 - Understanding theoretical computer science concepts
 - Exploring system design principles
@@ -573,6 +587,7 @@ You have access to the following MCP servers. **Use these tools proactively** to
 - Need detailed explanations of technical concepts
 
 **Don't use when:**
+
 - Need quick syntax references
 - Require the latest technology updates
 - Looking for specific implementation code
@@ -611,6 +626,7 @@ User asks: "How do I implement authentication in my Next.js 14 app with Azure AD
 ---
 
 **Note**: Proactively use these tools without always asking permission. They are provided to enhance your effectiveness.
+
 ```
 
 
@@ -628,3 +644,4 @@ User asks: "How do I implement authentication in my Next.js 14 app with Azure AD
 
 
 <!-- nx configuration end-->
+```

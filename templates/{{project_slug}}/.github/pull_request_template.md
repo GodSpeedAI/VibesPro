@@ -17,6 +17,7 @@ Branching rules:
 ---
 
 ## ✍️ Summary (What & Why)
+
 - **What**: One sentence that a busy reviewer can grok in 5 seconds.
 - **Why**: Link the requirement (PRD-### / ADR-### / SDS-###) this enforces.
 
@@ -25,24 +26,26 @@ Branching rules:
 ---
 
 ## 🧩 Traceability
-- **ADR**: ADR-___
-- **PRD**: PRD-___
-- **SDS**: SDS-___
+
+- **ADR**: ADR-\_\_\_
+- **PRD**: PRD-\_\_\_
+- **SDS**: SDS-\_\_\_
 - **TDD Plan**: link to the plan section for `TASK-###`
 
 ---
 
 ## 🧭 Ownership (Nx)
 
-| Type | Projects | Notes |
-|---|---|---|
-| **Primary** | `apps/...`, `libs/...` | Owner(s) below will auto-review. |
-| **Secondary** | `tools/...`, `generators/...` | Avoid cross-task edits. |
+| Type          | Projects                      | Notes                            |
+| ------------- | ----------------------------- | -------------------------------- |
+| **Primary**   | `apps/...`, `libs/...`        | Owner(s) below will auto-review. |
+| **Secondary** | `tools/...`, `generators/...` | Avoid cross-task edits.          |
 
 **Affected (suggested)**
+
 ```bash
 pnpm nx print-affected --select=projects
-````
+```
 
 ---
 
@@ -137,7 +140,7 @@ just ai-validate
 
 ## 👀 Reviewer Guide
 
-- **Focus**: Does this PR advance *only* the declared TDD phase for `TASK-###`?
+- **Focus**: Does this PR advance _only_ the declared TDD phase for `TASK-###`?
 - **Reject** if: scope creep, cross-task edits, or missing validation (`just ai-validate`).
 - **Approve** if: tiny diff, correct phase behavior, all checks green.
 

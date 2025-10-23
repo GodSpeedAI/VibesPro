@@ -22,9 +22,6 @@
       "description": "A directory where the feature will be created."
     }
   },
-  "required": [
-    "name",
-    "domain"
-  ],
+  "required": ["name", "domain"],
   "additionalProperties": false
 }

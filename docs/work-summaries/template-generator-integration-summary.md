@@ -11,6 +11,7 @@
 You correctly identified that the Nx generator integration I implemented was only in the **maintainer project** (VibesPro repository itself), but NOT in the **template project** (`templates/{{project_slug}}/`).
 
 This was a critical oversight because:
+
 - The **template** is what generates NEW projects via Copier
 - Generated projects need the generator-first infrastructure more than the maintainer project
 - Without this integration, new projects wouldn't have AI workflows configured to use Nx generators
@@ -33,12 +34,14 @@ This was a critical oversight because:
 **File:** `templates/{{project_slug}}/.github/copilot-instructions.md`
 
 **Changes:**
+
 - Removed duplicate/malformed text
 - Added **"Core Principles (HIGHEST PRIORITY)"** section at top
 - Clearly states generator-first requirement BEFORE any other guidelines
 - References both generators-first.instructions.md and nx.instructions.md
 
 **New structure:**
+
 ```markdown
 # Repository‑Wide Copilot Instructions
 
@@ -48,6 +51,7 @@ This was a critical oversight because:
 - **Security First**: Never write or modify `.vscode/settings.json`...
 
 ## 📋 General Guidelines
+
 ...
 ```
 
@@ -56,18 +60,22 @@ This was a critical oversight because:
 **Files modified in `templates/{{project_slug}}/.github/`:**
 
 1. **instructions/ai-workflows.instructions.md**
+
    - Added "Generator-First Policy" section at top (before Namespacing)
    - Cross-references generators-first.instructions.md and nx.instructions.md
 
 2. **instructions/src.instructions.md**
+
    - Added "Generator-First Requirement" as first bullet point
    - Instructs to check generators before creating new code
 
 3. **prompts/spec.implement.prompt.md**
+
    - Added **"Step 0: Check for Nx Generators (REQUIRED FIRST STEP)"**
    - Clear instructions to run `pnpm exec nx list` and `just ai-scaffold`
 
 4. **prompts/tdd.workflow.prompt.md**
+
    - Updated Red Phase to check generators FIRST if creating new module
    - References generators-first.instructions.md
 
@@ -80,6 +88,7 @@ This was a critical oversight because:
 **File added:** `templates/{{project_slug}}/docs/nx-generators-guide.md`
 
 **Content:**
+
 - Complete reference for all Nx generators
 - Installed generators (@nx/js, @nx/react, @nx/node)
 - Available generators (@nx/next, @nx/nest, @nxlv/python)
@@ -188,6 +197,7 @@ docs/
 ### To Verify Integration Works:
 
 1. **Generate a test project:**
+
    ```bash
    cd /tmp
    copier copy https://github.com/GodSpeedAI/VibesPro.git test-project
@@ -195,6 +205,7 @@ docs/
    ```
 
 2. **Check files exist:**
+
    ```bash
    ls -la .github/instructions/generators-first.instructions.md
    ls -la .github/instructions/nx.instructions.md
@@ -202,6 +213,7 @@ docs/
    ```
 
 3. **Verify copilot-instructions.md:**
+
    ```bash
    head -20 .github/copilot-instructions.md
    # Should show "Core Principles" section with generator-first requirement
@@ -217,21 +229,25 @@ docs/
 ## Benefits for Generated Projects
 
 ### 1. Consistency
+
 - All components/libs use standard Nx structure
 - Proper project.json, tsconfig.json configuration
 - Correct Nx project graph relationships
 
 ### 2. Developer Experience
+
 - AI assistants use generators automatically
 - No manual boilerplate writing
 - Clear guidance in all AI workflows
 
 ### 3. Maintainability
+
 - Generated code follows Nx conventions
 - Easier to navigate and understand
 - Reduces technical debt
 
 ### 4. Discoverability
+
 - `docs/nx-generators-guide.md` shows all available generators
 - Quick reference table for common tasks
 - Integration with TDD and spec workflows
@@ -243,6 +259,7 @@ docs/
 ### When AI Creates New Code:
 
 **TDD Workflow (Red Phase):**
+
 ```
 1. User: "Let's TDD the new UserService"
 2. AI reads: tdd.red.chatmode.md
@@ -256,6 +273,7 @@ docs/
 ```
 
 **Spec Implementation:**
+
 ```
 1. User: "Implement feature from PRD-042"
 2. AI reads: spec.implement.prompt.md
@@ -286,6 +304,7 @@ Precedence Order (lowest number = highest priority):
 ```
 
 Generator-first policy is **precedence 15**, meaning:
+
 - Only security (10) overrides it
 - Applies before all workflow, testing, and general guidelines
 - Enforced in ALL AI-assisted coding tasks
@@ -314,11 +333,13 @@ Generator-first policy is **precedence 15**, meaning:
 ### For Template:
 
 1. **Add more chat modes with generator awareness:**
+
    - `tdd.green.chatmode.md`
    - `tdd.refactor.chatmode.md`
    - `debug.*.chatmode.md`
 
 2. **Create template-specific custom generators:**
+
    - Domain entity generator (hexagonal architecture)
    - API adapter generator
    - UI feature library generator
@@ -331,6 +352,7 @@ Generator-first policy is **precedence 15**, meaning:
 ### For Testing:
 
 1. **Integration test:**
+
    - Generate project from template
    - Verify all generator files present
    - Test AI workflow with Copilot
@@ -345,14 +367,16 @@ Generator-first policy is **precedence 15**, meaning:
 ## User Feedback Implementation
 
 **Original Request:**
-> "i hope you incorporated that nx integration to the template project as well 
-> not just the maintainer projects code as that nx integration is primarily 
+
+> "i hope you incorporated that nx integration to the template project as well
+> not just the maintainer projects code as that nx integration is primarily
 > for the template project"
 
 **Response:**
 ✅ **DONE** - All Nx generator infrastructure now in template project:
+
 - generators-first.instructions.md
-- nx.instructions.md  
+- nx.instructions.md
 - nx-generators-guide.md
 - Updated all AI workflows (prompts, chatmodes, instructions)
 - Template copilot-instructions.md has Core Principles

@@ -18,6 +18,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### Files Created (Phase 2)
 
 #### 1. **tests/AGENT.md** (811 lines)
+
 - **Purpose**: Testing infrastructure and TDD workflow guidance
 - **Key Content**:
   - TDD workflow (Red-Green-Refactor cycle)
@@ -31,6 +32,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
   - Test organization patterns
 
 #### 2. **apps/AGENT.md** (684 lines)
+
 - **Purpose**: Application interfaces (web, mobile, CLI, API)
 - **Key Content**:
   - Hexagonal architecture interface layer
@@ -43,6 +45,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
   - Security considerations (input validation, authentication, rate limiting)
 
 #### 3. **libs/AGENT.md** (1,048 lines)
+
 - **Purpose**: Business logic libraries (hexagonal architecture core)
 - **Key Content**:
   - Three-layer hexagonal architecture (domain, application, infrastructure)
@@ -55,6 +58,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
   - Testing strategy by layer
 
 #### 4. **generators/AGENT.md** (915 lines)
+
 - **Purpose**: Code generators (Nx and Copier)
 - **Key Content**:
   - Generator-first workflow enforcement
@@ -68,6 +72,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
   - When to create new generators
 
 #### 5. **templates/AGENT.md** (893 lines)
+
 - **Purpose**: Copier/Jinja2 templates for project generation
 - **Key Content**:
   - Copier configuration (copier.yml)
@@ -93,6 +98,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### 1. Hexagonal Architecture Documentation
 
 **Three-layer pattern thoroughly documented in libs/AGENT.md:**
+
 - Domain layer (pure business logic, no dependencies)
 - Application layer (use cases, ports/interfaces)
 - Infrastructure layer (adapters, implementations)
@@ -101,6 +107,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### 2. Testing by Architecture Layer
 
 **Comprehensive testing strategy in tests/AGENT.md:**
+
 - Domain: Pure unit tests, 100% coverage, no mocks
 - Application: Unit tests with mocked ports, 90%+ coverage
 - Infrastructure: Integration tests with real dependencies, 80%+ coverage
@@ -109,6 +116,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### 3. Generator-First Workflow
 
 **Enforced in generators/AGENT.md:**
+
 - ALWAYS check for generators before writing code
 - Use `just ai-scaffold name=<generator>`
 - Custom generator patterns for project conventions
@@ -117,6 +125,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### 4. Template-Driven Generation
 
 **Comprehensive Copier/Jinja2 guidance in templates/AGENT.md:**
+
 - Full project generation workflow
 - Jinja2 best practices (filters, conditionals, loops)
 - Pre/post generation hooks in Python
@@ -125,6 +134,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### 5. Security Integration
 
 **Every AGENT.md includes security section:**
+
 - tests/: Security testing priorities, threat modeling
 - apps/: Input validation, authentication, rate limiting
 - libs/: Domain invariants, authorization in use cases
@@ -138,6 +148,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### Cross-Reference Network
 
 **All Phase 2 files properly integrated:**
+
 - Link to parent copilot-instructions.md
 - Link to AGENT-MAP.md for navigation
 - Link to relevant sibling contexts
@@ -147,6 +158,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### Routing Tables
 
 **Each file includes "Use When/Refer When" tables:**
+
 - Clear guidance on when to use this context
 - Explicit routing to other contexts when needed
 - No overlap or ambiguity
@@ -154,6 +166,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### Practical Examples
 
 **Every file includes 4+ real-world examples:**
+
 - tests/: TDD workflow examples, test structures
 - apps/: Controllers, DTOs, presenters, dependency injection
 - libs/: Domain entities, value objects, use cases, repositories
@@ -196,6 +209,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 **Decision**: Document hexagonal architecture (Ports & Adapters) as the primary pattern in libs/AGENT.md.
 
 **Rationale**:
+
 - Aligns with project's architectural vision
 - Clear dependency rules prevent coupling
 - Testability built-in (mock ports)
@@ -208,6 +222,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 **Decision**: Define different testing approaches for each architecture layer.
 
 **Rationale**:
+
 - Domain layer: Pure logic deserves pure tests (no mocks, 100% coverage)
 - Application layer: Use case orchestration needs mocked dependencies
 - Infrastructure layer: Real dependencies when safe (databases, adapters)
@@ -220,6 +235,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 **Decision**: Emphasize generator-first workflow in generators/AGENT.md with ALWAYS directive.
 
 **Rationale**:
+
 - Consistency across codebase
 - Faster development
 - Enforces architectural patterns
@@ -232,6 +248,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 **Decision**: Separate Nx generators (generators/) from Copier templates (templates/).
 
 **Rationale**:
+
 - Nx generators: Individual components within existing projects
 - Copier templates: Full project initialization
 - Different use cases, different tools
@@ -267,6 +284,7 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### Phase 3: Specialized Contexts (Planned)
 
 **Pending AGENT.md files:**
+
 1. **temporal_db/AGENT.md** - Rust-based learning database
 2. **architecture/AGENT.md** - CALM docs and architectural diagrams
 3. **ops/AGENT.md** - DevOps and deployment automation
@@ -277,11 +295,13 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### Phase 4: Domain-Specific Sub-Contexts (Optional)
 
 **Conditional on domain maturity:**
+
 - `libs/{domain}/AGENT.md` for major bounded contexts
 - Only create when domain is well-established
 - Examples: `libs/orders/AGENT.md`, `libs/users/AGENT.md`
 
 **Criteria for creation**:
+
 - Domain has 5+ libraries
 - Domain has unique patterns/conventions
 - Team requests specific guidance
@@ -300,12 +320,14 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### For AI Development
 
 **Positive impacts:**
+
 - AI now has local context for testing, apps, libs, generators, templates
 - Routing rules guide AI to correct context automatically
 - Examples provide patterns to follow
 - Security guidance integrated at every level
 
 **Reduced ambiguity:**
+
 - Clear when to use TDD vs code-first
 - Clear when to use Nx generators vs Copier templates
 - Clear testing strategy by architecture layer
@@ -314,12 +336,14 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 ### For Developers
 
 **Improved onboarding:**
+
 - New developers can reference AGENT.md files
 - Clear examples for common patterns
 - Checklists guide workflows
 - Quick reference sections for commands
 
 **Consistency:**
+
 - All code follows same architectural pattern
 - Testing approach consistent by layer
 - Generator-first workflow enforced

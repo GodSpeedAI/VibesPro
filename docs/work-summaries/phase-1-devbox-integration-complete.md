@@ -16,6 +16,7 @@ Implement Phase 1 of the environment setup roadmap: establish Devbox as the OS-l
 Created `tests/env/test_devbox.sh` to validate Devbox configuration:
 
 **Test Coverage:**
+
 - ✅ Validates `devbox.json` exists at repo root
 - ✅ Checks `devbox.json` is valid JSON
 - ✅ Verifies `packages` array is present
@@ -32,24 +33,31 @@ The `devbox.json` file already existed with proper structure:
 ```json
 {
   "packages": [
-    "git", "curl", "jq", "make", "ffmpeg",
-    "postgresql@15", "ripgrep", "fd", "uv"
+    "git",
+    "curl",
+    "jq",
+    "make",
+    "ffmpeg",
+    "postgresql@15",
+    "ripgrep",
+    "fd",
+    "uv"
   ],
   "shell": {
-    "init_hook": [
-      "echo 'Devbox initialized: OS toolchain ready.'"
-    ]
+    "init_hook": ["echo 'Devbox initialized: OS toolchain ready.'"]
   }
 }
 ```
 
 **Fixed Test Logic:**
+
 - Updated test to use correct `devbox info` command syntax
 - Made runtime validation optional (gracefully degrades if devbox not fully initialized)
 - Fixed syntax errors in test script
 
 **Documentation Added:**
 Updated `docs/ENVIRONMENT.md` with comprehensive Devbox section:
+
 - What is Devbox and when to use it
 - Installation instructions
 - Usage examples (shell, run, update)
@@ -60,6 +68,7 @@ Updated `docs/ENVIRONMENT.md` with comprehensive Devbox section:
 
 **Created Boot Script:**
 Added `scripts/devbox_boot.sh` with:
+
 - Attractive ASCII banner
 - List of available tools
 - Quick command reference
@@ -67,6 +76,7 @@ Added `scripts/devbox_boot.sh` with:
 
 **Updated devbox.json:**
 Modified init_hook to call the boot script:
+
 ```json
 "init_hook": [
   "bash scripts/devbox_boot.sh"
@@ -75,6 +85,7 @@ Modified init_hook to call the boot script:
 
 **Added Just Target:**
 Created `env-enter` recipe in `justfile`:
+
 ```make
 env-enter:
     @echo "🎯 Entering Devbox environment..."
@@ -117,9 +128,11 @@ Sanity OK
 ### New Files (2 total)
 
 **Tests:**
+
 - `tests/env/test_devbox.sh` - Devbox configuration validation
 
 **Scripts:**
+
 - `scripts/devbox_boot.sh` - Welcome banner and diagnostics
 
 ### Modified Files (3 total)
@@ -218,6 +231,7 @@ This implementation fulfills Phase 1 requirements from `docs/tmp/devenv.md`:
 - ✅ **1.3 REFACTOR** - Added boot script and env-enter target
 
 Maps to specifications:
+
 - **PRD-011** (Devbox as OS boundary) ✅
 - **DEV-SPEC-006** (CI posture) - Foundation ready
 - **DEV-SPEC-008** (Testing strategy) - TDD workflow followed
@@ -248,6 +262,7 @@ Maps to specifications:
 With Devbox providing OS-level isolation, Phase 2 will add runtime version management:
 
 ### Phase 2 - mise Runtime Management
+
 - Create `.mise.toml` with Node/Python/Rust versions
 - Add `tests/env/test_mise_versions.sh`
 - Remove `.python-version` (mise becomes authoritative)
@@ -255,6 +270,7 @@ With Devbox providing OS-level isolation, Phase 2 will add runtime version manag
 - Add `verify:node` target to detect Volta/mise conflicts
 
 ### Expected Flow
+
 ```bash
 # User workflow with Phases 0+1+2 complete:
 devbox shell              # Enter OS toolchain (Phase 1)
@@ -309,6 +325,7 @@ The Devbox integration provides a solid OS boundary while staying lightweight an
 ---
 
 **Traceability:**
+
 - PRD-011: Devbox as OS boundary ✅
 - Phase 0: Test harness ✅
 - Phase 1: Devbox integration ✅

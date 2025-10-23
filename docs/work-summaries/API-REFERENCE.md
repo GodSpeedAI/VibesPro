@@ -14,7 +14,6 @@ All API endpoints require authentication:
 Authorization: Bearer <your-token>
 ```
 
-
 ## Core Domain API
 
 ### Endpoints
@@ -28,7 +27,6 @@ Authorization: Bearer <your-token>
 ### Data Models
 
 See [Type Definitions](../libs/shared/database-types/) for complete data models.
-
 
 ## User Domain API
 
@@ -44,7 +42,6 @@ See [Type Definitions](../libs/shared/database-types/) for complete data models.
 
 See [Type Definitions](../libs/shared/database-types/) for complete data models.
 
-
 ## Billing Domain API
 
 ### Endpoints
@@ -58,7 +55,6 @@ See [Type Definitions](../libs/shared/database-types/) for complete data models.
 ### Data Models
 
 See [Type Definitions](../libs/shared/database-types/) for complete data models.
-
 
 ## Error Handling
 

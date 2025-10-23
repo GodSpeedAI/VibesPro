@@ -127,6 +127,7 @@ technology stack includes next (frontend), fastapi (backend), postgresql
 ## Benefits Comparison
 
 ### Before (Static Context)
+
 ```
 ❌ Same text for all generated projects
 ❌ Quickly becomes outdated
@@ -136,6 +137,7 @@ technology stack includes next (frontend), fastapi (backend), postgresql
 ```
 
 ### After (Hybrid Approach)
+
 ```
 ✅ Dynamic context at generation
 ✅ Easy conversational updates
@@ -147,18 +149,23 @@ technology stack includes next (frontend), fastapi (backend), postgresql
 ## Key Features
 
 ### 1. **Sensible Defaults**
+
 Projects work immediately with good baseline context
 
 ### 2. **Optional Refinement**
+
 Developers can update when needed, not forced to
 
 ### 3. **Guided Conversation**
+
 Structured questions ensure complete information
 
 ### 4. **No Template Dependency**
+
 Projects can update context independently
 
 ### 5. **Traceability**
+
 Context evolution can be tracked in ADRs
 
 ## Integration Points

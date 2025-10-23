@@ -3,6 +3,7 @@
 Prompts carry YAML frontmatter with taxonomy fields: `kind: prompt`, `domain`, `task`, optional `phase`, and an optional `budget` (S|M|L).
 
 ## Groups (by domain)
+
 - spec:
   - spec.implement.prompt.md (task: implement)
   - spec.change.prompt.md (task: change)
@@ -27,4 +28,5 @@ Prompts carry YAML frontmatter with taxonomy fields: `kind: prompt`, `domain`, `
 See also: `reference/index.md` for a consolidated list.
 
 ## Usage
+
 Chat modes reference prompts; you can also run prompts via tasks or tooling (see `scripts/run_prompt.sh`).

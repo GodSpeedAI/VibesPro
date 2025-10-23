@@ -19,6 +19,7 @@ Implemented automated template cleanup system to remove maintainer-specific file
 **File**: `templates/{{project_slug}}/.github/copilot-instructions.md.j2`
 
 Added instruction to save work summaries:
+
 ```markdown
 **Save and generated summaries in the docs/work-summaries/ folder for future reference.**
 ```
@@ -33,6 +34,7 @@ Replaced 4 pre-generated spec files with user-friendly starters (500+ lines tota
 - `templates/{{project_slug}}/docs/dev_technical-specifications.md.j2` - Technical Specifications starter
 
 Each starter includes:
+
 - Clear purpose statement in callout format
 - Step-by-step instructions on using chat modes and prompts
 - Complete template structure
@@ -44,6 +46,7 @@ Each starter includes:
 **File**: `scripts/template-cleanup.sh` (executable, 147 lines)
 
 Features:
+
 - Removes 22+ maintainer-specific files and test artifacts
 - Replaces spec files with minimal starters
 - Idempotent (safe to run multiple times)
@@ -56,6 +59,7 @@ Features:
 **File**: `justfile` (Template Maintenance section)
 
 Added two recipes:
+
 - `just template-cleanup` - Interactive with confirmation prompt
 - `just template-cleanup-force` - Force execution for CI/automation
 
@@ -64,6 +68,7 @@ Added two recipes:
 ## What Gets Removed
 
 ### Maintainer-Specific Documentation (12 files)
+
 - dev_devkit-integration-plan.md
 - dev_implementation_plan.md
 - devkit-prompts-instructions-integration.md
@@ -78,6 +83,7 @@ Added two recipes:
 - work-summaries/ directory
 
 ### Test Artifacts (6 directories)
+
 - docs/specs/10914THREAD_VALUE/
 - docs/specs/11409THREAD_VALUE/
 - docs/specs/9336THREAD/
@@ -86,6 +92,7 @@ Added two recipes:
 - docs/specs/test-feature-direct/
 
 ### Pre-Generated Specs (4 files - replaced)
+
 - dev_adr.md.j2
 - dev_prd.md.j2
 - dev_sds.md.j2
@@ -96,24 +103,28 @@ Added two recipes:
 ## Best Practices Followed
 
 ✅ **No Technical Debt**
+
 - Idempotent script with proper error handling
 - Clear separation of concerns
 - Comprehensive inline documentation
 - Version controlled automation
 
 ✅ **User-Friendly Design**
+
 - Spec starters include clear instructions
 - Example entries show best practices
 - Direct users to appropriate chat modes/prompts
 - Proper Jinja2 syntax with `{% raw %}` blocks
 
 ✅ **Safety Features**
+
 - Interactive confirmation by default
 - Force option for automation
 - Non-destructive operations
 - Validation checks
 
 ✅ **Maintainability**
+
 - Centralized cleanup logic
 - Easy to extend with more cleanup operations
 - Clear output for debugging
@@ -124,18 +135,21 @@ Added two recipes:
 ## Usage
 
 ### Run Cleanup Interactively
+
 ```bash
 just template-cleanup
 # Prompts for confirmation before executing
 ```
 
 ### Run Cleanup Without Confirmation
+
 ```bash
 just template-cleanup-force
 # Runs immediately without prompt (for CI/automation)
 ```
 
 ### Run Script Directly
+
 ```bash
 bash scripts/template-cleanup.sh
 # Direct execution
@@ -163,6 +177,7 @@ bash scripts/template-cleanup.sh
 ## Impact
 
 ### Benefits
+
 ✅ Cleaner scaffolded projects
 ✅ No VibesPro-specific content in user projects
 ✅ Clear guidance for new users
@@ -170,10 +185,12 @@ bash scripts/template-cleanup.sh
 ✅ Reduced confusion and support requests
 
 ### Risks
+
 ⚠️ Breaking change for existing workflows
 ⚠️ Users need to understand new spec generation workflow
 
 ### Mitigation
+
 ✅ Comprehensive documentation
 ✅ Clear instructions in spec starters
 ✅ Safe, reversible automation
@@ -183,6 +200,7 @@ bash scripts/template-cleanup.sh
 ## Files Modified
 
 ### Created
+
 - scripts/template-cleanup.sh
 - templates/{{project_slug}}/docs/dev_adr.md.j2 (new version)
 - templates/{{project_slug}}/docs/dev_prd.md.j2 (new version)
@@ -192,6 +210,7 @@ bash scripts/template-cleanup.sh
 - docs/work-summaries/2025-10-08-template-cleanup.md
 
 ### Modified
+
 - justfile (added 2 recipes)
 - templates/{{project_slug}}/.github/copilot-instructions.md.j2 (added work-summaries note)
 

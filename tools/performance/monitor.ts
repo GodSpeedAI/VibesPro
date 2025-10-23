@@ -1,9 +1,9 @@
-import { randomUUID } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { performance, PerformanceObserver } from 'node:perf_hooks';
-import { dirname, resolve } from 'node:path';
+import { randomUUID } from "node:crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { performance, PerformanceObserver } from "node:perf_hooks";
+import { dirname, resolve } from "node:path";
 
-type Severity = 'info' | 'warn' | 'critical';
+type Severity = "info" | "warn" | "critical";
 
 export interface PerformanceMonitorOptions {
   baselinePath?: string;
@@ -47,7 +47,7 @@ interface PersistedState {
 
 const DEFAULT_THRESHOLDS = {
   warn: 0.25,
-  critical: 0.5
+  critical: 0.5,
 };
 
 export class PerformanceMonitor {
@@ -61,10 +61,12 @@ export class PerformanceMonitor {
   private persisting = false;
 
   constructor(options: PerformanceMonitorOptions = {}) {
-    this.baselinePath = resolve(options.baselinePath ?? 'tmp/performance-baselines.json');
+    this.baselinePath = resolve(
+      options.baselinePath ?? "tmp/performance-baselines.json",
+    );
     this.thresholds = {
       warn: options.thresholds?.warn ?? DEFAULT_THRESHOLDS.warn,
-      critical: options.thresholds?.critical ?? DEFAULT_THRESHOLDS.critical
+      critical: options.thresholds?.critical ?? DEFAULT_THRESHOLDS.critical,
     };
     this.persist = options.persist ?? true;
     this.maxHistory = Math.max(5, options.maxHistory ?? 40);
@@ -73,7 +75,11 @@ export class PerformanceMonitor {
     this.setupObservers();
   }
 
-  async track<T>(workflow: string, fn: () => Promise<T>, metadata: Record<string, unknown> = {}): Promise<T> {
+  async track<T>(
+    workflow: string,
+    fn: () => Promise<T>,
+    metadata: Record<string, unknown> = {},
+  ): Promise<T> {
     const startMark = `${workflow}-start-${randomUUID()}`;
     const endMark = `${workflow}-end-${randomUUID()}`;
     performance.mark(startMark);
@@ -92,22 +98,36 @@ export class PerformanceMonitor {
   }
 
   async measureGenerationTime<T>(fn: () => Promise<T>): Promise<T> {
-    return this.track('generation', fn, { category: 'generation' });
+    return this.track("generation", fn, { category: "generation" });
   }
 
   async measureBuildTime<T>(fn: () => Promise<T>): Promise<T> {
-    return this.track('build', fn, { category: 'build' });
+    return this.track("build", fn, { category: "build" });
   }
 
-  recordSample(workflow: string, duration: number, metadata: Record<string, unknown> = {}): void {
+  recordSample(
+    workflow: string,
+    duration: number,
+    metadata: Record<string, unknown> = {},
+  ): void {
     if (!Number.isFinite(duration) || duration < 0) {
-      console.debug(`[PerformanceMonitor] Dropped sample for workflow "${workflow}" due to invalid duration:`, duration, 'metadata:', metadata);
+      console.debug(
+        `[PerformanceMonitor] Dropped sample for workflow "${workflow}" due to invalid duration:`,
+        duration,
+        "metadata:",
+        metadata,
+      );
       return;
     }
 
     const sanitizedMetadata = this.sanitizeMetadata(metadata);
     const timestamp = new Date().toISOString();
-    this.history.push({ workflow, duration, timestamp, metadata: sanitizedMetadata });
+    this.history.push({
+      workflow,
+      duration,
+      timestamp,
+      metadata: sanitizedMetadata,
+    });
     if (this.history.length > this.maxHistory) {
       this.history.shift();
     }
@@ -117,17 +137,21 @@ export class PerformanceMonitor {
     this.baselines.set(workflow, updatedBaseline);
 
     if (existing) {
-      const delta = (duration - existing.baseline) / Math.max(existing.baseline, 1);
+      const delta =
+        (duration - existing.baseline) / Math.max(existing.baseline, 1);
       const severity = this.calculateSeverity(delta);
-      if (severity !== 'info') {
+      if (severity !== "info") {
         const advisory = this.createAdvisory({
           workflow,
           duration,
           baseline: existing.baseline,
           delta,
-          threshold: severity === 'critical' ? this.thresholds.critical : this.thresholds.warn,
+          threshold:
+            severity === "critical"
+              ? this.thresholds.critical
+              : this.thresholds.warn,
           metadata: sanitizedMetadata,
-          severity
+          severity,
         });
         this.advisories.push(advisory);
       }
@@ -171,22 +195,22 @@ export class PerformanceMonitor {
 
       const entriesArray = Array.isArray(entries) ? entries : [entries];
       for (const entry of entriesArray) {
-        const workflow = entry.name.replace(/-duration$/u, '');
+        const workflow = entry.name.replace(/-duration$/u, "");
         this.recordSample(workflow, entry.duration);
       }
     });
-    observer.observe({ entryTypes: ['measure'], buffered: true });
+    observer.observe({ entryTypes: ["measure"], buffered: true });
   }
 
   private loadState(): void {
     try {
-      const data = readFileSync(this.baselinePath, 'utf-8');
+      const data = readFileSync(this.baselinePath, "utf-8");
       const parsed: PersistedState = JSON.parse(data);
       Object.entries(parsed.baselines).forEach(([workflow, baseline]) => {
         this.baselines.set(workflow, baseline);
       });
     } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
         throw error;
       }
     }
@@ -203,7 +227,7 @@ export class PerformanceMonitor {
       const directory = dirname(this.baselinePath);
       mkdirSync(directory, { recursive: true });
       const payload: PersistedState = {
-        baselines: Object.fromEntries(this.baselines.entries())
+        baselines: Object.fromEntries(this.baselines.entries()),
       };
       writeFileSync(this.baselinePath, JSON.stringify(payload, null, 2));
     } finally {
@@ -211,12 +235,15 @@ export class PerformanceMonitor {
     }
   }
 
-  private updateBaseline(existing: BaselineEntry | undefined, duration: number): BaselineEntry {
+  private updateBaseline(
+    existing: BaselineEntry | undefined,
+    duration: number,
+  ): BaselineEntry {
     if (!existing) {
       return {
         baseline: duration,
         samples: 1,
-        lastObserved: duration
+        lastObserved: duration,
       };
     }
 
@@ -225,20 +252,25 @@ export class PerformanceMonitor {
     return {
       baseline,
       samples: existing.samples + 1,
-      lastObserved: duration
+      lastObserved: duration,
     };
   }
 
-  private sanitizeMetadata(metadata: Record<string, unknown>): Record<string, unknown> {
+  private sanitizeMetadata(
+    metadata: Record<string, unknown>,
+  ): Record<string, unknown> {
     const result: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(metadata)) {
-      if (typeof value === 'string') {
-        if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/iu.test(value) || key.toLowerCase().includes('token')) {
-          result[key] = '[redacted]';
+      if (typeof value === "string") {
+        if (
+          /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/iu.test(value) ||
+          key.toLowerCase().includes("token")
+        ) {
+          result[key] = "[redacted]";
         } else {
           result[key] = value;
         }
-      } else if (typeof value === 'object' && value !== null) {
+      } else if (typeof value === "object" && value !== null) {
         result[key] = this.sanitizeMetadata(value as Record<string, unknown>);
       } else {
         result[key] = value;
@@ -249,12 +281,12 @@ export class PerformanceMonitor {
 
   private calculateSeverity(delta: number): Severity {
     if (delta >= this.thresholds.critical) {
-      return 'critical';
+      return "critical";
     }
     if (delta >= this.thresholds.warn) {
-      return 'warn';
+      return "warn";
     }
-    return 'info';
+    return "info";
   }
 
   private createAdvisory(params: {
@@ -266,8 +298,18 @@ export class PerformanceMonitor {
     metadata: Record<string, unknown>;
     severity: Severity;
   }): PerformanceAdvisory {
-    const { workflow, duration, baseline, delta, threshold, metadata, severity } = params;
-    const message = `Workflow '${workflow}' regressed by ${(delta * 100).toFixed(1)}% against baseline ${baseline.toFixed(2)}ms.`;
+    const {
+      workflow,
+      duration,
+      baseline,
+      delta,
+      threshold,
+      metadata,
+      severity,
+    } = params;
+    const message = `Workflow '${workflow}' regressed by ${(
+      delta * 100
+    ).toFixed(1)}% against baseline ${baseline.toFixed(2)}ms.`;
     return {
       id: randomUUID(),
       workflow,
@@ -278,7 +320,7 @@ export class PerformanceMonitor {
       thresholdPct: threshold,
       message,
       timestamp: new Date().toISOString(),
-      metadata
+      metadata,
     };
   }
 }

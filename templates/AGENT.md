@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Copier templates for project generation
 - Jinja2 template syntax and patterns
 - Template variables and configuration
@@ -224,31 +225,33 @@ templates/
 ### Use This Context When:
 
 - [ ] Generating full projects with Copier
-- [ ] Working with Jinja2 template files (*.j2)
+- [ ] Working with Jinja2 template files (\*.j2)
 - [ ] Configuring copier.yml
 - [ ] Writing pre/post generation hooks
 - [ ] Testing template generation
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [generators/AGENT.md](/generators/AGENT.md) | Nx generators for individual components |
-| [libs/AGENT.md](/libs/AGENT.md) | Understanding library structure to template |
-| [apps/AGENT.md](/apps/AGENT.md) | Understanding app structure to template |
-| [hooks/](/hooks/) | Pre/post generation hook implementation |
-| [docs/AGENT.md](/docs/AGENT.md) | Documentation templates |
+| Context                                     | When to Use                                 |
+| ------------------------------------------- | ------------------------------------------- |
+| [generators/AGENT.md](/generators/AGENT.md) | Nx generators for individual components     |
+| [libs/AGENT.md](/libs/AGENT.md)             | Understanding library structure to template |
+| [apps/AGENT.md](/apps/AGENT.md)             | Understanding app structure to template     |
+| [hooks/](/hooks/)                           | Pre/post generation hook implementation     |
+| [docs/AGENT.md](/docs/AGENT.md)             | Documentation templates                     |
 
 ## 🔧 Local Conventions
 
 ### Template File Conventions
 
 **File naming:**
+
 - Template files: `filename.ext.j2`
 - Variable directories: `{{variable_name}}/`
 - Keep original extensions before `.j2` suffix
 
 **Example:**
+
 ```
 package.json.j2          → generates package.json
 {{project_slug}}/        → generates actual-project-name/
@@ -418,11 +421,13 @@ if __name__ == "__main__":
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Generator-first policy
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing templates
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in templates
 
 **Relevant documentation:**
+
 - [Copier documentation](https://copier.readthedocs.io/)
 - [Jinja2 documentation](https://jinja.palletsprojects.com/)
 
@@ -524,7 +529,7 @@ export const getDatabaseConfig = (configService: ConfigService) => ({
 
 ### Example 4: README Template with Rich Content
 
-```jinja2
+````jinja2
 {# templates/{{project_slug}}/README.md.j2 #}
 # {{ project_name }}
 
@@ -547,7 +552,7 @@ pnpm dev  # Web app on http://localhost:3000
 {% elif include_api -%}
 pnpm dev  # API on http://localhost:3001
 {% endif %}
-```
+````
 
 ## 📦 Project Structure
 
@@ -567,20 +572,21 @@ pnpm dev  # API on http://localhost:3001
 ## 🛠️ Tech Stack
 
 {% if use_typescript -%}
+
 - **TypeScript** - Type-safe JavaScript
-{% endif -%}
-{% if include_web_app -%}
+  {% endif -%}
+  {% if include_web_app -%}
 - **Next.js** - React framework
 - **React** - UI library
-{% endif -%}
-{% if include_api -%}
+  {% endif -%}
+  {% if include_api -%}
 - **NestJS** - Node.js framework
-{% endif -%}
-{% if database == 'postgresql' -%}
+  {% endif -%}
+  {% if database == 'postgresql' -%}
 - **PostgreSQL** - Relational database
-{% elif database == 'mongodb' -%}
+  {% elif database == 'mongodb' -%}
 - **MongoDB** - Document database
-{% endif -%}
+  {% endif -%}
 - **Nx** - Monorepo tooling
 
 ## 📝 License
@@ -590,7 +596,8 @@ pnpm dev  # API on http://localhost:3001
 ---
 
 _Generated with ❤️ by VibesPro • {{ current_year }}_
-```
+
+````
 
 ## ✅ Checklist
 
@@ -638,20 +645,20 @@ copier copy . /tmp/test-project --vcs-ref HEAD
 
 # Validate template
 python tools/validate-templates.py
-```
+````
 
 ### Jinja2 Filters
 
-| Filter | Purpose | Example |
-|--------|---------|---------|
-| `lower` | Lowercase | `{{ name\|lower }}` |
-| `upper` | Uppercase | `{{ name\|upper }}` |
-| `title` | Title case | `{{ name\|title }}` |
+| Filter    | Purpose           | Example                         |
+| --------- | ----------------- | ------------------------------- |
+| `lower`   | Lowercase         | `{{ name\|lower }}`             |
+| `upper`   | Uppercase         | `{{ name\|upper }}`             |
+| `title`   | Title case        | `{{ name\|title }}`             |
 | `replace` | Replace substring | `{{ name\|replace(' ', '-') }}` |
-| `default` | Default value | `{{ desc\|default('None') }}` |
-| `length` | String length | `{{ items\|length }}` |
-| `join` | Join list | `{{ items\|join(', ') }}` |
-| `trim` | Remove whitespace | `{{ text\|trim }}` |
+| `default` | Default value     | `{{ desc\|default('None') }}`   |
+| `length`  | String length     | `{{ items\|length }}`           |
+| `join`    | Join list         | `{{ items\|join(', ') }}`       |
+| `trim`    | Remove whitespace | `{{ text\|trim }}`              |
 
 ### Copier Context Variables
 
@@ -674,6 +681,7 @@ python tools/validate-templates.py
 - ⚠️ **Validate hooks**: Review pre/post generation scripts
 
 **Example sanitization:**
+
 ```jinja2
 {# Escape quotes in JSON #}
 "description": "{{ description|replace('"', '\\"')|replace('\n', ' ') }}"
@@ -773,20 +781,21 @@ rm -rf "$TEST_DIR"
 
 ### Common Issues & Solutions
 
-| Issue | Solution |
-|-------|----------|
-| Template syntax error | Run `python tools/validate-templates.py` |
-| Hook fails | Check Python syntax and imports |
-| Missing variables | Verify copier.yml has all required variables |
-| Wrong output | Test with `--vcs-ref HEAD` flag |
-| Whitespace issues | Use `{%-` and `-%}` for control |
+| Issue                 | Solution                                     |
+| --------------------- | -------------------------------------------- |
+| Template syntax error | Run `python tools/validate-templates.py`     |
+| Hook fails            | Check Python syntax and imports              |
+| Missing variables     | Verify copier.yml has all required variables |
+| Wrong output          | Test with `--vcs-ref HEAD` flag              |
+| Whitespace issues     | Use `{%-` and `-%}` for control              |
 
 ---
 
 _Last updated: 2025-10-13 | Maintained by: VibesPro Project Team_
 _Parent context: [copilot-instructions.md](/.github/copilot-instructions.md) | Navigation: [AGENT-MAP.md](/AGENT-MAP.md)_
 , value))
-```
+
+````
 
 ## 🎯 Testing Strategy
 
@@ -822,7 +831,7 @@ def validate_templates(template_dir: Path) -> bool:
 if __name__ == '__main__':
     templates_dir = Path(__file__).parent.parent / 'templates'
     sys.exit(0 if validate_templates(templates_dir) else 1)
-```
+````
 
 ### Integration Test
 
@@ -875,13 +884,13 @@ rm -rf "$TEST_DIR"
 
 ### Common Issues & Solutions
 
-| Issue | Solution |
-|-------|----------|
-| Template syntax error | Run `python tools/validate-templates.py` |
-| Hook fails | Check Python syntax and imports |
-| Missing variables | Verify copier.yml has all required variables |
-| Wrong output | Test with `--vcs-ref HEAD` flag |
-| Whitespace issues | Use `{%-` and `-%}` for control |
+| Issue                 | Solution                                     |
+| --------------------- | -------------------------------------------- |
+| Template syntax error | Run `python tools/validate-templates.py`     |
+| Hook fails            | Check Python syntax and imports              |
+| Missing variables     | Verify copier.yml has all required variables |
+| Wrong output          | Test with `--vcs-ref HEAD` flag              |
+| Whitespace issues     | Use `{%-` and `-%}` for control              |
 
 ---
 

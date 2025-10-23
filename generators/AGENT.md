@@ -12,6 +12,7 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 ## 🎯 Local Scope
 
 **This directory handles:**
+
 - Custom Nx generators for hexagonal architecture
 - Generator templates and schematics
 - Code scaffolding following project conventions
@@ -60,6 +61,7 @@ generators/
 ### Generator Collection Configuration
 
 **generators.json:**
+
 ```json
 {
   "$schema": "https://json-schema.org/schema",
@@ -98,13 +100,13 @@ generators/
 
 ### Refer to Other Contexts When:
 
-| Context | When to Use |
-|---------|-------------|
-| [.github/AGENT.md](/.github/AGENT.md) | Generator-first policy and workflow |
-| [libs/AGENT.md](/libs/AGENT.md) | Understanding hexagonal architecture for service generator |
-| [apps/AGENT.md](/apps/AGENT.md) | Understanding application structures |
-| [templates/AGENT.md](/templates/AGENT.md) | Copier templates for full project generation |
-| [tests/AGENT.md](/tests/AGENT.md) | Testing patterns for generated code |
+| Context                                   | When to Use                                                |
+| ----------------------------------------- | ---------------------------------------------------------- |
+| [.github/AGENT.md](/.github/AGENT.md)     | Generator-first policy and workflow                        |
+| [libs/AGENT.md](/libs/AGENT.md)           | Understanding hexagonal architecture for service generator |
+| [apps/AGENT.md](/apps/AGENT.md)           | Understanding application structures                       |
+| [templates/AGENT.md](/templates/AGENT.md) | Copier templates for full project generation               |
+| [tests/AGENT.md](/tests/AGENT.md)         | Testing patterns for generated code                        |
 
 ## 🔧 Local Conventions
 
@@ -142,13 +144,13 @@ import {
   generateFiles,
   names,
   offsetFromRoot,
-} from '@nx/devkit';
-import * as path from 'path';
-import { ServiceGeneratorSchema } from './schema';
+} from "@nx/devkit";
+import * as path from "path";
+import { ServiceGeneratorSchema } from "./schema";
 
 export async function serviceGenerator(
   tree: Tree,
-  options: ServiceGeneratorSchema
+  options: ServiceGeneratorSchema,
 ) {
   // 1. Normalize options
   const normalizedOptions = normalizeOptions(tree, options);
@@ -175,7 +177,7 @@ export async function serviceGenerator(
 
 function normalizeOptions(
   tree: Tree,
-  options: ServiceGeneratorSchema
+  options: ServiceGeneratorSchema,
 ): NormalizedSchema {
   const name = names(options.name).fileName;
   const projectDirectory = options.directory
@@ -187,19 +189,21 @@ function normalizeOptions(
     ...options,
     projectName: name,
     projectRoot,
-    parsedTags: options.tags ? options.tags.split(',').map(t => t.trim()) : [],
+    parsedTags: options.tags
+      ? options.tags.split(",").map((t) => t.trim())
+      : [],
   };
 }
 
 function addDomainLayer(tree: Tree, options: NormalizedSchema) {
-  const templatePath = path.join(__dirname, 'files', 'domain');
+  const templatePath = path.join(__dirname, "files", "domain");
   const targetPath = `${options.projectRoot}/domain`;
 
   generateFiles(tree, templatePath, targetPath, {
     ...options,
     ...names(options.projectName),
     offsetFromRoot: offsetFromRoot(options.projectRoot),
-    template: '', // Remove __template__ from file names
+    template: "", // Remove __template__ from file names
   });
 }
 
@@ -255,11 +259,13 @@ export default serviceGenerator;
 ### Template Files
 
 **Template file naming convention:**
+
 - Use `__templateFileName__.ts.template` pattern
 - Template variables: `<%= propertyName %>`
 - Naming helpers: `<%= className %>`, `<%= fileName %>`, `<%= constantName %>`
 
 **Example domain entity template:**
+
 ```typescript
 // files/domain/src/entities/__name__.entity.ts.template
 export class <%= className %> {
@@ -286,14 +292,14 @@ export class <%= className %> {
 
 ```typescript
 // generators/_utils/naming.ts
-import { names as nxNames } from '@nx/devkit';
+import { names as nxNames } from "@nx/devkit";
 
 export interface Names {
-  name: string;          // Original name
-  className: string;     // PascalCase
-  propertyName: string;  // camelCase
-  constantName: string;  // UPPER_SNAKE_CASE
-  fileName: string;      // kebab-case
+  name: string; // Original name
+  className: string; // PascalCase
+  propertyName: string; // camelCase
+  constantName: string; // UPPER_SNAKE_CASE
+  fileName: string; // kebab-case
 }
 
 export function getNames(name: string): Names {
@@ -311,15 +317,18 @@ export function getNames(name: string): Names {
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
+
 - [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - **Generator-first policy (READ THIS FIRST)**
 - [.github/instructions/nx.instructions.md](/.github/instructions/nx.instructions.md) - Nx integration and MCP tools
 - [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing generated code
 - [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in generators
 
 **Relevant prompts:**
+
 - [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Use generators first, then implement
 
 **Related chat modes:**
+
 - `persona.system-architect` - Generator design guidance
 - `tdd.red` - Generate test scaffolds
 
@@ -368,44 +377,44 @@ pnpm exec nx g @nx/react:component OrderList \
 // generators/api-endpoint/generator.ts
 export async function apiEndpointGenerator(
   tree: Tree,
-  options: ApiEndpointGeneratorSchema
+  options: ApiEndpointGeneratorSchema,
 ) {
   const normalizedOptions = normalizeOptions(tree, options);
 
   // 1. Generate controller
   generateFiles(
     tree,
-    path.join(__dirname, 'files', 'controller'),
+    path.join(__dirname, "files", "controller"),
     normalizedOptions.controllerPath,
     {
       ...normalizedOptions,
       ...names(normalizedOptions.name),
-      template: '',
-    }
+      template: "",
+    },
   );
 
   // 2. Generate DTO
   generateFiles(
     tree,
-    path.join(__dirname, 'files', 'dto'),
+    path.join(__dirname, "files", "dto"),
     normalizedOptions.dtoPath,
     {
       ...normalizedOptions,
       ...names(normalizedOptions.name),
-      template: '',
-    }
+      template: "",
+    },
   );
 
   // 3. Generate tests
   generateFiles(
     tree,
-    path.join(__dirname, 'files', 'tests'),
+    path.join(__dirname, "files", "tests"),
     normalizedOptions.testsPath,
     {
       ...normalizedOptions,
       ...names(normalizedOptions.name),
-      template: '',
-    }
+      template: "",
+    },
   );
 
   // 4. Update route configuration
@@ -493,14 +502,14 @@ pnpm exec nx g vibespro:service orders \
 
 ### Built-in Nx Generators
 
-| Generator | Plugin | Purpose |
-|-----------|--------|---------|
-| `lib` | `@nx/js` | TypeScript/JavaScript library |
-| `app` | `@nx/next` | Next.js application |
-| `component` | `@nx/react` | React component |
-| `hook` | `@nx/react` | React hook |
-| `app` | `@nxlv/python` | Python application |
-| `lib` | `@nxlv/python` | Python library |
+| Generator   | Plugin         | Purpose                       |
+| ----------- | -------------- | ----------------------------- |
+| `lib`       | `@nx/js`       | TypeScript/JavaScript library |
+| `app`       | `@nx/next`     | Next.js application           |
+| `component` | `@nx/react`    | React component               |
+| `hook`      | `@nx/react`    | React hook                    |
+| `app`       | `@nxlv/python` | Python application            |
+| `lib`       | `@nxlv/python` | Python library                |
 
 ### Naming Conventions in Templates
 
@@ -539,22 +548,26 @@ names('user-profile') => {
 - ⚠️ **File permissions**: Set appropriate permissions on generated files
 
 **Example validation:**
+
 ```typescript
 function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
   // Validate name
   if (!/^[a-z][a-z0-9-]*$/.test(options.name)) {
-    throw new Error('Name must be lowercase kebab-case');
+    throw new Error("Name must be lowercase kebab-case");
   }
 
   // Prevent path traversal
-  const directory = options.directory || '';
-  if (directory.includes('..')) {
+  const directory = options.directory || "";
+  if (directory.includes("..")) {
     throw new Error('Directory cannot contain ".."');
   }
 
   // Sanitize tags
   const tags = options.tags
-    ? options.tags.split(',').map(t => t.trim()).filter(Boolean)
+    ? options.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean)
     : [];
 
   return {
@@ -569,6 +582,7 @@ function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
 ## 🎯 Integration with Nx MCP Server
 
 **Available Nx MCP Tools:**
+
 - `nx_workspace` - Get workspace structure and errors
 - `nx_generators` - List available generators
 - `nx_generator_schema` - Get generator options schema
@@ -576,6 +590,7 @@ function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
 - `nx_read_generator_log` - Read generator execution log
 
 **Workflow with MCP:**
+
 ```bash
 # 1. AI uses nx_generators tool to discover available generators
 # 2. AI uses nx_generator_schema to understand options
@@ -589,37 +604,37 @@ function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
 
 ```typescript
 // generators/service/generator.spec.ts
-import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
-import { Tree, readProjectConfiguration } from '@nx/devkit';
-import serviceGenerator from './generator';
+import { createTreeWithEmptyWorkspace } from "@nx/devkit/testing";
+import { Tree, readProjectConfiguration } from "@nx/devkit";
+import serviceGenerator from "./generator";
 
-describe('service generator', () => {
+describe("service generator", () => {
   let tree: Tree;
 
   beforeEach(() => {
     tree = createTreeWithEmptyWorkspace();
   });
 
-  it('should generate domain, application, and infrastructure layers', async () => {
+  it("should generate domain, application, and infrastructure layers", async () => {
     await serviceGenerator(tree, {
-      name: 'orders',
-      language: 'typescript',
+      name: "orders",
+      language: "typescript",
     });
 
-    expect(tree.exists('libs/orders/domain/src/index.ts')).toBeTruthy();
-    expect(tree.exists('libs/orders/application/src/index.ts')).toBeTruthy();
-    expect(tree.exists('libs/orders/infrastructure/src/index.ts')).toBeTruthy();
+    expect(tree.exists("libs/orders/domain/src/index.ts")).toBeTruthy();
+    expect(tree.exists("libs/orders/application/src/index.ts")).toBeTruthy();
+    expect(tree.exists("libs/orders/infrastructure/src/index.ts")).toBeTruthy();
   });
 
-  it('should configure Nx project correctly', async () => {
+  it("should configure Nx project correctly", async () => {
     await serviceGenerator(tree, {
-      name: 'orders',
-      tags: 'type:service,scope:orders',
+      name: "orders",
+      tags: "type:service,scope:orders",
     });
 
-    const config = readProjectConfiguration(tree, 'orders-domain');
-    expect(config.tags).toContain('type:service');
-    expect(config.tags).toContain('scope:orders');
+    const config = readProjectConfiguration(tree, "orders-domain");
+    expect(config.tags).toContain("type:service");
+    expect(config.tags).toContain("scope:orders");
   });
 });
 ```
@@ -653,12 +668,14 @@ pnpm exec nx build test-service-domain
 ### When to Create a New Generator
 
 **Consider creating a generator when:**
+
 - You're repeating the same scaffolding 3+ times
 - Pattern has clear structure and conventions
 - Would benefit other team members
 - Enforces architectural boundaries
 
 **Don't create a generator when:**
+
 - Pattern is still evolving rapidly
 - One-off or experimental code
 - Better handled by existing generators with options

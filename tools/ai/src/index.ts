@@ -1,7 +1,7 @@
-export { AIContextManager } from './context-manager.js';
+export { AIContextManager } from "./context-manager.js";
 export type {
   AIContextManagerConfig,
   ContextSelectionResult,
   ContextSource,
-  ContextSourceMetrics
-} from './context-manager.js';
+  ContextSourceMetrics,
+} from "./context-manager.js";

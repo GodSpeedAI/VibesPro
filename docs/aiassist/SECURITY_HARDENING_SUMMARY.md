@@ -10,32 +10,36 @@
 
 ### 1. Documentation Created (100% Complete)
 
-| Document | Purpose | Status |
-|----------|---------|--------|
-| **AI_SECURITY_HARDENING.md** | Complete technical specification with threat model, crypto decisions, reference implementation | ✅ Complete |
-| **AI_ADR-006** | Architectural decision record justifying security approach | ✅ Complete |
-| **AI_TDD_PLAN PHASE-006** | Task breakdown with TDD workflow (TASK-013, 014, 015) | ✅ Complete |
-| **SECURITY_INTEGRATION_GUIDE.md** | Integration strategy, code reuse analysis, rollback plan | ✅ Complete |
-| **PHASE-006-CHECKLIST.md** | Step-by-step implementation checklist with time estimates | ✅ Complete |
+| Document                          | Purpose                                                                                        | Status      |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- | ----------- |
+| **AI_SECURITY_HARDENING.md**      | Complete technical specification with threat model, crypto decisions, reference implementation | ✅ Complete |
+| **AI_ADR-006**                    | Architectural decision record justifying security approach                                     | ✅ Complete |
+| **AI_TDD_PLAN PHASE-006**         | Task breakdown with TDD workflow (TASK-013, 014, 015)                                          | ✅ Complete |
+| **SECURITY_INTEGRATION_GUIDE.md** | Integration strategy, code reuse analysis, rollback plan                                       | ✅ Complete |
+| **PHASE-006-CHECKLIST.md**        | Step-by-step implementation checklist with time estimates                                      | ✅ Complete |
 
 ### 2. Key Decisions Made
 
 **✅ Opt-in via feature flags**
+
 - `enable_security_hardening: false` (default)
 - Zero impact on projects that don't need security
 - No mandatory complexity added
 
 **✅ Maximum code reuse**
+
 - 85% copy/paste from existing specifications
 - Only 15% new code (Jinja2 conditionals, hooks)
 - Estimated 22 hours saved vs. writing from scratch
 
 **✅ TDD discipline maintained**
+
 - Every task has RED → GREEN → REFACTOR workflow
 - Test cases defined before implementation
 - Clear success criteria for each phase
 
 **✅ Clear rollback path**
+
 - Feature flag can be disabled instantly
 - Templates can be archived with zero impact
 - Low-risk approach suitable for production
@@ -47,11 +51,13 @@
 ### Phase 1: Library Implementation (TASK-013) - 8-10 hours
 
 **Agent A responsible for:**
+
 1. Copy test cases from AI_SECURITY_HARDENING.md → verify RED state
 2. Copy SecureDb implementation from specification → verify GREEN state
 3. Refactor into modules, improve error handling → maintain GREEN state
 
 **Deliverables:**
+
 - `libs/security/src/secure_db.rs` (encrypted sled wrapper)
 - 5 passing unit tests
 - Clean `cargo clippy` output
@@ -59,11 +65,13 @@
 ### Phase 2: Template Generation (TASK-014) - 6-8 hours
 
 **Agent B responsible for:**
+
 1. Create template tests → verify RED state
 2. Copy Dockerfile, docker-compose.yml, convert to Jinja2 → verify GREEN state
 3. Add documentation, validate syntax → maintain GREEN state
 
 **Deliverables:**
+
 - `templates/{{project_slug}}/libs/security/` (Jinja2 templates)
 - `Dockerfile.j2` (distroless multi-stage build)
 - `docker-compose.yml.j2` (security_opt configured)
@@ -72,11 +80,13 @@
 ### Phase 3: Validation Suite (TASK-015) - 6-8 hours
 
 **Agent C responsible for:**
+
 1. Create validation test suite → verify RED state
 2. Implement benchmark scripts, CI workflows → verify GREEN state
 3. Add reporting, documentation → maintain GREEN state
 
 **Deliverables:**
+
 - Performance benchmarks (< 5% overhead verified)
 - Binary size tracking (< 2MB increase verified)
 - Security audit automation (`cargo audit` in CI)
@@ -88,16 +98,16 @@
 
 ### Source Material Available for Copy/Paste
 
-| Source File | Section | Lines | Destination |
-|-------------|---------|-------|-------------|
-| AI_SECURITY_HARDENING.md | §5.2 SecureDb Implementation | ~120 | `libs/security/src/secure_db.rs` |
-| AI_SECURITY_HARDENING.md | §5.3 Dockerfile | ~25 | `templates/.../Dockerfile.j2` |
-| AI_SECURITY_HARDENING.md | §5.3 docker-compose.yml | ~15 | `templates/.../docker-compose.yml.j2` |
-| AI_SECURITY_HARDENING.md | §5.4 Example Usage | ~20 | `templates/.../examples/` |
-| AI_SECURITY_HARDENING.md | §7.1 Unit Tests | ~80 | `libs/security/tests/unit/` |
-| AI_SECURITY_HARDENING.md | §7.2 Integration Tests | ~40 | `tests/integration/security/` |
-| AI_SECURITY_HARDENING.md | §7.3 Security Tests | ~30 | `tests/security/` |
-| **TOTAL** | | **~330 lines** | **~22 hours saved** |
+| Source File              | Section                      | Lines          | Destination                           |
+| ------------------------ | ---------------------------- | -------------- | ------------------------------------- |
+| AI_SECURITY_HARDENING.md | §5.2 SecureDb Implementation | ~120           | `libs/security/src/secure_db.rs`      |
+| AI_SECURITY_HARDENING.md | §5.3 Dockerfile              | ~25            | `templates/.../Dockerfile.j2`         |
+| AI_SECURITY_HARDENING.md | §5.3 docker-compose.yml      | ~15            | `templates/.../docker-compose.yml.j2` |
+| AI_SECURITY_HARDENING.md | §5.4 Example Usage           | ~20            | `templates/.../examples/`             |
+| AI_SECURITY_HARDENING.md | §7.1 Unit Tests              | ~80            | `libs/security/tests/unit/`           |
+| AI_SECURITY_HARDENING.md | §7.2 Integration Tests       | ~40            | `tests/integration/security/`         |
+| AI_SECURITY_HARDENING.md | §7.3 Security Tests          | ~30            | `tests/security/`                     |
+| **TOTAL**                |                              | **~330 lines** | **~22 hours saved**                   |
 
 ### New Code Required (Minimal)
 
@@ -147,10 +157,10 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
 
 ### Feature Flag Behavior
 
-| Flag Value | Generated Files | Binary Size | Performance |
-|------------|----------------|-------------|-------------|
-| `false` (default) | Standard build, no security libs | Baseline | 100% |
-| `true` | Full security stack, distroless Docker | +1.5MB | 95-97% |
+| Flag Value        | Generated Files                        | Binary Size | Performance |
+| ----------------- | -------------------------------------- | ----------- | ----------- |
+| `false` (default) | Standard build, no security libs       | Baseline    | 100%        |
+| `true`            | Full security stack, distroless Docker | +1.5MB      | 95-97%      |
 
 ---
 
@@ -232,6 +242,7 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
 ### Immediate Next Steps (15 minutes)
 
 1. **Review Documentation**
+
    ```bash
    # Read these in order:
    cat docs/aiassist/AI_SECURITY_HARDENING.md      # Technical spec
@@ -240,12 +251,14 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
    ```
 
 2. **Update copier.yml**
+
    ```bash
    # Add 3 variables (see PHASE-006-CHECKLIST.md)
    vim copier.yml
    ```
 
 3. **Start TASK-013 RED Phase**
+
    ```bash
    # Create test structure
    mkdir -p libs/security/tests/unit
@@ -299,6 +312,7 @@ A: Binary size (+2.5MB vs +1.5MB) and unnecessary features. RustCrypto provides 
 ### Ready for Implementation
 
 **Next action:** Assign agents to tasks
+
 - **Agent A:** TASK-013 (Encrypted Sled Wrapper)
 - **Agent B:** TASK-014 (Copier Templates)
 - **Agent C:** TASK-015 (Validation Suite)
@@ -315,6 +329,7 @@ A: Binary size (+2.5MB vs +1.5MB) and unnecessary features. RustCrypto provides 
 **Rollback Authority:** Project maintainers
 
 For questions or issues during implementation:
+
 1. Refer to PHASE-006-CHECKLIST.md for step-by-step guidance
 2. Check AI_SECURITY_HARDENING.md for technical details
 3. Review SECURITY_INTEGRATION_GUIDE.md for integration strategy

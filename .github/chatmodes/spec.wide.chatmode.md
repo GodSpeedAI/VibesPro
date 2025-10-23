@@ -5,12 +5,14 @@ task: mode
 phase: wide
 budget: M
 description: "Full-spec context for cross-cutting tasks; use after Lean escalation."
-tools: ['codebase', 'editFiles', 'runInTerminal', 'search', 'runTests', 'problems']
+tools:
+  ["codebase", "editFiles", "runInTerminal", "search", "runTests", "problems"]
 model: ${ default_model }
 name: "Spec Wide"
 ---
 
 # Mode Guidance
+
 - Enter Wide mode only after Lean mode signals an escalation trigger.
 - Work spec-first (product + dev). If conflicts exist, add Spec Gaps and propose options.
 - Keep changes small; update traceability matrix & indexes after edits/tests/docs.
@@ -18,6 +20,7 @@ name: "Spec Wide"
 - When finished, revert to Lean mode for subsequent tasks (close expanded spec files from context).
 
 ## Included Instructions
+
 - `.github/copilot-instructions.md`
 - `.github/instructions/docs.instructions.md`
 - `.github/instructions/src.instructions.md`

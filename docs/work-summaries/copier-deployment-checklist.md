@@ -5,6 +5,7 @@
 ### 1. Functionality Testing
 
 - [ ] **Test with defaults**
+
   ```bash
   copier copy . /tmp/test-defaults --config copier.yml.improved --defaults --trust
   cd /tmp/test-defaults
@@ -12,6 +13,7 @@
   ```
 
 - [ ] **Test with data file**
+
   ```bash
   copier copy . /tmp/test-data --config copier.yml.improved --data-file tests/fixtures/test-data.yml --trust
   cd /tmp/test-data
@@ -19,6 +21,7 @@
   ```
 
 - [ ] **Test interactive mode** (manual)
+
   ```bash
   copier copy . /tmp/test-interactive --config copier.yml.improved --trust
   # Answer questions naturally
@@ -26,6 +29,7 @@
   ```
 
 - [ ] **Compare outputs** (original vs improved)
+
   ```bash
   # Generate with original
   copier copy . /tmp/original --config copier.yml --defaults --trust
@@ -40,12 +44,14 @@
 ### 2. Validation Testing
 
 - [ ] **Test all validators**
+
   - Invalid email (no @)
   - Invalid project slug (spaces, caps)
   - Invalid domain name (special chars)
   - Verify error messages are helpful
 
 - [ ] **Test conditional questions**
+
   - `enable_temporal_learning` only shows if `include_ai_workflows` is true
   - `app_router_style` only shows if `app_framework` is "next"
   - `include_supabase` only shows if `database_type` is "postgresql"
@@ -60,6 +66,7 @@
 ### 3. User Experience Testing
 
 - [ ] **Test with non-technical user**
+
   - Can they understand every question?
   - Do they know what to enter?
   - Are examples helpful?
@@ -67,6 +74,7 @@
   - Can they complete successfully?
 
 - [ ] **Test with technical user**
+
   - Can they customize everything?
   - Is organization helpful?
   - Are defaults appropriate?
@@ -81,12 +89,14 @@
 ### 4. Documentation Review
 
 - [ ] **QUICKSTART.md accuracy**
+
   - Examples match actual questions
   - Recommendations are correct
   - Commands work as shown
   - Links are valid
 
 - [ ] **Refinement docs accuracy**
+
   - `copier-questions-refinement.md` complete
   - `copier-before-after-comparison.md` accurate
   - `copier-refinement-summary.md` up to date
@@ -99,12 +109,14 @@
 ### 5. Backward Compatibility
 
 - [ ] **Existing test fixtures pass**
+
   ```bash
   # Run all existing copier tests
   just test-generation
   ```
 
 - [ ] **CI/CD compatibility**
+
   - GitHub Actions workflows pass
   - No new warnings
   - Build times unchanged
@@ -170,7 +182,8 @@ Refs: copier.yml improvements
 ### Step 4: Update Related Documentation
 
 - [ ] **Update README.md**
-  ```markdown
+
+  ````markdown
   ## Quick Start
 
   New to VibesPro? Check out our [Quick Start Guide](../QUICKSTART.md)!
@@ -178,11 +191,16 @@ Refs: copier.yml improvements
   ```bash
   copier copy gh:GodSpeedAI/VibesPro my-project
   ```
+  ````
 
   Follow the friendly prompts - we'll guide you through every question with examples and recommendations!
+
+  ```
+
   ```
 
 - [ ] **Update CONTRIBUTING.md**
+
   ```markdown
   ## Writing Copier Questions
 
@@ -216,12 +234,14 @@ git push origin v1.0.0-copier-layman
 ### Step 6: Announce Changes
 
 - [ ] **Create announcement**
+
   - Blog post / changelog entry
   - Highlight accessibility improvements
   - Show before/after examples
   - Link to QUICKSTART guide
 
 - [ ] **Update documentation sites**
+
   - Deploy updated docs
   - Update getting started pages
   - Add video walkthrough (optional)
@@ -236,11 +256,13 @@ git push origin v1.0.0-copier-layman
 ### Immediate Checks (First 24 Hours)
 
 - [ ] **Monitor for issues**
+
   - GitHub Issues for bug reports
   - User feedback on questions
   - Error reports
 
 - [ ] **Test on fresh environment**
+
   ```bash
   # Clone fresh repo
   git clone <repo-url> /tmp/fresh-test
@@ -262,12 +284,14 @@ git push origin v1.0.0-copier-layman
 ### User Feedback Collection (First Week)
 
 - [ ] **Create feedback form**
+
   - "Were the questions clear?"
   - "Did examples help?"
   - "What was confusing?"
   - "What could be better?"
 
 - [ ] **Monitor usage**
+
   - Track successful generations
   - Identify common customizations
   - Note frequently skipped options
@@ -282,12 +306,14 @@ git push origin v1.0.0-copier-layman
 ### Iteration (First Month)
 
 - [ ] **Review feedback**
+
   - Identify unclear questions
   - Find confusing examples
   - Locate missing guidance
   - Note improvement opportunities
 
 - [ ] **Refine as needed**
+
   - Update confusing wording
   - Add more examples
   - Clarify recommendations
@@ -369,11 +395,13 @@ git push origin main
 ### Quarterly Review
 
 - [ ] **Review usage patterns**
+
   - Most common configurations
   - Frequently customized options
   - Rarely used features
 
 - [ ] **Update examples**
+
   - Keep technology choices current
   - Add new framework options
   - Update version numbers
@@ -386,6 +414,7 @@ git push origin main
 ### Annual Update
 
 - [ ] **Major review**
+
   - Re-evaluate all questions
   - Consider new defaults
   - Add emerging technologies
@@ -400,6 +429,7 @@ git push origin main
 ## Checklist Summary
 
 ### Pre-Deployment
+
 - [ ] Functionality tests pass
 - [ ] Validation tests pass
 - [ ] UX tests pass
@@ -407,6 +437,7 @@ git push origin main
 - [ ] Backward compatibility verified
 
 ### Deployment
+
 - [ ] Backup created
 - [ ] Improved config deployed
 - [ ] Documentation updated
@@ -414,12 +445,14 @@ git push origin main
 - [ ] Announcement made
 
 ### Post-Deployment
+
 - [ ] Immediate checks done
 - [ ] User feedback collected
 - [ ] Iterations planned
 - [ ] Rollback plan ready
 
 ### Success Metrics
+
 - [ ] Technical: All tests pass
 - [ ] User: Positive feedback
 - [ ] Impact: Increased accessibility

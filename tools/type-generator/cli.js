@@ -1,43 +1,52 @@
 #!/usr/bin/env node
 
-const { program } = require('commander');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const { spawnSync } = require('child_process');
-const ts = require('typescript');
+const { program } = require("commander");
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
+const { spawnSync } = require("child_process");
+const ts = require("typescript");
 
 let DbToTypeScript;
 try {
-  ({ DbToTypeScript } = require('./dist/src/generators/types/db-to-typescript'));
+  ({
+    DbToTypeScript,
+  } = require("./dist/src/generators/types/db-to-typescript"));
 } catch (error) {
   DbToTypeScript = class {
-    constructor() { }
+    constructor() {}
     generate() {
-      throw new Error('Database generation support is not available in this environment.');
+      throw new Error(
+        "Database generation support is not available in this environment.",
+      );
     }
   };
 }
 
 let verifyTypeParity;
 try {
-  ({ verifyTypeParity } = require('./dist/src/generators/verify'));
+  ({ verifyTypeParity } = require("./dist/src/generators/verify"));
 } catch (err) {
   // Inline fallback of verifyTypeParity (from compiled source) to avoid runtime
   // dependency on the dist build when running directly from source.
-  const TS_OPTIONAL_TOKENS = new Set(['null', 'undefined']);
+  const TS_OPTIONAL_TOKENS = new Set(["null", "undefined"]);
 
   function splitTopLevel(type, delimiter) {
     const parts = [];
     let depth = 0;
-    let current = '';
+    let current = "";
     const openingBrackets = new Map([
-      ['[', ']'],
-      ['(', ')'],
-      ['{', '}'],
-      ['<', '>'],
+      ["[", "]"],
+      ["(", ")"],
+      ["{", "}"],
+      ["<", ">"],
     ]);
-    const closingBrackets = new Map(Array.from(openingBrackets.entries()).map(([open, close]) => [close, open]));
+    const closingBrackets = new Map(
+      Array.from(openingBrackets.entries()).map(([open, close]) => [
+        close,
+        open,
+      ]),
+    );
     for (const char of type) {
       if (openingBrackets.has(char)) {
         depth += 1;
@@ -47,7 +56,7 @@ try {
       if (char === delimiter && depth === 0) {
         if (current) {
           parts.push(current);
-          current = '';
+          current = "";
         }
         continue;
       }
@@ -60,21 +69,23 @@ try {
   }
 
   function parseTypeScriptTokens(type) {
-    return splitTopLevel(type, '|');
+    return splitTopLevel(type, "|");
   }
 
   function parsePythonTokens(type) {
-    if (type.startsWith('optional[')) {
-      const inner = type.slice('optional['.length, -1);
-      return [...parsePythonTokens(inner), 'none'];
+    if (type.startsWith("optional[")) {
+      const inner = type.slice("optional[".length, -1);
+      return [...parsePythonTokens(inner), "none"];
     }
-    if (type.startsWith('union[')) {
-      const inner = type.slice('union['.length, -1);
-      return splitTopLevel(inner, ',').flatMap(token => parsePythonTokens(token));
+    if (type.startsWith("union[")) {
+      const inner = type.slice("union[".length, -1);
+      return splitTopLevel(inner, ",").flatMap((token) =>
+        parsePythonTokens(token),
+      );
     }
-    const unionParts = splitTopLevel(type, '|');
+    const unionParts = splitTopLevel(type, "|");
     if (unionParts.length > 1) {
-      return unionParts.flatMap(token => parsePythonTokens(token));
+      return unionParts.flatMap((token) => parsePythonTokens(token));
     }
     return [type];
   }
@@ -86,36 +97,39 @@ try {
     if (tsToken === pyToken) {
       return true;
     }
-    const tsArray = tsToken.endsWith('[]');
-    const pyList = pyToken.startsWith('list[') && pyToken.endsWith(']');
+    const tsArray = tsToken.endsWith("[]");
+    const pyList = pyToken.startsWith("list[") && pyToken.endsWith("]");
     if (tsArray || pyList) {
       if (!(tsArray && pyList)) {
         return false;
       }
       const tsBase = tsToken.slice(0, -2);
-      const pyBase = pyToken.slice('list['.length, -1);
+      const pyBase = pyToken.slice("list[".length, -1);
       return verifyTypeParity(tsBase, pyBase);
     }
-    if (tsToken.startsWith('{') && tsToken.endsWith('}')) {
-      return matchSingleType('object', pyToken);
+    if (tsToken.startsWith("{") && tsToken.endsWith("}")) {
+      return matchSingleType("object", pyToken);
     }
     const typeMapping = {
-      string: ['str', 'uuid', 'datetime', 'date', 'time', 'bytes'],
-      number: ['int', 'float'],
-      boolean: ['bool'],
-      unknown: ['dict', 'any', 'object', 'mapping'],
-      object: ['dict', 'mapping'],
+      string: ["str", "uuid", "datetime", "date", "time", "bytes"],
+      number: ["int", "float"],
+      boolean: ["bool"],
+      unknown: ["dict", "any", "object", "mapping"],
+      object: ["dict", "mapping"],
     };
-    const normalizedMatch = (candidate, targets) => targets.some(target => candidate === target || candidate.startsWith(`${target}[`));
+    const normalizedMatch = (candidate, targets) =>
+      targets.some(
+        (target) => candidate === target || candidate.startsWith(`${target}[`),
+      );
     for (const [tsKey, pyValues] of Object.entries(typeMapping)) {
       if (tsToken === tsKey && normalizedMatch(pyToken, pyValues)) {
         return true;
       }
     }
-    if (tsToken === 'record<string,any>' && pyToken.startsWith('dict[')) {
+    if (tsToken === "record<string,any>" && pyToken.startsWith("dict[")) {
       return true;
     }
-    if (pyToken === 'any' && (tsToken === 'unknown' || tsToken === 'any')) {
+    if (pyToken === "any" && (tsToken === "unknown" || tsToken === "any")) {
       return true;
     }
     return false;
@@ -144,42 +158,46 @@ try {
   }
 
   verifyTypeParity = function (tsType, pyType) {
-    const normalizedTsType = tsType.replace(/\s+/g, '').toLowerCase();
-    const normalizedPyType = pyType.replace(/\s+/g, '').toLowerCase();
+    const normalizedTsType = tsType.replace(/\s+/g, "").toLowerCase();
+    const normalizedPyType = pyType.replace(/\s+/g, "").toLowerCase();
     if (!normalizedTsType || !normalizedPyType) {
       return false;
     }
     const tsTokens = parseTypeScriptTokens(normalizedTsType);
     const pyTokens = parsePythonTokens(normalizedPyType);
-    const tsHasOptional = tsTokens.some(token => TS_OPTIONAL_TOKENS.has(token));
-    const pyHasOptional = pyTokens.includes('none');
+    const tsHasOptional = tsTokens.some((token) =>
+      TS_OPTIONAL_TOKENS.has(token),
+    );
+    const pyHasOptional = pyTokens.includes("none");
     if (tsHasOptional !== pyHasOptional) {
       return false;
     }
-    const tsCoreTokens = tsTokens.filter(token => !TS_OPTIONAL_TOKENS.has(token));
-    const pyCoreTokens = pyTokens.filter(token => token !== 'none');
+    const tsCoreTokens = tsTokens.filter(
+      (token) => !TS_OPTIONAL_TOKENS.has(token),
+    );
+    const pyCoreTokens = pyTokens.filter((token) => token !== "none");
     return matchTokenSets(tsCoreTokens, pyCoreTokens);
   };
 }
 
-const normalizeWhitespace = value => value.replace(/\s+/g, '').toLowerCase();
+const normalizeWhitespace = (value) => value.replace(/\s+/g, "").toLowerCase();
 
 function normalizeTsType(type) {
-  const raw = (type ?? '').trim();
+  const raw = (type ?? "").trim();
   if (!raw) {
-    return '';
+    return "";
   }
 
   const lowered = raw.toLowerCase();
-  if (['string', 'number', 'boolean', 'any'].includes(lowered)) {
+  if (["string", "number", "boolean", "any"].includes(lowered)) {
     return lowered;
   }
 
-  if (lowered === 'int' || lowered === 'float') {
-    return 'number';
+  if (lowered === "int" || lowered === "float") {
+    return "number";
   }
 
-  if (raw.endsWith('[]')) {
+  if (raw.endsWith("[]")) {
     return `list<${normalizeTsType(raw.slice(0, -2))}>`;
   }
 
@@ -194,12 +212,17 @@ function normalizeTsType(type) {
   }
 
   if (/^\{[\s\S]*\}$/.test(raw)) {
-    return 'dict<string, any>';
+    return "dict<string, any>";
   }
 
-  const unionParts = raw.split('|').map(part => part.trim()).filter(Boolean);
+  const unionParts = raw
+    .split("|")
+    .map((part) => part.trim())
+    .filter(Boolean);
   if (unionParts.length > 1) {
-    const nonNullable = unionParts.filter(part => !['null', 'undefined', 'void'].includes(part.toLowerCase()));
+    const nonNullable = unionParts.filter(
+      (part) => !["null", "undefined", "void"].includes(part.toLowerCase()),
+    );
     const normalizedParts = nonNullable.map(normalizeTsType).sort();
 
     if (nonNullable.length === 1 && nonNullable.length !== unionParts.length) {
@@ -207,7 +230,7 @@ function normalizeTsType(type) {
     }
 
     if (normalizedParts.length > 1) {
-      return `union<${normalizedParts.join('|')}>`;
+      return `union<${normalizedParts.join("|")}>`;
     }
   }
   return normalizeWhitespace(raw);
@@ -216,28 +239,35 @@ const {
   isPathSafe,
   resolvePathWithinWorkspace,
   sanitizePathInput,
-} = require('./utils/pathSecurity');
+} = require("./utils/pathSecurity");
 
-const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
-WORKSPACE_MARKERS.forEach(marker => {
-  if (typeof marker !== 'string' || !marker.trim()) {
-    throw new Error('Workspace marker entries must be non-empty strings');
+const WORKSPACE_MARKERS = ["nx.json", "pnpm-workspace.yaml", ".git"];
+WORKSPACE_MARKERS.forEach((marker) => {
+  if (typeof marker !== "string" || !marker.trim()) {
+    throw new Error("Workspace marker entries must be non-empty strings");
   }
-  if (marker.includes('/') || marker.includes('\\')) {
-    throw new Error(`Workspace marker may not contain path separators: ${marker}`);
+  if (marker.includes("/") || marker.includes("\\")) {
+    throw new Error(
+      `Workspace marker may not contain path separators: ${marker}`,
+    );
   }
 });
 
 function findWorkspaceRoot(startDir) {
-  const sanitizedStartDir = sanitizePathInput(startDir, 'workspace search path');
+  const sanitizedStartDir = sanitizePathInput(
+    startDir,
+    "workspace search path",
+  );
   const normalizedStartDir = path.normalize(sanitizedStartDir);
   const hasTraversal = normalizedStartDir
     .split(/[\\/]+/)
     .filter(Boolean)
-    .some(segment => segment === '..');
+    .some((segment) => segment === "..");
 
   if (hasTraversal) {
-    throw new Error('Workspace search path may not contain parent directory traversals');
+    throw new Error(
+      "Workspace search path may not contain parent directory traversals",
+    );
   }
 
   const absoluteStartDir = path.resolve(sanitizedStartDir);
@@ -246,7 +276,9 @@ function findWorkspaceRoot(startDir) {
   try {
     realStartDir = fs.realpathSync(absoluteStartDir);
   } catch (error) {
-    throw new Error(`Unable to resolve workspace search path: ${absoluteStartDir}`);
+    throw new Error(
+      `Unable to resolve workspace search path: ${absoluteStartDir}`,
+    );
   }
 
   let startStats;
@@ -257,7 +289,9 @@ function findWorkspaceRoot(startDir) {
   }
 
   if (!startStats.isDirectory()) {
-    throw new Error(`Workspace search path must be a directory: ${realStartDir}`);
+    throw new Error(
+      `Workspace search path must be a directory: ${realStartDir}`,
+    );
   }
 
   let currentDir = realStartDir;
@@ -266,16 +300,18 @@ function findWorkspaceRoot(startDir) {
 
   while (currentDir !== root) {
     if (visited.has(currentDir)) {
-      throw new Error(`Cyclical directory resolution detected while locating workspace root from: ${realStartDir}`);
+      throw new Error(
+        `Cyclical directory resolution detected while locating workspace root from: ${realStartDir}`,
+      );
     }
     visited.add(currentDir);
 
-    const isWorkspaceRoot = WORKSPACE_MARKERS.some(marker => {
+    const isWorkspaceRoot = WORKSPACE_MARKERS.some((marker) => {
       const markerPath = path.join(currentDir, marker);
       try {
         return fs.existsSync(markerPath);
       } catch (error) {
-        if (error && error.code === 'ENOENT') {
+        if (error && error.code === "ENOENT") {
           return false;
         }
         throw error;
@@ -294,7 +330,7 @@ function findWorkspaceRoot(startDir) {
 }
 
 const WORKSPACE_ROOT = findWorkspaceRoot(process.cwd());
-const PY_PARSER_PATH = path.join(os.tmpdir(), 'vibespro_py_class_parser.py');
+const PY_PARSER_PATH = path.join(os.tmpdir(), "vibespro_py_class_parser.py");
 const PY_PARSER_SOURCE = `
 import ast
 import json
@@ -334,7 +370,7 @@ if __name__ == "__main__":
 
 function ensurePyParserScript() {
   if (!fs.existsSync(PY_PARSER_PATH)) {
-    fs.writeFileSync(PY_PARSER_PATH, PY_PARSER_SOURCE, 'utf-8');
+    fs.writeFileSync(PY_PARSER_PATH, PY_PARSER_SOURCE, "utf-8");
   }
   return PY_PARSER_PATH;
 }
@@ -362,19 +398,26 @@ function ensureDirectoryExists(dirPath, label) {
     if (stats.isSymbolicLink()) {
       const realPath = fs.realpathSync(resolved);
       const relativeRealPath = path.relative(WORKSPACE_ROOT, realPath);
-      if (relativeRealPath.startsWith('..') || path.isAbsolute(relativeRealPath)) {
-        throw new Error(`${label} is a symlink pointing outside the workspace: ${resolved}`);
+      if (
+        relativeRealPath.startsWith("..") ||
+        path.isAbsolute(relativeRealPath)
+      ) {
+        throw new Error(
+          `${label} is a symlink pointing outside the workspace: ${resolved}`,
+        );
       }
 
       effectiveStats = fs.statSync(realPath);
       if (!effectiveStats.isDirectory()) {
-        throw new Error(`${label} symlink does not resolve to a directory: ${resolved}`);
+        throw new Error(
+          `${label} symlink does not resolve to a directory: ${resolved}`,
+        );
       }
     } else if (!stats.isDirectory()) {
       throw new Error(`${label} is not a directory: ${resolved}`);
     }
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       throw new Error(`${label} does not exist: ${resolved}`);
     }
     throw error;
@@ -394,13 +437,20 @@ function ensureFileExists(filePath, label) {
     if (stats.isSymbolicLink()) {
       const realPath = fs.realpathSync(resolved);
       const relativeRealPath = path.relative(WORKSPACE_ROOT, realPath);
-      if (relativeRealPath.startsWith('..') || path.isAbsolute(relativeRealPath)) {
-        throw new Error(`${label} is a symlink pointing outside the workspace: ${resolved}`);
+      if (
+        relativeRealPath.startsWith("..") ||
+        path.isAbsolute(relativeRealPath)
+      ) {
+        throw new Error(
+          `${label} is a symlink pointing outside the workspace: ${resolved}`,
+        );
       }
 
       effectiveStats = fs.statSync(realPath);
       if (!effectiveStats.isFile()) {
-        throw new Error(`${label} symlink does not resolve to a file: ${resolved}`);
+        throw new Error(
+          `${label} symlink does not resolve to a file: ${resolved}`,
+        );
       }
     } else if (!stats.isFile()) {
       throw new Error(`${label} is not a file: ${resolved}`);
@@ -408,10 +458,12 @@ function ensureFileExists(filePath, label) {
 
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (effectiveStats.size > maxSize) {
-      throw new Error(`${label} is too large (${effectiveStats.size} bytes). Maximum allowed size is ${maxSize} bytes: ${resolved}`);
+      throw new Error(
+        `${label} is too large (${effectiveStats.size} bytes). Maximum allowed size is ${maxSize} bytes: ${resolved}`,
+      );
     }
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       throw new Error(`${label} does not exist: ${resolved}`);
     }
     throw error;
@@ -419,8 +471,8 @@ function ensureFileExists(filePath, label) {
   return resolved;
 }
 
-function safeReadFileSync(filePath, encoding = 'utf-8') {
-  const resolved = ensureFileExists(filePath, 'file path');
+function safeReadFileSync(filePath, encoding = "utf-8") {
+  const resolved = ensureFileExists(filePath, "file path");
   try {
     return fs.readFileSync(resolved, encoding);
   } catch (error) {
@@ -428,10 +480,10 @@ function safeReadFileSync(filePath, encoding = 'utf-8') {
   }
 }
 
-function safeWriteFileSync(filePath, content, encoding = 'utf-8') {
-  const resolved = assertWorkspacePath(filePath, 'file path');
+function safeWriteFileSync(filePath, content, encoding = "utf-8") {
+  const resolved = assertWorkspacePath(filePath, "file path");
   const parentDir = path.dirname(resolved);
-  ensureDirectoryExists(parentDir, 'parent directory');
+  ensureDirectoryExists(parentDir, "parent directory");
   try {
     fs.writeFileSync(resolved, content, encoding);
   } catch (error) {
@@ -441,7 +493,7 @@ function safeWriteFileSync(filePath, content, encoding = 'utf-8') {
 }
 
 function camelToSnake(value) {
-  return value.replace(/([A-Z])/g, '_$1').toLowerCase();
+  return value.replace(/([A-Z])/g, "_$1").toLowerCase();
 }
 
 function snakeToCamel(value) {
@@ -449,36 +501,39 @@ function snakeToCamel(value) {
 }
 
 function parseTypeScriptTypes(tsDir) {
-  const resolvedDir = ensureDirectoryExists(tsDir, 'TypeScript directory');
+  const resolvedDir = ensureDirectoryExists(tsDir, "TypeScript directory");
   const entries = fs.readdirSync(resolvedDir, { withFileTypes: true });
   const tsTypes = {};
   let processedFiles = 0;
 
-  entries.forEach(entry => {
-    if (!entry.isFile() || !entry.name.endsWith('.ts')) {
+  entries.forEach((entry) => {
+    if (!entry.isFile() || !entry.name.endsWith(".ts")) {
       return;
     }
 
     processedFiles += 1;
 
-    const filePath = assertWorkspacePath(path.join(resolvedDir, entry.name), 'TypeScript file');
+    const filePath = assertWorkspacePath(
+      path.join(resolvedDir, entry.name),
+      "TypeScript file",
+    );
     const sourceFile = ts.createSourceFile(
       filePath,
       safeReadFileSync(filePath),
       ts.ScriptTarget.Latest,
-      true
+      true,
     );
 
     function visit(node) {
       if (
         ts.isInterfaceDeclaration(node) &&
         node.modifiers &&
-        node.modifiers.some(mod => mod.kind === ts.SyntaxKind.ExportKeyword)
+        node.modifiers.some((mod) => mod.kind === ts.SyntaxKind.ExportKeyword)
       ) {
         const className = node.name.text;
         const fields = {};
 
-        node.members.forEach(member => {
+        node.members.forEach((member) => {
           if (ts.isPropertySignature(member) && member.name && member.type) {
             const fieldName = member.name.getText(sourceFile);
             const fieldType = member.type.getText(sourceFile);
@@ -499,11 +554,13 @@ function parseTypeScriptTypes(tsDir) {
 }
 
 function parsePythonTypes(pyDir) {
-  const resolvedDir = ensureDirectoryExists(pyDir, 'Python directory');
+  const resolvedDir = ensureDirectoryExists(pyDir, "Python directory");
   const entries = fs.readdirSync(resolvedDir, { withFileTypes: true });
   const pythonFiles = entries
-    .filter(entry => entry.isFile() && entry.name.endsWith('.py'))
-    .map(entry => assertWorkspacePath(path.join(resolvedDir, entry.name), 'Python file'));
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".py"))
+    .map((entry) =>
+      assertWorkspacePath(path.join(resolvedDir, entry.name), "Python file"),
+    );
 
   const fileContents = {};
   const perFileClasses = {}; // resolvedFile -> { className: { field: type } }
@@ -514,12 +571,14 @@ function parsePythonTypes(pyDir) {
 
   const parserPath = ensurePyParserScript();
   const tryPythonParser = () => {
-    const result = spawnSync('python3', [parserPath, ...pythonFiles], { encoding: 'utf-8' });
+    const result = spawnSync("python3", [parserPath, ...pythonFiles], {
+      encoding: "utf-8",
+    });
     if (result.error || result.status !== 0) {
       return null;
     }
     try {
-      return JSON.parse(result.stdout || '{}');
+      return JSON.parse(result.stdout || "{}");
     } catch {
       return null;
     }
@@ -528,7 +587,7 @@ function parsePythonTypes(pyDir) {
   const pythonParsed = tryPythonParser();
   if (pythonParsed) {
     for (const [filePath, classes] of Object.entries(pythonParsed)) {
-      const resolvedFile = assertWorkspacePath(filePath, 'Python file');
+      const resolvedFile = assertWorkspacePath(filePath, "Python file");
       const content = safeReadFileSync(resolvedFile);
       fileContents[resolvedFile] = content;
       perFileClasses[resolvedFile] = {};
@@ -539,7 +598,7 @@ function parsePythonTypes(pyDir) {
   } else {
     // Fallback JS parser
     for (const filePath of pythonFiles) {
-      const resolvedFile = assertWorkspacePath(filePath, 'Python file');
+      const resolvedFile = assertWorkspacePath(filePath, "Python file");
       const content = safeReadFileSync(resolvedFile);
       fileContents[resolvedFile] = content;
       const classes = {};
@@ -563,7 +622,9 @@ function parsePythonTypes(pyDir) {
           classIndent = Infinity;
           continue;
         }
-        const matchField = line.match(/^\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([^#]+)/);
+        const matchField = line.match(
+          /^\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([^#]+)/,
+        );
         if (matchField && currentClass) {
           const [, fieldName, annotation] = matchField;
           classes[currentClass][fieldName] = annotation.trim();
@@ -609,7 +670,11 @@ function parsePythonTypes(pyDir) {
         if (Object.prototype.hasOwnProperty.call(classes, className)) {
           if (path.basename(filePath).toLowerCase() === preferredLower) {
             chosenFile = filePath;
-            console.warn(`⚠️  Selected ${path.basename(filePath)} for class ${className} (case-insensitive match)`);
+            console.warn(
+              `⚠️  Selected ${path.basename(
+                filePath,
+              )} for class ${className} (case-insensitive match)`,
+            );
             break;
           }
         }
@@ -622,9 +687,14 @@ function parsePythonTypes(pyDir) {
       for (const [filePath, classes] of Object.entries(perFileClasses)) {
         if (Object.prototype.hasOwnProperty.call(classes, className)) {
           const bname = path.basename(filePath);
-          if (bname.toLowerCase() === preferredLower && bname !== preferredBase) {
+          if (
+            bname.toLowerCase() === preferredLower &&
+            bname !== preferredBase
+          ) {
             chosenFile = filePath;
-            console.warn(`⚠️  Prefer ${bname} over ${preferredBase} for class ${className} (prefers snake_case)`);
+            console.warn(
+              `⚠️  Prefer ${bname} over ${preferredBase} for class ${className} (prefers snake_case)`,
+            );
             break;
           }
         }
@@ -637,16 +707,29 @@ function parsePythonTypes(pyDir) {
     }
   }
 
-  return { pyTypes, classFileMap, fileContents, processedFiles: pythonFiles.length };
+  return {
+    pyTypes,
+    classFileMap,
+    fileContents,
+    processedFiles: pythonFiles.length,
+  };
 }
 
-function renamePythonField(className, fromName, toName, pyFilePath, pyClassFields, fileContents) {
+function renamePythonField(
+  className,
+  fromName,
+  toName,
+  pyFilePath,
+  pyClassFields,
+  fileContents,
+) {
   const fieldType = pyClassFields[fromName];
   if (!fieldType) {
     return false;
   }
 
-  const existingContent = fileContents[pyFilePath] ?? safeReadFileSync(pyFilePath);
+  const existingContent =
+    fileContents[pyFilePath] ?? safeReadFileSync(pyFilePath);
   const fieldDefRegex = new RegExp(`(^|\\n)(\\s*)${fromName}:\\s*[^\\n]+`);
 
   if (!fieldDefRegex.test(existingContent)) {
@@ -655,32 +738,36 @@ function renamePythonField(className, fromName, toName, pyFilePath, pyClassField
 
   const updatedContent = existingContent.replace(
     fieldDefRegex,
-    (match, prefix, indent) => `${prefix}${indent}${toName}: ${fieldType}`
+    (match, prefix, indent) => `${prefix}${indent}${toName}: ${fieldType}`,
   );
 
   safeWriteFileSync(pyFilePath, updatedContent);
   fileContents[pyFilePath] = updatedContent;
   delete pyClassFields[fromName];
   pyClassFields[toName] = fieldType;
-  console.log(`🛠  Auto-fixed field name in ${className}: ${fromName} -> ${toName}`);
+  console.log(
+    `🛠  Auto-fixed field name in ${className}: ${fromName} -> ${toName}`,
+  );
   return true;
 }
 
 program
-  .name('typegen')
-  .description('TypeScript and Python type generator from database schema')
-  .version('0.1.0')
+  .name("typegen")
+  .description("TypeScript and Python type generator from database schema")
+  .version("0.1.0")
   .configureOutput({
     outputError: (str, write) => {
       write(`❌ Error: ${str}`);
     },
   })
-  .exitOverride(err => {
-    if (err.code === 'commander.unknownCommand') {
-      console.error(`❌ Unknown command. Use --help to see available commands.`);
+  .exitOverride((err) => {
+    if (err.code === "commander.unknownCommand") {
+      console.error(
+        `❌ Unknown command. Use --help to see available commands.`,
+      );
       process.exit(1);
     }
-    if (err.code === 'commander.missingArgument') {
+    if (err.code === "commander.missingArgument") {
       console.error(`❌ Missing required argument: ${err.message}`);
       process.exit(1);
     }
@@ -688,30 +775,36 @@ program
   });
 
 program
-  .command('generate')
-  .description('Generate TypeScript types from database schema')
-  .argument('<schema-path>', 'path to the database schema JSON file')
-  .option('-o, --output-dir <dir>', 'output directory for generated types')
+  .command("generate")
+  .description("Generate TypeScript types from database schema")
+  .argument("<schema-path>", "path to the database schema JSON file")
+  .option("-o, --output-dir <dir>", "output directory for generated types")
   .action((schemaPath, options) => {
     try {
       const generator = new DbToTypeScript(WORKSPACE_ROOT);
-      const normalizedSchema = sanitizePathInput(schemaPath, 'schema path');
+      const normalizedSchema = sanitizePathInput(schemaPath, "schema path");
       if (!isPathSafe(normalizedSchema)) {
-        throw new Error(`schema path contains invalid path characters: ${schemaPath}`);
+        throw new Error(
+          `schema path contains invalid path characters: ${schemaPath}`,
+        );
       }
 
-      const resolvedSchema = resolvePathWithinWorkspace(normalizedSchema, WORKSPACE_ROOT, 'schema path');
+      const resolvedSchema = resolvePathWithinWorkspace(
+        normalizedSchema,
+        WORKSPACE_ROOT,
+        "schema path",
+      );
 
       const resolvedOutputDir = options.outputDir
         ? resolvePathWithinWorkspace(
-          sanitizePathInput(options.outputDir, 'output directory'),
-          WORKSPACE_ROOT,
-          'output directory'
-        )
+            sanitizePathInput(options.outputDir, "output directory"),
+            WORKSPACE_ROOT,
+            "output directory",
+          )
         : undefined;
 
       generator.generate(resolvedSchema, resolvedOutputDir);
-      console.log('✅ TypeScript types generated successfully');
+      console.log("✅ TypeScript types generated successfully");
     } catch (error) {
       console.error(`❌ ${error.message}`);
       process.exit(1);
@@ -719,37 +812,46 @@ program
   });
 
 program
-  .command('verify')
-  .description('Verify structural parity between TypeScript and Python types')
-  .argument('<ts-dir>', 'directory containing TypeScript type files')
-  .argument('<py-dir>', 'directory containing Python type files')
-  .option('-f, --fix', 'auto-fix simple naming mismatches by renaming Python fields to match TypeScript')
-  .option('-d, --debug', 'print detailed comparison debug output')
+  .command("verify")
+  .description("Verify structural parity between TypeScript and Python types")
+  .argument("<ts-dir>", "directory containing TypeScript type files")
+  .argument("<py-dir>", "directory containing Python type files")
+  .option(
+    "-f, --fix",
+    "auto-fix simple naming mismatches by renaming Python fields to match TypeScript",
+  )
+  .option("-d, --debug", "print detailed comparison debug output")
   .action((tsDir, pyDir, options) => {
     try {
       const sanitizedTsDir = resolvePathWithinWorkspace(
-        sanitizePathInput(tsDir, 'TypeScript directory'),
+        sanitizePathInput(tsDir, "TypeScript directory"),
         WORKSPACE_ROOT,
-        'TypeScript directory'
+        "TypeScript directory",
       );
       const sanitizedPyDir = resolvePathWithinWorkspace(
-        sanitizePathInput(pyDir, 'Python directory'),
+        sanitizePathInput(pyDir, "Python directory"),
         WORKSPACE_ROOT,
-        'Python directory'
+        "Python directory",
       );
 
-      const { tsTypes, processedFiles: tsFileCount } = parseTypeScriptTypes(sanitizedTsDir);
-      const { pyTypes, classFileMap, fileContents, processedFiles: pyFileCount } = parsePythonTypes(sanitizedPyDir);
+      const { tsTypes, processedFiles: tsFileCount } =
+        parseTypeScriptTypes(sanitizedTsDir);
+      const {
+        pyTypes,
+        classFileMap,
+        fileContents,
+        processedFiles: pyFileCount,
+      } = parsePythonTypes(sanitizedPyDir);
 
       let hasErrors = false;
 
       if (tsFileCount === 0) {
-        console.error('❌ No TypeScript files found');
+        console.error("❌ No TypeScript files found");
         hasErrors = true;
       }
 
       if (pyFileCount === 0) {
-        console.error('❌ No Python files found');
+        console.error("❌ No Python files found");
         hasErrors = true;
       }
 
@@ -763,10 +865,14 @@ program
 
         for (const [fieldName, tsType] of Object.entries(tsClass)) {
           const pythonCandidateNames = [camelToSnake(fieldName), fieldName];
-          const matchedName = pythonCandidateNames.find(name => Object.prototype.hasOwnProperty.call(pyClass, name));
+          const matchedName = pythonCandidateNames.find((name) =>
+            Object.prototype.hasOwnProperty.call(pyClass, name),
+          );
 
           if (!matchedName) {
-            console.error(`❌ Missing field in Python ${className}: ${fieldName}`);
+            console.error(
+              `❌ Missing field in Python ${className}: ${fieldName}`,
+            );
             hasErrors = true;
             continue;
           }
@@ -779,14 +885,18 @@ program
           // Debugging output removed in cleanup; use CLI return codes and
           // error messages to inspect mismatches if needed.
           if (!parity) {
-            console.error(`❌ Type mismatch in ${className}.${fieldName}: TS=${tsType}, Python=${pyType}`);
+            console.error(
+              `❌ Type mismatch in ${className}.${fieldName}: TS=${tsType}, Python=${pyType}`,
+            );
             hasErrors = true;
           }
 
           if (options.fix && matchedName !== fieldName) {
             const pyFilePath = classFileMap[className];
             if (!pyFilePath) {
-              console.error(`❌ Unable to locate Python file for class ${className} to auto-fix field ${matchedName}`);
+              console.error(
+                `❌ Unable to locate Python file for class ${className} to auto-fix field ${matchedName}`,
+              );
               hasErrors = true;
               continue;
             }
@@ -797,11 +907,13 @@ program
               fieldName,
               pyFilePath,
               pyClass,
-              fileContents
+              fileContents,
             );
 
             if (!renamed) {
-              console.error(`❌ Failed to auto-fix field ${className}.${matchedName}`);
+              console.error(
+                `❌ Failed to auto-fix field ${className}.${matchedName}`,
+              );
               hasErrors = true;
             }
           }
@@ -809,11 +921,14 @@ program
 
         for (const [pyFieldName] of Object.entries(pyClass)) {
           const camelCaseName = snakeToCamel(pyFieldName);
-          const existsInTs = Object.prototype.hasOwnProperty.call(tsClass, camelCaseName) ||
+          const existsInTs =
+            Object.prototype.hasOwnProperty.call(tsClass, camelCaseName) ||
             Object.prototype.hasOwnProperty.call(tsClass, pyFieldName);
 
           if (!existsInTs) {
-            console.error(`❌ Extra field in Python ${className}: ${pyFieldName}`);
+            console.error(
+              `❌ Extra field in Python ${className}: ${pyFieldName}`,
+            );
             hasErrors = true;
             continue;
           }
@@ -825,7 +940,9 @@ program
           ) {
             const pyFilePath = classFileMap[className];
             if (!pyFilePath) {
-              console.error(`❌ Unable to locate Python file for class ${className} to auto-fix field ${pyFieldName}`);
+              console.error(
+                `❌ Unable to locate Python file for class ${className} to auto-fix field ${pyFieldName}`,
+              );
               hasErrors = true;
               continue;
             }
@@ -836,11 +953,13 @@ program
               camelCaseName,
               pyFilePath,
               pyClass,
-              fileContents
+              fileContents,
             );
 
             if (!renamed) {
-              console.error(`❌ Failed to auto-fix field ${className}.${pyFieldName}`);
+              console.error(
+                `❌ Failed to auto-fix field ${className}.${pyFieldName}`,
+              );
               hasErrors = true;
             }
           }
@@ -855,7 +974,7 @@ program
       }
 
       if (hasErrors) {
-        console.error('❌ Type parity check failed');
+        console.error("❌ Type parity check failed");
         // Use process.exitCode instead of process.exit to avoid environments
         // (test harnesses or wrappers) that may intercept/override immediate
         // process.exit behavior. Setting exitCode and returning lets Node
@@ -864,7 +983,7 @@ program
         return;
       }
 
-      console.log('✅ All types are structurally compatible');
+      console.log("✅ All types are structurally compatible");
     } catch (error) {
       console.error(`❌ ${error.message}`);
       process.exit(1);

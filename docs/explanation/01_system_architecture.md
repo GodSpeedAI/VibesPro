@@ -9,6 +9,7 @@ The core philosophy is "convention over configuration," guided by a spec-driven 
 The ecosystem is composed of several interconnected components that work together to guide the developer.
 
 {% raw %}
+
 ```mermaid
 graph TD
     subgraph "Developer"
@@ -40,6 +41,7 @@ graph TD
     B -->|8. Reads context from| G
     B -->|9. Generates code/docs for| A
 ```
+
 {% endraw %}
 
 ### Component Breakdown
@@ -49,15 +51,17 @@ graph TD
 2.  **`techstack.yaml`:** This is the single source of truth for the project's technology stack. It's a manifest of all libraries, frameworks, and services. The developer defines the desired stack here.
 
 3.  **`justfile` & `scripts/*.sh` (Automation Layer):**
-    *   The `justfile` provides a simple, memorable set of commands (recipes) for common project tasks.
-    *   These commands delegate their logic to shell scripts in the `scripts/` directory.
-    *   Scripts like `sync_techstack.sh` read the `techstack.yaml` and perform actions, such as updating configuration files or generating documentation. This automates the setup process based on the declared tech stack.
+
+    - The `justfile` provides a simple, memorable set of commands (recipes) for common project tasks.
+    - These commands delegate their logic to shell scripts in the `scripts/` directory.
+    - Scripts like `sync_techstack.sh` read the `techstack.yaml` and perform actions, such as updating configuration files or generating documentation. This automates the setup process based on the declared tech stack.
 
 4.  **`.github/` (AI Guidance):** This directory is the "brain" of the AI assistant. It contains:
-    *   **`instructions/`**: Detailed rules and guidelines for the AI on topics like coding style, testing, security, and commit messages.
-    *   **`prompts/`**: Pre-written prompts for common, complex tasks (e.g., creating a new component, implementing a feature).
-    *   **`chatmodes/`**: Personas for the AI to adopt (e.g., "Senior Backend Engineer," "Security Analyst") to provide specialized advice.
-    These files provide deep, repository-specific context to the AI, making its suggestions far more relevant and helpful than generic advice.
+
+    - **`instructions/`**: Detailed rules and guidelines for the AI on topics like coding style, testing, security, and commit messages.
+    - **`prompts/`**: Pre-written prompts for common, complex tasks (e.g., creating a new component, implementing a feature).
+    - **`chatmodes/`**: Personas for the AI to adopt (e.g., "Senior Backend Engineer," "Security Analyst") to provide specialized advice.
+      These files provide deep, repository-specific context to the AI, making its suggestions far more relevant and helpful than generic advice.
 
 5.  **`docs/` (Spec-Driven Workflow):** The project emphasizes a "specification-first" approach. This directory contains templates for Architecture Decision Records (ADRs), System Design Specifications (SDSs), and other planning documents. The AI assistant is instructed to read these documents to understand the project's goals and constraints before generating code.
 

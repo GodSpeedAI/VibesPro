@@ -22,11 +22,13 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
 **Problem**: Ubuntu apt repositories don't include SOPS package
 
 **Solution**:
+
 - Install SOPS v3.9.3 from GitHub releases instead of apt
 - Platform-specific installation (GitHub releases for Ubuntu, brew for macOS)
 - Added version verification step
 
 **Files Modified**:
+
 - `.github/workflows/env-check.yml`
 - `.github/workflows/build-matrix.yml`
 
@@ -35,6 +37,7 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
 **Problem**: Inconsistent SOPS_AGE_KEY handling across workflows
 
 **Solution**:
+
 - Made secret handling consistent
 - Added `continue-on-error: true` for optional secrets
 - Improved error messaging
@@ -44,6 +47,7 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
 **Problem**: `docs-generator` workflow failed with "No `pyproject.toml` found"
 
 **Solution**:
+
 - Created `pyproject.toml` from template
 - Configured for uv dependency management
 - Includes ruff, mypy, and pytest configuration
@@ -53,11 +57,13 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
 **Problem**: Tests failed due to template refactoring (removed `dev_` prefix, changed architecture_style format)
 
 **Solution**:
+
 - Updated template doc filenames
 - Fixed architecture_style choices format handling (now object with descriptions)
 - Removed dev_spec_index.md references
 
 **Files Updated**:
+
 - `tests/integration/template-docs.test.ts`
 - `tests/integration/docs-emission.spec.ts`
 - `tests/integration/project-structure.test.ts`
@@ -67,11 +73,13 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
 **Problem**: `template-smoke.test.ts` failed with prompt:lint returning status 1 due to missing frontmatter fields
 
 **Solution**:
+
 - Added required frontmatter fields (kind, domain, task, thread, matrix_ids, budget) to `customize.copilot-instructions.prompt.md`
 - Updated generation-smoke.ts to use `--vcs-ref=HEAD` flag to include staged template changes
 - Now picks up uncommitted changes during testing
 
 **Files Modified**:
+
 - `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
 - `tests/utils/generation-smoke.ts`
 
@@ -84,26 +92,31 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
 ### Major Features Added
 
 1. **Devbox Integration** (Phases 1 & 2)
+
    - OS-level environment isolation
    - Declarative dependency management
    - Comprehensive documentation
 
 2. **mise Runtime Management** (Phase 2)
+
    - Single tool for Node/Python/Rust version management
    - Replaces nvm/pyenv/rustup
    - Volta coexistence with migration path (Phase 5)
 
 3. **SOPS Secret Management** (Phase 3)
+
    - Encrypted secrets with age encryption
    - Git-friendly encrypted files
    - CI/CD integration
 
 4. **Environment Testing** (Phase 0)
+
    - 9 comprehensive environment tests (all passing)
    - Test harness with discovery mechanism
    - Validation for all infrastructure layers
 
 5. **CI Workflow Enhancements** (Phase 4)
+
    - Cross-platform testing (Ubuntu + macOS)
    - Automated environment validation
    - Optimized caching strategies
@@ -117,6 +130,7 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
 
 - **Total**: 45 files changed, 7,670 insertions(+), 43 deletions(-)
 - **New Configuration Files**:
+
   - `.mise.toml` (runtime versions)
   - `.secrets.env.sops` (encrypted secrets template)
   - `.sops.yaml` (encryption configuration)
@@ -124,11 +138,13 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
   - `pyproject.toml` (Python project configuration)
 
 - **New Scripts**:
+
   - `scripts/devbox_boot.sh` (Devbox initialization)
   - `scripts/doctor.sh` (environment health check)
   - `scripts/verify-node.sh` (Volta/mise alignment)
 
 - **New Tests**:
+
   - `tests/env/test_sanity.sh`
   - `tests/env/test_doctor.sh`
   - `tests/env/test_harness.sh`
@@ -148,14 +164,17 @@ PR #27 successfully resolves all CI failures and test issues. The pull request a
 ## Test Status
 
 ### Integration Tests
+
 - ✅ `template-smoke.test.ts` - Now passing (fixed frontmatter issue)
 - ✅ `template-docs.test.ts` - Updated for template refactoring
 - ✅ `docs-emission.spec.ts` - Updated for new file naming
 - ✅ `project-structure.test.ts` - Fixed architecture_style parsing
-- ⚠️  `performance.test.ts` - 1 flaky test (temp directory cleanup race condition, not a blocker)
+- ⚠️ `performance.test.ts` - 1 flaky test (temp directory cleanup race condition, not a blocker)
 
 ### Environment Tests
+
 All 9 tests passing:
+
 ```bash
 $ just test-env
 ✅ test_sanity.sh - Basic harness validation
@@ -176,6 +195,7 @@ $ just test-env
 ## CI Workflow Status
 
 ### Passing Workflows ✅
+
 - ✅ test-docs-generator (Python 3.12, Node 20)
 - ✅ markdownlint
 - ✅ lint-markdown
@@ -190,6 +210,7 @@ $ just test-env
 - ✅ Cargo Audit
 
 ### Status Unknown (Running)
+
 - ⏳ prepare (build-matrix)
 - ⏳ env-check
 - ⏳ build-and-test
@@ -207,7 +228,9 @@ $ just test-env
 **Current Version**: 0.1.0
 
 **Changes Include**:
+
 1. **New Features** (minor version bump):
+
    - Devbox integration (new capability)
    - mise integration (new runtime management)
    - SOPS secret management (new security feature)
@@ -216,6 +239,7 @@ $ just test-env
    - Environment testing infrastructure (new validation)
 
 2. **Bug Fixes** (patch version bump):
+
    - SOPS installation fixes
    - Test updates for template changes
    - Frontmatter validation fixes
@@ -229,6 +253,7 @@ $ just test-env
 ### Recommended Version: **0.2.0**
 
 **Rationale**:
+
 - Significant new features added (6 phases of environment infrastructure)
 - No breaking changes to existing APIs or workflows
 - Follows semantic versioning: MAJOR.MINOR.PATCH
@@ -243,12 +268,14 @@ $ just test-env
 ### Recommended Approach: **Squash and Merge**
 
 **Reasons**:
+
 - Cleaner main branch history
 - Single commit represents complete feature set
 - Easier to revert if needed
 - Maintains atomic changesets
 
 **Commit Message Template**:
+
 ```
 feat: add comprehensive development environment infrastructure [DEV-SPEC-ENV]
 
@@ -284,17 +311,20 @@ Breaking: None - all changes are additive and backward compatible
 ## Post-Merge Checklist
 
 ### Immediate Actions
+
 - [ ] Create release tag `v0.2.0`
 - [ ] Create GitHub release with changelog
 - [ ] Update README with version badge
 - [ ] Announce new version in team channels
 
 ### Documentation
+
 - [ ] Update getting started guide with new setup instructions
 - [ ] Add migration guide for existing projects
 - [ ] Update contributor documentation
 
 ### Follow-up Work (Future)
+
 - [ ] Consider adding Windows support to CI matrix
 - [ ] Explore automated dependency updates (Dependabot/Renovate)
 - [ ] Add Docker integration (Phase 7)
@@ -305,6 +335,7 @@ Breaking: None - all changes are additive and backward compatible
 ## Traceability
 
 **Specifications**:
+
 - DEV-SDS-ENV (Environment setup specification)
 - DEV-SPEC-SOPS (Secret management specification)
 - DEV-SPEC-PYTHON (Python tooling specification)
@@ -331,6 +362,7 @@ Breaking: None - all changes are additive and backward compatible
 ## Sign-off
 
 **Changes Validated**:
+
 - ✅ All critical CI workflows passing or running
 - ✅ 9/9 environment tests passing
 - ✅ Integration tests updated and passing
@@ -347,7 +379,7 @@ Breaking: None - all changes are additive and backward compatible
 
 ---
 
-*Generated*: January 11, 2025
-*Author*: GitHub Copilot (AI Assistant)
-*Reviewed*: Pending human approval
-*Final Commit*: 72c96db - fix(templates): add required frontmatter to customize prompt
+_Generated_: January 11, 2025
+_Author_: GitHub Copilot (AI Assistant)
+_Reviewed_: Pending human approval
+_Final Commit_: 72c96db - fix(templates): add required frontmatter to customize prompt

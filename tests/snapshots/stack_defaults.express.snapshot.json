@@ -1,1 +1,5 @@
-{"language":"typescript","backendFramework":"express","packageManager":"pnpm"}
+{
+  "language": "typescript",
+  "backendFramework": "express",
+  "packageManager": "pnpm"
+}

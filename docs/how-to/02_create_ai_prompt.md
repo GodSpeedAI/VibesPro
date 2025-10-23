@@ -28,7 +28,6 @@ A prompt file has two main parts: the frontmatter and the body.
 
     ```markdown
     Please summarize the key changes in the following code. Focus on the "why" behind the changes, not just the "what".
-
     ```
 
 ## Step 3: Test the Prompt (Conceptual)

@@ -13,10 +13,10 @@ reviews:
   tools:
     eslint:
       enabled: true
-      config_file: templates/{{project_slug}}/.eslintrc.cjs   # adjust to actual path
+      config_file: templates/{{project_slug}}/.eslintrc.cjs # adjust to actual path
     ruff:
       enabled: true
-      config_file: pyproject.toml   # or ruff.toml if you split it
+      config_file: pyproject.toml # or ruff.toml if you split it
 knowledge_base:
   code_guidelines:
     enabled: true
