@@ -1,0 +1,71 @@
+name: CI - build & test (with SOPS)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install sops
+        run: sudo apt-get update && sudo apt-get install -y sops
+
+      - name: Configure age key (required for decrypt)
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          if [ -z "${SOPS_AGE_KEY:-}" ]; then
+            echo "SOPS_AGE_KEY is not set; failing the job. Set repository secret SOPS_AGE_KEY with your private age key." >&2
+            exit 1
+          fi
+          mkdir -p ~/.config/sops
+          printf "%s" "${SOPS_AGE_KEY}" > ~/.config/sops/age-key.txt
+          chmod 600 ~/.config/sops/age-key.txt
+          export SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt
+
+      - name: Decrypt secrets
+        run: |
+          set -euo pipefail
+          sops -d .secrets.env.sops > .secrets.env
+          chmod 600 .secrets.env
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Enable corepack (pnpm)
+        run: |
+          corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Run tests
+        run: |
+          # load decrypted env for the test run without printing values
+          set -a
+          # shellcheck disable=SC1090
+          source .secrets.env
+          set +a
+          pnpm run test
+
+      - name: Cleanup decrypted secrets
+        if: always()
+        run: shred -u .secrets.env || rm -f .secrets.env
