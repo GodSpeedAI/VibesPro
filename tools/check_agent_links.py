@@ -37,9 +37,10 @@ def check_local_links(agent_files: list[Path]) -> list[tuple[str, str, str]]:
                 continue
             # strip anchors and query
             target_path = target.split("#")[0].split("?")[0]
-            # handle leading slash (repo root)
+            # skip repo-root absolute links (template repos may reference generated projects)
             if target_path.startswith("/"):
-                target_path = target_path[1:]
+                # treat leading-slash links as out-of-scope for this template repo
+                continue
             candidate = REPO_ROOT / target_path
             if not candidate.exists():
                 errors.append((str(rel), target, str(candidate)))

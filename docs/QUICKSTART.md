@@ -19,6 +19,51 @@ VibesPro is a project generator that creates a complete, professional applicatio
 - Basic familiarity with the command line (Terminal/Command Prompt)
 - An idea of what you want to build
 
+### Optional: Python dev tools for local validation
+
+If you want to run the repository's type checks and linters locally (recommended for contributors), install the Python dev tools used by this repo:
+
+```bash
+# Create a virtual environment (recommended)
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install dev tooling
+pip install mypy ruff shellcheck
+```
+
+After this, `pnpm run typecheck` will invoke `mypy .` and report issues locally.
+
+### Recommended: Python dev tools (best practice)
+
+For consistent local development and CI parity we recommend creating a per-repo virtual environment and installing the project's checking tools there. This avoids contaminating your global Python environment and ensures everyone runs the same tool versions.
+
+1. Create and activate a virtual environment in the repo root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+2. Upgrade packaging tools and install the recommended dev tools (mypy will install missing stubs when possible):
+
+```bash
+python -m pip install --upgrade pip setuptools wheel
+pip install mypy ruff shellcheck types-requests types-PyYAML types-colorama tiktoken
+```
+
+3. Run the workspace typecheck and validation commands:
+
+```bash
+pnpm run typecheck   # runs tools/check_mypy.sh -> mypy --install-types --non-interactive .
+just ai-validate     # runs pre-commit checks, linters, typecheck and tests
+```
+
+Notes:
+- The project includes a helper `tools/check_mypy.sh` which prefers `.venv/bin/mypy` when present and falls back to PATH mypy. Using the `.venv` created above ensures consistent results.
+- `mypy --install-types` will attempt to fetch type stubs automatically when pip is available in the venv. If network access is restricted, install the listed type packages manually.
+- Consider adding `.venv/` to your global `~/.gitignore` or the repo `.gitignore` to avoid checking the venv into source control.
+
 ### What You DON'T Need
 - Deep programming knowledge
 - Understanding of complex architecture
