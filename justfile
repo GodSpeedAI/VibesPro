@@ -248,6 +248,50 @@ clean-all: clean
 	rm -rf pnpm-lock.yaml
 	rm -rf uv.lock
 
+
+# --- SOPS utilities ---
+# Rotate / re-encrypt .secrets.env.sops for a new recipient and verify
+# Usage: just sops-rotate RECIPIENT='age1qx...'
+sops-rotate RECIPIENT="":
+	#!/usr/bin/env bash
+	set -euo pipefail
+	if [ -z "${RECIPIENT}" ]; then
+		echo "Usage: just sops-rotate RECIPIENT='age1...'" >&2
+		exit 2
+	fi
+
+	if [ ! -f ".secrets.env.sops" ]; then
+		echo ".secrets.env.sops not found in $(pwd)" >&2
+		exit 2
+	fi
+
+	echo "Backing up current .secrets.env.sops -> .secrets.env.sops.bak"
+	cp .secrets.env.sops .secrets.env.sops.bak
+
+	# Decrypt to temp file
+	tmpfile=$(mktemp --tmpdir sops-XXXXXX.env)
+	trap 'shred -u "${tmpfile}" >/dev/null 2>&1 || rm -f "${tmpfile}"' EXIT
+	sops -d .secrets.env.sops > "${tmpfile}"
+
+	# Re-encrypt for the provided recipient
+	echo "Re-encrypting for recipient: ${RECIPIENT}"
+	sops --encrypt --age "${RECIPIENT}" "${tmpfile}" > .secrets.env.sops.new
+
+	# Replace and verify
+	mv .secrets.env.sops.new .secrets.env.sops
+	# Verify decryption works with local keys (requires you have the private key available)
+	if sops -d .secrets.env.sops >/dev/null 2>&1; then
+		echo "Verification: decryption succeeded"
+	else
+		echo "Verification failed: could not decrypt .secrets.env.sops with available keys" >&2
+		echo "Restoring backup .secrets.env.sops.bak" >&2
+		mv .secrets.env.sops.bak .secrets.env.sops
+		exit 3
+	fi
+
+	echo "Rotation complete. Remember to update CI secret SOPS_AGE_KEY with the private key corresponding to ${RECIPIENT} if you want CI to decrypt."
+
+
 doctor:
 	@echo "🩺 Running project doctor (no secrets will be shown)"
 	@bash scripts/doctor.sh
