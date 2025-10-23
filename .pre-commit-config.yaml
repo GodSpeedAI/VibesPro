@@ -103,15 +103,14 @@ repos:
         args: ["--write"]
         files: '\.(js|jsx|ts|tsx|json|yml|yaml|md|css|scss)$'
 
-  # Note: shfmt hook removed because the upstream repo layout lacks a
-  # pre-commit manifest. Add a supported shfmt mirror later (e.g.
-  # https://github.com/kaelzhang/pre-commit-shfmt) if desired.
-  # Add shfmt via a pre-commit mirror that provides a manifest
-  - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.12.0-2
+  # shfmt for shell script formatting (local system hook).
+  # This avoids fetching external mirrors; requires `shfmt` to be installed on the developer machine.
+  - repo: local
     hooks:
       - id: shfmt
-        args: ["-i", "2", "-ci"]
+        name: shfmt (system)
+        entry: shfmt -i 2 -ci
+        language: system
         files: '\.(sh|bash)$'
 
   # AGENTS.md and documentation link checking
