@@ -53,6 +53,30 @@ setup-tools:
 		uv tool install copier; \
 	fi
 
+install-hooks:
+	@echo "🔧 Installing pre-commit hooks and verifying shfmt"
+	@if [ ! -d ".venv" ]; then \
+		echo "Python venv not found - running setup-python"; \
+		just setup-python; \
+	fi
+	@echo "Installing pre-commit into the venv and ensuring hooks are installed..."
+	@. .venv/bin/activate >/dev/null 2>&1 || true; \
+	python3 -m pip install --upgrade pre-commit >/dev/null 2>&1 || true; \
+	# Respect repository-level core.hooksPath; do not override silently
+	if git config --get core.hooksPath >/dev/null 2>&1; then \
+		echo "Repository uses custom core.hooksPath (git config core.hooksPath set)."; \
+		echo "To install pre-commit hooks into .git/hooks run: git config --unset-all core.hooksPath"; \
+		echo "Skipping pre-commit install to avoid clobbering custom hooks."; \
+	else \
+		pre-commit install --hook-type pre-commit --hook-type commit-msg || true; \
+	fi
+	@echo "Checking for shfmt on PATH..."
+	@if command -v shfmt >/dev/null 2>&1; then \
+		echo "shfmt found: $(command -v shfmt)"; \
+	else \
+		echo "shfmt not found. Install it with: brew install shfmt  OR  go install mvdan.cc/sh/v3/cmd/shfmt@latest"; \
+	fi
+
 verify-node:
 	@echo "🔍 Verifying Node version alignment..."
 	@bash scripts/verify-node.sh
