@@ -399,6 +399,60 @@ sops -e .secrets.env.sops > .secrets.env.sops.encrypted
 
 **Decrypting secrets:**
 
+## Contributors & CI — reproducible steps
+
+This section documents a minimal, reproducible workflow contributors and CI pipelines can follow to get deterministic results when running validations (mypy, linters, tests) locally or in CI.
+
+1. Create a project-local virtual environment for Python (recommended):
+
+```bash
+# from the repo root
+python -m venv .venv
+source .venv/bin/activate  # or `source .venv/bin/activate` on zsh
+python -m pip install --upgrade pip setuptools wheel
+```
+
+2. Install developer tooling used by the repository (examples):
+
+```bash
+pip install mypy types-requests types-PyYAML types-colorama tiktoken
+pnpm install
+```
+
+3. Run the repository validators locally:
+
+```bash
+# Run mypy (our helper prefers the .venv pip-installed mypy)
+pnpm run typecheck
+
+# Run pre-commit validations and tests (just recipes)
+just ai-validate
+```
+
+4. CI guidance (Linux runners):
+
+- Use the same runtimes (Node/Python/Rust) as defined in `.mise.toml` or devbox config.
+- Create a fresh virtualenv in CI and install mypy + required stubs prior to running `pnpm run typecheck`. Example (GitHub Actions):
+
+```yaml
+steps:
+  - uses: actions/checkout@v4
+  - uses: actions/setup-python@v4
+    with:
+      python-version: '3.12'
+  - run: python -m venv .venv && .venv/bin/python -m pip install --upgrade pip setuptools wheel
+  - run: .venv/bin/pip install mypy types-requests types-PyYAML types-colorama tiktoken
+  - run: pnpm install
+  - run: pnpm run typecheck
+  - run: just ai-validate
+```
+
+Notes:
+
+- We intentionally prefer a local `.venv` with pip-installed mypy so mypy's `--install-types` behavior works and can fetch missing stubs when required. If your CI uses a pre-cached mypy wheel or OS package, ensure the same stub packages are available.
+- Don't commit your `.venv` directory. Add `/.venv/` to `.gitignore` (already present in this repo).
+
+
 ```bash
 # Decrypt to stdout (inspect without saving)
 sops -d .secrets.env.sops

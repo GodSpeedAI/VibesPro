@@ -157,6 +157,11 @@ pnpm dev
 
 ---
 
+Developer quickstart (venv)
+
+If you're contributing to the template itself (editing files in this repo), we recommend creating a local Python virtual environment (`.venv`) and following the quickstart venv steps in `docs/QUICKSTART.md` (see the "Recommended: Python dev tools" section). After creating the venv, run `pnpm run typecheck` and `just ai-validate` to verify mypy, linters and pre-commit hooks are working locally.
+
+
 ## 🎁 What's In The Box?
 
 ### For Product Teams
