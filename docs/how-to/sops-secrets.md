@@ -104,3 +104,22 @@ creation_rules:
 ### Next steps
 
 - If you want, I can add the `scripts/run-with-secrets.sh` helper (executable) and a GitHub Actions workflow example to `.github/workflows/` in this repo. I already added the helper script in `scripts/` as part of this change.
+
+### Files added to this repo
+
+- `.sops.yaml` — repo-level SOPS config. Adjust `creation_rules` and `key_groups` if you use PGP/KMS.
+- `.github/workflows/sops-decrypt.yml` — example workflow that decrypts `.secrets.env.sops` using `SOPS_AGE_KEY` and runs tests.
+- `.envrc.example` — example `direnv` file showing how to decrypt on directory enter (do not commit a real `.envrc` with plaintext).
+
+### Generating an age key (quick)
+
+On your local machine you can generate an `age` keypair and extract the private key to store in CI secrets:
+
+```bash
+# install age if not present (platform-specific)
+age-keygen -o key.txt
+# the file contains the private key (store securely). The public key is printed too.
+cat key.txt
+```
+
+Store the private key contents as `SOPS_AGE_KEY` in GitHub Secrets. The workflow will write it to `~/.config/sops/age-key.txt` and use it to decrypt.
