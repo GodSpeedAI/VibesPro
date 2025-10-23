@@ -12,7 +12,7 @@ try {
   ({ DbToTypeScript } = require('./dist/src/generators/types/db-to-typescript'));
 } catch (error) {
   DbToTypeScript = class {
-    constructor() {}
+    constructor() { }
     generate() {
       throw new Error('Database generation support is not available in this environment.');
     }
@@ -704,10 +704,10 @@ program
 
       const resolvedOutputDir = options.outputDir
         ? resolvePathWithinWorkspace(
-            sanitizePathInput(options.outputDir, 'output directory'),
-            WORKSPACE_ROOT,
-            'output directory'
-          )
+          sanitizePathInput(options.outputDir, 'output directory'),
+          WORKSPACE_ROOT,
+          'output directory'
+        )
         : undefined;
 
       generator.generate(resolvedSchema, resolvedOutputDir);
@@ -772,16 +772,16 @@ program
           }
 
           const pyType = pyClass[matchedName];
-            // Debugging aid: when running under tests, print the actual
-            // comparison and the result to help trace why mismatches may be
-            // reported as compatible in some environments.
-            const parity = verifyTypeParity(tsType, pyType);
-            // Debugging output removed in cleanup; use CLI return codes and
-            // error messages to inspect mismatches if needed.
-            if (!parity) {
-              console.error(`❌ Type mismatch in ${className}.${fieldName}: TS=${tsType}, Python=${pyType}`);
-              hasErrors = true;
-            }
+          // Debugging aid: when running under tests, print the actual
+          // comparison and the result to help trace why mismatches may be
+          // reported as compatible in some environments.
+          const parity = verifyTypeParity(tsType, pyType);
+          // Debugging output removed in cleanup; use CLI return codes and
+          // error messages to inspect mismatches if needed.
+          if (!parity) {
+            console.error(`❌ Type mismatch in ${className}.${fieldName}: TS=${tsType}, Python=${pyType}`);
+            hasErrors = true;
+          }
 
           if (options.fix && matchedName !== fieldName) {
             const pyFilePath = classFileMap[className];

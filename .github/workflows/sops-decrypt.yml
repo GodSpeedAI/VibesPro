@@ -2,7 +2,7 @@ name: Decrypt secrets and test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
