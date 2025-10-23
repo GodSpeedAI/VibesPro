@@ -144,16 +144,16 @@ pnpm exec nx g @nx/react:component UserProfile
 
 ### Temporal Database Context
 
-VibesPro learns from project history:
+VibesPro learns from project history using an embedded redb database:
 
 ```rust
-// temporal_db/ - Embedded redb database
+// temporal_db/ - Embedded redb database (migrated from sled in TASK-017)
 SPECIFICATIONS_TABLE  // ADRs, PRDs, SDS (spec:{id}:{timestamp_nanos})
 PATTERNS_TABLE        // Proven design patterns
 CHANGES_TABLE         // Time-series change tracking
 ```
 
-**Use before major decisions**: Query historical architectural choices
+**Use before major decisions**: Query historical architectural choices. See `temporal_db/README.md` for usage examples.
 
 ### Environment Setup (Layered Approach)
 
@@ -287,26 +287,31 @@ export class UserController {
 ### Critical Security Rules
 
 1. **NEVER modify VS Code configuration files without explicit user confirmation**
+
    - `.vscode/settings.json`
    - `.vscode/tasks.json`
    - Rationale: Malicious changes can enable auto-approval (`chat.tools.autoApprove`) → Remote Code Execution
 
 2. **Always sanitize and validate ALL user inputs**
+
    - Never interpolate untrusted data into shell commands
    - Use prepared statements for SQL queries
    - Validate file paths, URLs, and external data
 
 3. **Respect VS Code workspace trust boundaries**
+
    - Do not run tasks or execute code in untrusted folders
    - Require user confirmation before executing external commands
 
 4. **Secret Management**
+
    - NEVER hardcode secrets in code or configuration
    - Use environment variables or secret stores
    - Expect `.env` files or external secret management
    - Never commit keys to version control
 
 5. **Cryptographic Standards**
+
    - Use `crypto/rand` for randomness (not Math.random)
    - Use modern crypto libraries (libsodium, Web Crypto API)
    - Follow current best practices for hashing, encryption
@@ -680,12 +685,18 @@ Risk: New attack surface - mitigated with OWASP controls
 
 ### Available MCP Integrations
 
-- Context7: Library documentation
-- Microsoft Docs: Official Microsoft/Azure documentation
-- Exa Search: Code context and web search
-- Memory Tool: User preference storage
-- Nx MCP Server: Nx workspace operations
-- Pylance MCP: Python language server features
+VibesPro supports several MCP (Model Context Protocol) servers for enhanced AI capabilities:
+
+- **Nx MCP Server**: Nx workspace operations (generators, project details, docs, visualization)
+- **Context7**: Up-to-date library documentation (resolve library IDs, fetch docs)
+- **Microsoft Docs**: Official Microsoft/Azure documentation (search, fetch, code samples)
+- **Exa Search**: Code context and web search for programming tasks
+- **Memory Tool**: User preference storage and recall
+- **GitHub MCP**: Repository operations (PRs, commits, issues, reviews)
+- **Ref**: Documentation search and URL reading
+- **Vibe Check**: Metacognitive questioning and pattern recognition for AI workflows
+
+**Usage**: These tools are available via the MCP protocol. Always check which MCP tools are available and use them when appropriate. See `mcp/` directory for tool descriptors.
 
 ---
 
@@ -694,24 +705,31 @@ Risk: New attack surface - mitigated with OWASP controls
 ### AI-Enhanced Development
 
 1. **Temporal Learning System**
+
    - Records architectural decisions in `temporal_db/project_specs.db`
    - Learns from development patterns over time
-   - Uses sled (Rust embedded database) for persistence
+   - Uses redb (Rust embedded database) for persistence
+   - Migrated from sled to redb in TASK-017 for better long-term stability
 
 2. **Context Management**
+
    - Token budget optimization
    - Relevance scoring for context inclusion
-   - Dynamic context bundling
+   - Dynamic context bundling via `just ai-context-bundle`
+   - Generates `docs/ai_context_bundle/` with CALM, specs, and techstack
 
 3. **Custom Chat Modes**
-   - 30+ specialized personas
+
+   - 30+ specialized personas and workflow modes
    - Workflow-specific guidance (TDD, debugging, planning)
    - Product and technical modes
+   - Domain.task naming pattern (e.g., `tdd.red`, `debug.start`)
 
 4. **Task Orchestration**
    - VS Code tasks run prompts with dynamic context
    - Token measurement and tracking
    - A/B testing support for prompt variations
+   - Just recipes for TDD/Debug workflows
 
 ### Modular Instruction Stacking
 
@@ -796,9 +814,12 @@ See `.github/instructions/performance.instructions.md` for detailed guidance.
 ### Key Documentation Files
 
 - `docs/ARCHITECTURE.md` - Hexagonal architecture guide
+- `docs/ENVIRONMENT.md` - Complete environment setup guide (Devbox, mise, SOPS, Just)
 - `docs/dev_spec_index.md` - Developer specification index
 - `docs/traceability_matrix.md` - Requirements traceability
+- `AGENTS.md` - Nx configuration and agent rules
 - `.github/instructions/ai-workflows.instructions.md` - AI workflow conventions
+- `temporal_db/README.md` - Temporal database usage and patterns
 
 ### External References
 
@@ -807,6 +828,11 @@ Use Context7 MCP for up-to-date library documentation:
 - React, Next.js, Node.js patterns
 - TypeScript best practices
 - Python ecosystem tools
+
+Use `KNOWLEDGE.md` for usage specs of key dependencies:
+
+- nx, @nx/devkit, @nx/workspace
+- copier (Jinja2 templating)
 
 ---
 
