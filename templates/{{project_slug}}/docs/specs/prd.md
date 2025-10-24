@@ -1,0 +1,111 @@
+{% include 'docs/partials/_metadata_header.j2' %}
+
+<!--
+thread: {{ project_slug }}
+matrix_ids: []
+project: {{ project_name }}
+date: {{ year }}
+-->
+
+# Product Requirements Document (PRD)
+
+> **🎯 Purpose**: Define product features, user needs, and success criteria for your project.
+>
+> **📝 How to use this file**:
+>
+> 1. Use chat mode `@workspace #spec.lean` or `#spec.wide` to generate PRD entries
+> 2. Or run the prompt: `.github/prompts/spec.plan.prd.prompt.md`
+> 3. Each PRD should follow the template structure below
+
+---
+
+## Template Structure
+
+### PRD-XXX — [Feature Name]
+
+#### Overview
+
+- **Feature**: [Brief description of the feature]
+- **Business Value**: [Why this feature matters]
+- **Target Users**: [Who will use this feature]
+- **Priority**: [High | Medium | Low]
+- **Status**: [Planned | In Progress | Implemented | Deferred]
+
+#### User Stories
+
+- As a [user type], I want to [action] so that [benefit]
+- [Add more user stories as needed]
+
+#### Acceptance Criteria
+
+- [ ] [Specific, measurable criteria for completion]
+- [ ] [Another criterion]
+- [ ] [Another criterion]
+
+#### Success Metrics
+
+- **KPI 1**: [Metric and target value]
+- **KPI 2**: [Metric and target value]
+
+#### Dependencies
+
+- **Depends on**: [PRD-XXX, ADR-XXX]
+- **Blocks**: [PRD-XXX]
+
+#### Related Specs
+
+- ADR: [ADR-XXX]
+- SDS: [SDS-XXX]
+- TS: [TS-XXX]
+
+---
+
+## Example PRD Entry
+
+### PRD-001 — User Authentication
+
+#### Overview
+
+- **Feature**: OAuth2 authentication with Google and GitHub providers
+- **Business Value**: Secure user access without managing passwords
+- **Target Users**: All application users
+- **Priority**: High
+- **Status**: Planned
+
+#### User Stories
+
+- As a new user, I want to sign up using my Google account so that I don't need to create another password
+- As a returning user, I want to log in quickly using my existing OAuth provider
+- As a security-conscious user, I want my authentication to use industry-standard protocols
+
+#### Acceptance Criteria
+
+- [ ] Users can sign up with Google OAuth2
+- [ ] Users can sign up with GitHub OAuth2
+- [ ] Users can log in with their chosen provider
+- [ ] Session management follows security best practices
+- [ ] Error messages are user-friendly and actionable
+
+#### Success Metrics
+
+- **Sign-up conversion**: >70% of visitors who start sign-up complete it
+- **Authentication success rate**: >99.5%
+- **User satisfaction**: >4.5/5 rating for login experience
+
+#### Dependencies
+
+- **Depends on**: ADR-002 (OAuth provider selection)
+- **Blocks**: PRD-005 (User profile management)
+
+#### Related Specs
+
+- ADR: ADR-002
+- SDS: SDS-003
+- TS: TS-008
+
+---
+
+## Your PRD Entries
+
+<!-- Add your PRD entries below this line -->
+<!-- Use the chat modes or prompts mentioned above to generate well-structured PRDs -->

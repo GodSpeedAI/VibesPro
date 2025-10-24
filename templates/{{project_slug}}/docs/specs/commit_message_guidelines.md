@@ -1,0 +1,106 @@
+---
+matrix_ids:
+  - AI_PRD-002
+  - AI_TS-005
+---
+
+# Commit Message Guidelines
+
+See also: `.github/instructions/commit-msg.instructions.md` for the automation and
+Copilot guardrails enforced across this workspace.
+
+### ✨ Core Principles
+
+- **Clarity & Actionability:** Every commit message should make it easy to understand what changed and why—at a glance.
+- **Blend of Code & Reasoning:** Surface the rationale and context when it adds value (e.g., for architectural, non-obvious, or risky changes), but keep routine commits concise.
+- **Traceability & Automation:** Reference relevant specs, issues, or design docs to support automated workflows and future audits.
+- **Cognitive Ergonomics:** Use a small, meaningful emoji set to improve scanability—never for decoration.
+- **Validation & Risk Awareness:** Explicitly note how changes were tested, any risks introduced, and mitigation strategies.
+
+---
+
+### 📝 Commit Message Structure
+
+| Section          | Guidance                                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| **Subject**      | ≤ 72 chars, imperative mood (“Add”, “Fix”, “Refactor”). Summarize the main action.       |
+| **Body**         | Wrap at 72–100 cols. Explain **what** changed and **why** (not just how).                |
+| **Traceability** | Reference spec/issue IDs (e.g., PRD-xxx, ADR-xxx, SDS-xxx, TS-xxx, DEV-\_, AI\_\_).      |
+| **Emojis**       | Use a small, documented set for quick scanning (e.g., ✨, 🐛,♻️, ⚠️). No decorative use. |
+| **Risks**        | Call out security, performance, UX, or operational risks and how you mitigated them.     |
+| **Validation**   | Note updated tests, docs, or scripts. Mention deferred follow-ups and mitigation plans.  |
+
+---
+
+### 🧠 When to Surface Analytical Context
+
+- **Do include reasoning** for:
+  - Architectural changes
+  - Non-obvious bug fixes
+  - Performance/security optimizations
+  - Trade-offs or alternatives considered
+- **Keep it concise** for:
+  - Routine refactors
+  - Simple feature additions
+  - Standard dependency updates
+
+---
+
+### 🛠️ Example Commit Messages
+
+#### 1. Feature with Context & Traceability
+
+```
+✨ feat(auth): add two-factor authentication
+
+Implements TOTP-based 2FA to enhance account security.
+Motivation: Addresses PRD-102 and mitigates risk of credential stuffing attacks.
+Tested with new integration tests; docs updated.
+Refs: PRD-102, SDS-45
+```
+
+#### 2. Bug Fix with Root Cause
+
+```
+🐛 fix(ui): resolve dropdown misalignment on profile page
+
+Dropdown was misaligned due to conflicting CSS.
+Root cause: Overlapping flexbox rules.
+Tested on all supported browsers.
+Fixes: DEV-789
+```
+
+#### 3. Refactor with Rationale
+
+```
+♻️ refactor(user-service): modularize user validation logic
+
+Split monolithic validateUser() into smaller, testable functions.
+Motivation: Improves maintainability and test coverage.
+Unit tests added.
+Refs: ADR-112
+```
+
+#### 4. Breaking Change with Risk & Mitigation
+
+```
+⚠️ feat(config): support config inheritance via 'extends' key
+
+BREAKING CHANGE: Config files now support 'extends' for modularity.
+Migration: Existing configs must add 'extends' or update structure.
+Mitigation: Migration script provided; see docs.
+Refs: ADR-102, PRD-45
+```
+
+---
+
+### 📋 Quick Reference Table
+
+| Element          | Why It Matters                                             |
+| ---------------- | ---------------------------------------------------------- |
+| **Subject**      | Fast scan, enables automation, sets context                |
+| **Body**         | Captures intent, rationale, and value for future readers   |
+| **Traceability** | Links code to specs/issues, supports audits and automation |
+| **Emojis**       | Boosts scanability, signals change type                    |
+| **Risks**        | Surfaces potential issues, supports safe deployment        |
+| **Validation**   | Documents testing, docs, and follow-ups for accountability |

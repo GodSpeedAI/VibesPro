@@ -12,6 +12,26 @@ Thank you for helping build the Vibes Pro project. This project follows a spec-d
    just setup
    ```
 
+## Devbox note
+
+This repository supplies a Devbox configuration (`devbox.json`) that includes `just` in the runtime. If you enter the Devbox shell (recommended for reproducible work) you'll already have `just` available. Example:
+
+```bash
+devbox shell
+just --version
+```
+
+If `just` is missing for any reason, you can install it into the Devbox user environment without sudo:
+
+```bash
+# inside devbox shell
+curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+export PATH="$HOME/.local/bin:$PATH"
+just --version
+```
+
+Adding `just` to Devbox ensures all contributors and CI that use the Devbox environment run the same `just` binary and recipes.
+
 ## Pre-commit, formatting and shfmt
 
 We use pre-commit as the canonical gate for linting/formatting. This ensures everyone formats code the same
