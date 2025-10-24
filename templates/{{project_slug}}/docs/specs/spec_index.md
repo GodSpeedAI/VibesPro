@@ -1,0 +1,96 @@
+{% include 'docs/partials/_metadata_header.j2' %}
+
+# Product Specification Index
+
+> **🎯 Purpose**: Maintain a concise index of all product specifications (PRD, ADR, SDS, TS) with ≤140 character summaries.
+>
+> **📝 How to use this file**:
+>
+> 1. Generate specifications using chat modes: `@workspace #spec.lean` or `#spec.wide`
+> 2. Or use prompts: `.github/prompts/spec.plan.*.prompt.md`
+> 3. After creating specs, update this index with concise summaries
+> 4. Run `just spec-matrix` to validate traceability
+
+---
+
+## Template Structure
+
+Each entry should follow this format:
+
+```markdown
+## [SPEC-ID] — [Brief Title]
+
+Source: [path/to/spec.md#spec-id]
+Summary: [≤140 character description of what this spec defines]
+```
+
+---
+
+## Example Entries
+
+### PRD Specifications
+
+## PRD-001 — User Authentication
+
+Source: docs/dev_prd.md#prd-001
+Summary: OAuth2 authentication with Google and GitHub providers for secure user access without password management.
+
+## PRD-002 — Dashboard Analytics
+
+Source: docs/dev_prd.md#prd-002
+Summary: Real-time analytics dashboard showing key metrics, user activity, and system health with customizable widgets.
+
+### ADR Specifications
+
+## ADR-001 — Use TypeScript Strict Mode
+
+Source: docs/dev_adr.md#adr-001
+Summary: Enable TypeScript strict mode for type safety, better tooling support, and reduced runtime errors.
+
+## ADR-002 — Hexagonal Architecture Pattern
+
+Source: docs/dev_adr.md#adr-002
+Summary: Apply ports and adapters pattern to decouple business logic from infrastructure concerns.
+
+### SDS Specifications
+
+## SDS-001 — Authentication Service Architecture
+
+Source: docs/dev_sds.md#sds-001
+Summary: Hexagonal design for auth service with OAuth adapters, token management, and session persistence.
+
+## SDS-002 — API Gateway Design
+
+Source: docs/dev_sds.md#sds-002
+Summary: Rate-limited gateway with request routing, auth middleware, and centralized error handling.
+
+### TS Specifications
+
+## TS-001 — Rate Limiting Implementation
+
+Source: docs/dev_technical-specifications.md#ts-001
+Summary: Sliding window rate limiter using Redis with 100 req/min limit and graceful degradation.
+
+## TS-002 — Database Migration Strategy
+
+Source: docs/dev_technical-specifications.md#ts-002
+Summary: Zero-downtime migrations using shadow tables, dual-write pattern, and automated rollback capability.
+
+---
+
+## Your Specification Entries
+
+<!-- Add your specification entries below this line -->
+<!-- Keep summaries to ≤140 characters -->
+<!-- Update this file whenever you add/modify specs -->
+<!-- Run `just spec-matrix` to validate traceability -->
+
+---
+
+## Maintenance
+
+- **When to update**: After creating or modifying any specification
+- **Validation**: Run `just spec-matrix` to check traceability
+- **Summary length**: Keep ≤140 characters for scanability
+- **Source paths**: Use relative paths from repository root
+- **Spec IDs**: Must match IDs in source documents

@@ -1,0 +1,41 @@
+# AI Onboarding Guide
+
+This playbook helps teams enable VibesPro's AI enhancements immediately after generating a new project.
+
+## 1. Verify repository trust & governance
+
+1. Review `.github/copilot-instructions.md` and the contents of `.github/instructions/`.
+2. Confirm the `models.yaml` file aligns with your organisation's approved models.
+3. Share the governance overview with maintainers so that Copilot usage remains spec-compliant.
+
+## 2. Configure Model Context Protocol descriptors
+
+1. Inspect `mcp/tool_index.md` for required environment variables.
+2. Populate `.env.local` (or your secrets manager) with the values listed under each descriptor.
+3. Update `.vscode/mcp.json` if your endpoints differ from the defaults.
+
+## 3. Enable temporal learning integrations
+
+1. Run `just setup-temporal` to provision the local redb databases under `temporal_db/`.
+2. Use `just ai-capture --note "{description}"` whenever you make an architectural decision.
+3. Review decisions with `just ai-decisions:list` to feed guidance back into the team workflow.
+
+## 4. Align documentation and traceability
+
+1. Read through `docs/README.md` and `docs/spec_index.md` together with the team.
+2. Update spec summaries if new requirements exist and link back to the traceability matrix and `docs/commit_message_guidelines.md` (Commit Message Guidelines) so contributors keep traceability healthy from their first commit.
+3. Store onboarding decisions in the temporal database so future contributors inherit the context.
+
+## 5. Run validation scripts
+
+1. `pnpm prompt:lint` — ensures prompt assets obey lint rules.
+2. `pnpm spec:matrix` — regenerates traceability and confirms spec coverage.
+3. `pnpm test:jest -- --runInBand` — runs the TypeScript suite with deterministic ordering.
+
+## 6. Record next steps
+
+Capture action items in your project management tool and file any new ADRs using `just adr:new`. Keeping this loop tight maintains the AI feedback cycle envisioned by AI_PRD-005.
+
+---
+
+Contact the architecture enablement team if additional onboarding support is required or if you discover gaps in the automation provided by the template. When you spot documentation drift, update this guide and the `docs/commit_message_guidelines.md` template together to preserve onboarding accuracy.
