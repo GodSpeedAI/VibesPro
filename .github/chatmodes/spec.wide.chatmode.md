@@ -5,8 +5,7 @@ task: mode
 phase: wide
 budget: M
 description: "Full-spec context for cross-cutting tasks; use after Lean escalation."
-tools:
-  ["codebase", "editFiles", "runInTerminal", "search", "runTests", "problems"]
+tools: ["search", "edit", "runCommands", "search", "runTests", "problems"]
 model: ${ default_model }
 name: "Spec Wide"
 ---

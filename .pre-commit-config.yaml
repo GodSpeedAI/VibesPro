@@ -113,6 +113,17 @@ repos:
         language: system
         files: '\.(sh|bash)$'
 
+  # Optional: If you prefer shfmt provided by a remote pre-commit mirror (no local shfmt required),
+  # maintainers can enable one of the mirrors below. Be careful: some mirrors change layout or
+  # are unavailable; validate the `rev` before enabling.
+  # Example (uncomment to enable):
+  # - repo: https://github.com/scop/pre-commit-shfmt
+  #   rev: v3.12.0-2
+  #   hooks:
+  #     - id: shfmt
+  #       args: ["-i", "2", "-ci"]
+  #       files: '\\.(sh|bash)$'
+
   # AGENTS.md and documentation link checking
   - repo: local
     hooks:

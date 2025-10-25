@@ -42,7 +42,8 @@ setup-python:
 	# Install tooling using the venv's python and clearing PYTHONPATH to avoid
 	# repo-local packages from shadowing stdlib modules during installation.
 	PYTHONPATH= .venv/bin/python -m pip install --upgrade pip setuptools wheel || exit 1
-	PYTHONPATH= .venv/bin/python -m pip install --upgrade pre-commit structlog mypy ruff uv || exit 1
+	# Add psutil because some performance tests rely on it
+	PYTHONPATH= .venv/bin/python -m pip install --upgrade pre-commit structlog mypy ruff uv psutil || exit 1
 
 setup-tools:
 	@echo "🔧 Setting up development tools..."
@@ -51,6 +52,30 @@ setup-tools:
 	else \
 		echo "📦 Installing Copier..."; \
 		uv tool install copier; \
+	fi
+
+install-hooks:
+	@echo "🔧 Installing pre-commit hooks and verifying shfmt"
+	@if [ ! -d ".venv" ]; then \
+		echo "Python venv not found - running setup-python"; \
+		just setup-python; \
+	fi
+	@echo "Installing pre-commit into the venv and ensuring hooks are installed..."
+	@. .venv/bin/activate >/dev/null 2>&1 || true; \
+	python3 -m pip install --upgrade pre-commit >/dev/null 2>&1 || true; \
+	# Respect repository-level core.hooksPath; do not override silently
+	if git config --get core.hooksPath >/dev/null 2>&1; then \
+		echo "Repository uses custom core.hooksPath (git config core.hooksPath set)."; \
+		echo "To install pre-commit hooks into .git/hooks run: git config --unset-all core.hooksPath"; \
+		echo "Skipping pre-commit install to avoid clobbering custom hooks."; \
+	else \
+		pre-commit install --hook-type pre-commit --hook-type commit-msg || true; \
+	fi
+	@echo "Checking for shfmt on PATH..."
+	@if command -v shfmt >/dev/null 2>&1; then \
+		echo "shfmt found: $(command -v shfmt)"; \
+	else \
+		echo "shfmt not found. Install it with: brew install shfmt  OR  go install mvdan.cc/sh/v3/cmd/shfmt@latest"; \
 	fi
 
 verify-node:
@@ -136,7 +161,20 @@ test-target TARGET:
 # --- Language-Specific Test Tasks ---
 test-python:
 	@echo "🧪 Running Python tests..."
-	uv run pytest
+	# Run pytest while skipping pre-commit hooks that may modify files during
+	# pytest-copier's temporary git commits (these hooks can cause commits to fail).
+	# SKIP lists hook ids to bypass. COPIER_SKIP_PROJECT_SETUP avoids heavy post-gen setup.
+	SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck COPIER_SKIP_PROJECT_SETUP=1 UV_NO_SYNC=1 uv run pytest
+
+test-template:
+	@echo "🧪 Running template generation test (non-interactive)"
+	# Ensure Python dev deps are installed
+	uv sync --dev || true
+	# Run the single test while skipping pre-commit hooks that mutate files during test fixture commits
+	SKIP=end-of-file-fixer,ruff,ruff-format,shellcheck,prettier,trim-trailing-whitespace \
+	COPIER_SKIP_PROJECT_SETUP=1 \
+	UV_NO_SYNC=1 \
+	uv run pytest -q tests/template/test_template_generation.py::test_generate_template_user_defaults
 
 test-node:
 	@echo "🧪 Running Node.js tests..."

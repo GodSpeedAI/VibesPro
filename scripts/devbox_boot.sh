@@ -45,3 +45,31 @@ fi
 printf "   Node/pnpm: managed by mise (run 'mise install' if needed)\n"
 printf "   Python: managed by mise + uv\n"
 printf "\n"
+
+# Ensure user-local bin is on PATH so user-installed tools (just, etc.) are found
+if [[ ":${PATH}:" != *":${HOME}/.local/bin:"* ]]; then
+  export PATH="${HOME}/.local/bin:${PATH}"
+  # Persist for this shell session (devbox will pick it up automatically)
+fi
+
+# Idempotent install of `just` into ~/.local/bin if missing. This keeps the
+# Devbox experience reproducible for contributors who don't have `just` preinstalled.
+if ! command -v just >/dev/null 2>&1; then
+  echo "just not found in PATH — installing to ~/.local/bin (user-local)"
+  mkdir -p "${HOME}/.local/bin"
+  # Try best-effort install; do not fail shell entry if install fails.
+  if curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to "${HOME}/.local/bin"; then
+    export PATH="${HOME}/.local/bin:${PATH}"
+    if command -v just >/dev/null 2>&1; then
+      just_path=$(command -v just || true)
+      if [[ -n "${just_path}" ]]; then
+        echo "just installed: ${just_path}"
+      else
+        echo "just installed: not found"
+      fi
+    fi
+  else
+    echo "warning: failed to install just automatically. You can install it manually inside devbox:"
+    echo "  curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin"
+  fi
+fi

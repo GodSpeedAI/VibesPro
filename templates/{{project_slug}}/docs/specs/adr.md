@@ -1,0 +1,57 @@
+{% include 'docs/partials/_metadata_header.j2' %}
+
+<!--
+thread: {{ project_slug }}
+matrix_ids: []
+project: {{ project_name }}
+date: {{ year }}
+-->
+
+# Developer Architectural Decision Record (ADR)
+
+> **🎯 Purpose**: Track architectural decisions that shape your development environment and platform.
+>
+> **📝 How to use this file**:
+>
+> 1. Use chat mode `@workspace #spec.lean` or `#spec.wide` to generate ADRs
+> 2. Or run the prompt: `.github/prompts/spec.plan.adr.prompt.md`
+> 3. Each ADR should follow the template structure below
+
+---
+
+## Template Structure
+
+### ADR-XXX — [Decision Title]
+
+- **Decision**: [What was decided]
+- **Context**: [Why this decision was needed, what problem it solves]
+- **Rationale**: [Why this option was chosen over alternatives]
+- **DX Impact**: [How this affects developer experience]
+- **Trade-offs**: [What we gain vs what we lose]
+- **Status**: [Proposed | Accepted | Rejected | Superseded]
+- **Date**: YYYY-MM-DD
+- **Related Specs**: [PRD-XXX, SDS-XXX, TS-XXX]
+
+---
+
+## Example ADR Entry
+
+### ADR-001 — Use TypeScript for Type Safety
+
+- **Decision**: Use TypeScript with strict mode enabled across all JavaScript/Node.js code
+- **Context**: Need to prevent runtime type errors and improve developer productivity with better IDE support
+- **Rationale**: TypeScript provides compile-time type checking, excellent tooling support, and doesn't significantly slow down build times
+- **DX Impact**: Better autocomplete, earlier error detection, improved refactoring confidence
+- **Trade-offs**:
+  - Gain: Type safety, better tooling, self-documenting code
+  - Lose: Slightly longer build times, learning curve for team members new to TypeScript
+- **Status**: Accepted
+- **Date**: {{ year }}-XX-XX
+- **Related Specs**: SDS-001
+
+---
+
+## Your ADR Entries
+
+<!-- Add your ADR entries below this line -->
+<!-- Use the chat modes or prompts mentioned above to generate well-structured ADRs -->
