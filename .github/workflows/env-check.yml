@@ -31,9 +31,16 @@ jobs:
 
       - name: Install just
         run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-          sudo chmod +x /usr/local/bin/just
-          just --version
+          # Attempt official installer then fallback to apt; do not fail the job on installer network issues
+          set -euo pipefail
+          if curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin; then
+            sudo chmod +x /usr/local/bin/just
+          else
+            echo "just installer failed; attempting apt fallback"
+            sudo apt-get update || true
+            sudo apt-get install -y just || echo "could not install just; continuing without just"
+          fi
+          just --version || true
 
       - name: Install SOPS
         run: |
