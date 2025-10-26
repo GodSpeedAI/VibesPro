@@ -104,7 +104,8 @@ jobs:
           echo "✅ Vector config valid"
 
       - name: Ops smoke test (stdout + OTLP)
-        run: sh -eu tests/ops/test_observe_smoke.sh
+        # Run under bash so `set -o pipefail` in the script is supported
+        run: bash -eux -o pipefail tests/ops/test_observe_smoke.sh
 
       - name: Crate tests (no otlp)
         run: cargo test --manifest-path crates/vibepro-observe/Cargo.toml
