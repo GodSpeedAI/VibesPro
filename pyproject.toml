@@ -20,6 +20,7 @@ dev = [
     "mypy>=1.11.0",
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
+    "psutil>=5.9.0",
 ]
 
 [tool.ruff]
@@ -120,4 +121,5 @@ dev = [
     "pytest-copier>=0.4.1",
     "requests>=2.32.0",
     "ruff>=0.13.1",
+    "psutil>=5.9.0",
 ]
