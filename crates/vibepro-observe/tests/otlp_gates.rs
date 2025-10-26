@@ -20,5 +20,3 @@ mod otlp_enabled {
         env::remove_var("OTLP_ENDPOINT");
     }
 }
-    }
-}

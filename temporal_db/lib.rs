@@ -1,9 +1,9 @@
 // temporal_db/lib.rs
-pub mod schema;
 pub mod repository;
+pub mod schema;
 
-pub use schema::*;
 pub use repository::*;
+pub use schema::*;
 
 use anyhow::Result;
 
@@ -53,7 +53,10 @@ mod tests {
         repo.store_specification(&spec).await.unwrap();
 
         // Retrieve specification
-        let retrieved = repo.get_latest_specification("ADR", "ADR-001").await.unwrap();
+        let retrieved = repo
+            .get_latest_specification("ADR", "ADR-001")
+            .await
+            .unwrap();
         assert!(retrieved.is_some());
 
         let retrieved_spec = retrieved.unwrap();
@@ -83,7 +86,10 @@ mod tests {
         repo.store_architectural_pattern(&pattern).await.unwrap();
 
         // Test pattern retrieval
-        let patterns = repo.get_similar_patterns("repository", 0.5, 30).await.unwrap();
+        let patterns = repo
+            .get_similar_patterns("repository", 0.5, 30)
+            .await
+            .unwrap();
         assert!(!patterns.is_empty());
 
         repo.close().await.unwrap();
@@ -105,7 +111,9 @@ mod tests {
             "Need reliable ACID transactions",
             "architect",
             Some(0.85),
-        ).await.unwrap();
+        )
+        .await
+        .unwrap();
 
         // Analyze decision patterns
         let patterns = repo.analyze_decision_patterns(30).await.unwrap();
