@@ -65,12 +65,30 @@ function buildMatrix(rootDir) {
 }
 
 function renderMatrixTable(rows) {
-  const header = "| Spec ID | Artifacts | Status | Notes |\n|---|---|---|---|";
-  const lines = rows.map(
-    (r) =>
-      `| ${r.id} | ${r.artifacts.join("<br>")} | ${r.status} | ${r.notes} |`,
+  const header = ["Spec ID", "Artifacts", "Status", "Notes"];
+  const dataRows = rows.map((r) => [
+    r.id,
+    r.artifacts.join("<br>"),
+    r.status ?? "",
+    r.notes ?? "",
+  ]);
+
+  const widths = header.map((colHeader, idx) =>
+    Math.max(
+      colHeader.length,
+      ...dataRows.map((row) => (row[idx] ?? "").length),
+    ),
   );
-  return [header, ...lines].join("\n");
+
+  const formatRow = (cells) =>
+    `| ${cells
+      .map((cell, idx) => (cell ?? "").padEnd(widths[idx], " "))
+      .join(" | ")} |`;
+
+  const separator = `| ${widths.map((w) => "-".repeat(w)).join(" | ")} |`;
+  const formattedRows = dataRows.map(formatRow);
+
+  return [formatRow(header), separator, ...formattedRows].join("\n");
 }
 
 function updateMatrixFile(rootDir) {
@@ -80,14 +98,20 @@ function updateMatrixFile(rootDir) {
   const banner =
     "# Traceability Matrix\n\nNote: This file is generated/updated by tools/spec/matrix.js. Do not edit manually.\n\n";
   const content = banner + table + "\n";
-  fs.writeFileSync(file, content, "utf8");
-  return { file, count: rows.length };
+  const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+
+  if (existing !== content) {
+    fs.writeFileSync(file, content, "utf8");
+  }
+
+  return { file, count: rows.length, changed: existing !== content };
 }
 
 if (require.main === module) {
   const root = process.cwd();
   const result = updateMatrixFile(root);
-  console.log(`[matrix] Updated ${result.file} with ${result.count} row(s).`);
+  const status = result.changed ? "Updated" : "Up-to-date";
+  console.log(`[matrix] ${status} ${result.file} with ${result.count} row(s).`);
 }
 
 module.exports = {

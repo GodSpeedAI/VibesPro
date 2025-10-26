@@ -1,7 +1,7 @@
 // temporal_db/schema.rs
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SpecificationRecord {

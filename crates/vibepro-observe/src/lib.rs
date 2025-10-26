@@ -3,7 +3,7 @@
 //! Default: JSON logs to stdout via `tracing_subscriber`.
 //! If `VIBEPRO_OBSERVE=1` and feature `otlp` is enabled, export OTLP to `OTLP_ENDPOINT` (default: grpc://127.0.0.1:4317).
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use once_cell::sync::OnceCell;
 use std::env;
 use tracing::info;
@@ -19,66 +19,72 @@ static INIT_GUARD: OnceCell<()> = OnceCell::new();
 /// - If `VIBEPRO_OBSERVE=1` and feature `otlp` is enabled,
 ///   installs an OTLP exporter targeting `OTLP_ENDPOINT` (default http://127.0.0.1:4317).
 pub fn init_tracing(service_name: &str) -> Result<()> {
-    }
     if INIT_GUARD.get().is_some() {
         return Ok(());
     }
 
     let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
-    let fmt_layer = tracing_subscriber::fmt::layer()
-        .json()
-        .with_target(true)
-        .with_thread_ids(false)
-        .with_thread_names(false)
-        .with_current_span(true);
-
     let observe_flag = env::var("VIBEPRO_OBSERVE").unwrap_or_default() == "1";
 
-    // Conditionally attach OTLP exporter if compiled with feature and runtime flag enabled
     #[cfg(feature = "otlp")]
     {
+        let build_base_subscriber = || {
+            tracing_subscriber::registry()
+                .with(env_filter.clone())
+                .with(
+                    tracing_subscriber::fmt::layer()
+                        .json()
+                        .with_target(true)
+                        .with_thread_ids(false)
+                        .with_thread_names(false)
+                        .with_current_span(true),
+                )
+        };
+
         if observe_flag {
             let endpoint = env::var("OTLP_ENDPOINT").unwrap_or_else(|_| "http://127.0.0.1:4317".to_string());
             let protocol = env::var("OTLP_PROTOCOL").unwrap_or_else(|_| "grpc".to_string());
-            // Note: OpenTelemetry 0.31+ handles errors via built-in logging
-            let tracer = setup_otlp_exporter(&endpoint, &protocol, _service_name)?;
-            let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
-
-            tracing_subscriber::registry()
-                .with(env_filter)
-                .with(fmt_layer)
-                .with(telemetry)
+            let tracer = setup_otlp_exporter(&endpoint, &protocol, service_name)?;
+            if let Err(err) = build_base_subscriber()
+                .with(tracing_opentelemetry::layer().with_tracer(tracer))
                 .try_init()
-                .map_err(|err| anyhow!(err))?;
+            {
+                debug!(target = "vibepro_observe::init", error = %err, "global subscriber already initialized");
+            }
 
-            info!(service = _service_name, endpoint = %endpoint, "OTLP exporter enabled");
-            let _ = INIT_GUARD.set(());
+            info!(service = service_name, endpoint = %endpoint, "OTLP exporter enabled");
         } else {
-            tracing_subscriber::registry()
-                .with(env_filter)
-                .with(fmt_layer)
-                .try_init()
-                .map_err(|err| anyhow!(err))?;
+            if let Err(err) = build_base_subscriber().try_init() {
+                debug!(target = "vibepro_observe::init", error = %err, "global subscriber already initialized");
+            }
 
-            info!(service = _service_name, "OTLP exporter disabled (VIBEPRO_OBSERVE!=1)");
-            let _ = INIT_GUARD.set(());
+            info!(service = service_name, "OTLP exporter disabled (VIBEPRO_OBSERVE!=1)");
         }
     }
 
     #[cfg(not(feature = "otlp"))]
     {
-        tracing_subscriber::registry()
-            .with(env_filter)
-            .with(fmt_layer)
+        if let Err(err) = tracing_subscriber::registry()
+            .with(env_filter.clone())
+            .with(
+                tracing_subscriber::fmt::layer()
+                    .json()
+                    .with_target(true)
+                    .with_thread_ids(false)
+                    .with_thread_names(false)
+                    .with_current_span(true),
+            )
             .try_init()
-            .map_err(|err| anyhow!(err))?;
+        {
+            info!(service = service_name, error = %err, "tracing subscriber already initialized; skipping re-init");
+        }
 
         if observe_flag {
-            info!("VIBEPRO_OBSERVE=1 set, but crate built without `otlp` feature; exporting is disabled");
+            info!(service = service_name, "VIBEPRO_OBSERVE=1 set, but crate built without `otlp` feature; exporting is disabled");
         }
-        let _ = INIT_GUARD.set(());
     }
 
+    let _ = INIT_GUARD.set(());
     Ok(())
 }
 

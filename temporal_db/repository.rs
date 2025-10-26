@@ -1,11 +1,9 @@
 // temporal_db/repository.rs
-use crate::schema::{
-    SpecificationRecord, SpecificationChange, ChangeType, ArchitecturalPattern,
-};
-use redb::{Database, TableDefinition};
+use crate::schema::{ArchitecturalPattern, ChangeType, SpecificationChange, SpecificationRecord};
+use anyhow::{Context, Result};
 use chrono::Utc;
+use redb::{Database, TableDefinition};
 use std::collections::HashMap;
-use anyhow::{Result, Context};
 
 // Define table schemas for redb
 const SPECIFICATIONS_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("specifications");
@@ -19,16 +17,12 @@ pub struct TemporalRepository {
 
 impl TemporalRepository {
     pub fn new(db_path: String) -> Self {
-        Self {
-            db_path,
-            db: None,
-        }
+        Self { db_path, db: None }
     }
 
     pub async fn initialize(&mut self) -> Result<()> {
         // Initialize redb database
-        let db = Database::create(&self.db_path)
-            .context("Failed to open redb database")?;
+        let db = Database::create(&self.db_path).context("Failed to open redb database")?;
 
         // Create tables if they don't exist
         {
@@ -45,12 +39,8 @@ impl TemporalRepository {
         Ok(())
     }
 
-    pub async fn store_specification(
-        &self,
-        spec: &SpecificationRecord,
-    ) -> Result<()> {
-        let db = self.db.as_ref()
-            .context("Database not initialized")?;
+    pub async fn store_specification(&self, spec: &SpecificationRecord) -> Result<()> {
+        let db = self.db.as_ref().context("Database not initialized")?;
 
         // Create change record for time-series
         let change = SpecificationChange {
@@ -68,13 +58,21 @@ impl TemporalRepository {
         let write_txn = db.begin_write()?;
         {
             // Store in specifications table
-            let spec_key = format!("spec:{}:{}", spec.identifier, spec.timestamp.timestamp_nanos_opt().unwrap_or(0));
+            let spec_key = format!(
+                "spec:{}:{}",
+                spec.identifier,
+                spec.timestamp.timestamp_nanos_opt().unwrap_or(0)
+            );
             let spec_value = serde_json::to_vec(spec)?;
             let mut spec_table = write_txn.open_table(SPECIFICATIONS_TABLE)?;
             spec_table.insert(spec_key.as_str(), spec_value.as_slice())?;
 
             // Store change in changes table
-            let change_key = format!("change:{}:{}", spec.identifier, spec.timestamp.timestamp_nanos_opt().unwrap_or(0));
+            let change_key = format!(
+                "change:{}:{}",
+                spec.identifier,
+                spec.timestamp.timestamp_nanos_opt().unwrap_or(0)
+            );
             let change_value = serde_json::to_vec(&change)?;
             let mut change_table = write_txn.open_table(CHANGES_TABLE)?;
             change_table.insert(change_key.as_str(), change_value.as_slice())?;
@@ -89,8 +87,7 @@ impl TemporalRepository {
         _spec_type: &str,
         identifier: &str,
     ) -> Result<Option<SpecificationRecord>> {
-        let db = self.db.as_ref()
-            .context("Database not initialized")?;
+        let db = self.db.as_ref().context("Database not initialized")?;
 
         let read_txn = db.begin_read()?;
         let spec_table = read_txn.open_table(SPECIFICATIONS_TABLE)?;
@@ -123,16 +120,16 @@ impl TemporalRepository {
         Ok(latest_spec)
     }
 
-    pub async fn store_architectural_pattern(
-        &self,
-        pattern: &ArchitecturalPattern,
-    ) -> Result<()> {
-        let db = self.db.as_ref()
-            .context("Database not initialized")?;
+    pub async fn store_architectural_pattern(&self, pattern: &ArchitecturalPattern) -> Result<()> {
+        let db = self.db.as_ref().context("Database not initialized")?;
 
         let write_txn = db.begin_write()?;
         {
-            let pattern_key = format!("pattern:{}:{}", pattern.id, Utc::now().timestamp_nanos_opt().unwrap_or(0));
+            let pattern_key = format!(
+                "pattern:{}:{}",
+                pattern.id,
+                Utc::now().timestamp_nanos_opt().unwrap_or(0)
+            );
             let pattern_value = serde_json::to_vec(pattern)?;
             let mut pattern_table = write_txn.open_table(PATTERNS_TABLE)?;
             pattern_table.insert(pattern_key.as_str(), pattern_value.as_slice())?;
@@ -148,8 +145,7 @@ impl TemporalRepository {
         _similarity_threshold: f64,
         _lookback_days: i64,
     ) -> Result<Vec<ArchitecturalPattern>> {
-        let db = self.db.as_ref()
-            .context("Database not initialized")?;
+        let db = self.db.as_ref().context("Database not initialized")?;
 
         let read_txn = db.begin_read()?;
         let pattern_table = read_txn.open_table(PATTERNS_TABLE)?;
@@ -171,14 +167,14 @@ impl TemporalRepository {
         &self,
         _lookback_days: i64,
     ) -> Result<Vec<HashMap<String, serde_json::Value>>> {
-        let db = self.db.as_ref()
-            .context("Database not initialized")?;
+        let db = self.db.as_ref().context("Database not initialized")?;
 
         let read_txn = db.begin_read()?;
         let change_table = read_txn.open_table(CHANGES_TABLE)?;
 
         // Aggregate decision patterns from changes
-        let mut patterns: HashMap<(String, String), HashMap<String, serde_json::Value>> = HashMap::new();
+        let mut patterns: HashMap<(String, String), HashMap<String, serde_json::Value>> =
+            HashMap::new();
 
         let range = change_table.range::<&str>(..)?;
         for result in range {
@@ -197,12 +193,29 @@ impl TemporalRepository {
 
                 let pattern = patterns.entry(key).or_insert_with(|| {
                     let mut map = HashMap::new();
-                    map.insert("decision_point".to_string(), serde_json::Value::String(change.field.clone()));
-                    map.insert("spec_type".to_string(), serde_json::Value::String(
-                        change.spec_id.split('-').next().unwrap_or("unknown").to_string()
-                    ));
-                    map.insert("total_decisions".to_string(), serde_json::Value::Number(0.into()));
-                    map.insert("selected_count".to_string(), serde_json::Value::Number(0.into()));
+                    map.insert(
+                        "decision_point".to_string(),
+                        serde_json::Value::String(change.field.clone()),
+                    );
+                    map.insert(
+                        "spec_type".to_string(),
+                        serde_json::Value::String(
+                            change
+                                .spec_id
+                                .split('-')
+                                .next()
+                                .unwrap_or("unknown")
+                                .to_string(),
+                        ),
+                    );
+                    map.insert(
+                        "total_decisions".to_string(),
+                        serde_json::Value::Number(0.into()),
+                    );
+                    map.insert(
+                        "selected_count".to_string(),
+                        serde_json::Value::Number(0.into()),
+                    );
                     map.insert("contexts".to_string(), serde_json::Value::Array(Vec::new()));
                     map
                 });
@@ -220,7 +233,9 @@ impl TemporalRepository {
                 // Track selections (simplified logic)
                 if let Some(confidence) = change.confidence {
                     if confidence > 0.7 {
-                        if let Some(serde_json::Value::Number(count)) = pattern.get_mut("selected_count") {
+                        if let Some(serde_json::Value::Number(count)) =
+                            pattern.get_mut("selected_count")
+                        {
                             *count = (count.as_u64().unwrap_or(0) + 1).into();
                         }
                     }
@@ -240,8 +255,7 @@ impl TemporalRepository {
         author: &str,
         confidence: Option<f64>,
     ) -> Result<()> {
-        let db = self.db.as_ref()
-            .context("Database not initialized")?;
+        let db = self.db.as_ref().context("Database not initialized")?;
 
         let change = SpecificationChange {
             spec_id: spec_id.to_string(),
@@ -256,7 +270,11 @@ impl TemporalRepository {
 
         let write_txn = db.begin_write()?;
         {
-            let change_key = format!("change:{}:{}", spec_id, Utc::now().timestamp_nanos_opt().unwrap_or(0));
+            let change_key = format!(
+                "change:{}:{}",
+                spec_id,
+                Utc::now().timestamp_nanos_opt().unwrap_or(0)
+            );
             let change_value = serde_json::to_vec(&change)?;
             let mut change_table = write_txn.open_table(CHANGES_TABLE)?;
             change_table.insert(change_key.as_str(), change_value.as_slice())?;

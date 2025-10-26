@@ -1,8 +1,8 @@
-use vibepro_observe::{init_tracing, record_metric};
 use std::env;
+use vibepro_observe::{init_tracing, record_metric};
 
-#[tokio::test]
-async fn init_multiple_times_is_idempotent() {
+#[test]
+fn init_multiple_times_is_idempotent() {
     // First call should succeed
     let result1 = init_tracing("unit-test");
     // Second call should also succeed due to guard check
@@ -12,20 +12,16 @@ async fn init_multiple_times_is_idempotent() {
     assert!(result1.is_ok() || result2.is_ok(), "At least one init should succeed");
 }
 
-#[tokio::test]
-async fn emits_json_logs_by_default() {
+#[test]
+fn emits_json_logs_by_default() {
     // Without env flag or otlp feature, we still initialize and log.
     let _ = init_tracing("unit-test-logs");
     record_metric("unit.counter", 1.0);
     // Not asserting output here; just ensuring no panic.
 }
 
-use serial_test::serial;
-
-#[serial]
-#[tokio::test]
-#[tokio::test]
-async fn respect_env_flag_without_otlp_feature() {
+#[test]
+fn respect_env_flag_without_otlp_feature() {
     struct EnvGuard(&'static str);
     impl Drop for EnvGuard {
         fn drop(&mut self) {

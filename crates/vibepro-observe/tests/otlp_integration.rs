@@ -39,8 +39,3 @@ async fn test_otlp_span_export_basic() {
 
     println!("✓ Phase 3: OTLP span exported successfully via fake collector");
 }
-    assert_eq!(attrs.get("test.phase").map(|v| v.as_str()), Some("3"));
-    assert_eq!(attrs.get("test.type").map(|v| v.as_str()), Some("integration"));
-
-    println!("✓ Phase 3: OTLP span exported successfully via fake collector");
-}
