@@ -97,7 +97,9 @@ jobs:
         run: |
           echo "Validating Vector configuration..."
           # Ensure expected data directories exist so `vector validate` doesn't fail
-          mkdir -p ops/vector/tmp/vector-data
+          # Vector config uses paths like `tmp/vector-data` relative to repo root,
+          # so create both locations to be safe (repo-root tmp/ and ops/vector/tmp/).
+          mkdir -p tmp/vector-data ops/vector/tmp/vector-data
           vector validate ops/vector/vector.toml
           echo "✅ Vector config valid"
 
@@ -126,13 +128,14 @@ jobs:
       - name: Decrypt secrets to ephemeral env (if provided)
         run: |
           # GitHub injects secrets into the environment only for run steps; check at runtime.
+          # If SOPS_AGE_KEY is not provided (e.g., PRs from forks), skip decryption gracefully
+          # instead of failing the job.
           if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
             echo "SOPS_AGE_KEY present; attempting decryption"
             sops -d .secrets.env.sops > /tmp/ci.env
             set -a; source /tmp/ci.env; set +a
           else
             echo "No SOPS_AGE_KEY provided or .secrets.env.sops missing; skipping decryption."
-            exit 1
           fi
 
       - name: SOPS status
