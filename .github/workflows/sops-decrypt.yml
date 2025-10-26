@@ -21,20 +21,23 @@ jobs:
           sudo chmod +x /usr/local/bin/sops
           sops --version
 
-      - name: Configure age key
+      - name: Configure age key (skip if not set)
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
+          # If the repository secret isn't available (e.g., PR from fork), skip decrypt
           if [ -z "${SOPS_AGE_KEY:-}" ]; then
-            echo "SOPS_AGE_KEY is not set; skipping decrypt (ensure secret is configured)" >&2
-            exit 1
+            echo "SOPS_AGE_KEY is not set; skipping decrypt (no secret available for this run)"
+            exit 0
           fi
           mkdir -p ~/.config/sops
           printf "%s" "${SOPS_AGE_KEY}" > ~/.config/sops/age-key.txt
           chmod 600 ~/.config/sops/age-key.txt
-          export SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt
+          # Expose the path for subsequent steps
+          echo "SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt" >> $GITHUB_ENV
 
       - name: Decrypt secrets
+        if: ${{ secrets.SOPS_AGE_KEY != '' }}
         run: |
           set -euo pipefail
           sops -d .secrets.env.sops > .secrets.env
