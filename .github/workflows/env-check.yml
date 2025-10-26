@@ -89,6 +89,8 @@ jobs:
       - name: Validate Vector config
         run: |
           echo "Validating Vector configuration..."
+          # Ensure expected data directories exist so `vector validate` doesn't fail
+          mkdir -p ops/vector/tmp/vector-data
           vector validate ops/vector/vector.toml
           echo "✅ Vector config valid"
 

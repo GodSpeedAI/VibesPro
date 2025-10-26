@@ -11,7 +11,15 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install sops
-        run: sudo apt-get update && sudo apt-get install -y sops
+        run: |
+          # Install sops by downloading the official release binary (works on Ubuntu runners)
+          set -euo pipefail
+          SOPS_VERSION="3.9.3"
+          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+          sudo mv "${SOPS_FILE}" /usr/local/bin/sops
+          sudo chmod +x /usr/local/bin/sops
+          sops --version
 
       - name: Configure age key
         env:

@@ -70,6 +70,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       MISE_NONINTERACTIVE: "1"
+      # Allow building PyO3-based wheels on newer Python by using ABI3 forward
+      # compatibility. This avoids build aborts when runner Python is newer than
+      # PyO3's checked maximum (example: CPython 3.14 vs PyO3 0.24.1 expecting <=3.13).
+      PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
 
     steps:
       - name: Checkout
@@ -222,7 +226,11 @@ jobs:
 
       - name: Install Python dependencies (uv)
         if: hashFiles('uv.lock') != '' || hashFiles('pyproject.toml') != ''
-        run: uv sync --frozen
+        run: |
+          # Ensure PyO3 ABI3 forward compatibility is enabled for native builds
+          # This helps when runner Python is newer than PyO3's max supported version.
+          export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+          uv sync --frozen
 
       - name: Fetch Rust dependencies (cargo)
         if: hashFiles('Cargo.toml') != ''
