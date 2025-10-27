@@ -1,13 +1,12 @@
 /* eslint-env es2020 */
 /* Generate/update docs/traceability_matrix.md by scanning docs for Spec IDs.
 Implements: PRD-002/PRD-007; SDS-003 */
-const fs = require("node:fs");
-const path = require("node:path");
-const { extractIdsFromFile, validateIdFormat } = require("./ids");
-const {
-  extractFrontmatter,
-  extractIdsFromFrontmatter,
-} = require("../utils/frontmatter");
+const fs = module.require("node:fs");
+const path = module.require("node:path");
+const { extractIdsFromFile, validateIdFormat } = module.require("./ids");
+const { extractFrontmatter, extractIdsFromFrontmatter } = module.require(
+  "../utils/frontmatter",
+);
 
 // extractIdsFromFrontmatter and extractFrontmatter are provided by ../utils/frontmatter
 
