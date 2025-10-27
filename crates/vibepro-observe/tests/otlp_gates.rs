@@ -1,7 +1,7 @@
 #[cfg(feature = "otlp")]
 mod otlp_enabled {
-    use vibepro_observe::{init_tracing, record_metric};
     use std::env;
+    use vibepro_observe::{init_tracing, record_metric};
 
     #[tokio::test(flavor = "multi_thread")]
     async fn otlp_exporter_initializes_with_flag() {

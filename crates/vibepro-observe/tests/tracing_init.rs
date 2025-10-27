@@ -9,7 +9,10 @@ fn init_multiple_times_is_idempotent() {
     let result2 = init_tracing("unit-test");
 
     // Both should be Ok - the second one just returns early
-    assert!(result1.is_ok() || result2.is_ok(), "At least one init should succeed");
+    assert!(
+        result1.is_ok() || result2.is_ok(),
+        "At least one init should succeed"
+    );
 }
 
 #[test]

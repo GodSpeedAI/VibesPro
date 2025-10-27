@@ -2,7 +2,7 @@
 
 //! Integration tests for OTLP exporter using fake OpenTelemetry collector
 
-use fake_opentelemetry_collector::{FakeCollectorServer, setup_tracer_provider};
+use fake_opentelemetry_collector::{setup_tracer_provider, FakeCollectorServer};
 use opentelemetry::trace::Span;
 use std::time::Duration;
 
@@ -12,7 +12,8 @@ async fn test_otlp_span_export_basic() {
     let tracer_provider = setup_tracer_provider(&fake_collector).await;
 
     // Use the concrete tracer type from the provider
-    let tracer = opentelemetry::trace::TracerProvider::tracer(&tracer_provider, "vibepro-observe-test");
+    let tracer =
+        opentelemetry::trace::TracerProvider::tracer(&tracer_provider, "vibepro-observe-test");
 
     let mut span = opentelemetry::trace::Tracer::start(&tracer, "test_operation");
     span.set_attribute(opentelemetry::KeyValue::new("test.phase", "3"));
@@ -32,10 +33,21 @@ async fn test_otlp_span_export_basic() {
 
     assert_eq!(span_data.name, "test_operation");
 
-    // Verify attributes were exported correctly
+    // Verify attributes were exported correctly. The fake collector stores stringified AnyValue.
     let attrs = &span_data.attributes;
-    assert_eq!(attrs.get("test.phase").map(|v| v.as_str()), Some("3"));
-    assert_eq!(attrs.get("test.type").map(|v| v.as_str()), Some("integration"));
+    let phase = attrs
+        .get("test.phase")
+        .expect("phase attribute should exist");
+    assert!(
+        phase.contains("StringValue(\"3\")"),
+        "expected phase attribute to include StringValue(\"3\"), got {phase}"
+    );
+
+    let ty = attrs.get("test.type").expect("type attribute should exist");
+    assert!(
+        ty.contains("StringValue(\"integration\")"),
+        "expected type attribute to include StringValue(\"integration\"), got {ty}"
+    );
 
     println!("✓ Phase 3: OTLP span exported successfully via fake collector");
 }
