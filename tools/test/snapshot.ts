@@ -20,7 +20,27 @@ export function compareSnapshot(name: string, content: string): boolean {
   const p = snapPath(name);
   if (!fs.existsSync(p)) return false;
   const existing = fs.readFileSync(p, "utf8");
-  return existing.trimEnd() === content.trimEnd();
+
+  // Try JSON-aware comparison first (robust to formatting differences)
+  try {
+    const ex = JSON.parse(existing);
+    const now = JSON.parse(content);
+
+    // Stable stringify with sorted keys for deterministic comparison
+    const stable = (v: any): string => {
+      if (v === null || typeof v !== "object") return JSON.stringify(v);
+      if (Array.isArray(v)) return `[${v.map((x) => stable(x)).join(",")}]`;
+      const keys = Object.keys(v).sort();
+      return `{${keys
+        .map((k) => `${JSON.stringify(k)}:${stable(v[k])}`)
+        .join(",")}}`;
+    };
+
+    return stable(ex) === stable(now);
+  } catch (err) {
+    // Fallback to plain string compare if not valid JSON
+    return existing.trimEnd() === content.trimEnd();
+  }
 }
 
 export function getSnapshotPath(name: string): string {

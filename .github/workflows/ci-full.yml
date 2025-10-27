@@ -18,22 +18,33 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install sops
-        run: sudo apt-get update && sudo apt-get install -y sops
+        run: |
+          set -euo pipefail
+          SOPS_VERSION="3.9.3"
+          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+          sudo mv "${SOPS_FILE}" /usr/local/bin/sops
+          sudo chmod +x /usr/local/bin/sops
+          sops --version
 
-      - name: Configure age key (required for decrypt)
+      - name: Configure age key (skip gracefully if not set)
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
+          # Don't fail the job if the secret isn't available (PRs/forks). Mark SOPS_LOADED in the env.
           if [ -z "${SOPS_AGE_KEY:-}" ]; then
-            echo "SOPS_AGE_KEY is not set; failing the job. Set repository secret SOPS_AGE_KEY with your private age key." >&2
-            exit 1
+            echo "SOPS_AGE_KEY is not set; skipping decrypt for this run (no repo secret available)"
+            echo "SOPS_LOADED=false" >> $GITHUB_ENV
+          else
+            mkdir -p ~/.config/sops
+            printf "%s" "${SOPS_AGE_KEY}" > ~/.config/sops/age-key.txt
+            chmod 600 ~/.config/sops/age-key.txt
+            echo "SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt" >> $GITHUB_ENV
+            echo "SOPS_LOADED=true" >> $GITHUB_ENV
           fi
-          mkdir -p ~/.config/sops
-          printf "%s" "${SOPS_AGE_KEY}" > ~/.config/sops/age-key.txt
-          chmod 600 ~/.config/sops/age-key.txt
-          export SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt
 
       - name: Decrypt secrets
+        if: ${{ env.SOPS_LOADED == 'true' }}
         run: |
           set -euo pipefail
           sops -d .secrets.env.sops > .secrets.env
@@ -59,11 +70,15 @@ jobs:
 
       - name: Run tests
         run: |
-          # load decrypted env for the test run without printing values
-          set -a
-          # shellcheck disable=SC1090
-          source .secrets.env
-          set +a
+          # If decrypted secrets file exists, load it into the environment for tests.
+          if [ -f .secrets.env ]; then
+            set -a
+            # shellcheck disable=SC1090
+            source .secrets.env
+            set +a
+          else
+            echo "No decrypted secrets found; running tests without them"
+          fi
           pnpm run test
 
       - name: Cleanup decrypted secrets

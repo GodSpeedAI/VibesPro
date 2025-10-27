@@ -63,5 +63,19 @@ jobs:
       - name: CLI guidance smoke
         run: bash tests/cli/test_ai_advice_command.sh
 
+      - name: Install just (fallback for runners without preinstalled just)
+        if: ${{ runner.os == 'Linux' || runner.os == 'Windows' || runner.os == 'macOS' }}
+        shell: bash
+        run: |
+          # install just to user-local bin if missing so subsequent just calls succeed
+          if ! command -v just >/dev/null 2>&1; then
+            echo "Installing just into ~/.local/bin"
+            mkdir -p ~/.local/bin
+            curl -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+            echo "$HOME/.local/bin" >> $GITHUB_PATH
+          else
+            echo "just already installed: $(command -v just)"
+          fi
+
       - name: Run AI guidance test suite
         run: just test-ai-guidance

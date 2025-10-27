@@ -8,7 +8,7 @@ description = "VibePro: Rust-native observability helpers (tracing → OTLP)"
 [features]
 # Enable OTLP exporter (gRPC) when you want to export spans to Vector/OpenObserve.
 # Keep default minimal for near-zero overhead without exporter.
-otlp = ["dep:opentelemetry", "dep:opentelemetry-otlp", "dep:opentelemetry_sdk", "tracing-opentelemetry"]
+otlp = ["dep:opentelemetry", "dep:opentelemetry-otlp", "dep:opentelemetry_sdk", "tracing-opentelemetry", "dep:tokio"]
 
 [dependencies]
 anyhow = "1"
@@ -16,6 +16,7 @@ once_cell = "1"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
 tracing-opentelemetry = { version = "0.32", optional = true }
+tokio = { version = "1", optional = true, features = ["rt"] }
 
 # Only built when `--features otlp` is enabled
 # Updated to OpenTelemetry 0.31+ for compatibility with modern tooling
