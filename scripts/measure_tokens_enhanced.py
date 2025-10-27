@@ -9,8 +9,16 @@ import asyncio
 import importlib.util
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TypedDict, cast
+
+from prompt_optimizer.application.ports import (
+    MLFeatures,
+    OptimizationPattern,
+    TemporalDatabasePort,
+)
+from prompt_optimizer.domain.entities import Prompt, PromptOptimizationSession
 
 # Add the prompt optimizer to the path
 LIBS_ROOT = Path(__file__).parent.parent / "libs"
@@ -33,7 +41,7 @@ if PROMPT_OPTIMIZER_ROOT.exists():
         sys.modules["prompt_optimizer"] = module
         spec.loader.exec_module(module)
 
-from prompt_optimizer.application.use_cases import (  # noqa: E402
+from prompt_optimizer.application.use_cases import (  # type: ignore[import-untyped] # noqa: E402
     AnalyzePromptCommand,
     AnalyzePromptUseCase,
     OptimizePromptCommand,
@@ -52,8 +60,86 @@ from prompt_optimizer.infrastructure.adapters import (  # noqa: E402
 from prompt_optimizer.infrastructure.temporal_db import (  # noqa: E402
     SimpleMLModelAdapter,
     SimpleNotificationAdapter,
-    SledTemporalDatabaseAdapter,
 )
+
+
+class MockTemporalDatabase(TemporalDatabasePort):
+    async def store_prompt_analysis(self, prompt: Prompt, timestamp: datetime) -> None:
+        pass
+
+    async def get_similar_prompts(
+        self, features: MLFeatures, similarity_threshold: float = 0.7
+    ) -> list[Prompt]:
+        return []
+
+    async def get_optimization_patterns(
+        self, goal: OptimizationGoal, days_back: int = 90
+    ) -> list[OptimizationPattern]:
+        return []
+
+    async def store_optimization_session(self, session: PromptOptimizationSession) -> None:
+        pass
+
+
+class TokenCountDict(TypedDict):
+    total: int
+    model: str
+    estimated_cost: float
+    distribution: dict[str, int]
+
+
+class EffectivenessDict(TypedDict):
+    overall: float
+    clarity: float
+    specificity: float
+    completeness: float
+
+
+class FeaturesDict(TypedDict):
+    token_count: int
+    sentence_count: int
+    avg_sentence_length: float
+    instruction_clarity: float
+    context_completeness: float
+    task_specificity: float
+    role_definition: bool
+    example_count: int
+    constraint_clarity: float
+    readability_score: float
+    ambiguity_score: float
+    directive_strength: float
+
+
+class AnalysisDict(TypedDict):
+    token_count: TokenCountDict
+    effectiveness: EffectivenessDict
+    features: FeaturesDict
+    suggestions: list[str]
+
+
+class AnalysisResultDict(TypedDict):
+    file: str
+    analysis: AnalysisDict
+
+
+class ErrorDict(TypedDict):
+    error: str
+
+
+class OptimizationDict(TypedDict):
+    goal: str
+    original_content: str
+    optimized_content: str
+    improvements: list[str]
+    token_savings: int
+    effectiveness_improvement: float
+    confidence: float
+    alternatives: list[str]
+
+
+class OptimizationResultDict(TypedDict):
+    file: str
+    optimization: OptimizationDict
 
 
 class PromptOptimizerCLI:
@@ -62,9 +148,9 @@ class PromptOptimizerCLI:
     def __init__(self) -> None:
         self.token_counter = TiktokenAdapter()
         self.prompt_repository = InMemoryPromptRepository()
-        self.temporal_db = SledTemporalDatabaseAdapter("./data/prompt_optimizer.sled")
         self.ml_model = SimpleMLModelAdapter()
         self.notification = SimpleNotificationAdapter()
+        self.temporal_db = MockTemporalDatabase()
 
         # Domain services
         self.feature_extractor = PromptFeatureExtractor()
@@ -88,7 +174,9 @@ class PromptOptimizerCLI:
             self.optimizer,
         )
 
-    async def analyze_prompt_file(self, file_path: str, model: str = "gpt-4") -> dict[str, Any]:
+    async def analyze_prompt_file(
+        self, file_path: str, model: str = "gpt-4"
+    ) -> AnalysisResultDict | ErrorDict:
         """Analyze a prompt file and return detailed results."""
         try:
             with open(file_path, encoding="utf-8") as f:
@@ -114,28 +202,51 @@ class PromptOptimizerCLI:
                     "token_count": {
                         "total": prompt.token_count.total_tokens if prompt.token_count else 0,
                         "model": prompt.token_count.model.value if prompt.token_count else model,
-                        "estimated_cost": prompt.token_count.estimated_cost
-                        if prompt.token_count
-                        else 0.0,
-                        "distribution": prompt.token_count.token_distribution
-                        if prompt.token_count
-                        else {},
+                        "estimated_cost": (
+                            prompt.token_count.estimated_cost if prompt.token_count else 0.0
+                        ),
+                        "distribution": (
+                            prompt.token_count.token_distribution if prompt.token_count else {}
+                        ),
                     },
                     "effectiveness": {
-                        "overall": prompt.effectiveness_score.overall_score
-                        if prompt.effectiveness_score
-                        else 0,
-                        "clarity": prompt.effectiveness_score.clarity_score
-                        if prompt.effectiveness_score
-                        else 0,
-                        "specificity": prompt.effectiveness_score.specificity_score
-                        if prompt.effectiveness_score
-                        else 0,
-                        "completeness": prompt.effectiveness_score.completeness_score
-                        if prompt.effectiveness_score
-                        else 0,
+                        "overall": (
+                            prompt.effectiveness_score.overall_score
+                            if prompt.effectiveness_score
+                            else 0.0
+                        ),
+                        "clarity": (
+                            prompt.effectiveness_score.clarity_score
+                            if prompt.effectiveness_score
+                            else 0.0
+                        ),
+                        "specificity": (
+                            prompt.effectiveness_score.specificity_score
+                            if prompt.effectiveness_score
+                            else 0.0
+                        ),
+                        "completeness": (
+                            prompt.effectiveness_score.completeness_score
+                            if prompt.effectiveness_score
+                            else 0.0
+                        ),
                     },
-                    "features": prompt.features.to_dict() if prompt.features else {},
+                    "features": cast(FeaturesDict, prompt.features.to_dict())
+                    if prompt.features
+                    else {
+                        "token_count": 0,
+                        "sentence_count": 0,
+                        "avg_sentence_length": 0.0,
+                        "instruction_clarity": 0.0,
+                        "context_completeness": 0.0,
+                        "task_specificity": 0.0,
+                        "role_definition": False,
+                        "example_count": 0,
+                        "constraint_clarity": 0.0,
+                        "readability_score": 0.0,
+                        "ambiguity_score": 0.0,
+                        "directive_strength": 0.0,
+                    },
                     "suggestions": prompt.optimization_suggestions,
                 },
             }
@@ -144,7 +255,7 @@ class PromptOptimizerCLI:
 
     async def optimize_prompt_file(
         self, file_path: str, goal: str = "effectiveness", model: str = "gpt-4"
-    ) -> dict[str, Any]:
+    ) -> OptimizationResultDict | ErrorDict:
         """Optimize a prompt file and return the results."""
         try:
             with open(file_path, encoding="utf-8") as f:
@@ -171,38 +282,40 @@ class PromptOptimizerCLI:
         try:
             result = await self.optimize_use_case.execute(command)
 
-            return {
-                "file": file_path,
-                "optimization": {
-                    "goal": result.optimization_goal.value,
-                    "original_content": result.original_prompt.content,
-                    "optimized_content": result.optimized_content,
-                    "improvements": result.improvements,
-                    "token_savings": result.token_savings,
-                    "effectiveness_improvement": result.effectiveness_improvement,
-                    "confidence": result.confidence_score,
-                    "alternatives": result.alternative_versions,
-                },
+            optimization_data: OptimizationDict = {
+                "goal": result.optimization_goal.value,
+                "original_content": result.original_prompt.content,
+                "optimized_content": result.optimized_content,
+                "improvements": result.improvements,
+                "token_savings": result.token_savings,
+                "effectiveness_improvement": result.effectiveness_improvement,
+                "confidence": result.confidence_score,
+                "alternatives": result.alternative_versions,
             }
+            return {"file": file_path, "optimization": optimization_data}
         except Exception as e:
             return {"error": f"Optimization failed: {e}"}
 
 
-def format_output(data: dict[str, Any], format_type: str = "human") -> str:
+def format_output(
+    data: AnalysisResultDict | OptimizationResultDict | ErrorDict,
+    format_type: str = "human",
+) -> str:
     """Format output based on the requested format."""
     if format_type == "json":
         return json.dumps(data, indent=2, ensure_ascii=False)
 
     if "error" in data:
-        return f"❌ Error: {data['error']}"
-
-    if "analysis" in data:
-        analysis = data["analysis"]
+        error_data = cast(ErrorDict, data)
+        return f"❌ Error: {error_data['error']}"
+    elif "analysis" in data:
+        analysis_data = cast(AnalysisResultDict, data)
+        analysis = analysis_data["analysis"]
         token_info = analysis["token_count"]
         effectiveness = analysis["effectiveness"]
 
         output: list[str] = [
-            f"📄 File: {data['file']}",
+            f"📄 File: {analysis_data['file']}",
             "",
             "🔢 Token Analysis:",
             f"  • Total tokens: {token_info['total']:,}",
@@ -228,12 +341,12 @@ def format_output(data: dict[str, Any], format_type: str = "human") -> str:
                 output.append(f"  • {suggestion}")
 
         return "\n".join(output)
-
-    if "optimization" in data:
-        opt = data["optimization"]
+    elif "optimization" in data:
+        optimization_data = cast(OptimizationResultDict, data)
+        opt = optimization_data["optimization"]
 
         output = [
-            f"📄 File: {data['file']}",
+            f"📄 File: {optimization_data['file']}",
             f"🎯 Goal: {opt['goal']}",
             "",
             "📈 Results:",
@@ -258,8 +371,8 @@ def format_output(data: dict[str, Any], format_type: str = "human") -> str:
                 output.append(f"  • {improvement}")
 
         return "\n".join(output)
-
-    return str(data)
+    else:
+        return ""
 
 
 async def main() -> None:
@@ -324,6 +437,7 @@ Examples:
         return
 
     cli = PromptOptimizerCLI()
+    result: AnalysisResultDict | OptimizationResultDict | ErrorDict
 
     try:
         if args.command == "analyze":

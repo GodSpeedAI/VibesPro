@@ -3,9 +3,26 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import TypedDict, cast
+
+
+class PerformanceMetrics(TypedDict, total=False):
+    """Represents the structure of the performance metrics file."""
+
+    generationTime: float | int | str
+    buildTime: float | int | str
+    memoryUsage: float | int | str
+
+
+def _as_float(value: float | int | str | None, *, default: float) -> float:
+    """Safely convert a value to a float, returning a default if None."""
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Expected numeric metric value, got {value!r}") from exc
 
 
 def generate_report(metrics_file: str | Path, output_file: str | Path) -> None:
@@ -14,24 +31,23 @@ def generate_report(metrics_file: str | Path, output_file: str | Path) -> None:
     """
     metrics_path = Path(metrics_file)
     output_path = Path(output_file)
-    raw_metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
-    if not isinstance(raw_metrics, Mapping):
-        raise ValueError("Metrics file must contain a JSON object.")
-    metrics: Mapping[str, Any] = raw_metrics
+
+    try:
+        # The return type of json.loads is Any, so we assign to object and check type.
+        loaded_json: object = json.loads(metrics_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in metrics file: {metrics_file}") from exc
+
+    if not isinstance(loaded_json, dict):
+        raise ValueError("Metrics file must contain a JSON object at the top level.")
+
+    # Cast the loaded data to our TypedDict for static analysis.
+    metrics = cast(PerformanceMetrics, loaded_json)
 
     with output_path.open("w", encoding="utf-8") as f:
         f.write("# Performance Report\n\n")
         f.write("| Metric             | Value         | Threshold     | Status |\n")
         f.write("|--------------------|---------------|---------------|--------|\n")
-
-        # Generation Time
-        def _as_float(value: Any, *, default: float) -> float:
-            if value is None:
-                return default
-            try:
-                return float(value)
-            except (TypeError, ValueError) as exc:
-                raise ValueError(f"Expected numeric metric value, got {value!r}") from exc
 
         # Generation Time
         gen_time_ms = _as_float(metrics.get("generationTime"), default=0.0)
@@ -66,4 +82,9 @@ if __name__ == "__main__":
     parser.add_argument("metrics_file", help="Path to the JSON metrics file.")
     parser.add_argument("output_file", help="Path to the output report file.")
     args = parser.parse_args()
-    generate_report(args.metrics_file, args.output_file)
+
+    # Cast args because argparse types them as Any
+    metrics_file_arg = cast(str, args.metrics_file)
+    output_file_arg = cast(str, args.output_file)
+
+    generate_report(metrics_file_arg, output_file_arg)

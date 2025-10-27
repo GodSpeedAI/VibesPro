@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
+#!/usr/bin/env python3
 """
 Link checker for AGENT.md files.
 

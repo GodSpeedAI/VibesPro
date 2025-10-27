@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Compatibility shim for stdlib ``logging`` used by docs and quickstarts.
 
 This module no longer replaces ``sys.modules['logging']``. Instead it

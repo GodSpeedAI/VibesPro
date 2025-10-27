@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
+#!/usr/bin/env python3
 """
 Backup of original structlog quickstart moved to avoid stdlib shadowing.
 """

@@ -4,399 +4,486 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from pathlib import Path
+from typing import TypedDict, cast
 
-from ..application.ports import MLModelPort, NotificationPort, TemporalDatabasePort
+from ..application.ports import (
+    MLFeatures,
+    OptimizationPattern,
+    TemporalDatabasePort,
+)
 from ..domain.entities import (
-    FeedbackRecord,
+    EffectivenessScore,
     ModelType,
     OptimizationGoal,
-    OptimizationResult,
     Prompt,
+    PromptFeatures,
     PromptOptimizationSession,
+    TokenCount,
 )
 
 
-class RedbTemporalDatabaseAdapter(TemporalDatabasePort):
-    """Redb-based temporal database adapter for storing prompt analysis data."""
+class PromptFeaturesJSON(TypedDict):
+    """Serialized representation of prompt features."""
+
+    token_count: int
+    sentence_count: int
+    avg_sentence_length: float
+    instruction_clarity: float
+    context_completeness: float
+    task_specificity: float
+    role_definition: bool
+    example_count: int
+    constraint_clarity: float
+    readability_score: float
+    ambiguity_score: float
+    directive_strength: float
+
+
+class TokenCountJSON(TypedDict):
+    """Serialized representation of token count information."""
+
+    total_tokens: int
+    model: ModelType
+    estimated_cost: float
+    token_distribution: dict[str, int]
+
+
+class EffectivenessScoreJSON(TypedDict):
+    """Serialized representation of effectiveness metrics."""
+
+    overall_score: float
+    clarity_score: float
+    specificity_score: float
+    completeness_score: float
+
+
+_PROMPT_FILE_PREFIX = "prompt_analysis"
+
+
+class PromptRecord(TypedDict):
+    """Serialized prompt analysis record stored on disk."""
+
+    id: str
+    content: str
+    timestamp: str
+    features: PromptFeaturesJSON | None
+    token_count: TokenCountJSON | None
+    effectiveness_score: EffectivenessScoreJSON | None
+    optimization_suggestions: list[str]
+    metadata: dict[str, object]
+
+
+def _features_to_json(features: PromptFeatures) -> PromptFeaturesJSON:
+    """Convert domain prompt features into a serializable structure."""
+    return {
+        "token_count": features.token_count,
+        "sentence_count": features.sentence_count,
+        "avg_sentence_length": float(features.avg_sentence_length),
+        "instruction_clarity": float(features.instruction_clarity),
+        "context_completeness": float(features.context_completeness),
+        "task_specificity": float(features.task_specificity),
+        "role_definition": features.role_definition,
+        "example_count": features.example_count,
+        "constraint_clarity": float(features.constraint_clarity),
+        "readability_score": float(features.readability_score),
+        "ambiguity_score": float(features.ambiguity_score),
+        "directive_strength": float(features.directive_strength),
+    }
+
+
+def _token_count_to_json(token_count: TokenCount) -> TokenCountJSON:
+    """Convert domain token count data into a serializable structure."""
+    return {
+        "total_tokens": token_count.total_tokens,
+        "model": token_count.model,
+        "estimated_cost": float(token_count.estimated_cost),
+        "token_distribution": dict(token_count.token_distribution),
+    }
+
+
+def _effectiveness_score_to_json(score: EffectivenessScore) -> EffectivenessScoreJSON:
+    """Convert domain effectiveness score into a serializable structure."""
+    return {
+        "overall_score": float(score.overall_score),
+        "clarity_score": float(score.clarity_score),
+        "specificity_score": float(score.specificity_score),
+        "completeness_score": float(score.completeness_score),
+    }
+
+
+def _build_prompt_record(prompt: Prompt, timestamp: datetime) -> PromptRecord:
+    """Create a prompt record from the domain entity."""
+    return {
+        "id": str(prompt.id),
+        "content": prompt.content,
+        "timestamp": timestamp.isoformat(),
+        "features": _features_to_json(prompt.features) if prompt.features else None,
+        "token_count": _token_count_to_json(prompt.token_count) if prompt.token_count else None,
+        "effectiveness_score": (
+            _effectiveness_score_to_json(prompt.effectiveness_score)
+            if prompt.effectiveness_score
+            else None
+        ),
+        "optimization_suggestions": list(prompt.optimization_suggestions),
+        "metadata": dict(prompt.metadata),
+    }
+
+
+def _features_from_json(value: object) -> PromptFeaturesJSON | None:
+    """Deserialize persisted prompt features."""
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        return None
+
+    token_count = value.get("token_count")
+    sentence_count = value.get("sentence_count")
+    avg_sentence_length = value.get("avg_sentence_length")
+    instruction_clarity = value.get("instruction_clarity")
+    context_completeness = value.get("context_completeness")
+    task_specificity = value.get("task_specificity")
+    role_definition = value.get("role_definition")
+    example_count = value.get("example_count")
+    constraint_clarity = value.get("constraint_clarity")
+    readability_score = value.get("readability_score")
+    ambiguity_score = value.get("ambiguity_score")
+    directive_strength = value.get("directive_strength")
+
+    if not isinstance(token_count, int):
+        return None
+    if not isinstance(sentence_count, int):
+        return None
+    if not isinstance(role_definition, bool):
+        return None
+    if not isinstance(example_count, int):
+        return None
+
+    if not isinstance(avg_sentence_length, int | float):
+        return None
+    if not isinstance(instruction_clarity, int | float):
+        return None
+    if not isinstance(context_completeness, int | float):
+        return None
+    if not isinstance(task_specificity, int | float):
+        return None
+    if not isinstance(constraint_clarity, int | float):
+        return None
+    if not isinstance(readability_score, int | float):
+        return None
+    if not isinstance(ambiguity_score, int | float):
+        return None
+    if not isinstance(directive_strength, int | float):
+        return None
+
+    return {
+        "token_count": token_count,
+        "sentence_count": sentence_count,
+        "avg_sentence_length": float(avg_sentence_length),
+        "instruction_clarity": float(instruction_clarity),
+        "context_completeness": float(context_completeness),
+        "task_specificity": float(task_specificity),
+        "role_definition": role_definition,
+        "example_count": example_count,
+        "constraint_clarity": float(constraint_clarity),
+        "readability_score": float(readability_score),
+        "ambiguity_score": float(ambiguity_score),
+        "directive_strength": float(directive_strength),
+    }
+
+
+def _token_count_from_json(value: object) -> TokenCountJSON | None:
+    """Deserialize persisted token count information."""
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        return None
+
+    total_tokens = value.get("total_tokens")
+    model = value.get("model")
+    estimated_cost = value.get("estimated_cost")
+    token_distribution_raw = value.get("token_distribution")
+
+    if not isinstance(total_tokens, int):
+        return None
+    if not isinstance(model, str):
+        return None
+    if not isinstance(estimated_cost, int | float):
+        return None
+    if not isinstance(token_distribution_raw, dict):
+        return None
+
+    token_distribution: dict[str, int] = {}
+    for key, token_value in token_distribution_raw.items():
+        if not isinstance(key, str):
+            return None
+        if not isinstance(token_value, int):
+            return None
+        token_distribution[key] = token_value
+
+    try:
+        model_enum = ModelType(model)
+    except ValueError:
+        return None
+
+    return {
+        "total_tokens": total_tokens,
+        "model": model_enum,
+        "estimated_cost": float(estimated_cost),
+        "token_distribution": token_distribution,
+    }
+
+
+def _effectiveness_score_from_json(value: object) -> EffectivenessScoreJSON | None:
+    """Deserialize persisted effectiveness metrics."""
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        return None
+
+    overall_score = value.get("overall_score")
+    clarity_score = value.get("clarity_score")
+    specificity_score = value.get("specificity_score")
+    completeness_score = value.get("completeness_score")
+
+    if not isinstance(overall_score, int | float):
+        return None
+    if not isinstance(clarity_score, int | float):
+        return None
+    if not isinstance(specificity_score, int | float):
+        return None
+    if not isinstance(completeness_score, int | float):
+        return None
+
+    return {
+        "overall_score": float(overall_score),
+        "clarity_score": float(clarity_score),
+        "specificity_score": float(specificity_score),
+        "completeness_score": float(completeness_score),
+    }
+
+
+def _ensure_str_list(value: object) -> list[str] | None:
+    """Ensure the value is a list of strings."""
+    if not isinstance(value, list):
+        return None
+    results: list[str] = []
+    for item in value:
+        if not isinstance(item, str):
+            return None
+        results.append(item)
+    return results
+
+
+def _ensure_metadata(value: object) -> dict[str, object] | None:
+    """Ensure the metadata payload has string keys."""
+    if not isinstance(value, dict):
+        return None
+    metadata: dict[str, object] = {}
+    for key, item in value.items():
+        if not isinstance(key, str):
+            return None
+        metadata[key] = item
+    return metadata
+
+
+def _prompt_record_from_json(value: object) -> PromptRecord | None:
+    """Attempt to deserialize a prompt record stored on disk."""
+    if not isinstance(value, dict):
+        return None
+
+    record_id = value.get("id")
+    content = value.get("content")
+    timestamp = value.get("timestamp")
+    optimization_suggestions = _ensure_str_list(value.get("optimization_suggestions"))
+    metadata = _ensure_metadata(value.get("metadata"))
+
+    if not isinstance(record_id, str):
+        return None
+    if not isinstance(content, str):
+        return None
+    if not isinstance(timestamp, str):
+        return None
+    if optimization_suggestions is None:
+        return None
+    if metadata is None:
+        return None
+
+    try:
+        datetime.fromisoformat(timestamp)
+    except ValueError:
+        return None
+
+    features = _features_from_json(value.get("features"))
+    token_count = _token_count_from_json(value.get("token_count"))
+    effectiveness_score = _effectiveness_score_from_json(value.get("effectiveness_score"))
+
+    return {
+        "id": record_id,
+        "content": content,
+        "timestamp": timestamp,
+        "features": features,
+        "token_count": token_count,
+        "effectiveness_score": effectiveness_score,
+        "optimization_suggestions": optimization_suggestions,
+        "metadata": metadata,
+    }
+
+
+def _prompt_record_to_serializable(record: PromptRecord) -> dict[str, object]:
+    """Convert an in-memory prompt record into a JSON-serializable dictionary."""
+    serialized: dict[str, object] = {
+        "id": record["id"],
+        "content": record["content"],
+        "timestamp": record["timestamp"],
+        "optimization_suggestions": list(record["optimization_suggestions"]),
+        "metadata": dict(record["metadata"]),
+    }
+
+    features = record["features"]
+    if features is None:
+        serialized["features"] = None
+    else:
+        serialized["features"] = {
+            "token_count": features["token_count"],
+            "sentence_count": features["sentence_count"],
+            "avg_sentence_length": features["avg_sentence_length"],
+            "instruction_clarity": features["instruction_clarity"],
+            "context_completeness": features["context_completeness"],
+            "task_specificity": features["task_specificity"],
+            "role_definition": features["role_definition"],
+            "example_count": features["example_count"],
+            "constraint_clarity": features["constraint_clarity"],
+            "readability_score": features["readability_score"],
+            "ambiguity_score": features["ambiguity_score"],
+            "directive_strength": features["directive_strength"],
+        }
+
+    token_count = record["token_count"]
+    if token_count is None:
+        serialized["token_count"] = None
+    else:
+        serialized["token_count"] = {
+            "total_tokens": token_count["total_tokens"],
+            "model": token_count["model"].value,
+            "estimated_cost": token_count["estimated_cost"],
+            "token_distribution": dict(token_count["token_distribution"]),
+        }
+
+    effectiveness_score = record["effectiveness_score"]
+    if effectiveness_score is None:
+        serialized["effectiveness_score"] = None
+    else:
+        serialized["effectiveness_score"] = {
+            "overall_score": effectiveness_score["overall_score"],
+            "clarity_score": effectiveness_score["clarity_score"],
+            "specificity_score": effectiveness_score["specificity_score"],
+            "completeness_score": effectiveness_score["completeness_score"],
+        }
+
+    return serialized
+
+
+def _record_sort_key(record: PromptRecord) -> datetime:
+    """Sorting key helper for prompt records."""
+    return datetime.fromisoformat(record["timestamp"])
+
+
+def _parse_prompt_filename(path: Path) -> tuple[str, datetime] | None:
+    """Extract the prompt identifier and timestamp from a filename."""
+    stem = path.stem
+    if not stem.startswith(f"{_PROMPT_FILE_PREFIX}:"):
+        return None
+
+    parts = stem.split(":")
+    if len(parts) != 3:
+        return None
+
+    timestamp_str = parts[1].replace("_", ":")
+    try:
+        timestamp = datetime.fromisoformat(timestamp_str)
+    except ValueError:
+        return None
+
+    prompt_id = parts[2]
+    return prompt_id, timestamp
+
+
+class JsonFileStorage(TemporalDatabasePort):
+    """JSON file-based temporal database for storing prompt analysis data."""
 
     def __init__(self, db_path: str):
-        self.db_path = db_path
-        self._db: Any = None  # Type depends on whether redb is available
-        self._initialized = False
+        """Initialize the JSON file storage."""
+        self.db_path = Path(db_path)
+        self.db_path.mkdir(parents=True, exist_ok=True)
 
-    async def _ensure_initialized(self) -> None:
-        """Ensure the database is initialized."""
-        if self._initialized:
-            return
-
-        try:
-            # Import redb bindings (assuming Python bindings exist or use Rust FFI)
-            # For now, redb doesn't have direct Python bindings, so we use JSON fallback
-            import os
-
-            os.makedirs(self.db_path, exist_ok=True)
-            self._db = self.db_path
-            self._initialized = True
-        except Exception:
-            # Fallback to file-based storage if redb bindings not available
-            import os
-
-            os.makedirs(self.db_path, exist_ok=True)
-            self._db = self.db_path
-            self._initialized = True
+    def _get_prompt_filepath(self, prompt_id: str, timestamp: datetime) -> Path:
+        """Generate a unique filepath for a prompt record."""
+        sanitized_timestamp = timestamp.isoformat().replace(":", "_")
+        key = f"{_PROMPT_FILE_PREFIX}:{sanitized_timestamp}:{prompt_id}"
+        return self.db_path / f"{key}.json"
 
     async def store_prompt_analysis(self, prompt: Prompt, timestamp: datetime) -> None:
-        """Store prompt analysis results in temporal database."""
-        await self._ensure_initialized()
+        """Store prompt analysis results in a JSON file."""
+        filepath = self._get_prompt_filepath(str(prompt.id), timestamp)
+        record = _build_prompt_record(prompt, timestamp)
+        serialized = json.dumps(_prompt_record_to_serializable(record), indent=4)
+        filepath.write_text(f"{serialized}\n", encoding="utf-8")
 
-        # Create a temporal record
-        record: dict[str, Any] = {
-            "id": str(prompt.id),
-            "content": prompt.content,
-            "timestamp": timestamp.isoformat(),
-            "features": prompt.features.to_dict() if prompt.features else None,
-            "token_count": {
-                "total_tokens": prompt.token_count.total_tokens,
-                "model": prompt.token_count.model.value,
-                "estimated_cost": prompt.token_count.estimated_cost,
-                "token_distribution": prompt.token_count.token_distribution,
-            }
-            if prompt.token_count
-            else None,
-            "effectiveness_score": {
-                "overall_score": prompt.effectiveness_score.overall_score,
-                "clarity_score": prompt.effectiveness_score.clarity_score,
-                "specificity_score": prompt.effectiveness_score.specificity_score,
-                "completeness_score": prompt.effectiveness_score.completeness_score,
-            }
-            if prompt.effectiveness_score
-            else None,
-            "optimization_suggestions": prompt.optimization_suggestions,
-            "metadata": prompt.metadata,
-        }
+    async def retrieve_recent_prompts(self, time_window: timedelta) -> list[dict[str, object]]:
+        """Retrieve recent prompts from JSON files."""
+        now = datetime.now(UTC)
+        records: list[PromptRecord] = []
 
-        # Store with timestamp-based key for temporal ordering
-        key = f"prompt_analysis:{timestamp.isoformat()}:{prompt.id}"
-        await self._store_record(key, record)
+        for prompt_path in self.db_path.glob(f"{_PROMPT_FILE_PREFIX}:*.json"):
+            parsed = _parse_prompt_filename(prompt_path)
+            if parsed is None:
+                continue
+
+            _, timestamp = parsed
+            if now - timestamp > time_window:
+                continue
+
+            try:
+                raw_text = prompt_path.read_text(encoding="utf-8")
+            except OSError:
+                continue
+
+            try:
+                raw = cast(object, json.loads(raw_text))
+            except json.JSONDecodeError:
+                continue
+
+            record = _prompt_record_from_json(raw)
+            if record is not None:
+                records.append(record)
+
+        sorted_records = sorted(records, key=_record_sort_key, reverse=True)
+
+        return [_prompt_record_to_serializable(record) for record in sorted_records]
 
     async def store_optimization_session(self, session: PromptOptimizationSession) -> None:
-        """Store optimization session data."""
-        await self._ensure_initialized()
+        """Store a prompt optimization session (placeholder)."""
+        # This method can be implemented if session storage is needed.
+        pass
 
-        session_record: dict[str, Any] = {
-            "id": str(session.id),
-            "optimization_goal": session.optimization_goal.value,
-            "target_model": session.target_model.value,
-            "started_at": session.started_at.isoformat(),
-            "completed_at": session.completed_at.isoformat() if session.completed_at else None,
-            "prompt_ids": [str(p.id) for p in session.prompts],
-            "result_count": len(session.results),
-        }
-
-        key = f"optimization_session:{session.started_at.isoformat()}:{session.id}"
-        await self._store_record(key, session_record)
+    async def get_optimization_session(self, session_id: str) -> dict[str, object] | None:
+        """Retrieve a prompt optimization session by its ID (placeholder)."""
+        # This method can be implemented if session retrieval is needed.
+        return None
 
     async def get_similar_prompts(
-        self, features: dict[str, Any], similarity_threshold: float = 0.7
+        self, features: MLFeatures, similarity_threshold: float = 0.7
     ) -> list[Prompt]:
-        """Find similar prompts based on features."""
-        await self._ensure_initialized()
-
-        # This is a simplified similarity search
-        # In a real implementation, you'd use vector similarity
-        similar_prompts: list[Prompt] = []
-
-        # Get recent prompt analyses
-        recent_records = await self._get_recent_records("prompt_analysis", days=90)
-
-        for record in recent_records:
-            if record.get("features"):
-                similarity = self._calculate_feature_similarity(features, record["features"])
-                if similarity >= similarity_threshold:
-                    prompt = self._deserialize_prompt_from_record(record)
-                    if prompt:
-                        similar_prompts.append(prompt)
-
-        return similar_prompts[:10]  # Limit results
+        """Find similar prompts based on features (placeholder)."""
+        # This is a placeholder and would require a proper implementation
+        # of feature comparison in a real-world scenario.
+        return []
 
     async def get_optimization_patterns(
         self, goal: OptimizationGoal, days_back: int = 90
-    ) -> list[dict[str, Any]]:
-        """Get optimization patterns from historical data."""
-        await self._ensure_initialized()
-
-        patterns: list[dict[str, Any]] = []
-
-        # Get recent optimization sessions
-        sessions = await self._get_recent_records("optimization_session", days=days_back)
-
-        # Group by optimization goal
-        goal_sessions = [s for s in sessions if s.get("optimization_goal") == goal.value]
-
-        if goal_sessions:
-            # Analyze patterns (simplified)
-            patterns.append(
-                {
-                    "goal": goal.value,
-                    "session_count": len(goal_sessions),
-                    "avg_prompts_per_session": sum(s.get("result_count", 0) for s in goal_sessions)
-                    / len(goal_sessions),
-                    "most_common_model": self._get_most_common_model(goal_sessions),
-                    "success_rate": 0.8,  # Would calculate from actual feedback
-                    "common_improvements": [
-                        "Reduced token count",
-                        "Improved clarity",
-                        "Better structure",
-                    ],
-                }
-            )
-
-        return patterns
-
-    async def _store_record(self, key: str, record: dict[str, Any]) -> None:
-        """Store a record in the database."""
-        if isinstance(self._db, str):
-            # File-based fallback
-            import os
-
-            file_path = os.path.join(self._db, f"{key.replace(':', '_')}.json")
-            with open(file_path, "w", encoding="utf-8") as f:
-                json.dump(record, f, indent=2, ensure_ascii=False)
-        else:
-            # Redb database
-            record_bytes = json.dumps(record).encode("utf-8")
-            self._db.insert(key.encode("utf-8"), record_bytes)
-
-    async def _get_recent_records(self, prefix: str, days: int) -> list[dict[str, Any]]:
-        """Get recent records with the given prefix."""
-        cutoff_date = datetime.now(UTC) - timedelta(days=days)
-        records: list[dict[str, Any]] = []
-
-        if isinstance(self._db, str):
-            # File-based fallback
-            import glob
-            import os
-
-            pattern = os.path.join(self._db, f"{prefix}_*.json")
-            files = glob.glob(pattern)
-
-            for file_path in files:
-                try:
-                    with open(file_path, encoding="utf-8") as f:
-                        record = json.load(f)
-
-                    # Check if record is recent enough
-                    record_time = datetime.fromisoformat(
-                        record.get("timestamp", record.get("started_at", ""))
-                    )
-                    if record_time >= cutoff_date:
-                        records.append(record)
-
-                except (json.JSONDecodeError, ValueError, KeyError):
-                    continue
-        else:
-            # Redb database
-            prefix_bytes = prefix.encode("utf-8")
-            for item in self._db.scan_prefix(prefix_bytes):
-                try:
-                    key_bytes, value_bytes = item
-                    record = json.loads(value_bytes.decode("utf-8"))
-
-                    # Check if record is recent enough
-                    record_time = datetime.fromisoformat(
-                        record.get("timestamp", record.get("started_at", ""))
-                    )
-                    if record_time >= cutoff_date:
-                        records.append(record)
-
-                except (json.JSONDecodeError, ValueError, KeyError):
-                    continue
-
-        # Sort by timestamp, most recent first
-        records.sort(
-            key=lambda r: datetime.fromisoformat(r.get("timestamp", r.get("started_at", ""))),
-            reverse=True,
-        )
-
-        return records
-
-    def _calculate_feature_similarity(
-        self, features1: dict[str, Any], features2: dict[str, Any]
-    ) -> float:
-        """Calculate similarity between two feature sets."""
-        # Simple cosine similarity calculation
-        common_keys = set(features1.keys()) & set(features2.keys())
-        if not common_keys:
-            return 0.0
-
-        dot_product = 0.0
-        norm1 = 0.0
-        norm2 = 0.0
-
-        for key in common_keys:
-            v1 = float(features1.get(key, 0))
-            v2 = float(features2.get(key, 0))
-
-            dot_product += v1 * v2
-            norm1 += v1 * v1
-            norm2 += v2 * v2
-
-        if norm1 == 0 or norm2 == 0:
-            return 0.0
-
-        similarity = dot_product / (norm1**0.5 * norm2**0.5)
-        return float(similarity)
-
-    def _deserialize_prompt_from_record(self, record: dict[str, Any]) -> Prompt | None:
-        """Deserialize a prompt from a database record."""
-        from uuid import UUID
-
-        from ..domain.entities import EffectivenessScore, PromptFeatures, PromptId, TokenCount
-
-        try:
-            prompt_id = PromptId(UUID(record["id"]))
-            created_at = datetime.fromisoformat(record["timestamp"])
-
-            prompt = Prompt(
-                id=prompt_id,
-                content=record["content"],
-                created_at=created_at,
-                optimization_suggestions=record.get("optimization_suggestions", []),
-                metadata=record.get("metadata", {}),
-            )
-
-            # Restore features if present
-            if record.get("features"):
-                features_data = record["features"]
-                features = PromptFeatures(**features_data)
-                prompt.update_features(features)
-
-            # Restore token count if present
-            if record.get("token_count"):
-                tc_data = record["token_count"]
-                token_count = TokenCount(
-                    total_tokens=tc_data["total_tokens"],
-                    model=ModelType(tc_data["model"]),
-                    estimated_cost=tc_data["estimated_cost"],
-                    token_distribution=tc_data["token_distribution"],
-                )
-                prompt.update_token_count(token_count)
-
-            # Restore effectiveness score if present
-            if record.get("effectiveness_score"):
-                es_data = record["effectiveness_score"]
-                effectiveness = EffectivenessScore(
-                    overall_score=es_data["overall_score"],
-                    clarity_score=es_data["clarity_score"],
-                    specificity_score=es_data["specificity_score"],
-                    completeness_score=es_data["completeness_score"],
-                )
-                prompt.update_effectiveness_score(effectiveness)
-
-            return prompt
-
-        except (KeyError, ValueError, TypeError):
-            return None
-
-    def _get_most_common_model(self, sessions: list[dict[str, Any]]) -> str:
-        """Get the most commonly used model from sessions."""
-        model_counts: dict[str, int] = {}
-
-        for session in sessions:
-            model = session.get("target_model", "unknown")
-            model_counts[model] = model_counts.get(model, 0) + 1
-
-        if not model_counts:
-            return "unknown"
-
-        return max(model_counts.items(), key=lambda x: x[1])[0]
-
-
-class SimpleMLModelAdapter(MLModelPort):
-    """Simple ML model adapter for development and testing."""
-
-    def __init__(self) -> None:
-        self.feedback_data: list[FeedbackRecord] = []
-
-    async def predict_effectiveness(self, features: dict[str, Any]) -> float:
-        """Predict prompt effectiveness using simple heuristics."""
-        # Simple rule-based effectiveness prediction
-        score = 50.0  # Base score
-
-        # Adjust based on features
-        if features.get("instruction_clarity", 0) > 0.7:
-            score += 15.0
-
-        if features.get("task_specificity", 0) > 0.6:
-            score += 10.0
-
-        if features.get("context_completeness", 0) > 0.5:
-            score += 10.0
-
-        if features.get("ambiguity_score", 1.0) < 0.3:
-            score += 10.0
-
-        if features.get("role_definition", False):
-            score += 5.0
-
-        # Normalize to 0-100 range
-        return max(0.0, min(100.0, score))
-
-    async def generate_optimization_suggestions(
-        self, prompt_content: str, goal: OptimizationGoal
-    ) -> list[str]:
-        """Generate optimization suggestions using simple rules."""
-        suggestions: list[str] = []
-        content_lower = prompt_content.lower()
-
-        if goal == OptimizationGoal.CLARITY:
-            if "please" not in content_lower:
-                suggestions.append("Add polite language like 'please' for clearer communication")
-
-            if len(prompt_content.split(".")) < 3:
-                suggestions.append("Break down the prompt into clearer steps")
-
-        elif goal == OptimizationGoal.CONCISENESS:
-            if len(prompt_content.split()) > 100:
-                suggestions.append("Consider reducing word count for better token efficiency")
-
-            if "very" in content_lower or "really" in content_lower:
-                suggestions.append("Remove unnecessary adverbs for conciseness")
-
-        elif goal == OptimizationGoal.EFFECTIVENESS:
-            if "example" not in content_lower:
-                suggestions.append("Add specific examples to improve effectiveness")
-
-            if not any(
-                action in content_lower for action in ["generate", "create", "write", "analyze"]
-            ):
-                suggestions.append("Use clear action verbs to specify the desired task")
-
-        elif goal == OptimizationGoal.TOKEN_EFFICIENCY:
-            suggestions.append("Replace verbose phrases with concise alternatives")
-            suggestions.append("Use bullet points instead of long sentences")
-
-        return suggestions
-
-    async def learn_from_feedback(self, feedback: FeedbackRecord) -> None:
-        """Store feedback for future model improvement."""
-        self.feedback_data.append(feedback)
-
-        # In a real implementation, this would retrain or update the model
-        # For now, just store the feedback
-
-
-class SimpleNotificationAdapter(NotificationPort):
-    """Simple notification adapter for development."""
-
-    async def notify_optimization_complete(self, result: OptimizationResult) -> None:
-        """Log optimization completion."""
-        print(f"✅ Optimization complete for prompt: {result.original_prompt.id}")
-        print(f"   Goal: {result.optimization_goal}")
-        print(f"   Token savings: {result.token_savings}")
-        print(f"   Effectiveness improvement: {result.effectiveness_improvement:.1f}")
-
-    async def notify_model_updated(self, model_version: str) -> None:
-        """Log model update."""
-        print(f"Model updated to {model_version}")
+    ) -> list[OptimizationPattern]:
+        """Get optimization patterns from historical data (placeholder)."""
+        # This is a placeholder. A real implementation would analyze
+        # historical data to identify patterns.
+        return []

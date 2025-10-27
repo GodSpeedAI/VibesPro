@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any
+from typing import TypedDict
 
 from ..domain.entities import (
     FeedbackRecord,
@@ -16,6 +16,17 @@ from ..domain.entities import (
     PromptOptimizationSession,
     TokenCount,
 )
+
+type MLFeatures = dict[str, int | float]
+
+
+class OptimizationPattern(TypedDict):
+    goal: str
+    session_count: int
+    avg_prompts_per_session: float
+    most_common_model: str
+    success_rate: float
+    common_improvements: list[str]
 
 
 class TokenCounterPort(ABC):
@@ -60,7 +71,7 @@ class MLModelPort(ABC):
     """Port for machine learning model interactions."""
 
     @abstractmethod
-    async def predict_effectiveness(self, features: dict[str, Any]) -> float:
+    async def predict_effectiveness(self, features: MLFeatures) -> float:
         """Predict prompt effectiveness using ML model."""
         pass
 
@@ -92,7 +103,7 @@ class TemporalDatabasePort(ABC):
 
     @abstractmethod
     async def get_similar_prompts(
-        self, features: dict[str, Any], similarity_threshold: float = 0.7
+        self, features: MLFeatures, similarity_threshold: float = 0.7
     ) -> list[Prompt]:
         """Find similar prompts based on features."""
         pass
@@ -100,7 +111,7 @@ class TemporalDatabasePort(ABC):
     @abstractmethod
     async def get_optimization_patterns(
         self, goal: OptimizationGoal, days_back: int = 90
-    ) -> list[dict[str, Any]]:
+    ) -> list[OptimizationPattern]:
         """Get optimization patterns from historical data."""
         pass
 
