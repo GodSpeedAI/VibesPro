@@ -14,7 +14,7 @@ This report details the challenges encountered while attempting to add strict ty
 
 I recommend a more thorough refactoring of this file to better support static typing. This could include:
 
-*   **Explicitly typed data access layer**: Instead of a dynamic `_db` attribute, a more robust solution would be to create a simple data access layer with clearly defined methods for reading and writing JSON data.
-*   **Data validation**: Instead of relying on `cast`, a more robust solution would be to use a library like `pydantic` to validate the JSON data at runtime.
+- **Explicitly typed data access layer**: Instead of a dynamic `_db` attribute, a more robust solution would be to create a simple data access layer with clearly defined methods for reading and writing JSON data.
+- **Data validation**: Instead of relying on `cast`, a more robust solution would be to use a library like `pydantic` to validate the JSON data at runtime.
 
 I have reverted my changes to this file to avoid leaving it in a partially typed, error-prone state. All other Python files in the `libs/prompt_optimizer` directory have been successfully typed.
