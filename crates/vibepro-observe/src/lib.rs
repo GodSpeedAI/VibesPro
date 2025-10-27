@@ -5,13 +5,17 @@
 
 use anyhow::Result;
 use once_cell::sync::OnceCell;
+#[cfg(feature = "otlp")]
+use opentelemetry_sdk::trace::SdkTracerProvider;
 use std::env;
-use tracing::info;
 #[cfg(feature = "otlp")]
 use tracing::debug;
+use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 static INIT_GUARD: OnceCell<()> = OnceCell::new();
+#[cfg(feature = "otlp")]
+static OTLP_TRACER_PROVIDER: OnceCell<SdkTracerProvider> = OnceCell::new();
 
 /// Initialize tracing for a given service name.
 /// Behavior:
@@ -42,23 +46,40 @@ pub fn init_tracing(service_name: &str) -> Result<()> {
         };
 
         if observe_flag {
-            let endpoint = env::var("OTLP_ENDPOINT").unwrap_or_else(|_| "http://127.0.0.1:4317".to_string());
+            let endpoint =
+                env::var("OTLP_ENDPOINT").unwrap_or_else(|_| "http://127.0.0.1:4317".to_string());
             let protocol = env::var("OTLP_PROTOCOL").unwrap_or_else(|_| "grpc".to_string());
-            let tracer = setup_otlp_exporter(&endpoint, &protocol, service_name)?;
-            if let Err(err) = build_base_subscriber()
-                .with(tracing_opentelemetry::layer().with_tracer(tracer))
-                .try_init()
-            {
-                debug!(target = "vibepro_observe::init", error = %err, "global subscriber already initialized");
-            }
 
-            info!(service = service_name, endpoint = %endpoint, "OTLP exporter enabled");
+            if tokio::runtime::Handle::try_current().is_err() {
+                if let Err(err) = build_base_subscriber().try_init() {
+                    debug!(target = "vibepro_observe::init", error = %err, "global subscriber already initialized");
+                }
+
+                info!(
+                    service = service_name,
+                    endpoint = %endpoint,
+                    "OTLP exporter skipped (no Tokio runtime available)"
+                );
+            } else {
+                let tracer = setup_otlp_exporter(&endpoint, &protocol, service_name)?;
+                if let Err(err) = build_base_subscriber()
+                    .with(tracing_opentelemetry::layer().with_tracer(tracer))
+                    .try_init()
+                {
+                    debug!(target = "vibepro_observe::init", error = %err, "global subscriber already initialized");
+                }
+
+                info!(service = service_name, endpoint = %endpoint, "OTLP exporter enabled");
+            }
         } else {
             if let Err(err) = build_base_subscriber().try_init() {
                 debug!(target = "vibepro_observe::init", error = %err, "global subscriber already initialized");
             }
 
-            info!(service = service_name, "OTLP exporter disabled (VIBEPRO_OBSERVE!=1)");
+            info!(
+                service = service_name,
+                "OTLP exporter disabled (VIBEPRO_OBSERVE!=1)"
+            );
         }
     }
 
@@ -107,21 +128,26 @@ fn setup_otlp_exporter(
         service = service_name,
         "initializing OTLP exporter"
     );
+    use opentelemetry::{trace::TracerProvider as _, KeyValue};
     use opentelemetry_otlp::{SpanExporter, WithExportConfig};
     use opentelemetry_sdk::{trace as sdktrace, Resource};
-    use opentelemetry::{KeyValue, trace::TracerProvider as _};
 
     // Build the OTLP exporter based on protocol
-    let exporter = if matches!(protocol.to_lowercase().as_str(), "http" | "http/proto" | "http/protobuf") {
-        SpanExporter::builder()
-            .with_http()
-            .with_endpoint(endpoint)
-            .build()?
-    } else {
-        SpanExporter::builder()
-            .with_tonic()
-            .with_endpoint(endpoint)
-            .build()?
+    let build_exporter = || -> Result<SpanExporter> {
+        if matches!(
+            protocol.to_lowercase().as_str(),
+            "http" | "http/proto" | "http/protobuf"
+        ) {
+            Ok(SpanExporter::builder()
+                .with_http()
+                .with_endpoint(endpoint)
+                .build()?)
+        } else {
+            Ok(SpanExporter::builder()
+                .with_tonic()
+                .with_endpoint(endpoint)
+                .build()?)
+        }
     };
 
     // Build the tracer provider with resource attributes
@@ -132,19 +158,50 @@ fn setup_otlp_exporter(
         ])
         .build();
 
-    // Create batch span processor
-    let batch_processor = sdktrace::BatchSpanProcessor::builder(exporter).build();
+    // Prefer batch processing when a Tokio runtime is available; otherwise fall back to simple.
+    let mut provider_builder = sdktrace::SdkTracerProvider::builder().with_resource(resource);
+    if tokio::runtime::Handle::try_current().is_ok() {
+        let exporter = build_exporter()?;
+        provider_builder = provider_builder
+            .with_span_processor(sdktrace::BatchSpanProcessor::builder(exporter).build());
+    } else {
+        let exporter = build_exporter()?;
+        provider_builder =
+            provider_builder.with_span_processor(sdktrace::SimpleSpanProcessor::new(exporter));
+    }
 
-    let tracer_provider = sdktrace::SdkTracerProvider::builder()
-        .with_span_processor(batch_processor)
-        .with_resource(resource)
-        .build();
+    let tracer_provider = provider_builder.build();
 
     // Get tracer before setting global provider
     let tracer = tracer_provider.tracer("vibepro-observe");
 
-    // Also set global tracer provider for convenience
-    opentelemetry::global::set_tracer_provider(tracer_provider);
+    // Store provider for optional shutdown and set global provider for convenience
+    let provider_handle = tracer_provider.clone();
+    let _ = OTLP_TRACER_PROVIDER.set(provider_handle.clone());
+    opentelemetry::global::set_tracer_provider(provider_handle);
 
     Ok(tracer)
+}
+
+/// Gracefully shut down the OTLP tracer provider if one was initialized.
+/// Safe to call multiple times.
+#[cfg(feature = "otlp")]
+pub fn shutdown_tracing() -> Result<()> {
+    use opentelemetry_sdk::error::OTelSdkError;
+
+    if let Some(provider) = OTLP_TRACER_PROVIDER.get() {
+        match provider.shutdown() {
+            Ok(()) => Ok(()),
+            Err(OTelSdkError::AlreadyShutdown) => Ok(()),
+            Err(err) => Err(err.into()),
+        }
+    } else {
+        Ok(())
+    }
+}
+
+/// No-op when OTLP support is disabled.
+#[cfg(not(feature = "otlp"))]
+pub fn shutdown_tracing() -> Result<()> {
+    Ok(())
 }

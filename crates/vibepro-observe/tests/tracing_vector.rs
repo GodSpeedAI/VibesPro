@@ -7,7 +7,7 @@ use opentelemetry::{
 use std::env;
 use std::time::Duration;
 use tokio::time::sleep;
-use vibepro_observe::init_tracing;
+use vibepro_observe::{init_tracing, shutdown_tracing};
 
 // Small RAII helper that captures previous values of environment variables
 // and restores them when dropped. This ensures tests don't leak env changes
@@ -41,7 +41,7 @@ impl Drop for EnvVarGuard {
     fn drop(&mut self) {
         // Explicitly flush the exporter with error handling
         // Ignore errors during shutdown as we're in a Drop context
-        let _ = opentelemetry::global::shutdown_tracer_provider();
+        let _ = shutdown_tracing();
 
         // Restore original environment variables
         if let Some(val) = &self.vibep {
@@ -76,7 +76,10 @@ async fn emits_span_with_redactable_fields() {
 
     {
         let _guard = span.enter();
-        tracing::info!(event = "phase3_integration", detail = "ensuring OTLP pipeline works");
+        tracing::info!(
+            event = "phase3_integration",
+            detail = "ensuring OTLP pipeline works"
+        );
     }
 
     let tracer = opentelemetry::global::tracer("vector-integration");
