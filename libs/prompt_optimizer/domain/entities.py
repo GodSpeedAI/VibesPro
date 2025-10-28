@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any
 from uuid import UUID, uuid4
 
 
@@ -92,7 +91,7 @@ class PromptFeatures:
     ambiguity_score: float
     directive_strength: float
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, int | float]:
         """Convert features to dictionary for ML processing."""
         return {
             "token_count": self.token_count,
@@ -110,6 +109,9 @@ class PromptFeatures:
         }
 
 
+type MetadataValue = object
+
+
 @dataclass
 class Prompt:
     """Domain entity representing a prompt for optimization."""
@@ -121,7 +123,7 @@ class Prompt:
     token_count: TokenCount | None = None
     effectiveness_score: EffectivenessScore | None = None
     optimization_suggestions: list[str] = field(default_factory=list)
-    metadata: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, MetadataValue] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if not self.content.strip():

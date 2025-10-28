@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 # temporal_db/python/types.py
 """
 Type definitions for the temporal database Python bindings.

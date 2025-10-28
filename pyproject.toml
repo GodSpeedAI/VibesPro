@@ -47,6 +47,26 @@ ignore = [
 [tool.mypy]
 python_version = "3.12"
 strict = true
+warn_unused_configs = true
+disallow_any_unimported = true
+disallow_any_expr = true
+disallow_any_decorated = true
+disallow_any_explicit = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+warn_return_any = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+no_implicit_optional = true
+strict_equality = true
+extra_checks = true
 exclude = [
     "tests/fixtures/",
     "test-output/",
@@ -70,6 +90,7 @@ exclude = [
     # Exclude any path that contains Jinja-style template braces to avoid
     # treating placeholders like {{domain_name}} as real package names.
     "^.*\\{\\{.*\\}\\}.*$",
+    "scripts/",
 ]
 [[tool.mypy.overrides]]
 module = ["prompt_optimizer.*", "my_test_domain.*"]

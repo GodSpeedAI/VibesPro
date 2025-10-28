@@ -829,11 +829,6 @@ Use Context7 MCP for up-to-date library documentation:
 - TypeScript best practices
 - Python ecosystem tools
 
-Use `KNOWLEDGE.md` for usage specs of key dependencies:
-
-- nx, @nx/devkit, @nx/workspace
-- copier (Jinja2 templating)
-
 ---
 
 ## 🎓 Learning & Adaptation
@@ -879,5 +874,5 @@ The `temporal_db/` stores:
 
 For detailed guidance on any topic, consult the modular instruction files in `.github/instructions/`.
 
-**Save and generated summaries in the docs/work-summaries/ folder for future reference.**
+**Save and generated summaries in the docs/work-summaries/ folder for future reference after significant problem is solved or after milestone completed.**
 **Always check which MCP tools are available and use them when appropriate.**

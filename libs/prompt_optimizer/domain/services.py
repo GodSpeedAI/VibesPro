@@ -59,7 +59,10 @@ class PromptFeatureExtractor:
     def _split_sentences(self, text: str) -> list[str]:
         """Split text into sentences."""
         # Simple sentence splitting - could be enhanced with NLP library
-        sentences = re.split(r"[.!?]+", text)
+        if not text:
+            return []
+        # Mypy can infer re.split as containing Any, so we assert the type.
+        sentences: list[str] = re.split(r"[.!?]+", text)
         return [s.strip() for s in sentences if s.strip()]
 
     def _measure_instruction_clarity(self, content: str) -> float:

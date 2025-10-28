@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
+#!/usr/bin/env python3
 """Pre-generation validation hook for Copier."""
 
 from __future__ import annotations

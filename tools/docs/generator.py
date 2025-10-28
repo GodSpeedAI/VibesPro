@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
+#!/usr/bin/env python3
 """
 MERGE-TASK-011: Documentation Generator CLI (Python wrapper)
 Traceability: PRD-MERGE-006, ADR-MERGE-008

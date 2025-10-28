@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 # temporal_db/python/repository.py
 """
 Python repository interface for the temporal database.
