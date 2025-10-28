@@ -203,52 +203,54 @@ Language-specific implementations:
 
 - **Rust:** Continue using `tracing` events (already in place via `vibepro-observe`)
 - **Node:** `pino` with custom formatters for trace context injection
-- **Python:** `structlog` with JSON renderer and context binding
+- **Python:** Replace `structlog` with the Logfire SDK (OpenTelemetry emitter) to auto-instrument FastAPI requests, outbound HTTP clients, and Pydantic validation while emitting the shared JSON schema
 
 Rationale
 
 - **Consistency:** Same log schema regardless of language/runtime
 - **Correlation:** Enables log ↔ trace navigation in OpenObserve
+- **Python Fidelity:** Logfire surfaces FastAPI spans, Pydantic validation errors, and LLM context without bespoke middleware
 - **Cost Control:** Sampling/redaction at Vector edge; shorter retention than traces
 - **PII Safety:** Centralized redaction rules prevent accidental exposure
 - **Query Performance:** JSON structure enables fast field indexing
 
 Consequences
 
-| Area         | Positive                                       | Trade-off                                   |
-| ------------ | ---------------------------------------------- | ------------------------------------------- |
-| Developer DX | Unified logging API across languages           | Learning curve for structured logging       |
-| Debugging    | Fast correlation between logs and traces       | Must adopt new logger libs (pino/structlog) |
-| Security     | PII redaction enforced at infrastructure layer | Vector config complexity                    |
-| Cost         | Lower retention costs; efficient queries       | Initial setup overhead                      |
-| Operations   | Consistent log schema for alerting/dashboards  | Requires Vector transforms validation       |
+| Area         | Positive                                                        | Trade-off                                           |
+| ------------ | --------------------------------------------------------------- | --------------------------------------------------- |
+| Developer DX | Unified logging/tracing API across languages; Python auto-spans | Learn Logfire workflows and manage OTEL env vars    |
+| Debugging    | Fast correlation between logs, spans, and Pydantic context      | Must replace legacy structlog wrappers with Logfire |
+| Security     | PII redaction enforced at infrastructure layer                  | Vector config complexity                            |
+| Cost         | Lower retention costs; efficient queries                        | Initial setup overhead                              |
+| Operations   | Consistent log schema for alerting/dashboards                   | Requires Vector transforms validation               |
 
 Implementation Requirements
 
 1. Add Vector OTLP logs source and PII redaction transforms to `ops/vector/vector.toml`
 2. Create `libs/node-logging/logger.ts` with pino wrapper
-3. Create `libs/python/vibepro_logging.py` with structlog configuration
-4. Document logging policy in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
-5. Add TDD tests: Vector config validation, PII redaction, trace correlation
+3. Refactor `libs/python/vibepro_logging.py` into a Logfire bootstrap that instruments FastAPI, requests, and async clients
+4. Install and configure the Logfire SDK in `pyproject.toml`, including default OTEL environment variable templates
+5. Document logging and tracing policy in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
+6. Add TDD tests: Vector config validation, PII redaction, trace correlation, Logfire smoke test
 
 Related Specs
 
 - DEV-ADR-016 — Rust-Native Observability Pipeline (foundation)
-- DEV-PRD-018 — Structured Logging Product Requirements (to be created)
-- DEV-SDS-018 — Structured Logging Design Specification (to be created)
+- DEV-PRD-018 — Structured Logging Product Requirements (Logfire upgrade)
+- DEV-SDS-018 — Structured Logging Design Specification (Logfire upgrade)
 - DEV-SPEC-009 — Logging Policy & Examples (documentation)
 
 Migration Strategy
 
-- Phase 1: Introduce logging libraries as opt-in; update examples
-- Phase 2: Deprecate printf-style logging; lint rules to enforce JSON
-- Phase 3: Mandatory for all new code; existing code migrated incrementally
+- Phase 1: Introduce Logfire alongside existing structlog wrapper behind a compatibility facade; update examples and smoke tests.
+- Phase 2: Cut Python services over to Logfire instrumentation (FastAPI, requests, Pydantic) and deprecate structlog usage.
+- Phase 3: Remove structlog dependency, enforce Logfire bootstrap in generators, and lint for legacy imports.
 
 Validation
 
 - All logs must include: `trace_id`, `span_id`, `service`, `environment`, `application_version`
 - PII fields (email, authorization, tokens) automatically redacted by Vector
-- Tests validate: config correctness, redaction behavior, correlation fields
+- Tests validate: config correctness, redaction behavior, correlation fields, and presence of Logfire-generated spans for FastAPI endpoints
 
 ---
 

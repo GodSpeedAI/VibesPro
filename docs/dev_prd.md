@@ -217,9 +217,9 @@ Supported by: DEV-ADR-014, DEV-SDS-015
 
 ## DEV-PRD-018 — Structured Logging with Trace Correlation
 
-- Description: As a developer, I want consistent, JSON-formatted structured logging across all languages (Rust, Node, Python) with automatic trace correlation so that I can debug issues efficiently and comply with PII protection requirements.
-- EARS: When application code emits logs, the system shall automatically enrich them with trace context (`trace_id`, `span_id`, `service`, `environment`, `version`) and apply PII redaction rules before storage.
-- DX Metrics: Log-trace correlation success rate > 95%; PII exposure incidents = 0; query performance improvement > 50% vs unstructured logs.
+- Description: As a developer, I want consistent, JSON-formatted structured logging across all languages (Rust, Node, Python) with automatic trace correlation and zero-effort distributed tracing for Python services so that I can debug issues efficiently and comply with PII protection requirements.
+- EARS: When application code emits logs, the system shall automatically enrich them with trace context (`trace_id`, `span_id`, `service`, `environment`, `version`) and apply PII redaction rules before storage. When a Python FastAPI request is handled, the instrumentation shall create a root span and propagate the trace context through downstream calls and logs.
+- DX Metrics: Log-trace correlation success rate > 95%; PII exposure incidents = 0; query performance improvement > 50% vs unstructured logs; Python trace coverage ≥ 95% of FastAPI endpoints.
 
 ### EARS (Event → Action → Response)
 
@@ -229,6 +229,7 @@ Supported by: DEV-ADR-014, DEV-SDS-015
 | Vector receives JSON log            | Applies PII redaction transform (email, authorization headers) and enrichment                       | Clean, enriched log forwarded to OpenObserve         |
 | Developer queries logs for trace_id | OpenObserve search filters logs by trace_id                                                         | All correlated logs + spans returned in unified view |
 | Developer accidentally logs PII     | Vector redaction transform catches configured patterns                                              | PII replaced with [REDACTED] before storage          |
+| Python FastAPI request received     | Logfire instrumentation opens a root span, binds Pydantic context, and emits correlated logs        | Unified trace + log timeline visible in OpenObserve  |
 | Log retention policy expires        | OpenObserve automatically purges logs older than configured days (14-30)                            | Storage costs reduced; compliance maintained         |
 
 ### Goals
@@ -247,13 +248,14 @@ Supported by: DEV-ADR-014, DEV-SDS-015
 
 ### User Stories
 
-| ID        | Story                                                                                             | Acceptance Criteria                                                                  |
-| --------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| PRD-018-A | As a Node developer, I can use `logger.info()` and get JSON with trace context automatically.     | Log contains `trace_id`, `span_id`, `service`, `environment`, `application_version`. |
-| PRD-018-B | As a Python developer, I can use `log.info()` and get the same structured format.                 | Python logs match Node/Rust schema exactly.                                          |
-| PRD-018-C | As a security engineer, I can verify that PII is redacted before storage.                         | Test logs with emails/tokens show `[REDACTED]` in OpenObserve.                       |
-| PRD-018-D | As an SRE, I can query logs by `trace_id` to find all related log lines.                          | Query returns 100% of logs for a given trace.                                        |
-| PRD-018-E | As a developer, I can distinguish between app, audit, and security logs via the `category` field. | Logs tagged with `category=security` are routed to dedicated retention policy.       |
+| ID        | Story                                                                                             | Acceptance Criteria                                                                   |
+| --------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| PRD-018-A | As a Node developer, I can use `logger.info()` and get JSON with trace context automatically.     | Log contains `trace_id`, `span_id`, `service`, `environment`, `application_version`.  |
+| PRD-018-B | As a Python developer, I can use `log.info()` and get the same structured format.                 | Python logs match Node/Rust schema exactly while being emitted through Logfire.       |
+| PRD-018-C | As a security engineer, I can verify that PII is redacted before storage.                         | Test logs with emails/tokens show `[REDACTED]` in OpenObserve.                        |
+| PRD-018-D | As an SRE, I can query logs by `trace_id` to find all related log lines.                          | Query returns 100% of logs for a given trace.                                         |
+| PRD-018-E | As a developer, I can distinguish between app, audit, and security logs via the `category` field. | Logs tagged with `category=security` are routed to dedicated retention policy.        |
+| PRD-018-F | As a Python service owner, I enable tracing once and see correlated spans for FastAPI routes.     | 95% of FastAPI endpoints produce spans in OpenObserve without manual instrumentation. |
 
 ### DX & Operational Metrics
 
@@ -331,14 +333,32 @@ log.info({ category: "app", user_id_hash: "abc123" }, "request accepted");
 log.warn({ category: "security", action: "auth_failure" }, "auth failed");
 ```
 
-**Python (structlog):**
+**Python (Logfire SDK):**
 
 ```python
-from libs.python.vibepro_logging import configure_logger
-log = configure_logger()
-log.info("request accepted", category="app", user_id_hash="abc123")
-log.warning("auth failed", category="security", action="auth_failure")
+from fastapi import FastAPI
+import logfire
+
+app = FastAPI()
+logfire.configure(service_name="user-api")
+logfire.instrument_fastapi(app)      # automatic request spans
+
+logger = logfire.logger
+logger.info("request accepted", category="app", user_id_hash="abc123")
+logger.warning("auth failed", category="security", action="auth_failure")
 ```
+
+**Python OTLP Export Configuration:**
+
+```bash
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318"
+export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
+export OTEL_SERVICE_NAME="user-api"
+```
+
+Set the endpoint to Vector (local) or OpenObserve directly, depending on environment. The Logfire SDK respects standard OpenTelemetry variables, so no additional configuration files are required to switch destinations.
+
+Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using Logfire's optional helpers where relevant to the service.
 
 ### Dependencies
 
@@ -347,7 +367,8 @@ log.warning("auth failed", category="security", action="auth_failure")
 - DEV-SDS-018 — Structured Logging Design Specification (to be created)
 - `ops/vector/vector.toml` — OTLP logs source and PII redaction transforms
 - `libs/node-logging/logger.ts` — Node pino wrapper
-- `libs/python/vibepro_logging.py` — Python structlog configuration
+- `libs/python/vibepro_logging.py` (to be refactored) — Logfire bootstrap for Python services
+- `pyproject.toml` — `logfire` dependency declaration aligned with structlog removal
 
 ### Acceptance Tests
 
@@ -355,12 +376,13 @@ log.warning("auth failed", category="security", action="auth_failure")
 - `tests/ops/test_log_redaction.sh` — Confirms PII redaction behavior
 - `tests/ops/test_log_trace_correlation.sh` — Verifies trace context in logs
 - `tools/logging/test_pino.js` — Quick validation of Node logger
-- `tools/logging/test_structlog.py` — Quick validation of Python logger
+- `tools/logging/test_logfire.py` — Quick validation of Python Logfire instrumentation
 
 ### Success Criteria
 
 - All language-specific loggers emit identical JSON schema
 - 100% of logs include trace context when `VIBEPRO_OBSERVE=1`
+- ≥95% of FastAPI endpoints emit Logfire-generated spans without manual decorators
 - PII redaction tests pass with 0 leaks
 - Log query performance improves by > 50% vs unstructured logs
 - Documentation complete in `docs/ENVIRONMENT.md` and `docs/observability/README.md`

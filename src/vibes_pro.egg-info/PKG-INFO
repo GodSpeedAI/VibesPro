@@ -6,6 +6,7 @@ Requires-Python: >=3.12
 License-File: LICENSE
 Requires-Dist: copier>=9.0.0
 Requires-Dist: jinja2>=3.1.0
+Requires-Dist: logfire[fastapi]>=4.14.2
 Requires-Dist: pyyaml>=6.0
 Requires-Dist: structlog>=23.0.0
 Provides-Extra: dev

@@ -26,9 +26,13 @@ See DEV-PRD-018 for requirements.
 import logging
 import os
 import sys
+from typing import TYPE_CHECKING
 
 import structlog
 from structlog.stdlib import BoundLogger
+
+if TYPE_CHECKING:  # pragma: no cover - used for type hints only
+    from fastapi import FastAPI
 
 
 def configure_logger(service: str | None = None) -> BoundLogger:
@@ -77,3 +81,14 @@ def configure_logger(service: str | None = None) -> BoundLogger:
         "application_version": os.getenv("APP_VERSION", "dev"),
     }
     return logger.bind(**context)
+
+
+def bootstrap_logfire(app: "FastAPI") -> None:
+    """
+    Placeholder for Logfire instrumentation bootstrap.
+
+    This stub will be replaced with full OpenTelemetry/Logfire wiring in DEV-TDD cycle 2A.
+    """
+    raise NotImplementedError(
+        "Logfire bootstrap is not implemented yet. See DEV-PRD-018 and DEV-SDS-018."
+    )
