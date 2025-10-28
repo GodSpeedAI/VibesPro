@@ -118,7 +118,7 @@ The following phases are mutually exclusive and collectively exhaustive. Within 
   - Dependencies: Environment variable management within tests
   - Satisfies: DEV-PRD-018, DEV-SDS-018
 
-## [ ]Phase 3 — Pipeline & Documentation Integration
+## [ ] Phase 3 — Pipeline & Documentation Integration
 
 > Concurrency: Cycles 3A–3C depend on Phase 2 outputs but do not depend on one another.
 
@@ -176,7 +176,7 @@ The following phases are mutually exclusive and collectively exhaustive. Within 
   - Dependencies: OpenObserve token, Devbox
   - Satisfies: DEV-PRD-018, DEV-SDS-018
 
-## [ ]Phase 4 — Migration & Enforcement
+## [ ] Phase 4 — Migration & Enforcement
 
 > Concurrency: Cycles 4A–4B require Phase 3 completions but can run in parallel.
 

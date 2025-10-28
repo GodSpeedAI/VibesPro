@@ -209,7 +209,7 @@ Rationale
 
 - **Consistency:** Same log schema regardless of language/runtime
 - **Correlation:** Enables log ↔ trace navigation in OpenObserve
-- **Python Fidelity:** Logfire surfaces FastAPI spans, Pydantic validation errors, and LLM context without bespoke middleware
+- **Python Fidelity:** Logfire surfaces FastAPI spans, Pydantic validation errors, and LLM context with minimal, standardized instrumentation setup such as calling logfire.instrument_fastapi()
 - **Cost Control:** Sampling/redaction at Vector edge; shorter retention than traces
 - **PII Safety:** Centralized redaction rules prevent accidental exposure
 - **Query Performance:** JSON structure enables fast field indexing
@@ -227,11 +227,56 @@ Consequences
 Implementation Requirements
 
 1. Add Vector OTLP logs source and PII redaction transforms to `ops/vector/vector.toml`
+   - **DRI:** Infrastructure Team
+   - **Timeline:** Week 1 (2025-11-01 to 2025-11-07)
+   - **Phase-exit criteria:** Vector config updated and validated in CI
 2. Create `libs/node-logging/logger.ts` with pino wrapper
+   - **DRI:** Frontend Platform Team
+   - **Timeline:** Week 1-2 (2025-11-01 to 2025-11-14)
+   - **Phase-exit criteria:** Logger package published and tests passing
 3. Refactor `libs/python/vibepro_logging.py` into a Logfire bootstrap that instruments FastAPI, requests, and async clients
-4. Install and configure the Logfire SDK in `pyproject.toml`, including default OTEL environment variable templates
+
+   - **DRI:** Backend Platform Team
+   - **Timeline:** Week 2-3 (2025-11-08 to 2025-11-21)
+   - **Phase-exit criteria:** Logfire SDK installed, FastAPI instrumentation validated, and smoke test passes in staging
+   - **DRI:** Backend Platform Team
+   - **Timeline:** Week 2-3 (2025-11-08 to 2025-11-21)
+   - **Phase-exit criteria:** Logfire SDK installed, FastAPI instrumentation validated, and smoke test passes in staging
+
+4. Install and configure Logfire SDK in `pyproject.toml`, including default OTEL environment variable templates
+
+   - **DRI:** Backend Platform Team
+   - **Timeline:** Week 2 (2025-11-08 to 2025-11-14)
+   - **Phase-exit criteria:** All Python services can import and configure Logfire without errors
+   - **DRI:** Backend Platform Team
+   - **Timeline:** Week 2 (2025-11-08 to 2025-11-14)
+   - **Phase-exit criteria:** All Python services can import and configure Logfire without errors
+
 5. Document logging and tracing policy in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
+
+   - **DRI:** Documentation Team
+   - **Timeline:** Week 3-4 (2025-11-15 to 2025-11-28)
+   - **Phase-exit criteria:** Documentation reviewed and approved by technical leads
+   - **DRI:** Documentation Team
+   - **Timeline:** Week 3-4 (2025-11-15 to 2025-11-28)
+   - **Phase-exit criteria:** Documentation reviewed and approved by technical leads
+
 6. Add TDD tests: Vector config validation, PII redaction, trace correlation, Logfire smoke test
+   - **DRI:** QA Team
+   - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
+   - **Phase-exit criteria:** All tests passing in CI with >90% code coverage
+   - **DRI:** QA Team
+   - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
+   - **Phase-exit criteria:** All tests passing in CI with >90% code coverage
+7. Install and configure the Logfire SDK in `pyproject.toml`, including default OTEL environment variable templates
+8. Document logging and tracing policy in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
+   - **DRI:** Documentation Team
+   - **Timeline:** Week 3-4 (2025-11-15 to 2025-11-28)
+   - **Phase-exit criteria:** Documentation reviewed and approved by technical leads
+9. Add TDD tests: Vector config validation, PII redaction, trace correlation, Logfire smoke test
+   - **DRI:** QA Team
+   - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
+   - **Phase-exit criteria:** All tests passing in CI with >90% code coverage
 
 Related Specs
 

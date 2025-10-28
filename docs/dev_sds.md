@@ -500,7 +500,9 @@ log.error({ category: "app", code: 500 }, "upstream timeout");
 **Trace context:** Injected via middleware/headers (OpenTelemetry context propagation)
 **Transport:** stdout JSON → Vector OTLP logs source or HTTP ingestion
 
-#### 3) Python (Logfire instrumentation)
+#### 3) Python (Logfire instrumentation) - **FUTURE DESIGN (Cycle 2A)**
+
+> **Note:** This section describes planned/target implementations for Cycle 2A (DEV-TDD cycle 2A). These examples are not yet implemented - see `libs/python/vibepro_logging.py` which currently contains stub/NotImplementedError.
 
 Refactor `libs/python/vibepro_logging.py` to expose a Logfire bootstrap that instruments FastAPI and outbound calls:
 

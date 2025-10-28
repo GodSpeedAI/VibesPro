@@ -184,5 +184,3 @@ If you want, I can:
 - Add a PR that creates this file and links into `docs/dev_tdd.md` or `docs/README.md`.
 - Modify `CONTRIBUTING.md` to summarize these rules.
 - Produce a small `docs/branching-quickstart.md` with only the commands.
-
-File created: `docs/branching.md`

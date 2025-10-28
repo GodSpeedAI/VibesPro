@@ -217,7 +217,7 @@ Supported by: DEV-ADR-014, DEV-SDS-015
 
 ## DEV-PRD-018 — Structured Logging with Trace Correlation
 
-- Description: As a developer, I want consistent, JSON-formatted structured logging across all languages (Rust, Node, Python) with automatic trace correlation and zero-effort distributed tracing for Python services so that I can debug issues efficiently and comply with PII protection requirements.
+- Description: As a developer, I want consistent, JSON-formatted structured logging across all languages (Rust, Node, Python) with automatic trace correlation and planned zero-effort distributed tracing for Python services (DEV-TDD cycle 2A) so that I can debug issues efficiently and comply with PII protection requirements.
 - EARS: When application code emits logs, the system shall automatically enrich them with trace context (`trace_id`, `span_id`, `service`, `environment`, `version`) and apply PII redaction rules before storage. When a Python FastAPI request is handled, the instrumentation shall create a root span and propagate the trace context through downstream calls and logs.
 - DX Metrics: Log-trace correlation success rate > 95%; PII exposure incidents = 0; query performance improvement > 50% vs unstructured logs; Python trace coverage ≥ 95% of FastAPI endpoints.
 
