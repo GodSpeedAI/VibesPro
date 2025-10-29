@@ -60,61 +60,61 @@ The following phases are mutually exclusive and collectively exhaustive. Within 
   - Dependencies: Copier, temporary output directory
   - Satisfies: DEV-PRD-021, DEV-SDS-021
 
-## [ ] Phase 2 — Python Instrumentation Delivery
+## [x] Phase 2 — Python Instrumentation Delivery
 
 > Concurrency: Cycles 2A–2C require Phase 1 artifacts present but are otherwise independent.
 
 ### Cycle 2A — FastAPI Instrumentation
 
-- [ ] **Red:** Extend `tests/python/test_logfire_bootstrap.py` asserting FastAPI requests emit spans (test currently skips due to missing instrumentation).
+- [x] **Red:** Extend `tests/python/test_logfire_bootstrap.py` asserting FastAPI requests emit spans (test currently skips due to missing instrumentation).
   - Files: `tests/python/test_logfire_bootstrap.py`
   - Dependencies: `httpx`, `fastapi`, `pytest-asyncio`
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Green:** Implement `bootstrap_logfire` to call `logfire.configure` and `logfire.instrument_fastapi`.
+- [x] **Green:** Implement `bootstrap_logfire` to call `logfire.configure` and `logfire.instrument_fastapi`.
   - Files: `libs/python/vibepro_logging.py`
   - Dependencies: Logfire SDK API
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Refactor:** Extract shared OTEL env binding into `libs/python/vibepro_logging.py::default_metadata`.
+- [x] **Refactor:** Extract shared OTEL env binding into `libs/python/vibepro_logging.py::default_metadata`.
   - Files: `libs/python/vibepro_logging.py`
   - Dependencies: Python typing utilities (`TypedDict` or dataclasses)
   - Satisfies: DEV-PRD-020, DEV-SDS-022
-- [ ] **Regression:** Run `pytest tests/python/test_logfire_bootstrap.py -k fastapi` and `just test:logs`.
+- [x] **Regression:** Run `pytest tests/python/test_logfire_bootstrap.py -k fastapi` and `just test:logs`.
   - Dependencies: FastAPI test client, Devbox shell
   - Satisfies: DEV-PRD-023, DEV-SDS-022
 
 ### Cycle 2B — Context Binding API
 
-- [ ] **Red:** Author a failing unit test that expects `get_logger()` to bind `environment` and `application_version`.
+- [x] **Red:** Author a failing unit test that expects `get_logger()` to bind `environment` and `application_version`.
   - Files: `tests/python/test_logfire_context.py` (new)
   - Dependencies: Python logging fixtures
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Green:** Implement `get_logger()` to return a Logfire-bound logger with the shared metadata and ensure optional category defaults.
+- [x] **Green:** Implement `get_logger()` to return a Logfire-bound logger with the shared metadata and ensure optional category defaults.
   - Files: `libs/python/vibepro_logging.py`
   - Dependencies: `typing` protocols, Logfire API
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Refactor:** Centralize category constants in `libs/python/vibepro_logging.py` and export for reuse by generated services.
+- [x] **Refactor:** Centralize category constants in `libs/python/vibepro_logging.py` and export for reuse by generated services.
   - Files: `libs/python/vibepro_logging.py`, `templates/{{project_slug}}/libs/shared/logging/constants.py.j2`
   - Dependencies: Template sync with runtime library
   - Satisfies: DEV-PRD-006, DEV-SDS-002
-- [ ] **Regression:** Execute `pytest tests/python/test_logfire_context.py` and re-run `just test-generation` to confirm template alignment.
+- [x] **Regression:** Execute `pytest tests/python/test_logfire_context.py` and re-run `just test-generation` to confirm template alignment.
   - Dependencies: Copier artifacts from Phase 1C
   - Satisfies: DEV-PRD-021, DEV-SDS-021
 
 ### Cycle 2C — Optional Integrations
 
-- [ ] **Red:** Add skipped tests outlining expected spans for `requests` and `pydantic` instrumentation.
+- [x] **Red:** Add skipped tests outlining expected spans for `requests` and `pydantic` instrumentation.
   - Files: `tests/python/test_logfire_integrations.py` (new)
   - Dependencies: `requests`, `pydantic`, `pytest`
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Green:** Wire optional helpers (`logfire.instrument_requests`, `logfire.instrument_pydantic`) behind feature flags or settings toggles.
+- [x] **Green:** Wire optional helpers (`logfire.instrument_requests`, `logfire.instrument_pydantic`) behind feature flags or settings toggles.
   - Files: `libs/python/vibepro_logging.py`, `docs/observability/README.md`
   - Dependencies: Environment variable parsing (`os.getenv`)
   - Satisfies: DEV-PRD-009, DEV-SDS-008
-- [ ] **Refactor:** Move toggle parsing into a reusable settings module (`libs/python/logging_settings.py`).
+- [x] **Refactor:** Move toggle parsing into a reusable settings module (`libs/python/logging_settings.py`).
   - Files: `libs/python/logging_settings.py` (new), `libs/python/vibepro_logging.py`
   - Dependencies: Shared configuration patterns
   - Satisfies: DEV-PRD-006, DEV-SDS-002
-- [ ] **Regression:** Run targeted tests (`pytest tests/python/test_logfire_integrations.py`) with toggles on/off and confirm `just test:logs` still passes.
+- [x] **Regression:** Run targeted tests (`pytest tests/python/test_logfire_integrations.py`) with toggles on/off and confirm `just test:logs` still passes.
   - Dependencies: Environment variable management within tests
   - Satisfies: DEV-PRD-018, DEV-SDS-018
 

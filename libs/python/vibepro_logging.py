@@ -27,7 +27,7 @@ import logging
 import os
 import sys
 from typing import TYPE_CHECKING
-
+import logfire
 import structlog
 from structlog.stdlib import BoundLogger
 
@@ -75,25 +75,57 @@ def configure_logger(service: str | None = None) -> BoundLogger:
     logger: BoundLogger = structlog.stdlib.get_logger()
 
     # Bind service metadata
-    context: dict[str, str] = {
+    return logger.bind(**default_metadata(service))
+
+
+def default_metadata(service: str | None = None) -> dict[str, str]:
+    """Return a dictionary with default OTEL metadata."""
+    if service is None:
+        service = os.getenv("SERVICE_NAME", "vibepro-py")
+
+    return {
         "service": service,
         "environment": os.getenv("APP_ENV", "local"),
         "application_version": os.getenv("APP_VERSION", "dev"),
     }
-    return logger.bind(**context)
 
 
-def bootstrap_logfire(app: "FastAPI") -> None:
+def bootstrap_logfire(app: "FastAPI", **kwargs) -> None:
     """
-    Placeholder for Logfire instrumentation bootstrap.
-
-    This stub will be replaced with full OpenTelemetry/Logfire wiring in DEV-TDD cycle 2A.
-    Currently a safe no-op that logs a warning when called.
+    Bootstrap Logfire for FastAPI applications.
+    This function configures Logfire and instruments the FastAPI application
+    to emit OpenTelemetry spans for each request.
+    kwargs are passed to logfire.configure()
     """
-    import warnings
+    import logfire
+    logfire.configure(**kwargs)
+    logfire.instrument_fastapi(app)
 
-    warnings.warn(
-        "Logfire bootstrap is not implemented yet. See DEV-PRD-018 and DEV-SDS-018.",
-        UserWarning,
-        stacklevel=2,
-    )
+
+def get_logger(category: str | None = None, **kwargs) -> "logfire.Logfire":
+    """
+    Returns a Logfire-bound logger with shared metadata.
+    """
+    metadata = default_metadata()
+    if category:
+        metadata['category'] = category
+    metadata.update(kwargs)
+    return logfire.get_logger().bind(**metadata)
+
+
+class LogCategory:
+    APP = "app"
+    AUDIT = "audit"
+    SECURITY = "security"
+
+
+from .logging_settings import settings
+
+def instrument_integrations(requests: bool = False, pydantic: bool = False):
+    """
+    Enable optional Logfire instrumentations.
+    """
+    if requests or settings.INSTRUMENT_REQUESTS:
+        logfire.instrument_requests()
+    if pydantic or settings.INSTRUMENT_PYDANTIC:
+        logfire.instrument_pydantic()
