@@ -2,7 +2,7 @@
 
 The following phases are mutually exclusive and collectively exhaustive. Within each phase, the listed TDD cycles (Red → Green → Refactor → Regression) can run in parallel—up to three agents concurrently—without blocking dependencies across cycles.
 
-## [ ] Phase 1 — Dependency & Environment Foundations
+## [x] Phase 1 — Dependency & Environment Foundations
 
 > Concurrency: Cycles 1A–1C may run in parallel once shared repos are pulled.
 
