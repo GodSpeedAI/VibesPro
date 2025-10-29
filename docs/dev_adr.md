@@ -12,7 +12,7 @@ Source: transcript.md synthesis and repository conventions
 - Context: Constraint of "NO custom YAML files or external DSL," need for immediate usability and hot-reload.
 - Rationale: Lower cognitive load; no extra tooling; leverages existing ecosystem; simpler onboarding; safe defaults.
 - DX Impact: Faster setup (<10 min), less context switching, predictable discovery; fewer toolchains to learn.
-- Trade-offs: Less declarative logic in-config; conditional flows handled via tasks/scripts.
+- Trade–offs: Less declarative logic in-config; conditional flows handled via tasks/scripts.
 
 ## DEV-ADR-002 — MECE modular instruction files with "LoRA-style" stacking
 
@@ -79,7 +79,7 @@ Rationale: Reproducibility, cross-platform parity, smaller onboarding surface.
 
 DX Impact: Faster "first build," fewer "works on my machine" incidents.
 
-Trade-offs: Devbox binary required; CI runner images may need an extra layer.
+Trade–offs: Devbox binary required; CI runner images may need an extra layer.
 
 ## DEV-ADR-012 — Standardize on mise for multi-language runtime management
 
@@ -91,7 +91,7 @@ Rationale: Single tool, consistent PATH, simpler docs/CI.
 
 DX Impact: Zero drift; simpler contributor experience.
 
-Trade-offs: Team must learn mise; initial cache warming in CI.
+Trade–offs: Team must learn mise; initial cache warming in CI.
 
 ## DEV-ADR-013 — Secrets managed by SOPS; ephemeral decryption
 
@@ -103,7 +103,7 @@ Rationale: Strong auditability; easy rotation; flexible recipients (AGE/KMS).
 
 DX Impact: Safer by default; minimal friction after keys configured.
 
-Trade-offs: Requires developer key management; CI key plumbing.
+Trade–offs: Requires developer key management; CI key plumbing.
 
 ## DEV-ADR-014 — Volta compatibility, mise authority, and timed deprecation
 
@@ -115,7 +115,7 @@ Rationale: Smooth transition, deterministic behavior, one true source.
 
 DX Impact: Clear, early feedback; removal plan avoids confusion.
 
-Trade-offs: Short-term duplication until deprecation window ends.
+Trade–offs: Short-term duplication until deprecation window ends.
 
 ## DEV-ADR-015 — Minimal CI (no direnv) with explicit SOPS decrypt
 
@@ -127,7 +127,7 @@ Rationale: Simpler pipeline, fewer moving parts; same versions as local.
 
 DX Impact: Faster, more reliable CI; clearer failure modes.
 
-Trade-offs: Need small glue to source decrypted env file.
+Trade–offs: Need small glue to source decrypted env file.
 
 ## DEV-ADR-016 — Adopt Rust‑Native Observability Pipeline (tracing → Vector → OpenObserve)
 
@@ -216,7 +216,7 @@ Rationale
 
 Consequences
 
-| Area         | Positive                                                        | Trade-off                                           |
+| Area         | Positive                                                        | Trade–off                                           |
 | ------------ | --------------------------------------------------------------- | --------------------------------------------------- |
 | Developer DX | Unified logging/tracing API across languages; Python auto-spans | Learn Logfire workflows and manage OTEL env vars    |
 | Debugging    | Fast correlation between logs, spans, and Pydantic context      | Must replace legacy structlog wrappers with Logfire |
@@ -236,9 +236,6 @@ Implementation Requirements
    - **Phase-exit criteria:** Logger package published and tests passing
 3. Refactor `libs/python/vibepro_logging.py` into a Logfire bootstrap that instruments FastAPI, requests, and async clients
 
-   - **DRI:** Backend Platform Team
-   - **Timeline:** Week 2-3 (2025-11-08 to 2025-11-21)
-   - **Phase-exit criteria:** Logfire SDK installed, FastAPI instrumentation validated, and smoke test passes in staging
    - **DRI:** Backend Platform Team
    - **Timeline:** Week 2-3 (2025-11-08 to 2025-11-21)
    - **Phase-exit criteria:** Logfire SDK installed, FastAPI instrumentation validated, and smoke test passes in staging
@@ -319,7 +316,7 @@ Rationale
 
 Consequences
 
-| Area           | Positive                                                          | Trade-off                                                      |
+| Area           | Positive                                                          | Trade–off                                                      |
 | -------------- | ----------------------------------------------------------------- | -------------------------------------------------------------- |
 | Developer DX   | Proactive, context-aware recommendations with confidence metadata | Requires new UI/CLI surfacing for confidence + advisories      |
 | Data           | Unified governance for temporal insights and telemetry            | Must harden retention/PII policies before expanding data usage |

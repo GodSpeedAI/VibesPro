@@ -166,19 +166,24 @@ test-python:
 	# SKIP lists hook ids to bypass. COPIER_SKIP_PROJECT_SETUP avoids heavy post-gen setup.
 	SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck COPIER_SKIP_PROJECT_SETUP=1 UV_NO_SYNC=1 uv run pytest
 
+# Common SKIP list for template tests to avoid pre-commit hooks that mutate files during test fixture commits
+TEMPLATE_TEST_SKIP := "end-of-file-fixer ruff ruff-format shellcheck prettier trim-trailing-whitespace"
+
 test-template:
 	@echo "🧪 Running template generation test (non-interactive)"
 	# Ensure Python dev deps are installed
 	uv sync --dev || true
 	# Run the single test while skipping pre-commit hooks that mutate files during test fixture commits
-	SKIP=end-of-file-fixer,ruff,ruff-format,shellcheck,prettier,trim-trailing-whitespace \
+	SKIP={{TEMPLATE_TEST_SKIP}} \
 	COPIER_SKIP_PROJECT_SETUP=1 \
 	UV_NO_SYNC=1 \
 	uv run pytest -q tests/template/test_template_generation.py::test_generate_template_user_defaults
 
 test-template-logfire:
 	@echo "🧪 Validating Logfire template scaffolding..."
-	SKIP=end-of-file-fixer,ruff,ruff-format,shellcheck,prettier,trim-trailing-whitespace,check-shebang-scripts-are-executable,spec-matrix \
+	# Skip additional checks for Logfire tests: check-shebang-scripts-are-executable and spec-matrix
+	# These checks are not relevant for Logfire template validation as they test different aspects
+	SKIP={{TEMPLATE_TEST_SKIP}},check-shebang-scripts-are-executable,spec-matrix \
 	COPIER_SKIP_PROJECT_SETUP=1 \
 	UV_NO_SYNC=1 \
 	uv run pytest -q tests/copier/test_logfire_template.py

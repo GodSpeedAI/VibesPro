@@ -364,10 +364,6 @@ Set the endpoint to Vector (local) or OpenObserve directly, depending on environ
 
 Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using Logfire's optional helpers where relevant to the service.
 
-**Note:** The Python Logfire bootstrap function (`libs/python/vibepro_logging.py`) is not yet implemented and is planned for DEV-TDD cycle 2A.
-
-**Note:** The Python Logfire bootstrap function (`libs/python/vibepro_logging.py`) is not yet implemented and is planned for DEV-TDD cycle 2A.
-
 ### Dependencies
 
 - DEV-ADR-017 — JSON-First Structured Logging with Trace Correlation

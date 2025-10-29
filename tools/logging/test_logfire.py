@@ -36,9 +36,12 @@ def _ensure_repo_root_on_path() -> None:
 
         current_dir = current_dir.parent
 
-    # If no marker found, fall back to the original approach
+    # If no marker found, raise a clear exception
     if repo_root is None:
-        repo_root = Path(__file__).resolve().parents[2]
+        raise RuntimeError(
+            "Could not find repository root. Looked for pyproject.toml, setup.cfg, or .git "
+            f"in parent directories starting from {Path(__file__).resolve().parent}"
+        )
 
     repo_root_str = str(repo_root)
     if repo_root_str not in sys.path:
