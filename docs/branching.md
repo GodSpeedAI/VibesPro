@@ -179,7 +179,13 @@ git push origin --delete old-name
 
 ---
 
-If you want, I can:
+## Next Steps
+
+To implement this branching strategy:
+
+1. Create a PR that adds this file and links it from `docs/dev_tdd.md` or `docs/README.md`.
+2. Update `CONTRIBUTING.md` to summarize these branching rules.
+3. Create a condensed `docs/branching-quickstart.md` containing only the essential commands.
 
 - Add a PR that creates this file and links into `docs/dev_tdd.md` or `docs/README.md`.
 - Modify `CONTRIBUTING.md` to summarize these rules.

@@ -1037,6 +1037,8 @@ dev = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "fastapi" },
+    { name = "httpx" },
     { name = "mypy" },
     { name = "pre-commit" },
     { name = "psutil" },
@@ -1050,8 +1052,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "copier", specifier = ">=9.0.0" },
-    { name = "fastapi", marker = "extra == 'dev'" },
-    { name = "httpx", marker = "extra == 'dev'" },
+    { name = "fastapi", marker = "extra == 'dev'", specifier = ">=0.120.1" },
+    { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.28.1" },
     { name = "jinja2", specifier = ">=3.1.0" },
     { name = "logfire", extras = ["fastapi"], specifier = ">=4.14.2" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.0" },
@@ -1066,6 +1068,8 @@ provides-extras = ["dev"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "fastapi", specifier = ">=0.120.1" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "mypy", specifier = ">=1.18.2" },
     { name = "pre-commit", specifier = ">=4.0.0" },
     { name = "psutil", specifier = ">=5.9.0" },

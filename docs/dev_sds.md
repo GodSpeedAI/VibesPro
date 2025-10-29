@@ -519,11 +519,7 @@ def bootstrap_logfire(app: FastAPI, service: str = DEFAULT_SERVICE) -> None:
     logfire.configure(service_name=service)
     logfire.instrument_fastapi(app)
 
-def get_logger():
-    return logfire.logger.bind(
-        environment=os.getenv("APP_ENV", "local"),
-        application_version=os.getenv("APP_VERSION", "dev"),
-    )
+# get_logger() function removed - consumers should call logfire methods directly
 ```
 
 **Usage:**

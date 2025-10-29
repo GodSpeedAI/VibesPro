@@ -1,9 +1,9 @@
-
-import pytest
 from unittest.mock import patch
+
 from libs.python.vibepro_logging import get_logger
 
-@patch('libs.python.vibepro_logging.logfire')
+
+@patch("libs.python.vibepro_logging.logfire")
 def test_get_logger_binds_context(mock_logfire):
     """
     RED: This test should fail.
@@ -21,8 +21,6 @@ def test_get_logger_binds_context(mock_logfire):
     # Assert that the logger was retrieved and bound with the correct context
     mock_logfire.get_logger.assert_called_once()
     mock_logger.bind.assert_called_once_with(
-        service='vibepro-py',
-        environment='local',
-        application_version='dev'
+        service="vibepro-py", environment="local", application_version="dev"
     )
     assert logger == mock_bound_logger

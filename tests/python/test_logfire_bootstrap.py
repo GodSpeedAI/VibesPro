@@ -1,10 +1,10 @@
-
-import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
+
 from libs.python.vibepro_logging import bootstrap_logfire
+
 
 def test_fastapi_instrumentation_emits_spans():
     """
@@ -26,7 +26,7 @@ def test_fastapi_instrumentation_emits_spans():
         app,
         additional_span_processors=[processor],
         send_to_logfire=False,  # Don't send data to the Logfire service
-        console=False  # Don't output to the console
+        console=False,  # Don't output to the console
     )
 
     client = TestClient(app)
@@ -36,9 +36,20 @@ def test_fastapi_instrumentation_emits_spans():
 
     spans = exporter.get_finished_spans()
     assert len(spans) > 0
-    span = spans[0]
-    # The span name is now internal to the asgi instrumentation
-    assert "GET" in span.name
-    assert span.attributes["http.method"] == "GET"
-    assert span.attributes["http.status_code"] == 200
 
+    # Find the HTTP GET span by filtering for known attributes
+    http_get_spans = [
+        span
+        for span in spans
+        if (span.attributes.get("http.method") == "GET" and "GET" in span.name)
+    ]
+    assert len(http_get_spans) > 0, "No HTTP GET span found"
+
+    # Use the first matching span for assertions
+    span = http_get_spans[0]
+
+    # Safely access attributes with clear error messages
+    assert "http.method" in span.attributes, "Missing http.method attribute"
+    assert "http.status_code" in span.attributes, "Missing http.status_code attribute"
+    assert span.attributes.get("http.method") == "GET"
+    assert span.attributes.get("http.status_code") == 200

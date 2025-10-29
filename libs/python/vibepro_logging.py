@@ -27,9 +27,12 @@ import logging
 import os
 import sys
 from typing import TYPE_CHECKING
+
 import logfire
 import structlog
 from structlog.stdlib import BoundLogger
+
+from .logging_settings import settings
 
 if TYPE_CHECKING:  # pragma: no cover - used for type hints only
     from fastapi import FastAPI
@@ -97,7 +100,6 @@ def bootstrap_logfire(app: "FastAPI", **kwargs) -> None:
     to emit OpenTelemetry spans for each request.
     kwargs are passed to logfire.configure()
     """
-    import logfire
     logfire.configure(**kwargs)
     logfire.instrument_fastapi(app)
 
@@ -108,9 +110,9 @@ def get_logger(category: str | None = None, **kwargs) -> "logfire.Logfire":
     """
     metadata = default_metadata()
     if category:
-        metadata['category'] = category
+        metadata["category"] = category
     metadata.update(kwargs)
-    return logfire.get_logger().bind(**metadata)
+    return logfire.bind(**metadata)
 
 
 class LogCategory:
@@ -118,8 +120,6 @@ class LogCategory:
     AUDIT = "audit"
     SECURITY = "security"
 
-
-from .logging_settings import settings
 
 def instrument_integrations(requests: bool = False, pydantic: bool = False):
     """

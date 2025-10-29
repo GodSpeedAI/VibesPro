@@ -42,17 +42,9 @@ jobs:
         uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
 
       - name: Install just
-        if: ${{ runner.os == 'Linux' || runner.os == 'Windows' || runner.os == 'macOS' }}
-        shell: bash
-        run: |
-          if ! command -v just >/dev/null 2>&1; then
-            echo "Installing just into ~/.local/bin"
-            mkdir -p ~/.local/bin
-            curl -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
-            echo "$HOME/.local/bin" >> $GITHUB_PATH
-          else
-            echo "just already installed: $(command -v just)"
-          fi
+        uses: extractions/setup-just@v2
+        with:
+          just-version: "1.27.0"
 
       - name: Install Node dependencies
         run: pnpm install --frozen-lockfile

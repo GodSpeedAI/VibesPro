@@ -1,24 +1,54 @@
-
-import pytest
-import requests
-from pydantic import BaseModel
+import time
 from unittest.mock import patch
+
+import requests
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
+from pydantic import BaseModel
 
 from libs.python.vibepro_logging import instrument_integrations
 
-@patch('libs.python.vibepro_logging.logfire')
-def test_requests_instrumentation(mock_logfire):
+
+def test_requests_instrumentation():
     """
     Asserts that requests instrumentation emits spans.
     """
+    exporter = InMemorySpanExporter()
+    processor = SimpleSpanProcessor(exporter)
+
+    # Configure logfire with our test processor
+    import logfire
+
+    logfire.configure(send_to_logfire=False, console=False, additional_span_processors=[processor])
+
+    # Enable requests instrumentation
     instrument_integrations(requests=True)
-    mock_logfire.instrument_requests.assert_called_once()
 
-    with patch('requests.get') as mock_get:
-        requests.get("https://example.com")
-        mock_get.assert_called_once()
+    # Make a real HTTP request with short timeout
+    try:
+        requests.get("https://httpbin.org/get", timeout=1)
+    except requests.RequestException:
+        # Network errors are acceptable for this test
+        pass
 
-@patch('libs.python.vibepro_logging.logfire')
+    # Allow some time for spans to be processed
+    time.sleep(0.1)
+
+    # Check that spans were created
+    spans = exporter.get_finished_spans()
+    assert len(spans) > 0
+
+    # Find the HTTP span
+    http_spans = [span for span in spans if "http" in span.name.lower()]
+    assert len(http_spans) > 0
+
+    # Verify the span has HTTP attributes
+    http_span = http_spans[0]
+    assert http_span.attributes.get("http.method") == "GET"
+    assert http_span.attributes.get("http.url") is not None
+
+
+@patch("libs.python.vibepro_logging.logfire")
 def test_pydantic_instrumentation(mock_logfire):
     """
     Asserts that pydantic instrumentation is enabled.
