@@ -20,7 +20,7 @@ test_rust_log_correlation() {
 
   # Run observe-smoke and capture JSON output
   local output
-  output=$(cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep '^{' || true)
+  output=$(RUST_LOG=info cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep '^{' || true)
 
   if [ -z "$output" ]; then
     die "No JSON log output from observe-smoke"
@@ -52,7 +52,7 @@ test_required_fields() {
   log "Testing for required structured fields"
 
   local output
-  output=$(cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep '^{' | head -1)
+  output=$(RUST_LOG=info cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep '^{' | head -1)
 
   # Check for mandatory fields
   local timestamp level message target
@@ -73,14 +73,14 @@ test_category_field() {
   log "Testing for category field in logs"
 
   local output
-  output=$(cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep 'category' || true)
+  output=$(RUST_LOG=info cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep 'category' || true)
 
   if [ -n "$output" ]; then
     log "✓ Category field present in logs"
 
     # Extract and display category values
     local categories
-    categories=$(cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | \
+    categories=$(RUST_LOG=info cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | \
       grep '^{' | jq -r '.fields.category // empty' | sort -u | tr '\n' ' ')
 
     if [ -n "$categories" ]; then

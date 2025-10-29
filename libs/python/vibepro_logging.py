@@ -88,7 +88,12 @@ def bootstrap_logfire(app: "FastAPI") -> None:
     Placeholder for Logfire instrumentation bootstrap.
 
     This stub will be replaced with full OpenTelemetry/Logfire wiring in DEV-TDD cycle 2A.
+    Currently a safe no-op that logs a warning when called.
     """
-    raise NotImplementedError(
-        "Logfire bootstrap is not implemented yet. See DEV-PRD-018 and DEV-SDS-018."
+    import warnings
+
+    warnings.warn(
+        "Logfire bootstrap is not implemented yet. See DEV-PRD-018 and DEV-SDS-018.",
+        UserWarning,
+        stacklevel=2,
     )

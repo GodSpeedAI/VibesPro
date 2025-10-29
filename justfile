@@ -176,6 +176,13 @@ test-template:
 	UV_NO_SYNC=1 \
 	uv run pytest -q tests/template/test_template_generation.py::test_generate_template_user_defaults
 
+test-template-logfire:
+	@echo "🧪 Validating Logfire template scaffolding..."
+	SKIP=end-of-file-fixer,ruff,ruff-format,shellcheck,prettier,trim-trailing-whitespace,check-shebang-scripts-are-executable,spec-matrix \
+	COPIER_SKIP_PROJECT_SETUP=1 \
+	UV_NO_SYNC=1 \
+	uv run pytest -q tests/copier/test_logfire_template.py
+
 test-node:
 	@echo "🧪 Running Node.js tests..."
 	pnpm test
@@ -510,6 +517,8 @@ ai-validate:
 		echo "⚠️  pnpm not found. Skipping validation."; \
 		echo "Run 'just setup' to install dependencies."; \
 	fi
+	@echo "Running Logfire smoke validation (DEV-PRD-007, DEV-SDS-006)..."
+	@just test-logfire
 	@echo "✅ Validation complete"
 
 # Scaffold new code using Nx generators
@@ -668,8 +677,15 @@ test-logs-correlation:
 	@echo "🧪 Testing log-trace correlation..."
 	@bash -eu tests/ops/test_log_trace_correlation.sh
 
+# Logfire smoke validation used by CI (DEV-PRD-018, DEV-SDS-018)
+alias test-logfire := test-logs-logfire
+
+test-logs-logfire:
+	@echo "🧪 Running Logfire smoke test..."
+	@uv run python tools/logging/test_logfire.py
+
 # Run all logging tests
-test-logs: test-logs-config test-logs-redaction test-logs-correlation
+test-logs: test-logs-config test-logs-redaction test-logs-correlation test-logs-logfire
 	@echo "✅ All logging tests passed"
 
 

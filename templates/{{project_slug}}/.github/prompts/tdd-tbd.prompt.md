@@ -74,6 +74,7 @@ When invoked under `tdd-tbd` chatmode, **implement a TDD plan via Trunk-Based De
 just ai-context-bundle
 pnpm nx test <project> -- --runTestsByPath <path>     # RED/GREEN focus
 pnpm nx run-many -t test -p <affected-projects>       # REGRESSION
+just test-template-logfire                            # Validate Logfire env scaffolding
 just ai-validate
 ```
 ````

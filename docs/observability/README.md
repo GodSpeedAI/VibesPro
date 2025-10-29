@@ -727,7 +727,7 @@ sh -eu tests/ops/test_log_redaction.sh
 sh -eu tests/ops/test_log_trace_correlation.sh
 
 # Run all logging tests
-just test:logs
+just test-logs  # Includes Logfire bootstrap smoke coverage
 ```
 
 ### OpenObserve Setup for Logs
