@@ -541,7 +541,50 @@ log.warning("auth failed", category="security", action="auth_failure")
 ```
 
 **Trace context:** Created automatically by Logfire (OpenTelemetry spans) for FastAPI handlers and, when optional integrations are enabled, for outbound HTTP clients and Pydantic validation.
-**Transport:** OTLP exporter controlled via env variables (`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_SERVICE_NAME`). Enable extra integrations (e.g., `requests`, `httpx`, SQLAlchemy) with Logfire's optional instrumentation helpers as needed.
+
+**Integration API calls:** Enable optional integrations in your application startup immediately after creating your FastAPI app or DB engine:
+
+```python
+import logfire
+
+# After FastAPI app creation
+logfire.instrument_fastapi(app)
+
+# For HTTP clients (add to application startup)
+logfire.instrument_requests()  # For requests library
+logfire.instrument_httpx()     # For httpx library
+
+# For SQLAlchemy (pass engine or session factory)
+logfire.instrument_sqlalchemy(engine=your_db_engine)
+```
+
+**Note:** When using `logfire.instrument_sqlalchemy()`, you must pass either the SQLAlchemy engine or session factory as the `engine` parameter. This enables automatic tracing of database queries and connection operations.
+
+**Additional integration examples:**
+
+```python
+# Import and configure Logfire with your service
+import logfire
+from fastapi import FastAPI
+from sqlalchemy import create_engine
+
+# Initialize Logfire
+logfire.configure(service_name="my-api-service")
+
+# Create FastAPI app and instrument it
+app = FastAPI()
+logfire.instrument_fastapi(app)
+
+# Create database engine and instrument it
+db_engine = create_engine(DATABASE_URL)
+logfire.instrument_sqlalchemy(engine=db_engine)
+
+# Instrument HTTP clients for outbound requests
+logfire.instrument_requests()  # For Python requests library
+logfire.instrument_httpx()     # For httpx (async) library
+```
+
+**Transport:** OTLP exporter controlled via env variables (`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_SERVICE_NAME`). See the Logfire integration reference page for more options and configuration.
 
 ---
 
@@ -774,7 +817,7 @@ log.info(
 
 - Rust: `tracing` crate (already in use)
 - Node: `pino` package (to be added to libs/node-logging/package.json)
-- Python: `logfire` package (to be added to requirements.txt or pyproject.toml)
+- Python: `logfire~=1.2.0` package (to be added to requirements.txt or pyproject.toml)
 - Vector: `vector` binary (already installed via Devbox)
 - OpenObserve: API token and URL in `.secrets.env.sops`
 

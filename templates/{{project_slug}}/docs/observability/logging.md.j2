@@ -1,0 +1,32 @@
+{%- from "templates/{{project_slug}}/docs/_includes/env_vars.md.j2" import render_logfire_env_table, default_logfire_send_to_logfire -%}
+
+# Logfire Observability Blueprint
+
+> Traceability: DEV-PRD-018 · DEV-SDS-018 · DEV-PRD-021
+
+This guide captures the Logfire defaults shipped with the VibesPro template.
+Cycle 2A will extend these notes with full instrumentation walkthroughs once
+`bootstrap_logfire` evolves beyond the stub phased in during Cycle 1.
+
+## Environment Variables
+
+{{ render_logfire_env_table(project_slug) }}
+
+## Local Usage
+
+- Keep `LOGFIRE_TOKEN` empty while developing locally. Set
+  `LOGFIRE_SEND_TO_LOGFIRE={{ default_logfire_send_to_logfire() }}` to control remote export when you add a token.
+- Override `LOGFIRE_ENVIRONMENT` per environment (`development`, `staging`,
+  `production`) to keep dashboards segmented.
+- Point `OTEL_EXPORTER_OTLP_ENDPOINT` at your observability pipeline. The
+  defaults target Vector’s local OTLP listener (`http://localhost:4318`).
+
+## Deployment Checklist
+
+1. Store `LOGFIRE_TOKEN` in your secrets manager (SOPS, GitHub Actions, etc.).
+2. Promote `LOGFIRE_SEND_TO_LOGFIRE` to `true` (or leave
+   `if-token-present` to gate on token availability).
+3. Update `LOGFIRE_SERVICE_NAME` if the deployment uses multiple FastAPI apps;
+   keep the value aligned with `OTEL_SERVICE_NAME` to preserve dashboards.
+4. Add release automation that sets `LOGFIRE_SERVICE_VERSION` to your semantic
+   version so traces line up with shipped artifacts.

@@ -44,19 +44,19 @@ The following phases are mutually exclusive and collectively exhaustive. Within 
 
 ### Cycle 1C — Template Synchronisation
 
-- [ ] **Red:** Add a failing copier template test expecting Logfire env vars in generated projects.
+- [x] **Red:** Add a failing copier template test expecting Logfire env vars in generated projects.
   - Files: `tests/copier/test_logfire_template.py` (new), `justfile` test target
   - Dependencies: Copier test harness (`just test-generation`)
   - Satisfies: DEV-PRD-021, DEV-SDS-021
-- [ ] **Green:** Update template files to include Logfire settings and documentation placeholders.
+- [x] **Green:** Update template files to include Logfire settings and documentation placeholders.
   - Files: `templates/{{project_slug}}/.github/prompts/tdd-tbd.prompt.md`, `templates/{{project_slug}}/docs/observability/logging.md.j2`
   - Dependencies: Jinja templating, existing docs snippets
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Refactor:** Ensure template variables reuse existing macros for OTEL endpoints.
+- [x] **Refactor:** Ensure template variables reuse existing macros for OTEL endpoints.
   - Files: `templates/{{project_slug}}/docs/_includes/env_vars.md.j2`
   - Dependencies: Template macro library
   - Satisfies: DEV-PRD-006, DEV-SDS-002
-- [ ] **Regression:** Run `just test-generation` to validate rendered workspace reflects new env vars and docs.
+- [x] **Regression:** Run `just test-generation` to validate rendered workspace reflects new env vars and docs.
   - Dependencies: Copier, temporary output directory
   - Satisfies: DEV-PRD-021, DEV-SDS-021
 

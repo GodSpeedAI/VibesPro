@@ -176,6 +176,13 @@ test-template:
 	UV_NO_SYNC=1 \
 	uv run pytest -q tests/template/test_template_generation.py::test_generate_template_user_defaults
 
+test-template-logfire:
+	@echo "🧪 Validating Logfire template scaffolding..."
+	SKIP=end-of-file-fixer,ruff,ruff-format,shellcheck,prettier,trim-trailing-whitespace,check-shebang-scripts-are-executable,spec-matrix \
+	COPIER_SKIP_PROJECT_SETUP=1 \
+	UV_NO_SYNC=1 \
+	uv run pytest -q tests/copier/test_logfire_template.py
+
 test-node:
 	@echo "🧪 Running Node.js tests..."
 	pnpm test

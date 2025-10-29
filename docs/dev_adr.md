@@ -9,12 +9,12 @@ Source: transcript.md synthesis and repository conventions
 ## DEV-ADR-001 — Native Copilot/VS Code over custom DSL
 
 - Decision: Use only GitHub Copilot + VS Code native mechanisms (copilot-instructions.md, instructions/_.md, prompts/_.prompt.md, chatmodes/\*.chatmode.md, settings.json, tasks) instead of inventing a YAML DSL.
-- Context: Constraint of “NO custom YAML files or external DSL,” need for immediate usability and hot-reload.
+- Context: Constraint of "NO custom YAML files or external DSL," need for immediate usability and hot-reload.
 - Rationale: Lower cognitive load; no extra tooling; leverages existing ecosystem; simpler onboarding; safe defaults.
 - DX Impact: Faster setup (<10 min), less context switching, predictable discovery; fewer toolchains to learn.
 - Trade-offs: Less declarative logic in-config; conditional flows handled via tasks/scripts.
 
-## DEV-ADR-002 — MECE modular instruction files with “LoRA-style” stacking
+## DEV-ADR-002 — MECE modular instruction files with "LoRA-style" stacking
 
 - Decision: Break guidance into MECE instruction files (security, performance, style, general) and compose per task by ordered stacking.
 - Rationale: Mirrors adapter/LoRA composability; enables reuse and fine-grained overrides.
@@ -47,7 +47,7 @@ Source: transcript.md synthesis and repository conventions
 
 ## DEV-ADR-007 — Prompt-as-code lifecycle (VC, lint, test, plan)
 
-- Decision: Treat prompts/instructions as code: versioned, linted, evaluated (A/B), and “planned” prior to change.
+- Decision: Treat prompts/instructions as code: versioned, linted, evaluated (A/B), and "planned" prior to change.
 - Rationale: Reproducibility and rollback; reduces regressions.
 - DX Impact: Safer iteration; observable quality trends; consistent reviews.
 
@@ -77,7 +77,7 @@ Context: Current manuals require host installs; variability causes flakiness.
 
 Rationale: Reproducibility, cross-platform parity, smaller onboarding surface.
 
-DX Impact: Faster “first build,” fewer “works on my machine” incidents.
+DX Impact: Faster "first build," fewer "works on my machine" incidents.
 
 Trade-offs: Devbox binary required; CI runner images may need an extra layer.
 
@@ -134,7 +134,7 @@ Trade-offs: Need small glue to source decrypted env file.
 Status: Proposed → Active (feature‑flagged)
 
 Context
-VibePro’s execution model is moving toward deterministic, AI‑ready telemetry. Current logging is largely unstructured, preventing reliable correlation and automated analysis. A Rust‑native stack (tracing → Vector → OpenObserve) provides structured OTLP telemetry with low runtime overhead and avoids container‑side agents.
+VibePro's execution model is moving toward deterministic, AI‑ready telemetry. Current logging is largely unstructured, preventing reliable correlation and automated analysis. A Rust‑native stack (tracing → Vector → OpenObserve) provides structured OTLP telemetry with low runtime overhead and avoids container‑side agents.
 
 Decision
 Implement an opt‑in observability subsystem composed of:
@@ -268,15 +268,6 @@ Implementation Requirements
    - **DRI:** QA Team
    - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
    - **Phase-exit criteria:** All tests passing in CI with >90% code coverage
-7. Install and configure the Logfire SDK in `pyproject.toml`, including default OTEL environment variable templates
-8. Document logging and tracing policy in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
-   - **DRI:** Documentation Team
-   - **Timeline:** Week 3-4 (2025-11-15 to 2025-11-28)
-   - **Phase-exit criteria:** Documentation reviewed and approved by technical leads
-9. Add TDD tests: Vector config validation, PII redaction, trace correlation, Logfire smoke test
-   - **DRI:** QA Team
-   - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
-   - **Phase-exit criteria:** All tests passing in CI with >90% code coverage
 
 Related Specs
 
@@ -290,12 +281,13 @@ Migration Strategy
 - Phase 1: Introduce Logfire alongside existing structlog wrapper behind a compatibility facade; update examples and smoke tests.
 - Phase 2: Cut Python services over to Logfire instrumentation (FastAPI, requests, Pydantic) and deprecate structlog usage.
 - Phase 3: Remove structlog dependency, enforce Logfire bootstrap in generators, and lint for legacy imports.
+  - Note: pyproject.toml currently contains structlog>=23.0.0 (line 15) as this is Phase 1: coexistence period
 
 Validation
 
 - All logs must include: `trace_id`, `span_id`, `service`, `environment`, `application_version`
 - PII fields (email, authorization, tokens) automatically redacted by Vector
-- Tests validate: config correctness, redaction behavior, correlation fields, and presence of Logfire-generated spans for FastAPI endpoints
+- Tests validate: config correctness, redaction behavior, correlation fields, and Logfire span validation deferred to DEV-TDD cycle 2A
 
 ---
 
@@ -343,7 +335,7 @@ Implementation Requirements
 4. Add governance guards: retention policies, opt-out flags, and anonymization for sensitive fields prior to storage.
 5. Wire a consolidated CI workflow (`.github/workflows/ai-guidance.yml`) that runs `nx run-many --target=test --projects temporal,performance,context` and the new `just test-ai-guidance` wrapper before merge.
 6. Establish the S.W.O.R.D skill rubric (Safety, Workflow Observability, Reliability, Developer experience) and require every code path surfaced by the fabric to document how it satisfies the rubric within implementation PRs.
-7. Validate via the TDD plan in `docs/dev_tdd_ai_guidance.md`, covering unit, integration, and regression tests for each subsystem.
+7. Validate via TDD plan in `docs/dev_tdd_ai_guidance.md`, covering unit, integration, and regression tests for each subsystem.
 
 Related Specs
 
@@ -357,7 +349,7 @@ Validation
 - Clustering jobs produce recommendations with confidence ≥ defined threshold and link back to source ADR/commit IDs.
 - Performance advisories highlight regressions > 20% over baseline and include remediation hints.
 - Context bundles include at least one high-confidence artifact in ≥80% of assistant responses.
-- Automated tests cover ingestion, scoring, and advisory generation per the TDD plan.
+- Automated tests cover ingestion, scoring, and advisory generation per TDD plan.
 
 ## Developer ergonomics considerations (summary)
 
@@ -373,7 +365,7 @@ Status: Active
 
 Context: The project requires a consistent and reliable type system that spans across the database, backend (Python/FastAPI), and frontend (TypeScript/Next.js). Maintaining separate type definitions manually is error-prone and leads to drift.
 
-Decision: Use the Supabase PostgreSQL database schema as the single source of truth for all data models and types. Supabase's built-in type generation capabilities will be used to automatically create TypeScript types directly from the database schema. Python models (Pydantic) will be generated to mirror this schema for the backend.
+Decision: Use Supabase PostgreSQL database schema as the single source of truth for all data models and types. Supabase's built-in type generation capabilities will be used to automatically create TypeScript types directly from the database schema. Python models (Pydantic) will be generated to mirror this schema for the backend.
 
 Rationale:
 
@@ -408,7 +400,7 @@ Consequences:
 
 - Developers need to be proficient in writing SQL migrations.
 - The CI/CD pipeline must include steps for running migrations and executing the type generation process.
-- Initial setup requires integrating the Supabase CLI and Nx generators into a cohesive pipeline.
+- Initial setup requires integrating Supabase CLI and Nx generators into a cohesive pipeline.
 
 ---
 
@@ -436,7 +428,7 @@ Consequences:
 
 - Requires an upfront investment in building and maintaining the main `@vibepro/domain` orchestrator generator.
 - Developers need to be trained on the DDD structure and how to use the primary generator.
-- The project becomes dependent on the continued maintenance of the external Nx generators.
+- The project becomes dependent on the continued maintenance of external Nx generators.
 
 ---
 
@@ -444,24 +436,24 @@ Consequences:
 
 Status: Active
 
-Context: To ensure the application's core business logic is maintainable, testable, and independent of external technologies, a clear separation of concerns is required. The current domain-driven structure needs a more formal pattern for managing dependencies between the core logic and external systems like the database, APIs, and UIs.
+Context: To ensure that the application's core business logic is maintainable, testable, and independent of external technologies, a clear separation of concerns is required. The current domain-driven structure needs a more formal pattern for managing dependencies between the core logic and external systems like the database, APIs, and UIs.
 
-Decision: Formally adopt the Hexagonal (Ports & Adapters) architecture.
+Decision: Formally adopt Hexagonal (Ports & Adapters) architecture.
 
 - **Core Logic:** The `domain` and `application` layers will contain the core business logic and will have no dependencies on external technologies.
-- **Ports:** The application's boundaries will be defined by `ports`, which are technology-agnostic interfaces (or `protocol` types in Python using abstract base classes only where necessary) located within the `application` layer. These ports define the contracts for data persistence and other external interactions (e.g., `IUserRepository`).
-- **Adapters:** Concrete implementations of the ports are called `adapters`.
-  - **Driven Adapters:** These implement the ports for backend services. For example, a `SupabaseUserRepository` in the `infrastructure` layer will implement the `IUserRepository` port.
-  - **Driving Adapters:** These drive the application's core logic. For example, FastAPI controllers in the `api` layer or UI components in the `ui` layer will use the application services via their ports.
+- **Ports:** The application's boundaries will be defined by `ports`, which are technology-agnostic interfaces (or `protocol` types in Python using abstract base classes only where necessary) located within the `application` layer. These ports define contracts for data persistence and other external interactions (e.g., `IUserRepository`).
+- **Adapters:** Concrete implementations of ports are called `adapters`.
+  - **Driven Adapters:** These implement ports for backend services. For example, a `SupabaseUserRepository` in the `infrastructure` layer will implement the `IUserRepository` port.
+  - **Driving Adapters:** These drive the application's core logic. For example, FastAPI controllers in the `api` layer or UI components in the `ui` layer will use application services via their ports.
 
 Rationale:
 
 - **Decoupling:** The core logic is completely decoupled from the implementation details of external services.
-- **Testability:** The core logic can be tested in isolation by providing mock implementations of the ports.
+- **Testability:** The core logic can be tested in isolation by providing mock implementations of ports.
 - **Flexibility:** External technologies can be swapped out by simply writing a new adapter (e.g., replacing Supabase with another database) without changing the core logic.
 
 Consequences:
 
 - Introduces a higher level of abstraction, which may increase the initial learning curve.
 - Results in a greater number of files and interfaces to manage.
-- Requires the consistent use of dependency injection to provide concrete adapters to the application's core.
+- Requires consistent use of dependency injection to provide concrete adapters to the application's core.

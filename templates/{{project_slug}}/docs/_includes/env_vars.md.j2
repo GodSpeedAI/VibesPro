@@ -1,0 +1,32 @@
+{%- macro default_service_name(project_slug) -%}
+{{ project_slug }}-api
+{%- endmacro %}
+
+{%- macro default_otel_endpoint() -%}
+http://localhost:4318
+{%- endmacro %}
+
+{%- macro default_otel_protocol() -%}
+http/protobuf
+{%- endmacro %}
+
+{%- macro default_logfire_environment() -%}
+development
+{%- endmacro %}
+
+{%- macro default_logfire_send_to_logfire() -%}
+if-token-present
+{%- endmacro %}
+
+{%- macro render_logfire_env_table(project_slug) -%}
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `LOGFIRE_TOKEN` | _unset_ | API token for Logfire ingestion (store in secrets for non-local environments). |
+| `LOGFIRE_ENVIRONMENT` | `{{ default_logfire_environment() }}` | Controls Logfire environment tagging to align with deployment stage. |
+| `LOGFIRE_SERVICE_NAME` | `{{ default_service_name(project_slug) }}` | Service identifier surfaced in Logfire dashboards and OTEL spans. |
+| `LOGFIRE_SERVICE_VERSION` | Derived from `APP_VERSION` | Version metadata for trace correlation (optional override). |
+| `LOGFIRE_SEND_TO_LOGFIRE` | `{{ default_logfire_send_to_logfire() }}` | Enables remote export when a token is present; keeps local runs offline by default. |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `{{ default_otel_endpoint() }}` | OTLP HTTP endpoint for spans/logs (Vector locally, OpenObserve remotely). |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `{{ default_otel_protocol() }}` | Transport protocol expected by Logfire’s OTLP exporter. |
+| `OTEL_SERVICE_NAME` | `{{ default_service_name(project_slug) }}` | Mirrors Logfire service naming for downstream OTEL tooling. |
+{%- endmacro %}
