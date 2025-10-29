@@ -222,6 +222,7 @@ See `docs/ENVIRONMENT.md` for complete details on this approach.
 - **mypy strict mode**: 100% type coverage required
 - **Type all function signatures**: Args, returns, and raises
 - **Use `typing` module**: Generic types, Protocol, TypedDict
+- **Follow conventions described in `.github/instructions/style.python.instructions.md`**
 
 ### File Naming Patterns
 

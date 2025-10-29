@@ -26,19 +26,19 @@ The following phases are mutually exclusive and collectively exhaustive. Within 
 
 ### Cycle 1B — CI & Task Wiring
 
-- [ ] **Red:** Create a failing CI task asserting `logfire` smoke tests are invoked (e.g., missing `tools/logging/test_logfire.py`).
+- [x] **Red:** Create a failing CI task asserting `logfire` smoke tests are invoked (e.g., missing `tools/logging/test_logfire.py`).
   - Files: `.github/workflows/ai-validate.yml`, `Justfile`
   - Dependencies: Existing CI workflow templates
   - Satisfies: DEV-PRD-007, DEV-SDS-006
-- [ ] **Green:** Add a `just test:logfire` target that runs the smoke script and wire it into CI.
+- [x] **Green:** Add a `just test:logfire` target that runs the smoke script and wire it into CI.
   - Files: `Justfile`, `.github/workflows/ai-validate.yml`, `tools/logging/test_logfire.py` (stub)
   - Dependencies: Node/Python shared tooling, execution permissions
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Refactor:** Consolidate logging-related tasks under a single namespace (e.g., `test:logs`) to avoid duplication.
+- [x] **Refactor:** Consolidate logging-related tasks under a single namespace (e.g., `test:logs`) to avoid duplication.
   - Files: `Justfile`, `docs/observability/README.md`
   - Dependencies: Existing logging tasks (`test:logs`)
   - Satisfies: DEV-PRD-004, DEV-SDS-004
-- [ ] **Regression:** Execute `just test:logs` locally and confirm CI workflow passes in dry-run mode (`act` or workflow dispatcher).
+- [x] **Regression:** Execute `just test:logs` locally and confirm CI workflow passes in dry-run mode (`act` or workflow dispatcher).
   - Dependencies: Local Vector mock, GitHub Actions runner config
   - Satisfies: DEV-PRD-018, DEV-SDS-018
 
