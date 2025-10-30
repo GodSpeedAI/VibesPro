@@ -1,0 +1,24 @@
+{
+  "metrics": {
+    "logfire.span.duration": {
+      "description": "Duration of completed Logfire spans (milliseconds).",
+      "unit": "ms",
+      "dimensions": ["service", "environment", "span_name"]
+    },
+    "logfire.span.count": {
+      "description": "Count of spans emitted by Logfire instrumentation.",
+      "unit": "count",
+      "dimensions": ["service", "environment"]
+    },
+    "logfire.span.error_ratio": {
+      "description": "Ratio of errored spans over total spans.",
+      "unit": "percent",
+      "dimensions": ["service"]
+    }
+  },
+  "labels": {
+    "service": "Service name associated with the span or metric producer.",
+    "environment": "Deployment environment (local, staging, production).",
+    "span_name": "Logfire span name, used for high-cardinality drilldowns."
+  }
+}

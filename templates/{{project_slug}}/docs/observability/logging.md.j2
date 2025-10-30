@@ -30,3 +30,13 @@ Cycle 2A will extend these notes with full instrumentation walkthroughs once
    keep the value aligned with `OTEL_SERVICE_NAME` to preserve dashboards.
 4. Add release automation that sets `LOGFIRE_SERVICE_VERSION` to your semantic
    version so traces line up with shipped artifacts.
+
+## Logfire Validation
+
+- `bash tests/ops/test_vector_logfire.sh` — ensures Vector wiring captures Logfire metadata.
+- `just test-logs` — runs the log pipeline suite (redaction, correlation, Logfire smoke test).
+- `just docs-lint` — verifies docs and templates document the required sections.
+
+Vector relies on the shared VRL program at `tools/vector/macros.vrl` plus the
+`transforms.logs_logfire_normalize` block. When you extend Logfire attributes, update the macros,
+normalize transform, and rerun the commands above.

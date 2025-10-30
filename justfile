@@ -371,6 +371,10 @@ docs-validate:
 	node cli/docs.js validate \
 		--output-dir docs/generated
 
+docs-lint:
+	@echo "🧪 Linting documentation for required Logfire sections..."
+	@uv run python tools/docs/lint_check.py
+
 docs-serve PORT="8000":
 	@echo "📚 Serving documentation on port {{PORT}}..."
 	python -m http.server {{PORT}} -d docs/generated
@@ -613,7 +617,30 @@ observe-start:
 	@echo "🚀 Starting Vector pipeline with ops/vector/vector.toml..."
 	@command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found. Install from https://vector.dev/"; exit 1; }
 	@mkdir -p tmp/vector-data || { echo "❌ Failed to create tmp/vector-data"; exit 1; }
-	vector --config ops/vector/vector.toml --watch
+	vector --config ops/vector/vector.toml --watch-config
+
+observe-openobserve-up:
+	@echo "🚀 Starting OpenObserve (Docker Compose)..."
+	@if ! command -v docker >/dev/null 2>&1; then \
+		echo "❌ Docker is required to run OpenObserve locally."; exit 1; \
+	fi
+	@if ! command -v docker compose >/dev/null 2>&1; then \
+		echo "❌ Docker Compose plugin not found. Please install Docker Compose."; exit 1; \
+	fi
+	@if [ ! -f ops/openobserve/.env.local ]; then \
+		echo "❌ Missing ops/openobserve/.env.local"; \
+		echo "   Create it by copying ops/openobserve/.env.example and updating the credentials."; \
+		exit 1; \
+	fi
+	DOCKER_CONFIG=ops/openobserve docker compose -f ops/openobserve/docker-compose.yml up -d
+
+observe-openobserve-down:
+	@echo "🛑 Stopping OpenObserve (Docker Compose)..."
+	@if command -v docker >/dev/null 2>&1 && command -v docker compose >/dev/null 2>&1; then \
+		DOCKER_CONFIG=ops/openobserve docker compose -f ops/openobserve/docker-compose.yml down; \
+	else \
+		echo "ℹ️  Docker not available; nothing to stop."; \
+	fi
 
 # Run OTLP integration tests with fake collector (Phase 3)
 observe-test:
@@ -727,7 +754,9 @@ observe-verify:
 	@bash tests/ops/test_openobserve_sink.sh
 	@echo ""
 	@echo "Step 3: Starting Vector in background..." ; \
-	( just observe-start & ) ; \
+	command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found. Install from https://vector.dev/"; exit 1; } ; \
+	mkdir -p tmp/vector-data || { echo "❌ Failed to create tmp/vector-data"; exit 1; } ; \
+	vector --config ops/vector/vector.toml --watch-config & \
 	VECTOR_PID=$! ; \
 	trap 'kill $VECTOR_PID 2>/dev/null || true' EXIT ; \
 	sleep 2 ; \

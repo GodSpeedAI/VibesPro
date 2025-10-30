@@ -1,0 +1,2 @@
+# Additional sanitization for trace events after PII redaction
+.sampled = true

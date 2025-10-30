@@ -1,0 +1,16 @@
+{
+  "requiredSections": [
+    {
+      "file": "docs/observability/README.md",
+      "mustContain": ["## 8. Logfire Integration"]
+    },
+    {
+      "file": "docs/ENVIRONMENT.md",
+      "mustContain": ["### Logfire Telemetry"]
+    },
+    {
+      "file": "templates/{{project_slug}}/docs/observability/logging.md.j2",
+      "mustContain": ["## Logfire"]
+    }
+  ]
+}

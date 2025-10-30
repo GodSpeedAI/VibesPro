@@ -27,23 +27,10 @@ use_otlp_decoding = true
 [transforms.traces_sanitize]
 type = "remap"
 inputs = ["otlp.traces"]
-source = '''
-.sampled = true
-
-if exists(.attributes) {
-  if exists(.attributes."user.email") { del(.attributes."user.email") }
-  if exists(.attributes."auth.token") { del(.attributes."auth.token") }
-  if exists(.attributes.user_email) { del(.attributes.user_email) }
-  if exists(.attributes.auth_token) { del(.attributes.auth_token) }
-}
-
-if exists(.resource) && exists(.resource.attributes) {
-  if exists(.resource.attributes."user.email") { del(.resource.attributes."user.email") }
-  if exists(.resource.attributes."auth.token") { del(.resource.attributes."auth.token") }
-  if exists(.resource.attributes.user_email) { del(.resource.attributes.user_email) }
-  if exists(.resource.attributes.auth_token) { del(.resource.attributes.auth_token) }
-}
-'''
+files = [
+  "tools/vector/macros.vrl",
+  "tools/vector/traces_sanitize.vrl",
+]
 
 [sinks.dev_console]
 inputs = ["traces_sanitize"]
@@ -88,34 +75,116 @@ retry_attempts = 3
 inputs = ["otlp.metrics"]
 type = "blackhole"
 
+[transforms.metrics_logfire_extract]
+type = "remap"
+inputs = ["otlp.metrics"]
+source = '''
+.metric_name = to_string(.name) ?? ""
+if !starts_with(.metric_name, "logfire.") {
+  abort
+}
+
+if exists(.resource) && exists(.resource.attributes."service.name") {
+  .service = to_string(.resource.attributes."service.name") ?? "unknown"
+} else {
+  .service = "unknown"
+}
+
+if exists(.resource) && exists(.resource.attributes.environment) {
+  .environment = to_string(.resource.attributes.environment) ?? "local"
+} else if exists(.attributes) && exists(.attributes.environment) {
+  .environment = to_string(.attributes.environment) ?? "local"
+} else {
+  .environment = "local"
+}
+'''
+
+[transforms.metrics_logfire_enrich]
+type = "remap"
+inputs = ["metrics_logfire_extract"]
+source = '''
+.category = "logfire"
+'''
+
+[sinks.metrics_logfire_openobserve]
+type = "http"
+inputs = ["metrics_logfire_enrich"]
+uri = "${OPENOBSERVE_URL:-http://localhost:5080}/api/${OPENOBSERVE_ORG:-default}/v1/logfire_metrics"
+method = "post"
+
+[sinks.metrics_logfire_openobserve.encoding]
+codec = "json"
+
+[sinks.metrics_logfire_openobserve.auth]
+strategy = "basic"
+user = "${OPENOBSERVE_USER:-root@example.com}"
+password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
+
+[sinks.metrics_logfire_openobserve.request]
+timeout_secs = 30
+retry_attempts = 3
+
+  [sinks.metrics_logfire_openobserve.request.headers]
+  "Content-Type" = "application/json"
+
 # --- Logs Pipeline ---
 # Process OTLP logs with PII redaction, enrichment, and storage
 
 [transforms.logs_redact_pii]
 type = "remap"
 inputs = ["otlp.logs"]
-source = '''
-# Redact PII fields to [REDACTED]
-if exists(.attributes.user_email) { .attributes.user_email = "[REDACTED]" }
-if exists(.attributes.email) { .attributes.email = "[REDACTED]" }
-if exists(.attributes.authorization) { .attributes.authorization = "[REDACTED]" }
-if exists(.attributes.Authorization) { .attributes.Authorization = "[REDACTED]" }
-if exists(.attributes.password) { .attributes.password = "[REDACTED]" }
-if exists(.attributes.token) { .attributes.token = "[REDACTED]" }
-if exists(.attributes.api_key) { .attributes.api_key = "[REDACTED]" }
+file = "tools/vector/macros.vrl"
 
-# Also check resource attributes
-if exists(.resource.attributes.user_email) { .resource.attributes.user_email = "[REDACTED]" }
-if exists(.resource.attributes.email) { .resource.attributes.email = "[REDACTED]" }
-if exists(.resource.attributes.authorization) { .resource.attributes.authorization = "[REDACTED]" }
-if exists(.resource.attributes.password) { .resource.attributes.password = "[REDACTED]" }
-if exists(.resource.attributes.token) { .resource.attributes.token = "[REDACTED]" }
-if exists(.resource.attributes.api_key) { .resource.attributes.api_key = "[REDACTED]" }
+[transforms.logs_logfire_normalize]
+type = "remap"
+inputs = ["logs_redact_pii"]
+source = '''
+# Ensure trace correlation metadata is present for Logfire-generated logs
+if !exists(.trace_id) {
+  if exists(.attributes.trace_id) {
+    trace_candidate = to_string(.attributes.trace_id) ?? ""
+    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
+  } else if exists(.attributes."logfire.trace_id") {
+    trace_candidate = to_string(.attributes."logfire.trace_id") ?? ""
+    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
+  } else if exists(.attributes.logfire_trace_id) {
+    trace_candidate = to_string(.attributes.logfire_trace_id) ?? ""
+    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
+  }
+}
+
+if !exists(.span_id) {
+  if exists(.attributes.span_id) {
+    span_candidate = to_string(.attributes.span_id) ?? ""
+    if span_candidate != "" { .span_id = downcase(span_candidate) }
+  } else if exists(.attributes."logfire.span_id") {
+    span_candidate = to_string(.attributes."logfire.span_id") ?? ""
+    if span_candidate != "" { .span_id = downcase(span_candidate) }
+  } else if exists(.attributes.logfire_span_id) {
+    span_candidate = to_string(.attributes.logfire_span_id) ?? ""
+    if span_candidate != "" { .span_id = downcase(span_candidate) }
+  }
+}
+
+# Preserve span name context if supplied by Logfire
+if exists(.attributes."logfire.span_name") {
+  .span_name = to_string(.attributes."logfire.span_name") ?? ""
+}
+
+# Capture Logfire observation identifiers when present
+if exists(.attributes."logfire.observation_id") {
+  .observation_id = to_string(.attributes."logfire.observation_id") ?? ""
+}
+
+# Normalize severity defaults if missing
+if !exists(.severity_text) && exists(.level) {
+  .severity_text = to_string(.level) ?? "INFO"
+}
 '''
 
 [transforms.logs_enrich]
 type = "remap"
-inputs = ["logs_redact_pii"]
+inputs = ["logs_logfire_normalize"]
 source = '''
 # Enrich with metadata from resource attributes or set defaults
 # Service name from resource or unknown

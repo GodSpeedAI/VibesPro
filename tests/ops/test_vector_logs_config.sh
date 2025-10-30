@@ -5,6 +5,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 VECTOR_CONFIG="${ROOT_DIR}/ops/vector/vector.toml"
+MACRO_FILE="${ROOT_DIR}/tools/vector/macros.vrl"
 
 log()  { printf "==> %s\n" "$*"; }
 die()  { printf "❌ %s\n" "$*" >&2; exit 1; }
@@ -33,8 +34,9 @@ test_logs_source_exists() {
 test_pii_redaction_transform() {
   log "Checking for PII redaction transform"
   grep -q '\[transforms\.logs_redact_pii\]' "${VECTOR_CONFIG}" || die "PII redaction transform not found"
-  grep -q 'user_email.*REDACTED' "${VECTOR_CONFIG}" || die "Email redaction rule not found"
-  grep -q 'authorization.*REDACTED' "${VECTOR_CONFIG}" || die "Authorization redaction rule not found"
+  grep -q 'file = "tools/vector/macros.vrl"' "${VECTOR_CONFIG}" || die "logs_redact_pii should reuse shared macros"
+  grep -q 'user_email' "${MACRO_FILE}" || die "Email redaction rule not found in macros"
+  grep -q 'authorization' "${MACRO_FILE}" || die "Authorization redaction rule not found in macros"
 }
 
 test_enrichment_transform() {

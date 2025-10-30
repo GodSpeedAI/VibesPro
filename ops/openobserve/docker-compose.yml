@@ -1,0 +1,39 @@
+services:
+  openobserve:
+    image: public.ecr.aws/zinclabs/openobserve:latest
+    container_name: openobserve
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      # Provide safe defaults; override via .env.local
+      ZO_ROOT_USER_EMAIL: "${ZO_ROOT_USER_EMAIL:-root@example.com}"
+      ZO_ROOT_USER_PASSWORD: "${ZO_ROOT_USER_PASSWORD:-admin}"
+      ZO_ROOT_ORG: "${ZO_ROOT_ORG:-default}"
+      ZO_DATA_DIR: /app/data
+      ZO_USAGE_COLLECTION: "false"
+      CONSOLE_ENABLED: "true"
+    ports:
+      - "${OPENOBSERVE_HTTP_PORT:-5080}:5080"
+      - "${OPENOBSERVE_GRPC_PORT:-5081}:5081"
+    volumes:
+      - openobserve-data:/app/data
+      - ./config:/app/config:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent http://localhost:5080/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  openobserve-data:
+    driver: local

@@ -118,61 +118,61 @@ The following phases are mutually exclusive and collectively exhaustive. Within 
   - Dependencies: Environment variable management within tests
   - Satisfies: DEV-PRD-018, DEV-SDS-018
 
-## [ ] Phase 3 — Pipeline & Documentation Integration
+## [x] Phase 3 — Pipeline & Documentation Integration
 
 > Concurrency: Cycles 3A–3C depend on Phase 2 outputs but do not depend on one another.
 
 ### Cycle 3A — Vector & Monitoring Updates
 
-- [ ] **Red:** Introduce a failing shell test expecting Logfire-derived fields in Vector output.
+- [x] **Red:** Introduce a failing shell test expecting Logfire-derived fields in Vector output.
   - Files: `tests/ops/test_vector_logfire.sh` (new)
   - Dependencies: Shell test harness, Docker/Vector binary
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Green:** Update `ops/vector/vector.toml` to ensure OTLP log ingestion captures Logfire spans and metadata.
+- [x] **Green:** Update `ops/vector/vector.toml` to ensure OTLP log ingestion captures Logfire spans and metadata.
   - Files: `ops/vector/vector.toml`
   - Dependencies: Vector configuration syntax
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Refactor:** Consolidate PII redaction transforms to reuse macros (avoid duplicating rules).
+- [x] **Refactor:** Consolidate PII redaction transforms to reuse macros (avoid duplicating rules).
   - Files: `ops/vector/vector.toml`, `tools/vector/macros.vrl` (new)
   - Dependencies: Vector VRL includes
   - Satisfies: DEV-PRD-005, DEV-SDS-005
-- [ ] **Regression:** Execute `just test:logs` and `tests/ops/test_vector_logfire.sh`.
+- [x] **Regression:** Execute `just test:logs` and `tests/ops/test_vector_logfire.sh`.
   - Dependencies: Vector runtime, OpenObserve stub
   - Satisfies: DEV-PRD-018, DEV-SDS-018
 
 ### Cycle 3B — Documentation Synchronisation
 
-- [ ] **Red:** Add failing markdown lint checks expecting Logfire sections in docs.
+- [x] **Red:** Add failing markdown lint checks expecting Logfire sections in docs.
   - Files: `tools/docs/lint_config.json`, `docs/observability/README.md` (placeholder comment)
   - Dependencies: `markdownlint`, doc lint pipeline
   - Satisfies: DEV-PRD-007, DEV-SDS-006
-- [ ] **Green:** Document Logfire workflows across developer guides.
+- [x] **Green:** Document Logfire workflows across developer guides.
   - Files: `docs/observability/README.md`, `docs/ENVIRONMENT.md`, `templates/{{project_slug}}/docs/observability/logging.md.j2`
   - Dependencies: Markdown standards, template sync
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Refactor:** Extract shared snippets into `.github/instructions/logging.instructions.md` for reuse across personas.
+- [x] **Refactor:** Extract shared snippets into `.github/instructions/logging.instructions.md` for reuse across personas.
   - Files: `.github/instructions/logging.instructions.md`, `.github/copilot-instructions.md`
   - Dependencies: Instruction stacking guidelines
   - Satisfies: DEV-PRD-002, DEV-SDS-002
-- [ ] **Regression:** Run `just docs:lint` and `just test-generation` to ensure templates inherit documentation updates.
+- [x] **Regression:** Run `just docs:lint` and `just test-generation` to ensure templates inherit documentation updates.
   - Dependencies: Markdown lint toolchain, Copier
   - Satisfies: DEV-PRD-007, DEV-SDS-006
 
 ### Cycle 3C — Workflow Observability
 
-- [ ] **Red:** Create failing telemetry expectations for new Logfire metrics ingestion (e.g., `tests/observability/test_logfire_metrics.py`).
+- [x] **Red:** Create failing telemetry expectations for new Logfire metrics ingestion (e.g., `tests/observability/test_logfire_metrics.py`).
   - Files: `tests/observability/test_logfire_metrics.py`
   - Dependencies: Telemetry fixtures, redb temporal DB
   - Satisfies: DEV-PRD-019, DEV-SDS-017
-- [ ] **Green:** Extend observability pipeline to ship Logfire span metrics into existing dashboards.
+- [x] **Green:** Extend observability pipeline to ship Logfire span metrics into existing dashboards.
   - Files: `docs/observability/dashboards/logfire.json`, `ops/vector/vector.toml` (metrics sink)
   - Dependencies: OpenObserve dashboards, Vector metrics config
   - Satisfies: DEV-PRD-018, DEV-SDS-018
-- [ ] **Refactor:** Align metrics naming with existing telemetry taxonomy (e.g., `logfire.span.duration`).
+- [x] **Refactor:** Align metrics naming with existing telemetry taxonomy (e.g., `logfire.span.duration`).
   - Files: `docs/observability/dashboards/logfire.json`, `tools/observability/schema.json`
   - Dependencies: Observability schema definitions
   - Satisfies: DEV-PRD-010, DEV-SDS-009
-- [ ] **Regression:** Run `just observe-verify` and confirm dashboards load via API snapshot tests.
+- [x] **Regression:** Run `just observe-verify` and confirm dashboards load via API snapshot tests.
   - Dependencies: OpenObserve token, Devbox
   - Satisfies: DEV-PRD-018, DEV-SDS-018
 
