@@ -4,6 +4,9 @@ from pathlib import Path
 from typing import Any
 
 import jinja2
+import pytest
+
+pytest.importorskip("pytest_copier", reason="copier template tests require pytest-copier")
 
 
 def _generate_template(copier: Any, destination: Path) -> Path:

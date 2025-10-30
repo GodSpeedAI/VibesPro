@@ -40,13 +40,10 @@ jobs:
         if: ${{ secrets.SOPS_AGE_KEY != '' }}
         run: |
           set -euo pipefail
-          sops -d .secrets.env.sops > .secrets.env
+          sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > .secrets.env
           chmod 600 .secrets.env
 
       - name: Run tests
-        env:
-          # load minimal variables from .secrets.env if needed by tests
-          # Example: OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           # avoid echoing secrets
           # run your test/build commands here
