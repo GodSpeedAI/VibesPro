@@ -43,11 +43,18 @@ def _load_required_sections() -> list[SectionSpec]:
         if not isinstance(file_value, str) or not file_value:
             continue
         if not isinstance(snippets_obj, list):
-            continue
+            raise ValueError(f"`mustContain` for {file_value} must be a list of strings")
 
-        snippets_source = cast(list[object], snippets_obj)
-        snippets: tuple[str, ...] = tuple(str(snippet) for snippet in snippets_source)
-        sections.append(SectionSpec(file=file_value, snippets=snippets))
+        snippets_list = cast(list[object], snippets_obj)
+        validated_snippets: list[str] = []
+        for index, snippet in enumerate(snippets_list):
+            if not isinstance(snippet, str):
+                raise ValueError(
+                    f"`mustContain[{index}]` for {file_value} must be a string, got {snippet!r}"
+                )
+            validated_snippets.append(snippet)
+
+        sections.append(SectionSpec(file=file_value, snippets=tuple(validated_snippets)))
 
     return sections
 
@@ -68,7 +75,11 @@ def main() -> int:
             failures.append(f"{section.file}: file not found")
             continue
 
-        content = target_path.read_text(encoding="utf-8")
+        try:
+            content = target_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            failures.append(f"{section.file}: failed to read file ({exc})")
+            continue
         for missing in _check_snippets(content, section.snippets):
             failures.append(f"{section.file}: missing required snippet -> {missing}")
 

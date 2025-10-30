@@ -78,33 +78,12 @@ type = "blackhole"
 [transforms.metrics_logfire_extract]
 type = "remap"
 inputs = ["otlp.metrics"]
-source = '''
-.metric_name = to_string(.name) ?? ""
-if !starts_with(.metric_name, "logfire.") {
-  abort
-}
-
-if exists(.resource) && exists(.resource.attributes."service.name") {
-  .service = to_string(.resource.attributes."service.name") ?? "unknown"
-} else {
-  .service = "unknown"
-}
-
-if exists(.resource) && exists(.resource.attributes.environment) {
-  .environment = to_string(.resource.attributes.environment) ?? "local"
-} else if exists(.attributes) && exists(.attributes.environment) {
-  .environment = to_string(.attributes.environment) ?? "local"
-} else {
-  .environment = "local"
-}
-'''
+file = "ops/vector/transforms/metrics_logfire_extract.vrl"
 
 [transforms.metrics_logfire_enrich]
 type = "remap"
 inputs = ["metrics_logfire_extract"]
-source = '''
-.category = "logfire"
-'''
+file = "ops/vector/transforms/metrics_logfire_enrich.vrl"
 
 [sinks.metrics_logfire_openobserve]
 type = "http"
@@ -133,92 +112,20 @@ retry_attempts = 3
 [transforms.logs_redact_pii]
 type = "remap"
 inputs = ["otlp.logs"]
-file = "tools/vector/macros.vrl"
+files = [
+  "tools/vector/macros.vrl",
+  "ops/vector/transforms/logs_redact_pii.vrl",
+]
 
 [transforms.logs_logfire_normalize]
 type = "remap"
 inputs = ["logs_redact_pii"]
-source = '''
-# Ensure trace correlation metadata is present for Logfire-generated logs
-if !exists(.trace_id) {
-  if exists(.attributes.trace_id) {
-    trace_candidate = to_string(.attributes.trace_id) ?? ""
-    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
-  } else if exists(.attributes."logfire.trace_id") {
-    trace_candidate = to_string(.attributes."logfire.trace_id") ?? ""
-    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
-  } else if exists(.attributes.logfire_trace_id) {
-    trace_candidate = to_string(.attributes.logfire_trace_id) ?? ""
-    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
-  }
-}
-
-if !exists(.span_id) {
-  if exists(.attributes.span_id) {
-    span_candidate = to_string(.attributes.span_id) ?? ""
-    if span_candidate != "" { .span_id = downcase(span_candidate) }
-  } else if exists(.attributes."logfire.span_id") {
-    span_candidate = to_string(.attributes."logfire.span_id") ?? ""
-    if span_candidate != "" { .span_id = downcase(span_candidate) }
-  } else if exists(.attributes.logfire_span_id) {
-    span_candidate = to_string(.attributes.logfire_span_id) ?? ""
-    if span_candidate != "" { .span_id = downcase(span_candidate) }
-  }
-}
-
-# Preserve span name context if supplied by Logfire
-if exists(.attributes."logfire.span_name") {
-  .span_name = to_string(.attributes."logfire.span_name") ?? ""
-}
-
-# Capture Logfire observation identifiers when present
-if exists(.attributes."logfire.observation_id") {
-  .observation_id = to_string(.attributes."logfire.observation_id") ?? ""
-}
-
-# Normalize severity defaults if missing
-if !exists(.severity_text) && exists(.level) {
-  .severity_text = to_string(.level) ?? "INFO"
-}
-'''
+file = "ops/vector/transforms/logs_logfire_normalize.vrl"
 
 [transforms.logs_enrich]
 type = "remap"
 inputs = ["logs_logfire_normalize"]
-source = '''
-# Enrich with metadata from resource attributes or set defaults
-# Service name from resource or unknown
-if exists(.resource.attributes."service.name") {
-  .service = string!(.resource.attributes."service.name")
-} else if exists(.attributes.service) {
-  .service = string!(.attributes.service)
-} else {
-  .service = "unknown"
-}
-
-# Environment from resource or local
-if exists(.resource.attributes.environment) {
-  .environment = string!(.resource.attributes.environment)
-} else if exists(.attributes.environment) {
-  .environment = string!(.attributes.environment)
-} else {
-  .environment = "local"
-}
-
-# Application version from resource or dev
-if exists(.resource.attributes."service.version") {
-  .application_version = string!(.resource.attributes."service.version")
-} else if exists(.attributes.application_version) {
-  .application_version = string!(.attributes.application_version)
-} else {
-  .application_version = "dev"
-}
-
-# Ensure category field exists (default to "app")
-if !exists(.attributes.category) {
-  .attributes.category = "app"
-}
-'''
+file = "ops/vector/transforms/logs_enrich.vrl"
 
 # Console output for local debugging
 [sinks.logs_console]

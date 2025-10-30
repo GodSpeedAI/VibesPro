@@ -3,63 +3,37 @@
 
 is_log_event = exists(.severity_text) || exists(.severity_number)
 
-if exists(.attributes.user_email) {
-  if is_log_event { .attributes.user_email = "[REDACTED]" } else { del(.attributes.user_email) }
-}
-if exists(.attributes.email) {
-  if is_log_event { .attributes.email = "[REDACTED]" } else { del(.attributes.email) }
-}
-if exists(.attributes.authorization) {
-  if is_log_event { .attributes.authorization = "[REDACTED]" } else { del(.attributes.authorization) }
-}
-if exists(.attributes.Authorization) {
-  if is_log_event { .attributes.Authorization = "[REDACTED]" } else { del(.attributes.Authorization) }
-}
-if exists(.attributes.password) {
-  if is_log_event { .attributes.password = "[REDACTED]" } else { del(.attributes.password) }
-}
-if exists(.attributes.token) {
-  if is_log_event { .attributes.token = "[REDACTED]" } else { del(.attributes.token) }
-}
-if exists(.attributes.api_key) {
-  if is_log_event { .attributes.api_key = "[REDACTED]" } else { del(.attributes.api_key) }
-}
-if exists(.attributes.auth_token) {
-  if is_log_event { .attributes.auth_token = "[REDACTED]" } else { del(.attributes.auth_token) }
-}
-if exists(.attributes."user.email") {
-  if is_log_event { .attributes."user.email" = "[REDACTED]" } else { del(.attributes."user.email") }
-}
-if exists(.attributes."auth.token") {
-  if is_log_event { .attributes."auth.token" = "[REDACTED]" } else { del(.attributes."auth.token") }
-}
+# Keep both lowercase and capitalized Authorization headers to handle case variations.
+pii_field_paths = [
+  ["attributes", "user_email"],
+  ["attributes", "email"],
+  ["attributes", "authorization"],
+  ["attributes", "Authorization"],
+  ["attributes", "password"],
+  ["attributes", "token"],
+  ["attributes", "api_key"],
+  ["attributes", "auth_token"],
+  ["attributes", "user.email"],
+  ["attributes", "auth.token"],
+  ["resource", "attributes", "user_email"],
+  ["resource", "attributes", "email"],
+  ["resource", "attributes", "authorization"],
+  ["resource", "attributes", "password"],
+  ["resource", "attributes", "token"],
+  ["resource", "attributes", "api_key"],
+  ["resource", "attributes", "auth_token"],
+  ["resource", "attributes", "user.email"],
+  ["resource", "attributes", "auth.token"],
+]
 
-if exists(.resource) && exists(.resource.attributes) {
-  if exists(.resource.attributes.user_email) {
-    if is_log_event { .resource.attributes.user_email = "[REDACTED]" } else { del(.resource.attributes.user_email) }
-  }
-  if exists(.resource.attributes.email) {
-    if is_log_event { .resource.attributes.email = "[REDACTED]" } else { del(.resource.attributes.email) }
-  }
-  if exists(.resource.attributes.authorization) {
-    if is_log_event { .resource.attributes.authorization = "[REDACTED]" } else { del(.resource.attributes.authorization) }
-  }
-  if exists(.resource.attributes.password) {
-    if is_log_event { .resource.attributes.password = "[REDACTED]" } else { del(.resource.attributes.password) }
-  }
-  if exists(.resource.attributes.token) {
-    if is_log_event { .resource.attributes.token = "[REDACTED]" } else { del(.resource.attributes.token) }
-  }
-  if exists(.resource.attributes.api_key) {
-    if is_log_event { .resource.attributes.api_key = "[REDACTED]" } else { del(.resource.attributes.api_key) }
-  }
-  if exists(.resource.attributes.auth_token) {
-    if is_log_event { .resource.attributes.auth_token = "[REDACTED]" } else { del(.resource.attributes.auth_token) }
-  }
-  if exists(.resource.attributes."user.email") {
-    if is_log_event { .resource.attributes."user.email" = "[REDACTED]" } else { del(.resource.attributes."user.email") }
-  }
-  if exists(.resource.attributes."auth.token") {
-    if is_log_event { .resource.attributes."auth.token" = "[REDACTED]" } else { del(.resource.attributes."auth.token") }
+for_each(pii_field_paths) -> |_, path| {
+  value = get(., path) ?? null
+
+  if value != null {
+    if is_log_event {
+      . = set(., path, "[REDACTED]") ?? .
+    } else {
+      . = remove(., path) ?? .
+    }
   }
 }

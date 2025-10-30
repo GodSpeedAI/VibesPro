@@ -245,23 +245,14 @@ Implementation Requirements
    - **DRI:** Backend Platform Team
    - **Timeline:** Week 2 (2025-11-08 to 2025-11-14)
    - **Phase-exit criteria:** All Python services can import and configure Logfire without errors
-   - **DRI:** Backend Platform Team
-   - **Timeline:** Week 2 (2025-11-08 to 2025-11-14)
-   - **Phase-exit criteria:** All Python services can import and configure Logfire without errors
 
 5. Document logging and tracing policy in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
 
    - **DRI:** Documentation Team
    - **Timeline:** Week 3-4 (2025-11-15 to 2025-11-28)
    - **Phase-exit criteria:** Documentation reviewed and approved by technical leads
-   - **DRI:** Documentation Team
-   - **Timeline:** Week 3-4 (2025-11-15 to 2025-11-28)
-   - **Phase-exit criteria:** Documentation reviewed and approved by technical leads
 
 6. Add TDD tests: Vector config validation, PII redaction, trace correlation, Logfire smoke test
-   - **DRI:** QA Team
-   - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
-   - **Phase-exit criteria:** All tests passing in CI with >90% code coverage
    - **DRI:** QA Team
    - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
    - **Phase-exit criteria:** All tests passing in CI with >90% code coverage

@@ -3,12 +3,12 @@
     "logfire.span.duration": {
       "description": "Duration of completed Logfire spans (milliseconds).",
       "unit": "ms",
-      "dimensions": ["service", "environment", "span_name"]
+      "dimensions": ["environment", "service", "span_name"]
     },
     "logfire.span.count": {
       "description": "Count of spans emitted by Logfire instrumentation.",
       "unit": "count",
-      "dimensions": ["service", "environment"]
+      "dimensions": ["environment", "service"]
     },
     "logfire.span.error_ratio": {
       "description": "Ratio of errored spans over total spans.",
@@ -17,8 +17,8 @@
     }
   },
   "labels": {
-    "service": "Service name associated with the span or metric producer.",
     "environment": "Deployment environment (local, staging, production).",
+    "service": "Service name associated with the span or metric producer.",
     "span_name": "Logfire span name, used for high-cardinality drilldowns."
   }
 }

@@ -1,10 +1,9 @@
-import time
 from unittest.mock import patch
 
+import pytest
 import requests
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
-from pydantic import BaseModel
 
 from libs.python.vibepro_logging import instrument_integrations
 
@@ -13,6 +12,11 @@ def test_requests_instrumentation():
     """
     Asserts that requests instrumentation emits spans.
     """
+    try:
+        from opentelemetry.instrumentation.requests import RequestsInstrumentor  # noqa: F401
+    except ImportError:
+        pytest.skip("opentelemetry-instrumentation-requests package not installed")
+
     exporter = InMemorySpanExporter()
     processor = SimpleSpanProcessor(exporter)
 
@@ -24,15 +28,21 @@ def test_requests_instrumentation():
     # Enable requests instrumentation
     instrument_integrations(requests=True)
 
-    # Make a real HTTP request with short timeout
-    try:
-        requests.get("https://httpbin.org/get", timeout=1)
-    except requests.RequestException:
-        # Network errors are acceptable for this test
-        pass
+    # Make a deterministic HTTP request by mocking the Session.send call
+    with patch("requests.sessions.Session.send") as mock_send:
+        response = requests.Response()
+        prepared = requests.Request(method="GET", url="https://example.test/logfire").prepare()
+        response.status_code = 200
+        response.headers = {"Content-Type": "application/json"}
+        response._content = b'{"ok": true}'
+        response.request = prepared
+        response.url = prepared.url
+        mock_send.return_value = response
 
-    # Allow some time for spans to be processed
-    time.sleep(0.1)
+        requests.get("https://example.test/logfire", timeout=1)
+
+    # Flush spans to ensure the exporter receives them before assertions
+    processor.force_flush(timeout_millis=5_000)
 
     # Check that spans were created
     spans = exporter.get_finished_spans()
@@ -55,8 +65,3 @@ def test_pydantic_instrumentation(mock_logfire):
     """
     instrument_integrations(pydantic=True)
     mock_logfire.instrument_pydantic.assert_called_once()
-
-    class MyModel(BaseModel):
-        x: int
-
-    MyModel(x=1)

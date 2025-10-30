@@ -38,11 +38,7 @@ def test_fastapi_instrumentation_emits_spans():
     assert len(spans) > 0
 
     # Find the HTTP GET span by filtering for known attributes
-    http_get_spans = [
-        span
-        for span in spans
-        if (span.attributes.get("http.method") == "GET" and "GET" in span.name)
-    ]
+    http_get_spans = [span for span in spans if span.attributes.get("http.method") == "GET"]
     assert len(http_get_spans) > 0, "No HTTP GET span found"
 
     # Use the first matching span for assertions

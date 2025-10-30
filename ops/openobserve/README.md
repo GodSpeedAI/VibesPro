@@ -12,6 +12,7 @@ Security-first notes
 
 - Secrets are stored encrypted in the repository using SOPS (`.secrets.env.sops`).
 - Never commit plaintext files such as `ops/openobserve/.env.local` or `.env`.
+- `ZO_ROOT_USER_PASSWORD` must be provided explicitly (no default); export it or rely on the SOPS-managed secret before starting Docker Compose.
 - Use the top-level `scripts/run-with-secrets.sh` helper to run commands with secrets
   decrypted into the process environment (no plaintext file written to disk).
 

@@ -166,8 +166,9 @@ test-python:
 	# SKIP lists hook ids to bypass. COPIER_SKIP_PROJECT_SETUP avoids heavy post-gen setup.
 	SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck COPIER_SKIP_PROJECT_SETUP=1 UV_NO_SYNC=1 uv run pytest
 
-# Common SKIP list for template tests to avoid pre-commit hooks that mutate files during test fixture commits
-TEMPLATE_TEST_SKIP := "end-of-file-fixer ruff ruff-format shellcheck prettier trim-trailing-whitespace"
+# Common SKIP list for template tests to avoid pre-commit hooks that mutate files during test fixture commits.
+# Pre-commit expects a comma-delimited list for SKIP.
+TEMPLATE_TEST_SKIP := "end-of-file-fixer,ruff,ruff-format,shellcheck,prettier,trim-trailing-whitespace"
 
 test-template:
 	@echo "🧪 Running template generation test (non-interactive)"
@@ -632,12 +633,30 @@ observe-openobserve-up:
 		echo "   Create it by copying ops/openobserve/.env.example and updating the credentials."; \
 		exit 1; \
 	fi
-	DOCKER_CONFIG=ops/openobserve docker compose -f ops/openobserve/docker-compose.yml up -d
+	@if [ ! -d ops/openobserve ]; then \
+		echo "❌ ops/openobserve directory is missing."; \
+		exit 1; \
+	fi
+	@if [ ! -f ops/openobserve/docker-compose.yml ]; then \
+		echo "❌ Missing ops/openobserve/docker-compose.yml"; \
+		exit 1; \
+	fi
+	@if RUNNING="$$(docker compose --project-directory ops/openobserve ps --status running --services 2>/dev/null || true)"; then \
+		if printf "%s" "$$RUNNING" | grep -q '^openobserve$$'; then \
+			echo "ℹ️  OpenObserve service already running (use 'just observe-openobserve-down' first)."; \
+			exit 0; \
+		fi; \
+	fi
+	docker compose --project-directory ops/openobserve --file ops/openobserve/docker-compose.yml up -d
 
 observe-openobserve-down:
 	@echo "🛑 Stopping OpenObserve (Docker Compose)..."
 	@if command -v docker >/dev/null 2>&1 && command -v docker compose >/dev/null 2>&1; then \
-		DOCKER_CONFIG=ops/openobserve docker compose -f ops/openobserve/docker-compose.yml down; \
+		if [ -d ops/openobserve ] && [ -f ops/openobserve/docker-compose.yml ]; then \
+			docker compose --project-directory ops/openobserve --file ops/openobserve/docker-compose.yml down; \
+		else \
+			echo "ℹ️  Compose manifests not found; nothing to stop."; \
+		fi; \
 	else \
 		echo "ℹ️  Docker not available; nothing to stop."; \
 	fi

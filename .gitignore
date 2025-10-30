@@ -89,3 +89,14 @@ RULES.md
 KNOWLEDGE.md
 .tessl/*
 key.txt
+
+# Sensitive token seed files
+.token_seed
+*.token_seed
+
+# Docker Buildx generated files
+ops/openobserve/buildx/.buildNodeID
+ops/openobserve/buildx/.lock
+ops/openobserve/buildx/current
+ops/openobserve/buildx/activity/
+ops/openobserve/buildx/refs/

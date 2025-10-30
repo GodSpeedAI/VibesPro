@@ -360,7 +360,7 @@ export OTEL_SERVICE_NAME="user-api"
 
 Set the endpoint to Vector (local) or OpenObserve directly, depending on environment. The Logfire SDK will respect standard OpenTelemetry variables, so no additional configuration files will be required to switch destinations.
 
-**Note:** The Python Logfire bootstrap function (`libs/python/vibepro_logging.py`) is not yet implemented and is planned for DEV-TDD cycle 2A.
+**Note:** The Python Logfire bootstrap function (`libs/python/vibepro_logging.py`) is now implemented; see that module for configuration details. DEV-TDD cycle 2A will extend coverage where additional instrumentation is required.
 
 Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using Logfire's optional helpers where relevant to the service.
 
@@ -371,7 +371,7 @@ Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using
 - DEV-SDS-018 — Structured Logging Design Specification (to be created)
 - `ops/vector/vector.toml` — OTLP logs source and PII redaction transforms
 - `libs/node-logging/logger.ts` — Node pino wrapper
-- `libs/python/vibepro_logging.py` (to be refactored) — Logfire bootstrap for Python services
+- `libs/python/vibepro_logging.py` — Logfire bootstrap for Python services
 - `pyproject.toml` — `logfire` dependency declaration aligned with structlog removal
 
 ### Acceptance Tests

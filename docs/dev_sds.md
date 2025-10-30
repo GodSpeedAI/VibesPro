@@ -580,7 +580,7 @@ logfire.instrument_requests()  # For Python requests library
 logfire.instrument_httpx()     # For httpx (async) library
 ```
 
-**Transport:** OTLP exporter controlled via env variables (`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_SERVICE_NAME`). See the Logfire integration reference page for more options and configuration.
+**Transport:** OTLP exporter controlled via env variables (`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_SERVICE_NAME`). See the [Logfire integration reference](https://logfire.pydantic.dev/docs/integrations/) for more options and configuration.
 
 ---
 

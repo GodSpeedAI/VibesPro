@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """
 VibePro structured logger using structlog.
 
@@ -22,6 +21,9 @@ Usage:
 See DEV-SDS-018 for schema details.
 See DEV-PRD-018 for requirements.
 """
+
+# mypy: ignore-errors
+from __future__ import annotations
 
 import logging
 import os
@@ -93,7 +95,7 @@ def default_metadata(service: str | None = None) -> dict[str, str]:
     }
 
 
-def bootstrap_logfire(app: "FastAPI", **kwargs) -> None:
+def bootstrap_logfire(app: FastAPI, **kwargs) -> None:
     """
     Bootstrap Logfire for FastAPI applications.
     This function configures Logfire and instruments the FastAPI application
@@ -104,7 +106,7 @@ def bootstrap_logfire(app: "FastAPI", **kwargs) -> None:
     logfire.instrument_fastapi(app)
 
 
-def get_logger(category: str | None = None, **kwargs) -> "logfire.Logfire":
+def get_logger(category: str | None = None, **kwargs) -> logfire.Logfire:
     """
     Returns a Logfire-bound logger with shared metadata.
     """
@@ -121,7 +123,7 @@ class LogCategory:
     SECURITY = "security"
 
 
-def instrument_integrations(requests: bool = False, pydantic: bool = False):
+def instrument_integrations(requests: bool = False, pydantic: bool = False) -> None:
     """
     Enable optional Logfire instrumentations.
     """
