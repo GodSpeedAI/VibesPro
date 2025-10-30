@@ -1,52 +1,62 @@
-## age keypair and GitHub Actions secrets — step by step
+# How to create an `age` key and share it with GitHub Actions
 
-This document shows concrete zsh commands and guidance to:
+This guide walks you through the entire process, from generating an `age` keypair on your laptop to letting GitHub Actions decrypt `.secrets.env.sops` during CI runs. It is written for newcomers—follow the steps in order and you’ll be ready in a few minutes.
 
-- generate an `age` keypair locally
-- add the public recipient to `.sops.yaml`
-- re-encrypt `.secrets.env.sops` for the new recipient(s)
-- add the private key to GitHub Actions as `SOPS_AGE_KEY`
-- test locally and in CI
-
-Always follow your organization's secret-handling policies. The commands below assume you are on a trusted machine.
+Everything below runs from the repository root in a trusted shell session.
 
 ---
 
-1. Install `age` and `sops` (if missing)
+## 1. Check your tools
 
-Debian/Ubuntu example:
+You need both `age` and `sops`. Verify they are installed:
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y age sops
+age --version
+sops --version
 ```
 
-Alternatively, download releases from the projects:
+If either command is missing, install them (Debian/Ubuntu example):
 
-- age: https://github.com/FiloSottile/age/releases
-- sops: https://github.com/mozilla/sops/releases
+```bash
+sudo apt update
+sudo apt install -y age sops
+```
 
-2. Generate an age keypair and save it securely
+Other platforms can download prebuilt binaries from:
 
-Recommended location: `~/.config/sops/key.txt` with strict permissions.
+- age – <https://github.com/FiloSottile/age/releases>
+- sops – <https://github.com/mozilla/sops/releases>
+
+---
+
+## 2. Generate an `age` keypair (once per person)
+
+1. Pick a safe location for your private key. The convention is `~/.config/sops/key.txt`.
+2. Create the directory and generate a keypair:
 
 ```bash
 mkdir -p ~/.config/sops
 age-keygen -o ~/.config/sops/key.txt
 chmod 600 ~/.config/sops/key.txt
-
-# Print the public recipient (age1... string) to copy into .sops.yaml
-grep -i 'public key' -n ~/.config/sops/key.txt || sed -n '1,120p' ~/.config/sops/key.txt
 ```
 
-Notes:
+3. Display the **public** key (starts with `age1…`). You will paste this into `.sops.yaml` in the next step.
 
-- `key.txt` contains your private key and a public key comment. Keep the file private.
-- Do NOT commit `key.txt` into git. Add `~/.config/sops/key.txt` to your personal backups if needed.
+```bash
+grep '^# public key:' ~/.config/sops/key.txt
+# Example: # public key: age1qp...your_public_key_here
+```
 
-3. Add public recipient to `.sops.yaml`
+Important safety notes:
 
-Open `.sops.yaml` and add the `age` recipient under `key_groups` (replace the placeholder with the real public key string produced above):
+- `key.txt` holds your private key—never commit or share the file.
+- Keep a secure backup (password manager, encrypted disk), because losing this key means you cannot decrypt any secrets that rely on it.
+
+---
+
+## 3. Tell SOPS about the new recipient
+
+Open `.sops.yaml` and add your public key under the `age` recipients. The file already has structure like the snippet below; just drop your key beside the others.
 
 ```yaml
 creation_rules:
@@ -54,110 +64,106 @@ creation_rules:
     encrypted_regex: "^(.*)$"
     key_groups:
       - age:
-          - "age1qx...your_public_key_here"
+          - "age1...existing-team-key"
+          - "age1...your_public_key_here"
 ```
 
-If you have multiple recipients (e.g., a team key and a CI key), add them to the list.
+Save the file. From now on, `sops` knows that `.secrets.env.sops` should be encrypted for everyone listed.
 
-4. Re-encrypt `.secrets.env.sops` to include the new recipient (safe rotation)
+> Tip: keep multiple recipients (team key, CI key, individual key). Any of them can decrypt.
 
-If you already have `.secrets.env.sops` encrypted and can decrypt it locally with your current key, re-encrypt it so the new recipient(s) can also decrypt it.
+---
+
+## 4. Re-encrypt `.secrets.env.sops` so the new key works
+
+If `.secrets.env.sops` already exists, you must re-encrypt it; otherwise your new key will not be able to decrypt the file.
+
+### Quick method (preferred)
+
+`sops` can rewrite the file in place using the recipients declared in `.sops.yaml`:
 
 ```bash
-# decrypt to plaintext (temporary)
-sops -d .secrets.env.sops > .secrets.env
-
-# re-encrypt specifying recipient(s). You can use sops' key-groups or the --age flag.
-# Example: encrypt for the new recipient
-sops --encrypt --age 'age1qx...your_public_key_here' .secrets.env > .secrets.env.sops.new
-
-# Inspect, back up, and replace safely
-mv .secrets.env.sops .secrets.env.sops.bak
-mv .secrets.env.sops.new .secrets.env.sops
-shred -u .secrets.env || rm -f .secrets.env
-
-# verify decryption works
-sops -d .secrets.env.sops
-
-# If everything looks good, remove the .bak or keep it offline for a short time
-rm -f .secrets.env.sops.bak
+export SOPS_AGE_KEY_FILE="$HOME/.config/sops/key.txt"
+sops --input-type dotenv --output-type dotenv --encrypt --in-place .secrets.env.sops
 ```
 
-Notes:
+That command decrypts and immediately re-encrypts using every recipient in `.sops.yaml`. No plaintext file touches disk.
 
-- Running `sops --encrypt` with a single `--age` will create a file encrypted for that recipient only. Use `--age` multiple times or key_groups in `.sops.yaml` to include many recipients.
-- If your existing `.secrets.env.sops` already contains encrypted keys for multiple recipients, you can use `sops -d .secrets.env.sops | sops --encrypt --age 'age1...' > .secrets.env.sops` to rotate recipients in one command.
+### Manual method (if you want a backup)
 
-5. Add the private key to GitHub Actions (as a secret)
+```bash
+export SOPS_AGE_KEY_FILE="$HOME/.config/sops/key.txt"
+sops -d .secrets.env.sops > .secrets.env.tmp
+sops --encrypt --age 'age1...your_public_key_here' \
+     --age 'age1...existing-team-key' \
+     .secrets.env.tmp > .secrets.env.sops.new
+mv .secrets.env.sops .secrets.env.sops.bak
+mv .secrets.env.sops.new .secrets.env.sops
+shred -u .secrets.env.tmp       # or rm -f
+```
 
-1) Open GitHub → your repo → Settings → Secrets and variables → Actions → New repository secret.
-2) Name: `SOPS_AGE_KEY` (this matches the CI workflow in this repo).
-3) Value: paste the full private key file contents from `~/.config/sops/key.txt` (the whole file). Save.
+After either approach, verify decryption succeeds:
 
-Important:
+```bash
+sops --input-type dotenv -d .secrets.env.sops | head
+```
 
-- Do not check the private key into source control. The repository secret is stored encrypted by GitHub; it is the recommended place for CI secrets.
+Once you’re satisfied, remove any `.bak` files or store them securely offline.
 
-6. Test the workflow locally (optional)
+---
 
-You can simulate the CI decrypt step locally by writing a temporary file from your `key.txt` and running sops decrypt:
+## 5. Provide the private key to GitHub Actions
+
+1. Open your repository on GitHub.
+2. Go to **Settings → Secrets and variables → Actions → New repository secret**.
+3. Name the secret `SOPS_AGE_KEY` (this matches our CI scripts).
+4. Paste the entire contents of `~/.config/sops/key.txt` into the value field and save.
+
+Now CI jobs can export the key with `SOPS_AGE_KEY` and decrypt `.secrets.env.sops`.
+
+> Warning: never store the private key in the repository itself. GitHub encrypts repository secrets for you; that is the safest place for CI use.
+
+---
+
+## 6. Smoke test the setup
+
+### Local check
 
 ```bash
 export SOPS_AGE_KEY="$(cat ~/.config/sops/key.txt)"
-mkdir -p ~/.config/sops
-printf "%s" "$SOPS_AGE_KEY" > ~/.config/sops/age-key.txt
-chmod 600 ~/.config/sops/age-key.txt
-
-# decrypt and inspect
-sops -d .secrets.env.sops
-
-# cleanup if desired
-# rm -f ~/.config/sops/age-key.txt
+sops --input-type dotenv -d .secrets.env.sops | head
 unset SOPS_AGE_KEY
 ```
 
-7. Rotate keys if the private key was ever exposed
+If you can read the contents, re-encryption succeeded.
 
-If your private key was accidentally committed, pushed, or leaked, **rotate** immediately:
+### GitHub Actions check
 
-- Generate a new age keypair.
-- Add the new public recipient to `.sops.yaml`.
-- Re-encrypt `.secrets.env.sops` for the new recipient. Use the steps in section (4).
-- Update GitHub Secret `SOPS_AGE_KEY` to the new private key content.
-- Optionally purge historical commits containing the old private key (use `git-filter-repo` or BFG) and force push; coordinate with your team.
-
-8. Quick checklist before pushing changes
-
-- Ensure `.sops.yaml` contains the correct public recipient(s).
-- Ensure you did not accidentally commit any private key file (search `git log --all -- key.txt`).
-- Update `.gitignore` to exclude local private key files if present (e.g., `~/.config/sops/key.txt` is outside the repo; if you used `key.txt` in repo root, add `key.txt` to `.gitignore`).
-- Update CI secret `SOPS_AGE_KEY` in repository settings.
-
-9. Example: full minimal sequence (safe, manual)
+Push a branch and watch the CI run. The logs should not contain “failed to decrypt” errors. If you need a quick manual test, you can run the decrypt step locally in the same way the workflow does:
 
 ```bash
-# generate key locally
-mkdir -p ~/.config/sops
-age-keygen -o ~/.config/sops/key.txt
-chmod 600 ~/.config/sops/key.txt
-
-# copy public recipient from the file and update .sops.yaml (manually)
-
-# decrypt and re-encrypt for the new recipient
-sops -d .secrets.env.sops > .secrets.env
-sops --encrypt --age 'age1...newpub' .secrets.env > .secrets.env.sops.new
-mv .secrets.env.sops .secrets.env.sops.bak
-mv .secrets.env.sops.new .secrets.env.sops
-shred -u .secrets.env || rm -f .secrets.env
-
-# add private key contents to GitHub secret SOPS_AGE_KEY
+sops exec-env .secrets.env.sops -- printenv SOME_SECRET
 ```
 
 ---
 
-If you want, I can:
+## 7. Rotating a key (if the private key leaks)
 
-- add an optional helper `Makefile` target or a `just` task that automates re-encrypting with a listed recipient (local only) and verifies the result; or
-- prepare a KMS-based `.sops.yaml` and CI workflow if you prefer AWS/GCP/Azure KMS (safer for team CI).
+1. Generate a new keypair (repeat Step 2).
+2. Replace the old public key in `.sops.yaml` with the new one.
+3. Re-encrypt `.secrets.env.sops` (Step 4).
+4. Update the GitHub secret `SOPS_AGE_KEY` with the new private key.
+5. Invalidate any old copies of the key (remove credentials from backups, rotate downstream tokens if needed).
 
-Which helper should I add next? (add just task, KMS workflow, or both?)
+When rotating, it’s a good idea to leave both the old and new recipients in `.sops.yaml` until every teammate has switched, then remove the old key and re-encrypt again.
+
+---
+
+## 8. Checklist before committing
+
+- [ ] `.sops.yaml` contains the correct recipient list.
+- [ ] `.secrets.env.sops` decrypts with your new key.
+- [ ] No private keys or plaintext `.env` files were added to Git history.
+- [ ] GitHub Actions secret `SOPS_AGE_KEY` is set to the current private key.
+
+Keep this document handy whenever you onboard a new teammate or rotate keys; the steps are always the same. Following them ensures everyone can decrypt shared secrets while keeping the private portion of the key safe. If you prefer a cloud KMS approach instead of `age`, reach out—there are ready-made templates for AWS, GCP, and Azure as well.
