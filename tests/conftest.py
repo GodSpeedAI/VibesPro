@@ -1,3 +1,4 @@
+import os
 import pathlib
 from pathlib import Path
 from shutil import copy, copytree
@@ -37,6 +38,16 @@ def pytest_ignore_collect(path, config):
 
 
 if PYTEST_COPIER_AVAILABLE:
+    _DEFAULT_TEMPLATE_SKIP = [
+        "end-of-file-fixer",
+        "ruff",
+        "ruff-format",
+        "shellcheck",
+        "prettier",
+        "trim-trailing-whitespace",
+        "check-shebang-scripts-are-executable",
+        "spec-matrix",
+    ]
 
     def _copy_template_tree(template_root: Path, src: Path, template_paths: list[str]) -> None:
         if template_paths:
@@ -52,10 +63,24 @@ if PYTEST_COPIER_AVAILABLE:
     def _initial_commit_with_allow_empty(repo_path: Path) -> None:
         """Stage all files and create an initial commit, allowing empty trees."""
         copier_run("git", "add", "-A", ".", cwd=repo_path)
+        original_skip = os.environ.get("SKIP")
+        skip_parts = []
+        if original_skip:
+            skip_parts.extend([p.strip() for p in original_skip.split(",") if p.strip()])
+        for hook in _DEFAULT_TEMPLATE_SKIP:
+            if hook not in skip_parts:
+                skip_parts.append(hook)
+        os.environ["SKIP"] = ",".join(skip_parts)
+
         try:
             copier_run("git", "commit", "-m", "test", cwd=repo_path)
         except RunError:
             copier_run("git", "commit", "--allow-empty", "-m", "test", cwd=repo_path)
+        finally:
+            if original_skip is not None:
+                os.environ["SKIP"] = original_skip
+            else:
+                os.environ.pop("SKIP", None)
 
     @pytest.fixture(scope="session")
     def copier_template(

@@ -110,11 +110,13 @@ def get_logger(category: str | None = None, **kwargs) -> logfire.Logfire:
     """
     Returns a Logfire-bound logger with shared metadata.
     """
+    logger = logfire.get_logger()
+
     metadata = default_metadata()
     if category:
         metadata["category"] = category
     metadata.update(kwargs)
-    return logfire.bind(**metadata)
+    return logger.bind(**metadata)
 
 
 class LogCategory:

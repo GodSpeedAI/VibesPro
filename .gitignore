@@ -20,6 +20,7 @@ htmlcov/
 
 # Environment
 .env
+!templates/{{project_slug}}/.env
 .env.local
 .env.development.local
 .env.test.local
