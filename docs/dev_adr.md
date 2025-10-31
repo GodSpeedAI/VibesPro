@@ -8,66 +8,66 @@ Source: transcript.md synthesis and repository conventions
 
 ## DEV-ADR-001 — Native Copilot/VS Code over custom DSL
 
-- Decision: Use only GitHub Copilot + VS Code native mechanisms (copilot-instructions.md, instructions/_.md, prompts/_.prompt.md, chatmodes/\*.chatmode.md, settings.json, tasks) instead of inventing a YAML DSL.
-- Context: Constraint of "NO custom YAML files or external DSL," need for immediate usability and hot-reload.
-- Rationale: Lower cognitive load; no extra tooling; leverages existing ecosystem; simpler onboarding; safe defaults.
-- DX Impact: Faster setup (<10 min), less context switching, predictable discovery; fewer toolchains to learn.
-- Trade–offs: Less declarative logic in-config; conditional flows handled via tasks/scripts.
+-   Decision: Use only GitHub Copilot + VS Code native mechanisms (copilot-instructions.md, instructions/_.md, prompts/_.prompt.md, chatmodes/\*.chatmode.md, settings.json, tasks) instead of inventing a YAML DSL.
+-   Context: Constraint of "NO custom YAML files or external DSL," need for immediate usability and hot-reload.
+-   Rationale: Lower cognitive load; no extra tooling; leverages existing ecosystem; simpler onboarding; safe defaults.
+-   DX Impact: Faster setup (<10 min), less context switching, predictable discovery; fewer toolchains to learn.
+-   Trade–offs: Less declarative logic in-config; conditional flows handled via tasks/scripts.
 
 ## DEV-ADR-002 — MECE modular instruction files with "LoRA-style" stacking
 
-- Decision: Break guidance into MECE instruction files (security, performance, style, general) and compose per task by ordered stacking.
-- Rationale: Mirrors adapter/LoRA composability; enables reuse and fine-grained overrides.
-- DX Impact: Clear layering, simpler diffs, targeted tweaks; avoids monolithic prompts.
-- Conventions: Left-to-right order determines precedence; repo-wide > mode > prompt can be tuned explicitly.
+-   Decision: Break guidance into MECE instruction files (security, performance, style, general) and compose per task by ordered stacking.
+-   Rationale: Mirrors adapter/LoRA composability; enables reuse and fine-grained overrides.
+-   DX Impact: Clear layering, simpler diffs, targeted tweaks; avoids monolithic prompts.
+-   Conventions: Left-to-right order determines precedence; repo-wide > mode > prompt can be tuned explicitly.
 
 ## DEV-ADR-003 — Custom chat modes as first-class personas (8 roles)
 
-- Decision: Define chat modes for product-manager, ux-ui-designer, system-architect, senior-frontend-engineer, senior-backend-engineer, qa-test-automation-engineer, devops-deployment-engineer, security-analyst.
-- Rationale: Minimizes cognitive switching; aligns with delivery phases; improves handoffs.
-- DX Impact: One-click persona; consistent outputs; faster planning/implementation flows.
+-   Decision: Define chat modes for product-manager, ux-ui-designer, system-architect, senior-frontend-engineer, senior-backend-engineer, qa-test-automation-engineer, devops-deployment-engineer, security-analyst.
+-   Rationale: Minimizes cognitive switching; aligns with delivery phases; improves handoffs.
+-   DX Impact: One-click persona; consistent outputs; faster planning/implementation flows.
 
 ## DEV-ADR-004 — Tasks as orchestration layer (dynamic injection, A/B, token metrics)
 
-- Decision: Use VS Code tasks to run prompts, inject dynamic context, measure tokens, and support A/B flows via branches/workspaces.
-- Rationale: Declarative files stay simple; tasks provide controlled imperative glue.
-- DX Impact: Repeatable runs; single keybindings/commands; measurable feedback loops.
+-   Decision: Use VS Code tasks to run prompts, inject dynamic context, measure tokens, and support A/B flows via branches/workspaces.
+-   Rationale: Declarative files stay simple; tasks provide controlled imperative glue.
+-   DX Impact: Repeatable runs; single keybindings/commands; measurable feedback loops.
 
 ## DEV-ADR-005 — Security by default: workspace trust and tool safety
 
-- Decision: Respect workspace trust boundaries; never enable chat.tools.autoApprove; centralize safety instructions.
-- Rationale: Prevent prompt-injection and RCE; protect developer machines.
-- DX Impact: Confidence in running examples; fewer security reviews blocked.
+-   Decision: Respect workspace trust boundaries; never enable chat.tools.autoApprove; centralize safety instructions.
+-   Rationale: Prevent prompt-injection and RCE; protect developer machines.
+-   DX Impact: Confidence in running examples; fewer security reviews blocked.
 
 ## DEV-ADR-006 — Context window optimization via strategic file ordering
 
-- Decision: Use chat.promptFilesLocations and chat.modeFilesLocations with curated ordering; prune redundant context.
-- Rationale: Predictable token budgets; reduce noise; improve answer quality.
-- DX Impact: Fewer truncations; faster, more relevant results.
+-   Decision: Use chat.promptFilesLocations and chat.modeFilesLocations with curated ordering; prune redundant context.
+-   Rationale: Predictable token budgets; reduce noise; improve answer quality.
+-   DX Impact: Fewer truncations; faster, more relevant results.
 
 ## DEV-ADR-007 — Prompt-as-code lifecycle (VC, lint, test, plan)
 
-- Decision: Treat prompts/instructions as code: versioned, linted, evaluated (A/B), and "planned" prior to change.
-- Rationale: Reproducibility and rollback; reduces regressions.
-- DX Impact: Safer iteration; observable quality trends; consistent reviews.
+-   Decision: Treat prompts/instructions as code: versioned, linted, evaluated (A/B), and "planned" prior to change.
+-   Rationale: Reproducibility and rollback; reduces regressions.
+-   DX Impact: Safer iteration; observable quality trends; consistent reviews.
 
 ## DEV-ADR-008 — CALM + Wasp + Nx synergy (semantics over single-spec generation)
 
-- Decision: Use CALM (architecture semantics/policy) over a Wasp-style single spec; Nx generators scaffold reversible polyglot services; IaC artifacts are downstream.
-- Rationale: Clear separation of intent vs constraints; design-time guarantees.
-- DX Impact: Deterministic scaffolds; safer service boundaries; reversible changes.
+-   Decision: Use CALM (architecture semantics/policy) over a Wasp-style single spec; Nx generators scaffold reversible polyglot services; IaC artifacts are downstream.
+-   Rationale: Clear separation of intent vs constraints; design-time guarantees.
+-   DX Impact: Deterministic scaffolds; safer service boundaries; reversible changes.
 
 ## DEV-ADR-009 — Declarative-first with imperative escape hatches
 
-- Decision: Keep guidance declarative; use tasks/scripts for branching/conditionals and retrieval.
-- Rationale: Maintains simplicity; avoids DSL creep; enables power when needed.
-- DX Impact: Lower learning curve; flexibility preserved.
+-   Decision: Keep guidance declarative; use tasks/scripts for branching/conditionals and retrieval.
+-   Rationale: Maintains simplicity; avoids DSL creep; enables power when needed.
+-   DX Impact: Lower learning curve; flexibility preserved.
 
 ## DEV-ADR-010 — Evaluation hooks and token budgets
 
-- Decision: Provide token usage logging, quality checks, and optional toxicity/safety post-process steps.
-- Rationale: Close the loop on output quality and cost.
-- DX Impact: Faster feedback; predictable spend; structured improvements.
+-   Decision: Provide token usage logging, quality checks, and optional toxicity/safety post-process steps.
+-   Rationale: Close the loop on output quality and cost.
+-   DX Impact: Faster feedback; predictable spend; structured improvements.
 
 ## DEV-ADR-011 — Adopt Devbox as OS dependency boundary
 
@@ -139,18 +139,18 @@ VibePro's execution model is moving toward deterministic, AI‑ready telemetry. 
 Decision
 Implement an opt‑in observability subsystem composed of:
 
-- tracing + tracing‑opentelemetry for in‑process spans, metrics, and structured logs
-- Vector as the host‑level collector/transformer
-- OpenObserve as the unified long‑term store
+-   tracing + tracing‑opentelemetry for in‑process spans, metrics, and structured logs
+-   Vector as the host‑level collector/transformer
+-   OpenObserve as the unified long‑term store
 
 Enable via the environment flag: VIBEPRO_OBSERVE=1
 
 Rationale
 
-- Low overhead: Rust async tracing with minimal allocations
-- Standardized telemetry (OTLP) compatible with AIOps tools
-- Enables AI‑driven RCA and anomaly detection with context‑rich spans
-- Removes dependency on container agents (Vector runs as a host binary)
+-   Low overhead: Rust async tracing with minimal allocations
+-   Standardized telemetry (OTLP) compatible with AIOps tools
+-   Enables AI‑driven RCA and anomaly detection with context‑rich spans
+-   Removes dependency on container agents (Vector runs as a host binary)
 
 Consequences
 
@@ -169,17 +169,17 @@ Adoption phases
 
 Related
 
-- DEV-PRD-017 — Observability Integration Story (create before Phase 3 implementation)
-- docs/dev_tdd_observability.md (v1)
+-   DEV-PRD-017 — Observability Integration Story (create before Phase 3 implementation)
+-   docs/dev_tdd_observability.md (v1)
 
-- DEV-SDS-017 — Observability Design Spec (create before Phase 2 implementation)
-- Traceability: Phase 1 prototypes may proceed without specs; Phases 2+ must reference DEV-SDS-017 and DEV-PRD-017 in commits
+-   DEV-SDS-017 — Observability Design Spec (create before Phase 2 implementation)
+-   Traceability: Phase 1 prototypes may proceed without specs; Phases 2+ must reference DEV-SDS-017 and DEV-PRD-017 in commits
 
 Notes
 
-- Ensure PII/PII‑like fields are redacted or filtered before export.
-- Add automated CI checks for vector config validation and a small benchmark to detect regressions.
-- Document rollout plan for operators (Vector binary distribution, upgrades, and monitoring).
+-   Ensure PII/PII‑like fields are redacted or filtered before export.
+-   Add automated CI checks for vector config validation and a small benchmark to detect regressions.
+-   Document rollout plan for operators (Vector binary distribution, upgrades, and monitoring).
 
 ## DEV-ADR-017 — JSON-First Structured Logging with Trace Correlation
 
@@ -191,28 +191,28 @@ VibePro's current logging approach is inconsistent across languages (Rust, Node,
 Decision
 Implement structured, JSON-first logging with mandatory trace correlation across all languages:
 
-- **Format:** JSON only (machine-first) for all application logs
-- **Correlation:** Every log line carries `trace_id`, `span_id`, `service`, `env`, `version`
-- **PII Protection:** Never emit raw PII from app code; mandatory redaction in Vector
-- **Levels:** `error`, `warn`, `info`, `debug` (no `trace` level—use tracing spans)
-- **Categories:** `app` (default), `audit`, `security` via dedicated field
-- **Transport:** stdout/stderr locally; OTLP to Vector when `VIBEPRO_OBSERVE=1`
-- **Retention:** 14-30 days for logs (shorter than traces)
+-   **Format:** JSON only (machine-first) for all application logs
+-   **Correlation:** Every log line carries `trace_id`, `span_id`, `service`, `env`, `version`
+-   **PII Protection:** Never emit raw PII from app code; mandatory redaction in Vector
+-   **Levels:** `error`, `warn`, `info`, `debug` (no `trace` level—use tracing spans)
+-   **Categories:** `app` (default), `audit`, `security` via dedicated field
+-   **Transport:** stdout/stderr locally; OTLP to Vector when `VIBEPRO_OBSERVE=1`
+-   **Retention:** 14-30 days for logs (shorter than traces)
 
 Language-specific implementations:
 
-- **Rust:** Continue using `tracing` events (already in place via `vibepro-observe`)
-- **Node:** `pino` with custom formatters for trace context injection
-- **Python:** Replace `structlog` with the Logfire SDK (OpenTelemetry emitter) to auto-instrument FastAPI requests, outbound HTTP clients, and Pydantic validation while emitting the shared JSON schema
+-   **Rust:** Continue using `tracing` events (already in place via `vibepro-observe`)
+-   **Node:** `pino` with custom formatters for trace context injection
+-   **Python:** Replace `structlog` with the Logfire SDK (OpenTelemetry emitter) to auto-instrument FastAPI requests, outbound HTTP clients, and Pydantic validation while emitting the shared JSON schema
 
 Rationale
 
-- **Consistency:** Same log schema regardless of language/runtime
-- **Correlation:** Enables log ↔ trace navigation in OpenObserve
-- **Python Fidelity:** Logfire surfaces FastAPI spans, Pydantic validation errors, and LLM context with minimal, standardized instrumentation setup such as calling logfire.instrument_fastapi()
-- **Cost Control:** Sampling/redaction at Vector edge; shorter retention than traces
-- **PII Safety:** Centralized redaction rules prevent accidental exposure
-- **Query Performance:** JSON structure enables fast field indexing
+-   **Consistency:** Same log schema regardless of language/runtime
+-   **Correlation:** Enables log ↔ trace navigation in OpenObserve
+-   **Python Fidelity:** Logfire surfaces FastAPI spans, Pydantic validation errors, and LLM context with minimal, standardized instrumentation setup such as calling logfire.instrument_fastapi()
+-   **Cost Control:** Sampling/redaction at Vector edge; shorter retention than traces
+-   **PII Safety:** Centralized redaction rules prevent accidental exposure
+-   **Query Performance:** JSON structure enables fast field indexing
 
 Consequences
 
@@ -227,55 +227,55 @@ Consequences
 Implementation Requirements
 
 1. Add Vector OTLP logs source and PII redaction transforms to `ops/vector/vector.toml`
-   - **DRI:** Infrastructure Team
-   - **Timeline:** Week 1 (2025-11-01 to 2025-11-07)
-   - **Phase-exit criteria:** Vector config updated and validated in CI
+    - **DRI:** Infrastructure Team
+    - **Timeline:** Week 1 (2025-11-01 to 2025-11-07)
+    - **Phase-exit criteria:** Vector config updated and validated in CI
 2. Create `libs/node-logging/logger.ts` with pino wrapper
-   - **DRI:** Frontend Platform Team
-   - **Timeline:** Week 1-2 (2025-11-01 to 2025-11-14)
-   - **Phase-exit criteria:** Logger package published and tests passing
+    - **DRI:** Frontend Platform Team
+    - **Timeline:** Week 1-2 (2025-11-01 to 2025-11-14)
+    - **Phase-exit criteria:** Logger package published and tests passing
 3. Refactor `libs/python/vibepro_logging.py` into a Logfire bootstrap that instruments FastAPI, requests, and async clients
 
-   - **DRI:** Backend Platform Team
-   - **Timeline:** Week 2-3 (2025-11-08 to 2025-11-21)
-   - **Phase-exit criteria:** Logfire SDK installed, FastAPI instrumentation validated, and smoke test passes in staging
+    - **DRI:** Backend Platform Team
+    - **Timeline:** Week 2-3 (2025-11-08 to 2025-11-21)
+    - **Phase-exit criteria:** Logfire SDK installed, FastAPI instrumentation validated, and smoke test passes in staging
 
 4. Install and configure Logfire SDK in `pyproject.toml`, including default OTEL environment variable templates
 
-   - **DRI:** Backend Platform Team
-   - **Timeline:** Week 2 (2025-11-08 to 2025-11-14)
-   - **Phase-exit criteria:** All Python services can import and configure Logfire without errors
+    - **DRI:** Backend Platform Team
+    - **Timeline:** Week 2 (2025-11-08 to 2025-11-14)
+    - **Phase-exit criteria:** All Python services can import and configure Logfire without errors
 
 5. Document logging and tracing policy in `docs/ENVIRONMENT.md` and `docs/observability/README.md`
 
-   - **DRI:** Documentation Team
-   - **Timeline:** Week 3-4 (2025-11-15 to 2025-11-28)
-   - **Phase-exit criteria:** Documentation reviewed and approved by technical leads
+    - **DRI:** Documentation Team
+    - **Timeline:** Week 3-4 (2025-11-15 to 2025-11-28)
+    - **Phase-exit criteria:** Documentation reviewed and approved by technical leads
 
 6. Add TDD tests: Vector config validation, PII redaction, trace correlation, Logfire smoke test
-   - **DRI:** QA Team
-   - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
-   - **Phase-exit criteria:** All tests passing in CI with >90% code coverage
+    - **DRI:** QA Team
+    - **Timeline:** Week 4-5 (2025-11-22 to 2025-12-05)
+    - **Phase-exit criteria:** All tests passing in CI with >90% code coverage
 
 Related Specs
 
-- DEV-ADR-016 — Rust-Native Observability Pipeline (foundation)
-- DEV-PRD-018 — Structured Logging Product Requirements (Logfire upgrade)
-- DEV-SDS-018 — Structured Logging Design Specification (Logfire upgrade)
-- DEV-SPEC-009 — Logging Policy & Examples (documentation)
+-   DEV-ADR-016 — Rust-Native Observability Pipeline (foundation)
+-   DEV-PRD-018 — Structured Logging Product Requirements (Logfire upgrade)
+-   DEV-SDS-018 — Structured Logging Design Specification (Logfire upgrade)
+-   DEV-SPEC-009 — Logging Policy & Examples (documentation)
 
 Migration Strategy
 
-- Phase 1: Introduce Logfire alongside existing structlog wrapper behind a compatibility facade; update examples and smoke tests.
-- Phase 2: Cut Python services over to Logfire instrumentation (FastAPI, requests, Pydantic) and deprecate structlog usage.
-- Phase 3: Remove structlog dependency, enforce Logfire bootstrap in generators, and lint for legacy imports.
-  - Note: pyproject.toml currently contains structlog>=23.0.0 (line 15) as this is Phase 1: coexistence period
+-   Phase 1: Introduce Logfire alongside existing structlog wrapper behind a compatibility facade; update examples and smoke tests.
+-   Phase 2: Cut Python services over to Logfire instrumentation (FastAPI, requests, Pydantic) and deprecate structlog usage.
+-   Phase 3: Remove structlog dependency, enforce Logfire bootstrap in generators, and lint for legacy imports.
+    -   Note: Completed during TDD Phase 4 — `pyproject.toml` now depends solely on `logfire`.
 
 Validation
 
-- All logs must include: `trace_id`, `span_id`, `service`, `environment`, `application_version`
-- PII fields (email, authorization, tokens) automatically redacted by Vector
-- Tests validate: config correctness, redaction behavior, correlation fields, and Logfire span validation deferred to DEV-TDD cycle 2A
+-   All logs must include: `trace_id`, `span_id`, `service`, `environment`, `application_version`
+-   PII fields (email, authorization, tokens) automatically redacted by Vector
+-   Tests validate: config correctness, redaction behavior, correlation fields, and Logfire span validation deferred to DEV-TDD cycle 2A
 
 ---
 
@@ -285,25 +285,25 @@ Status: Proposed
 
 Context
 
-- Enhanced AI pattern prediction, automated performance optimization, and deeper context awareness are top DX asks, but current capabilities operate independently (temporal DB, pattern recognizer, performance telemetry, and AIContextManager scoring).
-- redb already stores architecture decisions, performance spans, and AI guidance outcomes with timestamps, yet no feedback loop closes the gap between historical success and future recommendations.
-- Developers want proactive, confident suggestions without curating prompts by hand for every task.
+-   Enhanced AI pattern prediction, automated performance optimization, and deeper context awareness are top DX asks, but current capabilities operate independently (temporal DB, pattern recognizer, performance telemetry, and AIContextManager scoring).
+-   redb already stores architecture decisions, performance spans, and AI guidance outcomes with timestamps, yet no feedback loop closes the gap between historical success and future recommendations.
+-   Developers want proactive, confident suggestions without curating prompts by hand for every task.
 
 Decision
 
-- Treat the temporal database, ArchitecturalPatternRecognizer, PerformanceMonitor, and AIContextManager as a unified "AI guidance fabric" that mines historical outcomes to steer future assistance.
-- Establish shared contracts so that:
-  - Temporal snapshots feed clustering jobs that emit pattern recommendations with confidence scores and provenance metadata.
-  - Performance telemetry produces heuristics (baseline deltas, hotspot detection) that surface prescriptive tuning advice alongside raw metrics.
-  - AIContextManager scoring incorporates pattern confidence, performance advisories, and usage success rates when assembling bundles inside token budgets.
-- Ship the fabric in incremental phases with strict TDD coverage tracked in `docs/dev_tdd_ai_guidance.md`.
+-   Treat the temporal database, ArchitecturalPatternRecognizer, PerformanceMonitor, and AIContextManager as a unified "AI guidance fabric" that mines historical outcomes to steer future assistance.
+-   Establish shared contracts so that:
+    -   Temporal snapshots feed clustering jobs that emit pattern recommendations with confidence scores and provenance metadata.
+    -   Performance telemetry produces heuristics (baseline deltas, hotspot detection) that surface prescriptive tuning advice alongside raw metrics.
+    -   AIContextManager scoring incorporates pattern confidence, performance advisories, and usage success rates when assembling bundles inside token budgets.
+-   Ship the fabric in incremental phases with strict TDD coverage tracked in `docs/dev_tdd_ai_guidance.md`.
 
 Rationale
 
-- **Higher-confidence guidance:** Learning from past successful artifacts reduces generic answers and aligns suggestions with proven solutions.
-- **Operational awareness:** Performance heuristics turn telemetry into prescriptive advice, shrinking iteration loops when regressions appear.
-- **Context quality:** Injecting temporal success data into context scoring increases bundle relevance without exceeding budgets.
-- **Reuse existing assets:** Builds on the temporal DB, telemetry hooks, and context manager that already exist in the platform.
+-   **Higher-confidence guidance:** Learning from past successful artifacts reduces generic answers and aligns suggestions with proven solutions.
+-   **Operational awareness:** Performance heuristics turn telemetry into prescriptive advice, shrinking iteration loops when regressions appear.
+-   **Context quality:** Injecting temporal success data into context scoring increases bundle relevance without exceeding budgets.
+-   **Reuse existing assets:** Builds on the temporal DB, telemetry hooks, and context manager that already exist in the platform.
 
 Consequences
 
@@ -327,23 +327,23 @@ Implementation Requirements
 
 Related Specs
 
-- DEV-PRD-018 — AI pattern intelligence & performance co-pilot
-- DEV-SDS-021 — AI guidance fabric design (to be authored)
-- DEV-SPEC-012 — Temporal database governance (existing)
-- docs/dev_tdd_ai_guidance.md — Phase-driven TDD execution plan (now including CI workflow + S.W.O.R.D closure tracking)
+-   DEV-PRD-018 — AI pattern intelligence & performance co-pilot
+-   DEV-SDS-021 — AI guidance fabric design (to be authored)
+-   DEV-SPEC-012 — Temporal database governance (existing)
+-   docs/dev_tdd_ai_guidance.md — Phase-driven TDD execution plan (now including CI workflow + S.W.O.R.D closure tracking)
 
 Validation
 
-- Clustering jobs produce recommendations with confidence ≥ defined threshold and link back to source ADR/commit IDs.
-- Performance advisories highlight regressions > 20% over baseline and include remediation hints.
-- Context bundles include at least one high-confidence artifact in ≥80% of assistant responses.
-- Automated tests cover ingestion, scoring, and advisory generation per TDD plan.
+-   Clustering jobs produce recommendations with confidence ≥ defined threshold and link back to source ADR/commit IDs.
+-   Performance advisories highlight regressions > 20% over baseline and include remediation hints.
+-   Context bundles include at least one high-confidence artifact in ≥80% of assistant responses.
+-   Automated tests cover ingestion, scoring, and advisory generation per TDD plan.
 
 ## Developer ergonomics considerations (summary)
 
-- Progressive disclosure of options; sensible defaults; opinionated naming.
-- Idempotent tasks; hot-reload for instructions and modes.
-- Clear precedence rules; consistent folder conventions; ready-to-run samples.
+-   Progressive disclosure of options; sensible defaults; opinionated naming.
+-   Idempotent tasks; hot-reload for instructions and modes.
+-   Clear precedence rules; consistent folder conventions; ready-to-run samples.
 
 ---
 
@@ -357,16 +357,16 @@ Decision: Use Supabase PostgreSQL database schema as the single source of truth 
 
 Rationale:
 
-- **Consistency:** Eliminates drift between frontend, backend, and database types.
-- **Reliability:** The database schema is the most rigid and reliable contract.
-- **Efficiency:** Automates the creation and maintenance of type definitions, reducing developer overhead.
-- **Tooling:** Leverages Supabase's mature and well-supported type generation features.
+-   **Consistency:** Eliminates drift between frontend, backend, and database types.
+-   **Reliability:** The database schema is the most rigid and reliable contract.
+-   **Efficiency:** Automates the creation and maintenance of type definitions, reducing developer overhead.
+-   **Tooling:** Leverages Supabase's mature and well-supported type generation features.
 
 Consequences:
 
-- All data model changes MUST start at the database schema level.
-- A robust workflow for schema migrations and subsequent type regeneration is required.
-- The development workflow becomes tightly coupled to the Supabase ecosystem.
+-   All data model changes MUST start at the database schema level.
+-   A robust workflow for schema migrations and subsequent type regeneration is required.
+-   The development workflow becomes tightly coupled to the Supabase ecosystem.
 
 ---
 
@@ -380,15 +380,15 @@ Decision: Adopt a strict "schema-first" development workflow. All changes to dat
 
 Rationale:
 
-- **Traceability:** SQL migrations provide a clear, version-controlled history of all data model changes.
-- **Automation:** Reduces the risk of human error during type updates.
-- **Safety:** Compile-time errors in frontend and backend code will immediately flag any breaking changes resulting from a schema update.
+-   **Traceability:** SQL migrations provide a clear, version-controlled history of all data model changes.
+-   **Automation:** Reduces the risk of human error during type updates.
+-   **Safety:** Compile-time errors in frontend and backend code will immediately flag any breaking changes resulting from a schema update.
 
 Consequences:
 
-- Developers need to be proficient in writing SQL migrations.
-- The CI/CD pipeline must include steps for running migrations and executing the type generation process.
-- Initial setup requires integrating Supabase CLI and Nx generators into a cohesive pipeline.
+-   Developers need to be proficient in writing SQL migrations.
+-   The CI/CD pipeline must include steps for running migrations and executing the type generation process.
+-   Initial setup requires integrating Supabase CLI and Nx generators into a cohesive pipeline.
 
 ---
 
@@ -400,23 +400,23 @@ Context: The project's architecture needs to be scalable, maintainable, and enfo
 
 Decision: Organize the codebase using a Domain-Driven Design (DDD) structure within the Nx monorepo. Libraries will be structured by domain (e.g., `libs/<domain>`) and further subdivided into layers (`domain`, `application`, `infrastructure`, `ui`, `api`). A custom orchestrator generator (`@vibepro/domain`) will be created to scaffold the entire structure for a new domain. This generator will leverage specialized, off-the-shelf generators for specific layers:
 
-- **Backend API:** `@nxlv/python` will be used to scaffold FastAPI applications.
-- **UI Components:** `@nx-extend/shadcn-ui` will be used to generate type-safe UI components.
-- **Frontend Application:** The appropriate Nx plugin (`@nx/next`, `@nx/remix`, or `@nx/expo`) will be used based on the project configuration.
+-   **Backend API:** `@nxlv/python` will be used to scaffold FastAPI applications.
+-   **UI Components:** `@nx-extend/shadcn-ui` will be used to generate type-safe UI components.
+-   **Frontend Application:** The appropriate Nx plugin (`@nx/next`, `@nx/remix`, or `@nx/expo`) will be used based on the project configuration.
 
 Rationale:
 
-- **Scalability:** DDD provides clear boundaries, allowing teams to work on different domains in parallel.
-- **Consistency:** A primary generator orchestrating specialized generators ensures all domains follow the same structure and conventions.
-- **Efficiency:** Automates boilerplate creation, allowing developers to focus on business logic.
-- **Architectural Safety:** Nx dependency rules can be used to enforce boundaries between domains and layers.
-- **Leverages Ecosystem:** Uses well-maintained community generators, reducing custom code.
+-   **Scalability:** DDD provides clear boundaries, allowing teams to work on different domains in parallel.
+-   **Consistency:** A primary generator orchestrating specialized generators ensures all domains follow the same structure and conventions.
+-   **Efficiency:** Automates boilerplate creation, allowing developers to focus on business logic.
+-   **Architectural Safety:** Nx dependency rules can be used to enforce boundaries between domains and layers.
+-   **Leverages Ecosystem:** Uses well-maintained community generators, reducing custom code.
 
 Consequences:
 
-- Requires an upfront investment in building and maintaining the main `@vibepro/domain` orchestrator generator.
-- Developers need to be trained on the DDD structure and how to use the primary generator.
-- The project becomes dependent on the continued maintenance of external Nx generators.
+-   Requires an upfront investment in building and maintaining the main `@vibepro/domain` orchestrator generator.
+-   Developers need to be trained on the DDD structure and how to use the primary generator.
+-   The project becomes dependent on the continued maintenance of external Nx generators.
 
 ---
 
@@ -428,20 +428,20 @@ Context: To ensure that the application's core business logic is maintainable, t
 
 Decision: Formally adopt Hexagonal (Ports & Adapters) architecture.
 
-- **Core Logic:** The `domain` and `application` layers will contain the core business logic and will have no dependencies on external technologies.
-- **Ports:** The application's boundaries will be defined by `ports`, which are technology-agnostic interfaces (or `protocol` types in Python using abstract base classes only where necessary) located within the `application` layer. These ports define contracts for data persistence and other external interactions (e.g., `IUserRepository`).
-- **Adapters:** Concrete implementations of ports are called `adapters`.
-  - **Driven Adapters:** These implement ports for backend services. For example, a `SupabaseUserRepository` in the `infrastructure` layer will implement the `IUserRepository` port.
-  - **Driving Adapters:** These drive the application's core logic. For example, FastAPI controllers in the `api` layer or UI components in the `ui` layer will use application services via their ports.
+-   **Core Logic:** The `domain` and `application` layers will contain the core business logic and will have no dependencies on external technologies.
+-   **Ports:** The application's boundaries will be defined by `ports`, which are technology-agnostic interfaces (or `protocol` types in Python using abstract base classes only where necessary) located within the `application` layer. These ports define contracts for data persistence and other external interactions (e.g., `IUserRepository`).
+-   **Adapters:** Concrete implementations of ports are called `adapters`.
+    -   **Driven Adapters:** These implement ports for backend services. For example, a `SupabaseUserRepository` in the `infrastructure` layer will implement the `IUserRepository` port.
+    -   **Driving Adapters:** These drive the application's core logic. For example, FastAPI controllers in the `api` layer or UI components in the `ui` layer will use application services via their ports.
 
 Rationale:
 
-- **Decoupling:** The core logic is completely decoupled from the implementation details of external services.
-- **Testability:** The core logic can be tested in isolation by providing mock implementations of ports.
-- **Flexibility:** External technologies can be swapped out by simply writing a new adapter (e.g., replacing Supabase with another database) without changing the core logic.
+-   **Decoupling:** The core logic is completely decoupled from the implementation details of external services.
+-   **Testability:** The core logic can be tested in isolation by providing mock implementations of ports.
+-   **Flexibility:** External technologies can be swapped out by simply writing a new adapter (e.g., replacing Supabase with another database) without changing the core logic.
 
 Consequences:
 
-- Introduces a higher level of abstraction, which may increase the initial learning curve.
-- Results in a greater number of files and interfaces to manage.
-- Requires consistent use of dependency injection to provide concrete adapters to the application's core.
+-   Introduces a higher level of abstraction, which may increase the initial learning curve.
+-   Results in a greater number of files and interfaces to manage.
+-   Requires consistent use of dependency injection to provide concrete adapters to the application's core.

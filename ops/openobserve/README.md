@@ -10,11 +10,11 @@ This folder contains a Docker Compose configuration to run OpenObserve locally.
 
 Security-first notes
 
-- Secrets are stored encrypted in the repository using SOPS (`.secrets.env.sops`).
-- Never commit plaintext files such as `ops/openobserve/.env.local` or `.env`.
-- `ZO_ROOT_USER_PASSWORD` must be provided explicitly (no default); export it or rely on the SOPS-managed secret before starting Docker Compose.
-- Use the top-level `scripts/run-with-secrets.sh` helper to run commands with secrets
-  decrypted into the process environment (no plaintext file written to disk).
+-   Secrets are stored encrypted in the repository using SOPS (`.secrets.env.sops`).
+-   Never commit plaintext files such as `ops/openobserve/.env.local` or `.env`.
+-   `ZO_ROOT_USER_PASSWORD` must be provided explicitly (no default); export it or rely on the SOPS-managed secret before starting Docker Compose.
+-   Use the top-level `scripts/run-with-secrets.sh` helper to run commands with secrets
+    decrypted into the process environment (no plaintext file written to disk).
 
 Quick diagnostic commands (from repo root)
 
@@ -37,7 +37,7 @@ ls -la ops/openobserve/.env.local || echo 'ops/openobserve/.env.local not presen
 
 Recommended usage
 
-- Run OpenObserve with decrypted secrets injected into the process environment (no plaintext file):
+-   Run OpenObserve with decrypted secrets injected into the process environment (no plaintext file):
 
 ```zsh
 # from repo root
@@ -60,21 +60,21 @@ CI pattern (GitHub Actions) — decrypt securely in the job
 ```yaml
 - name: Decrypt secrets
   run: |
-    printf "%s" "${{ secrets.SOPS_AGE_KEY }}" > "$RUNNER_TEMP/sops.key"
-    export SOPS_AGE_KEY_FILE="$RUNNER_TEMP/sops.key"
-    sops -d .secrets.env.sops > .env
+      printf "%s" "${{ secrets.SOPS_AGE_KEY }}" > "$RUNNER_TEMP/sops.key"
+      export SOPS_AGE_KEY_FILE="$RUNNER_TEMP/sops.key"
+      sops -d .secrets.env.sops > .env
 
 - name: Start OpenObserve
   run: |
-    cd ops/openobserve
-    docker compose up -d
+      cd ops/openobserve
+      docker compose up -d
 ```
 
 If you hit SOPS decryption errors
 
-- Verify `sops` is installed and you have the correct private key (AGE/GCP/KMS).
-- Locally the repo prefers `${HOME}/.config/sops/key.txt` as `SOPS_AGE_KEY_FILE` (see `.envrc`).
-- Example test with explicit key file:
+-   Verify `sops` is installed and you have the correct private key (AGE/GCP/KMS).
+-   Locally the repo prefers `${HOME}/.config/sops/key.txt` as `SOPS_AGE_KEY_FILE` (see `.envrc`).
+-   Example test with explicit key file:
 
 ```zsh
 export SOPS_AGE_KEY_FILE="${HOME}/.config/sops/key.txt"
@@ -83,8 +83,8 @@ sops exec-env .secrets.env.sops 'env | grep ZO_ROOT_USER_PASSWORD'
 
 Contact / traceability
 
-- See repository SOPS config in `.sops.yaml` for which files/keys are targeted.
-- The `.githooks/pre-commit` enforces committing only encrypted secrets.
+-   See repository SOPS config in `.sops.yaml` for which files/keys are targeted.
+-   The `.githooks/pre-commit` enforces committing only encrypted secrets.
 
 ---
 

@@ -1,5 +1,5 @@
-import { Tree, formatFiles, names } from "@nx/devkit";
-import { PortGeneratorSchema } from "./schema";
+import { Tree, formatFiles, names } from '@nx/devkit';
+import { PortGeneratorSchema } from './schema';
 
 /**
  * Generates the TypeScript files for the port and adapter.
@@ -39,8 +39,8 @@ export class ${classifiedName}InMemoryAdapter implements I${classifiedName} {
  */
 function addPyFiles(tree: Tree, options: PortGeneratorSchema) {
   const classifiedName = names(options.name).className;
-  const snakeCaseName = names(options.name).fileName.replace(/-/g, "_");
-  const snakeCaseDomain = options.domain.replace(/-/g, "_");
+  const snakeCaseName = names(options.name).fileName.replace(/-/g, '_');
+  const snakeCaseDomain = options.domain.replace(/-/g, '_');
 
   const portProtocolContent = `from typing import Protocol
 
@@ -67,9 +67,9 @@ class ${classifiedName}FakeAdapter(I${classifiedName}):
 }
 
 export async function portGenerator(tree: Tree, options: PortGeneratorSchema) {
-  if (options.language === "ts") {
+  if (options.language === 'ts') {
     addTsFiles(tree, options);
-  } else if (options.language === "py") {
+  } else if (options.language === 'py') {
     addPyFiles(tree, options);
   }
 

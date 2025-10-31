@@ -13,13 +13,13 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
-- Shell scripts for automation and orchestration
-- Justfile integration and task runners
-- Build and deployment scripts
-- Token measurement and AI context scripts
-- Template and configuration scripts
-- Development environment setup
-- CI/CD helper scripts
+-   Shell scripts for automation and orchestration
+-   Justfile integration and task runners
+-   Build and deployment scripts
+-   Token measurement and AI context scripts
+-   Template and configuration scripts
+-   Development environment setup
+-   CI/CD helper scripts
 
 **Architecture Layer**: N/A (Infrastructure/Automation)
 
@@ -72,13 +72,13 @@ scripts/
 
 ### Use This Context When:
 
-- [ ] Writing shell scripts for automation
-- [ ] Creating justfile recipes
-- [ ] Building CI/CD orchestration scripts
-- [ ] Working with prompt execution scripts
-- [ ] Implementing token measurement
-- [ ] Creating environment setup scripts
-- [ ] Writing validation or health check scripts
+-   [ ] Writing shell scripts for automation
+-   [ ] Creating justfile recipes
+-   [ ] Building CI/CD orchestration scripts
+-   [ ] Working with prompt execution scripts
+-   [ ] Implementing token measurement
+-   [ ] Creating environment setup scripts
+-   [ ] Writing validation or health check scripts
 
 ### Refer to Other Contexts When:
 
@@ -197,10 +197,10 @@ shellcheck -S style -o all scripts/*.sh
 
 **Common ShellCheck rules:**
 
-- SC2086: Quote variables to prevent word splitting
-- SC2046: Quote command substitution to prevent word splitting
-- SC2155: Separate declaration and assignment
-- SC2164: Use `cd ... || exit` for robust directory changes
+-   SC2086: Quote variables to prevent word splitting
+-   SC2046: Quote command substitution to prevent word splitting
+-   SC2155: Separate declaration and assignment
+-   SC2164: Use `cd ... || exit` for robust directory changes
 
 ### Testing with ShellSpec
 
@@ -256,19 +256,19 @@ const EXIT_ERROR = 1;
 const EXIT_USAGE = 2;
 
 function main(args) {
-  try {
-    // Script logic
-    console.log("✅ Success");
-    process.exit(EXIT_SUCCESS);
-  } catch (error) {
-    console.error("❌ Error:", error.message);
-    process.exit(EXIT_ERROR);
-  }
+    try {
+        // Script logic
+        console.log("✅ Success");
+        process.exit(EXIT_SUCCESS);
+    } catch (error) {
+        console.error("❌ Error:", error.message);
+        process.exit(EXIT_ERROR);
+    }
 }
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main(process.argv.slice(2));
+    main(process.argv.slice(2));
 }
 ```
 
@@ -330,14 +330,14 @@ if __name__ == "__main__":
 
 **Modular instructions that apply here:**
 
-- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - ShellSpec testing
-- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Script security
-- [.github/instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - AI script patterns
+-   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - ShellSpec testing
+-   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Script security
+-   [.github/instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - AI script patterns
 
 **Related contexts:**
 
-- [tests/AGENT.md](/tests/AGENT.md) - Writing ShellSpec tests
-- [tools/AGENT.md](/tools/AGENT.md) - Development tools (not scripts)
+-   [tests/AGENT.md](/tests/AGENT.md) - Writing ShellSpec tests
+-   [tools/AGENT.md](/tools/AGENT.md) - Development tools (not scripts)
 
 ## 💡 Examples
 
@@ -608,31 +608,31 @@ template-clean:
 
 ### Before Creating a Shell Script:
 
-- [ ] Check if similar script exists
-- [ ] Determine if shell is appropriate (vs Node/Python)
-- [ ] Plan error handling strategy
-- [ ] Design for testability with ShellSpec
-- [ ] Consider portability (POSIX vs Bash-specific)
+-   [ ] Check if similar script exists
+-   [ ] Determine if shell is appropriate (vs Node/Python)
+-   [ ] Plan error handling strategy
+-   [ ] Design for testability with ShellSpec
+-   [ ] Consider portability (POSIX vs Bash-specific)
 
 ### While Writing Script:
 
-- [ ] Use `set -euo pipefail` at the top
-- [ ] Add usage function with examples
-- [ ] Implement proper error handling
-- [ ] Add logging (info/warn/error functions)
-- [ ] Quote all variables: `"$var"`
-- [ ] Use `readonly` for constants
-- [ ] Add cleanup trap handler
+-   [ ] Use `set -euo pipefail` at the top
+-   [ ] Add usage function with examples
+-   [ ] Implement proper error handling
+-   [ ] Add logging (info/warn/error functions)
+-   [ ] Quote all variables: `"$var"`
+-   [ ] Use `readonly` for constants
+-   [ ] Add cleanup trap handler
 
 ### After Writing Script:
 
-- [ ] Run ShellCheck: `shellcheck scripts/your_script.sh`
-- [ ] Write ShellSpec tests in `tests/shell/`
-- [ ] Run tests: `shellspec tests/shell/scripts/your_script_spec.sh`
-- [ ] Make executable: `chmod +x scripts/your_script.sh`
-- [ ] Add shebang: `#!/usr/bin/env bash`
-- [ ] Update this AGENT.md if new pattern emerges
-- [ ] Add to justfile if frequently used
+-   [ ] Run ShellCheck: `shellcheck scripts/your_script.sh`
+-   [ ] Write ShellSpec tests in `tests/shell/`
+-   [ ] Run tests: `shellspec tests/shell/scripts/your_script_spec.sh`
+-   [ ] Make executable: `chmod +x scripts/your_script.sh`
+-   [ ] Add shebang: `#!/usr/bin/env bash`
+-   [ ] Update this AGENT.md if new pattern emerges
+-   [ ] Add to justfile if frequently used
 
 ## 🔍 Quick Reference
 
@@ -700,13 +700,13 @@ source "$(dirname "$0")/../lib/common.sh"
 
 **CRITICAL for scripts:**
 
-- ⚠️ **NEVER** execute arbitrary user input: `eval "$user_input"` ← DON'T
-- ⚠️ **ALWAYS** quote variables to prevent injection: `"$var"`
-- ⚠️ **NEVER** trust external input without validation
-- ⚠️ Use `readonly` for constants that shouldn't change
-- ⚠️ Validate file paths before operations (prevent traversal)
-- ⚠️ Use environment variables for secrets, never hardcode
-- ⚠️ Be cautious with `curl` or `wget` - validate URLs
+-   ⚠️ **NEVER** execute arbitrary user input: `eval "$user_input"` ← DON'T
+-   ⚠️ **ALWAYS** quote variables to prevent injection: `"$var"`
+-   ⚠️ **NEVER** trust external input without validation
+-   ⚠️ Use `readonly` for constants that shouldn't change
+-   ⚠️ Validate file paths before operations (prevent traversal)
+-   ⚠️ Use environment variables for secrets, never hardcode
+-   ⚠️ Be cautious with `curl` or `wget` - validate URLs
 
 **Example secure command execution:**
 
@@ -766,7 +766,7 @@ Scripts run in GitHub Actions workflows:
 
 - name: Measure tokens
   run: |
-    bash scripts/measure_tokens.sh .github/prompts/*.prompt.md
+      bash scripts/measure_tokens.sh .github/prompts/*.prompt.md
 ```
 
 ### With Nx
@@ -775,14 +775,14 @@ Scripts can be Nx targets:
 
 ```json
 {
-  "targets": {
-    "doctor": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "bash scripts/doctor.sh"
-      }
+    "targets": {
+        "doctor": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "bash scripts/doctor.sh"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -810,18 +810,18 @@ tests/shell/
 
 ### Regular Tasks
 
-- **Weekly**: Run ShellCheck on all scripts
-- **Monthly**: Update script dependencies
-- **Quarterly**: Review script usage and deprecate unused scripts
-- **As needed**: Refactor based on patterns
+-   **Weekly**: Run ShellCheck on all scripts
+-   **Monthly**: Update script dependencies
+-   **Quarterly**: Review script usage and deprecate unused scripts
+-   **As needed**: Refactor based on patterns
 
 ### When to Update This AGENT.md
 
-- New script patterns emerge
-- ShellCheck rules change
-- Testing conventions evolve
-- Integration patterns updated
-- Security best practices change
+-   New script patterns emerge
+-   ShellCheck rules change
+-   Testing conventions evolve
+-   Integration patterns updated
+-   Security best practices change
 
 ---
 

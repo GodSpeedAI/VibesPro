@@ -35,37 +35,37 @@ Use this prompt to **customize `.github/copilot-instructions.md`** for your spec
 
 1. **Read `copier.yml` or `.copier-answers.yml`** to understand initial template choices:
 
-   - Project name, slug, description
-   - Selected architecture style
-   - Chosen tech stack components
-   - Enabled features (AI workflows, database, etc.)
+    - Project name, slug, description
+    - Selected architecture style
+    - Chosen tech stack components
+    - Enabled features (AI workflows, database, etc.)
 
 2. **Analyze `package.json`** (if Node.js project):
 
-   - Detect framework: Next.js, Remix, React, Vue, etc.
-   - Identify language: TypeScript vs JavaScript
-   - List key dependencies (auth, database clients, testing libs)
+    - Detect framework: Next.js, Remix, React, Vue, etc.
+    - Identify language: TypeScript vs JavaScript
+    - List key dependencies (auth, database clients, testing libs)
 
 3. **Check `pyproject.toml`** (if Python project):
 
-   - Detect framework: FastAPI, Django, Flask
-   - Identify dependencies
+    - Detect framework: FastAPI, Django, Flask
+    - Identify dependencies
 
 4. **Inspect `nx.json`**:
 
-   - Understand workspace structure
-   - Identify existing projects/libraries
-   - Detect configured generators
+    - Understand workspace structure
+    - Identify existing projects/libraries
+    - Detect configured generators
 
 5. **Scan directory structure**:
 
-   - `apps/` - identify application types
-   - `libs/` - understand domain structure
-   - `tests/` - detect testing setup
+    - `apps/` - identify application types
+    - `libs/` - understand domain structure
+    - `tests/` - detect testing setup
 
 6. **Review existing `.github/copilot-instructions.md`**:
-   - Identify already-customized sections
-   - Find `[CUSTOMIZE: ...]` placeholders that need filling
+    - Identify already-customized sections
+    - Find `[CUSTOMIZE: ...]` placeholders that need filling
 
 **Audit Summary Template:**
 
@@ -138,38 +138,38 @@ Once confirmed, update `.github/copilot-instructions.md`:
 
 1. **Update Project Overview section**
 
-   - Replace generic description with project-specific context
-   - Include domain terminology
-   - Reference actual tech stack
+    - Replace generic description with project-specific context
+    - Include domain terminology
+    - Reference actual tech stack
 
 2. **Update Architecture & Structure section**
 
-   - Adjust directory structure to match project type
-   - Add project-specific layers/modules
-   - Document actual tech stack versions
+    - Adjust directory structure to match project type
+    - Add project-specific layers/modules
+    - Document actual tech stack versions
 
 3. **Update Coding Standards section**
 
-   - Add domain-specific naming conventions
-   - Include project-specific patterns
-   - Reference actual libraries/frameworks used
+    - Add domain-specific naming conventions
+    - Include project-specific patterns
+    - Reference actual libraries/frameworks used
 
 4. **Update Testing Strategy section**
 
-   - Match team's preferred approach (TDD, test-after, etc.)
-   - Reference actual testing tools
-   - Adjust complexity to team experience
+    - Match team's preferred approach (TDD, test-after, etc.)
+    - Reference actual testing tools
+    - Adjust complexity to team experience
 
 5. **Update Security Guidelines section**
 
-   - Add compliance requirements (HIPAA, SOC2, etc.)
-   - Include domain-specific security concerns
-   - Reference actual deployment environment
+    - Add compliance requirements (HIPAA, SOC2, etc.)
+    - Include domain-specific security concerns
+    - Reference actual deployment environment
 
 6. **Update Custom sections**
-   - Add project-specific workflows
-   - Document domain concepts
-   - Include team conventions
+    - Add project-specific workflows
+    - Document domain concepts
+    - Include team conventions
 
 ### Step 5: Present Changes
 
@@ -204,9 +204,9 @@ When updating, preserve this structure but customize content:
 
 The project combines:
 
-- [CUSTOM: Key technologies]
-- [CUSTOM: Architecture style]
-- [CUSTOM: Special features]
+-   [CUSTOM: Key technologies]
+-   [CUSTOM: Architecture style]
+-   [CUSTOM: Special features]
 
 ### Primary Goal
 
@@ -224,17 +224,17 @@ The project combines:
 
 ### Tech Stack
 
-- **Frontend**: [CUSTOM]
-- **Backend**: [CUSTOM]
-- **Database**: [CUSTOM]
-- **Infrastructure**: [CUSTOM]
+-   **Frontend**: [CUSTOM]
+-   **Backend**: [CUSTOM]
+-   **Database**: [CUSTOM]
+-   **Infrastructure**: [CUSTOM]
 
 ---
 
 ## 🎯 Core Principles (HIGHEST PRIORITY)
 
-- **Generator-First Requirement**: [Keep as-is]
-- **Security First**: [Keep as-is + CUSTOM compliance requirements]
+-   **Generator-First Requirement**: [Keep as-is]
+-   **Security First**: [Keep as-is + CUSTOM compliance requirements]
 
 ---
 
@@ -276,8 +276,8 @@ Is that right?"
 
 **AI:** "You mentioned preferring TDD. Should I emphasize:
 
-- Writing tests BEFORE implementation (strict Red-Green-Refactor)?
-- Or a more flexible 'test-first when it makes sense' approach?"
+-   Writing tests BEFORE implementation (strict Red-Green-Refactor)?
+-   Or a more flexible 'test-first when it makes sense' approach?"
 
 **User:** "Strict TDD for business logic, test-after for UI components"
 
@@ -287,17 +287,17 @@ Is that right?"
 
 **AI:** "You mentioned this is a healthcare application. Does it handle:
 
-- Protected Health Information (PHI) requiring HIPAA compliance?
-- Or is it non-PHI wellness data?"
+-   Protected Health Information (PHI) requiring HIPAA compliance?
+-   Or is it non-PHI wellness data?"
 
 **User:** "PHI - we need HIPAA compliance"
 
 **AI:** "Understood. I'll add HIPAA-specific security guidelines including:
 
-- Encryption at rest and in transit requirements
-- Audit logging
-- Access controls
-- BAA requirements
+-   Encryption at rest and in transit requirements
+-   Audit logging
+-   Access controls
+-   BAA requirements
 
 Anything else specific to add?"
 
@@ -314,11 +314,11 @@ After gathering all information, provide:
 
 Run this prompt when:
 
-- Setting up a new project from the template
-- Project direction changes significantly
-- Adding new team members (update for their context)
-- Major architecture refactoring
-- Compliance requirements change
+-   Setting up a new project from the template
+-   Project direction changes significantly
+-   Adding new team members (update for their context)
+-   Major architecture refactoring
+-   Compliance requirements change
 
 **Command:**
 
@@ -335,12 +335,12 @@ just customize-instructions
 
 ## Notes for AI
 
-- **Be conversational and friendly** - this is a dialogue, not an interrogation
-- **Ask follow-up questions** - clarify ambiguity immediately
-- **Provide examples** - help user understand what you're asking
-- **Summarize periodically** - confirm understanding before moving on
-- **Be patient** - user may need time to think about architecture decisions
-- **Suggest options** - if user is unsure, offer 2-3 common patterns
-- **Document assumptions** - if user skips a question, state your default choice
+-   **Be conversational and friendly** - this is a dialogue, not an interrogation
+-   **Ask follow-up questions** - clarify ambiguity immediately
+-   **Provide examples** - help user understand what you're asking
+-   **Summarize periodically** - confirm understanding before moving on
+-   **Be patient** - user may need time to think about architecture decisions
+-   **Suggest options** - if user is unsure, offer 2-3 common patterns
+-   **Document assumptions** - if user skips a question, state your default choice
 
 Remember: The goal is to make copilot-instructions.md **actually useful** for THIS specific project, not generic boilerplate.

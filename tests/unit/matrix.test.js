@@ -1,20 +1,16 @@
 // Unit tests for tools/spec/matrix.js thread linking functionality
-const assert = require("node:assert");
-const fs = require("node:fs");
-const path = require("node:path");
-const {
-  buildMatrix,
-  renderMatrixTable,
-  updateMatrixFile,
-} = require("../../tools/spec/matrix");
+const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
+const { buildMatrix, renderMatrixTable, updateMatrixFile } = require('../../tools/spec/matrix');
 
 // Test that the matrix can link spec/plan/tasks triplets by thread
 // This test should FAIL initially (RED phase)
 
-const tempDir = path.join(__dirname, "temp-matrix-test");
-const docsDir = path.join(tempDir, "docs");
-const specsDir = path.join(docsDir, "specs");
-const testThread = "test-thread-linking";
+const tempDir = path.join(__dirname, 'temp-matrix-test');
+const docsDir = path.join(tempDir, 'docs');
+const specsDir = path.join(docsDir, 'specs');
+const testThread = 'test-thread-linking';
 const testThreadDir = path.join(specsDir, testThread);
 
 function createTestFiles() {
@@ -72,9 +68,9 @@ matrix_ids: [SDS-201, TS-301, TASK-401]
 Referenced IDs: SDS-201, TS-301, TASK-401
 `;
 
-  fs.writeFileSync(path.join(testThreadDir, "spec.md"), specContent);
-  fs.writeFileSync(path.join(testThreadDir, "plan.adr.md"), planContent);
-  fs.writeFileSync(path.join(testThreadDir, "tasks.md"), tasksContent);
+  fs.writeFileSync(path.join(testThreadDir, 'spec.md'), specContent);
+  fs.writeFileSync(path.join(testThreadDir, 'plan.adr.md'), planContent);
+  fs.writeFileSync(path.join(testThreadDir, 'tasks.md'), tasksContent);
 }
 
 function cleanupTestFiles() {
@@ -95,8 +91,8 @@ try {
   // 3. Multiple matrix_ids from different files with same thread are aggregated
 
   // Find the row for PRD-101 (should appear in both spec and plan)
-  const prdRow = matrix.find((row) => row.id === "PRD-101");
-  assert.ok(prdRow, "PRD-101 should be found in matrix");
+  const prdRow = matrix.find((row) => row.id === 'PRD-101');
+  assert.ok(prdRow, 'PRD-101 should be found in matrix');
 
   // Check that PRD-101 is linked to both spec and plan files from the same thread
   const expectedArtifacts = [
@@ -107,15 +103,13 @@ try {
   for (const artifact of expectedArtifacts) {
     assert.ok(
       prdRow.artifacts.includes(artifact),
-      `PRD-101 should reference ${artifact}. Found: ${prdRow.artifacts.join(
-        ", ",
-      )}`,
+      `PRD-101 should reference ${artifact}. Found: ${prdRow.artifacts.join(', ')}`,
     );
   }
 
   // Find SDS-201 (should appear in spec and tasks)
-  const sdsRow = matrix.find((row) => row.id === "SDS-201");
-  assert.ok(sdsRow, "SDS-201 should be found in matrix");
+  const sdsRow = matrix.find((row) => row.id === 'SDS-201');
+  assert.ok(sdsRow, 'SDS-201 should be found in matrix');
 
   const expectedSdsArtifacts = [
     `docs/specs/${testThread}/spec.md`,
@@ -125,15 +119,13 @@ try {
   for (const artifact of expectedSdsArtifacts) {
     assert.ok(
       sdsRow.artifacts.includes(artifact),
-      `SDS-201 should reference ${artifact}. Found: ${sdsRow.artifacts.join(
-        ", ",
-      )}`,
+      `SDS-201 should reference ${artifact}. Found: ${sdsRow.artifacts.join(', ')}`,
     );
   }
 
   // Find TS-301 (should appear in plan and tasks)
-  const tsRow = matrix.find((row) => row.id === "TS-301");
-  assert.ok(tsRow, "TS-301 should be found in matrix");
+  const tsRow = matrix.find((row) => row.id === 'TS-301');
+  assert.ok(tsRow, 'TS-301 should be found in matrix');
 
   const expectedTsArtifacts = [
     `docs/specs/${testThread}/plan.adr.md`,
@@ -143,25 +135,21 @@ try {
   for (const artifact of expectedTsArtifacts) {
     assert.ok(
       tsRow.artifacts.includes(artifact),
-      `TS-301 should reference ${artifact}. Found: ${tsRow.artifacts.join(
-        ", ",
-      )}`,
+      `TS-301 should reference ${artifact}. Found: ${tsRow.artifacts.join(', ')}`,
     );
   }
 
   // Find TASK-401 (should appear only in tasks)
-  const taskRow = matrix.find((row) => row.id === "TASK-401");
-  assert.ok(taskRow, "TASK-401 should be found in matrix");
+  const taskRow = matrix.find((row) => row.id === 'TASK-401');
+  assert.ok(taskRow, 'TASK-401 should be found in matrix');
   assert.ok(
     taskRow.artifacts.includes(`docs/specs/${testThread}/tasks.md`),
-    `TASK-401 should reference tasks.md. Found: ${taskRow.artifacts.join(
-      ", ",
-    )}`,
+    `TASK-401 should reference tasks.md. Found: ${taskRow.artifacts.join(', ')}`,
   );
 
-  console.log("✓ All thread linking tests passed");
+  console.log('✓ All thread linking tests passed');
 } catch (error) {
-  console.error("✗ Test failed as expected (RED phase):", error.message);
+  console.error('✗ Test failed as expected (RED phase):', error.message);
   throw error; // Re-throw to ensure test fails
 } finally {
   cleanupTestFiles();

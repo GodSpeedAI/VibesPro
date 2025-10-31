@@ -1,6 +1,6 @@
 // Test file: tests/performance/benchmarks.test.ts
-describe("Performance Benchmarks", () => {
-  it("should meet performance targets", async () => {
+describe('Performance Benchmarks', () => {
+  it('should meet performance targets', async () => {
     const metrics = {
       generationTime: 25000,
       buildTime: 110000,

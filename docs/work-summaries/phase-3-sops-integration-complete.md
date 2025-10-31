@@ -13,41 +13,41 @@ Phase 3 implements SOPS (Secrets OPerationS) encrypted secret management for Vib
 
 ✅ **SOPS Configuration**
 
-- Created `.sops.yaml` with age encryption rules
-- Configured `encrypted_regex` to target sensitive keys (API keys, passwords, tokens)
-- Set up age public key placeholder for template mode
+-   Created `.sops.yaml` with age encryption rules
+-   Configured `encrypted_regex` to target sensitive keys (API keys, passwords, tokens)
+-   Set up age public key placeholder for template mode
 
 ✅ **Secret File Management**
 
-- Created `.secrets.env.sops` as unencrypted template with example placeholders
-- File includes standard environment variables (APP_ENV, OPENAI_API_KEY, DATABASE_URL)
-- Template mode allows generated projects to start with safe defaults
+-   Created `.secrets.env.sops` as unencrypted template with example placeholders
+-   File includes standard environment variables (APP_ENV, OPENAI_API_KEY, DATABASE_URL)
+-   Template mode allows generated projects to start with safe defaults
 
 ✅ **direnv Integration**
 
-- Verified existing `.envrc` uses sophisticated `sops exec-env` pattern
-- Automatic secret decryption when entering project directory
-- Secrets loaded into memory only (never written to disk unencrypted)
+-   Verified existing `.envrc` uses sophisticated `sops exec-env` pattern
+-   Automatic secret decryption when entering project directory
+-   Secrets loaded into memory only (never written to disk unencrypted)
 
 ✅ **Git Security**
 
-- Confirmed `.gitignore` blocks plaintext `.env*` files
-- `.secrets.env.sops` intentionally tracked (encrypted or template)
-- Pre-commit hook (from Phase 0) prevents accidental plaintext secret commits
+-   Confirmed `.gitignore` blocks plaintext `.env*` files
+-   `.secrets.env.sops` intentionally tracked (encrypted or template)
+-   Pre-commit hook (from Phase 0) prevents accidental plaintext secret commits
 
 ✅ **Test Coverage**
 
-- Created `tests/env/test_sops_local.sh` following TDD Red-Green-Refactor
-- Test validates SOPS configuration exists
-- Detects encryption status and provides helpful guidance
-- Ensures no plaintext secrets in git
+-   Created `tests/env/test_sops_local.sh` following TDD Red-Green-Refactor
+-   Test validates SOPS configuration exists
+-   Detects encryption status and provides helpful guidance
+-   Ensures no plaintext secrets in git
 
 ✅ **Documentation**
 
-- Updated `docs/ENVIRONMENT.md` with comprehensive SOPS section
-- Covers installation, first-time setup, usage, troubleshooting
-- Explains local development (direnv) vs CI/CD integration
-- Documents security best practices and template mode workflow
+-   Updated `docs/ENVIRONMENT.md` with comprehensive SOPS section
+-   Covers installation, first-time setup, usage, troubleshooting
+-   Explains local development (direnv) vs CI/CD integration
+-   Documents security best practices and template mode workflow
 
 ## TDD Workflow
 
@@ -57,11 +57,11 @@ Phase 3 implements SOPS (Secrets OPerationS) encrypted secret management for Vib
 
 Created test that validates:
 
-- `.sops.yaml` configuration exists
-- `.secrets.env.sops` file present
-- File encryption status (encrypted vs template mode)
-- No plaintext `.env` files tracked in git
-- `.gitignore` properly configured
+-   `.sops.yaml` configuration exists
+-   `.secrets.env.sops` file present
+-   File encryption status (encrypted vs template mode)
+-   No plaintext `.env` files tracked in git
+-   `.gitignore` properly configured
 
 **Initial Status:** Test provided helpful guidance about encryption
 
@@ -69,11 +69,11 @@ Created test that validates:
 
 All SOPS infrastructure already existed:
 
-- ✅ `.sops.yaml` with age encryption rules
-- ✅ `.secrets.env.sops` with example placeholders (template mode)
-- ✅ `.envrc` with sophisticated `sops exec-env` integration
-- ✅ `.gitignore` blocking `.env*` patterns
-- ✅ Pre-commit hook preventing secret leaks (Phase 0)
+-   ✅ `.sops.yaml` with age encryption rules
+-   ✅ `.secrets.env.sops` with example placeholders (template mode)
+-   ✅ `.envrc` with sophisticated `sops exec-env` integration
+-   ✅ `.gitignore` blocking `.env*` patterns
+-   ✅ Pre-commit hook preventing secret leaks (Phase 0)
 
 **Test Status:** All validations passing, provides encryption guidance
 
@@ -81,42 +81,42 @@ All SOPS infrastructure already existed:
 
 **Documentation Enhancement:**
 
-- Added comprehensive SOPS section to `docs/ENVIRONMENT.md`
-- Documented first-time setup workflow (age-keygen → update .sops.yaml → encrypt)
-- Explained direnv integration and automatic secret loading
-- Provided CI/CD integration examples (GitHub Actions)
-- Covered troubleshooting scenarios
+-   Added comprehensive SOPS section to `docs/ENVIRONMENT.md`
+-   Documented first-time setup workflow (age-keygen → update .sops.yaml → encrypt)
+-   Explained direnv integration and automatic secret loading
+-   Provided CI/CD integration examples (GitHub Actions)
+-   Covered troubleshooting scenarios
 
 **Test Structure Update:**
 
-- Added `test_sops_local.sh` to test harness documentation
-- Test provides actionable guidance for template mode users
+-   Added `test_sops_local.sh` to test harness documentation
+-   Test provides actionable guidance for template mode users
 
 ## Files Created/Modified
 
 ### Created
 
-- `tests/env/test_sops_local.sh` - SOPS validation test
+-   `tests/env/test_sops_local.sh` - SOPS validation test
 
 ### Modified
 
-- `docs/ENVIRONMENT.md` - Added comprehensive SOPS section
-  - Installation and setup instructions
-  - Local development (direnv) workflow
-  - CI/CD integration examples
-  - Security best practices
-  - Troubleshooting guide
-  - Template mode explanation
-- Updated test structure documentation to include `test_sops_local.sh`
-- Marked Phase 3 complete in "Next Steps" section
+-   `docs/ENVIRONMENT.md` - Added comprehensive SOPS section
+    -   Installation and setup instructions
+    -   Local development (direnv) workflow
+    -   CI/CD integration examples
+    -   Security best practices
+    -   Troubleshooting guide
+    -   Template mode explanation
+-   Updated test structure documentation to include `test_sops_local.sh`
+-   Marked Phase 3 complete in "Next Steps" section
 
 ### Verified (No Changes Needed)
 
-- `.sops.yaml` - Already configured with age encryption
-- `.secrets.env.sops` - Already exists in template mode
-- `.envrc` - Already uses sophisticated `sops exec-env` pattern
-- `.gitignore` - Already blocks plaintext `.env*` files
-- `.githooks/pre-commit` - Already prevents secret leaks (Phase 0)
+-   `.sops.yaml` - Already configured with age encryption
+-   `.secrets.env.sops` - Already exists in template mode
+-   `.envrc` - Already uses sophisticated `sops exec-env` pattern
+-   `.gitignore` - Already blocks plaintext `.env*` files
+-   `.githooks/pre-commit` - Already prevents secret leaks (Phase 0)
 
 ## Test Results
 
@@ -138,20 +138,20 @@ SOPS test OK
 
 ### Phase 0 Integration
 
-- SOPS test uses `helpers.sh` assertions from test harness
-- Pre-commit hook prevents accidental plaintext secret commits
-- Test runs via `tests/env/run.sh` discovery mechanism
+-   SOPS test uses `helpers.sh` assertions from test harness
+-   Pre-commit hook prevents accidental plaintext secret commits
+-   Test runs via `tests/env/run.sh` discovery mechanism
 
 ### Phase 1 Integration
 
-- Devbox can provide SOPS and age binaries for team consistency
-- Optional: Add `sops` and `age` to `devbox.json` packages
+-   Devbox can provide SOPS and age binaries for team consistency
+-   Optional: Add `sops` and `age` to `devbox.json` packages
 
 ### Phase 2 Integration
 
-- direnv `.envrc` uses `use mise` for runtimes
-- SOPS decryption happens after mise activation
-- Environment variables available to all mise-managed tools
+-   direnv `.envrc` uses `use mise` for runtimes
+-   SOPS decryption happens after mise activation
+-   Environment variables available to all mise-managed tools
 
 ## Usage Examples
 
@@ -191,11 +191,11 @@ cd /path/to/VibesPro
 # .github/workflows/ci.yml
 - name: Decrypt secrets
   env:
-    SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+      SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
   run: |
-    mkdir -p ~/.config/sops/age
-    echo "$SOPS_AGE_KEY" > ~/.config/sops/age/keys.txt
-    sops -d .secrets.env.sops | tee -a $GITHUB_ENV
+      mkdir -p ~/.config/sops/age
+      echo "$SOPS_AGE_KEY" > ~/.config/sops/age/keys.txt
+      sops -d .secrets.env.sops | tee -a $GITHUB_ENV
 ```
 
 ### Template Mode (Generated Projects)
@@ -224,50 +224,50 @@ git add .secrets.env.sops      # Commit encrypted version
 
 ### Installation Issues
 
-- SOPS/age binary not found → Installation instructions
-- Command not in PATH → Export PATH guidance
+-   SOPS/age binary not found → Installation instructions
+-   Command not in PATH → Export PATH guidance
 
 ### Encryption Problems
 
-- "Failed to get data key" → SOPS_AGE_KEY_FILE setup
-- "No matching creation rules" → .sops.yaml path_regex validation
-- Key file permissions → chmod 600 guidance
+-   "Failed to get data key" → SOPS_AGE_KEY_FILE setup
+-   "No matching creation rules" → .sops.yaml path_regex validation
+-   Key file permissions → chmod 600 guidance
 
 ### direnv Issues
 
-- ".envrc is blocked" → `direnv allow` command
-- Secrets not loading → Hook verification, reload commands
-- DIRENV_DIR not set → Shell hook setup
+-   ".envrc is blocked" → `direnv allow` command
+-   Secrets not loading → Hook verification, reload commands
+-   DIRENV_DIR not set → Shell hook setup
 
 ### CI/CD Issues
 
-- CI can't decrypt → GitHub secret SOPS_AGE_KEY setup
-- Age key not found → Key file creation in workflow
-- Environment variables not available → Export to GITHUB_ENV
+-   CI can't decrypt → GitHub secret SOPS_AGE_KEY setup
+-   Age key not found → Key file creation in workflow
+-   Environment variables not available → Export to GITHUB_ENV
 
 ## Alignment with Specifications
 
 **PRD-013: Secure Secret Management**
 
-- ✅ Secrets encrypted at rest using industry-standard tools (SOPS + age)
-- ✅ No plaintext secrets in version control
-- ✅ Local development uses automatic decryption (direnv)
-- ✅ CI/CD integration documented and tested
-- ✅ Fine-grained control over what gets encrypted (encrypted_regex)
+-   ✅ Secrets encrypted at rest using industry-standard tools (SOPS + age)
+-   ✅ No plaintext secrets in version control
+-   ✅ Local development uses automatic decryption (direnv)
+-   ✅ CI/CD integration documented and tested
+-   ✅ Fine-grained control over what gets encrypted (encrypted_regex)
 
 **DEV-SPEC-008: Testing Strategy**
 
-- ✅ Unit test validates SOPS configuration
-- ✅ Test checks git security (.gitignore, no plaintext in git)
-- ✅ Graceful degradation for template mode
-- ✅ Clear error messages and encryption guidance
+-   ✅ Unit test validates SOPS configuration
+-   ✅ Test checks git security (.gitignore, no plaintext in git)
+-   ✅ Graceful degradation for template mode
+-   ✅ Clear error messages and encryption guidance
 
 **DEV-ADR-XXX: Secret Management Architecture** (Implicit)
 
-- ✅ SOPS chosen over Doppler/Vault for git-friendly workflow
-- ✅ age encryption for simplicity and offline capability
-- ✅ direnv for automatic local activation
-- ✅ Template mode for generator-first approach
+-   ✅ SOPS chosen over Doppler/Vault for git-friendly workflow
+-   ✅ age encryption for simplicity and offline capability
+-   ✅ direnv for automatic local activation
+-   ✅ Template mode for generator-first approach
 
 ## Next Steps
 
@@ -275,22 +275,22 @@ Phase 3 is **COMPLETE**. Ready to proceed to:
 
 **Phase 4: Minimal CI Workflows**
 
-- Create `.github/workflows/env-validate.yml`
-- Run `just test-env` in CI
-- Add SOPS decryption step
-- Validate on Ubuntu, macOS runners
+-   Create `.github/workflows/env-validate.yml`
+-   Run `just test-env` in CI
+-   Add SOPS decryption step
+-   Validate on Ubuntu, macOS runners
 
 **Phase 5: Volta Coexistence Checks**
 
-- Enhance `scripts/verify-node.sh`
-- Add warnings for Volta/mise misalignment
-- Document migration path from Volta to mise
+-   Enhance `scripts/verify-node.sh`
+-   Add warnings for Volta/mise misalignment
+-   Document migration path from Volta to mise
 
 **Phase 6: Just Task Awareness**
 
-- Ensure all `just` recipes work with mise
-- Add environment checks to key tasks
-- Document environment requirements per task
+-   Ensure all `just` recipes work with mise
+-   Add environment checks to key tasks
+-   Document environment requirements per task
 
 ## Lessons Learned
 
@@ -321,16 +321,16 @@ Phase 3 is **COMPLETE**. Ready to proceed to:
 
 **docs/ENVIRONMENT.md** - Added comprehensive SOPS section:
 
-- Installation (brew, binary downloads)
-- First-time setup (age-keygen, .sops.yaml config)
-- Configuration explanation (creation_rules, encrypted_regex)
-- Usage (encrypt, decrypt, edit, exec-env)
-- Local development (direnv integration)
-- CI/CD integration (GitHub Actions example)
-- Security best practices (DO/DON'T lists)
-- Template mode explanation
-- Troubleshooting (4 categories, 12+ scenarios)
-- Alternatives (Doppler, Vault, cloud providers)
+-   Installation (brew, binary downloads)
+-   First-time setup (age-keygen, .sops.yaml config)
+-   Configuration explanation (creation_rules, encrypted_regex)
+-   Usage (encrypt, decrypt, edit, exec-env)
+-   Local development (direnv integration)
+-   CI/CD integration (GitHub Actions example)
+-   Security best practices (DO/DON'T lists)
+-   Template mode explanation
+-   Troubleshooting (4 categories, 12+ scenarios)
+-   Alternatives (Doppler, Vault, cloud providers)
 
 **Lines added:** ~350 lines of comprehensive documentation
 
@@ -345,14 +345,14 @@ Phase 3 is **COMPLETE**. Ready to proceed to:
 
 ## Phase 3 Completion Checklist
 
-- [x] RED: Write failing SOPS test (`test_sops_local.sh`)
-- [x] GREEN: Verify SOPS configuration files (`.sops.yaml`, `.secrets.env.sops`)
-- [x] GREEN: Verify direnv integration (`.envrc`)
-- [x] GREEN: Verify git security (`.gitignore`, pre-commit hook)
-- [x] REFACTOR: Update documentation (`docs/ENVIRONMENT.md`)
-- [x] REFACTOR: Add test to harness documentation
-- [x] Validate: Run `just test-env` (6/6 tests passing)
-- [x] Document: Create phase completion summary
+-   [x] RED: Write failing SOPS test (`test_sops_local.sh`)
+-   [x] GREEN: Verify SOPS configuration files (`.sops.yaml`, `.secrets.env.sops`)
+-   [x] GREEN: Verify direnv integration (`.envrc`)
+-   [x] GREEN: Verify git security (`.gitignore`, pre-commit hook)
+-   [x] REFACTOR: Update documentation (`docs/ENVIRONMENT.md`)
+-   [x] REFACTOR: Add test to harness documentation
+-   [x] Validate: Run `just test-env` (6/6 tests passing)
+-   [x] Document: Create phase completion summary
 
 **Phase 3 Status: COMPLETE ✅**
 

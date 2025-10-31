@@ -81,7 +81,7 @@ build_deployment_dependencies:
 
 monitoring_observability_dependencies:
   logging:
-    - structlog # structured logging
+    - logfire # structured logging, tracing, and metrics
   apm_tracing:
     - opentelemetry-sdk # distributed tracing
     - docker-otel-lgtm # local observability stack

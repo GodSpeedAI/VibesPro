@@ -25,38 +25,38 @@ date: {{ year }}
 
 #### Overview
 
-- **Feature**: [Brief description of the feature]
-- **Business Value**: [Why this feature matters]
-- **Target Users**: [Who will use this feature]
-- **Priority**: [High | Medium | Low]
-- **Status**: [Planned | In Progress | Implemented | Deferred]
+-   **Feature**: [Brief description of the feature]
+-   **Business Value**: [Why this feature matters]
+-   **Target Users**: [Who will use this feature]
+-   **Priority**: [High | Medium | Low]
+-   **Status**: [Planned | In Progress | Implemented | Deferred]
 
 #### User Stories
 
-- As a [user type], I want to [action] so that [benefit]
-- [Add more user stories as needed]
+-   As a [user type], I want to [action] so that [benefit]
+-   [Add more user stories as needed]
 
 #### Acceptance Criteria
 
-- [ ] [Specific, measurable criteria for completion]
-- [ ] [Another criterion]
-- [ ] [Another criterion]
+-   [ ] [Specific, measurable criteria for completion]
+-   [ ] [Another criterion]
+-   [ ] [Another criterion]
 
 #### Success Metrics
 
-- **KPI 1**: [Metric and target value]
-- **KPI 2**: [Metric and target value]
+-   **KPI 1**: [Metric and target value]
+-   **KPI 2**: [Metric and target value]
 
 #### Dependencies
 
-- **Depends on**: [PRD-XXX, ADR-XXX]
-- **Blocks**: [PRD-XXX]
+-   **Depends on**: [PRD-XXX, ADR-XXX]
+-   **Blocks**: [PRD-XXX]
 
 #### Related Specs
 
-- ADR: [ADR-XXX]
-- SDS: [SDS-XXX]
-- TS: [TS-XXX]
+-   ADR: [ADR-XXX]
+-   SDS: [SDS-XXX]
+-   TS: [TS-XXX]
 
 ---
 
@@ -66,42 +66,42 @@ date: {{ year }}
 
 #### Overview
 
-- **Feature**: OAuth2 authentication with Google and GitHub providers
-- **Business Value**: Secure user access without managing passwords
-- **Target Users**: All application users
-- **Priority**: High
-- **Status**: Planned
+-   **Feature**: OAuth2 authentication with Google and GitHub providers
+-   **Business Value**: Secure user access without managing passwords
+-   **Target Users**: All application users
+-   **Priority**: High
+-   **Status**: Planned
 
 #### User Stories
 
-- As a new user, I want to sign up using my Google account so that I don't need to create another password
-- As a returning user, I want to log in quickly using my existing OAuth provider
-- As a security-conscious user, I want my authentication to use industry-standard protocols
+-   As a new user, I want to sign up using my Google account so that I don't need to create another password
+-   As a returning user, I want to log in quickly using my existing OAuth provider
+-   As a security-conscious user, I want my authentication to use industry-standard protocols
 
 #### Acceptance Criteria
 
-- [ ] Users can sign up with Google OAuth2
-- [ ] Users can sign up with GitHub OAuth2
-- [ ] Users can log in with their chosen provider
-- [ ] Session management follows security best practices
-- [ ] Error messages are user-friendly and actionable
+-   [ ] Users can sign up with Google OAuth2
+-   [ ] Users can sign up with GitHub OAuth2
+-   [ ] Users can log in with their chosen provider
+-   [ ] Session management follows security best practices
+-   [ ] Error messages are user-friendly and actionable
 
 #### Success Metrics
 
-- **Sign-up conversion**: >70% of visitors who start sign-up complete it
-- **Authentication success rate**: >99.5%
-- **User satisfaction**: >4.5/5 rating for login experience
+-   **Sign-up conversion**: >70% of visitors who start sign-up complete it
+-   **Authentication success rate**: >99.5%
+-   **User satisfaction**: >4.5/5 rating for login experience
 
 #### Dependencies
 
-- **Depends on**: ADR-002 (OAuth provider selection)
-- **Blocks**: PRD-005 (User profile management)
+-   **Depends on**: ADR-002 (OAuth provider selection)
+-   **Blocks**: PRD-005 (User profile management)
 
 #### Related Specs
 
-- ADR: ADR-002
-- SDS: SDS-003
-- TS: TS-008
+-   ADR: ADR-002
+-   SDS: SDS-003
+-   TS: TS-008
 
 ---
 

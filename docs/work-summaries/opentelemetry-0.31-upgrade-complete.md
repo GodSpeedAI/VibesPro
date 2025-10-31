@@ -12,10 +12,10 @@ Successfully upgraded the vibepro-observe crate from OpenTelemetry 0.25 to 0.31+
 
 **Test Results**:
 
-- ✅ Phase 1 tests: 3/3 passing (tracing initialization)
-- ✅ Phase 2 tests: 1/1 passing (OTLP gates)
-- ✅ Phase 3 tests: 2/2 passing (OTLP integration + Vector integration)
-- ✅ **Total: 6/6 tests passing**
+-   ✅ Phase 1 tests: 3/3 passing (tracing initialization)
+-   ✅ Phase 2 tests: 1/1 passing (OTLP gates)
+-   ✅ Phase 3 tests: 2/2 passing (OTLP integration + Vector integration)
+-   ✅ **Total: 6/6 tests passing**
 
 ---
 
@@ -43,10 +43,10 @@ fake-opentelemetry-collector = "0.32"  # Was incompatible with 0.25
 
 **Rationale**: Version 0.31 introduced breaking changes but provides:
 
-- Better async runtime auto-detection (no manual configuration)
-- Improved builder patterns for configuration
-- Built-in error logging (no custom error handlers needed)
-- Compatibility with latest ecosystem tools (fake-opentelemetry-collector)
+-   Better async runtime auto-detection (no manual configuration)
+-   Improved builder patterns for configuration
+-   Built-in error logging (no custom error handlers needed)
+-   Compatibility with latest ecosystem tools (fake-opentelemetry-collector)
 
 ---
 
@@ -74,9 +74,9 @@ let exporter = opentelemetry_otlp::SpanExporter::builder()
 
 **Changes**:
 
-- `new_exporter()` → `SpanExporter::builder()`
-- `tonic()` → `with_tonic()`
-- `build_span_exporter()` → `build()`
+-   `new_exporter()` → `SpanExporter::builder()`
+-   `tonic()` → `with_tonic()`
+-   `build_span_exporter()` → `build()`
 
 ### 2. Resource Creation
 
@@ -100,8 +100,8 @@ let resource = Resource::builder_empty()
 
 **Changes**:
 
-- `Resource::new()` is now private
-- Use `Resource::builder_empty().with_attributes().build()` pattern
+-   `Resource::new()` is now private
+-   Use `Resource::builder_empty().with_attributes().build()` pattern
 
 ### 3. BatchSpanProcessor
 
@@ -121,7 +121,7 @@ let batch_processor = sdk::trace::BatchSpanProcessor::builder(exporter)
 
 **Changes**:
 
-- Runtime parameter removed (auto-detected from `#[tokio::main]` or `tokio::test`)
+-   Runtime parameter removed (auto-detected from `#[tokio::main]` or `tokio::test`)
 
 ### 4. Error Handling
 
@@ -141,8 +141,8 @@ opentelemetry::global::set_error_handler(|err| {
 
 **Changes**:
 
-- `set_error_handler()` API removed
-- Errors now logged automatically via the logging crate
+-   `set_error_handler()` API removed
+-   Errors now logged automatically via the logging crate
 
 ### 5. Span Methods
 
@@ -168,8 +168,8 @@ span.end();
 
 **Changes**:
 
-- Trait methods now called directly on the span instance
-- Must import `opentelemetry::trace::Span` trait to access methods
+-   Trait methods now called directly on the span instance
+-   Must import `opentelemetry::trace::Span` trait to access methods
 
 ### 6. Global Shutdown
 
@@ -189,9 +189,9 @@ tracer_provider.shutdown()?;
 
 **Changes**:
 
-- Global shutdown removed from API
-- Shutdown happens automatically when provider is dropped
-- For explicit control, call `shutdown()` on the provider instance
+-   Global shutdown removed from API
+-   Shutdown happens automatically when provider is dropped
+-   For explicit control, call `shutdown()` on the provider instance
 
 ---
 
@@ -199,35 +199,35 @@ tracer_provider.shutdown()?;
 
 ### 1. `Cargo.toml`
 
-- **Change**: Updated all OpenTelemetry dependencies to 0.31+
-- **Impact**: Foundation for entire upgrade
-- **Lines**: Dependencies section
+-   **Change**: Updated all OpenTelemetry dependencies to 0.31+
+-   **Impact**: Foundation for entire upgrade
+-   **Lines**: Dependencies section
 
 ### 2. `src/lib.rs` - `setup_otlp_exporter()`
 
-- **Changes**:
-  - Replaced `new_exporter()` with `SpanExporter::builder()`
-  - Updated `Resource::new()` to builder pattern
-  - Removed runtime parameter from `BatchSpanProcessor`
-  - Removed `set_error_handler()` call
-- **Impact**: Core OTLP export functionality
-- **Lines**: ~150-200 (entire function rewritten)
+-   **Changes**:
+    -   Replaced `new_exporter()` with `SpanExporter::builder()`
+    -   Updated `Resource::new()` to builder pattern
+    -   Removed runtime parameter from `BatchSpanProcessor`
+    -   Removed `set_error_handler()` call
+-   **Impact**: Core OTLP export functionality
+-   **Lines**: ~150-200 (entire function rewritten)
 
 ### 3. `tests/otlp_integration.rs`
 
-- **Changes**:
-  - Added `use opentelemetry::trace::Span;` import
-  - Changed `Span::set_attribute(&mut span, kv)` → `span.set_attribute(kv)`
-  - Changed `Span::end(span)` → `span.end()`
-- **Impact**: Phase 3 integration tests
-- **Lines**: 5 (import), 17-19 (span methods)
+-   **Changes**:
+    -   Added `use opentelemetry::trace::Span;` import
+    -   Changed `Span::set_attribute(&mut span, kv)` → `span.set_attribute(kv)`
+    -   Changed `Span::end(span)` → `span.end()`
+-   **Impact**: Phase 3 integration tests
+-   **Lines**: 5 (import), 17-19 (span methods)
 
 ### 4. `tests/tracing_vector.rs`
 
-- **Changes**:
-  - Removed `opentelemetry::global::shutdown_tracer_provider()` call
-- **Impact**: Vector integration tests
-- **Lines**: 45 (removed shutdown line)
+-   **Changes**:
+    -   Removed `opentelemetry::global::shutdown_tracer_provider()` call
+-   **Impact**: Vector integration tests
+-   **Lines**: 45 (removed shutdown line)
 
 ---
 
@@ -280,16 +280,16 @@ $ cargo check --features otlp
 
 ### Before Upgrade
 
-- ❌ Blocked by OpenTelemetry version conflicts
-- ❌ `fake-opentelemetry-collector` 0.32 incompatible with 0.25
-- ❌ Cannot verify end-to-end OTLP export flow
+-   ❌ Blocked by OpenTelemetry version conflicts
+-   ❌ `fake-opentelemetry-collector` 0.32 incompatible with 0.25
+-   ❌ Cannot verify end-to-end OTLP export flow
 
 ### After Upgrade
 
-- ✅ Integration test passing with fake collector
-- ✅ Verified span export to OTLP endpoint
-- ✅ Validated span attributes and metadata
-- ✅ Vector integration test also working
+-   ✅ Integration test passing with fake collector
+-   ✅ Verified span export to OTLP endpoint
+-   ✅ Validated span attributes and metadata
+-   ✅ Vector integration test also working
 
 **Phase 3 is now COMPLETE** ✅
 
@@ -308,9 +308,9 @@ $ cargo check --features otlp
 
 **Overall Migration Complexity**: **Low to Medium**
 
-- Most changes are mechanical API replacements
-- Improved ergonomics in 0.31 reduce boilerplate
-- Better type inference in builder patterns
+-   Most changes are mechanical API replacements
+-   Improved ergonomics in 0.31 reduce boilerplate
+-   Better type inference in builder patterns
 
 ---
 
@@ -342,9 +342,9 @@ $ cargo check --features otlp
 
 ### Immediate (Complete)
 
-- ✅ Update `docs/dev_tdd_observability.md` with Phase 3 completion status
-- ✅ Verify all CI/CD pipelines pass with new versions
-- ✅ Update traceability matrix for Phase 3
+-   ✅ Update `docs/dev_tdd_observability.md` with Phase 3 completion status
+-   ✅ Verify all CI/CD pipelines pass with new versions
+-   ✅ Update traceability matrix for Phase 3
 
 ### Future Considerations
 
@@ -357,10 +357,10 @@ $ cargo check --features otlp
 
 ## References
 
-- [OpenTelemetry 0.31.0 Release Notes](https://github.com/open-telemetry/opentelemetry-rust/releases/tag/v0.31.0)
-- [Migration Guide 0.25 → 0.31](https://opentelemetry.io/docs/languages/rust/migration/)
-- [fake-opentelemetry-collector 0.32](https://docs.rs/fake-opentelemetry-collector/0.32.0/)
-- [tracing-opentelemetry 0.32](https://docs.rs/tracing-opentelemetry/0.32.0/)
+-   [OpenTelemetry 0.31.0 Release Notes](https://github.com/open-telemetry/opentelemetry-rust/releases/tag/v0.31.0)
+-   [Migration Guide 0.25 → 0.31](https://opentelemetry.io/docs/languages/rust/migration/)
+-   [fake-opentelemetry-collector 0.32](https://docs.rs/fake-opentelemetry-collector/0.32.0/)
+-   [tracing-opentelemetry 0.32](https://docs.rs/tracing-opentelemetry/0.32.0/)
 
 ---
 
@@ -368,15 +368,15 @@ $ cargo check --features otlp
 
 **Spec References**:
 
-- DEV-TDD-OBS-PHASE3: Integration testing with OTLP collector
-- DEV-ADR-OBS-001: OpenTelemetry as observability foundation
-- DEV-SDS-OBS-002: OTLP export configuration
+-   DEV-TDD-OBS-PHASE3: Integration testing with OTLP collector
+-   DEV-ADR-OBS-001: OpenTelemetry as observability foundation
+-   DEV-SDS-OBS-002: OTLP export configuration
 
 **Related Documents**:
 
-- `docs/dev_tdd_observability.md` - Phase 3 testing strategy
-- `docs/dev_adr.md` - Observability architecture decisions
-- `crates/vibepro-observe/README.md` - Usage documentation
+-   `docs/dev_tdd_observability.md` - Phase 3 testing strategy
+-   `docs/dev_adr.md` - Observability architecture decisions
+-   `crates/vibepro-observe/README.md` - Usage documentation
 
 ---
 

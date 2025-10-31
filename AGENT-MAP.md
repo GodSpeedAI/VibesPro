@@ -10,33 +10,33 @@ This map shows the distributed AGENT.md system that replicates the semantic rout
 
 ### 🏠 Root Level
 
-- [AGENTS.md](/AGENTS.md) - Nx-specific guidelines (auto-generated)
-- [.github/copilot-instructions.md](/.github/copilot-instructions.md) - Master instructions (supreme authority)
+-   [AGENTS.md](/AGENTS.md) - Nx-specific guidelines (auto-generated)
+-   [.github/copilot-instructions.md](/.github/copilot-instructions.md) - Master instructions (supreme authority)
 
 ### 🎯 Core Infrastructure (Phase 1)
 
-- [.github/AGENT.md](/.github/AGENT.md) - AI Development System (prompts, instructions, chat modes)
-- [docs/AGENT.md](/docs/AGENT.md) - Documentation & Specifications (ADR, PRD, SDS, traceability)
-- [tools/AGENT.md](/tools/AGENT.md) - Development Tools (utilities, generators, metrics)
-- [scripts/AGENT.md](/scripts/AGENT.md) - Orchestration Scripts (shell automation, justfile integration)
+-   [.github/AGENT.md](/.github/AGENT.md) - AI Development System (prompts, instructions, chat modes)
+-   [docs/AGENT.md](/docs/AGENT.md) - Documentation & Specifications (ADR, PRD, SDS, traceability)
+-   [tools/AGENT.md](/tools/AGENT.md) - Development Tools (utilities, generators, metrics)
+-   [scripts/AGENT.md](/scripts/AGENT.md) - Orchestration Scripts (shell automation, justfile integration)
 
 ### 🏗️ Application Architecture (Phase 2)
 
-- [apps/AGENT.md](/apps/AGENT.md) - Application Interfaces (web, mobile, CLI, API)
-- [libs/AGENT.md](/libs/AGENT.md) - Business Logic Libraries (hexagonal architecture)
-- [generators/AGENT.md](/generators/AGENT.md) - Code Generators (Nx generators, scaffolding)
-- [templates/AGENT.md](/templates/AGENT.md) - Jinja2 Templates (Copier project generation)
+-   [apps/AGENT.md](/apps/AGENT.md) - Application Interfaces (web, mobile, CLI, API)
+-   [libs/AGENT.md](/libs/AGENT.md) - Business Logic Libraries (hexagonal architecture)
+-   [generators/AGENT.md](/generators/AGENT.md) - Code Generators (Nx generators, scaffolding)
+-   [templates/AGENT.md](/templates/AGENT.md) - Jinja2 Templates (Copier project generation)
 
 ### 🧪 Quality & Testing (Phase 2)
 
-- [tests/AGENT.md](/tests/AGENT.md) - Testing Infrastructure (unit, integration, shell tests)
+-   [tests/AGENT.md](/tests/AGENT.md) - Testing Infrastructure (unit, integration, shell tests)
 
 ### 🔬 Specialized Contexts (Phase 3)
 
-- [temporal_db/AGENT.md](/temporal_db/AGENT.md) - AI Learning Database (Rust, sled)
-- [architecture/AGENT.md](/architecture/AGENT.md) - Architecture Documentation (CALM)
-- [ops/AGENT.md](/ops/AGENT.md) - Operations & Deployment
-- [hooks/AGENT.md](/hooks/AGENT.md) - Pre/Post-generation hooks (Copier templates)
+-   [temporal_db/AGENT.md](/temporal_db/AGENT.md) - AI Learning Database (Rust, sled)
+-   [architecture/AGENT.md](/architecture/AGENT.md) - Architecture Documentation (CALM)
+-   [ops/AGENT.md](/ops/AGENT.md) - Operations & Deployment
+-   [hooks/AGENT.md](/hooks/AGENT.md) - Pre/Post-generation hooks (Copier templates)
 
 ## Quick Navigation
 
@@ -203,34 +203,34 @@ AI Development (implementation)
 
 ✅ **Create when:**
 
-- Directory has distinct purpose/domain
-- Local conventions differ meaningfully
-- Routing logic would benefit from clarity
-- Multiple team members work in this area
-- Onboarding would be significantly easier
+-   Directory has distinct purpose/domain
+-   Local conventions differ meaningfully
+-   Routing logic would benefit from clarity
+-   Multiple team members work in this area
+-   Onboarding would be significantly easier
 
 ❌ **Don't create when:**
 
-- Directory is purely organizational (no code)
-- No distinct conventions exist
-- Would duplicate parent context without adding value
-- Directory is temporary or experimental
+-   Directory is purely organizational (no code)
+-   No distinct conventions exist
+-   Would duplicate parent context without adding value
+-   Directory is temporary or experimental
 
 ### Updating AGENT.MAP.md
 
 **Update this map when:**
 
-- New AGENT.md file is created
-- Directory structure changes significantly
-- New task types or routing patterns emerge
-- Cross-reference network evolves
+-   New AGENT.md file is created
+-   Directory structure changes significantly
+-   New task types or routing patterns emerge
+-   Cross-reference network evolves
 
 ### Version Control
 
-- AGENT.md files are versioned with the code
-- Changes reviewed as part of PRs
-- Breaking changes to routing require team discussion
-- Keep changelog in relevant AGENT.md files
+-   AGENT.md files are versioned with the code
+-   Changes reviewed as part of PRs
+-   Breaking changes to routing require team discussion
+-   Keep changelog in relevant AGENT.md files
 
 ## Quick Command Reference
 
@@ -289,18 +289,18 @@ ls -la **/*AGENT.md
 
 ### Planned Additions (As Needed)
 
-- [ ] Domain-specific AGENT.md in `libs/{domain}/` subdirectories
-- [ ] Language-specific guides (e.g., `libs/python/AGENT.md`)
-- [ ] CI/CD-specific context in `.github/workflows/`
-- [ ] MCP server documentation context
-- [ ] Generated project templates context
+-   [ ] Domain-specific AGENT.md in `libs/{domain}/` subdirectories
+-   [ ] Language-specific guides (e.g., `libs/python/AGENT.md`)
+-   [ ] CI/CD-specific context in `.github/workflows/`
+-   [ ] MCP server documentation context
+-   [ ] Generated project templates context
 
 ### Automation Opportunities
 
-- [ ] Auto-generate AGENT-MAP.md from directory scan
-- [ ] Validate cross-references in CI
-- [ ] Detect missing AGENT.md for high-activity directories
-- [ ] Link checking for AGENT.md cross-references
+-   [ ] Auto-generate AGENT-MAP.md from directory scan
+-   [ ] Validate cross-references in CI
+-   [ ] Detect missing AGENT.md for high-activity directories
+-   [ ] Link checking for AGENT.md cross-references
 
 ---
 
@@ -308,12 +308,12 @@ ls -la **/*AGENT.md
 
 This distributed AGENT.md system creates a **semantic routing network** that:
 
-- ✨ Provides local context without overwhelming AI with full repo details
-- 🔗 Links related contexts for easy navigation
-- 📚 References modular instructions for consistent guidance
-- 🎯 Routes tasks to appropriate contexts efficiently
-- 🛡️ Maintains security and quality standards everywhere
-- 🔄 Evolves with the project organically
+-   ✨ Provides local context without overwhelming AI with full repo details
+-   🔗 Links related contexts for easy navigation
+-   📚 References modular instructions for consistent guidance
+-   🎯 Routes tasks to appropriate contexts efficiently
+-   🛡️ Maintains security and quality standards everywhere
+-   🔄 Evolves with the project organically
 
 **Start Here**: Find your context in the tables above, then navigate to the relevant AGENT.md file.
 

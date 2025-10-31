@@ -13,12 +13,12 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
-- CALM (Continuous Architecture with Living Models) documentation
-- System architecture diagrams (C4 model, sequence, component)
-- Architectural Decision Records (ADRs) - high-level strategic
-- Architecture patterns and principles
-- Integration architecture diagrams
-- Domain maps and bounded contexts
+-   CALM (Continuous Architecture with Living Models) documentation
+-   System architecture diagrams (C4 model, sequence, component)
+-   Architectural Decision Records (ADRs) - high-level strategic
+-   Architecture patterns and principles
+-   Integration architecture diagrams
+-   Domain maps and bounded contexts
 
 **Related Methodology**: [CALM](https://www.infoq.com/articles/continuous-architecture-principles/) - Architecture as living documentation
 
@@ -93,12 +93,12 @@ Level 4: Code
 
 ### Use This Context When:
 
-- [ ] Creating system architecture diagrams
-- [ ] Documenting architectural decisions (ADRs)
-- [ ] Understanding system design patterns
-- [ ] Mapping bounded contexts (DDD)
-- [ ] Creating CALM documentation
-- [ ] Generating diagrams with Mermaid/PlantUML
+-   [ ] Creating system architecture diagrams
+-   [ ] Documenting architectural decisions (ADRs)
+-   [ ] Understanding system design patterns
+-   [ ] Mapping bounded contexts (DDD)
+-   [ ] Creating CALM documentation
+-   [ ] Generating diagrams with Mermaid/PlantUML
 
 ### Refer to Other Contexts When:
 
@@ -135,43 +135,43 @@ Level 4: Code
 
 ### Positive
 
-- [Benefit 1]
-- [Benefit 2]
+-   [Benefit 1]
+-   [Benefit 2]
 
 ### Negative
 
-- [Trade-off 1]
-- [Trade-off 2]
+-   [Trade-off 1]
+-   [Trade-off 2]
 
 ### Risks
 
-- [Risk 1] - **Mitigation**: [How we address it]
-- [Risk 2] - **Mitigation**: [How we address it]
+-   [Risk 1] - **Mitigation**: [How we address it]
+-   [Risk 2] - **Mitigation**: [How we address it]
 
 ## Alternatives Considered
 
 ### Alternative 1: [Name]
 
-- **Pros**: [...]
-- **Cons**: [...]
-- **Reason rejected**: [...]
+-   **Pros**: [...]
+-   **Cons**: [...]
+-   **Reason rejected**: [...]
 
 ### Alternative 2: [Name]
 
-- **Pros**: [...]
-- **Cons**: [...]
-- **Reason rejected**: [...]
+-   **Pros**: [...]
+-   **Cons**: [...]
+-   **Reason rejected**: [...]
 
 ## Implementation Notes
 
-- [Key point 1]
-- [Key point 2]
+-   [Key point 1]
+-   [Key point 2]
 
 ## References
 
-- [Link to related docs]
-- [Link to similar ADRs]
-- [External resources]
+-   [Link to related docs]
+-   [Link to similar ADRs]
+-   [External resources]
 ```
 
 ### Mermaid Diagram Conventions
@@ -308,50 +308,50 @@ sequenceDiagram
 
 ### Orders Context
 
-- **Responsibility**: Order management and fulfillment
-- **Language**: Order, OrderItem, OrderStatus, Customer
-- **Relationships**:
-  - **Upstream**: Products Context (Conformist)
-  - **Downstream**: Shipping Context (Customer-Supplier)
+-   **Responsibility**: Order management and fulfillment
+-   **Language**: Order, OrderItem, OrderStatus, Customer
+-   **Relationships**:
+    -   **Upstream**: Products Context (Conformist)
+    -   **Downstream**: Shipping Context (Customer-Supplier)
 
 ### Products Context
 
-- **Responsibility**: Product catalog and inventory
-- **Language**: Product, SKU, Category, Inventory
-- **Relationships**:
-  - **Downstream**: Orders Context (Published Language)
+-   **Responsibility**: Product catalog and inventory
+-   **Language**: Product, SKU, Category, Inventory
+-   **Relationships**:
+    -   **Downstream**: Orders Context (Published Language)
 
 ### Users Context
 
-- **Responsibility**: User authentication and authorization
-- **Language**: User, Role, Permission, Session
-- **Relationships**:
-  - **Shared Kernel**: with all contexts (Identity)
+-   **Responsibility**: User authentication and authorization
+-   **Language**: User, Role, Permission, Session
+-   **Relationships**:
+    -   **Shared Kernel**: with all contexts (Identity)
 
 ## Context Relationships
 
-- **Partnership**: Users ↔ Orders (bidirectional cooperation)
-- **Customer-Supplier**: Orders → Shipping (downstream dependency)
-- **Conformist**: Orders → Products (accept upstream model)
-- **Anticorruption Layer**: Orders → External Payment API
+-   **Partnership**: Users ↔ Orders (bidirectional cooperation)
+-   **Customer-Supplier**: Orders → Shipping (downstream dependency)
+-   **Conformist**: Orders → Products (accept upstream model)
+-   **Anticorruption Layer**: Orders → External Payment API
 ```
 
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
 
-- [.github/instructions/docs.instructions.md](/.github/instructions/docs.instructions.md) - Documentation standards
-- [.github/instructions/general.instructions.md](/.github/instructions/general.instructions.md) - General guidelines
+-   [.github/instructions/docs.instructions.md](/.github/instructions/docs.instructions.md) - Documentation standards
+-   [.github/instructions/general.instructions.md](/.github/instructions/general.instructions.md) - General guidelines
 
 **Relevant prompts:**
 
-- [.github/prompts/spec.plan.adr.prompt.md](/.github/prompts/spec.plan.adr.prompt.md) - Generate ADRs
-- [.github/prompts/docs.generate.prompt.md](/.github/prompts/docs.generate.prompt.md) - Generate architecture docs
+-   [.github/prompts/spec.plan.adr.prompt.md](/.github/prompts/spec.plan.adr.prompt.md) - Generate ADRs
+-   [.github/prompts/docs.generate.prompt.md](/.github/prompts/docs.generate.prompt.md) - Generate architecture docs
 
 **Related chat modes:**
 
-- `persona.system-architect` - Architectural guidance
-- `spec.wide` - Comprehensive spec generation
+-   `persona.system-architect` - Architectural guidance
+-   `spec.wide` - Comprehensive spec generation
 
 ## 💡 Examples
 
@@ -369,10 +369,10 @@ sequenceDiagram
 
 We need a clean architecture that:
 
-- Separates business logic from infrastructure concerns
-- Enables independent testing of domain logic
-- Allows switching infrastructure implementations
-- Supports Domain-Driven Design (DDD)
+-   Separates business logic from infrastructure concerns
+-   Enables independent testing of domain logic
+-   Allows switching infrastructure implementations
+-   Supports Domain-Driven Design (DDD)
 
 Current monolithic structure couples business rules with database access,
 making testing difficult and technology migration risky.
@@ -391,49 +391,49 @@ Dependency rule: Domain ← Application ← Infrastructure (inward only).
 
 ### Positive
 
-- **Testability**: Domain logic testable without infrastructure
-- **Flexibility**: Easy to swap database, framework, or external services
-- **Clarity**: Clear boundaries between business and technical concerns
-- **DDD Support**: Natural fit for domain-driven design
+-   **Testability**: Domain logic testable without infrastructure
+-   **Flexibility**: Easy to swap database, framework, or external services
+-   **Clarity**: Clear boundaries between business and technical concerns
+-   **DDD Support**: Natural fit for domain-driven design
 
 ### Negative
 
-- **Initial Complexity**: More files and layers than simple architecture
-- **Learning Curve**: Team needs to understand pattern
-- **Boilerplate**: More interfaces and abstractions
+-   **Initial Complexity**: More files and layers than simple architecture
+-   **Learning Curve**: Team needs to understand pattern
+-   **Boilerplate**: More interfaces and abstractions
 
 ### Risks
 
-- **Over-engineering simple features** - **Mitigation**: Use generators for consistent scaffolding
-- **Circular dependencies** - **Mitigation**: Enforce with Nx boundary rules
+-   **Over-engineering simple features** - **Mitigation**: Use generators for consistent scaffolding
+-   **Circular dependencies** - **Mitigation**: Enforce with Nx boundary rules
 
 ## Alternatives Considered
 
 ### Alternative 1: Layered Architecture
 
-- **Pros**: Simpler, well-known pattern
-- **Cons**: Business logic can leak into presentation/data layers
-- **Reason rejected**: Insufficient separation of concerns
+-   **Pros**: Simpler, well-known pattern
+-   **Cons**: Business logic can leak into presentation/data layers
+-   **Reason rejected**: Insufficient separation of concerns
 
 ### Alternative 2: Clean Architecture
 
-- **Pros**: Similar benefits, more layers (entities, use cases, controllers, frameworks)
-- **Cons**: More complex, overlaps with hexagonal
-- **Reason rejected**: Hexagonal is sufficient for our needs
+-   **Pros**: Similar benefits, more layers (entities, use cases, controllers, frameworks)
+-   **Cons**: More complex, overlaps with hexagonal
+-   **Reason rejected**: Hexagonal is sufficient for our needs
 
 ## Implementation Notes
 
-- Use Nx generators to scaffold hexagonal layers
-- Store domain logic in `libs/{context}/domain`
-- Define ports in `libs/{context}/application/ports`
-- Implement adapters in `libs/{context}/infrastructure`
-- Wire dependencies in `apps/{app}/src/main.ts`
+-   Use Nx generators to scaffold hexagonal layers
+-   Store domain logic in `libs/{context}/domain`
+-   Define ports in `libs/{context}/application/ports`
+-   Implement adapters in `libs/{context}/infrastructure`
+-   Wire dependencies in `apps/{app}/src/main.ts`
 
 ## References
 
-- [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
-- [Ports and Adapters Pattern](https://jmgarridopaz.github.io/content/hexagonalarchitecture.html)
-- DEV-SDS-001: Software Design Specification
+-   [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
+-   [Ports and Adapters Pattern](https://jmgarridopaz.github.io/content/hexagonalarchitecture.html)
+-   DEV-SDS-001: Software Design Specification
 ```
 
 ### Example 2: System Context Diagram
@@ -480,19 +480,19 @@ graph TB
 
 ## Actors
 
-- **Developer**: Uses the platform to generate projects
-- **AI Assistant**: Provides guidance and automation
+-   **Developer**: Uses the platform to generate projects
+-   **AI Assistant**: Provides guidance and automation
 
 ## Systems
 
-- **Generator System**: Core generation engine using Nx and Copier
-- **Templates**: Jinja2 templates for code generation
-- **Temporal DB**: Learning database (Rust/sled)
+-   **Generator System**: Core generation engine using Nx and Copier
+-   **Templates**: Jinja2 templates for code generation
+-   **Temporal DB**: Learning database (Rust/sled)
 
 ## External Dependencies
 
-- **GitHub**: Source control and CI/CD
-- **Copier**: Template engine (Python)
+-   **GitHub**: Source control and CI/CD
+-   **Copier**: Template engine (Python)
 
 ````
 
@@ -545,23 +545,23 @@ graph TB
 
 ### Domain Layer
 
-- **Order Entity**: Aggregate root for order management
-- **OrderItem VO**: Value object for line items
-- **OrderStatus**: Enum for order lifecycle
-- **OrderCreated Event**: Domain event published on creation
+-   **Order Entity**: Aggregate root for order management
+-   **OrderItem VO**: Value object for line items
+-   **OrderStatus**: Enum for order lifecycle
+-   **OrderCreated Event**: Domain event published on creation
 
 ### Application Layer
 
-- **CreateOrder UseCase**: Creates new orders
-- **ConfirmOrder UseCase**: Confirms pending orders
-- **OrderRepository Port**: Interface for persistence
-- **EventBus Port**: Interface for event publishing
+-   **CreateOrder UseCase**: Creates new orders
+-   **ConfirmOrder UseCase**: Confirms pending orders
+-   **OrderRepository Port**: Interface for persistence
+-   **EventBus Port**: Interface for event publishing
 
 ### Infrastructure Layer
 
-- **PostgresOrderRepository**: Production persistence
-- **InMemoryOrderRepository**: Testing persistence
-- **EventBusAdapter**: Event publishing implementation
+-   **PostgresOrderRepository**: Production persistence
+-   **InMemoryOrderRepository**: Testing persistence
+-   **EventBusAdapter**: Event publishing implementation
 
 ````
 
@@ -676,11 +676,11 @@ just ai-context-bundle
 
 **Security in architecture:**
 
-- ⚠️ **Document security boundaries**: Show trust boundaries in diagrams
-- ⚠️ **Review architecture decisions**: Security implications in ADRs
-- ⚠️ **Access control**: Document authentication/authorization flows
-- ⚠️ **Data flow**: Show where sensitive data travels
-- ⚠️ **Threat modeling**: Include STRIDE analysis in ADRs
+-   ⚠️ **Document security boundaries**: Show trust boundaries in diagrams
+-   ⚠️ **Review architecture decisions**: Security implications in ADRs
+-   ⚠️ **Access control**: Document authentication/authorization flows
+-   ⚠️ **Data flow**: Show where sensitive data travels
+-   ⚠️ **Threat modeling**: Include STRIDE analysis in ADRs
 
 **Example security boundary in diagram:**
 
@@ -731,18 +731,18 @@ Context:
 import { TemporalDb } from "../temporal_db";
 
 async function storeADR(adrFile: string) {
-  const content = await readFile(adrFile, "utf-8");
-  const adr = parseADR(content);
+    const content = await readFile(adrFile, "utf-8");
+    const adr = parseADR(content);
 
-  await TemporalDb.storeDecision({
-    id: adr.id,
-    title: adr.title,
-    status: adr.status,
-    context: adr.context,
-    decision: adr.decision,
-    consequences: adr.consequences,
-    created_at: adr.date,
-  });
+    await TemporalDb.storeDecision({
+        id: adr.id,
+        title: adr.title,
+        status: adr.status,
+        context: adr.context,
+        decision: adr.decision,
+        consequences: adr.consequences,
+        created_at: adr.date,
+    });
 }
 ```
 
@@ -750,27 +750,27 @@ async function storeADR(adrFile: string) {
 
 ### Regular Tasks
 
-- **Weekly**: Review new ADRs for consistency
-- **Monthly**: Update diagrams if architecture changes
-- **Quarterly**: Audit ADRs, deprecate outdated ones
-- **Per feature**: Create ADR for significant architectural decisions
+-   **Weekly**: Review new ADRs for consistency
+-   **Monthly**: Update diagrams if architecture changes
+-   **Quarterly**: Audit ADRs, deprecate outdated ones
+-   **Per feature**: Create ADR for significant architectural decisions
 
 ### When to Update This AGENT.md
 
-- C4 model conventions change
-- New diagram types introduced
-- ADR template evolves
-- CALM principles update
-- Architecture patterns change
+-   C4 model conventions change
+-   New diagram types introduced
+-   ADR template evolves
+-   CALM principles update
+-   Architecture patterns change
 
 ### Keeping Diagrams Current
 
 **Automation strategies:**
 
-- Generate diagrams from code (where possible)
-- Use tests to validate diagram accuracy
-- Include diagram review in PR checklist
-- Automate with `just ai-context-bundle`
+-   Generate diagrams from code (where possible)
+-   Use tests to validate diagram accuracy
+-   Include diagram review in PR checklist
+-   Automate with `just ai-context-bundle`
 
 ---
 

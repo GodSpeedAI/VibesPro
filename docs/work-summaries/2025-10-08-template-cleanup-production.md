@@ -18,67 +18,67 @@ Template cleanup is complete and production-ready. All maintainer-specific files
 
 **Developer Specification Starters** (with examples and instructions):
 
-- `docs/adr.md.j2` (2.0K) - Architecture Decision Records
-- `docs/prd.md.j2` (2.8K) - Product Requirements Documents
-- `docs/sds.md.j2` (4.0K) - Software Design Specifications
-- `docs/technical-specifications.md.j2` (3.1K) - Technical Specifications
+-   `docs/adr.md.j2` (2.0K) - Architecture Decision Records
+-   `docs/prd.md.j2` (2.8K) - Product Requirements Documents
+-   `docs/sds.md.j2` (4.0K) - Software Design Specifications
+-   `docs/technical-specifications.md.j2` (3.1K) - Technical Specifications
 
 **Index and Traceability Starters**:
 
-- `docs/spec_index.md.j2` (2.9K) - Specification index with examples
-- `docs/traceability_matrix.md.j2` (2.4K) - Requirement traceability matrix
+-   `docs/spec_index.md.j2` (2.9K) - Specification index with examples
+-   `docs/traceability_matrix.md.j2` (2.4K) - Requirement traceability matrix
 
 Each file includes:
 
-- 🎯 Clear purpose statement
-- 📝 Instructions on using chat modes (`#spec.lean`, `#spec.wide`)
-- 📋 Template structure
-- 💡 Complete example entries
-- ✏️ Placeholder sections for user content
+-   🎯 Clear purpose statement
+-   📝 Instructions on using chat modes (`#spec.lean`, `#spec.wide`)
+-   📋 Template structure
+-   💡 Complete example entries
+-   ✏️ Placeholder sections for user content
 
 ### ✅ 2. Removed Maintainer-Specific Files (15+ items)
 
 **Documentation files removed**:
 
-- dev_devkit-integration-plan.md
-- dev_implementation_plan.md
-- devkit-prompts-instructions-integration.md
-- ideation-insights.md
-- mapping.md
-- template_structure_analysis.md
-- vibecoder_integration_plan.md
-- environment_report.md
-- migration-from-yaml.md
-- vibelog.txt
-- techstack.schema copy.json
+-   dev_devkit-integration-plan.md
+-   dev_implementation_plan.md
+-   devkit-prompts-instructions-integration.md
+-   ideation-insights.md
+-   mapping.md
+-   template_structure_analysis.md
+-   vibecoder_integration_plan.md
+-   environment_report.md
+-   migration-from-yaml.md
+-   vibelog.txt
+-   techstack.schema copy.json
 
 **Directories removed**:
 
-- work-summaries/
+-   work-summaries/
 
 **Test artifacts removed** (6 directories):
 
-- specs/10914THREAD_VALUE/
-- specs/11409THREAD_VALUE/
-- specs/9336THREAD/
-- specs/THREAD=test-feature-final/
-- specs/THREAD=test-feature-fixed/
-- specs/test-feature-direct/
+-   specs/10914THREAD_VALUE/
+-   specs/11409THREAD_VALUE/
+-   specs/9336THREAD/
+-   specs/THREAD=test-feature-final/
+-   specs/THREAD=test-feature-fixed/
+-   specs/test-feature-direct/
 
 **Non-template duplicates removed**:
 
-- spec_index.md (generated file)
-- traceability_matrix.md (generated file)
-- commit_message_guidelines.md (non-template duplicate)
+-   spec_index.md (generated file)
+-   traceability_matrix.md (generated file)
+-   commit_message_guidelines.md (non-template duplicate)
 
 ### ✅ 3. Created Production-Ready Cleanup Automation
 
 **Script**: `scripts/template-cleanup.sh` (145 lines)
 
-- Idempotent (safe to run multiple times)
-- Color-coded output with progress indicators
-- Comprehensive error handling
-- Exit code 0 on success
+-   Idempotent (safe to run multiple times)
+-   Color-coded output with progress indicators
+-   Comprehensive error handling
+-   Exit code 0 on success
 
 **Just Recipes**:
 
@@ -123,9 +123,9 @@ Added to `.github/copilot-instructions.md.j2`:
 
 ### Files Removed
 
-- **15+ maintainer-specific files**
-- **6 test artifact directories**
-- **3 non-template duplicates**
+-   **15+ maintainer-specific files**
+-   **6 test artifact directories**
+-   **3 non-template duplicates**
 
 **Total cleaned**: 24+ items
 
@@ -135,38 +135,38 @@ Added to `.github/copilot-instructions.md.j2`:
 
 ### ✅ Code Quality
 
-- [x] All spec starters follow consistent format
-- [x] Proper Jinja2 syntax with `{% raw %}` blocks
-- [x] Clear instructions and examples in each file
-- [x] Inline documentation guiding users
+-   [x] All spec starters follow consistent format
+-   [x] Proper Jinja2 syntax with `{% raw %}` blocks
+-   [x] Clear instructions and examples in each file
+-   [x] Inline documentation guiding users
 
 ### ✅ Functionality
 
-- [x] Cleanup script executes successfully (exit code 0)
-- [x] Idempotent - safe to run multiple times
-- [x] Just recipes work correctly
-- [x] Proper error handling and logging
+-   [x] Cleanup script executes successfully (exit code 0)
+-   [x] Idempotent - safe to run multiple times
+-   [x] Just recipes work correctly
+-   [x] Proper error handling and logging
 
 ### ✅ Documentation
 
-- [x] Comprehensive implementation docs created
-- [x] Work summaries saved
-- [x] Quick reference card available
-- [x] This production summary complete
+-   [x] Comprehensive implementation docs created
+-   [x] Work summaries saved
+-   [x] Quick reference card available
+-   [x] This production summary complete
 
 ### ✅ Testing
 
-- [x] Script tested with full cleanup
-- [x] Verified all maintainer files removed
-- [x] Confirmed spec starters in place
-- [x] Just recipes tested and functional
+-   [x] Script tested with full cleanup
+-   [x] Verified all maintainer files removed
+-   [x] Confirmed spec starters in place
+-   [x] Just recipes tested and functional
 
 ### ✅ Best Practices
 
-- [x] No technical debt introduced
-- [x] Security guidelines followed
-- [x] Clear separation of concerns
-- [x] Maintainable and extensible code
+-   [x] No technical debt introduced
+-   [x] Security guidelines followed
+-   [x] Clear separation of concerns
+-   [x] Maintainable and extensible code
 
 ---
 
@@ -203,12 +203,12 @@ ls -lh templates/{{project_slug}}/docs/dev*.j2
 2. Navigate to `docs/` folder
 3. See minimal spec starters with clear instructions
 4. Use chat modes to generate actual specs:
-   - `@workspace #spec.lean` - Focused spec generation
-   - `@workspace #spec.wide` - Comprehensive spec generation
+    - `@workspace #spec.lean` - Focused spec generation
+    - `@workspace #spec.wide` - Comprehensive spec generation
 5. Or run prompts:
-   - `.github/prompts/spec.plan.adr.prompt.md`
-   - `.github/prompts/spec.plan.prd.prompt.md`
-   - etc.
+    - `.github/prompts/spec.plan.adr.prompt.md`
+    - `.github/prompts/spec.plan.prd.prompt.md`
+    - etc.
 
 ---
 
@@ -242,50 +242,50 @@ ls -lh templates/{{project_slug}}/docs/dev*.j2
 
 1. **Cleaner scaffolded projects**
 
-   - No VibesPro-specific content
-   - No maintainer artifacts
-   - Only relevant user-facing files
+    - No VibesPro-specific content
+    - No maintainer artifacts
+    - Only relevant user-facing files
 
 2. **Better user experience**
 
-   - Clear instructions in spec starters
-   - Example entries showing best practices
-   - Direct links to chat modes and prompts
-   - Obvious workflow: scaffold → generate specs → implement
+    - Clear instructions in spec starters
+    - Example entries showing best practices
+    - Direct links to chat modes and prompts
+    - Obvious workflow: scaffold → generate specs → implement
 
 3. **Reduced confusion**
 
-   - No pre-filled specs from wrong project
-   - Clear separation between template and generated
-   - Obvious what needs to be done next
+    - No pre-filled specs from wrong project
+    - Clear separation between template and generated
+    - Obvious what needs to be done next
 
 4. **Automated maintenance**
 
-   - One command to clean template
-   - Idempotent and safe
-   - CI-ready with force option
+    - One command to clean template
+    - Idempotent and safe
+    - CI-ready with force option
 
 5. **Improved traceability**
-   - Spec index and matrix starters in place
-   - Clear examples of proper structure
-   - Guidance on maintaining traceability
+    - Spec index and matrix starters in place
+    - Clear examples of proper structure
+    - Guidance on maintaining traceability
 
 ### Risks ⚠️
 
 1. **Breaking change for existing workflows**
 
-   - Mitigation: Clear documentation and examples
-   - Mitigation: Backwards compatible (old files removed, new ones added)
+    - Mitigation: Clear documentation and examples
+    - Mitigation: Backwards compatible (old files removed, new ones added)
 
 2. **Users need to understand workflow**
 
-   - Mitigation: Comprehensive inline instructions
-   - Mitigation: Example entries in each file
-   - Mitigation: Clear purpose statements
+    - Mitigation: Comprehensive inline instructions
+    - Mitigation: Example entries in each file
+    - Mitigation: Clear purpose statements
 
 3. **Generated projects differ from before**
-   - Mitigation: Actually a feature - no more VibesPro content!
-   - Mitigation: Migration not needed - only affects new projects
+    - Mitigation: Actually a feature - no more VibesPro content!
+    - Mitigation: Migration not needed - only affects new projects
 
 ---
 
@@ -296,56 +296,56 @@ ls -lh templates/{{project_slug}}/docs/dev*.j2
 1. **Review this summary** ✅
 2. **Test template generation**:
 
-   ```bash
-   pnpm generate
-   # Check that spec starters are minimal and clear
-   ```
+    ```bash
+    pnpm generate
+    # Check that spec starters are minimal and clear
+    ```
 
 3. **Commit changes**:
 
-   ```bash
-   git add -A
-   git commit -m "chore(template): cleanup and add minimal spec starters
+    ```bash
+    git add -A
+    git commit -m "chore(template): cleanup and add minimal spec starters
 
-   - Remove 24+ maintainer-specific files and test artifacts
-   - Add 6 minimal spec starters with examples and instructions
-   - Create automated cleanup script with just recipes
-   - Fix arithmetic expansion bug in cleanup script
-   - Add work-summaries note to copilot instructions
+    - Remove 24+ maintainer-specific files and test artifacts
+    - Add 6 minimal spec starters with examples and instructions
+    - Create automated cleanup script with just recipes
+    - Fix arithmetic expansion bug in cleanup script
+    - Add work-summaries note to copilot instructions
 
-   Files removed:
-   - 15 maintainer-specific docs
-   - 6 test artifact directories
-   - 3 non-template duplicates
+    Files removed:
+    - 15 maintainer-specific docs
+    - 6 test artifact directories
+    - 3 non-template duplicates
 
-   Files added:
-   - dev_adr.md.j2 (minimal starter)
-   - dev_prd.md.j2 (minimal starter)
-   - dev_sds.md.j2 (minimal starter)
-   - dev_technical-specifications.md.j2 (minimal starter)
-   - spec_index.md.j2 (minimal starter)
-   - traceability_matrix.md.j2 (minimal starter)
-   - scripts/template-cleanup.sh (automation)
+    Files added:
+    - dev_adr.md.j2 (minimal starter)
+    - dev_prd.md.j2 (minimal starter)
+    - dev_sds.md.j2 (minimal starter)
+    - dev_technical-specifications.md.j2 (minimal starter)
+    - spec_index.md.j2 (minimal starter)
+    - traceability_matrix.md.j2 (minimal starter)
+    - scripts/template-cleanup.sh (automation)
 
-   Just recipes:
-   - template-cleanup (interactive)
-   - template-cleanup-force (CI-ready)
+    Just recipes:
+    - template-cleanup (interactive)
+    - template-cleanup-force (CI-ready)
 
-   Benefits:
-   - Cleaner scaffolded projects
-   - No VibesPro-specific content confusion
-   - Clear workflow guidance for users
-   - Automated template maintenance
+    Benefits:
+    - Cleaner scaffolded projects
+    - No VibesPro-specific content confusion
+    - Clear workflow guidance for users
+    - Automated template maintenance
 
-   Refs: DEV-ADR-001, DEV-SDS-002
-   Risk: Breaking change - only affects new projects
-   Testing: Run 'pnpm generate' to verify"
-   ```
+    Refs: DEV-ADR-001, DEV-SDS-002
+    Risk: Breaking change - only affects new projects
+    Testing: Run 'pnpm generate' to verify"
+    ```
 
 4. **Push to production**:
-   ```bash
-   git push origin main
-   ```
+    ```bash
+    git push origin main
+    ```
 
 ### Future Enhancements
 
@@ -361,14 +361,14 @@ ls -lh templates/{{project_slug}}/docs/dev*.j2
 
 ### ✅ All Met
 
-- [x] Template cleanup script works (exit code 0)
-- [x] All maintainer-specific files removed
-- [x] Minimal spec starters in place with examples
-- [x] Just recipes functional
-- [x] Bug fixed (arithmetic expansion)
-- [x] Copilot instructions updated
-- [x] Comprehensive documentation created
-- [x] Production ready
+-   [x] Template cleanup script works (exit code 0)
+-   [x] All maintainer-specific files removed
+-   [x] Minimal spec starters in place with examples
+-   [x] Just recipes functional
+-   [x] Bug fixed (arithmetic expansion)
+-   [x] Copilot instructions updated
+-   [x] Comprehensive documentation created
+-   [x] Production ready
 
 ---
 
@@ -431,12 +431,12 @@ cat ../your-test-project/docs/traceability_matrix.md
 
 The template now:
 
-- Contains NO maintainer-specific files
-- Has clear, minimal spec starters with examples
-- Includes automated cleanup tooling
-- Follows best practices
-- Is well-documented
-- Has been tested and validated
+-   Contains NO maintainer-specific files
+-   Has clear, minimal spec starters with examples
+-   Includes automated cleanup tooling
+-   Follows best practices
+-   Is well-documented
+-   Has been tested and validated
 
 **Ready to commit and push to production!**
 

@@ -15,13 +15,13 @@ Successfully migrated the temporal database from sled 0.34 to redb 2.2. All test
 
 ## Motivation
 
-- **Sled Status**: Perpetual beta since 2020, no active maintenance
-- **Redb Benefits**:
-  - Active development and maintenance
-  - Stable 2.x release (currently 2.6.3)
-  - Better ACID guarantees
-  - Explicit transaction model (clearer semantics)
-  - Similar performance characteristics
+-   **Sled Status**: Perpetual beta since 2020, no active maintenance
+-   **Redb Benefits**:
+    -   Active development and maintenance
+    -   Stable 2.x release (currently 2.6.3)
+    -   Better ACID guarantees
+    -   Explicit transaction model (clearer semantics)
+    -   Similar performance characteristics
 
 ---
 
@@ -31,22 +31,22 @@ Successfully migrated the temporal database from sled 0.34 to redb 2.2. All test
 
 **File:** `temporal_db/repository.rs`
 
-- ✅ Replaced `sled::Db` with `redb::Database`
-- ✅ Defined three table schemas:
-  ```rust
-  const SPECIFICATIONS_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("specifications");
-  const PATTERNS_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("patterns");
-  const CHANGES_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("changes");
-  ```
-- ✅ Converted from implicit (sled) to explicit transactions (redb)
-- ✅ Updated all CRUD operations:
-  - `store_specification()` - Write transaction with commit
-  - `get_latest_specification()` - Read transaction with range query
-  - `store_architectural_pattern()` - Write transaction
-  - `get_similar_patterns()` - Read transaction
-  - `analyze_decision_patterns()` - Read transaction with filtering
-  - `record_decision()` - Write transaction
-- ✅ Fixed Rust 2024 edition match ergonomics (removed `ref mut`)
+-   ✅ Replaced `sled::Db` with `redb::Database`
+-   ✅ Defined three table schemas:
+    ```rust
+    const SPECIFICATIONS_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("specifications");
+    const PATTERNS_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("patterns");
+    const CHANGES_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("changes");
+    ```
+-   ✅ Converted from implicit (sled) to explicit transactions (redb)
+-   ✅ Updated all CRUD operations:
+    -   `store_specification()` - Write transaction with commit
+    -   `get_latest_specification()` - Read transaction with range query
+    -   `store_architectural_pattern()` - Write transaction
+    -   `get_similar_patterns()` - Read transaction
+    -   `analyze_decision_patterns()` - Read transaction with filtering
+    -   `record_decision()` - Write transaction
+-   ✅ Fixed Rust 2024 edition match ergonomics (removed `ref mut`)
 
 ### Dependencies
 
@@ -68,20 +68,20 @@ tokio = { version = "1", features = ["rt", "macros"] }  # For async tests
 
 **File:** `libs/prompt_optimizer/infrastructure/temporal_db.py`
 
-- ✅ Renamed `SledTemporalDatabaseAdapter` → `RedbTemporalDatabaseAdapter`
-- ✅ Added backward compatibility alias:
-  ```python
-  SledTemporalDatabaseAdapter = RedbTemporalDatabaseAdapter
-  ```
-- ✅ Updated docstrings to reflect redb
-- ✅ Maintained JSON/SQLite fallback for Python environments
+-   ✅ Renamed `SledTemporalDatabaseAdapter` → `RedbTemporalDatabaseAdapter`
+-   ✅ Added backward compatibility alias:
+    ```python
+    SledTemporalDatabaseAdapter = RedbTemporalDatabaseAdapter
+    ```
+-   ✅ Updated docstrings to reflect redb
+-   ✅ Maintained JSON/SQLite fallback for Python environments
 
 ### Documentation
 
-- ✅ `README.md` - Updated project tagline, fixed malformed header, added migration note
-- ✅ `PHASE-006-CHECKLIST.md` - Added TASK-017, marked phases complete
-- ✅ `TEMPORAL-DB-MIGRATION-PLAN.md` - Comprehensive migration plan document
-- ✅ `TEMPORAL-DB-MIGRATION-SUMMARY.md` - This document
+-   ✅ `README.md` - Updated project tagline, fixed malformed header, added migration note
+-   ✅ `PHASE-006-CHECKLIST.md` - Added TASK-017, marked phases complete
+-   ✅ `TEMPORAL-DB-MIGRATION-PLAN.md` - Comprehensive migration plan document
+-   ✅ `TEMPORAL-DB-MIGRATION-SUMMARY.md` - This document
 
 ---
 
@@ -166,8 +166,8 @@ db = RedbTemporalDatabaseAdapter("./temporal_db")
 
 **For Development:**
 
-- Clean start recommended
-- Re-seed temporal database with baseline specifications
+-   Clean start recommended
+-   Re-seed temporal database with baseline specifications
 
 ---
 
@@ -175,10 +175,10 @@ db = RedbTemporalDatabaseAdapter("./temporal_db")
 
 ### Expected Characteristics
 
-- **Comparable Performance**: redb and sled have similar performance profiles
-- **Memory Usage**: Similar to sled (embedded, no external process)
-- **Write Throughput**: Slightly lower due to explicit transactions (acceptable tradeoff for ACID guarantees)
-- **Read Performance**: Comparable or better (efficient range queries)
+-   **Comparable Performance**: redb and sled have similar performance profiles
+-   **Memory Usage**: Similar to sled (embedded, no external process)
+-   **Write Throughput**: Slightly lower due to explicit transactions (acceptable tradeoff for ACID guarantees)
+-   **Read Performance**: Comparable or better (efficient range queries)
 
 ### Benchmarks
 
@@ -190,22 +190,22 @@ _(To be added during REFACTOR phase)_
 
 ### REFACTOR Phase (Estimated: 2-3 hours)
 
-- [ ] Update remaining documentation references (README.md sled→redb)
-- [ ] Update template references in `templates/tools/prompt_optimizer/`
-- [ ] Create data migration script for existing users
-- [ ] Performance benchmarking (compare sled vs redb)
-- [ ] Add `just temporal-db-benchmark` recipe
-- [ ] Update CI workflow to include temporal DB tests
+-   [ ] Update remaining documentation references (README.md sled→redb)
+-   [ ] Update template references in `templates/tools/prompt_optimizer/`
+-   [ ] Create data migration script for existing users
+-   [ ] Performance benchmarking (compare sled vs redb)
+-   [ ] Add `just temporal-db-benchmark` recipe
+-   [ ] Update CI workflow to include temporal DB tests
 
 ### Template Updates
 
 Files requiring updates:
 
-- `templates/tools/prompt_optimizer/README.md.j2`
-- `templates/tools/prompt_optimizer/requirements.txt.j2`
-- `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`
-- `templates/tools/prompt_optimizer/measure_tokens_enhanced.py.j2`
-- `templates/tools/prompt-optimizer/tests/test_end_to_end.py.j2`
+-   `templates/tools/prompt_optimizer/README.md.j2`
+-   `templates/tools/prompt_optimizer/requirements.txt.j2`
+-   `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`
+-   `templates/tools/prompt_optimizer/measure_tokens_enhanced.py.j2`
+-   `templates/tools/prompt-optimizer/tests/test_end_to_end.py.j2`
 
 ---
 
@@ -229,10 +229,10 @@ Files requiring updates:
 
 ## References
 
-- **Redb Documentation**: https://docs.rs/redb/
-- **Migration Plan**: `/docs/TEMPORAL-DB-MIGRATION-PLAN.md`
-- **Task Checklist**: `/docs/aiassist/PHASE-006-CHECKLIST.md` (TASK-017)
-- **ADR**: AI_ADR-006 (Security Hardening & Database Selection)
+-   **Redb Documentation**: https://docs.rs/redb/
+-   **Migration Plan**: `/docs/TEMPORAL-DB-MIGRATION-PLAN.md`
+-   **Task Checklist**: `/docs/aiassist/PHASE-006-CHECKLIST.md` (TASK-017)
+-   **ADR**: AI_ADR-006 (Security Hardening & Database Selection)
 
 ---
 

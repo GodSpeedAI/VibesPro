@@ -38,10 +38,10 @@ Devbox provides reproducible OS-level dependencies without polluting your host s
 
 Devbox creates isolated development environments with:
 
-- Consistent tool versions across team members
-- No conflicts with system-installed packages
-- Declarative configuration in `devbox.json`
-- Powered by Nix for reproducibility
+-   Consistent tool versions across team members
+-   No conflicts with system-installed packages
+-   Declarative configuration in `devbox.json`
+-   Powered by Nix for reproducibility
 
 ### Installation
 
@@ -80,20 +80,10 @@ The `devbox.json` file defines all OS-level tools:
 
 ```json
 {
-  "packages": [
-    "git",
-    "curl",
-    "jq",
-    "make",
-    "ffmpeg",
-    "postgresql@15",
-    "ripgrep",
-    "fd",
-    "uv"
-  ],
-  "shell": {
-    "init_hook": ["echo 'Devbox initialized: OS toolchain ready.'"]
-  }
+    "packages": ["git", "curl", "jq", "make", "ffmpeg", "postgresql@15", "ripgrep", "fd", "uv"],
+    "shell": {
+        "init_hook": ["echo 'Devbox initialized: OS toolchain ready.'"]
+    }
 }
 ```
 
@@ -101,16 +91,16 @@ The `devbox.json` file defines all OS-level tools:
 
 **Use Devbox when:**
 
-- You need specific versions of system tools (PostgreSQL, FFmpeg, etc.)
-- Working in a team and need consistent tooling
-- You want isolation from system packages
-- CI/CD needs exact reproducibility
+-   You need specific versions of system tools (PostgreSQL, FFmpeg, etc.)
+-   Working in a team and need consistent tooling
+-   You want isolation from system packages
+-   CI/CD needs exact reproducibility
 
 **Skip Devbox if:**
 
-- You only need Node/Python (use mise instead)
-- You prefer managing tools with system package managers
-- You're prototyping and don't need reproducibility yet
+-   You only need Node/Python (use mise instead)
+-   You prefer managing tools with system package managers
+-   You're prototyping and don't need reproducibility yet
 
 ### Troubleshooting
 
@@ -146,11 +136,11 @@ mise is the single source of truth for Node.js, Python, and Rust runtime version
 
 mise provides:
 
-- **Declarative runtime versions** in `.mise.toml`
-- **Automatic environment activation** (no manual sourcing)
-- **Fast, Rust-based** implementation
-- **Replaces multiple tools** (nvm, pyenv, rbenv, etc.)
-- **Per-project versions** with global fallback
+-   **Declarative runtime versions** in `.mise.toml`
+-   **Automatic environment activation** (no manual sourcing)
+-   **Fast, Rust-based** implementation
+-   **Replaces multiple tools** (nvm, pyenv, rbenv, etc.)
+-   **Per-project versions** with global fallback
 
 ### Installation
 
@@ -206,9 +196,9 @@ rust = "1.80.1"
 
 **Version Formats:**
 
-- Exact: `"20.11.1"` - pins to specific patch
-- Prefix: `"20"` or `"20.11"` - latest matching version
-- Latest: `"latest"` - always use newest (not recommended)
+-   Exact: `"20.11.1"` - pins to specific patch
+-   Prefix: `"20"` or `"20.11"` - latest matching version
+-   Latest: `"latest"` - always use newest (not recommended)
 
 ### Why mise Instead of nvm/pyenv/rustup?
 
@@ -260,16 +250,16 @@ mise install      # All runtimes from one config
 
 **Use mise for:**
 
-- Node.js, Python, Rust runtimes
-- Development environment version management
-- Team-wide version consistency
-- CI/CD reproducibility
+-   Node.js, Python, Rust runtimes
+-   Development environment version management
+-   Team-wide version consistency
+-   CI/CD reproducibility
 
 **Don't use mise for:**
 
-- OS-level tools (use devbox instead)
-- Language packages (use pnpm/uv/cargo instead)
-- System services (use devbox for PostgreSQL, etc.)
+-   OS-level tools (use devbox instead)
+-   Language packages (use pnpm/uv/cargo instead)
+-   System services (use devbox for PostgreSQL, etc.)
 
 ### Troubleshooting
 
@@ -324,10 +314,10 @@ SOPS (Secrets OPerationS) provides encrypted secret management for local develop
 
 SOPS encrypts files using age, AWS KMS, GCP KMS, Azure Key Vault, or PGP:
 
-- **Encrypted at rest:** Secrets committed to git are encrypted
-- **Decrypted in memory:** Only at runtime via direnv or CI
-- **Fine-grained:** Encrypt only specific keys (encrypted_regex)
-- **Git-friendly:** Encrypted files can be safely committed
+-   **Encrypted at rest:** Secrets committed to git are encrypted
+-   **Decrypted in memory:** Only at runtime via direnv or CI
+-   **Fine-grained:** Encrypt only specific keys (encrypted_regex)
+-   **Git-friendly:** Encrypted files can be safely committed
 
 ### Installation
 
@@ -361,9 +351,9 @@ grep 'public key:' ~/.config/sops/age/keys.txt
 
 ```yaml
 creation_rules:
-  - path_regex: \.secrets\.env\.sops$
-    encrypted_regex: ^(OPENAI_API_KEY|DATABASE_URL|GITHUB_TOKEN|.*_SECRET|.*_KEY|.*_PASSWORD)$
-    age: age1abc123...xyz # Replace with YOUR public key from step 1
+    - path_regex: \.secrets\.env\.sops$
+      encrypted_regex: ^(OPENAI_API_KEY|DATABASE_URL|GITHUB_TOKEN|.*_SECRET|.*_KEY|.*_PASSWORD)$
+      age: age1abc123...xyz # Replace with YOUR public key from step 1
 ```
 
 **3. Encrypt the secrets file:**
@@ -393,16 +383,16 @@ The `.sops.yaml` file controls what gets encrypted:
 
 ```yaml
 creation_rules:
-  - path_regex: \.secrets\.env\.sops$
-    encrypted_regex: ^(OPENAI_API_KEY|DATABASE_URL|GITHUB_TOKEN|.*_SECRET|.*_KEY|.*_PASSWORD)$
-    age: age1abc123...xyz
+    - path_regex: \.secrets\.env\.sops$
+      encrypted_regex: ^(OPENAI_API_KEY|DATABASE_URL|GITHUB_TOKEN|.*_SECRET|.*_KEY|.*_PASSWORD)$
+      age: age1abc123...xyz
 ```
 
 **Key Fields:**
 
-- `path_regex`: Which files to encrypt (uses regex)
-- `encrypted_regex`: Which keys within the file to encrypt (case-sensitive)
-- `age`: Your age public key (from `age-keygen`)
+-   `path_regex`: Which files to encrypt (uses regex)
+-   `encrypted_regex`: Which keys within the file to encrypt (case-sensitive)
+-   `age`: Your age public key (from `age-keygen`)
 
 ### Usage
 
@@ -450,26 +440,26 @@ just ai-validate
 
 4. CI guidance (Linux runners):
 
-- Use the same runtimes (Node/Python/Rust) as defined in `.mise.toml` or devbox config.
-- Create a fresh virtualenv in CI and install mypy + required stubs prior to running `pnpm run typecheck`. Example (GitHub Actions):
+-   Use the same runtimes (Node/Python/Rust) as defined in `.mise.toml` or devbox config.
+-   Create a fresh virtualenv in CI and install mypy + required stubs prior to running `pnpm run typecheck`. Example (GitHub Actions):
 
 ```yaml
 steps:
-  - uses: actions/checkout@v4
-  - uses: actions/setup-python@v4
-    with:
-      python-version: "3.12"
-  - run: python -m venv .venv && .venv/bin/python -m pip install --upgrade pip setuptools wheel
-  - run: .venv/bin/pip install mypy types-requests types-PyYAML types-colorama tiktoken
-  - run: pnpm install
-  - run: pnpm run typecheck
-  - run: just ai-validate
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+          python-version: "3.12"
+    - run: python -m venv .venv && .venv/bin/python -m pip install --upgrade pip setuptools wheel
+    - run: .venv/bin/pip install mypy types-requests types-PyYAML types-colorama tiktoken
+    - run: pnpm install
+    - run: pnpm run typecheck
+    - run: just ai-validate
 ```
 
 Notes:
 
-- We intentionally prefer a local `.venv` with pip-installed mypy so mypy's `--install-types` behavior works and can fetch missing stubs when required. If your CI uses a pre-cached mypy wheel or OS package, ensure the same stub packages are available.
-- Don't commit your `.venv` directory. Add `/.venv/` to `.gitignore` (already present in this repo).
+-   We intentionally prefer a local `.venv` with pip-installed mypy so mypy's `--install-types` behavior works and can fetch missing stubs when required. If your CI uses a pre-cached mypy wheel or OS package, ensure the same stub packages are available.
+-   Don't commit your `.venv` directory. Add `/.venv/` to `.gitignore` (already present in this repo).
 
 ```bash
 # Decrypt to stdout (inspect without saving)
@@ -530,9 +520,9 @@ direnv allow
 
 **Security notes:**
 
-- Secrets are only in memory, never written to disk unencrypted
-- Age key (`~/.config/sops/age/keys.txt`) must be secured (chmod 600)
-- direnv only works locally; CI uses different method (see below)
+-   Secrets are only in memory, never written to disk unencrypted
+-   Age key (`~/.config/sops/age/keys.txt`) must be secured (chmod 600)
+-   direnv only works locally; CI uses different method (see below)
 
 ### CI/CD Integration
 
@@ -542,33 +532,33 @@ direnv allow
 name: CI
 on: [push]
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      # Install SOPS and age
-      - name: Install SOPS
-        run: |
-          curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
-          chmod +x sops-v3.8.1.linux.amd64
-          sudo mv sops-v3.8.1.linux.amd64 /usr/local/bin/sops
+            # Install SOPS and age
+            - name: Install SOPS
+              run: |
+                  curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
+                  chmod +x sops-v3.8.1.linux.amd64
+                  sudo mv sops-v3.8.1.linux.amd64 /usr/local/bin/sops
 
-      # Set age key from GitHub secret
-      - name: Decrypt secrets
-        env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        run: |
-          mkdir -p ~/.config/sops/age
-          echo "$SOPS_AGE_KEY" > ~/.config/sops/age/keys.txt
-          chmod 600 ~/.config/sops/age/keys.txt
+            # Set age key from GitHub secret
+            - name: Decrypt secrets
+              env:
+                  SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+              run: |
+                  mkdir -p ~/.config/sops/age
+                  echo "$SOPS_AGE_KEY" > ~/.config/sops/age/keys.txt
+                  chmod 600 ~/.config/sops/age/keys.txt
 
-          # Export decrypted secrets to GITHUB_ENV
-          sops -d .secrets.env.sops | tee -a $GITHUB_ENV
+                  # Export decrypted secrets to GITHUB_ENV
+                  sops -d .secrets.env.sops | tee -a $GITHUB_ENV
 
-      # Now secrets are available as env vars
-      - name: Run tests
-        run: just test
+            # Now secrets are available as env vars
+            - name: Run tests
+              run: just test
 ```
 
 **Setup in GitHub:**
@@ -583,18 +573,18 @@ jobs:
 
 ✅ **DO:**
 
-- Commit `.secrets.env.sops` (encrypted) to git
-- Use `.gitignore` to block plaintext `.env*` files
-- Rotate age keys periodically
-- Use different age keys for different environments (dev/staging/prod)
-- Keep age private key secure (chmod 600)
+-   Commit `.secrets.env.sops` (encrypted) to git
+-   Use `.gitignore` to block plaintext `.env*` files
+-   Rotate age keys periodically
+-   Use different age keys for different environments (dev/staging/prod)
+-   Keep age private key secure (chmod 600)
 
 ❌ **DON'T:**
 
-- Commit plaintext `.env` files
-- Share your age private key
-- Use the same key across multiple projects
-- Decrypt secrets to disk unnecessarily
+-   Commit plaintext `.env` files
+-   Share your age private key
+-   Use the same key across multiple projects
+-   Decrypt secrets to disk unnecessarily
 
 ### Template Mode (for generated projects)
 
@@ -685,18 +675,18 @@ sops -d .secrets.env.sops  # Should show plaintext
 
 If SOPS doesn't fit your workflow:
 
-- **Doppler:** Cloud-based secret management (SaaS)
-- **Vault:** HashiCorp Vault (self-hosted)
-- **AWS Secrets Manager / GCP Secret Manager:** Cloud provider native
-- **1Password CLI:** For teams already using 1Password
+-   **Doppler:** Cloud-based secret management (SaaS)
+-   **Vault:** HashiCorp Vault (self-hosted)
+-   **AWS Secrets Manager / GCP Secret Manager:** Cloud provider native
+-   **1Password CLI:** For teams already using 1Password
 
 SOPS is chosen for VibesPro because:
 
-- ✅ Encrypted secrets can be committed to git
-- ✅ No external service dependency
-- ✅ Works offline
-- ✅ Free and open source
-- ✅ Git-friendly diffs (only changed keys show as changed)
+-   ✅ Encrypted secrets can be committed to git
+-   ✅ No external service dependency
+-   ✅ Works offline
+-   ✅ Free and open source
+-   ✅ Git-friendly diffs (only changed keys show as changed)
 
 # Use specific runtime (override .mise.toml)
 
@@ -721,9 +711,9 @@ rust = "1.80.1"
 
 **Version Formats:**
 
-- Exact: `"20.11.1"` - pins to specific patch
-- Prefix: `"20"` or `"20.11"` - latest matching version
-- Latest: `"latest"` - always use newest (not recommended)
+-   Exact: `"20.11.1"` - pins to specific patch
+-   Prefix: `"20"` or `"20.11"` - latest matching version
+-   Latest: `"latest"` - always use newest (not recommended)
 
 ### Why mise Instead of nvm/pyenv/rustup?
 
@@ -775,16 +765,16 @@ mise install      # All runtimes from one config
 
 **Use mise for:**
 
-- Node.js, Python, Rust runtimes
-- Development environment version management
-- Team-wide version consistency
-- CI/CD reproducibility
+-   Node.js, Python, Rust runtimes
+-   Development environment version management
+-   Team-wide version consistency
+-   CI/CD reproducibility
 
 **Don't use mise for:**
 
-- OS-level tools (use devbox instead)
-- Language packages (use pnpm/uv/cargo instead)
-- System services (use devbox for PostgreSQL, etc.)
+-   OS-level tools (use devbox instead)
+-   Language packages (use pnpm/uv/cargo instead)
+-   System services (use devbox for PostgreSQL, etc.)
 
 ### Troubleshooting
 
@@ -837,10 +827,10 @@ devbox shell  # provides make, gcc, etc.
 
 The `tests/env/` directory contains environment validation tests that verify:
 
-- Tool availability and versions
-- Configuration file integrity
-- Secret management setup
-- Build system functionality
+-   Tool availability and versions
+-   Configuration file integrity
+-   Secret management setup
+-   Build system functionality
 
 **Structure:**
 
@@ -871,10 +861,10 @@ bash tests/env/test_doctor.sh
 
 **Test Helpers (in `helpers.sh`):**
 
-- `assert_file_exists <path>` – Fails if file doesn't exist
-- `assert_cmd_succeeds <command>` – Fails if command returns non-zero
-- `assert_equal <actual> <expected> [message]` – Compares values
-- `mktempdir` – Creates a temporary directory (cross-platform)
+-   `assert_file_exists <path>` – Fails if file doesn't exist
+-   `assert_cmd_succeeds <command>` – Fails if command returns non-zero
+-   `assert_equal <actual> <expected> [message]` – Compares values
+-   `mktempdir` – Creates a temporary directory (cross-platform)
 
 ### Writing New Environment Tests
 
@@ -904,10 +894,10 @@ The `just doctor` command provides a quick health check of your development envi
 
 **What it checks:**
 
-- Current user and OS information
-- Shell and PATH configuration
-- Availability of core tools (git, node, pnpm, python, rust, etc.)
-- Tool versions
+-   Current user and OS information
+-   Shell and PATH configuration
+-   Availability of core tools (git, node, pnpm, python, rust, etc.)
+-   Tool versions
 
 **Usage:**
 
@@ -930,13 +920,13 @@ git config core.hooksPath .githooks
 
 **What it prevents:**
 
-- Committing plaintext `.env` or `.env.local` files
-- Committing content with common secret patterns (API keys, tokens, passwords)
+-   Committing plaintext `.env` or `.env.local` files
+-   Committing content with common secret patterns (API keys, tokens, passwords)
 
 **Allowed:**
 
-- Encrypted secrets (`.secrets.env.sops`)
-- Environment variable references
+-   Encrypted secrets (`.secrets.env.sops`)
+-   Environment variable references
 
 **Override (not recommended):**
 
@@ -985,9 +975,9 @@ just prompt-lint    # Lint prompt files
 
 VibesPro uses environment variables for configuration:
 
-- **Local development:** Use `.envrc` (with direnv) or export manually
-- **CI/CD:** Set in GitHub Actions secrets
-- **Secrets:** Encrypt with SOPS (`.secrets.env.sops`)
+-   **Local development:** Use `.envrc` (with direnv) or export manually
+-   **CI/CD:** Set in GitHub Actions secrets
+-   **Secrets:** Encrypt with SOPS (`.secrets.env.sops`)
 
 **Never commit plaintext secrets.**
 
@@ -1043,10 +1033,10 @@ The CI system uses GitHub Actions with two primary workflows:
 
 Both workflows follow the same layered approach as local development:
 
-- Install Devbox (OS-level tools)
-- Install mise (runtime versions)
-- Decrypt secrets with SOPS
-- Run tests and builds
+-   Install Devbox (OS-level tools)
+-   Install mise (runtime versions)
+-   Decrypt secrets with SOPS
+-   Run tests and builds
 
 ### Environment Validation Workflow
 
@@ -1056,25 +1046,25 @@ This workflow runs on every push and pull request to validate:
 
 **System Setup:**
 
-- ✅ Installs SOPS, age, jq, make via apt
-- ✅ Installs Devbox for OS-level toolchain
-- ✅ Installs mise for runtime management
-- ✅ Caches mise runtimes for faster builds
+-   ✅ Installs SOPS, age, jq, make via apt
+-   ✅ Installs Devbox for OS-level toolchain
+-   ✅ Installs mise for runtime management
+-   ✅ Caches mise runtimes for faster builds
 
 **Secret Management:**
 
-- ✅ Decrypts `.secrets.env.sops` using `SOPS_AGE_KEY` secret
-- ✅ Loads secrets into ephemeral environment
-- ✅ Cleans up decrypted secrets after run
-- ✅ **Does NOT use direnv** (explicit decryption instead)
+-   ✅ Decrypts `.secrets.env.sops` using `SOPS_AGE_KEY` secret
+-   ✅ Loads secrets into ephemeral environment
+-   ✅ Cleans up decrypted secrets after run
+-   ✅ **Does NOT use direnv** (explicit decryption instead)
 
 **Validation Steps:**
 
-- ✅ Verifies Devbox environment works
-- ✅ Installs all mise runtimes (Node, Python, Rust)
-- ✅ Checks for Volta/mise version conflicts
-- ✅ Installs project dependencies (pnpm, uv)
-- ✅ Runs build and test suites
+-   ✅ Verifies Devbox environment works
+-   ✅ Installs all mise runtimes (Node, Python, Rust)
+-   ✅ Checks for Volta/mise version conflicts
+-   ✅ Installs project dependencies (pnpm, uv)
+-   ✅ Runs build and test suites
 
 **Key Features:**
 
@@ -1082,10 +1072,10 @@ This workflow runs on every push and pull request to validate:
 # Explicit SOPS decryption (not direnv)
 - name: Decrypt secrets to ephemeral env
   run: |
-    sops -d .secrets.env.sops > /tmp/ci.env
-    set -a; source /tmp/ci.env; set +a
+      sops -d .secrets.env.sops > /tmp/ci.env
+      set -a; source /tmp/ci.env; set +a
   env:
-    SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+      SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
 # Always cleanup secrets
 - name: Cleanup secrets
@@ -1103,30 +1093,30 @@ This workflow provides comprehensive cross-platform testing:
 
 ```yaml
 matrix:
-  os: [ubuntu-latest, macos-latest]
+    os: [ubuntu-latest, macos-latest]
 ```
 
 **Features:**
 
-- ✅ Tests on both Ubuntu and macOS
-- ✅ Fail-fast: false (tests all platforms even if one fails)
-- ✅ Platform-specific package managers (apt vs brew)
-- ✅ Shared cache for mise runtimes
-- ✅ Parallel execution for faster feedback
+-   ✅ Tests on both Ubuntu and macOS
+-   ✅ Fail-fast: false (tests all platforms even if one fails)
+-   ✅ Platform-specific package managers (apt vs brew)
+-   ✅ Shared cache for mise runtimes
+-   ✅ Parallel execution for faster feedback
 
 **Prepare Job:**
 
-- Introspects `.mise.toml` for runtime versions
-- Computes cache keys
-- Outputs versions for matrix jobs to use
+-   Introspects `.mise.toml` for runtime versions
+-   Computes cache keys
+-   Outputs versions for matrix jobs to use
 
 **Build-Test Job:**
 
-- Runs on each OS in parallel
-- Installs base tools (sops, age, jq)
-- Sets up Devbox and mise
-- Decrypts secrets
-- Runs full build and test suite
+-   Runs on each OS in parallel
+-   Installs base tools (sops, age, jq)
+-   Sets up Devbox and mise
+-   Decrypts secrets
+-   Runs full build and test suite
 
 ### Setting Up CI Secrets
 
@@ -1139,10 +1129,10 @@ matrix:
 
 **Security Notes:**
 
-- ⚠️ The private age key grants access to all encrypted secrets
-- 🔒 Only add to trusted repositories
-- 🔄 Rotate keys periodically
-- 📝 Consider using environment-specific keys (dev/staging/prod)
+-   ⚠️ The private age key grants access to all encrypted secrets
+-   🔒 Only add to trusted repositories
+-   🔄 Rotate keys periodically
+-   📝 Consider using environment-specific keys (dev/staging/prod)
 
 ### CI vs Local Development
 
@@ -1157,10 +1147,10 @@ matrix:
 
 **Why No direnv in CI?**
 
-- ✅ Explicit > Implicit in CI
-- ✅ Easier to debug failures
-- ✅ No shell hook dependencies
-- ✅ Clear secret lifecycle
+-   ✅ Explicit > Implicit in CI
+-   ✅ Easier to debug failures
+-   ✅ No shell hook dependencies
+-   ✅ Clear secret lifecycle
 
 ### Running Tests Locally Before CI
 
@@ -1204,7 +1194,7 @@ just build
 # Solution: Ensure SOPS_AGE_KEY secret is set
 # Check in workflow logs (key won't be printed)
 - run: |
-    echo "Age key file exists: $(test -f ~/.config/sops/age/keys.txt && echo yes || echo no)"
+      echo "Age key file exists: $(test -f ~/.config/sops/age/keys.txt && echo yes || echo no)"
 ```
 
 **Problem:** `mise: command not found`
@@ -1212,8 +1202,8 @@ just build
 ```yaml
 # Solution: Ensure mise is in PATH after installation
 - run: |
-    curl https://mise.run | bash
-    echo "$HOME/.local/bin" >> $GITHUB_PATH  # Critical!
+      curl https://mise.run | bash
+      echo "$HOME/.local/bin" >> $GITHUB_PATH  # Critical!
 ```
 
 **Problem:** Runtime version mismatch
@@ -1221,8 +1211,8 @@ just build
 ```yaml
 # Solution: Check .mise.toml is committed and up-to-date
 - run: |
-    mise ls
-    mise current
+      mise ls
+      mise current
 ```
 
 **Problem:** Cache not restoring
@@ -1238,9 +1228,9 @@ key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
 ```yaml
 # Solution: Use set -a to export all variables
 - run: |
-    sops -d .secrets.env.sops > /tmp/ci.env
-    set -a; source /tmp/ci.env; set +a  # Exports all vars
-    env | grep -E 'APP_|OPENAI'  # Verify (remove in production)
+      sops -d .secrets.env.sops > /tmp/ci.env
+      set -a; source /tmp/ci.env; set +a  # Exports all vars
+      env | grep -E 'APP_|OPENAI'  # Verify (remove in production)
 ```
 
 ### Workflow Triggers
@@ -1249,21 +1239,21 @@ key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
 
 ```yaml
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 ```
 
 **build-matrix.yml:**
 
 ```yaml
 on:
-  push:
-    branches: [main]
-    tags: ["v*.*.*"] # Also on version tags
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+        tags: ["v*.*.*"] # Also on version tags
+    pull_request:
+        branches: [main]
 ```
 
 ### Performance Optimization
@@ -1274,16 +1264,16 @@ on:
 # Cache mise runtimes (saves ~2-3 minutes per run)
 - uses: actions/cache@v4
   with:
-    path: |
-      ~/.local/share/mise
-      ~/.cache/mise
-    key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+      path: |
+          ~/.local/share/mise
+          ~/.cache/mise
+      key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
 
 # Cache pnpm dependencies (saves ~1-2 minutes)
 - uses: actions/cache@v4
   with:
-    path: ~/.pnpm-store
-    key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      path: ~/.pnpm-store
+      key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 ```
 
 **Concurrency Control:**
@@ -1291,25 +1281,25 @@ on:
 ```yaml
 # Cancel in-progress runs on new push
 concurrency:
-  group: env-check-${{ github.ref }}
-  cancel-in-progress: true
+    group: env-check-${{ github.ref }}
+    cancel-in-progress: true
 ```
 
 ### Monitoring CI Health
 
 **Key Metrics:**
 
-- ✅ Build time: Target < 5 minutes for env-check
-- ✅ Cache hit rate: Should be > 80% for mise/pnpm
-- ✅ Test pass rate: Should be 100% on main branch
-- ✅ Secret decryption: Should always succeed
+-   ✅ Build time: Target < 5 minutes for env-check
+-   ✅ Cache hit rate: Should be > 80% for mise/pnpm
+-   ✅ Test pass rate: Should be 100% on main branch
+-   ✅ Secret decryption: Should always succeed
 
 **When to Update Workflows:**
 
-- Tool version changes (mise, devbox, sops)
-- New runtime added to `.mise.toml`
-- Additional OS-level dependencies needed
-- Security updates for actions (dependabot)
+-   Tool version changes (mise, devbox, sops)
+-   New runtime added to `.mise.toml`
+-   Additional OS-level dependencies needed
+-   Security updates for actions (dependabot)
 
 ### Local CI Simulation
 
@@ -1352,48 +1342,48 @@ To add a new validation step:
 
 1. **Create test locally:**
 
-   ```bash
-   # Create tests/env/test_new_feature.sh
-   # Ensure it uses helpers.sh and follows TDD
-   ```
+    ```bash
+    # Create tests/env/test_new_feature.sh
+    # Ensure it uses helpers.sh and follows TDD
+    ```
 
 2. **Run locally:**
 
-   ```bash
-   just test-env
-   ```
+    ```bash
+    just test-env
+    ```
 
 3. **CI automatically picks it up:**
 
-   - Test discovery in `tests/env/run.sh` finds `test_*.sh`
-   - No workflow changes needed
+    - Test discovery in `tests/env/run.sh` finds `test_*.sh`
+    - No workflow changes needed
 
 4. **For non-env tests:**
-   ```yaml
-   # Add step to .github/workflows/env-check.yml
-   - name: Run new check
-     run: just new-check
-   ```
+    ```yaml
+    # Add step to .github/workflows/env-check.yml
+    - name: Run new check
+      run: just new-check
+    ```
 
 ### Best Practices
 
 ✅ **DO:**
 
-- Keep workflows DRY (use reusable actions)
-- Cache aggressively (mise, pnpm, apt packages)
-- Fail fast for quick feedback
-- Clean up secrets with `if: always()`
-- Use matrix testing for cross-platform compatibility
-- Pin action versions (`@v4` not `@main`)
+-   Keep workflows DRY (use reusable actions)
+-   Cache aggressively (mise, pnpm, apt packages)
+-   Fail fast for quick feedback
+-   Clean up secrets with `if: always()`
+-   Use matrix testing for cross-platform compatibility
+-   Pin action versions (`@v4` not `@main`)
 
 ❌ **DON'T:**
 
-- Use direnv in CI (explicit is better)
-- Echo secrets in logs (even masked)
-- Skip cleanup steps
-- Hardcode versions (use `.mise.toml` as source of truth)
-- Commit decrypted secrets
-- Run tests without caching
+-   Use direnv in CI (explicit is better)
+-   Echo secrets in logs (even masked)
+-   Skip cleanup steps
+-   Hardcode versions (use `.mise.toml` as source of truth)
+-   Commit decrypted secrets
+-   Run tests without caching
 
 ### Troubleshooting Guide
 
@@ -1410,10 +1400,10 @@ See individual sections above for specific error solutions.
 
 **For persistent failures:**
 
-- Re-run workflow (may be transient)
-- Clear caches (Settings → Actions → Caches)
-- Check GitHub Actions status page
-- Review recent changes to workflows or configuration files
+-   Re-run workflow (may be transient)
+-   Clear caches (Settings → Actions → Caches)
+-   Check GitHub Actions status page
+-   Review recent changes to workflows or configuration files
 
 ## Volta Coexistence & Migration
 
@@ -1432,30 +1422,30 @@ just verify-node
 
 1. **✅ Versions aligned:**
 
-   ```
-   ✅ Node versions aligned (major version 20)
-      mise will be used as authoritative source
-   ```
+    ```
+    ✅ Node versions aligned (major version 20)
+       mise will be used as authoritative source
+    ```
 
 2. **❌ Version mismatch:**
 
-   ```
-   ❌ ERROR: Node version mismatch between mise and Volta!
+    ```
+    ❌ ERROR: Node version mismatch between mise and Volta!
 
-      mise (.mise.toml):      20.11.1
-      Volta (package.json):   18.17.0
+       mise (.mise.toml):      20.11.1
+       Volta (package.json):   18.17.0
 
-      Please align versions:
-      1. Update .mise.toml to match Volta, OR
-      2. Update package.json Volta section to match mise, OR
-      3. Remove Volta section from package.json (mise is authoritative)
-   ```
+       Please align versions:
+       1. Update .mise.toml to match Volta, OR
+       2. Update package.json Volta section to match mise, OR
+       3. Remove Volta section from package.json (mise is authoritative)
+    ```
 
 3. **ℹ️ mise only (recommended):**
-   ```
-   ✅ mise is managing Node (20.11.1)
-      No Volta configuration detected
-   ```
+    ```
+    ✅ mise is managing Node (20.11.1)
+       No Volta configuration detected
+    ```
 
 ### Migration Strategies
 
@@ -1466,9 +1456,9 @@ Keep the Volta section in `package.json` but ensure it matches mise:
 ```json
 // package.json
 {
-  "volta": {
-    "node": "20.11.1" // Match .mise.toml major version
-  }
+    "volta": {
+        "node": "20.11.1" // Match .mise.toml major version
+    }
 }
 ```
 
@@ -1480,14 +1470,14 @@ node = "20.11.1"
 
 **Benefits:**
 
-- Team members can continue using Volta temporarily
-- Gradual transition reduces disruption
-- CI enforces alignment
+-   Team members can continue using Volta temporarily
+-   Gradual transition reduces disruption
+-   CI enforces alignment
 
 **Drawbacks:**
 
-- Two sources of truth (risk of drift)
-- Requires manual synchronization
+-   Two sources of truth (risk of drift)
+-   Requires manual synchronization
 
 **Option 2: Clean Migration (Remove Volta)**
 
@@ -1509,14 +1499,14 @@ just verify-node
 
 **Benefits:**
 
-- Single source of truth
-- No synchronization needed
-- Simpler configuration
+-   Single source of truth
+-   No synchronization needed
+-   Simpler configuration
 
 **Drawbacks:**
 
-- All team members must switch to mise
-- Immediate change required
+-   All team members must switch to mise
+-   Immediate change required
 
 ### Why mise Over Volta?
 
@@ -1541,9 +1531,9 @@ Both CI workflows (`env-check.yml` and `build-matrix.yml`) run `just verify-node
 
 **Behavior:**
 
-- ✅ Passes if versions aligned or Volta absent
-- ❌ Fails if major version mismatch
-- Ensures consistent Node version across environments
+-   ✅ Passes if versions aligned or Volta absent
+-   ❌ Fails if major version mismatch
+-   Ensures consistent Node version across environments
 
 ### Deprecation Timeline
 
@@ -1593,12 +1583,12 @@ cd ../project-b  # Uses .mise.toml (node = "20.11.1")
 
 The `tests/env/test_volta_mise_guard.sh` test validates:
 
-- ✅ verify-node script exists and is runnable
-- ✅ just verify-node target exists
-- ✅ Script detects mise configuration
-- ✅ Script correctly identifies version mismatches (major version)
-- ✅ Script allows same major version with different minor/patch
-- ✅ Script works with mise-only configuration
+-   ✅ verify-node script exists and is runnable
+-   ✅ just verify-node target exists
+-   ✅ Script detects mise configuration
+-   ✅ Script correctly identifies version mismatches (major version)
+-   ✅ Script allows same major version with different minor/patch
+-   ✅ Script works with mise-only configuration
 
 Run tests:
 
@@ -1801,43 +1791,43 @@ just test-env
 
 **Test coverage (9 tests):**
 
-- `test_sanity.sh` - Basic harness validation
-- `test_doctor.sh` - Doctor script validation
-- `test_harness.sh` - Test discovery mechanism
-- `test_devbox.sh` - Devbox configuration
-- `test_mise_versions.sh` - mise runtime versions
-- `test_sops_local.sh` - SOPS encryption setup
-- `test_ci_minimal.sh` - CI workflow validation
-- `test_volta_mise_guard.sh` - Volta/mise alignment
-- `test_just_env_awareness.sh` - **Just task environment checks** ✨ **NEW**
+-   `test_sanity.sh` - Basic harness validation
+-   `test_doctor.sh` - Doctor script validation
+-   `test_harness.sh` - Test discovery mechanism
+-   `test_devbox.sh` - Devbox configuration
+-   `test_mise_versions.sh` - mise runtime versions
+-   `test_sops_local.sh` - SOPS encryption setup
+-   `test_ci_minimal.sh` - CI workflow validation
+-   `test_volta_mise_guard.sh` - Volta/mise alignment
+-   `test_just_env_awareness.sh` - **Just task environment checks** ✨ **NEW**
 
 ### Task Execution Best Practices
 
 1. **Always run `just setup` first** in new environments
 
-   ```bash
-   just setup  # Installs all dependencies (Node, Python, tools)
-   ```
+    ```bash
+    just setup  # Installs all dependencies (Node, Python, tools)
+    ```
 
 2. **Verify environment before running tasks**
 
-   ```bash
-   just test-env     # Validates entire environment
-   just verify-node  # Checks Node version alignment
-   just doctor       # Comprehensive environment check
-   ```
+    ```bash
+    just test-env     # Validates entire environment
+    just verify-node  # Checks Node version alignment
+    just doctor       # Comprehensive environment check
+    ```
 
 3. **Use mise for runtime version management**
 
-   ```bash
-   mise install      # Install all runtimes from .mise.toml
-   mise current      # Show active runtime versions
-   ```
+    ```bash
+    mise install      # Install all runtimes from .mise.toml
+    mise current      # Show active runtime versions
+    ```
 
 4. **Let tasks handle missing tools gracefully**
-   - Tasks provide clear installation instructions
-   - No need to manually check for tools
-   - Run `just <task>` and follow error messages
+    - Tasks provide clear installation instructions
+    - No need to manually check for tools
+    - Run `just <task>` and follow error messages
 
 ### CI Integration
 
@@ -1854,13 +1844,13 @@ Just tasks work seamlessly in CI environments with mise:
 
 - name: Verify environment
   run: |
-    just verify-node  # Check Node version alignment
-    just test-env     # Run environment tests
+      just verify-node  # Check Node version alignment
+      just test-env     # Run environment tests
 
 - name: Build and test
   run: |
-    just build
-    just test
+      just build
+      just test
 ```
 
 See `.github/workflows/env-check.yml` and `.github/workflows/build-matrix.yml` for complete examples.
@@ -1916,16 +1906,16 @@ just verify-node
 
 The `test_just_env_awareness.sh` test validates:
 
-- ✅ justfile exists and is well-formed
-- ✅ just command is available
-- ✅ All critical tasks are defined
-- ✅ Node tasks check for pnpm availability
-- ✅ Python tasks check for uv availability
-- ✅ Cargo tasks check for cargo availability
-- ✅ Tasks gracefully degrade when tools unavailable
-- ✅ Environment setup tasks properly ordered
-- ✅ verify-node integration works
-- ✅ Shell safety best practices followed
+-   ✅ justfile exists and is well-formed
+-   ✅ just command is available
+-   ✅ All critical tasks are defined
+-   ✅ Node tasks check for pnpm availability
+-   ✅ Python tasks check for uv availability
+-   ✅ Cargo tasks check for cargo availability
+-   ✅ Tasks gracefully degrade when tools unavailable
+-   ✅ Environment setup tasks properly ordered
+-   ✅ verify-node integration works
+-   ✅ Shell safety best practices followed
 
 Run test:
 
@@ -1944,20 +1934,20 @@ The observability stack follows a layered architecture (DEV-ADR-016):
 
 1. **Instrumentation Layer** (`vibepro-observe` Rust crate)
 
-   - OpenTelemetry tracing integration
-   - Minimal overhead when disabled
-   - OTLP export via gRPC/HTTP
+    - OpenTelemetry tracing integration
+    - Minimal overhead when disabled
+    - OTLP export via gRPC/HTTP
 
 2. **Data Pipeline Layer** (Vector)
 
-   - OTLP ingestion (gRPC on port 4317, HTTP on port 4318)
-   - Trace sanitization (removes PII)
-   - Sampling and filtering via VRL
+    - OTLP ingestion (gRPC on port 4317, HTTP on port 4318)
+    - Trace sanitization (removes PII)
+    - Sampling and filtering via VRL
 
 3. **Storage & Analytics Layer** (OpenObserve)
-   - Long-term trace storage
-   - Search and visualization
-   - Alerting and dashboards
+    - Long-term trace storage
+    - Search and visualization
+    - Alerting and dashboards
 
 ### Quick Start
 
@@ -1999,9 +1989,9 @@ VIBEPRO_OBSERVE=1
 
 Vector configuration is in `ops/vector/vector.toml`:
 
-- **Sources**: OTLP gRPC (4317) and HTTP (4318)
-- **Transforms**: Sanitization, sampling, PII redaction
-- **Sinks**: Console (dev), file (local), OpenObserve (production)
+-   **Sources**: OTLP gRPC (4317) and HTTP (4318)
+-   **Transforms**: Sanitization, sampling, PII redaction
+-   **Sinks**: Console (dev), file (local), OpenObserve (production)
 
 #### Run OpenObserve locally (Docker Compose)
 
@@ -2036,9 +2026,9 @@ set the token via SOPS/GitHub Secrets and flip `LOGFIRE_SEND_TO_LOGFIRE` to `tru
 
 The Vector config consumes these values through:
 
-- `tools/vector/macros.vrl` — shared VRL program that redacts PII for both traces and logs.
-- `transforms.logs_logfire_normalize` — copies Logfire-specific attributes into the canonical
-  `trace_id`, `span_id`, and `observation_id` fields.
+-   `tools/vector/macros.vrl` — shared VRL program that redacts PII for both traces and logs.
+-   `transforms.logs_logfire_normalize` — copies Logfire-specific attributes into the canonical
+    `trace_id`, `span_id`, and `observation_id` fields.
 
 Validate changes with:
 
@@ -2110,10 +2100,10 @@ cargo run
 
 For complete observability documentation, see:
 
-- `docs/observability/README.md` - Architecture and usage guide
-- `docs/dev_sds.md` - SDS-017: Storage Layer specifications
-- `docs/dev_adr.md` - DEV-ADR-016: Observability architecture decisions
-- `docs/work-summaries/observability-phase*-completion.md` - Implementation notes
+-   `docs/observability/README.md` - Architecture and usage guide
+-   `docs/dev_sds.md` - SDS-017: Storage Layer specifications
+-   `docs/dev_adr.md` - DEV-ADR-016: Observability architecture decisions
+-   `docs/work-summaries/observability-phase*-completion.md` - Implementation notes
 
 ### Troubleshooting
 
@@ -2185,56 +2175,56 @@ VibePro implements structured, trace-aware logging across all runtimes (Rust, No
 
 **Format:**
 
-- JSON only (machine-first parsing)
-- No printf-style logs in application code
-- Consistent schema across all languages
+-   JSON only (machine-first parsing)
+-   No printf-style logs in application code
+-   Consistent schema across all languages
 
 **Correlation:**
 
-- Every log carries `trace_id`, `span_id`, `service`, `environment`, `application_version`
-- Automatic correlation with distributed traces
-- Enables full request lifecycle visibility
+-   Every log carries `trace_id`, `span_id`, `service`, `environment`, `application_version`
+-   Automatic correlation with distributed traces
+-   Enables full request lifecycle visibility
 
 **PII Protection:**
 
-- Never emit raw PII from application code
-- Use hashed identifiers (`user_id_hash`, `client_ip_hash`)
-- Vector redacts any accidental PII at the edge
-- Redaction rules in `ops/vector/vector.toml`
+-   Never emit raw PII from application code
+-   Use hashed identifiers (`user_id_hash`, `client_ip_hash`)
+-   Vector redacts any accidental PII at the edge
+-   Redaction rules in `ops/vector/vector.toml`
 
 **Log Levels:**
 
-- `error` – Actionable failures requiring investigation
-- `warn` – Degraded behavior, potential issues
-- `info` – Normal operational events
-- `debug` – Detailed diagnostic information
-- ❌ No `trace` level – use tracing spans instead
+-   `error` – Actionable failures requiring investigation
+-   `warn` – Degraded behavior, potential issues
+-   `info` – Normal operational events
+-   `debug` – Detailed diagnostic information
+-   ❌ No `trace` level – use tracing spans instead
 
 **Categories:**
 
-- `app` – Default application logs
-- `audit` – User actions requiring compliance tracking
-- `security` – Authentication, authorization, rate limiting events
-- Use `category` field, not log level, to distinguish types
+-   `app` – Default application logs
+-   `audit` – User actions requiring compliance tracking
+-   `security` – Authentication, authorization, rate limiting events
+-   Use `category` field, not log level, to distinguish types
 
 ### Transport & Storage
 
 **Local Development:**
 
-- Stdout/stderr with JSON formatting
-- Optional: OTLP export to local Vector instance
+-   Stdout/stderr with JSON formatting
+-   Optional: OTLP export to local Vector instance
 
 **Production:**
 
-- OTLP protocol to Vector (`OTLP_ENDPOINT`)
-- Vector performs: PII redaction → enrichment → OpenObserve export
-- Structured fields enable rich querying
+-   OTLP protocol to Vector (`OTLP_ENDPOINT`)
+-   Vector performs: PII redaction → enrichment → OpenObserve export
+-   Structured fields enable rich querying
 
 **Retention:**
 
-- **Logs:** 14–30 days (shorter than traces)
-- **Traces:** 30–90 days
-- Configured per OpenObserve stream/index
+-   **Logs:** 14–30 days (shorter than traces)
+-   **Traces:** 30–90 days
+-   Configured per OpenObserve stream/index
 
 ### Language-Specific Usage
 
@@ -2269,21 +2259,19 @@ log.warn({ category: "security", action: "rate_limit" }, "client throttled");
 log.error({ category: "app", code: 500 }, "upstream timeout");
 ```
 
-**Python** (via `structlog`):
+**Python** (via Logfire):
 
 ```python
-from libs.python.vibepro_logging import configure_logger
+import logfire
 
-log = configure_logger('my-service')
+from libs.python.vibepro_logging import LogCategory, configure_logger
 
-# App log
-log.info("request accepted", category="app", user_id_hash="abc123")
+logger = configure_logger('my-service')
 
-# Security log
-log.warning("client throttled", category="security", action="rate_limit")
-
-# Error log
-log.error("upstream timeout", category="app", code=500)
+with logfire.span('http.request', http_method='GET', route='/demo'):
+    logger.info('request accepted', category=LogCategory.APP, user_id_hash='abc123')
+    logger.warn('client throttled', category=LogCategory.SECURITY, action='rate_limit')
+    logger.error('upstream timeout', category=LogCategory.APP, code=500)
 ```
 
 ### Quick-Start Examples
@@ -2298,7 +2286,7 @@ cargo run --manifest-path apps/observe-smoke/Cargo.toml
 node tools/logging/pino-quickstart.js
 
 # Python example
-python3 tools/logging/structlog-quickstart.py
+python3 tools/logging/logfire-quickstart.py
 ```
 
 ### Validation & Testing
@@ -2321,39 +2309,39 @@ just test:logs
 
 Every log line MUST contain:
 
-- `timestamp` (ISO 8601)
-- `level` (error|warn|info|debug)
-- `message` or `event`
-- `service`
-- `environment`
-- `application_version`
-- `category`
+-   `timestamp` (ISO 8601)
+-   `level` (error|warn|info|debug)
+-   `message` or `event`
+-   `service`
+-   `environment`
+-   `application_version`
+-   `category`
 
 Context-dependent fields (when available):
 
-- `trace_id`
-- `span_id`
-- `user_id_hash` (never raw user ID)
-- `client_ip_hash` (never raw IP)
-- `duration_ms` (for operation timing)
-- `status` (HTTP status code)
-- `error` (error type/code)
+-   `trace_id`
+-   `span_id`
+-   `user_id_hash` (never raw user ID)
+-   `client_ip_hash` (never raw IP)
+-   `duration_ms` (for operation timing)
+-   `status` (HTTP status code)
+-   `error` (error type/code)
 
 ### Vector Configuration
 
 See `ops/vector/vector.toml` for:
 
-- OTLP logs source (`sources.otel_logs`)
-- PII redaction transform (`transforms.logs_redact_pii`)
-- Enrichment transform (`transforms.logs_enrich`)
-- OpenObserve sink (`sinks.logs_otlp`)
+-   OTLP logs source (`sources.otel_logs`)
+-   PII redaction transform (`transforms.logs_redact_pii`)
+-   Enrichment transform (`transforms.logs_enrich`)
+-   OpenObserve sink (`sinks.logs_otlp`)
 
 ### OpenObserve Setup
 
 1. Create separate streams for logs vs. traces
 2. Configure retention policies:
-   - Logs: 14–30 days
-   - Traces: 30–90 days
+    - Logs: 14–30 days
+    - Traces: 30–90 days
 3. Set up alerts for `category="security"` events
 4. Use trace_id for correlation queries
 
@@ -2361,39 +2349,39 @@ See `ops/vector/vector.toml` for:
 
 **Missing correlation fields:**
 
-- Ensure OpenTelemetry context propagation is enabled
-- Check that trace_id/span_id are injected from active span
+-   Ensure OpenTelemetry context propagation is enabled
+-   Check that trace_id/span_id are injected from active span
 
 **PII in logs:**
 
-- Review Vector redaction rules
-- Add new patterns to `transforms.logs_redact_pii`
-- Use `*_hash` suffix for sensitive identifiers
+-   Review Vector redaction rules
+-   Add new patterns to `transforms.logs_redact_pii`
+-   Use `*_hash` suffix for sensitive identifiers
 
 **Performance impact:**
 
-- JSON logging is ~2-5% overhead vs printf
-- Vector handles sampling/filtering at edge
-- Use debug level judiciously in hot paths
+-   JSON logging is ~2-5% overhead vs printf
+-   Vector handles sampling/filtering at edge
+-   Use debug level judiciously in hot paths
 
 For more details, see:
 
-- `docs/observability/README.md` § Logging Policy & Examples
-- Architecture Decision Record: DEV-ADR-017
-- Product Requirements: DEV-PRD-018
-- Software Design Spec: DEV-SDS-018
+-   `docs/observability/README.md` § Logging Policy & Examples
+-   Architecture Decision Record: DEV-ADR-017
+-   Product Requirements: DEV-PRD-018
+-   Software Design Spec: DEV-SDS-018
 
 ---
 
 ## Next Steps
 
-- ✅ **Phase 0:** Test harness and guardrails (complete)
-- ✅ **Phase 1:** Devbox integration (`devbox.json`) (complete)
-- ✅ **Phase 2:** mise runtime management (`.mise.toml`) (complete)
-- ✅ **Phase 3:** SOPS secret encryption (`.sops.yaml`, `.secrets.env.sops`) (complete)
-- ✅ **Phase 4:** Minimal CI workflows (`env-check.yml`, `build-matrix.yml`) (complete)
-- ✅ **Phase 5:** Volta coexistence checks (`verify-node`, conflict detection) (complete)
-- ✅ **Phase 6:** Just task environment awareness (task validation, documentation) (complete)
+-   ✅ **Phase 0:** Test harness and guardrails (complete)
+-   ✅ **Phase 1:** Devbox integration (`devbox.json`) (complete)
+-   ✅ **Phase 2:** mise runtime management (`.mise.toml`) (complete)
+-   ✅ **Phase 3:** SOPS secret encryption (`.sops.yaml`, `.secrets.env.sops`) (complete)
+-   ✅ **Phase 4:** Minimal CI workflows (`env-check.yml`, `build-matrix.yml`) (complete)
+-   ✅ **Phase 5:** Volta coexistence checks (`verify-node`, conflict detection) (complete)
+-   ✅ **Phase 6:** Just task environment awareness (task validation, documentation) (complete)
 
 **All 6 phases of the environment setup roadmap are now complete! 🎉**
 
@@ -2401,9 +2389,9 @@ See `docs/tmp/devenv.md` for the complete environment setup roadmap.
 
 ## References
 
-- [Just Manual](https://just.systems/man/en/)
-- [SOPS Documentation](https://github.com/getsops/sops)
-- [Devbox Documentation](https://www.jetpack.io/devbox/)
-- [mise Documentation](https://mise.jdx.dev/)
-- [pnpm Documentation](https://pnpm.io/)
-- [uv Documentation](https://github.com/astral-sh/uv)
+-   [Just Manual](https://just.systems/man/en/)
+-   [SOPS Documentation](https://github.com/getsops/sops)
+-   [Devbox Documentation](https://www.jetpack.io/devbox/)
+-   [mise Documentation](https://mise.jdx.dev/)
+-   [pnpm Documentation](https://pnpm.io/)
+-   [uv Documentation](https://github.com/astral-sh/uv)

@@ -19,77 +19,77 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 #### 1. **tests/AGENT.md** (811 lines)
 
-- **Purpose**: Testing infrastructure and TDD workflow guidance
-- **Key Content**:
-  - TDD workflow (Red-Green-Refactor cycle)
-  - Testing philosophy (match approach to complexity)
-  - Testing by architecture layer (domain, application, infrastructure, interface)
-  - Unit tests (Jest with node:assert, pytest)
-  - Integration tests (end-to-end workflows)
-  - ShellSpec tests for shell scripts
-  - Coverage requirements by layer (domain 100%, application 90%, infrastructure 80%, interface 70%)
-  - Security testing priorities
-  - Test organization patterns
+-   **Purpose**: Testing infrastructure and TDD workflow guidance
+-   **Key Content**:
+    -   TDD workflow (Red-Green-Refactor cycle)
+    -   Testing philosophy (match approach to complexity)
+    -   Testing by architecture layer (domain, application, infrastructure, interface)
+    -   Unit tests (Jest with node:assert, pytest)
+    -   Integration tests (end-to-end workflows)
+    -   ShellSpec tests for shell scripts
+    -   Coverage requirements by layer (domain 100%, application 90%, infrastructure 80%, interface 70%)
+    -   Security testing priorities
+    -   Test organization patterns
 
 #### 2. **apps/AGENT.md** (684 lines)
 
-- **Purpose**: Application interfaces (web, mobile, CLI, API)
-- **Key Content**:
-  - Hexagonal architecture interface layer
-  - Controller responsibilities (parse, validate, call use case, format output)
-  - DTO pattern for input validation with Zod schemas
-  - Presenter pattern for output formatting
-  - Dependency injection patterns
-  - Application types (Next.js, NestJS, CLI, React Native)
-  - Examples: REST controllers, GraphQL resolvers, server actions, CLI commands
-  - Security considerations (input validation, authentication, rate limiting)
+-   **Purpose**: Application interfaces (web, mobile, CLI, API)
+-   **Key Content**:
+    -   Hexagonal architecture interface layer
+    -   Controller responsibilities (parse, validate, call use case, format output)
+    -   DTO pattern for input validation with Zod schemas
+    -   Presenter pattern for output formatting
+    -   Dependency injection patterns
+    -   Application types (Next.js, NestJS, CLI, React Native)
+    -   Examples: REST controllers, GraphQL resolvers, server actions, CLI commands
+    -   Security considerations (input validation, authentication, rate limiting)
 
 #### 3. **libs/AGENT.md** (1,048 lines)
 
-- **Purpose**: Business logic libraries (hexagonal architecture core)
-- **Key Content**:
-  - Three-layer hexagonal architecture (domain, application, infrastructure)
-  - Domain layer: Pure business logic, entities, value objects, aggregates, domain events
-  - Application layer: Use cases, ports (interfaces), application services
-  - Infrastructure layer: Repository implementations, adapters, external services
-  - Dependency rules (domain → nothing, application → domain, infrastructure → application)
-  - DDD patterns and bounded contexts
-  - Rich examples for each layer
-  - Testing strategy by layer
+-   **Purpose**: Business logic libraries (hexagonal architecture core)
+-   **Key Content**:
+    -   Three-layer hexagonal architecture (domain, application, infrastructure)
+    -   Domain layer: Pure business logic, entities, value objects, aggregates, domain events
+    -   Application layer: Use cases, ports (interfaces), application services
+    -   Infrastructure layer: Repository implementations, adapters, external services
+    -   Dependency rules (domain → nothing, application → domain, infrastructure → application)
+    -   DDD patterns and bounded contexts
+    -   Rich examples for each layer
+    -   Testing strategy by layer
 
 #### 4. **generators/AGENT.md** (915 lines)
 
-- **Purpose**: Code generators (Nx and Copier)
-- **Key Content**:
-  - Generator-first workflow enforcement
-  - Custom Nx generator patterns
-  - Generator implementation (generator.ts, schema.json)
-  - Template file patterns
-  - Naming utilities and conventions
-  - Built-in Nx generators catalog
-  - Integration with Nx MCP server
-  - Testing generators (unit and integration)
-  - When to create new generators
+-   **Purpose**: Code generators (Nx and Copier)
+-   **Key Content**:
+    -   Generator-first workflow enforcement
+    -   Custom Nx generator patterns
+    -   Generator implementation (generator.ts, schema.json)
+    -   Template file patterns
+    -   Naming utilities and conventions
+    -   Built-in Nx generators catalog
+    -   Integration with Nx MCP server
+    -   Testing generators (unit and integration)
+    -   When to create new generators
 
 #### 5. **templates/AGENT.md** (893 lines)
 
-- **Purpose**: Copier/Jinja2 templates for project generation
-- **Key Content**:
-  - Copier configuration (copier.yml)
-  - Jinja2 template syntax (variables, conditionals, loops, filters)
-  - Pre/post generation hooks (Python scripts)
-  - Template file naming with variables
-  - Best practices (whitespace control, macros, includes)
-  - Template validation and testing
-  - Security considerations in templates
-  - Common commands and workflow
+-   **Purpose**: Copier/Jinja2 templates for project generation
+-   **Key Content**:
+    -   Copier configuration (copier.yml)
+    -   Jinja2 template syntax (variables, conditionals, loops, filters)
+    -   Pre/post generation hooks (Python scripts)
+    -   Template file naming with variables
+    -   Best practices (whitespace control, macros, includes)
+    -   Template validation and testing
+    -   Security considerations in templates
+    -   Common commands and workflow
 
 ### Total Phase 2 Statistics
 
-- **Files Created**: 5 AGENT.md files
-- **Total Lines**: 4,351 lines of context-specific guidance
-- **Combined with Phase 1**: 14 total AGENT.md files, 8,435+ lines
-- **Cross-References**: All files link to parent context, navigation hub, and related contexts
+-   **Files Created**: 5 AGENT.md files
+-   **Total Lines**: 4,351 lines of context-specific guidance
+-   **Combined with Phase 1**: 14 total AGENT.md files, 8,435+ lines
+-   **Cross-References**: All files link to parent context, navigation hub, and related contexts
 
 ---
 
@@ -99,47 +99,47 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 **Three-layer pattern thoroughly documented in libs/AGENT.md:**
 
-- Domain layer (pure business logic, no dependencies)
-- Application layer (use cases, ports/interfaces)
-- Infrastructure layer (adapters, implementations)
-- Clear dependency rules and examples
+-   Domain layer (pure business logic, no dependencies)
+-   Application layer (use cases, ports/interfaces)
+-   Infrastructure layer (adapters, implementations)
+-   Clear dependency rules and examples
 
 ### 2. Testing by Architecture Layer
 
 **Comprehensive testing strategy in tests/AGENT.md:**
 
-- Domain: Pure unit tests, 100% coverage, no mocks
-- Application: Unit tests with mocked ports, 90%+ coverage
-- Infrastructure: Integration tests with real dependencies, 80%+ coverage
-- Interface: E2E tests, 70%+ coverage
+-   Domain: Pure unit tests, 100% coverage, no mocks
+-   Application: Unit tests with mocked ports, 90%+ coverage
+-   Infrastructure: Integration tests with real dependencies, 80%+ coverage
+-   Interface: E2E tests, 70%+ coverage
 
 ### 3. Generator-First Workflow
 
 **Enforced in generators/AGENT.md:**
 
-- ALWAYS check for generators before writing code
-- Use `just ai-scaffold name=<generator>`
-- Custom generator patterns for project conventions
-- Integration with Nx MCP server tools
+-   ALWAYS check for generators before writing code
+-   Use `just ai-scaffold name=<generator>`
+-   Custom generator patterns for project conventions
+-   Integration with Nx MCP server tools
 
 ### 4. Template-Driven Generation
 
 **Comprehensive Copier/Jinja2 guidance in templates/AGENT.md:**
 
-- Full project generation workflow
-- Jinja2 best practices (filters, conditionals, loops)
-- Pre/post generation hooks in Python
-- Template validation and testing
+-   Full project generation workflow
+-   Jinja2 best practices (filters, conditionals, loops)
+-   Pre/post generation hooks in Python
+-   Template validation and testing
 
 ### 5. Security Integration
 
 **Every AGENT.md includes security section:**
 
-- tests/: Security testing priorities, threat modeling
-- apps/: Input validation, authentication, rate limiting
-- libs/: Domain invariants, authorization in use cases
-- generators/: Input sanitization, path validation
-- templates/: Variable escaping, secure defaults
+-   tests/: Security testing priorities, threat modeling
+-   apps/: Input validation, authentication, rate limiting
+-   libs/: Domain invariants, authorization in use cases
+-   generators/: Input sanitization, path validation
+-   templates/: Variable escaping, secure defaults
 
 ---
 
@@ -149,29 +149,29 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 **All Phase 2 files properly integrated:**
 
-- Link to parent copilot-instructions.md
-- Link to AGENT-MAP.md for navigation
-- Link to relevant sibling contexts
-- Reference modular instruction files
-- Reference relevant prompts and chat modes
+-   Link to parent copilot-instructions.md
+-   Link to AGENT-MAP.md for navigation
+-   Link to relevant sibling contexts
+-   Reference modular instruction files
+-   Reference relevant prompts and chat modes
 
 ### Routing Tables
 
 **Each file includes "Use When/Refer When" tables:**
 
-- Clear guidance on when to use this context
-- Explicit routing to other contexts when needed
-- No overlap or ambiguity
+-   Clear guidance on when to use this context
+-   Explicit routing to other contexts when needed
+-   No overlap or ambiguity
 
 ### Practical Examples
 
 **Every file includes 4+ real-world examples:**
 
-- tests/: TDD workflow examples, test structures
-- apps/: Controllers, DTOs, presenters, dependency injection
-- libs/: Domain entities, value objects, use cases, repositories
-- generators/: Generator implementation, schema, templates
-- templates/: Jinja2 templates, hooks, validation
+-   tests/: TDD workflow examples, test structures
+-   apps/: Controllers, DTOs, presenters, dependency injection
+-   libs/: Domain entities, value objects, use cases, repositories
+-   generators/: Generator implementation, schema, templates
+-   templates/: Jinja2 templates, hooks, validation
 
 ---
 
@@ -179,26 +179,26 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 ### Completeness
 
-- ✅ Phase 1: 100% complete (5 core AGENT.md files)
-- ✅ Phase 2: 100% complete (5 application/library AGENT.md files)
-- ⏳ Phase 3: Pending (specialized contexts)
-- ⏳ Phase 4: Pending (domain-specific sub-contexts)
+-   ✅ Phase 1: 100% complete (5 core AGENT.md files)
+-   ✅ Phase 2: 100% complete (5 application/library AGENT.md files)
+-   ⏳ Phase 3: Pending (specialized contexts)
+-   ⏳ Phase 4: Pending (domain-specific sub-contexts)
 
 ### Quality
 
-- ✅ Consistent template structure across all 14 files
-- ✅ Cross-reference network complete
-- ✅ Security sections in every file
-- ✅ Practical examples throughout
-- ✅ Actionable checklists for workflows
+-   ✅ Consistent template structure across all 14 files
+-   ✅ Cross-reference network complete
+-   ✅ Security sections in every file
+-   ✅ Practical examples throughout
+-   ✅ Actionable checklists for workflows
 
 ### Coverage
 
-- ✅ Testing infrastructure (TDD, unit, integration, e2e)
-- ✅ Application interfaces (web, API, CLI, mobile)
-- ✅ Business logic (domain, application, infrastructure)
-- ✅ Code generation (Nx generators, custom patterns)
-- ✅ Project templates (Copier, Jinja2, hooks)
+-   ✅ Testing infrastructure (TDD, unit, integration, e2e)
+-   ✅ Application interfaces (web, API, CLI, mobile)
+-   ✅ Business logic (domain, application, infrastructure)
+-   ✅ Code generation (Nx generators, custom patterns)
+-   ✅ Project templates (Copier, Jinja2, hooks)
 
 ---
 
@@ -210,10 +210,10 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 **Rationale**:
 
-- Aligns with project's architectural vision
-- Clear dependency rules prevent coupling
-- Testability built-in (mock ports)
-- Domain-Driven Design compatible
+-   Aligns with project's architectural vision
+-   Clear dependency rules prevent coupling
+-   Testability built-in (mock ports)
+-   Domain-Driven Design compatible
 
 **Impact**: All library guidance follows this pattern consistently.
 
@@ -223,10 +223,10 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 **Rationale**:
 
-- Domain layer: Pure logic deserves pure tests (no mocks, 100% coverage)
-- Application layer: Use case orchestration needs mocked dependencies
-- Infrastructure layer: Real dependencies when safe (databases, adapters)
-- Interface layer: E2E tests for user-facing flows
+-   Domain layer: Pure logic deserves pure tests (no mocks, 100% coverage)
+-   Application layer: Use case orchestration needs mocked dependencies
+-   Infrastructure layer: Real dependencies when safe (databases, adapters)
+-   Interface layer: E2E tests for user-facing flows
 
 **Impact**: Clear testing guidance prevents over/under-testing.
 
@@ -236,10 +236,10 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 **Rationale**:
 
-- Consistency across codebase
-- Faster development
-- Enforces architectural patterns
-- Reduces boilerplate errors
+-   Consistency across codebase
+-   Faster development
+-   Enforces architectural patterns
+-   Reduces boilerplate errors
 
 **Impact**: AI will check for generators before writing code manually.
 
@@ -249,10 +249,10 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 **Rationale**:
 
-- Nx generators: Individual components within existing projects
-- Copier templates: Full project initialization
-- Different use cases, different tools
-- Clear separation of concerns
+-   Nx generators: Individual components within existing projects
+-   Copier templates: Full project initialization
+-   Different use cases, different tools
+-   Clear separation of concerns
 
 **Impact**: Clear guidance on which tool to use when.
 
@@ -262,20 +262,20 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 ### Updated Files
 
-- None (no updates to existing files in this phase)
+-   None (no updates to existing files in this phase)
 
 ### Related Specs
 
-- **DEV-ADR-002**: Hexagonal architecture decision
-- **DEV-SDS-001**: System design incorporating hexagonal layers
-- **DEV-PRD-008**: Testing requirements
-- **DEV-TS-003**: Generator specifications
+-   **DEV-ADR-002**: Hexagonal architecture decision
+-   **DEV-SDS-001**: System design incorporating hexagonal layers
+-   **DEV-PRD-008**: Testing requirements
+-   **DEV-TS-003**: Generator specifications
 
 ### Cross-References
 
-- Phase 1 summary: `docs/work-summaries/2025-10-13-distributed-agent-system.md`
-- Navigation hub: `AGENT-MAP.md`
-- Quick start: `AGENT-SYSTEM.md`
+-   Phase 1 summary: `docs/work-summaries/2025-10-13-distributed-agent-system.md`
+-   Navigation hub: `AGENT-MAP.md`
+-   Quick start: `AGENT-SYSTEM.md`
 
 ---
 
@@ -296,15 +296,15 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 **Conditional on domain maturity:**
 
-- `libs/{domain}/AGENT.md` for major bounded contexts
-- Only create when domain is well-established
-- Examples: `libs/orders/AGENT.md`, `libs/users/AGENT.md`
+-   `libs/{domain}/AGENT.md` for major bounded contexts
+-   Only create when domain is well-established
+-   Examples: `libs/orders/AGENT.md`, `libs/users/AGENT.md`
 
 **Criteria for creation**:
 
-- Domain has 5+ libraries
-- Domain has unique patterns/conventions
-- Team requests specific guidance
+-   Domain has 5+ libraries
+-   Domain has unique patterns/conventions
+-   Team requests specific guidance
 
 ### Immediate Actions
 
@@ -321,33 +321,33 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 **Positive impacts:**
 
-- AI now has local context for testing, apps, libs, generators, templates
-- Routing rules guide AI to correct context automatically
-- Examples provide patterns to follow
-- Security guidance integrated at every level
+-   AI now has local context for testing, apps, libs, generators, templates
+-   Routing rules guide AI to correct context automatically
+-   Examples provide patterns to follow
+-   Security guidance integrated at every level
 
 **Reduced ambiguity:**
 
-- Clear when to use TDD vs code-first
-- Clear when to use Nx generators vs Copier templates
-- Clear testing strategy by architecture layer
-- Clear hexagonal architecture dependency rules
+-   Clear when to use TDD vs code-first
+-   Clear when to use Nx generators vs Copier templates
+-   Clear testing strategy by architecture layer
+-   Clear hexagonal architecture dependency rules
 
 ### For Developers
 
 **Improved onboarding:**
 
-- New developers can reference AGENT.md files
-- Clear examples for common patterns
-- Checklists guide workflows
-- Quick reference sections for commands
+-   New developers can reference AGENT.md files
+-   Clear examples for common patterns
+-   Checklists guide workflows
+-   Quick reference sections for commands
 
 **Consistency:**
 
-- All code follows same architectural pattern
-- Testing approach consistent by layer
-- Generator-first workflow enforced
-- Security considerations standardized
+-   All code follows same architectural pattern
+-   Testing approach consistent by layer
+-   Generator-first workflow enforced
+-   Security considerations standardized
 
 ---
 
@@ -376,18 +376,18 @@ Complete Phase 2 of the distributed AGENT.md system by creating context-specific
 
 ## ✅ Completion Checklist
 
-- [x] tests/AGENT.md created (811 lines)
-- [x] apps/AGENT.md created (684 lines)
-- [x] libs/AGENT.md created (1,048 lines)
-- [x] generators/AGENT.md created (915 lines)
-- [x] templates/AGENT.md created (893 lines)
-- [x] All files follow consistent template structure
-- [x] Cross-references verified
-- [x] Security sections included
-- [x] Practical examples provided
-- [x] Checklists and quick references added
-- [x] Work summary created
-- [ ] AGENT-MAP.md updated (next action)
+-   [x] tests/AGENT.md created (811 lines)
+-   [x] apps/AGENT.md created (684 lines)
+-   [x] libs/AGENT.md created (1,048 lines)
+-   [x] generators/AGENT.md created (915 lines)
+-   [x] templates/AGENT.md created (893 lines)
+-   [x] All files follow consistent template structure
+-   [x] Cross-references verified
+-   [x] Security sections included
+-   [x] Practical examples provided
+-   [x] Checklists and quick references added
+-   [x] Work summary created
+-   [ ] AGENT-MAP.md updated (next action)
 
 ---
 

@@ -18,9 +18,9 @@ The original implementation had critical weaknesses:
 ```yaml
 - name: Install dependencies
   run: |
-    if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; fi
-    if [ -f uv.lock ] || [ -f pyproject.toml ]; then uv sync --frozen || true; fi
-    if [ -f Cargo.toml ]; then cargo fetch; fi
+      if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; fi
+      if [ -f uv.lock ] || [ -f pyproject.toml ]; then uv sync --frozen || true; fi
+      if [ -f Cargo.toml ]; then cargo fetch; fi
 ```
 
 **Problems**:
@@ -56,31 +56,31 @@ Split into three explicit conditional steps using GitHub Actions `if:` with `has
 
 ### 1. Fail-Fast Behavior
 
-- ✅ No `|| true` - errors stop the build immediately
-- ✅ Clear indication which package manager failed
-- ✅ Prevents wasting CI time on subsequent steps when deps fail
-- ✅ Forces fixing broken dependencies rather than masking them
+-   ✅ No `|| true` - errors stop the build immediately
+-   ✅ Clear indication which package manager failed
+-   ✅ Prevents wasting CI time on subsequent steps when deps fail
+-   ✅ Forces fixing broken dependencies rather than masking them
 
 ### 2. Explicit Conditionals
 
-- ✅ Uses GitHub Actions native `if:` conditions
-- ✅ `hashFiles()` is more reliable than shell `[ -f ]` tests
-- ✅ Each step shows as "skipped" in UI when condition not met
-- ✅ Clear visibility in Actions UI which steps run vs skip
+-   ✅ Uses GitHub Actions native `if:` conditions
+-   ✅ `hashFiles()` is more reliable than shell `[ -f ]` tests
+-   ✅ Each step shows as "skipped" in UI when condition not met
+-   ✅ Clear visibility in Actions UI which steps run vs skip
 
 ### 3. Better Observability
 
-- ✅ Separate step names clearly identify the failing component
-- ✅ Step timing shows which package manager is slow
-- ✅ Logs are scoped to specific package manager
-- ✅ Easy to identify if Node, Python, or Rust deps are the issue
+-   ✅ Separate step names clearly identify the failing component
+-   ✅ Step timing shows which package manager is slow
+-   ✅ Logs are scoped to specific package manager
+-   ✅ Easy to identify if Node, Python, or Rust deps are the issue
 
 ### 4. Maintainability
 
-- ✅ Easy to add new package managers (just add a step)
-- ✅ Easy to modify behavior per package manager
-- ✅ Can add step-level `continue-on-error: true` if truly optional
-- ✅ Can add step-level timeouts, retries, caching per manager
+-   ✅ Easy to add new package managers (just add a step)
+-   ✅ Easy to modify behavior per package manager
+-   ✅ Can add step-level `continue-on-error: true` if truly optional
+-   ✅ Can add step-level timeouts, retries, caching per manager
 
 ## Technical Details
 
@@ -88,8 +88,8 @@ Split into three explicit conditional steps using GitHub Actions `if:` with `has
 
 GitHub Actions `hashFiles()` returns:
 
-- **Empty string** if no files match the pattern
-- **Hash string** if files exist
+-   **Empty string** if no files match the pattern
+-   **Hash string** if files exist
 
 Therefore `hashFiles('file.lock') != ''` checks if the file exists.
 
@@ -97,21 +97,21 @@ Therefore `hashFiles('file.lock') != ''` checks if the file exists.
 
 **Node (pnpm)**:
 
-- Condition: `hashFiles('pnpm-lock.yaml') != ''`
-- Required when lock file exists
-- Uses `--frozen-lockfile` for deterministic installs
+-   Condition: `hashFiles('pnpm-lock.yaml') != ''`
+-   Required when lock file exists
+-   Uses `--frozen-lockfile` for deterministic installs
 
 **Python (uv)**:
 
-- Condition: `hashFiles('uv.lock') != '' || hashFiles('pyproject.toml') != ''`
-- Required when either uv.lock OR pyproject.toml exists
-- Uses `--frozen` for deterministic installs (no `|| true` anymore!)
+-   Condition: `hashFiles('uv.lock') != '' || hashFiles('pyproject.toml') != ''`
+-   Required when either uv.lock OR pyproject.toml exists
+-   Uses `--frozen` for deterministic installs (no `|| true` anymore!)
 
 **Rust (cargo)**:
 
-- Condition: `hashFiles('Cargo.toml') != ''`
-- Required when Cargo.toml exists
-- Uses `cargo fetch` for dependency download
+-   Condition: `hashFiles('Cargo.toml') != ''`
+-   Required when Cargo.toml exists
+-   Uses `cargo fetch` for dependency download
 
 ### Error Handling
 
@@ -134,15 +134,15 @@ If a dependency truly needs to be optional, use step-level override:
 
 **Benefits**:
 
-- ✅ Prevents silently broken builds from being deployed
-- ✅ Forces resolution of dependency issues
-- ✅ Clearer audit trail of what was installed
-- ✅ Easier to identify supply chain issues
+-   ✅ Prevents silently broken builds from being deployed
+-   ✅ Forces resolution of dependency issues
+-   ✅ Clearer audit trail of what was installed
+-   ✅ Easier to identify supply chain issues
 
 **Trade-offs**:
 
-- ⚠️ Builds that previously "succeeded" despite Python errors will now fail
-- ✅ This is the correct behavior - force fixing the root cause
+-   ⚠️ Builds that previously "succeeded" despite Python errors will now fail
+-   ✅ This is the correct behavior - force fixing the root cause
 
 ## Testing Recommendations
 
@@ -190,9 +190,9 @@ If emergency rollback needed, revert to single combined step with `|| true` on P
 ```yaml
 - name: Install dependencies
   run: |
-    if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; fi
-    if [ -f uv.lock ] || [ -f pyproject.toml ]; then uv sync --frozen || true; fi
-    if [ -f Cargo.toml ]; then cargo fetch; fi
+      if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; fi
+      if [ -f uv.lock ] || [ -f pyproject.toml ]; then uv sync --frozen || true; fi
+      if [ -f Cargo.toml ]; then cargo fetch; fi
 ```
 
 ### Recommended Follow-up
@@ -206,20 +206,20 @@ Note: The **Lint** step (lines 194-198) still uses `|| true` for linting:
 ```yaml
 - name: Lint
   run: |
-    if [ -f package.json ]; then pnpm run lint || pnpm run lint:ci || true; fi
-    if [ -f pyproject.toml ]; then just lint-python || true; fi
-    if [ -f Cargo.toml ]; then cargo clippy --all-targets -- -D warnings || true; fi
+      if [ -f package.json ]; then pnpm run lint || pnpm run lint:ci || true; fi
+      if [ -f pyproject.toml ]; then just lint-python || true; fi
+      if [ -f Cargo.toml ]; then cargo clippy --all-targets -- -D warnings || true; fi
 ```
 
 This is a **separate concern** - linting may be intentionally non-blocking during development. Consider a separate task to split lint steps similarly if you want lint failures to be blocking.
 
 ## References
 
-- **GitHub Actions hashFiles()**: https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles
-- **Conditional execution**: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsif
-- **Security guidelines**: `.github/instructions/security.instructions.md`
-- **CI posture**: DEV-SPEC-006 in `docs/dev_spec_index.md`
-- **Build tasks**: DEV-SPEC-003 in `docs/dev_spec_index.md`
+-   **GitHub Actions hashFiles()**: https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles
+-   **Conditional execution**: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsif
+-   **Security guidelines**: `.github/instructions/security.instructions.md`
+-   **CI posture**: DEV-SPEC-006 in `docs/dev_spec_index.md`
+-   **Build tasks**: DEV-SPEC-003 in `docs/dev_spec_index.md`
 
 ## Future Enhancements
 

@@ -12,7 +12,6 @@ dependencies = [
     "jinja2>=3.1.0",
     "logfire[fastapi]>=4.14.2",
     "pyyaml>=6.0",
-    "structlog>=23.0.0",
 ]
 
 [project.optional-dependencies]
@@ -38,6 +37,7 @@ extend-exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "S"]
+extend-select = ["TID"]
 ignore = [
     "E501",  # Line length handled by formatter
     "S603",  # subprocess call with untrusted input (false positive in our controlled context)
@@ -45,7 +45,12 @@ ignore = [
     "S105",  # Possible hardcoded password (false positives for enum values and punctuation)
     "S324",  # hashlib.md5 usage (acceptable for content hashing, not cryptographic purposes)
     "S101",  # Use of assert detected (acceptable in test files)
+    "TID251",  # Relative imports are allowed; we only ban specific modules here
+    "TID252",  # Allow existing relative imports during migration; module bans enforced separately
 ]
+
+[tool.ruff.lint.flake8-tidy-imports]
+banned-module-level-imports = ["structlog"]
 
 [tool.mypy]
 python_version = "3.12"

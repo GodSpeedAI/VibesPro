@@ -9,19 +9,19 @@
 
 **When to use**
 
-- You have a **feature spec** (ADR, PRD, SDS, etc.) and need a **complete implementation plan** for multiple agents to execute.
-- The plan should define MECE tasks, Nx project boundaries, tests-first sequencing, and generator specs when needed.
+-   You have a **feature spec** (ADR, PRD, SDS, etc.) and need a **complete implementation plan** for multiple agents to execute.
+-   The plan should define MECE tasks, Nx project boundaries, tests-first sequencing, and generator specs when needed.
 
 **What it produces**
 
-- A **multi-phase Test-Driven Development plan** following:
+-   A **multi-phase Test-Driven Development plan** following:
 
-  - VibePro’s _generator-first_ policy (no direct generator coding)
-  - Nx orchestration (`pnpm nx run-many ...`)
-  - `just` recipes (`just ai-context-bundle`, `just ai-validate`)
-  - Explicit **RED → GREEN → REFACTOR → REGRESSION** cycles per task
+    -   VibePro’s _generator-first_ policy (no direct generator coding)
+    -   Nx orchestration (`pnpm nx run-many ...`)
+    -   `just` recipes (`just ai-context-bundle`, `just ai-validate`)
+    -   Explicit **RED → GREEN → REFACTOR → REGRESSION** cycles per task
 
-- Each generator reference will output a **Generator Specification Plan**, not code.
+-   Each generator reference will output a **Generator Specification Plan**, not code.
 
 **Example**
 
@@ -33,9 +33,9 @@
 
 **MCP Tools**
 
-- **context7** – pull contextual excerpts from ADRs/PRDs/SDSs
-- **ref** – analyze refactors, duplication, seams
-- **exa** – find external best-practice examples or benchmarks
+-   **context7** – pull contextual excerpts from ADRs/PRDs/SDSs
+-   **ref** – analyze refactors, duplication, seams
+-   **exa** – find external best-practice examples or benchmarks
 
 ---
 
@@ -43,18 +43,18 @@
 
 **When to use**
 
-- You want to **define** (not implement) a new generator for VibePro (e.g., new API route, feature slice, or data access module).
-- Use this mode to draft a `GENERATOR_SPEC.md` following our Nx and organization-specific plugin structure.
+-   You want to **define** (not implement) a new generator for VibePro (e.g., new API route, feature slice, or data access module).
+-   Use this mode to draft a `GENERATOR_SPEC.md` following our Nx and organization-specific plugin structure.
 
 **What it produces**
 
-- A **spec-first document** classifying your intent into one of:
+-   A **spec-first document** classifying your intent into one of:
 
-  1. **feature-slice** — a domain library or feature module
-  2. **route-contract** — an HTTP route with tests and validators
-  3. **data-access** — a repository/adapter layer for persistence
+    1. **feature-slice** — a domain library or feature module
+    2. **route-contract** — an HTTP route with tests and validators
+    3. **data-access** — a repository/adapter layer for persistence
 
-- Fills out all sections: purpose, schema options, outputs, targets, acceptance tests, MCP guidance.
+-   Fills out all sections: purpose, schema options, outputs, targets, acceptance tests, MCP guidance.
 
 **Example**
 
@@ -66,9 +66,9 @@
 
 **MCP Tools**
 
-- **context7** – gather ADRs and prior generator specs for consistency
-- **ref** – evaluate seams across libs and enforce MECE boundaries
-- **exa** – suggest 3–5 real-world examples for review
+-   **context7** – gather ADRs and prior generator specs for consistency
+-   **ref** – evaluate seams across libs and enforce MECE boundaries
+-   **exa** – suggest 3–5 real-world examples for review
 
 ---
 
@@ -110,11 +110,11 @@ These modes enforce **specification-first**, **test-driven**, and **Nx-compliant
 
 ### 🧱 Core Principles
 
-- **Specification-First** — AI and humans never generate implementation directly; all work begins from explicit specs (`GENERATOR_SPEC.md`, `TDD Implementation Plan`).
-- **Generator-First** — New code structures are introduced via Nx generators, not ad-hoc scaffolding.
-- **Test-Driven** — Every plan and generator defines RED → GREEN → REFACTOR → REGRESSION steps.
-- **Parallel-Safe** — Tasks and generators must be MECE (mutually exclusive, collectively exhaustive).
-- **Auditable** — Each AI session runs in a declared chatmode with clear traceability to ADR/PRD/SDS sources.
+-   **Specification-First** — AI and humans never generate implementation directly; all work begins from explicit specs (`GENERATOR_SPEC.md`, `TDD Implementation Plan`).
+-   **Generator-First** — New code structures are introduced via Nx generators, not ad-hoc scaffolding.
+-   **Test-Driven** — Every plan and generator defines RED → GREEN → REFACTOR → REGRESSION steps.
+-   **Parallel-Safe** — Tasks and generators must be MECE (mutually exclusive, collectively exhaustive).
+-   **Auditable** — Each AI session runs in a declared chatmode with clear traceability to ADR/PRD/SDS sources.
 
 ---
 
@@ -175,8 +175,8 @@ MCP usage is **advisory**, not automated — tools guide reasoning and provide c
 3. **Implement** according to the plan (manual or agent-driven).
 4. **Validate** using:
 
-   ```bash
-   just ai-validate
-   ```
+    ```bash
+    just ai-validate
+    ```
 
 5. **Commit** the spec and plan under version control for traceability.

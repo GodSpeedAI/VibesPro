@@ -52,27 +52,27 @@ tools/vibepro/
 
 **Required**
 
-- `TODO: option`
+-   `TODO: option`
 
 **Recommended**
 
-- `TODO: option`
+-   `TODO: option`
 
 **Validation Rules**
 
-- `TODO: rule`
+-   `TODO: rule`
 
 **Example `schema.json` (excerpt)**
 
 ```json
 {
-  "$schema": "https://json-schema.org/schema",
-  "$id": "MyOrg<Type>",
-  "type": "object",
-  "properties": {
-    "TODO": { "type": "string" }
-  },
-  "required": ["TODO"]
+    "$schema": "https://json-schema.org/schema",
+    "$id": "MyOrg<Type>",
+    "type": "object",
+    "properties": {
+        "TODO": { "type": "string" }
+    },
+    "required": ["TODO"]
 }
 ```
 
@@ -88,49 +88,49 @@ export interface <Type>Schema {
 
 ## 4) Outputs / Artifacts
 
-- `TODO: detail generated files`
-- `TODO: mention workspace config updates (tags, path aliases)`
+-   `TODO: detail generated files`
+-   `TODO: mention workspace config updates (tags, path aliases)`
 
 ---
 
 ## 5) Targets & Cacheability
 
-- `TODO: describe default Nx targets`
-- Ensure targets align with workspace `namedInputs` for caching.
+-   `TODO: describe default Nx targets`
+-   Ensure targets align with workspace `namedInputs` for caching.
 
 ---
 
 ## 6) Conventions & Policy
 
-- `TODO: folder naming, tags, testing defaults, lint rules`
+-   `TODO: folder naming, tags, testing defaults, lint rules`
 
 ---
 
 ## 7) Implementation Hints (for future generator author)
 
-- Use `@nx/devkit` helpers such as `generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `names`. See `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` and `devkit-core.md`.
-- Verify tags/project graph integrity with `createProjectGraphAsync` or `readProjectConfiguration`.
-- Keep the generator idempotent; validate dry-run output matches writes.
-- `TODO: additional hints`
+-   Use `@nx/devkit` helpers such as `generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `names`. See `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` and `devkit-core.md`.
+-   Verify tags/project graph integrity with `createProjectGraphAsync` or `readProjectConfiguration`.
+-   Keep the generator idempotent; validate dry-run output matches writes.
+-   `TODO: additional hints`
 
 ---
 
 ## 8) Acceptance Tests (for generator once built)
 
-- Dry run prints expected plan.
-- Generated artifacts exist with correct content.
-- `pnpm nx test <affected>` (and other targets) succeed.
-- Re-running generator produces no diff.
-- Module-boundary lint and `pnpm nx graph --focus <project>` succeed.
-- `TODO: extra acceptance checks`
+-   Dry run prints expected plan.
+-   Generated artifacts exist with correct content.
+-   `pnpm nx test <affected>` (and other targets) succeed.
+-   Re-running generator produces no diff.
+-   Module-boundary lint and `pnpm nx graph --focus <project>` succeed.
+-   `TODO: extra acceptance checks`
 
 ---
 
 ## 9) Rollback & Safety
 
-- Emit change list for revert scenarios.
-- Avoid secrets or external side effects.
-- `TODO: other safety notes`
+-   Emit change list for revert scenarios.
+-   Avoid secrets or external side effects.
+-   `TODO: other safety notes`
 
 ---
 
@@ -146,9 +146,9 @@ just ai-validate
 
 ## MCP Assistance
 
-- **context7:** `TODO: list specs/docs to fetch for grounding`
-- **ref:** `TODO: seams/duplication checks`
-- **exa:** `TODO: relevant public examples (3–5)`
+-   **context7:** `TODO: list specs/docs to fetch for grounding`
+-   **ref:** `TODO: seams/duplication checks`
+-   **exa:** `TODO: relevant public examples (3–5)`
 
 ---
 
@@ -163,9 +163,9 @@ pnpm nx g @myorg/vibepro:<type> sample \
 
 ## 12) Review Checklist
 
-- [ ] `schema.json` / `schema.d.ts` alignment verified.
-- [ ] Tags include `scope:<scope>` and `type:<type>` (plus extras).
-- [ ] Targets cacheable; `namedInputs` alignment checked.
-- [ ] Generator re-run idempotent; dry run accurate.
-- [ ] Tests + lint + module boundaries pass.
-- [ ] Docs updated (usage + dry-run example).
+-   [ ] `schema.json` / `schema.d.ts` alignment verified.
+-   [ ] Tags include `scope:<scope>` and `type:<type>` (plus extras).
+-   [ ] Targets cacheable; `namedInputs` alignment checked.
+-   [ ] Generator re-run idempotent; dry run accurate.
+-   [ ] Tests + lint + module boundaries pass.
+-   [ ] Docs updated (usage + dry-run example).

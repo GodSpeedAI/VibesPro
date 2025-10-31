@@ -13,12 +13,12 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
-- Rust-based embedded database (sled)
-- Temporal learning storage for AI agents
-- Architectural decision history
-- Pattern recognition and anti-pattern tracking
-- Development insights over time
-- Project specification database
+-   Rust-based embedded database (sled)
+-   Temporal learning storage for AI agents
+-   Architectural decision history
+-   Pattern recognition and anti-pattern tracking
+-   Development insights over time
+-   Project specification database
 
 **Technology**: [sled](https://github.com/spacejam/sled) - Embedded database in Rust
 
@@ -77,12 +77,12 @@ harness = false
 
 ### Use This Context When:
 
-- [ ] Querying AI learning history
-- [ ] Storing architectural decisions programmatically
-- [ ] Implementing pattern recognition features
-- [ ] Working with Rust code in temporal_db
-- [ ] Benchmarking database performance
-- [ ] Understanding temporal learning system
+-   [ ] Querying AI learning history
+-   [ ] Storing architectural decisions programmatically
+-   [ ] Implementing pattern recognition features
+-   [ ] Working with Rust code in temporal_db
+-   [ ] Benchmarking database performance
+-   [ ] Understanding temporal learning system
 
 ### Refer to Other Contexts When:
 
@@ -99,11 +99,11 @@ harness = false
 
 **Follow Rust standard conventions:**
 
-- Use `rustfmt` for formatting
-- Use `clippy` for linting
-- Document all public APIs with `///` doc comments
-- Use `Result<T, E>` for error handling
-- Prefer `&str` over `String` for function parameters
+-   Use `rustfmt` for formatting
+-   Use `clippy` for linting
+-   Document all public APIs with `///` doc comments
+-   Use `Result<T, E>` for error handling
+-   Prefer `&str` over `String` for function parameters
 
 **Example module structure:**
 
@@ -310,15 +310,15 @@ impl<'a> QueryBuilder<'a> {
 
 **Modular instructions that apply here:**
 
-- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in database operations
-- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing Rust code
-- [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance benchmarking
+-   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in database operations
+-   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing Rust code
+-   [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance benchmarking
 
 **Relevant documentation:**
 
-- [sled documentation](https://docs.rs/sled/)
-- [Rust book](https://doc.rust-lang.org/book/)
-- [Cargo book](https://doc.rust-lang.org/cargo/)
+-   [sled documentation](https://docs.rs/sled/)
+-   [Rust book](https://doc.rust-lang.org/book/)
+-   [Cargo book](https://doc.rust-lang.org/cargo/)
 
 ## 💡 Examples
 
@@ -428,32 +428,28 @@ import { promisify } from "util";
 const execAsync = promisify(exec);
 
 interface Specification {
-  id: string;
-  spec_type: string;
-  title: string;
-  content: string;
+    id: string;
+    spec_type: string;
+    title: string;
+    content: string;
 }
 
 /**
  * Query temporal database for specifications.
  */
 export async function querySpecs(specType?: string): Promise<Specification[]> {
-  const cmd = specType
-    ? `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --type ${specType}`
-    : `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --all`;
+    const cmd = specType ? `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --type ${specType}` : `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --all`;
 
-  const { stdout } = await execAsync(cmd);
-  return JSON.parse(stdout);
+    const { stdout } = await execAsync(cmd);
+    return JSON.parse(stdout);
 }
 
 /**
  * Get architectural decisions.
  */
 export async function getDecisions(): Promise<any[]> {
-  const { stdout } = await execAsync(
-    "cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --decisions",
-  );
-  return JSON.parse(stdout);
+    const { stdout } = await execAsync("cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --decisions");
+    return JSON.parse(stdout);
 }
 ```
 
@@ -461,28 +457,28 @@ export async function getDecisions(): Promise<any[]> {
 
 ### Before Modifying Database Code:
 
-- [ ] Review current data models in `src/models.rs`
-- [ ] Check for breaking changes to serialization
-- [ ] Plan migration strategy if schema changes
-- [ ] Consider backward compatibility
+-   [ ] Review current data models in `src/models.rs`
+-   [ ] Check for breaking changes to serialization
+-   [ ] Plan migration strategy if schema changes
+-   [ ] Consider backward compatibility
 
 ### While Implementing Features:
 
-- [ ] Write tests first (Rust TDD)
-- [ ] Document public APIs with `///` comments
-- [ ] Handle errors with `Result<T, E>`
-- [ ] Use `?` operator for error propagation
-- [ ] Add tracing/logging for debugging
-- [ ] Write benchmarks for performance-critical code
+-   [ ] Write tests first (Rust TDD)
+-   [ ] Document public APIs with `///` comments
+-   [ ] Handle errors with `Result<T, E>`
+-   [ ] Use `?` operator for error propagation
+-   [ ] Add tracing/logging for debugging
+-   [ ] Write benchmarks for performance-critical code
 
 ### After Making Changes:
 
-- [ ] Run tests: `cargo test --manifest-path temporal_db/Cargo.toml`
-- [ ] Run clippy: `cargo clippy --manifest-path temporal_db/Cargo.toml`
-- [ ] Format code: `cargo fmt --manifest-path temporal_db/Cargo.toml`
-- [ ] Run benchmarks: `cargo bench --manifest-path temporal_db/Cargo.toml`
-- [ ] Update README.md if API changes
-- [ ] Test integration with tools
+-   [ ] Run tests: `cargo test --manifest-path temporal_db/Cargo.toml`
+-   [ ] Run clippy: `cargo clippy --manifest-path temporal_db/Cargo.toml`
+-   [ ] Format code: `cargo fmt --manifest-path temporal_db/Cargo.toml`
+-   [ ] Run benchmarks: `cargo bench --manifest-path temporal_db/Cargo.toml`
+-   [ ] Update README.md if API changes
+-   [ ] Test integration with tools
 
 ## 🔍 Quick Reference
 
@@ -564,12 +560,12 @@ pub type Result<T> = std::result::Result<T, MyError>;
 
 **Security in temporal database:**
 
-- ⚠️ **Access control**: Database is local, but protect from unauthorized access
-- ⚠️ **Input validation**: Validate all data before storing
-- ⚠️ **Sanitization**: Sanitize user input in stored content
-- ⚠️ **Path traversal**: Validate database path
-- ⚠️ **Resource limits**: Prevent unbounded queries
-- ⚠️ **Sensitive data**: Don't store secrets or PII
+-   ⚠️ **Access control**: Database is local, but protect from unauthorized access
+-   ⚠️ **Input validation**: Validate all data before storing
+-   ⚠️ **Sanitization**: Sanitize user input in stored content
+-   ⚠️ **Path traversal**: Validate database path
+-   ⚠️ **Resource limits**: Prevent unbounded queries
+-   ⚠️ **Sensitive data**: Don't store secrets or PII
 
 **Example validation:**
 
@@ -748,18 +744,18 @@ pub fn record_generation_insight(
 
 ### Regular Tasks
 
-- **Weekly**: Check database size, consider compaction
-- **Monthly**: Review stored patterns, archive old data
-- **Quarterly**: Benchmark performance, optimize queries
-- **Per feature**: Update data models if schema changes
+-   **Weekly**: Check database size, consider compaction
+-   **Monthly**: Review stored patterns, archive old data
+-   **Quarterly**: Benchmark performance, optimize queries
+-   **Per feature**: Update data models if schema changes
 
 ### When to Update This AGENT.md
 
-- Rust version updates
-- sled library updates
-- Data model changes
-- New query patterns
-- Performance optimizations
+-   Rust version updates
+-   sled library updates
+-   Data model changes
+-   New query patterns
+-   Performance optimizations
 
 ### Database Maintenance
 

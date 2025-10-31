@@ -18,20 +18,20 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 
 **Changes**:
 
-- Upgraded from 80 lines → 600+ lines
-- Matches maintainer version's comprehensive structure
-- Includes all key sections:
-  - 🎯 Project Overview (customizable)
-  - 🏗️ Architecture & Structure (customizable)
-  - 🤝 Development Partnership Model (Research → Plan → Implement → Validate)
-  - 📋 Coding Standards & Conventions (customizable)
-  - 🔒 Security Guidelines (non-negotiable)
-  - 🧪 Testing Strategy (customizable)
-  - 🚀 Build & Deployment (customizable)
-  - 🤖 AI Workflows & Chat Modes
-  - 📖 Domain Concepts (highly customizable)
-  - 🎨 Code Quality & Style (customizable)
-  - 🎯 Quick Reference Card
+-   Upgraded from 80 lines → 600+ lines
+-   Matches maintainer version's comprehensive structure
+-   Includes all key sections:
+    -   🎯 Project Overview (customizable)
+    -   🏗️ Architecture & Structure (customizable)
+    -   🤝 Development Partnership Model (Research → Plan → Implement → Validate)
+    -   📋 Coding Standards & Conventions (customizable)
+    -   🔒 Security Guidelines (non-negotiable)
+    -   🧪 Testing Strategy (customizable)
+    -   🚀 Build & Deployment (customizable)
+    -   🤖 AI Workflows & Chat Modes
+    -   📖 Domain Concepts (highly customizable)
+    -   🎨 Code Quality & Style (customizable)
+    -   🎯 Quick Reference Card
 
 **Innovation**: Uses `[CUSTOMIZE: ...]` placeholders for project-specific content while preserving non-negotiable principles (generator-first, security-first).
 
@@ -43,30 +43,30 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 
 **Phase 1: Automatic Audit** (AI executes silently)
 
-- Reads `.copier-answers.yml` for template choices
-- Analyzes `package.json` / `pyproject.toml` for dependencies
-- Inspects `nx.json` for workspace structure
-- Scans directories (`apps/`, `libs/`, `tests/`)
-- Reviews existing `copilot-instructions.md` for placeholders
+-   Reads `.copier-answers.yml` for template choices
+-   Analyzes `package.json` / `pyproject.toml` for dependencies
+-   Inspects `nx.json` for workspace structure
+-   Scans directories (`apps/`, `libs/`, `tests/`)
+-   Reviews existing `copilot-instructions.md` for placeholders
 
 **Auto-Detects (70-80% of info)**:
 
-- Project name, description
-- Architecture style
-- Framework (Next.js, FastAPI, etc.)
-- Language (TypeScript, JavaScript, Python)
-- Testing tools (Jest, pytest, Playwright)
-- Database (PostgreSQL, MongoDB from deps)
-- Deployment hints (Vercel, Docker)
-- Nx workspace structure
+-   Project name, description
+-   Architecture style
+-   Framework (Next.js, FastAPI, etc.)
+-   Language (TypeScript, JavaScript, Python)
+-   Testing tools (Jest, pytest, Playwright)
+-   Database (PostgreSQL, MongoDB from deps)
+-   Deployment hints (Vercel, Docker)
+-   Nx workspace structure
 
 **Phase 2: Targeted Questions** (only for gaps)
 
-- Business domain (can't auto-detect from code)
-- Testing philosophy (TDD vs test-after)
-- Team size/experience
-- Compliance requirements (optional)
-- Performance priorities (optional)
+-   Business domain (can't auto-detect from code)
+-   Testing philosophy (TDD vs test-after)
+-   Team size/experience
+-   Compliance requirements (optional)
+-   Performance priorities (optional)
 
 **Impact**: Reduces questions from ~10 to ~2-5 (60-70% reduction)
 
@@ -84,10 +84,10 @@ Enhanced the Copier template's AI assistance infrastructure to provide comprehen
 
 **Edge Cases Handled**:
 
-- Detection conflicts (ask user to clarify)
-- Missing files (graceful fallback)
-- 100% detection (just confirm)
-- User unsure (suggest defaults based on stack)
+-   Detection conflicts (ask user to clarify)
+-   Missing files (graceful fallback)
+-   100% detection (just confirm)
+-   User unsure (suggest defaults based on stack)
 
 **Example Flow**:
 
@@ -125,10 +125,10 @@ AI: ✨ Done!
 
 **What It Does**:
 
-- Prints friendly introduction
-- Explains customization process
-- Directs to `meta.customize-instructions` chatmode
-- Shows prompt content as fallback
+-   Prints friendly introduction
+-   Explains customization process
+-   Directs to `meta.customize-instructions` chatmode
+-   Shows prompt content as fallback
 
 ### 5. Enhanced Onboarding Chat Mode ✅
 
@@ -138,18 +138,18 @@ AI: ✨ Done!
 
 **Interactive Walkthroughs**:
 
-- 🔧 **Just Recipes** - Orchestration commands with when/why guidance
-- 💬 **Chat Modes** - AI personas for different tasks
-- 📋 **Prompts** - Task-specific AI workflows
-- 🛠️ **Tools** - MCP servers, utilities
-- 🚀 **Workflows** - TDD, Debug, Spec-driven development
+-   🔧 **Just Recipes** - Orchestration commands with when/why guidance
+-   💬 **Chat Modes** - AI personas for different tasks
+-   📋 **Prompts** - Task-specific AI workflows
+-   🛠️ **Tools** - MCP servers, utilities
+-   🚀 **Workflows** - TDD, Debug, Spec-driven development
 
 **Adaptive Approach**:
 
-- Quick Overview for fast start
-- Deep dives for learning
-- Context-specific guidance (when/why to use)
-- Progressive disclosure (user chooses depth)
+-   Quick Overview for fast start
+-   Deep dives for learning
+-   Context-specific guidance (when/why to use)
+-   Progressive disclosure (user chooses depth)
 
 **Example Interaction**:
 
@@ -178,29 +178,29 @@ AI: 🔧 Just Recipes - Orchestration Commands
 
 1. **`docs/workdocs/copilot-instructions-template-enhancement.md`**
 
-   - Complete enhancement overview
-   - Flipped interaction explanation
-   - Usage examples
-   - Testing plan
+    - Complete enhancement overview
+    - Flipped interaction explanation
+    - Usage examples
+    - Testing plan
 
 2. **`docs/workdocs/audit-first-customization-summary.md`**
 
-   - Detailed audit-first approach
-   - Detection capabilities table
-   - Scenario examples (Next.js, FastAPI, React Native)
-   - Edge cases and future enhancements
+    - Detailed audit-first approach
+    - Detection capabilities table
+    - Scenario examples (Next.js, FastAPI, React Native)
+    - Edge cases and future enhancements
 
 3. **`docs/workdocs/onboarding-chatmode-enhancement.md`**
 
-   - Interactive onboarding explanation
-   - Walkthrough formats
-   - Example interaction flows
-   - Success metrics
+    - Interactive onboarding explanation
+    - Walkthrough formats
+    - Example interaction flows
+    - Success metrics
 
 4. **`docs/workdocs/commit-summary-copilot-instructions-enhancement.md`**
-   - Commit message template
-   - Files changed summary
-   - Testing checklist
+    - Commit message template
+    - Files changed summary
+    - Testing checklist
 
 ---
 
@@ -214,10 +214,10 @@ AI: 🔧 Just Recipes - Orchestration Commands
 
 **Impact**:
 
-- 60-70% reduction in questions
-- 50%+ time savings
-- No repetition of info already in project files
-- "AI seems smart" user experience
+-   60-70% reduction in questions
+-   50%+ time savings
+-   No repetition of info already in project files
+-   "AI seems smart" user experience
 
 ### 2. Intelligent Flipped Interaction
 
@@ -239,10 +239,10 @@ AI: "Apply updates? (yes/no)"
 
 **Benefits**:
 
-- Less cognitive load (AI guides conversation)
-- Progressive disclosure (1-2 questions at a time)
-- Intelligent detection (respect user's time)
-- Natural conversation flow
+-   Less cognitive load (AI guides conversation)
+-   Progressive disclosure (1-2 questions at a time)
+-   Intelligent detection (respect user's time)
+-   Natural conversation flow
 
 ### 3. Template Parity with Customization
 
@@ -250,9 +250,9 @@ AI: "Apply updates? (yes/no)"
 
 **How**:
 
-- `[CUSTOMIZE: ...]` placeholders for variable content
-- Non-negotiable sections preserved (generator-first, security-first)
-- Audit-first customization fills placeholders intelligently
+-   `[CUSTOMIZE: ...]` placeholders for variable content
+-   Non-negotiable sections preserved (generator-first, security-first)
+-   Audit-first customization fills placeholders intelligently
 
 ### 4. Interactive Learning Onboarding
 
@@ -262,10 +262,10 @@ AI: "Apply updates? (yes/no)"
 
 **Features**:
 
-- User-driven exploration (choose topics)
-- When/why guidance (not just what)
-- Progressive depth (overview or deep dive)
-- Always accessible reference
+-   User-driven exploration (choose topics)
+-   When/why guidance (not just what)
+-   Progressive depth (overview or deep dive)
+-   Always accessible reference
 
 ---
 
@@ -448,49 +448,49 @@ just dev
 
 **Customization Workflow**:
 
-- [ ] Generate test project from template
-- [ ] Run `just customize-instructions`
-- [ ] Use `@meta.customize-instructions` chatmode
-- [ ] Verify audit detects project configuration correctly
-- [ ] Answer targeted questions (expect 2-5)
-- [ ] Confirm customizations summary is accurate
-- [ ] Apply updates
-- [ ] Verify `copilot-instructions.md` is properly customized
-- [ ] Test GitHub Copilot with customized instructions
+-   [ ] Generate test project from template
+-   [ ] Run `just customize-instructions`
+-   [ ] Use `@meta.customize-instructions` chatmode
+-   [ ] Verify audit detects project configuration correctly
+-   [ ] Answer targeted questions (expect 2-5)
+-   [ ] Confirm customizations summary is accurate
+-   [ ] Apply updates
+-   [ ] Verify `copilot-instructions.md` is properly customized
+-   [ ] Test GitHub Copilot with customized instructions
 
 **Onboarding Workflow**:
 
-- [ ] Use `@onboarding.overview` chatmode
-- [ ] Request "overview" → verify quick start shown
-- [ ] Request "recipes" → verify just commands with when/why
-- [ ] Request "chatmodes" → verify TDD/Debug workflows explained
-- [ ] Request "prompts" → verify available prompts listed
-- [ ] Request "tools" → verify MCP servers documented
-- [ ] Request "workflows" → verify development processes explained
+-   [ ] Use `@onboarding.overview` chatmode
+-   [ ] Request "overview" → verify quick start shown
+-   [ ] Request "recipes" → verify just commands with when/why
+-   [ ] Request "chatmodes" → verify TDD/Debug workflows explained
+-   [ ] Request "prompts" → verify available prompts listed
+-   [ ] Request "tools" → verify MCP servers documented
+-   [ ] Request "workflows" → verify development processes explained
 
 **Edge Cases**:
 
-- [ ] Missing `.copier-answers.yml` (graceful fallback)
-- [ ] Detection conflicts (asks user to clarify)
-- [ ] 100% auto-detection (skips questions, confirms)
-- [ ] User unsure during customization (suggests defaults)
-- [ ] User overwhelmed during onboarding (simplifies to 3 key points)
+-   [ ] Missing `.copier-answers.yml` (graceful fallback)
+-   [ ] Detection conflicts (asks user to clarify)
+-   [ ] 100% auto-detection (skips questions, confirms)
+-   [ ] User unsure during customization (suggests defaults)
+-   [ ] User overwhelmed during onboarding (simplifies to 3 key points)
 
 ### Success Metrics
 
 **Customization**:
 
-- Questions reduced: 60-70% (10 → 3-4 average)
-- Time saved: 50%+ reduction
-- User satisfaction: "AI seems smart" feedback
-- Accuracy: 95%+ correct detection
+-   Questions reduced: 60-70% (10 → 3-4 average)
+-   Time saved: 50%+ reduction
+-   User satisfaction: "AI seems smart" feedback
+-   Accuracy: 95%+ correct detection
 
 **Onboarding**:
 
-- Engagement: Users explore 2+ walkthroughs
-- Comprehension: Correct command usage after onboarding
-- Retention: Users return for reference
-- Satisfaction: "Helpful for getting started" feedback
+-   Engagement: Users explore 2+ walkthroughs
+-   Comprehension: Correct command usage after onboarding
+-   Retention: Users return for reference
+-   Satisfaction: "Helpful for getting started" feedback
 
 ---
 

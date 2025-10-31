@@ -1,6 +1,6 @@
 /* Spec ID utilities: extract and validate product and developer spec IDs.
 Implements: PRD-001/PRD-002; DEV-SPEC-003 */
-const fs = require("node:fs");
+const fs = require('node:fs');
 
 function extractIdsFromText(text, source) {
   const found = [];
@@ -23,7 +23,7 @@ function extractIdsFromText(text, source) {
 
 function extractIdsFromFile(path) {
   if (!fs.existsSync(path)) return [];
-  const text = fs.readFileSync(path, "utf8");
+  const text = fs.readFileSync(path, 'utf8');
   return extractIdsFromText(text, path);
 }
 

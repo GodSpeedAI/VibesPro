@@ -4,27 +4,25 @@
    action: generate | templates | validate
 */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 async function main() {
   const args = process.argv.slice(2);
   if (args.length < 3) {
-    console.error(
-      JSON.stringify({ success: false, error: "insufficient args" }),
-    );
+    console.error(JSON.stringify({ success: false, error: 'insufficient args' }));
     process.exit(2);
   }
 
   const [contextFile, outputDir, action] = args;
   let context = {};
   try {
-    context = JSON.parse(fs.readFileSync(contextFile, "utf8"));
+    context = JSON.parse(fs.readFileSync(contextFile, 'utf8'));
   } catch (e) {
     console.error(
       JSON.stringify({
         success: false,
-        error: "failed to read context file: " + String(e),
+        error: 'failed to read context file: ' + String(e),
       }),
     );
     process.exit(2);
@@ -33,16 +31,16 @@ async function main() {
   // Load generator module; support both CJS and ESM shapes
   let mod;
   try {
-    mod = require("./generator.js");
+    mod = require('./generator.js');
   } catch (e) {
     // Try dynamic import for ESM
     try {
-      mod = await import(path.resolve(__dirname, "generator.js"));
+      mod = await import(path.resolve(__dirname, 'generator.js'));
     } catch (err) {
       console.error(
         JSON.stringify({
           success: false,
-          error: "failed to load generator module: " + String(err),
+          error: 'failed to load generator module: ' + String(err),
         }),
       );
       process.exit(1);
@@ -58,7 +56,7 @@ async function main() {
     console.error(
       JSON.stringify({
         success: false,
-        error: "DocumentationGenerator not found in module",
+        error: 'DocumentationGenerator not found in module',
       }),
     );
     process.exit(1);
@@ -67,29 +65,25 @@ async function main() {
   try {
     const generator = new DocumentationGenerator(outputDir);
 
-    if (action === "generate") {
+    if (action === 'generate') {
       const docs = await generator.generateDocumentation(context);
       console.log(JSON.stringify({ success: true, docs }));
       process.exit(0);
     }
 
-    if (action === "templates") {
+    if (action === 'templates') {
       await generator.generateAndSaveTemplates(context);
       console.log(JSON.stringify({ success: true }));
       process.exit(0);
     }
 
-    if (action === "validate") {
-      const validation = await generator.validateDocumentation(
-        context.docs || {},
-      );
+    if (action === 'validate') {
+      const validation = await generator.validateDocumentation(context.docs || {});
       console.log(JSON.stringify(validation));
       process.exit(0);
     }
 
-    console.error(
-      JSON.stringify({ success: false, error: "unknown action: " + action }),
-    );
+    console.error(JSON.stringify({ success: false, error: 'unknown action: ' + action }));
     process.exit(2);
   } catch (err) {
     console.error(JSON.stringify({ success: false, error: String(err) }));

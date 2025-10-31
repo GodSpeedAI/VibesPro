@@ -21,12 +21,12 @@
 
 **Status values**:
 
-- `planned` - Spec exists, not yet implemented
-- `in-progress` - Implementation started
-- `implemented` - Code complete, tests passing
-- `referenced` - Referenced in docs/code
-- `validated` - Reviewed and validated
-- `deprecated` - No longer applicable
+-   `planned` - Spec exists, not yet implemented
+-   `in-progress` - Implementation started
+-   `implemented` - Code complete, tests passing
+-   `referenced` - Referenced in docs/code
+-   `validated` - Reviewed and validated
+-   `deprecated` - No longer applicable
 
 ---
 
@@ -56,11 +56,11 @@
 
 ## Maintenance
 
-- **Auto-generation**: Run `just spec-matrix` to scan codebase and update matrix
-- **Manual updates**: Update status and notes as implementation progresses
-- **Review cadence**: Check weekly during active development
-- **Coverage target**: Aim for 100% spec-to-artifact mapping
-- **Keep notes concise**: ≤140 characters for scanability
+-   **Auto-generation**: Run `just spec-matrix` to scan codebase and update matrix
+-   **Manual updates**: Update status and notes as implementation progresses
+-   **Review cadence**: Check weekly during active development
+-   **Coverage target**: Aim for 100% spec-to-artifact mapping
+-   **Keep notes concise**: ≤140 characters for scanability
 
 ---
 

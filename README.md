@@ -12,9 +12,9 @@
 
 **VibesPro is a Copier template, not a standalone application.**
 
-- 🎨 **This repository** contains the template that generates projects
-- 🏗️ **You work in** the projects that VibesPro generates for you
-- 🚀 **Quick start:** `copier copy gh:GodSpeedAI/VibesPro my-project`
+-   🎨 **This repository** contains the template that generates projects
+-   🏗️ **You work in** the projects that VibesPro generates for you
+-   🚀 **Quick start:** `copier copy gh:GodSpeedAI/VibesPro my-project`
 
 Think of VibesPro as a **cookie cutter** 🍪—you don't work inside the cookie cutter, you use it to create cookies (projects) that you then customize and enjoy!
 
@@ -34,10 +34,10 @@ That's VibesPro.
 
 **VibesPro is like having an expert architect sitting beside you**, one who:
 
-- **Remembers every decision** your team has made (and why)
-- **Speaks your language** (TypeScript, Python, Rust—pick your flavor)
-- **Never forgets best practices** (hexagonal architecture, domain-driven design, type safety)
-- **Gets smarter over time** (learning from your patterns and preferences)
+-   **Remembers every decision** your team has made (and why)
+-   **Speaks your language** (TypeScript, Python, Rust—pick your flavor)
+-   **Never forgets best practices** (hexagonal architecture, domain-driven design, type safety)
+-   **Gets smarter over time** (learning from your patterns and preferences)
 
 Think of it as a **GPS for software architecture**—you tell it where you want to go, and it creates the clearest path there, avoiding potholes and dead ends.
 
@@ -66,13 +66,13 @@ Behind the scenes, intelligent templates assemble your application like an exper
 
 **What you get:**
 
-- 📂 A complete, organized workspace (think: a well-organized kitchen, not a junk drawer)
-- ✅ Tests already written (your safety net is built-in)
-- 📚 Documentation that actually explains things (imagine instructions that make sense)
-- 🔐 Security baked in, not bolted on later
-- 🛠️ **Complete development setup** – Nx, TypeScript, ESLint, Jest all configured and working
-- 🎯 **Zero manual configuration** – Run `pnpm install` and start coding immediately
-- 🔄 **Production-ready from day one** – Build, lint, and test targets work out of the box
+-   📂 A complete, organized workspace (think: a well-organized kitchen, not a junk drawer)
+-   ✅ Tests already written (your safety net is built-in)
+-   📚 Documentation that actually explains things (imagine instructions that make sense)
+-   🔐 Security baked in, not bolted on later
+-   🛠️ **Complete development setup** – Nx, TypeScript, ESLint, Jest all configured and working
+-   🎯 **Zero manual configuration** – Run `pnpm install` and start coding immediately
+-   🔄 **Production-ready from day one** – Build, lint, and test targets work out of the box
 
 ### Step 3: **Start Building What Matters**
 
@@ -95,10 +95,10 @@ It's like muscle memory for your entire team. New developer joins? They inherit 
 
 **Powered by temporal intelligence:**
 
-- 🕰️ Tracks decisions across time
-- 🎯 Suggests patterns that worked before
-- 🔄 Improves recommendations with each project
-- 💾 Stores knowledge locally (your insights stay yours)
+-   🕰️ Tracks decisions across time
+-   🎯 Suggests patterns that worked before
+-   🔄 Improves recommendations with each project
+-   💾 Stores knowledge locally (your insights stay yours)
 
 ---
 
@@ -106,18 +106,18 @@ It's like muscle memory for your entire team. New developer joins? They inherit 
 
 ### Instead of Days, Think Minutes
 
-- **Before:** Week one: setup, configurations, folder structure, testing framework...
-- **After:** Hour one: writing actual business logic
+-   **Before:** Week one: setup, configurations, folder structure, testing framework...
+-   **After:** Hour one: writing actual business logic
 
 ### Instead of Chaos, Think Clarity
 
-- **Before:** Every project looks different; new dev needs a week to understand the layout
-- **After:** Consistent architecture across all projects; new dev productive on day one
+-   **Before:** Every project looks different; new dev needs a week to understand the layout
+-   **After:** Consistent architecture across all projects; new dev productive on day one
 
 ### Instead of Debt, Think Foundation
 
-- **Before:** Technical debt accumulates from day one (cutting corners to ship faster)
-- **After:** Best practices embedded from the start; you're building on solid ground
+-   **Before:** Technical debt accumulates from day one (cutting corners to ship faster)
+-   **After:** Best practices embedded from the start; you're building on solid ground
 
 ---
 
@@ -127,26 +127,26 @@ Think of your application like a **modern building**:
 
 **🏛️ Interface Layer** (The Lobby)
 
-- Where users and systems enter
-- Web pages, API endpoints, command-line tools
-- First impression matters; this layer makes it welcoming
+-   Where users and systems enter
+-   Web pages, API endpoints, command-line tools
+-   First impression matters; this layer makes it welcoming
 
 **🎯 Application Layer** (The Concierge)
 
-- Coordinates everything
-- Routes requests to the right place
-- Handles the "what happens when" logic
+-   Coordinates everything
+-   Routes requests to the right place
+-   Handles the "what happens when" logic
 
 **💎 Domain Layer** (The Vault)
 
-- Your business rules and logic
-- The crown jewels that make your app unique
-- Protected, pure, and portable
+-   Your business rules and logic
+-   The crown jewels that make your app unique
+-   Protected, pure, and portable
 
 **🔌 Infrastructure Layer** (The Utilities)
 
-- Databases, external services, technical plumbing
-- Swappable and upgradeable without touching business logic
+-   Databases, external services, technical plumbing
+-   Swappable and upgradeable without touching business logic
 
 ---
 
@@ -177,25 +177,25 @@ If you're contributing to the template itself (editing files in this repo), we r
 
 ### For Product Teams
 
-- ⚡ **Launch in hours, not weeks** – Complete applications generated in minutes
-- 🎯 **Stay aligned** – Everyone follows the same proven architecture patterns
-- 📈 **Ship with confidence** – Built-in testing and security guardrails
-- ✅ **No setup friction** – Every generated project works immediately after `pnpm install`
+-   ⚡ **Launch in hours, not weeks** – Complete applications generated in minutes
+-   🎯 **Stay aligned** – Everyone follows the same proven architecture patterns
+-   📈 **Ship with confidence** – Built-in testing and security guardrails
+-   ✅ **No setup friction** – Every generated project works immediately after `pnpm install`
 
 ### For Developers
 
-- 🧰 **Stop reinventing** – Reusable templates for common patterns
-- 🔍 **Find answers fast** – Documentation generated alongside code
-- 🤝 **Onboard quickly** – Consistent structure across all projects
-- 🎨 **Complete tooling** – Nx monorepo, ESLint, Jest, TypeScript all pre-configured
-- ⚡ **Instant productivity** – Run `npx nx build`, `lint`, `test` immediately—no setup needed
+-   🧰 **Stop reinventing** – Reusable templates for common patterns
+-   🔍 **Find answers fast** – Documentation generated alongside code
+-   🤝 **Onboard quickly** – Consistent structure across all projects
+-   🎨 **Complete tooling** – Nx monorepo, ESLint, Jest, TypeScript all pre-configured
+-   ⚡ **Instant productivity** – Run `npx nx build`, `lint`, `test` immediately—no setup needed
 
 ### For Architects
 
-- 🏛️ **Enforce standards** – Hexagonal architecture and DDD built-in
-- 📊 **Track decisions** – Temporal database captures architectural choices
-- 🔄 **Evolve patterns** – AI learns from your team's wisdom
-- 🎯 **Zero configuration drift** – Every project starts with the same solid foundation
+-   🏛️ **Enforce standards** – Hexagonal architecture and DDD built-in
+-   📊 **Track decisions** – Temporal database captures architectural choices
+-   🔄 **Evolve patterns** – AI learns from your team's wisdom
+-   🎯 **Zero configuration drift** – Every project starts with the same solid foundation
 
 ---
 
@@ -223,11 +223,11 @@ We don't just generate code—we generate _confidence_.
 
 **Every template goes through:**
 
-- ✅ **Type safety checks** (TypeScript, Python, Rust—all verified)
-- ✅ **Architecture validation** (hexagonal patterns enforced)
-- ✅ **Security scanning** (vulnerabilities caught before they ship)
-- ✅ **Performance testing** (your app starts fast, stays fast)
-- ✅ **Documentation generation** (explanations written for humans)
+-   ✅ **Type safety checks** (TypeScript, Python, Rust—all verified)
+-   ✅ **Architecture validation** (hexagonal patterns enforced)
+-   ✅ **Security scanning** (vulnerabilities caught before they ship)
+-   ✅ **Performance testing** (your app starts fast, stays fast)
+-   ✅ **Documentation generation** (explanations written for humans)
 
 **The promise:** If VibesPro generates it, it works. Period.
 
@@ -270,25 +270,25 @@ pnpm dev             ✅ Development server starts instantly
 
 **No more:**
 
-- ❌ "Node version mismatch" errors between team members
-- ❌ Missing tools breaking CI builds
-- ❌ Hours debugging PATH and environment variables
-- ❌ Secrets accidentally committed to version control
+-   ❌ "Node version mismatch" errors between team members
+-   ❌ Missing tools breaking CI builds
+-   ❌ Hours debugging PATH and environment variables
+-   ❌ Secrets accidentally committed to version control
 
 **Just:**
 
-- ✅ Consistent environments across all machines
-- ✅ CI pipelines that actually pass
-- ✅ One-command setup and validation
-- ✅ Secure secret management out of the box
+-   ✅ Consistent environments across all machines
+-   ✅ CI pipelines that actually pass
+-   ✅ One-command setup and validation
+-   ✅ Secure secret management out of the box
 
 **Technical Details:**
 
-- Added `devbox.json`, `.mise.toml`, `.sops.yaml` configuration files
-- Created 11+ shell test suites for environment validation
-- Implemented `scripts/doctor.sh` and `scripts/devbox_boot.sh` helpers
-- Updated CI workflows with proper tool installation steps
-- Fixed version retrieval and linting commands in GitHub Actions
+-   Added `devbox.json`, `.mise.toml`, `.sops.yaml` configuration files
+-   Created 11+ shell test suites for environment validation
+-   Implemented `scripts/doctor.sh` and `scripts/devbox_boot.sh` helpers
+-   Updated CI workflows with proper tool installation steps
+-   Fixed version retrieval and linting commands in GitHub Actions
 
 See: [CHANGELOG.md](CHANGELOG.md) and `docs/work-summaries/` for complete details.
 
@@ -306,7 +306,7 @@ A **complete observability pipeline** following industry best practices (OpenTel
 ✅ **Runtime Feature Flags** – Enable/disable telemetry via `VIBEPRO_OBSERVE` environment variable
 ✅ **Vector Data Pipeline** – OTLP ingestion, transformation, routing, and buffering
 ✅ **OpenObserve Storage** – Long-term trace and log storage with SQL querying
-✅ **Structured Logging** – JSON logs for Node.js (Pino) and Python (structlog)
+✅ **Structured Logging** – JSON logs for Node.js (Pino) and Python (Logfire)
 ✅ **PII Redaction** – Automatic removal of sensitive data in Vector transforms
 ✅ **Trace Correlation** – Link logs to distributed traces with trace_id/span_id
 ✅ **Comprehensive Testing** – 8 test suites validate the entire pipeline
@@ -333,10 +333,10 @@ just observe-test-all
 
 **Performance:**
 
-- 🚀 **<1µs overhead** per trace span
-- 📊 **<3% CPU usage** in Vector at 1k spans/s
-- ⚡ **Zero impact** when `VIBEPRO_OBSERVE=0`
-- 🔄 **Async export** – non-blocking trace emission
+-   🚀 **<1µs overhead** per trace span
+-   📊 **<3% CPU usage** in Vector at 1k spans/s
+-   ⚡ **Zero impact** when `VIBEPRO_OBSERVE=0`
+-   🔄 **Async export** – non-blocking trace emission
 
 **Architecture (3 Layers):**
 
@@ -346,10 +346,10 @@ just observe-test-all
 
 **Security & Privacy:**
 
-- 🔒 PII redaction removes emails, tokens, and secrets automatically
-- 🔐 SOPS-encrypted credentials in `.secrets.env.sops`
-- 🎯 Opt-in telemetry (disabled by default)
-- 🛡️ Token-based authentication with OpenObserve
+-   🔒 PII redaction removes emails, tokens, and secrets automatically
+-   🔐 SOPS-encrypted credentials in `.secrets.env.sops`
+-   🎯 Opt-in telemetry (disabled by default)
+-   🛡️ Token-based authentication with OpenObserve
 
 **Just Recipes:**
 
@@ -363,19 +363,19 @@ just observe-test-all     # Run all observability tests
 
 **New Components:**
 
-- `crates/vibepro-observe/` – Rust instrumentation library
-- `apps/observe-smoke/` – Smoke test application
-- `libs/node-logging/` – Node.js structured logging
-- `libs/python/vibepro_logging.py` – Python structured logging
-- `ops/vector/` – Vector configuration and documentation
-- `tests/ops/` – 8 comprehensive test suites
+-   `crates/vibepro-observe/` – Rust instrumentation library
+-   `apps/observe-smoke/` – Smoke test application
+-   `libs/node-logging/` – Node.js structured logging
+-   `libs/python/vibepro_logging.py` – Python structured logging
+-   `ops/vector/` – Vector configuration and documentation
+-   `tests/ops/` – 8 comprehensive test suites
 
 **Technical Specs:**
 
-- Implemented across 6 TDD phases (DEV-ADR-016, DEV-SDS-017, DEV-PRD-017)
-- OpenTelemetry 0.31.0+ with OTLP/gRPC and HTTP
-- Vector 0.43.0+ with VRL transforms
-- 14 work summaries documenting implementation
+-   Implemented across 6 TDD phases (DEV-ADR-016, DEV-SDS-017, DEV-PRD-017)
+-   OpenTelemetry 0.31.0+ with OTLP/gRPC and HTTP
+-   Vector 0.43.0+ with VRL transforms
+-   14 work summaries documenting implementation
 
 See: `docs/observability/README.md` for complete setup and operational guides.
 
@@ -414,25 +414,25 @@ npx nx show projects   ✅ Projects detected instantly
 
 **No more:**
 
-- ❌ "production is an invalid fileset" errors
-- ❌ Module resolution conflicts
-- ❌ Missing tslib dependency errors
-- ❌ Hours of manual configuration
-- ❌ Copy-pasting configs from other projects
+-   ❌ "production is an invalid fileset" errors
+-   ❌ Module resolution conflicts
+-   ❌ Missing tslib dependency errors
+-   ❌ Hours of manual configuration
+-   ❌ Copy-pasting configs from other projects
 
 **Just:**
 
-- ✅ `pnpm install` and start building
-- ✅ Complete development workflow ready
-- ✅ Professional setup from second one
+-   ✅ `pnpm install` and start building
+-   ✅ Complete development workflow ready
+-   ✅ Professional setup from second one
 
 **Technical Details:**
 
-- Upgraded Nx packages: 19.8.4 → 21.6.4
-- Added 10+ development dependencies
-- Created 13 configuration files in template
-- Fixed TypeScript `moduleResolution` conflicts
-- Included proper error handling patterns for strict mode
+-   Upgraded Nx packages: 19.8.4 → 21.6.4
+-   Added 10+ development dependencies
+-   Created 13 configuration files in template
+-   Fixed TypeScript `moduleResolution` conflicts
+-   Included proper error handling patterns for strict mode
 
 See: `docs/workdocs/template-nx-fixes-complete.md` for full details.
 
@@ -442,57 +442,57 @@ See: `docs/workdocs/template-nx-fixes-complete.md` for full details.
 
 ### ✅ **v0.3.0 – Shipped!** (October 2025)
 
-- 📊 **Production-ready observability stack** – Complete 3-layer architecture
-- 🦀 **Rust-native instrumentation** – `vibepro-observe` crate with OpenTelemetry
-- 📡 **Vector data pipeline** – OTLP ingestion, transformation, and routing
-- 🔍 **OpenObserve storage** – Long-term trace and log analytics
-- 📝 **Structured logging** – Node.js (Pino) and Python (structlog) libraries
-- 🔒 **Security & privacy** – PII redaction and encrypted credentials
-- ⚡ **Runtime feature flags** – `VIBEPRO_OBSERVE` environment control
-- 🧪 **Comprehensive testing** – 8 test suites validate the pipeline
-- 📚 **Complete documentation** – 630+ lines of operational guides
+-   📊 **Production-ready observability stack** – Complete 3-layer architecture
+-   🦀 **Rust-native instrumentation** – `vibepro-observe` crate with OpenTelemetry
+-   📡 **Vector data pipeline** – OTLP ingestion, transformation, and routing
+-   🔍 **OpenObserve storage** – Long-term trace and log analytics
+-   📝 **Structured logging** – Node.js (Pino) and Python (Logfire) libraries
+-   🔒 **Security & privacy** – PII redaction and encrypted credentials
+-   ⚡ **Runtime feature flags** – `VIBEPRO_OBSERVE` environment control
+-   🧪 **Comprehensive testing** – 8 test suites validate the pipeline
+-   📚 **Complete documentation** – 630+ lines of operational guides
 
 ### ✅ **v0.2.0 – Shipped!** (October 2025)
 
-- 🛠️ **Complete development environment setup** – Devbox, Mise, SOPS integration
-- 🔄 **CI/CD improvements** – Environment validation workflows and build matrix
-- ✅ **Environment testing suite** – Comprehensive validation in `tests/env/`
-- 📚 **Environment documentation** – Complete setup guide in `docs/ENVIRONMENT.md`
-- 🎯 **Just task awareness** – Tasks detect and adapt to local configuration
-- 🔐 **Secure secret management** – SOPS encryption out of the box
-- 🚦 **Tool conflict guards** – Volta/Mise coexistence checks
+-   🛠️ **Complete development environment setup** – Devbox, Mise, SOPS integration
+-   🔄 **CI/CD improvements** – Environment validation workflows and build matrix
+-   ✅ **Environment testing suite** – Comprehensive validation in `tests/env/`
+-   📚 **Environment documentation** – Complete setup guide in `docs/ENVIRONMENT.md`
+-   🎯 **Just task awareness** – Tasks detect and adapt to local configuration
+-   🔐 **Secure secret management** – SOPS encryption out of the box
+-   🚦 **Tool conflict guards** – Volta/Mise coexistence checks
 
 ### ✅ **v0.1.0 – Foundation** (October 2025)
 
-- ✨ Complete project generation with hexagonal architecture
-- 🤖 AI-powered temporal knowledge base
-- 💻 TypeScript, Python, and Rust support
-- 🧪 Automated testing and documentation
-- 🎯 Complete Nx, ESLint, Jest configuration out of the box
-- 🛠️ Zero-config development setup—projects work immediately after `pnpm install`
-- 📦 All dependencies and tooling pre-configured (upgraded to Nx 21.6.4)
-- 🎨 Intelligent customization with audit-first approach
-- 📚 Interactive onboarding for generated projects
+-   ✨ Complete project generation with hexagonal architecture
+-   🤖 AI-powered temporal knowledge base
+-   💻 TypeScript, Python, and Rust support
+-   🧪 Automated testing and documentation
+-   🎯 Complete Nx, ESLint, Jest configuration out of the box
+-   🛠️ Zero-config development setup—projects work immediately after `pnpm install`
+-   📦 All dependencies and tooling pre-configured (upgraded to Nx 21.6.4)
+-   🎨 Intelligent customization with audit-first approach
+-   📚 Interactive onboarding for generated projects
 
 ### 🔜 **v0.4.0 – AI Enhancements** (Q1 2026)
 
-- 🧠 **Enhanced AI pattern prediction** – Smarter suggestions based on project context
-- ⚡ **Performance optimization toolkit** – Automated performance analysis and recommendations
-- 🎯 **Extended context awareness** – Deeper understanding of project architecture and patterns
+-   🧠 **Enhanced AI pattern prediction** – Smarter suggestions based on project context
+-   ⚡ **Performance optimization toolkit** – Automated performance analysis and recommendations
+-   🎯 **Extended context awareness** – Deeper understanding of project architecture and patterns
 
 ### 🏗️ **v0.5.0 – Ecosystem Expansion** (Q2 2026)
 
-- 🏪 **Template marketplace** – Share your patterns with the community
-- 🎨 **Additional domain generators** – E-commerce, auth, analytics, and more
-- 🔌 **Plugin system** – Extend VibesPro with custom generators
-- 🌐 **Multi-cloud support** – AWS, Azure, GCP deployment templates
+-   🏪 **Template marketplace** – Share your patterns with the community
+-   🎨 **Additional domain generators** – E-commerce, auth, analytics, and more
+-   🔌 **Plugin system** – Extend VibesPro with custom generators
+-   🌐 **Multi-cloud support** – AWS, Azure, GCP deployment templates
 
 ### 🏆 **v1.0 – Production Ready** (Q3 2026)
 
-- 🎓 **Enterprise certification** – Battle-tested at scale
-- 📖 **Complete documentation refresh** – Comprehensive guides and tutorials
-- 🔒 **Security hardening** – Full security audit and certification
-- 🚀 **Performance benchmarks** – Proven scalability and reliability
+-   🎓 **Enterprise certification** – Battle-tested at scale
+-   📖 **Complete documentation refresh** – Comprehensive guides and tutorials
+-   🔒 **Security hardening** – Full security audit and certification
+-   🚀 **Performance benchmarks** – Proven scalability and reliability
 
 ---
 
@@ -515,18 +515,18 @@ Building VibesPro is a team effort. Whether you're an engineer, architect, or AI
 
 Since teams started using VibesPro:
 
-- ⚡ **95% faster setup** – Weeks of scaffolding collapsed to minutes
-- 🎯 **100% architecture compliance** – No shortcuts, no technical debt
-- 🧠 **80%+ AI acceptance** – Suggested improvements that developers actually use
-- ⏱️ **<30 second generation** – Fresh coffee, fresh codebase
-- 🚀 **<2 minute builds** – From code to running application
-- ✅ **Zero manual configuration** – All Nx, ESLint, Jest, TypeScript settings included (v0.1.0)
-- 🔧 **1-2 hours saved per project** – No more fixing daemon crashes or dependency issues
-- 🎨 **60-70% fewer questions** – Audit-first customization detects project setup automatically
-- 🛠️ **Consistent environments** – Devbox + Mise eliminate "works on my machine" issues (v0.2.0)
-- 🔄 **CI reliability** – Environment validation ensures builds pass first time (v0.2.0)
-- 📊 **Production observability** – Complete telemetry pipeline with <1µs overhead (v0.3.0)
-- 🔍 **Full trace visibility** – End-to-end request tracking with OpenTelemetry (v0.3.0)
+-   ⚡ **95% faster setup** – Weeks of scaffolding collapsed to minutes
+-   🎯 **100% architecture compliance** – No shortcuts, no technical debt
+-   🧠 **80%+ AI acceptance** – Suggested improvements that developers actually use
+-   ⏱️ **<30 second generation** – Fresh coffee, fresh codebase
+-   🚀 **<2 minute builds** – From code to running application
+-   ✅ **Zero manual configuration** – All Nx, ESLint, Jest, TypeScript settings included (v0.1.0)
+-   🔧 **1-2 hours saved per project** – No more fixing daemon crashes or dependency issues
+-   🎨 **60-70% fewer questions** – Audit-first customization detects project setup automatically
+-   🛠️ **Consistent environments** – Devbox + Mise eliminate "works on my machine" issues (v0.2.0)
+-   🔄 **CI reliability** – Environment validation ensures builds pass first time (v0.2.0)
+-   📊 **Production observability** – Complete telemetry pipeline with <1µs overhead (v0.3.0)
+-   🔍 **Full trace visibility** – End-to-end request tracking with OpenTelemetry (v0.3.0)
 
 ---
 
@@ -538,10 +538,10 @@ Software development shouldn't feel like starting from zero every time. The same
 
 Imagine a world where:
 
-- Junior developers inherit senior-level architecture from day one
-- Teams ship faster because the foundation is already solid
-- Best practices spread automatically, not through painful meetings
-- Every project makes the next one easier
+-   Junior developers inherit senior-level architecture from day one
+-   Teams ship faster because the foundation is already solid
+-   Best practices spread automatically, not through painful meetings
+-   Every project makes the next one easier
 
 **That world is what we're building. One generated project at a time.**
 
@@ -549,11 +549,11 @@ Imagine a world where:
 
 ## 📚 Learn More
 
-- **📖 Full Documentation** – `docs/README.md`
-- **🏗️ Architecture Deep Dive** – `docs/ARCHITECTURE.md`
-- **🎓 Tutorials** – `docs/how-to/`
-- **🤖 AI Workflows** – `docs/aiassist/`
-- **🔬 Technical Specs** – `docs/spec_index.md`
+-   **📖 Full Documentation** – `docs/README.md`
+-   **🏗️ Architecture Deep Dive** – `docs/ARCHITECTURE.md`
+-   **🎓 Tutorials** – `docs/how-to/`
+-   **🤖 AI Workflows** – `docs/aiassist/`
+-   **🔬 Technical Specs** – `docs/spec_index.md`
 
 ---
 
@@ -575,16 +575,16 @@ We follow what we call **"The Photoshop Rule"** — a simple way to understand h
 
 It's the same with VibesPro:
 
-- ✅ **Use VibesPro freely inside your organization** — generate projects, build applications, support your development workflows
-- ✅ **Use it to create outputs** (applications, services, codebases) and use or sell those outputs however you like
-- ✅ **Modify and customize** templates and generators for your team's needs
-- ❌ **Don't resell VibesPro itself** — you can't package it up and offer it as a hosted platform or SaaS to third parties without a commercial license
-- ❌ **Don't strip out VibesPro's core** to make a competing generator service
+-   ✅ **Use VibesPro freely inside your organization** — generate projects, build applications, support your development workflows
+-   ✅ **Use it to create outputs** (applications, services, codebases) and use or sell those outputs however you like
+-   ✅ **Modify and customize** templates and generators for your team's needs
+-   ❌ **Don't resell VibesPro itself** — you can't package it up and offer it as a hosted platform or SaaS to third parties without a commercial license
+-   ❌ **Don't strip out VibesPro's core** to make a competing generator service
 
 **Dual License Structure:**
 
-- 🧩 **MPL-2.0 (Open Source)** — for personal, educational, and internal company use
-- 💼 **Commercial License** — required if you want to embed, resell, or offer VibesPro as a hosted service
+-   🧩 **MPL-2.0 (Open Source)** — for personal, educational, and internal company use
+-   💼 **Commercial License** — required if you want to embed, resell, or offer VibesPro as a hosted service
 
 **In short:** Build amazing things with VibesPro. Sell what you build. Just don't sell VibesPro itself.
 

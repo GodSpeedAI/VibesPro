@@ -6,19 +6,19 @@
 
 VibesPro is a project generator that creates a complete, professional application for you. Think of it like a "create new document" wizard, but instead of a blank page, you get:
 
-- ✅ A fully structured codebase
-- ✅ AI-powered development tools
-- ✅ Best practices built-in
-- ✅ Documentation included
-- ✅ Ready to customize and build
+-   ✅ A fully structured codebase
+-   ✅ AI-powered development tools
+-   ✅ Best practices built-in
+-   ✅ Documentation included
+-   ✅ Ready to customize and build
 
 ## Before You Start
 
 ### What You Need
 
-- A computer (Mac, Windows, or Linux)
-- Basic familiarity with the command line (Terminal/Command Prompt)
-- An idea of what you want to build
+-   A computer (Mac, Windows, or Linux)
+-   Basic familiarity with the command line (Terminal/Command Prompt)
+-   An idea of what you want to build
 
 ### Optional: Python dev tools for local validation
 
@@ -62,15 +62,15 @@ just ai-validate     # runs pre-commit checks, linters, typecheck and tests
 
 Notes:
 
-- The project includes a helper `tools/check_mypy.sh` which prefers `.venv/bin/mypy` when present and falls back to PATH mypy. Using the `.venv` created above ensures consistent results.
-- `mypy --install-types` will attempt to fetch type stubs automatically when pip is available in the venv. If network access is restricted, install the listed type packages manually.
-- Consider adding `.venv/` to your global `~/.gitignore` or the repo `.gitignore` to avoid checking the venv into source control.
+-   The project includes a helper `tools/check_mypy.sh` which prefers `.venv/bin/mypy` when present and falls back to PATH mypy. Using the `.venv` created above ensures consistent results.
+-   `mypy --install-types` will attempt to fetch type stubs automatically when pip is available in the venv. If network access is restricted, install the listed type packages manually.
+-   Consider adding `.venv/` to your global `~/.gitignore` or the repo `.gitignore` to avoid checking the venv into source control.
 
 ### What You DON'T Need
 
-- Deep programming knowledge
-- Understanding of complex architecture
-- Experience with all the technologies
+-   Deep programming knowledge
+-   Understanding of complex architecture
+-   Experience with all the technologies
 
 **The generator will ask you questions and give you good defaults for everything!**
 
@@ -193,8 +193,8 @@ Choices:
 
 For the remaining questions:
 
-- If it says "(Advanced)" → **just press Enter to accept the default**
-- If you're unsure → **press Enter to accept the default**
+-   If it says "(Advanced)" → **just press Enter to accept the default**
+-   If you're unsure → **press Enter to accept the default**
 
 **All the defaults are carefully chosen to work great!**
 
@@ -221,9 +221,9 @@ Your project includes:
 
 ### AI-Powered Features
 
-- Open the GitHub Copilot chat
-- Select a chat mode (like "Navigator" for general coding help)
-- Start asking questions or requesting features!
+-   Open the GitHub Copilot chat
+-   Select a chat mode (like "Navigator" for general coding help)
+-   Start asking questions or requesting features!
 
 ### Ready-to-Run Commands
 
@@ -259,10 +259,10 @@ Don't worry! Most choices can be changed later. The important thing is to get st
 
 Look for these clues in the question:
 
-- **(Recommended)** → That's the safe choice
-- **"If unsure, choose..."** → Follow that advice
-- **"Advanced"** → Just press Enter to skip
-- **Examples provided** → Pick something similar to the examples
+-   **(Recommended)** → That's the safe choice
+-   **"If unsure, choose..."** → Follow that advice
+-   **"Advanced"** → Just press Enter to skip
+-   **Examples provided** → Pick something similar to the examples
 
 ### "Can I change my answers later?"
 
@@ -324,50 +324,50 @@ Include AI tools?
 
 ### Immediately Ready
 
-- ✅ TypeScript frontend with Next.js
-- ✅ Python backend with FastAPI
-- ✅ Database connection configured
-- ✅ User authentication (via Supabase)
-- ✅ AI coding assistant configured
-- ✅ Tests set up
-- ✅ Documentation generated
-- ✅ Development environment ready
+-   ✅ TypeScript frontend with Next.js
+-   ✅ Python backend with FastAPI
+-   ✅ Database connection configured
+-   ✅ User authentication (via Supabase)
+-   ✅ AI coding assistant configured
+-   ✅ Tests set up
+-   ✅ Documentation generated
+-   ✅ Development environment ready
 
 ### Included Free Services
 
-- **Supabase** (if you chose it):
+-   **Supabase** (if you chose it):
 
-  - User login/signup
-  - Database hosting
-  - Real-time updates
-  - File storage
-  - Free tier available!
+    -   User login/signup
+    -   Database hosting
+    -   Real-time updates
+    -   File storage
+    -   Free tier available!
 
-- **GitHub Copilot** (if you chose AI):
-  - Smart code suggestions
-  - Chat with AI about your code
-  - Automatic best practices
-  - Documentation generation
+-   **GitHub Copilot** (if you chose AI):
+    -   Smart code suggestions
+    -   Chat with AI about your code
+    -   Automatic best practices
+    -   Documentation generation
 
 ### What to Build Next
 
 1. **Customize the example pages**
 
-   - Look in `apps/your-app-name/`
-   - Modify the sample components
-   - Add your own pages
+    - Look in `apps/your-app-name/`
+    - Modify the sample components
+    - Add your own pages
 
 2. **Add your business logic**
 
-   - Create entities in `libs/your-domain/domain/`
-   - Add use cases in `libs/your-domain/application/`
-   - Implement adapters in `libs/your-domain/infrastructure/`
+    - Create entities in `libs/your-domain/domain/`
+    - Add use cases in `libs/your-domain/application/`
+    - Implement adapters in `libs/your-domain/infrastructure/`
 
 3. **Use the AI assistant**
-   - Ask it to generate components
-   - Request new features
-   - Get code reviews
-   - Learn best practices
+    - Ask it to generate components
+    - Request new features
+    - Get code reviews
+    - Learn best practices
 
 ## Tips for Success
 
@@ -379,9 +379,9 @@ Don't try to build everything at once. Start with one feature and expand.
 
 The AI modes are incredibly helpful! Don't be shy:
 
-- "How do I add a new page?"
-- "Create a user profile component"
-- "What's the best way to handle form validation?"
+-   "How do I add a new page?"
+-   "Create a user profile component"
+-   "What's the best way to handle form validation?"
 
 ### 📚 Read the Generated Docs
 
@@ -414,16 +414,16 @@ just docs
 
 Open VS Code's chat and select:
 
-- **Navigator** - General coding questions
-- **TDD** - Test-driven development
-- **Debug** - When something's broken
-- **Spec** - Writing specifications
+-   **Navigator** - General coding questions
+-   **TDD** - Test-driven development
+-   **Debug** - When something's broken
+-   **Spec** - Writing specifications
 
 ### Community
 
-- GitHub Issues: Report bugs or ask questions
-- Documentation: Check the generated `docs/` folder
-- Examples: Look at the example code included
+-   GitHub Issues: Report bugs or ask questions
+-   Documentation: Check the generated `docs/` folder
+-   Examples: Look at the example code included
 
 ## Next Steps
 
@@ -471,13 +471,13 @@ AI: Yes
 
 When in doubt, these work great:
 
-- Architecture: Hexagonal
-- Frontend: Next.js
-- Backend: FastAPI
-- Database: PostgreSQL
-- Supabase: Yes
-- AI Tools: Yes
-- Everything else: [Press Enter]
+-   Architecture: Hexagonal
+-   Frontend: Next.js
+-   Backend: FastAPI
+-   Database: PostgreSQL
+-   Supabase: Yes
+-   AI Tools: Yes
+-   Everything else: [Press Enter]
 
 ---
 

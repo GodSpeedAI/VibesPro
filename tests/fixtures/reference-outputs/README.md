@@ -5,10 +5,10 @@ These serve as golden files to ensure generated projects maintain quality.
 
 ## Structure
 
-- `hexagonal-project/` - Expected output for hexagonal architecture project
-- `ai-enabled-project/` - Expected output when AI workflows are enabled
-- `minimal-project/` - Expected output for minimal configuration
-- `performance-baseline.json` - Performance benchmark expectations
+-   `hexagonal-project/` - Expected output for hexagonal architecture project
+-   `ai-enabled-project/` - Expected output when AI workflows are enabled
+-   `minimal-project/` - Expected output for minimal configuration
+-   `performance-baseline.json` - Performance benchmark expectations
 
 ## Usage
 

@@ -6,8 +6,8 @@ Pick the right mode for the job; each links to prompts and the context bundle.
 
 ## Modes
 
-- TDD: `tdd.red`, `tdd.green`, `tdd.refactor`
-- Debug: `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`, `debug.refactor`, `debug.regress`
+-   TDD: `tdd.red`, `tdd.green`, `tdd.refactor`
+-   Debug: `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`, `debug.refactor`, `debug.regress`
 
 ## Steps
 

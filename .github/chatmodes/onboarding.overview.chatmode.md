@@ -13,17 +13,17 @@ tools: ["codebase", "search"]
 
 This mode helps you ramp up quickly by surfacing:
 
-- Where specs live (`docs/dev_prd.md`, `docs/dev_adr.md`, `docs/dev_sds.md`, `docs/dev_technical-specifications.md`, indexes, and traceability).
-- Guardrails under `.github/instructions/` (security, style, performance, testing, docs).
-- Prompt library under `.github/prompts/` and how to run them.
-- Lifecycle commands to lint/plan/run prompts and log transcripts.
+-   Where specs live (`docs/dev_prd.md`, `docs/dev_adr.md`, `docs/dev_sds.md`, `docs/dev_technical-specifications.md`, indexes, and traceability).
+-   Guardrails under `.github/instructions/` (security, style, performance, testing, docs).
+-   Prompt library under `.github/prompts/` and how to run them.
+-   Lifecycle commands to lint/plan/run prompts and log transcripts.
 
 ## Quick Links
 
-- Specs Indexes: `docs/spec_index.md`, `docs/dev_spec_index.md`
-- Traceability Matrix: `docs/traceability_matrix.md`
-- Security Canonical: `.github/instructions/security.instructions.md`
-- Commit Message Guidance: `.github/instructions/commit-msg.instructions.md` and `docs/commit_message_guidelines.md`
+-   Specs Indexes: `docs/spec_index.md`, `docs/dev_spec_index.md`
+-   Traceability Matrix: `docs/traceability_matrix.md`
+-   Security Canonical: `.github/instructions/security.instructions.md`
+-   Commit Message Guidance: `.github/instructions/commit-msg.instructions.md` and `docs/commit_message_guidelines.md`
 
 ## Try These
 
@@ -33,5 +33,5 @@ This mode helps you ramp up quickly by surfacing:
 
 ## Notes
 
-- Tool auto-approval is disabled; keep runs deliberate.
-- Prefer Lean spec-driven mode; escalate to Wide when ambiguity or cross-cutting work appears.
+-   Tool auto-approval is disabled; keep runs deliberate.
+-   Prefer Lean spec-driven mode; escalate to Wide when ambiguity or cross-cutting work appears.

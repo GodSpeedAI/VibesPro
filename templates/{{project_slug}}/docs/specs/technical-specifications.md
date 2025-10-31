@@ -25,43 +25,43 @@ date: {{ year }}
 
 #### Overview
 
-- **Feature**: [What is being implemented]
-- **Purpose**: [Why this is needed]
-- **Priority**: [High | Medium | Low]
-- **Status**: [Draft | Approved | Implemented]
+-   **Feature**: [What is being implemented]
+-   **Purpose**: [Why this is needed]
+-   **Priority**: [High | Medium | Low]
+-   **Status**: [Draft | Approved | Implemented]
 
 #### Technical Requirements
 
-- **FR-1**: [Functional requirement]
-- **NFR-1**: [Non-functional requirement]
+-   **FR-1**: [Functional requirement]
+-   **NFR-1**: [Non-functional requirement]
 
 #### Implementation Details
 
-- **Architecture**: [Design pattern, components involved]
-- **Data Structures**: [Key types and interfaces]
-- **Algorithms**: [Algorithm description and complexity]
+-   **Architecture**: [Design pattern, components involved]
+-   **Data Structures**: [Key types and interfaces]
+-   **Algorithms**: [Algorithm description and complexity]
 
 #### Testing Strategy
 
-- **Unit Tests**: [What to test]
-- **Integration Tests**: [What to test]
-- **Test Coverage**: [Target percentage]
+-   **Unit Tests**: [What to test]
+-   **Integration Tests**: [What to test]
+-   **Test Coverage**: [Target percentage]
 
 #### Security Considerations
 
-- **Authentication**: [How auth is handled]
-- **Data Protection**: [Encryption, sanitization]
+-   **Authentication**: [How auth is handled]
+-   **Data Protection**: [Encryption, sanitization]
 
 #### Performance Considerations
 
-- **Benchmarks**: [Expected metrics]
-- **Optimization**: [Techniques used]
+-   **Benchmarks**: [Expected metrics]
+-   **Optimization**: [Techniques used]
 
 #### Related Specs
 
-- PRD: [PRD-XXX]
-- ADR: [ADR-XXX]
-- SDS: [SDS-XXX]
+-   PRD: [PRD-XXX]
+-   ADR: [ADR-XXX]
+-   SDS: [SDS-XXX]
 
 ---
 
@@ -71,51 +71,51 @@ date: {{ year }}
 
 #### Overview
 
-- **Feature**: HTTP request rate limiting middleware
-- **Purpose**: Prevent abuse and ensure fair usage of API resources
-- **Priority**: High
-- **Status**: Approved
+-   **Feature**: HTTP request rate limiting middleware
+-   **Purpose**: Prevent abuse and ensure fair usage of API resources
+-   **Priority**: High
+-   **Status**: Approved
 
 #### Technical Requirements
 
-- **FR-1**: Limit requests to 100 per minute per IP address
-- **FR-2**: Return 429 status code when limit exceeded
-- **NFR-1**: <5ms overhead per request
+-   **FR-1**: Limit requests to 100 per minute per IP address
+-   **FR-2**: Return 429 status code when limit exceeded
+-   **NFR-1**: <5ms overhead per request
 
 #### Implementation Details
 
-- **Architecture**: Middleware pattern with sliding window counter
-- **Data Structures**:
-  ```typescript
-  interface RateLimitConfig {
-    windowMs: number;
-    maxRequests: number;
-    keyGenerator: (req: Request) => string;
-  }
-  ```
-- **Algorithms**: Sliding window counter using Redis INCR and EXPIRE (O(1) time complexity)
+-   **Architecture**: Middleware pattern with sliding window counter
+-   **Data Structures**:
+    ```typescript
+    interface RateLimitConfig {
+        windowMs: number;
+        maxRequests: number;
+        keyGenerator: (req: Request) => string;
+    }
+    ```
+-   **Algorithms**: Sliding window counter using Redis INCR and EXPIRE (O(1) time complexity)
 
 #### Testing Strategy
 
-- **Unit Tests**: Test rate limit logic, key generation, header setting
-- **Integration Tests**: Test with Redis, verify distributed behavior
-- **Test Coverage**: >90% for middleware logic
+-   **Unit Tests**: Test rate limit logic, key generation, header setting
+-   **Integration Tests**: Test with Redis, verify distributed behavior
+-   **Test Coverage**: >90% for middleware logic
 
 #### Security Considerations
 
-- **Authentication**: Rate limiting applied before auth to prevent brute force
-- **Data Protection**: Rate limit keys use hashed IPs for privacy
+-   **Authentication**: Rate limiting applied before auth to prevent brute force
+-   **Data Protection**: Rate limit keys use hashed IPs for privacy
 
 #### Performance Considerations
 
-- **Benchmarks**: <5ms overhead, 10,000 req/s throughput
-- **Optimization**: Redis pipelining for batch operations
+-   **Benchmarks**: <5ms overhead, 10,000 req/s throughput
+-   **Optimization**: Redis pipelining for batch operations
 
 #### Related Specs
 
-- PRD: PRD-001
-- ADR: ADR-003
-- SDS: SDS-002
+-   PRD: PRD-001
+-   ADR: ADR-003
+-   SDS: SDS-002
 
 ---
 

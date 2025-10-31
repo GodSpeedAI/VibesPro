@@ -1,10 +1,10 @@
 /* Frontmatter parsing utilities for template projects
  * This mirrors the runtime implementation at tools/utils/frontmatter.js
  */
-const fs = require("node:fs");
+const fs = require('node:fs');
 
 function stripQuotes(value) {
-  if (!value || typeof value !== "string") return value;
+  if (!value || typeof value !== 'string') return value;
   if (
     (value.startsWith('"') && value.endsWith('"')) ||
     (value.startsWith("'") && value.endsWith("'"))
@@ -29,7 +29,7 @@ function parseFrontmatterArray(line, fields) {
   }
 
   const items = rawItems
-    .split(",")
+    .split(',')
     .map((item) => stripQuotes(item.trim()))
     .filter((item) => item.length > 0);
 
@@ -43,7 +43,7 @@ function parseFrontmatterSimple(line, fields) {
     const key = simpleMatch[1].trim();
     let val = simpleMatch[2].trim();
 
-    val = val.replace(/^['"]|['"]$/g, "");
+    val = val.replace(/^['"]|['"]$/g, '');
 
     if (key && key.length > 0 && val !== undefined) {
       fields[key] = val;
@@ -52,7 +52,7 @@ function parseFrontmatterSimple(line, fields) {
 }
 
 function extractFrontmatter(text) {
-  if (!text || typeof text !== "string") {
+  if (!text || typeof text !== 'string') {
     return { raw: null, fields: {} };
   }
 
@@ -68,7 +68,7 @@ function extractFrontmatter(text) {
 
   for (const line of raw.split(/\r?\n/)) {
     const trimmedLine = line.trim();
-    if (!trimmedLine || trimmedLine.startsWith("#")) {
+    if (!trimmedLine || trimmedLine.startsWith('#')) {
       continue;
     }
 
@@ -81,13 +81,13 @@ function extractFrontmatter(text) {
 function extractIdsFromFrontmatter(filePath) {
   if (!fs.existsSync(filePath)) return [];
 
-  const text = fs.readFileSync(filePath, "utf8");
+  const text = fs.readFileSync(filePath, 'utf8');
   const { fields } = extractFrontmatter(text);
   const ids = [];
 
   if (fields.matrix_ids && Array.isArray(fields.matrix_ids)) {
     for (const id of fields.matrix_ids) {
-      ids.push({ id, type: id.split("-")[0], source: filePath });
+      ids.push({ id, type: id.split('-')[0], source: filePath });
     }
   }
 
