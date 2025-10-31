@@ -166,15 +166,28 @@ test-python:
 	# SKIP lists hook ids to bypass. COPIER_SKIP_PROJECT_SETUP avoids heavy post-gen setup.
 	SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck COPIER_SKIP_PROJECT_SETUP=1 UV_NO_SYNC=1 uv run pytest
 
+# Common SKIP list for template tests to avoid pre-commit hooks that mutate files during test fixture commits.
+# Pre-commit expects a comma-delimited list for SKIP.
+TEMPLATE_TEST_SKIP := "end-of-file-fixer,ruff,ruff-format,shellcheck,prettier,trim-trailing-whitespace"
+
 test-template:
 	@echo "🧪 Running template generation test (non-interactive)"
 	# Ensure Python dev deps are installed
 	uv sync --dev || true
 	# Run the single test while skipping pre-commit hooks that mutate files during test fixture commits
-	SKIP=end-of-file-fixer,ruff,ruff-format,shellcheck,prettier,trim-trailing-whitespace \
+	SKIP={{TEMPLATE_TEST_SKIP}} \
 	COPIER_SKIP_PROJECT_SETUP=1 \
 	UV_NO_SYNC=1 \
 	uv run pytest -q tests/template/test_template_generation.py::test_generate_template_user_defaults
+
+test-template-logfire:
+	@echo "🧪 Validating Logfire template scaffolding..."
+	# Skip additional checks for Logfire tests: check-shebang-scripts-are-executable and spec-matrix
+	# These checks are not relevant for Logfire template validation as they test different aspects
+	SKIP={{TEMPLATE_TEST_SKIP}},check-shebang-scripts-are-executable,spec-matrix \
+	COPIER_SKIP_PROJECT_SETUP=1 \
+	UV_NO_SYNC=1 \
+	uv run pytest -q tests/copier/test_logfire_template.py
 
 test-node:
 	@echo "🧪 Running Node.js tests..."
@@ -359,6 +372,10 @@ docs-validate:
 	node cli/docs.js validate \
 		--output-dir docs/generated
 
+docs-lint:
+	@echo "🧪 Linting documentation for required Logfire sections..."
+	@uv run python tools/docs/lint_check.py
+
 docs-serve PORT="8000":
 	@echo "📚 Serving documentation on port {{PORT}}..."
 	python -m http.server {{PORT}} -d docs/generated
@@ -510,6 +527,8 @@ ai-validate:
 		echo "⚠️  pnpm not found. Skipping validation."; \
 		echo "Run 'just setup' to install dependencies."; \
 	fi
+	@echo "Running Logfire smoke validation (DEV-PRD-007, DEV-SDS-006)..."
+	@just test-logfire
 	@echo "✅ Validation complete"
 
 # Scaffold new code using Nx generators
@@ -599,7 +618,48 @@ observe-start:
 	@echo "🚀 Starting Vector pipeline with ops/vector/vector.toml..."
 	@command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found. Install from https://vector.dev/"; exit 1; }
 	@mkdir -p tmp/vector-data || { echo "❌ Failed to create tmp/vector-data"; exit 1; }
-	vector --config ops/vector/vector.toml --watch
+	vector --config ops/vector/vector.toml --watch-config
+
+observe-openobserve-up:
+	@echo "🚀 Starting OpenObserve (Docker Compose)..."
+	@if ! command -v docker >/dev/null 2>&1; then \
+		echo "❌ Docker is required to run OpenObserve locally."; exit 1; \
+	fi
+	@if ! command -v docker compose >/dev/null 2>&1; then \
+		echo "❌ Docker Compose plugin not found. Please install Docker Compose."; exit 1; \
+	fi
+	@if [ ! -f ops/openobserve/.env.local ]; then \
+		echo "❌ Missing ops/openobserve/.env.local"; \
+		echo "   Create it by copying ops/openobserve/.env.example and updating the credentials."; \
+		exit 1; \
+	fi
+	@if [ ! -d ops/openobserve ]; then \
+		echo "❌ ops/openobserve directory is missing."; \
+		exit 1; \
+	fi
+	@if [ ! -f ops/openobserve/docker-compose.yml ]; then \
+		echo "❌ Missing ops/openobserve/docker-compose.yml"; \
+		exit 1; \
+	fi
+	@if RUNNING="$$(docker compose --project-directory ops/openobserve ps --status running --services 2>/dev/null || true)"; then \
+		if printf "%s" "$$RUNNING" | grep -q '^openobserve$$'; then \
+			echo "ℹ️  OpenObserve service already running (use 'just observe-openobserve-down' first)."; \
+			exit 0; \
+		fi; \
+	fi
+	docker compose --project-directory ops/openobserve --file ops/openobserve/docker-compose.yml up -d
+
+observe-openobserve-down:
+	@echo "🛑 Stopping OpenObserve (Docker Compose)..."
+	@if command -v docker >/dev/null 2>&1 && command -v docker compose >/dev/null 2>&1; then \
+		if [ -d ops/openobserve ] && [ -f ops/openobserve/docker-compose.yml ]; then \
+			docker compose --project-directory ops/openobserve --file ops/openobserve/docker-compose.yml down; \
+		else \
+			echo "ℹ️  Compose manifests not found; nothing to stop."; \
+		fi; \
+	else \
+		echo "ℹ️  Docker not available; nothing to stop."; \
+	fi
 
 # Run OTLP integration tests with fake collector (Phase 3)
 observe-test:
@@ -668,8 +728,15 @@ test-logs-correlation:
 	@echo "🧪 Testing log-trace correlation..."
 	@bash -eu tests/ops/test_log_trace_correlation.sh
 
+# Logfire smoke validation used by CI (DEV-PRD-018, DEV-SDS-018)
+alias test-logfire := test-logs-logfire
+
+test-logs-logfire:
+	@echo "🧪 Running Logfire smoke test..."
+	@uv run python tools/logging/test_logfire.py
+
 # Run all logging tests
-test-logs: test-logs-config test-logs-redaction test-logs-correlation
+test-logs: test-logs-config test-logs-redaction test-logs-correlation test-logs-logfire
 	@echo "✅ All logging tests passed"
 
 
@@ -706,7 +773,9 @@ observe-verify:
 	@bash tests/ops/test_openobserve_sink.sh
 	@echo ""
 	@echo "Step 3: Starting Vector in background..." ; \
-	( just observe-start & ) ; \
+	command -v vector >/dev/null 2>&1 || { echo "❌ vector binary not found. Install from https://vector.dev/"; exit 1; } ; \
+	mkdir -p tmp/vector-data || { echo "❌ Failed to create tmp/vector-data"; exit 1; } ; \
+	vector --config ops/vector/vector.toml --watch-config & \
 	VECTOR_PID=$! ; \
 	trap 'kill $VECTOR_PID 2>/dev/null || true' EXIT ; \
 	sleep 2 ; \

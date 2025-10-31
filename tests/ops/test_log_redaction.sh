@@ -22,7 +22,7 @@ test_email_redaction() {
   local vrl_script='if exists(.attributes.user_email) { .attributes.user_email = "[REDACTED]" }; .'
 
   local output
-  output=$(echo '{"attributes":{"user_email":"test@example.com"}}' | vector vrl "${vrl_script}" 2>&1) || \
+  output=$(echo '{"attributes":{"user_email":"test@example.com"}}' | VECTOR_LOG=error vector vrl "${vrl_script}" 2>&1) || \
     die "Email redaction VRL failed"
 
   echo "${output}" | jq -e '.attributes.user_email == "[REDACTED]"' >/dev/null || \
@@ -37,7 +37,7 @@ test_authorization_redaction() {
   local vrl_script='if exists(.attributes.authorization) { .attributes.authorization = "[REDACTED]" }; .'
 
   local output
-  output=$(echo '{"attributes":{"authorization":"Bearer token"}}' | vector vrl "${vrl_script}" 2>&1) || \
+  output=$(echo '{"attributes":{"authorization":"Bearer token"}}' | VECTOR_LOG=error vector vrl "${vrl_script}" 2>&1) || \
     die "Authorization redaction VRL failed"
 
   echo "${output}" | jq -e '.attributes.authorization == "[REDACTED]"' >/dev/null || \
@@ -53,7 +53,7 @@ test_non_pii_preserved() {
 
   local output
   output=$(echo '{"attributes":{"user_id_hash":"abc123","user_email":"test@example.com"}}' | \
-    vector vrl "${vrl_script}" 2>&1) || die "VRL transform failed"
+    VECTOR_LOG=error vector vrl "${vrl_script}" 2>&1) || die "VRL transform failed"
 
   echo "${output}" | jq -e '.attributes.user_id_hash == "abc123"' >/dev/null || \
     die "Non-PII field user_id_hash was not preserved"

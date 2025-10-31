@@ -1,0 +1,60 @@
+name: AI Validation
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "justfile"
+      - "tools/logging/**"
+      - ".github/workflows/ai-validate.yml"
+      - "docs/dev_tdd.md"
+  pull_request:
+    paths:
+      - "justfile"
+      - "tools/logging/**"
+      - ".github/workflows/ai-validate.yml"
+      - "docs/dev_tdd.md"
+
+jobs:
+  ai-validate:
+    runs-on: ubuntu-latest
+    env:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
+
+      - name: Install just
+        uses: extractions/setup-just@v2
+        with:
+          just-version: "1.27.0"
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sync Python toolchain
+        shell: bash
+        run: uv sync --group dev --all-extras --frozen
+
+      - name: Run ai-validate
+        # DEV-PRD-007 / DEV-SDS-006: Ensure Logfire smoke validation is invoked
+        run: just ai-validate

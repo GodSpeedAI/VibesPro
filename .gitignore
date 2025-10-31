@@ -7,6 +7,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Python egg-info
+*.egg-info/
+
 # Build outputs
 dist/
 build/
@@ -17,6 +20,7 @@ htmlcov/
 
 # Environment
 .env
+!templates/\{\{project_slug\}\}/.env
 .env.local
 .env.development.local
 .env.test.local
@@ -86,3 +90,14 @@ RULES.md
 KNOWLEDGE.md
 .tessl/*
 key.txt
+
+# Sensitive token seed files
+.token_seed
+*.token_seed
+
+# Docker Buildx generated files
+ops/openobserve/buildx/.buildNodeID
+ops/openobserve/buildx/.lock
+ops/openobserve/buildx/current
+ops/openobserve/buildx/activity/
+ops/openobserve/buildx/refs/

@@ -1,0 +1,27 @@
+services:
+  openobserve:
+    image: public.ecr.aws/zinclabs/openobserve:v0.10.0
+    container_name: openobserve
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      # Provide safe defaults for non-secret settings; root credentials come from env_file
+      ZO_DATA_DIR: /app/data
+      ZO_USAGE_COLLECTION: "false"
+      CONSOLE_ENABLED: "true"
+    ports:
+      - "${OPENOBSERVE_HTTP_PORT:-5080}:5080"
+      - "${OPENOBSERVE_GRPC_PORT:-5081}:5081"
+    volumes:
+      - openobserve-data:/app/data
+      - ./config:/app/config:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  openobserve-data:
+    driver: local

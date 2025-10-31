@@ -2003,6 +2003,54 @@ Vector configuration is in `ops/vector/vector.toml`:
 - **Transforms**: Sanitization, sampling, PII redaction
 - **Sinks**: Console (dev), file (local), OpenObserve (production)
 
+#### Run OpenObserve locally (Docker Compose)
+
+Use the bundled Compose stack when you need a real OTLP target:
+
+1. `cp ops/openobserve/.env.example ops/openobserve/.env.local`
+2. Edit `.env.local` with unique root credentials and ports (never commit it)
+3. Start the service: `just observe-openobserve-up`
+4. Visit `http://localhost:5080`, sign in with the credentials you set, and mint an API token
+5. Store `OPENOBSERVE_URL`, `OPENOBSERVE_TOKEN`, `OPENOBSERVE_ORG`, and `OPENOBSERVE_USER` in `.secrets.env.sops`
+
+Stop the container when you are done: `just observe-openobserve-down`.
+
+### Logfire Telemetry
+
+> Traceability: DEV-PRD-018 · DEV-SDS-018 · DEV-PRD-021
+
+Python services use Logfire to emit OTLP-compliant spans and logs that align with the Vector
+pipeline. Configure these environment variables (mirrored in
+`templates/{{project_slug}}/.env.example.j2`):
+
+| Variable                  | Purpose                                                         | Default                       |
+| :------------------------ | :-------------------------------------------------------------- | :---------------------------- |
+| `LOGFIRE_SEND_TO_LOGFIRE` | Controls remote export (`true`, `false`, or `if-token-present`) | `if-token-present`            |
+| `LOGFIRE_TOKEN`           | Write token for the Logfire SaaS endpoint                       | _(empty)_                     |
+| `LOGFIRE_ENVIRONMENT`     | Segments dashboards per environment                             | `local`                       |
+| `LOGFIRE_SERVICE_NAME`    | Service identifier (matches OTEL service name)                  | `${SERVICE_NAME:-vibepro-py}` |
+| `LOGFIRE_SERVICE_VERSION` | Release or commit identifier                                    | `${APP_VERSION:-dev}`         |
+
+Keep `LOGFIRE_TOKEN` empty during local development; the pipeline defaults to Vector. When deploying,
+set the token via SOPS/GitHub Secrets and flip `LOGFIRE_SEND_TO_LOGFIRE` to `true`.
+
+The Vector config consumes these values through:
+
+- `tools/vector/macros.vrl` — shared VRL program that redacts PII for both traces and logs.
+- `transforms.logs_logfire_normalize` — copies Logfire-specific attributes into the canonical
+  `trace_id`, `span_id`, and `observation_id` fields.
+
+Validate changes with:
+
+```bash
+bash tests/ops/test_vector_logfire.sh
+just test-logs
+just docs-lint
+```
+
+Add `just observe-verify` when you need an end-to-end span check that exercises the same code path
+used in CI.
+
 ### Testing
 
 Run observability tests:

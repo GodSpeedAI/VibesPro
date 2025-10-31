@@ -4,6 +4,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+OBSERVE_OUTPUT=""
+OBSERVE_JSON_LINES=""
 
 log()  { printf "==> %s\n" "$*"; }
 die()  { printf "❌ %s\n" "$*" >&2; exit 1; }
@@ -15,14 +17,27 @@ ensure_tools() {
   done
 }
 
+collect_observe_output() {
+  if [[ -n "${OBSERVE_OUTPUT}" ]]; then
+    return
+  fi
+
+  log "Running observe-smoke once to capture log output"
+  local status=0
+  OBSERVE_OUTPUT=$(RUST_LOG=info cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1) || status=$?
+
+  if [[ "${status}" -ne 0 ]]; then
+    printf "%s\n" "${OBSERVE_OUTPUT}" >&2
+    die "observe-smoke command failed with status ${status}"
+  fi
+
+  OBSERVE_JSON_LINES=$(printf "%s\n" "${OBSERVE_OUTPUT}" | grep '^{' || true)
+}
+
 test_rust_log_correlation() {
   log "Testing Rust log output for correlation fields"
 
-  # Run observe-smoke and capture JSON output
-  local output
-  output=$(cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep '^{' || true)
-
-  if [ -z "$output" ]; then
+  if [ -z "${OBSERVE_JSON_LINES}" ]; then
     die "No JSON log output from observe-smoke"
   fi
 
@@ -41,7 +56,7 @@ test_rust_log_correlation() {
       fi
       break
     fi
-  done <<< "$output"
+  done <<< "${OBSERVE_JSON_LINES}"
 
   if [[ "${has_span_info}" = "false" ]]; then
     die "No span correlation fields found in logs"
@@ -52,7 +67,11 @@ test_required_fields() {
   log "Testing for required structured fields"
 
   local output
-  output=$(cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep '^{' | head -1)
+  output=$(printf "%s\n" "${OBSERVE_JSON_LINES}" | head -1)
+
+  if [ -z "${output}" ]; then
+    die "No JSON log output from observe-smoke"
+  fi
 
   # Check for mandatory fields
   local timestamp level message target
@@ -73,15 +92,15 @@ test_category_field() {
   log "Testing for category field in logs"
 
   local output
-  output=$(cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | grep 'category' || true)
+  output=$(printf "%s\n" "${OBSERVE_OUTPUT}" | grep 'category' || true)
 
   if [ -n "$output" ]; then
     log "✓ Category field present in logs"
 
     # Extract and display category values
     local categories
-    categories=$(cargo run --manifest-path "${ROOT_DIR}/apps/observe-smoke/Cargo.toml" 2>&1 | \
-      grep '^{' | jq -r '.fields.category // empty' | sort -u | tr '\n' ' ')
+    categories=$(printf "%s\n" "${OBSERVE_JSON_LINES}" | \
+      jq -r '.fields.category // empty' | sort -u | tr '\n' ' ')
 
     if [ -n "$categories" ]; then
       log "  Categories found: $categories"
@@ -95,6 +114,7 @@ main() {
   log "Testing log-trace correlation (DEV-PRD-018, DEV-SDS-018)"
 
   ensure_tools
+  collect_observe_output
   test_rust_log_correlation
   test_required_fields
   test_category_field

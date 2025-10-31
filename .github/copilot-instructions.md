@@ -222,6 +222,7 @@ See `docs/ENVIRONMENT.md` for complete details on this approach.
 - **mypy strict mode**: 100% type coverage required
 - **Type all function signatures**: Args, returns, and raises
 - **Use `typing` module**: Generic types, Protocol, TypedDict
+- **Follow conventions described in `.github/instructions/style.python.instructions.md`**
 
 ### File Naming Patterns
 
@@ -614,6 +615,14 @@ See `.github/instructions/docs.instructions.md` for details:
 - API documentation auto-generated
 - Keep docs in sync with code
 
+### Logging & Observability
+
+See `.github/instructions/logging.instructions.md` for details:
+
+- Keep Vector VRL macros and transforms aligned when modifying Logfire behavior
+- Ensure `tests/ops/test_vector_logfire.sh`, `just test-logs`, and `just docs-lint` run clean locally
+- Update docs/templates alongside pipeline changes to satisfy `tools/docs/lint_check.py`
+
 ---
 
 ## 🔄 Commit Messages & Reviews
@@ -819,6 +828,7 @@ See `.github/instructions/performance.instructions.md` for detailed guidance.
 - `docs/traceability_matrix.md` - Requirements traceability
 - `AGENTS.md` - Nx configuration and agent rules
 - `.github/instructions/ai-workflows.instructions.md` - AI workflow conventions
+- `.github/instructions/logging.instructions.md` - Logfire and Vector pipeline guardrails
 - `temporal_db/README.md` - Temporal database usage and patterns
 
 ### External References

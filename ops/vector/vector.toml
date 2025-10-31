@@ -27,23 +27,10 @@ use_otlp_decoding = true
 [transforms.traces_sanitize]
 type = "remap"
 inputs = ["otlp.traces"]
-source = '''
-.sampled = true
-
-if exists(.attributes) {
-  if exists(.attributes."user.email") { del(.attributes."user.email") }
-  if exists(.attributes."auth.token") { del(.attributes."auth.token") }
-  if exists(.attributes.user_email) { del(.attributes.user_email) }
-  if exists(.attributes.auth_token) { del(.attributes.auth_token) }
-}
-
-if exists(.resource) && exists(.resource.attributes) {
-  if exists(.resource.attributes."user.email") { del(.resource.attributes."user.email") }
-  if exists(.resource.attributes."auth.token") { del(.resource.attributes."auth.token") }
-  if exists(.resource.attributes.user_email) { del(.resource.attributes.user_email) }
-  if exists(.resource.attributes.auth_token) { del(.resource.attributes.auth_token) }
-}
-'''
+files = [
+  "tools/vector/macros.vrl",
+  "tools/vector/traces_sanitize.vrl",
+]
 
 [sinks.dev_console]
 inputs = ["traces_sanitize"]
@@ -88,68 +75,57 @@ retry_attempts = 3
 inputs = ["otlp.metrics"]
 type = "blackhole"
 
+[transforms.metrics_logfire_extract]
+type = "remap"
+inputs = ["otlp.metrics"]
+file = "ops/vector/transforms/metrics_logfire_extract.vrl"
+
+[transforms.metrics_logfire_enrich]
+type = "remap"
+inputs = ["metrics_logfire_extract"]
+file = "ops/vector/transforms/metrics_logfire_enrich.vrl"
+
+[sinks.metrics_logfire_openobserve]
+type = "http"
+inputs = ["metrics_logfire_enrich"]
+uri = "${OPENOBSERVE_URL:-http://localhost:5080}/api/${OPENOBSERVE_ORG:-default}/v1/logfire_metrics"
+method = "post"
+
+[sinks.metrics_logfire_openobserve.encoding]
+codec = "json"
+
+[sinks.metrics_logfire_openobserve.auth]
+strategy = "basic"
+user = "${OPENOBSERVE_USER:-root@example.com}"
+password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
+
+[sinks.metrics_logfire_openobserve.request]
+timeout_secs = 30
+retry_attempts = 3
+
+  [sinks.metrics_logfire_openobserve.request.headers]
+  "Content-Type" = "application/json"
+
 # --- Logs Pipeline ---
 # Process OTLP logs with PII redaction, enrichment, and storage
 
 [transforms.logs_redact_pii]
 type = "remap"
 inputs = ["otlp.logs"]
-source = '''
-# Redact PII fields to [REDACTED]
-if exists(.attributes.user_email) { .attributes.user_email = "[REDACTED]" }
-if exists(.attributes.email) { .attributes.email = "[REDACTED]" }
-if exists(.attributes.authorization) { .attributes.authorization = "[REDACTED]" }
-if exists(.attributes.Authorization) { .attributes.Authorization = "[REDACTED]" }
-if exists(.attributes.password) { .attributes.password = "[REDACTED]" }
-if exists(.attributes.token) { .attributes.token = "[REDACTED]" }
-if exists(.attributes.api_key) { .attributes.api_key = "[REDACTED]" }
+files = [
+  "tools/vector/macros.vrl",
+  "ops/vector/transforms/logs_redact_pii.vrl",
+]
 
-# Also check resource attributes
-if exists(.resource.attributes.user_email) { .resource.attributes.user_email = "[REDACTED]" }
-if exists(.resource.attributes.email) { .resource.attributes.email = "[REDACTED]" }
-if exists(.resource.attributes.authorization) { .resource.attributes.authorization = "[REDACTED]" }
-if exists(.resource.attributes.password) { .resource.attributes.password = "[REDACTED]" }
-if exists(.resource.attributes.token) { .resource.attributes.token = "[REDACTED]" }
-if exists(.resource.attributes.api_key) { .resource.attributes.api_key = "[REDACTED]" }
-'''
+[transforms.logs_logfire_normalize]
+type = "remap"
+inputs = ["logs_redact_pii"]
+file = "ops/vector/transforms/logs_logfire_normalize.vrl"
 
 [transforms.logs_enrich]
 type = "remap"
-inputs = ["logs_redact_pii"]
-source = '''
-# Enrich with metadata from resource attributes or set defaults
-# Service name from resource or unknown
-if exists(.resource.attributes."service.name") {
-  .service = string!(.resource.attributes."service.name")
-} else if exists(.attributes.service) {
-  .service = string!(.attributes.service)
-} else {
-  .service = "unknown"
-}
-
-# Environment from resource or local
-if exists(.resource.attributes.environment) {
-  .environment = string!(.resource.attributes.environment)
-} else if exists(.attributes.environment) {
-  .environment = string!(.attributes.environment)
-} else {
-  .environment = "local"
-}
-
-# Application version from resource or dev
-if exists(.resource.attributes."service.version") {
-  .application_version = string!(.resource.attributes."service.version")
-} else if exists(.attributes.application_version) {
-  .application_version = string!(.attributes.application_version)
-} else {
-  .application_version = "dev"
-}
-
-# Ensure category field exists (default to "app")
-if !exists(.attributes.category) {
-  .attributes.category = "app"
-}
-'''
+inputs = ["logs_logfire_normalize"]
+file = "ops/vector/transforms/logs_enrich.vrl"
 
 # Console output for local debugging
 [sinks.logs_console]

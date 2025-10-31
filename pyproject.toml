@@ -10,6 +10,7 @@ requires-python = ">=3.12"
 dependencies = [
     "copier>=9.0.0",
     "jinja2>=3.1.0",
+    "logfire[fastapi]>=4.14.2",
     "pyyaml>=6.0",
     "structlog>=23.0.0",
 ]
@@ -21,6 +22,8 @@ dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
     "psutil>=5.9.0",
+    "fastapi>=0.120.1",
+    "httpx>=0.28.1",
 ]
 
 [tool.ruff]
@@ -122,4 +125,6 @@ dev = [
     "requests>=2.32.0",
     "ruff>=0.13.1",
     "psutil>=5.9.0",
+    "fastapi>=0.120.1",
+    "httpx>=0.28.1",
 ]

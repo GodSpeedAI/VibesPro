@@ -1,83 +1,109 @@
-# How-to: Manage `.secrets.env.sops` secrets for MCP configs
+# How to manage `.secrets.env.sops` for MCP tools
 
-This guide shows how to add an API key to `.secrets.env.sops`, re-encrypt the file safely, and supply the secret to tools that you configure such as `.vscode/mcp.json`. Read this together with `docs/how-to/sops-secrets.md` for the full SOPS primer.
+This walkthrough shows you how to **add**, **update**, and **use** secrets that live in `.secrets.env.sops`, especially when wiring them into MCP configurations like `.vscode/mcp.json`. Everything below assumes you are inside the repo root.
 
-## Prerequisites
+---
 
-- `sops` and an age/PGP/KMS key that can decrypt `.secrets.env.sops`
-- Shell or terminal configured the same way you run the repository (Devbox, mise, direnv, etc.)
-- A text editor that respects `$EDITOR` (SOPS opens the decrypted view there)
+## Before you start
 
-## 1. Decrypt and edit the secrets file
+You’ll need:
 
-Open the encrypted dotenv file with SOPS; it will transparently decrypt before showing the contents and re-encrypt on save:
+- `sops` installed
+- Access to the private key that decrypts `.secrets.env.sops`  
+  (most setups export `SOPS_AGE_KEY_FILE="$HOME/.config/sops/key.txt"`)
+- A shell that loads the repo toolchain (Devbox, direnv, etc.)
+
+If you’re new to SOPS, skim `docs/how-to/sops-secrets.md` first.
+
+---
+
+## Step 1 – View or edit the secrets file
+
+Open the file with SOPS. It automatically decrypts the content in your editor and re-encrypts on save.
 
 ```bash
 sops .secrets.env.sops
 ```
 
-Add your secret exactly like a normal `.env` entry:
+Inside the editor, add entries just like a `.env` file:
 
 ```dotenv
-# inside the editor view
 SMITHERY_API_KEY=sk_live_example_123
 ```
 
-Tips:
+Guidelines:
 
-- Keep keys upper-case with `_` separators; `.sops.yaml` rules often target that pattern.
-- Do not surround values with quotes unless the value itself requires them.
-- Save and exit; SOPS writes the encrypted version back to disk automatically.
+- Use uppercase letters and underscores for keys.
+- Don’t add quotes unless the value itself needs them.
+- Save and exit—SOPS writes the encrypted version back.
 
-If you edited the file with another tool, re-encrypt in place before committing:
+Need to flip a value later without opening the full editor? Use `sops --set`:
 
 ```bash
-sops -e -i .secrets.env.sops
+export SOPS_AGE_KEY_FILE="$HOME/.config/sops/key.txt"
+sops --input-type dotenv --output-type dotenv \
+  --set '["LOGFIRE_TOKEN"] "pylf_v1_us_real_value_here"' \
+  --in-place .secrets.env.sops
 ```
 
-Verify the key is present (SOPS decrypts just long enough to read the value):
+This decrypts, updates the value, re-encrypts, and refreshes the MAC in one command. Replace the sample token with your real one.
+
+---
+
+## Step 2 – Double-check what you changed
+
+Confirm a secret exists (SOPS only decrypts long enough to print it):
 
 ```bash
 sops -d .secrets.env.sops | grep SMITHERY_API_KEY
 ```
 
-If you forget the variable name, list every key without exposing values:
+Forgot the key name? List all keys without revealing the values. Because the file contains comments, always tell SOPS it’s a dotenv file:
 
 ```bash
-sops -d .secrets.env.sops | awk -F= '/^[A-Z0-9_]+=/{print $1}'
+export SOPS_AGE_KEY_FILE="$HOME/.config/sops/key.txt"
+sops --input-type dotenv --output-type dotenv -d .secrets.env.sops \
+  | awk -F= '/^[A-Z0-9_]+=/{print $1}'
 ```
 
-That pipeline decrypts to stdout, extracts the part before `=`, and prints each exported variable name.
+Common errors and fixes:
 
-## 2. Load secrets into your environment
+| Error message                                               | What it means                               | Fix                                                 |
+| ----------------------------------------------------------- | ------------------------------------------- | --------------------------------------------------- |
+| `invalid character '#' looking for beginning of value`      | SOPS assumed YAML/JSON                      | Add `--input-type dotenv`                           |
+| `MAC mismatch. File has …`                                  | File contents changed without re-encryption | Reapply your change with `sops` or restore from Git |
+| `error emitting binary store: no binary data found in tree` | SOPS thinks output should be binary         | Add `--output-type dotenv`                          |
 
-You rarely need to create a plaintext `.env`. Instead, inject the decrypted values into a subshell when you run commands:
+Example MAC recovery when the file was hand-edited:
 
 ```bash
-# Run any command with secrets available
+git restore .secrets.env.sops        # or sops --set … (see above)
+```
+
+---
+
+## Step 3 – Run commands with secrets loaded
+
+You rarely need to dump secrets into a plain `.env`. Inject them into subprocesses instead:
+
+```bash
 sops exec-env .secrets.env.sops -- just ai-validate
-
-# Launch VS Code so Copilot inherits the secrets
-sops exec-env .secrets.env.sops -- code .
+sops exec-env .secrets.env.sops -- code .          # start VS Code with secrets
 ```
 
-If you use `direnv`, the provided `.envrc` already runs `sops --decrypt .secrets.env.sops` and exports every variable when you `cd` into the repo. Either way, confirm the variable exists before wiring it to MCP tools:
+If you use `direnv`, the provided `.envrc` already exports these variables whenever you enter the repo. To confirm a variable is available:
 
 ```bash
 printenv SMITHERY_API_KEY
 ```
 
-Forgot the variable name? List every exported key without revealing values:
+---
 
-```bash
-sops -d .secrets.env.sops | awk -F= '/^[A-Z0-9_]+=/{print $1}'
-```
+## Step 4 – Reference secrets from MCP configs
 
-## 3. Reference secrets in `.vscode/mcp.json`
+Visual Studio Code resolves `${env:VAR_NAME}` using the environment present when Copilot (or the MCP CLI) starts. There is no `secrets.` prefix—stick to `env`.
 
-Visual Studio Code substitutes `${env:VAR_NAME}` with environment variables that exist when Copilot starts. Avoid the `secrets.` prefix shown in older examples—stick to `${env:...}`.
-
-Example MCP HTTP tool configuration (pattern matches the example in `mcp/tool_index.md`):
+Example `.vscode/mcp.json` fragment:
 
 ```jsonc
 {
@@ -94,17 +120,19 @@ Example MCP HTTP tool configuration (pattern matches the example in `mcp/tool_in
 }
 ```
 
-Key points:
+Tips:
 
-- The `env` block makes secrets available to the MCP CLI process without hardcoding them.
-- Use those environment variables inside your CLI/tool configuration (headers, query params, config files). Check the tool’s docs for the exact flags or config fields.
-- If you change secrets, restart Copilot (or VS Code) so it reloads the environment.
+- Keep secrets in the `env` block; downstream tooling picks them up from there.
+- After changing a secret, restart VS Code (or Copilot) so the new value is available.
+- Follow each tool’s documentation to wire the environment variable into headers, query params, etc.
 
-## 4. Additional safety notes
+---
 
-- Never commit decrypted `.env` files; only the `.sops` file belongs in Git.
-- Store your age private key (`SOPS_AGE_KEY` or `SOPS_AGE_KEY_FILE`) securely—treat it like any other credential.
-- For CI, inject the private key via GitHub Secrets and run `sops exec-env` in the workflow (see `docs/how-to/sops-secrets.md` for a YAML example).
-- Rotate secrets periodically and prune entries that are no longer in use.
+## Safety checklist
 
-Following this workflow keeps secrets encrypted at rest, limits exposure to the processes that actually need them, and keeps MCP tool configuration compliant with the repository’s security rules.
+- Do **not** commit decrypted `.env` files—only the `.sops` file lives in Git.
+- Protect your private key (`SOPS_AGE_KEY` / `SOPS_AGE_KEY_FILE`) like any other credential.
+- In CI, load the key from secrets and run `sops exec-env` rather than storing plaintext.
+- Rotate secrets periodically and remove ones you no longer need.
+
+Keeping to this flow means secrets stay encrypted at rest, only the processes that need them see the plaintext, and MCP integrations remain compliant with the project’s security rules.

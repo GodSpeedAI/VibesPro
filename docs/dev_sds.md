@@ -384,7 +384,7 @@ Logging is structured-first (JSON), trace-aware by default, and consistent acros
 | ---------- | -------------: | --------------------------------------------------------------- | ----------------------------------------- |
 | Rust       | tracing events | Emit structured log events via `info!()`, `warn!()`, `error!()` | crates/vibepro-observe (already in place) |
 | Node       |           pino | JSON logger with trace context injection                        | libs/node-logging/logger.ts               |
-| Python     |      structlog | JSON logger with context binding                                | libs/python/vibepro_logging.py            |
+| Python     |        Logfire | Auto-instrument FastAPI/Pydantic, emit JSON logs & spans        | libs/python/vibepro_logging.py            |
 | Pipeline   |         Vector | OTLP logs source, PII redaction, enrichment                     | ops/vector/vector.toml (logs section)     |
 | Storage    |    OpenObserve | Unified log storage with trace correlation                      | External service (staging/prod)           |
 | Validation |    Shell tests | Config validation, PII redaction, correlation                   | tests/ops/test*vector_logs*\*.sh          |
@@ -500,43 +500,87 @@ log.error({ category: "app", code: 500 }, "upstream timeout");
 **Trace context:** Injected via middleware/headers (OpenTelemetry context propagation)
 **Transport:** stdout JSON → Vector OTLP logs source or HTTP ingestion
 
-#### 3) Python (structlog wrapper)
+#### 3) Python (Logfire instrumentation) - **FUTURE DESIGN (Cycle 2A)**
 
-Create `libs/python/vibepro_logging.py`:
+> **Note:** This section describes planned/target implementations for Cycle 2A (DEV-TDD cycle 2A). These examples are not yet implemented - see `libs/python/vibepro_logging.py` which currently contains stub/NotImplementedError.
+
+Refactor `libs/python/vibepro_logging.py` to expose a Logfire bootstrap that instruments FastAPI and outbound calls:
 
 ```python
-import logging, os, json, structlog
+from __future__ import annotations
 
-def configure_logger(service=os.getenv("SERVICE_NAME","vibepro-py")):
-    logging.basicConfig(format="%(message)s", stream=logging.stdout, level=logging.INFO)
-    structlog.configure(
-        processors=[
-            structlog.processors.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.processors.JSONRenderer()
-        ],
-        wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
-        context_class=dict,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-    )
-    return structlog.get_logger().bind(
-        service=service,
-        environment=os.getenv("APP_ENV","local"),
-        application_version=os.getenv("APP_VERSION","dev"),
-    )
+import os
+from fastapi import FastAPI
+import logfire
+
+DEFAULT_SERVICE = os.getenv("SERVICE_NAME", "vibepro-py")
+
+def bootstrap_logfire(app: FastAPI, service: str = DEFAULT_SERVICE) -> None:
+    logfire.configure(service_name=service)
+    logfire.instrument_fastapi(app)
+
+# get_logger() function removed - consumers should call logfire methods directly
 ```
 
 **Usage:**
 
 ```python
-from libs.python.vibepro_logging import configure_logger
-log = configure_logger()
+from fastapi import FastAPI
+from libs.python.vibepro_logging import bootstrap_logfire, get_logger
+
+app = FastAPI()
+bootstrap_logfire(app)
+
+log = get_logger()
 log.info("request accepted", category="app", user_id_hash="abc123")
 log.warning("auth failed", category="security", action="auth_failure")
 ```
 
-**Trace context:** Injected via OpenTelemetry Python SDK context
-**Transport:** stdout JSON → Vector OTLP logs source
+**Trace context:** Created automatically by Logfire (OpenTelemetry spans) for FastAPI handlers and, when optional integrations are enabled, for outbound HTTP clients and Pydantic validation.
+
+**Integration API calls:** Enable optional integrations in your application startup immediately after creating your FastAPI app or DB engine:
+
+```python
+import logfire
+
+# After FastAPI app creation
+logfire.instrument_fastapi(app)
+
+# For HTTP clients (add to application startup)
+logfire.instrument_requests()  # For requests library
+logfire.instrument_httpx()     # For httpx library
+
+# For SQLAlchemy (pass engine or session factory)
+logfire.instrument_sqlalchemy(engine=your_db_engine)
+```
+
+**Note:** When using `logfire.instrument_sqlalchemy()`, you must pass either the SQLAlchemy engine or session factory as the `engine` parameter. This enables automatic tracing of database queries and connection operations.
+
+**Additional integration examples:**
+
+```python
+# Import and configure Logfire with your service
+import logfire
+from fastapi import FastAPI
+from sqlalchemy import create_engine
+
+# Initialize Logfire
+logfire.configure(service_name="my-api-service")
+
+# Create FastAPI app and instrument it
+app = FastAPI()
+logfire.instrument_fastapi(app)
+
+# Create database engine and instrument it
+db_engine = create_engine(DATABASE_URL)
+logfire.instrument_sqlalchemy(engine=db_engine)
+
+# Instrument HTTP clients for outbound requests
+logfire.instrument_requests()  # For Python requests library
+logfire.instrument_httpx()     # For httpx (async) library
+```
+
+**Transport:** OTLP exporter controlled via env variables (`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_SERVICE_NAME`). See the [Logfire integration reference](https://logfire.pydantic.dev/docs/integrations/) for more options and configuration.
 
 ---
 
@@ -697,20 +741,22 @@ log.info(
 );
 ```
 
-#### Python (`tools/logging/test_structlog.py`)
+#### Python (`tools/logging/test_logfire.py`)
 
 ```python
-import sys
-sys.path.insert(0, 'libs/python')
-from vibepro_logging import configure_logger
+from fastapi import FastAPI
 
-log = configure_logger('test-service')
+from libs.python.vibepro_logging import bootstrap_logfire, get_logger
+
+app = FastAPI()
+bootstrap_logfire(app, service="test-service")
+log = get_logger()
 log.info(
     "test log message",
     trace_id="abc123def456",
     span_id="789ghi",
     category="app",
-    user_email="test@example.com"  # Should be redacted
+    user_email="test@example.com",  # Should be redacted
 )
 ```
 
@@ -739,7 +785,7 @@ log.info(
 
 - Rust instrumentation: `crates/vibepro-observe/` (already exists)
 - Node logger: `libs/node-logging/logger.ts` (to be created)
-- Python logger: `libs/python/vibepro_logging.py` (to be created)
+- Python Logfire bootstrap: `libs/python/vibepro_logging.py` (to be refactored)
 - Vector config: `ops/vector/vector.toml` (logs section to be added)
 - Tests:
   - `tests/ops/test_vector_logs_config.sh`
@@ -747,7 +793,7 @@ log.info(
   - `tests/ops/test_log_trace_correlation.sh`
 - Quick-start tools:
   - `tools/logging/test_pino.js`
-  - `tools/logging/test_structlog.py`
+  - `tools/logging/test_logfire.py`
 - Docs:
   - `docs/ENVIRONMENT.md` §9 — Logging Policy
   - `docs/observability/README.md` §11 — Governance & Cost Controls
@@ -767,7 +813,7 @@ log.info(
 
 - Rust: `tracing` crate (already in use)
 - Node: `pino` package (to be added to libs/node-logging/package.json)
-- Python: `structlog` package (to be added to requirements.txt or pyproject.toml)
+- Python: `logfire~=1.2.0` package (to be added to requirements.txt or pyproject.toml)
 - Vector: `vector` binary (already installed via Devbox)
 - OpenObserve: API token and URL in `.secrets.env.sops`
 

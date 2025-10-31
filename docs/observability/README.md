@@ -345,9 +345,60 @@ vector validate ops/vector/vector.toml
 
 ---
 
-## 8. Feature Flags & Runtime Control
+## 8. Logfire Integration
 
-### 8.1 VIBEPRO_OBSERVE Flag
+Phase 3 (DEV-PRD-018 · DEV-SDS-018 · DEV-PRD-021) extends the logging pipeline so Logfire spans,
+logs, and dashboards stay in lockstep with template output and Vector runtime behavior.
+
+### 8.1 Pipeline Additions
+
+- `transforms.logs_redact_pii` now imports the shared VRL program at `tools/vector/macros.vrl`
+  so traces and logs reuse the same redaction rules.
+- `transforms.logs_logfire_normalize` projects Logfire OTLP attributes (`logfire.trace_id`,
+  `logfire.span_id`, `logfire.observation_id`, etc.) into the canonical `trace_id`, `span_id`, and
+  `observation_id` fields consumed by sinks and dashboards.
+- Trace sanitization pulls the same macros via `tools/vector/traces_sanitize.vrl`, preventing
+  divergence between span and log scrubbing logic.
+
+### 8.2 Shared VRL Macros
+
+The macro program distinguishes log vs trace events—masking sensitive values for logs while
+removing the same keys from trace payloads. Update the macro file whenever you introduce new
+PII-carrying attributes.
+
+```
+tools/vector/macros.vrl
+tools/vector/traces_sanitize.vrl
+```
+
+### 8.3 Verification Playbooks
+
+Run these guardrails before shipping Logfire or Vector changes:
+
+```bash
+bash tests/ops/test_vector_logfire.sh      # Validates normalization + macros wiring
+just test-logs                             # Full log pipeline regression suite
+just docs-lint                             # Ensures docs + template snippets stay in sync
+```
+
+### 8.4 Documentation & Template Sync
+
+- `docs/observability/README.md` (this guide) captures the integration details and validation flow.
+- `docs/ENVIRONMENT.md` documents local/CI environment variables for Logfire.
+- `templates/{{project_slug}}/docs/observability/logging.md.j2` ensures generated projects inherit
+  the same workflow.
+- `docs/observability/dashboards/logfire.json` defines the OpenObserve panels for Logfire metrics.
+- `tools/observability/schema.json` documents the metrics taxonomy (`logfire.span.duration`, etc.).
+- `ops/openobserve/docker-compose.yml` + `just observe-openobserve-up` spin up a local OpenObserve
+  instance when you need a real OTLP target.
+
+Keep all three aligned when introducing new metadata, macros, or transforms.
+
+---
+
+## 9. Feature Flags & Runtime Control
+
+### 9.1 VIBEPRO_OBSERVE Flag
 
 The observability stack uses a **runtime feature flag** to control span export behavior:
 
@@ -356,7 +407,7 @@ The observability stack uses a **runtime feature flag** to control span export b
 | `VIBEPRO_OBSERVE=1`          | **Enabled**: Spans exported to OTLP endpoint (requires `--features otlp`) |
 | `VIBEPRO_OBSERVE=0` or unset | **Disabled**: JSON logs only, no OTLP export                              |
 
-### 8.2 Cargo Feature Flags
+### 9.2 Cargo Feature Flags
 
 The `vibepro-observe` crate uses compile-time feature flags:
 
@@ -369,7 +420,7 @@ vibepro-observe = { version = "0.1", features = ["otlp"] }
 vibepro-observe = "0.1"
 ```
 
-### 8.3 Usage Patterns
+### 9.3 Usage Patterns
 
 **Development (OTLP disabled)**:
 
@@ -392,7 +443,7 @@ VIBEPRO_OBSERVE=1 cargo run --features otlp
 # Dockerfile, Kubernetes manifests, etc. set VIBEPRO_OBSERVE=1
 ```
 
-### 8.4 Testing Feature Flag Behavior
+### 9.4 Testing Feature Flag Behavior
 
 ```bash
 # Test feature flag implementation
@@ -409,7 +460,7 @@ Verifies:
 - ✅ Tests pass with and without `otlp` feature
 - ✅ Documentation references exist
 
-### 8.5 Decision Tree
+### 9.5 Decision Tree
 
 ```
 Is OTLP needed?
@@ -425,7 +476,7 @@ Is OTLP needed?
 
 ---
 
-## 9. Common Just Targets
+## 10. Common Just Targets
 
 | Command                  | Description                                                      |
 | :----------------------- | :--------------------------------------------------------------- |
@@ -438,7 +489,7 @@ Is OTLP needed?
 
 ---
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 | Symptom                            | Diagnosis                                     | Resolution                                       |
 | :--------------------------------- | :-------------------------------------------- | :----------------------------------------------- |
@@ -450,7 +501,7 @@ Is OTLP needed?
 
 ---
 
-## 10. Example Query Recipes (OpenObserve SQL)
+## 12. Example Query Recipes (OpenObserve SQL)
 
 | Use Case                    | Query                                                                                   |
 | :-------------------------- | :-------------------------------------------------------------------------------------- |
@@ -460,7 +511,7 @@ Is OTLP needed?
 
 ---
 
-## 11. Governance & Cost Controls
+## 13. Governance & Cost Controls
 
 - **Sampling:** Defined in `vector.toml` (reduce noise).
 - **Redaction:** Apply VRL transforms to mask PII.
@@ -489,7 +540,7 @@ Configure separate OpenObserve streams/indices:
 
 ---
 
-## 11.5. Structured Logging Policy & Examples
+## 13.5. Structured Logging Policy & Examples
 
 > **Specification References:** DEV-ADR-017, DEV-PRD-018, DEV-SDS-018
 
@@ -727,7 +778,7 @@ sh -eu tests/ops/test_log_redaction.sh
 sh -eu tests/ops/test_log_trace_correlation.sh
 
 # Run all logging tests
-just test:logs
+just test-logs  # Includes Logfire bootstrap smoke coverage
 ```
 
 ### OpenObserve Setup for Logs
@@ -814,7 +865,9 @@ LIMIT 100;
 
 ---
 
-## 12. References
+<!-- TODO: Phase 3 Logfire integration content per DEV-PRD-018 -->
+
+## 14. References
 
 - [DEV-ADR-016](../dev_adr.md) — Architecture Decision
 - [DEV-SDS-017](../dev_sds.md) — System Design Specification
@@ -826,7 +879,7 @@ LIMIT 100;
 
 ---
 
-## 13. Exit Criteria
+## 15. Exit Criteria
 
 ✅ `just observe-start` and `just observe-verify` both succeed.
 ✅ `vector validate` passes locally and in CI.
