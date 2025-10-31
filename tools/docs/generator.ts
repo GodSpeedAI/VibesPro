@@ -3,12 +3,8 @@
  * Traceability: PRD-MERGE-006, ADR-MERGE-008
  */
 
-import { existsSync, mkdirSync } from "node:fs";
-import type {
-  GeneratedDocs,
-  ProjectContext,
-  ValidationResult,
-} from "./types.js";
+import { existsSync, mkdirSync } from 'node:fs';
+import type { GeneratedDocs, ProjectContext, ValidationResult } from './types.js';
 
 export class DocumentationGenerator {
   constructor(private readonly outputDir: string) {
@@ -30,26 +26,21 @@ export class DocumentationGenerator {
     const warnings: string[] = [];
     const brokenLinks: string[] = [];
 
-    if (!docs.readme.includes("Getting Started")) {
-      missingSection.push("README → Getting Started");
+    if (!docs.readme.includes('Getting Started')) {
+      missingSection.push('README → Getting Started');
     }
-    if (!docs.readme.includes("## Architecture")) {
-      missingSection.push("README → Architecture overview");
+    if (!docs.readme.includes('## Architecture')) {
+      missingSection.push('README → Architecture overview');
     }
     if (!docs.apiDocs.trim()) {
-      missingSection.push("API reference content");
+      missingSection.push('API reference content');
     }
-    if (!docs.architectureGuide.includes("Hexagonal Architecture")) {
-      missingSection.push(
-        "Architecture guide → Hexagonal Architecture section",
-      );
+    if (!docs.architectureGuide.includes('Hexagonal Architecture')) {
+      missingSection.push('Architecture guide → Hexagonal Architecture section');
     }
 
     const totalChecks = 8;
-    const score = Math.max(
-      0,
-      (totalChecks - missingSection.length) / totalChecks,
-    );
+    const score = Math.max(0, (totalChecks - missingSection.length) / totalChecks);
 
     return {
       isValid: missingSection.length === 0,
@@ -62,30 +53,26 @@ export class DocumentationGenerator {
 
   private renderReadme(context: ProjectContext): string {
     const domainList = context.domains.length
-      ? context.domains
-          .map((domain) => `- **${formatTitle(domain)}** domain`)
-          .join("\n")
-      : "- Define your first bounded context to start building business logic";
+      ? context.domains.map((domain) => `- **${formatTitle(domain)}** domain`).join('\n')
+      : '- Define your first bounded context to start building business logic';
 
     const frameworkList = context.frameworks.length
-      ? context.frameworks.map((item) => `- ${formatTitle(item)}`).join("\n")
-      : "- Add preferred frameworks in copier answers to customise this section";
+      ? context.frameworks.map((item) => `- ${formatTitle(item)}`).join('\n')
+      : '- Add preferred frameworks in copier answers to customise this section';
 
     const repoBadge = context.repository
       ? `[![Repository](https://img.shields.io/badge/repository-${encodeURIComponent(
           context.projectName,
         )}-blue.svg)](${context.repository})`
-      : "";
+      : '';
 
     const versionBadge = context.version
       ? `![Version](https://img.shields.io/badge/version-${encodeURIComponent(
           context.version,
         )}-brightgreen.svg)`
-      : "";
+      : '';
 
-    const authorLine = context.author
-      ? `Maintained by **${context.author}**.`
-      : "";
+    const authorLine = context.author ? `Maintained by **${context.author}**.` : '';
 
     return `# ${context.projectName}
 
@@ -134,7 +121,7 @@ ${
 - Automated context capture for architectural decisions
 - Reusable prompts and generators for bounded contexts
 `
-    : ""
+    : ''
 }
 
 ## Development Commands
@@ -164,7 +151,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines, coding stand
 
 ## License
 
-${context.license ?? "MIT License"}
+${context.license ?? 'MIT License'}
 `;
   }
 
@@ -190,8 +177,8 @@ ${context.license ?? "MIT License"}
 Use the shared type definitions generated in \`libs/shared/database-types\` for request and response contracts.
 `;
           })
-          .join("\n")
-      : "## Domains\n\nDefine at least one bounded context to unlock detailed API documentation.";
+          .join('\n')
+      : '## Domains\n\nDefine at least one bounded context to unlock detailed API documentation.';
 
     return `# ${context.projectName} API Reference
 
@@ -247,8 +234,8 @@ All endpoints return a consistent error envelope:
                 domain,
               )} | libs/${domain}/domain | libs/${domain}/application | libs/${domain}/infrastructure |`,
           )
-          .join("\n")
-      : "| Pending | libs/example/domain | libs/example/application | libs/example/infrastructure |";
+          .join('\n')
+      : '| Pending | libs/example/domain | libs/example/application | libs/example/infrastructure |';
 
     return `# Architecture Guide
 
@@ -301,11 +288,11 @@ ${domainMatrix}
 
 function formatTitle(input: string): string {
   if (!input) {
-    return "";
+    return '';
   }
   return input
     .split(/[-_/\s]+/u)
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+    .join(' ');
 }

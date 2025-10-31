@@ -17,11 +17,11 @@ Standardize **repository + port/adapter** scaffolding for domain entities, with 
 
 **When to use**
 
-- New entity persistence layer or refactor to ports/adapters.
+-   New entity persistence layer or refactor to ports/adapters.
 
 **Non-goals**
 
-- Real DB migrations/seed data; production infra; actual network calls.
+-   Real DB migrations/seed data; production infra; actual network calls.
 
 ---
 
@@ -55,64 +55,64 @@ tools/vibepro/
 
 **Required**
 
-- `entity: string` — singular domain entity (kebab or camel; becomes Pascal in types)
+-   `entity: string` — singular domain entity (kebab or camel; becomes Pascal in types)
 
 **Recommended**
 
-- `scope: 'data' | 'shared' | 'api'` (default: `data`)
-- `directory?: string`
-- `backend: 'postgres' | 'sqlite' | 'http' | 'memory'` (default: `memory`)
-- `orm: 'drizzle' | 'prisma' | 'knex' | 'none'` (default: `none`)
+-   `scope: 'data' | 'shared' | 'api'` (default: `data`)
+-   `directory?: string`
+-   `backend: 'postgres' | 'sqlite' | 'http' | 'memory'` (default: `memory`)
+-   `orm: 'drizzle' | 'prisma' | 'knex' | 'none'` (default: `none`)
 
-  > Only meaningful for SQL backends; ignored for `http`/`memory`.
+    > Only meaningful for SQL backends; ignored for `http`/`memory`.
 
-- `withContractTests?: boolean` (default: `true`)
-- `unitTestRunner?: 'vitest' | 'jest'` (default: `vitest`)
-- `tags?: string`
+-   `withContractTests?: boolean` (default: `true`)
+-   `unitTestRunner?: 'vitest' | 'jest'` (default: `vitest`)
+-   `tags?: string`
 
 **Validation Rules**
 
-- `entity` maps to valid TS identifiers when PascalCased.
-- `orm` must be compatible with `backend` if SQL chosen.
+-   `entity` maps to valid TS identifiers when PascalCased.
+-   `orm` must be compatible with `backend` if SQL chosen.
 
 **Example `schema.json` (excerpt)**
 
 ```json
 {
-  "$schema": "https://json-schema.org/schema",
-  "$id": "MyOrgDataAccess",
-  "title": "Data Access",
-  "type": "object",
-  "properties": {
-    "entity": {
-      "type": "string",
-      "$default": { "$source": "argv", "index": 0 }
+    "$schema": "https://json-schema.org/schema",
+    "$id": "MyOrgDataAccess",
+    "title": "Data Access",
+    "type": "object",
+    "properties": {
+        "entity": {
+            "type": "string",
+            "$default": { "$source": "argv", "index": 0 }
+        },
+        "scope": {
+            "type": "string",
+            "enum": ["data", "shared", "api"],
+            "default": "data"
+        },
+        "directory": { "type": "string" },
+        "backend": {
+            "type": "string",
+            "enum": ["postgres", "sqlite", "http", "memory"],
+            "default": "memory"
+        },
+        "orm": {
+            "type": "string",
+            "enum": ["drizzle", "prisma", "knex", "none"],
+            "default": "none"
+        },
+        "withContractTests": { "type": "boolean", "default": true },
+        "unitTestRunner": {
+            "type": "string",
+            "enum": ["vitest", "jest"],
+            "default": "vitest"
+        },
+        "tags": { "type": "string" }
     },
-    "scope": {
-      "type": "string",
-      "enum": ["data", "shared", "api"],
-      "default": "data"
-    },
-    "directory": { "type": "string" },
-    "backend": {
-      "type": "string",
-      "enum": ["postgres", "sqlite", "http", "memory"],
-      "default": "memory"
-    },
-    "orm": {
-      "type": "string",
-      "enum": ["drizzle", "prisma", "knex", "none"],
-      "default": "none"
-    },
-    "withContractTests": { "type": "boolean", "default": true },
-    "unitTestRunner": {
-      "type": "string",
-      "enum": ["vitest", "jest"],
-      "default": "vitest"
-    },
-    "tags": { "type": "string" }
-  },
-  "required": ["entity"]
+    "required": ["entity"]
 }
 ```
 
@@ -120,14 +120,14 @@ tools/vibepro/
 
 ```ts
 export interface DataAccessSchema {
-  entity: string;
-  scope?: "data" | "shared" | "api";
-  directory?: string;
-  backend?: "postgres" | "sqlite" | "http" | "memory";
-  orm?: "drizzle" | "prisma" | "knex" | "none";
-  withContractTests?: boolean;
-  unitTestRunner?: "vitest" | "jest";
-  tags?: string;
+    entity: string;
+    scope?: "data" | "shared" | "api";
+    directory?: string;
+    backend?: "postgres" | "sqlite" | "http" | "memory";
+    orm?: "drizzle" | "prisma" | "knex" | "none";
+    withContractTests?: boolean;
+    unitTestRunner?: "vitest" | "jest";
+    tags?: string;
 }
 ```
 
@@ -164,54 +164,54 @@ libs/<scope>/<directory?>/<entity>-data/src/lib/adapters/http/http-client.ts  # 
 
 **Workspace Config**
 
-- Tags: `["scope:<scope>","type:data-access","entity:<entity>", ...extra]`
-- Ensure module-boundary rules apply.
+-   Tags: `["scope:<scope>","type:data-access","entity:<entity>", ...extra]`
+-   Ensure module-boundary rules apply.
 
 ---
 
 ## 5) Targets & Cacheability
 
-- `test`, `lint`, `type-check`, optional `build` for publishable adapters.
-- Prefer cacheable targets and align with workspace `namedInputs`.
+-   `test`, `lint`, `type-check`, optional `build` for publishable adapters.
+-   Prefer cacheable targets and align with workspace `namedInputs`.
 
 ---
 
 ## 6) Conventions & Policy
 
-- **Port/Adapter**: high-level interface (`Port`) + adapter(s) per backend.
-- **No real I/O** in stubs; fake clients where needed.
-- **Tests define behavior** (CRUD-ish operations or domain-specific ops).
-- **DTOs** own serialization boundaries; adapters convert as needed.
+-   **Port/Adapter**: high-level interface (`Port`) + adapter(s) per backend.
+-   **No real I/O** in stubs; fake clients where needed.
+-   **Tests define behavior** (CRUD-ish operations or domain-specific ops).
+-   **DTOs** own serialization boundaries; adapters convert as needed.
 
 ---
 
 ## 7) Implementation Hints (for future generator author)
 
-- Lean on `@nx/devkit` utilities (`generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `updateJson`) as outlined in `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` and `devkit-core.md`.
-- Build adapter-specific targets programmatically; use `createProjectGraphAsync` or `readProjectConfiguration` to confirm dependencies and tags after mutation.
-- If `backend` is SQL, mention ORM scaffolding expectations in README but avoid generating migrations or touching infrastructure generators.
-- Support incremental adapter creation: detect existing entity libs and add new adapters/tests without destructive changes.
-- Keep all generated code side-effect free and formatted via `formatFiles`.
+-   Lean on `@nx/devkit` utilities (`generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `updateJson`) as outlined in `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` and `devkit-core.md`.
+-   Build adapter-specific targets programmatically; use `createProjectGraphAsync` or `readProjectConfiguration` to confirm dependencies and tags after mutation.
+-   If `backend` is SQL, mention ORM scaffolding expectations in README but avoid generating migrations or touching infrastructure generators.
+-   Support incremental adapter creation: detect existing entity libs and add new adapters/tests without destructive changes.
+-   Keep all generated code side-effect free and formatted via `formatFiles`.
 
 ---
 
 ## 8) Acceptance Tests (for generator once built)
 
-- Dry run plan OK.
-- Files present with correct names and exports.
-- Unit tests compile and pass with fake clients.
-- If multiple adapters selected over time, contracts remain shared; tests pass for each.
-- Idempotency re-run = no diff.
-- Lint/module-boundaries pass.
-- Workspace graph (`pnpm nx graph --focus <entity>-data`) renders without missing dependencies; `project.json` includes expected tags and targets.
+-   Dry run plan OK.
+-   Files present with correct names and exports.
+-   Unit tests compile and pass with fake clients.
+-   If multiple adapters selected over time, contracts remain shared; tests pass for each.
+-   Idempotency re-run = no diff.
+-   Lint/module-boundaries pass.
+-   Workspace graph (`pnpm nx graph --focus <entity>-data`) renders without missing dependencies; `project.json` includes expected tags and targets.
 
 ---
 
 ## 9) Rollback & Safety
 
-- Emit change list.
-- No secrets; no live DB calls.
-- Keep adapters pure and side-effect free in stubs.
+-   Emit change list.
+-   No secrets; no live DB calls.
+-   Keep adapters pure and side-effect free in stubs.
 
 ---
 
@@ -223,9 +223,9 @@ libs/<scope>/<directory?>/<entity>-data/src/lib/adapters/http/http-client.ts  # 
 
 **MCP Assistance**
 
-- **context7**: gather ADRs on persistence + any prior entity data-access specs; assemble glossary.
-- **ref**: propose seam boundaries (port vs adapter vs dto); detect duplication across entities.
-- **exa**: find 3–5 examples of clean repository patterns for chosen backend/ORM; include links in PR.
+-   **context7**: gather ADRs on persistence + any prior entity data-access specs; assemble glossary.
+-   **ref**: propose seam boundaries (port vs adapter vs dto); detect duplication across entities.
+-   **exa**: find 3–5 examples of clean repository patterns for chosen backend/ORM; include links in PR.
 
 ---
 
@@ -243,9 +243,9 @@ pnpm nx g @myorg/vibepro:data-access invoice \
 
 ## 12) Review Checklist
 
-- [ ] `schema.json`/`schema.d.ts` match
-- [ ] Tags include `scope:<scope>`, `type:data-access`, `entity:<entity>`
-- [ ] Tests pass; cacheable targets
-- [ ] Idempotent on re-run
-- [ ] Port/adapter split is clean; DTOs correct
-- [ ] Docs updated (usage & options)
+-   [ ] `schema.json`/`schema.d.ts` match
+-   [ ] Tags include `scope:<scope>`, `type:data-access`, `entity:<entity>`
+-   [ ] Tests pass; cacheable targets
+-   [ ] Idempotent on re-run
+-   [ ] Port/adapter split is clean; DTOs correct
+-   [ ] Docs updated (usage & options)

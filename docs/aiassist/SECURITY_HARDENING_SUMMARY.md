@@ -22,27 +22,27 @@
 
 **✅ Opt-in via feature flags**
 
-- `enable_security_hardening: false` (default)
-- Zero impact on projects that don't need security
-- No mandatory complexity added
+-   `enable_security_hardening: false` (default)
+-   Zero impact on projects that don't need security
+-   No mandatory complexity added
 
 **✅ Maximum code reuse**
 
-- 85% copy/paste from existing specifications
-- Only 15% new code (Jinja2 conditionals, hooks)
-- Estimated 22 hours saved vs. writing from scratch
+-   85% copy/paste from existing specifications
+-   Only 15% new code (Jinja2 conditionals, hooks)
+-   Estimated 22 hours saved vs. writing from scratch
 
 **✅ TDD discipline maintained**
 
-- Every task has RED → GREEN → REFACTOR workflow
-- Test cases defined before implementation
-- Clear success criteria for each phase
+-   Every task has RED → GREEN → REFACTOR workflow
+-   Test cases defined before implementation
+-   Clear success criteria for each phase
 
 **✅ Clear rollback path**
 
-- Feature flag can be disabled instantly
-- Templates can be archived with zero impact
-- Low-risk approach suitable for production
+-   Feature flag can be disabled instantly
+-   Templates can be archived with zero impact
+-   Low-risk approach suitable for production
 
 ---
 
@@ -58,9 +58,9 @@
 
 **Deliverables:**
 
-- `libs/security/src/secure_db.rs` (encrypted sled wrapper)
-- 5 passing unit tests
-- Clean `cargo clippy` output
+-   `libs/security/src/secure_db.rs` (encrypted sled wrapper)
+-   5 passing unit tests
+-   Clean `cargo clippy` output
 
 ### Phase 2: Template Generation (TASK-014) - 6-8 hours
 
@@ -72,10 +72,10 @@
 
 **Deliverables:**
 
-- `templates/{{project_slug}}/libs/security/` (Jinja2 templates)
-- `Dockerfile.j2` (distroless multi-stage build)
-- `docker-compose.yml.j2` (security_opt configured)
-- 4 passing integration tests
+-   `templates/{{project_slug}}/libs/security/` (Jinja2 templates)
+-   `Dockerfile.j2` (distroless multi-stage build)
+-   `docker-compose.yml.j2` (security_opt configured)
+-   4 passing integration tests
 
 ### Phase 3: Validation Suite (TASK-015) - 6-8 hours
 
@@ -87,10 +87,10 @@
 
 **Deliverables:**
 
-- Performance benchmarks (< 5% overhead verified)
-- Binary size tracking (< 2MB increase verified)
-- Security audit automation (`cargo audit` in CI)
-- 5 passing validation tests
+-   Performance benchmarks (< 5% overhead verified)
+-   Binary size tracking (< 2MB increase verified)
+-   Security audit automation (`cargo audit` in CI)
+-   5 passing validation tests
 
 ---
 
@@ -111,10 +111,10 @@
 
 ### New Code Required (Minimal)
 
-- Jinja2 conditionals: ~20 lines
-- Post-generation hooks: ~15 lines
-- Test harness integration: ~15 lines
-- **TOTAL: ~50 lines (~4 hours)**
+-   Jinja2 conditionals: ~20 lines
+-   Post-generation hooks: ~15 lines
+-   Test harness integration: ~15 lines
+-   **TOTAL: ~50 lines (~4 hours)**
 
 ---
 
@@ -183,10 +183,10 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
 
 ### Mitigation Strategies
 
-- **Weekly security audits** during implementation
-- **Benchmark gates** in CI (fail if > 10% overhead)
-- **Platform testing** on Ubuntu 22.04+, Debian, Alpine
-- **Fallback implementations** for all critical paths
+-   **Weekly security audits** during implementation
+-   **Benchmark gates** in CI (fail if > 10% overhead)
+-   **Platform testing** on Ubuntu 22.04+, Debian, Alpine
+-   **Fallback implementations** for all critical paths
 
 ---
 
@@ -194,28 +194,28 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
 
 ### Documentation Metrics (ACHIEVED ✅)
 
-- [x] Complete technical specification created
-- [x] Architectural decision recorded
-- [x] Implementation plan with TDD workflow
-- [x] Integration guide with code reuse analysis
-- [x] Step-by-step checklist for execution
+-   [x] Complete technical specification created
+-   [x] Architectural decision recorded
+-   [x] Implementation plan with TDD workflow
+-   [x] Integration guide with code reuse analysis
+-   [x] Step-by-step checklist for execution
 
 ### Implementation Metrics (PENDING)
 
-- [ ] TASK-013: 5/5 unit tests passing
-- [ ] TASK-014: 4/4 integration tests passing
-- [ ] TASK-015: 5/5 validation tests passing
-- [ ] Generated project builds in < 2 minutes
-- [ ] Encryption overhead < 5% (measured)
-- [ ] Binary size increase < 2MB (measured)
-- [ ] Zero HIGH/CRITICAL security issues (cargo audit)
+-   [ ] TASK-013: 5/5 unit tests passing
+-   [ ] TASK-014: 4/4 integration tests passing
+-   [ ] TASK-015: 5/5 validation tests passing
+-   [ ] Generated project builds in < 2 minutes
+-   [ ] Encryption overhead < 5% (measured)
+-   [ ] Binary size increase < 2MB (measured)
+-   [ ] Zero HIGH/CRITICAL security issues (cargo audit)
 
 ### User Experience Metrics (PENDING)
 
-- [ ] Feature enabled via single Copier prompt
-- [ ] Generated documentation complete and clear
-- [ ] Docker deployment works without privileged mode
-- [ ] Key rotation procedure tested and documented
+-   [ ] Feature enabled via single Copier prompt
+-   [ ] Generated documentation complete and clear
+-   [ ] Docker deployment works without privileged mode
+-   [ ] Key rotation procedure tested and documented
 
 ---
 
@@ -223,17 +223,17 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
 
 ### Best Case (Parallel Execution)
 
-- **Week 1:** TASK-013 + TASK-014 (parallel)
-- **Week 2:** TASK-015 + integration testing
-- **Total:** 2 weeks (with 2-3 agents)
+-   **Week 1:** TASK-013 + TASK-014 (parallel)
+-   **Week 2:** TASK-015 + integration testing
+-   **Total:** 2 weeks (with 2-3 agents)
 
 ### Conservative (Sequential)
 
-- **TASK-013:** 2 days (one agent)
-- **TASK-014:** 2 days (one agent)
-- **TASK-015:** 2 days (one agent)
-- **Integration & Docs:** 1 day
-- **Total:** 1.5 weeks (single agent)
+-   **TASK-013:** 2 days (one agent)
+-   **TASK-014:** 2 days (one agent)
+-   **TASK-015:** 2 days (one agent)
+-   **Integration & Docs:** 1 day
+-   **Total:** 1.5 weeks (single agent)
 
 ---
 
@@ -243,40 +243,40 @@ Key Sealing: TPM 2.0 (preferred) or file-based (fallback)
 
 1. **Review Documentation**
 
-   ```bash
-   # Read these in order:
-   cat docs/aiassist/AI_SECURITY_HARDENING.md      # Technical spec
-   cat docs/aiassist/AI_ADR.md | grep -A50 ADR-006  # Decision rationale
-   cat docs/aiassist/PHASE-006-CHECKLIST.md         # Step-by-step guide
-   ```
+    ```bash
+    # Read these in order:
+    cat docs/aiassist/AI_SECURITY_HARDENING.md      # Technical spec
+    cat docs/aiassist/AI_ADR.md | grep -A50 ADR-006  # Decision rationale
+    cat docs/aiassist/PHASE-006-CHECKLIST.md         # Step-by-step guide
+    ```
 
 2. **Update copier.yml**
 
-   ```bash
-   # Add 3 variables (see PHASE-006-CHECKLIST.md)
-   vim copier.yml
-   ```
+    ```bash
+    # Add 3 variables (see PHASE-006-CHECKLIST.md)
+    vim copier.yml
+    ```
 
 3. **Start TASK-013 RED Phase**
 
-   ```bash
-   # Create test structure
-   mkdir -p libs/security/tests/unit
+    ```bash
+    # Create test structure
+    mkdir -p libs/security/tests/unit
 
-   # Copy test cases from AI_SECURITY_HARDENING.md Section 7.1
-   # Paste into libs/security/tests/unit/secure_db_test.rs
+    # Copy test cases from AI_SECURITY_HARDENING.md Section 7.1
+    # Paste into libs/security/tests/unit/secure_db_test.rs
 
-   # Verify RED state
-   cd libs/security && cargo test  # Should fail
-   ```
+    # Verify RED state
+    cd libs/security && cargo test  # Should fail
+    ```
 
 ### Resources Available
 
-- **Full specification:** `docs/aiassist/AI_SECURITY_HARDENING.md` (12 sections, 500+ lines)
-- **Reference code:** All implementations pre-written in specification
-- **Test cases:** All tests pre-written in specification
-- **Docker configs:** Dockerfile and docker-compose.yml ready to copy
-- **Integration guide:** Step-by-step with time estimates
+-   **Full specification:** `docs/aiassist/AI_SECURITY_HARDENING.md` (12 sections, 500+ lines)
+-   **Reference code:** All implementations pre-written in specification
+-   **Test cases:** All tests pre-written in specification
+-   **Docker configs:** Dockerfile and docker-compose.yml ready to copy
+-   **Integration guide:** Step-by-step with time estimates
 
 ---
 
@@ -303,19 +303,19 @@ A: Binary size (+2.5MB vs +1.5MB) and unnecessary features. RustCrypto provides 
 
 ### Documentation Approval ✅
 
-- [x] Specification complete (AI_SECURITY_HARDENING.md)
-- [x] Architecture approved (AI_ADR-006)
-- [x] Implementation plan reviewed (PHASE-006)
-- [x] Integration strategy validated (SECURITY_INTEGRATION_GUIDE.md)
-- [x] Checklist ready (PHASE-006-CHECKLIST.md)
+-   [x] Specification complete (AI_SECURITY_HARDENING.md)
+-   [x] Architecture approved (AI_ADR-006)
+-   [x] Implementation plan reviewed (PHASE-006)
+-   [x] Integration strategy validated (SECURITY_INTEGRATION_GUIDE.md)
+-   [x] Checklist ready (PHASE-006-CHECKLIST.md)
 
 ### Ready for Implementation
 
 **Next action:** Assign agents to tasks
 
-- **Agent A:** TASK-013 (Encrypted Sled Wrapper)
-- **Agent B:** TASK-014 (Copier Templates)
-- **Agent C:** TASK-015 (Validation Suite)
+-   **Agent A:** TASK-013 (Encrypted Sled Wrapper)
+-   **Agent B:** TASK-014 (Copier Templates)
+-   **Agent C:** TASK-015 (Validation Suite)
 
 **Estimated completion:** 20-26 hours (2 weeks with parallel execution)
 

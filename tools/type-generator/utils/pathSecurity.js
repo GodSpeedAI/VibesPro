@@ -1,10 +1,10 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 const SAFE_PATH_SEGMENT_REGEX = /^[a-zA-Z0-9_.@\- ]+$/;
 
 function sanitizePathInput(input, label) {
-  if (typeof input !== "string") {
+  if (typeof input !== 'string') {
     throw new Error(`${label} must be a string`);
   }
 
@@ -13,7 +13,7 @@ function sanitizePathInput(input, label) {
     throw new Error(`${label} cannot be empty`);
   }
 
-  if (trimmed.includes("\0")) {
+  if (trimmed.includes('\0')) {
     throw new Error(`${label} contains invalid characters`);
   }
 
@@ -21,18 +21,18 @@ function sanitizePathInput(input, label) {
 }
 
 function isPathSafe(inputPath) {
-  if (typeof inputPath !== "string") {
+  if (typeof inputPath !== 'string') {
     return false;
   }
 
-  if (inputPath.includes("\0")) {
+  if (inputPath.includes('\0')) {
     return false;
   }
 
   const normalized = path.normalize(inputPath);
   const segments = normalized.split(/[\\/]+/).filter(Boolean);
 
-  if (segments.some((segment) => segment === ".." || segment === "~")) {
+  if (segments.some((segment) => segment === '..' || segment === '~')) {
     return false;
   }
 
@@ -44,7 +44,7 @@ function resolveRealPath(targetPath) {
   try {
     return fs.realpathSync(candidate);
   } catch (error) {
-    if (error.code === "ENOENT") {
+    if (error.code === 'ENOENT') {
       return candidate;
     }
     throw error;
@@ -57,11 +57,11 @@ function buildAllowedRoots(workspace, allowedRoots = []) {
   roots.add(normalizedWorkspace);
 
   for (const root of allowedRoots) {
-    if (typeof root !== "string" || !root.trim()) {
+    if (typeof root !== 'string' || !root.trim()) {
       continue;
     }
 
-    const sanitizedRoot = sanitizePathInput(root, "allowed root");
+    const sanitizedRoot = sanitizePathInput(root, 'allowed root');
     if (!isPathSafe(sanitizedRoot)) {
       throw new Error(`allowed root contains invalid path characters: ${root}`);
     }
@@ -87,32 +87,20 @@ function ensureWithinWorkspace(resolvedPath, workspace, options = {}) {
     const rootWithSep = normalizedRoot.endsWith(path.sep)
       ? normalizedRoot
       : `${normalizedRoot}${path.sep}`;
-    return (
-      normalizedPath === normalizedRoot ||
-      normalizedPath.startsWith(rootWithSep)
-    );
+    return normalizedPath === normalizedRoot || normalizedPath.startsWith(rootWithSep);
   });
 }
 
-function resolvePathWithinWorkspace(
-  inputPath,
-  workspace,
-  description,
-  options = {},
-) {
+function resolvePathWithinWorkspace(inputPath, workspace, description, options = {}) {
   const sanitizedInput = sanitizePathInput(inputPath, description);
 
   if (!isPathSafe(sanitizedInput)) {
-    throw new Error(
-      `${description} contains invalid path characters: ${inputPath}`,
-    );
+    throw new Error(`${description} contains invalid path characters: ${inputPath}`);
   }
 
   const normalized = path.normalize(sanitizedInput);
-  if (normalized.startsWith("..")) {
-    throw new Error(
-      `${description} may not traverse outside the workspace: ${inputPath}`,
-    );
+  if (normalized.startsWith('..')) {
+    throw new Error(`${description} may not traverse outside the workspace: ${inputPath}`);
   }
 
   const workspaceRoot = resolveRealPath(workspace);
@@ -123,24 +111,22 @@ function resolvePathWithinWorkspace(
   const resolvedPath = resolveRealPath(absolute);
 
   if (!ensureWithinWorkspace(resolvedPath, workspaceRoot, options)) {
-    throw new Error(
-      `${description} path is outside the workspace: ${inputPath}`,
-    );
+    throw new Error(`${description} path is outside the workspace: ${inputPath}`);
   }
 
   return resolvedPath;
 }
 
-function assertFilenameSafe(filename, label = "filename") {
-  if (typeof filename !== "string" || !filename.trim()) {
+function assertFilenameSafe(filename, label = 'filename') {
+  if (typeof filename !== 'string' || !filename.trim()) {
     throw new Error(`${label} must be a non-empty string`);
   }
 
-  if (/[\\/]/.test(filename) || filename.includes("..")) {
+  if (/[\\/]/.test(filename) || filename.includes('..')) {
     throw new Error(`Invalid ${label}: ${filename}`);
   }
 
-  if (!SAFE_PATH_SEGMENT_REGEX.test(filename.replace(/\.[^.]+$/, ""))) {
+  if (!SAFE_PATH_SEGMENT_REGEX.test(filename.replace(/\.[^.]+$/, ''))) {
     throw new Error(`Invalid ${label}: ${filename}`);
   }
 }

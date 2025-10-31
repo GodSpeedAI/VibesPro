@@ -6,15 +6,15 @@ This directory contains AI workflow enhancement tools for the {{project_name}} p
 
 ### Context Manager (`context-manager.ts`)
 
-- Optimizes AI context selection within token budgets
-- Implements relevance scoring and priority-based selection
-- Supports multiple context sources with different priorities
+-   Optimizes AI context selection within token budgets
+-   Implements relevance scoring and priority-based selection
+-   Supports multiple context sources with different priorities
 
 ### Workflow Integration
 
-- GitHub Actions workflows for AI-assisted development
-- Automated code generation suggestions
-- Pattern recognition from temporal learning system
+-   GitHub Actions workflows for AI-assisted development
+-   Automated code generation suggestions
+-   Pattern recognition from temporal learning system
 
 ## Usage
 
@@ -22,14 +22,12 @@ This directory contains AI workflow enhancement tools for the {{project_name}} p
 import { AIContextManager } from "./context-manager.js";
 
 const manager = new AIContextManager({
-  maxTokens: 8000,
-  reservedTokens: 2000,
+    maxTokens: 8000,
+    reservedTokens: 2000,
 });
 
 const context = await manager.getOptimalContext("Create user entity");
-console.log(
-  `Generated context: ${context.tokenCount} tokens, relevance: ${context.relevanceScore}`,
-);
+console.log(`Generated context: ${context.tokenCount} tokens, relevance: ${context.relevanceScore}`);
 ```
 
 ## Configuration

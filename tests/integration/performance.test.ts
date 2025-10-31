@@ -5,18 +5,18 @@
  * Validates that performance targets are met as specified in TS-MERGE-008.
  */
 
-import { execSync } from "node:child_process";
-import { promises as fs } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { performance } from "node:perf_hooks";
-import { runCopierGeneration } from "../utils/generation-smoke";
+import { execSync } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { performance } from 'node:perf_hooks';
+import { runCopierGeneration } from '../utils/generation-smoke';
 
-describe("Performance Integration", () => {
+describe('Performance Integration', () => {
   let testWorkspace: string;
 
   beforeEach(async () => {
-    testWorkspace = await fs.mkdtemp(join(tmpdir(), "vibes-pro-perf-"));
+    testWorkspace = await fs.mkdtemp(join(tmpdir(), 'vibes-pro-perf-'));
   });
 
   afterEach(async () => {
@@ -25,14 +25,14 @@ describe("Performance Integration", () => {
     }
   });
 
-  it("should generate project within 30 seconds", async () => {
+  it('should generate project within 30 seconds', async () => {
     const startTime = performance.now();
 
     const projectPath = await runCopierGeneration({
       skipPostGenSetup: true,
-      project_name: "Performance Test Project",
+      project_name: 'Performance Test Project',
       include_ai_workflows: true,
-      architecture_style: "hexagonal",
+      architecture_style: 'hexagonal',
     });
 
     const endTime = performance.now();
@@ -44,11 +44,11 @@ describe("Performance Integration", () => {
     await fs.rm(projectPath, { recursive: true, force: true });
   }, 35000); // 35 second timeout to allow for 30s generation + cleanup
 
-  it("should build generated project within 2 minutes", async () => {
+  it('should build generated project within 2 minutes', async () => {
     // Generate project first
     const projectPath = await runCopierGeneration({
       skipPostGenSetup: true,
-      project_name: "Build Performance Test",
+      project_name: 'Build Performance Test',
       include_ai_workflows: false,
     });
 
@@ -56,14 +56,14 @@ describe("Performance Integration", () => {
     const startTime = performance.now();
 
     try {
-      execSync("just build", {
+      execSync('just build', {
         cwd: projectPath,
-        stdio: "pipe",
+        stdio: 'pipe',
       });
     } catch (error) {
       // Some builds might fail due to missing dependencies in test environment
       // This is acceptable for performance measurement
-      console.warn("Build failed in test environment, but timing was measured");
+      console.warn('Build failed in test environment, but timing was measured');
     }
 
     const endTime = performance.now();
@@ -76,13 +76,13 @@ describe("Performance Integration", () => {
     await fs.rm(projectPath, { recursive: true, force: true });
   }, 180000); // Test timeout: 3 minutes
 
-  it("should use reasonable memory during generation", async () => {
+  it('should use reasonable memory during generation', async () => {
     // Monitor memory usage during generation
     const initialMemory = process.memoryUsage();
 
     const projectPath = await runCopierGeneration({
       skipPostGenSetup: true,
-      project_name: "Memory Test Project",
+      project_name: 'Memory Test Project',
     });
 
     const finalMemory = process.memoryUsage();
@@ -95,10 +95,10 @@ describe("Performance Integration", () => {
     await fs.rm(projectPath, { recursive: true, force: true });
   });
 
-  it("should have reasonable file generation count", async () => {
+  it('should have reasonable file generation count', async () => {
     const projectPath = await runCopierGeneration({
       skipPostGenSetup: true,
-      project_name: "File Count Test",
+      project_name: 'File Count Test',
       include_ai_workflows: true,
     });
 
@@ -108,7 +108,7 @@ describe("Performance Integration", () => {
       const items = await fs.readdir(dir, { withFileTypes: true });
 
       for (const item of items) {
-        if (item.isDirectory() && !item.name.startsWith(".git")) {
+        if (item.isDirectory() && !item.name.startsWith('.git')) {
           count += await countFiles(join(dir, item.name));
         } else if (item.isFile()) {
           count++;

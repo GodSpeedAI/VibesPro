@@ -22,8 +22,8 @@
 
 **Problem Identified**:
 
-- `template-smoke.test.ts` failing with `prompt:lint` returning status 1
-- Root cause: `customize.copilot-instructions.prompt.md` missing required frontmatter fields
+-   `template-smoke.test.ts` failing with `prompt:lint` returning status 1
+-   Root cause: `customize.copilot-instructions.prompt.md` missing required frontmatter fields
 
 **Investigation Process**:
 
@@ -38,15 +38,15 @@
 
 **Solution Implemented**:
 
-- **File**: `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
+-   **File**: `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
 
-  - Added 6 missing frontmatter fields
-  - Total fields: 11 (kind, domain, task, thread, matrix_ids, budget, description, model, mode, tools, temperature)
+    -   Added 6 missing frontmatter fields
+    -   Total fields: 11 (kind, domain, task, thread, matrix_ids, budget, description, model, mode, tools, temperature)
 
-- **File**: `tests/utils/generation-smoke.ts`
-  - Added `--vcs-ref=HEAD` to Copier command
-  - Ensures template changes are picked up during testing
-  - Handles "dirty" working directory correctly
+-   **File**: `tests/utils/generation-smoke.ts`
+    -   Added `--vcs-ref=HEAD` to Copier command
+    -   Ensures template changes are picked up during testing
+    -   Handles "dirty" working directory correctly
 
 **Commit**: 72c96db
 
@@ -60,10 +60,10 @@
 
 **Key Findings**:
 
-- `_skip_if_exists` patterns are ALWAYS honored (no CLI override)
-- `--force` = `--defaults` + `--overwrite` BUT doesn't override `_skip_if_exists`
-- `--vcs-ref=HEAD` includes staged but uncommitted changes
-- Generated DirtyLocalWarning is expected and safe when using `--vcs-ref=HEAD`
+-   `_skip_if_exists` patterns are ALWAYS honored (no CLI override)
+-   `--force` = `--defaults` + `--overwrite` BUT doesn't override `_skip_if_exists`
+-   `--vcs-ref=HEAD` includes staged but uncommitted changes
+-   Generated DirtyLocalWarning is expected and safe when using `--vcs-ref=HEAD`
 
 **Documentation Reference**: Retrieved from `/copier-org/copier` library
 
@@ -73,31 +73,31 @@
 
 **Content**:
 
-- Executive summary of all fixes
-- Detailed issue resolution documentation
-- Test status (9/9 environment tests passing)
-- CI workflow status
-- Semantic versioning analysis (recommended v0.2.0)
-- Merge strategy recommendation (squash and merge)
-- Post-merge checklist
-- Traceability to specifications
+-   Executive summary of all fixes
+-   Detailed issue resolution documentation
+-   Test status (9/9 environment tests passing)
+-   CI workflow status
+-   Semantic versioning analysis (recommended v0.2.0)
+-   Merge strategy recommendation (squash and merge)
+-   Post-merge checklist
+-   Traceability to specifications
 
 ### 4. Semantic Versioning Analysis ✅
 
 **Analysis**:
 
-- Current version: 0.1.0
-- Changes: 6 phases of environment infrastructure (new features)
-- Bug fixes: SOPS installation, pyproject.toml, tests, frontmatter
-- Breaking changes: None
+-   Current version: 0.1.0
+-   Changes: 6 phases of environment infrastructure (new features)
+-   Bug fixes: SOPS installation, pyproject.toml, tests, frontmatter
+-   Breaking changes: None
 
 **Recommendation**: **v0.2.0**
 
 **Rationale**:
 
-- Significant new features (Devbox, mise, SOPS, testing, CI, Just tasks)
-- No breaking changes (all additive)
-- Follows semantic versioning (MINOR version for new features)
+-   Significant new features (Devbox, mise, SOPS, testing, CI, Just tasks)
+-   No breaking changes (all additive)
+-   Follows semantic versioning (MINOR version for new features)
 
 ---
 
@@ -107,10 +107,10 @@
 
 **Discovery**: Files without `.j2` suffix are copied as-is, NOT templated
 
-- Template files need `.j2` suffix to use Jinja2 variables
-- Plain markdown files are literal copies
-- `_skip_if_exists` prevents overwriting during generation
-- `--vcs-ref=HEAD` critical for testing uncommitted template changes
+-   Template files need `.j2` suffix to use Jinja2 variables
+-   Plain markdown files are literal copies
+-   `_skip_if_exists` prevents overwriting during generation
+-   `--vcs-ref=HEAD` critical for testing uncommitted template changes
 
 **Implication**: Template development requires `--vcs-ref=HEAD` for TDD workflow
 
@@ -143,9 +143,9 @@
 
 **Benefits**:
 
-- Immediate feedback on template changes
-- No need to commit broken templates
-- Safe iteration cycle
+-   Immediate feedback on template changes
+-   No need to commit broken templates
+-   Safe iteration cycle
 
 ---
 
@@ -153,25 +153,25 @@
 
 ### Templates
 
-- `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
-  - Added 6 missing frontmatter fields
-  - Now passes prompt:lint validation
+-   `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
+    -   Added 6 missing frontmatter fields
+    -   Now passes prompt:lint validation
 
 ### Tests
 
-- `tests/utils/generation-smoke.ts`
-  - Added `--vcs-ref=HEAD` flag to Copier command
-  - Enables testing of uncommitted template changes
+-   `tests/utils/generation-smoke.ts`
+    -   Added `--vcs-ref=HEAD` flag to Copier command
+    -   Enables testing of uncommitted template changes
 
 ### Documentation
 
-- `docs/work-summaries/pr-27-resolution-complete.md` (new)
+-   `docs/work-summaries/pr-27-resolution-complete.md` (new)
 
-  - Comprehensive PR resolution documentation
-  - Merge strategy and version recommendation
+    -   Comprehensive PR resolution documentation
+    -   Merge strategy and version recommendation
 
-- `docs/work-summaries/session-summary-pr-27.md` (new, this file)
-  - Session work log and insights
+-   `docs/work-summaries/session-summary-pr-27.md` (new, this file)
+    -   Session work log and insights
 
 ---
 
@@ -179,16 +179,16 @@
 
 ### Before Session
 
-- ❌ `template-smoke.test.ts` failing (prompt:lint status 1)
-- ❌ Generated projects had invalid frontmatter
+-   ❌ `template-smoke.test.ts` failing (prompt:lint status 1)
+-   ❌ Generated projects had invalid frontmatter
 
 ### After Session
 
-- ✅ `template-smoke.test.ts` passing
-- ✅ Generated projects have complete frontmatter
-- ✅ All 9 environment tests passing
-- ✅ Integration tests passing (13/14 suites)
-- ⚠️ 1 flaky performance test (non-blocking)
+-   ✅ `template-smoke.test.ts` passing
+-   ✅ Generated projects have complete frontmatter
+-   ✅ All 9 environment tests passing
+-   ✅ Integration tests passing (13/14 suites)
+-   ⚠️ 1 flaky performance test (non-blocking)
 
 ---
 
@@ -196,26 +196,26 @@
 
 ### Final State
 
-- ✅ 12+ workflows passing
-- ⏳ 4 workflows running (env-check, build-matrix, build-and-test)
-- 🎯 Expecting all to pass with latest commit
+-   ✅ 12+ workflows passing
+-   ⏳ 4 workflows running (env-check, build-matrix, build-and-test)
+-   🎯 Expecting all to pass with latest commit
 
 ### Key Workflows Validated
 
-- ✅ Security scans (Semgrep, plaintext detection)
-- ✅ Linting (markdown, shell)
-- ✅ Documentation generation
-- ✅ Node tests
-- ✅ Spec guard validation
+-   ✅ Security scans (Semgrep, plaintext detection)
+-   ✅ Linting (markdown, shell)
+-   ✅ Documentation generation
+-   ✅ Node tests
+-   ✅ Spec guard validation
 
 ---
 
 ## Commit History (This Session)
 
 1. **72c96db** - `fix(templates): add required frontmatter to customize prompt and enable VCS ref in tests [DEV-SPEC-008]`
-   - Added frontmatter fields to template
-   - Updated generation-smoke.ts with --vcs-ref=HEAD
-   - Fixed smoke test failure
+    - Added frontmatter fields to template
+    - Updated generation-smoke.ts with --vcs-ref=HEAD
+    - Fixed smoke test failure
 
 ---
 
@@ -223,22 +223,22 @@
 
 ### 1. Copier Workaround Documentation
 
-- How to test template changes before committing
-- Understanding `_skip_if_exists` behavior
-- When to use `--vcs-ref=HEAD`
+-   How to test template changes before committing
+-   Understanding `_skip_if_exists` behavior
+-   When to use `--vcs-ref=HEAD`
 
 ### 2. Prompt Frontmatter Requirements
 
-- Complete list of required fields
-- Validation rules
-- How linter checks templates
+-   Complete list of required fields
+-   Validation rules
+-   How linter checks templates
 
 ### 3. PR Resolution Process
 
-- Issue tracking and resolution
-- Testing validation
-- Version recommendation process
-- Merge strategy selection
+-   Issue tracking and resolution
+-   Testing validation
+-   Version recommendation process
+-   Merge strategy selection
 
 ---
 
@@ -294,23 +294,23 @@
 
 ### Lines of Code
 
-- **Added**: ~20 lines (frontmatter fields + VCS ref flag)
-- **Documentation**: ~400 lines (session summaries)
-- **Impact**: Fixed critical test failure blocking merge
+-   **Added**: ~20 lines (frontmatter fields + VCS ref flag)
+-   **Documentation**: ~400 lines (session summaries)
+-   **Impact**: Fixed critical test failure blocking merge
 
 ### Time Investment
 
-- **Investigation**: ~45 minutes (smoke test debugging)
-- **Context7 Research**: ~15 minutes (Copier documentation)
-- **Implementation**: ~10 minutes (frontmatter + VCS ref)
-- **Documentation**: ~50 minutes (PR summary + session notes)
-- **Total**: ~2 hours
+-   **Investigation**: ~45 minutes (smoke test debugging)
+-   **Context7 Research**: ~15 minutes (Copier documentation)
+-   **Implementation**: ~10 minutes (frontmatter + VCS ref)
+-   **Documentation**: ~50 minutes (PR summary + session notes)
+-   **Total**: ~2 hours
 
 ### Test Coverage
 
-- **Before**: 48/50 tests passing (96%)
-- **After**: 49/50 tests passing (98%)
-- **Flaky test**: 1 (performance test - temp dir cleanup)
+-   **Before**: 48/50 tests passing (96%)
+-   **After**: 49/50 tests passing (98%)
+-   **Flaky test**: 1 (performance test - temp dir cleanup)
 
 ---
 

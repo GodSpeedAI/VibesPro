@@ -10,9 +10,9 @@ const { spawnSync } = require('node:child_process');
 function testSpecIdsExtraction() {
   const sample = 'References PRD-123 and DEV-PRD-045 with ADR-002 sprinkled in.';
   const results = extractIdsFromText(sample, 'sample.md');
-  assert.ok(results.find(r => r.id === 'ADR-002'));
-  assert.ok(results.find(r => r.id === 'DEV-PRD-045'));
-  assert.ok(results.find(r => r.source === 'sample.md'));
+  assert.ok(results.find((r) => r.id === 'ADR-002'));
+  assert.ok(results.find((r) => r.id === 'DEV-PRD-045'));
+  assert.ok(results.find((r) => r.source === 'sample.md'));
 }
 
 function testSpecIdValidation() {
@@ -31,10 +31,10 @@ function testMatrixGeneration() {
   fs.writeFileSync(
     docPath,
     '---\nmatrix_ids: [PRD-200]\n---\nBody mentions DEV-PRD-045 as well.',
-    'utf8'
+    'utf8',
   );
   const rows = buildMatrix(tmpRoot);
-  assert.ok(rows.find(row => row.id === 'PRD-200'));
+  assert.ok(rows.find((row) => row.id === 'PRD-200'));
   const table = renderMatrixTable(rows);
   assert.ok(table.includes('PRD-200'));
 }
@@ -44,14 +44,14 @@ function testPlanPreviewCliAccurateFlagOrder() {
   const promptPath = path.join(tmpDir, 'prompt.prompt.md');
   fs.mkdirSync(tmpDir, { recursive: true });
   fs.writeFileSync(promptPath, 'Test prompt content', 'utf8');
-  const result = spawnSync(process.execPath, [
-    path.join(process.cwd(), 'tools', 'prompt', 'plan_preview.js'),
-    '--accurate',
-    promptPath,
-  ], {
-    env: { ...process.env, PROMPT_TOKENIZER: 'accurate' },
-    encoding: 'utf8',
-  });
+  const result = spawnSync(
+    process.execPath,
+    [path.join(process.cwd(), 'tools', 'prompt', 'plan_preview.js'), '--accurate', promptPath],
+    {
+      env: { ...process.env, PROMPT_TOKENIZER: 'accurate' },
+      encoding: 'utf8',
+    },
+  );
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.match(result.stdout, /tokenizer=accurate/);
 }

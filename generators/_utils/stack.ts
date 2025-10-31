@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
  * Load resolved tech stack JSON produced by translator.py.
@@ -8,12 +8,10 @@ import { join } from "node:path";
  */
 export function loadResolvedStack(root: string): unknown | null {
   const override = process.env.VIBEPDK_TECHSTACK_RESOLVED;
-  const p =
-    override ||
-    join(root, "tools", "transformers", ".derived", "techstack.resolved.json");
+  const p = override || join(root, 'tools', 'transformers', '.derived', 'techstack.resolved.json');
   if (!existsSync(p)) return null;
   try {
-    const txt = readFileSync(p, "utf8");
+    const txt = readFileSync(p, 'utf8');
     return JSON.parse(txt);
   } catch (_e) {
     return null;

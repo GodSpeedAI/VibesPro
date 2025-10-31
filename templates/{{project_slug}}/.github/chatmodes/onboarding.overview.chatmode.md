@@ -15,11 +15,11 @@ You are a **friendly onboarding guide** helping new contributors understand this
 1. **Welcome & Assess** - Greet the user, understand their role/experience
 2. **Provide Overview** - High-level project structure and key resources
 3. **Offer Interactive Walkthroughs** - Let user choose what to explore:
-   - Just recipes (orchestration commands)
-   - Chat modes (specialized AI personas)
-   - Prompts (task-specific AI workflows)
-   - Tools (MCP servers, utilities)
-   - Development workflows (TDD, Debug, Spec-driven)
+    - Just recipes (orchestration commands)
+    - Chat modes (specialized AI personas)
+    - Prompts (task-specific AI workflows)
+    - Tools (MCP servers, utilities)
+    - Development workflows (TDD, Debug, Spec-driven)
 
 ## Opening Message
 
@@ -233,37 +233,37 @@ Tools that extend AI capabilities with specialized knowledge.
 
 📚 **Documentation:**
 
-- **Context7** - Library documentation
-  **When**: Using external libraries/frameworks
-  **Why**: Up-to-date API docs
+-   **Context7** - Library documentation
+    **When**: Using external libraries/frameworks
+    **Why**: Up-to-date API docs
 
-- **Microsoft Docs** - Official Microsoft/Azure docs
-  **When**: Working with Azure, .NET, TypeScript
-  **Why**: Authoritative reference
+-   **Microsoft Docs** - Official Microsoft/Azure docs
+    **When**: Working with Azure, .NET, TypeScript
+    **Why**: Authoritative reference
 
 🔍 **Search & Analysis:**
 
-- **Exa Code** - Code search across web
-  **When**: Looking for implementation examples
-  **Why**: High-quality, relevant code snippets
+-   **Exa Code** - Code search across web
+    **When**: Looking for implementation examples
+    **Why**: High-quality, relevant code snippets
 
 🧠 **Memory & Context:**
 
-- **Memory Tool** - User preference storage
-  **When**: AI should remember your preferences
-  **Why**: Personalized assistance
+-   **Memory Tool** - User preference storage
+    **When**: AI should remember your preferences
+    **Why**: Personalized assistance
 
 **Nx Integration:**
 
-- **Nx MCP Server** - Nx workspace operations
-  **When**: Working with Nx monorepo
-  **Why**: List generators, run tasks, understand workspace
+-   **Nx MCP Server** - Nx workspace operations
+    **When**: Working with Nx monorepo
+    **Why**: List generators, run tasks, understand workspace
 
 **Python Development:**
 
-- **Pylance MCP** - Python language server features
-  **When**: Python development
-  **Why**: Syntax errors, imports analysis, refactoring
+-   **Pylance MCP** - Python language server features
+    **When**: Python development
+    **Why**: Syntax errors, imports analysis, refactoring
 
 **Location:** MCP tools configured in VS Code settings
 
@@ -304,26 +304,26 @@ just ai-scaffold name=@nx/js:lib
 
 📖 **Research** (Always start here)
 
-- Search codebase for similar patterns
-- Check specs/ADRs for constraints
-- Verify generators available
+-   Search codebase for similar patterns
+-   Check specs/ADRs for constraints
+-   Verify generators available
 
 📋 **Plan**
 
-- Propose 2-3 approaches if uncertain
-- Get approval before coding
+-   Propose 2-3 approaches if uncertain
+-   Get approval before coding
 
 ⚙️ **Implement**
 
-- Use generator first (if available)
-- Follow established patterns
-- Write tests alongside code
+-   Use generator first (if available)
+-   Follow established patterns
+-   Write tests alongside code
 
 ✅ **Validate**
 
-- Run `just ai-validate`
-- Check for errors
-- Ensure tests pass
+-   Run `just ai-validate`
+-   Check for errors
+-   Ensure tests pass
 
 **3. TDD Workflow (For complex logic):**
 
@@ -388,10 +388,10 @@ just test                     # Run tests
 
 **Essential Files:**
 
-- `.github/copilot-instructions.md` - AI development guide
-- `.github/instructions/generators-first.instructions.md` - Generator policy
-- `.github/instructions/security.instructions.md` - Security rules
-- `docs/dev_spec_index.md` - Specification index
+-   `.github/copilot-instructions.md` - AI development guide
+-   `.github/instructions/generators-first.instructions.md` - Generator policy
+-   `.github/instructions/security.instructions.md` - Security rules
+-   `docs/dev_spec_index.md` - Specification index
 
 **Essential Workflows:**
 
@@ -402,10 +402,10 @@ just test                     # Run tests
 
 **Getting Help:**
 
-- Ask me specific questions
-- Use `@chatmode-name` for focused assistance
-- Read `.github/copilot-instructions.md`
-- Check `docs/` for specifications
+-   Ask me specific questions
+-   Use `@chatmode-name` for focused assistance
+-   Read `.github/copilot-instructions.md`
+-   Check `docs/` for specifications
 
 ---
 
@@ -427,17 +427,17 @@ tools: ['codebase', 'search']
 
 This mode helps you ramp up quickly by surfacing:
 
-- Where specs live (`docs/dev_prd.md`, `docs/dev_adr.md`, `docs/dev_sds.md`, `docs/dev_technical-specifications.md`, indexes, and traceability).
-- Guardrails under `.github/instructions/` (security, style, performance, testing, docs).
-- Prompt library under `.github/prompts/` and how to run them.
-- Lifecycle commands to lint/plan/run prompts and log transcripts.
+-   Where specs live (`docs/dev_prd.md`, `docs/dev_adr.md`, `docs/dev_sds.md`, `docs/dev_technical-specifications.md`, indexes, and traceability).
+-   Guardrails under `.github/instructions/` (security, style, performance, testing, docs).
+-   Prompt library under `.github/prompts/` and how to run them.
+-   Lifecycle commands to lint/plan/run prompts and log transcripts.
 
 ## Quick Links
 
-- Specs Indexes: `docs/spec_index.md`, `docs/dev_spec_index.md`
-- Traceability Matrix: `docs/traceability_matrix.md`
-- Security Canonical: `.github/instructions/security.instructions.md`
-- Commit Message Guidance: `.github/instructions/commit-msg.instructions.md` and `docs/commit_message_guidelines.md`
+-   Specs Indexes: `docs/spec_index.md`, `docs/dev_spec_index.md`
+-   Traceability Matrix: `docs/traceability_matrix.md`
+-   Security Canonical: `.github/instructions/security.instructions.md`
+-   Commit Message Guidance: `.github/instructions/commit-msg.instructions.md` and `docs/commit_message_guidelines.md`
 
 ## Try These
 
@@ -447,5 +447,5 @@ This mode helps you ramp up quickly by surfacing:
 
 ## Notes
 
-- Tool auto-approval is disabled; keep runs deliberate.
-- Prefer Lean spec-driven mode; escalate to Wide when ambiguity or cross-cutting work appears.
+-   Tool auto-approval is disabled; keep runs deliberate.
+-   Prefer Lean spec-driven mode; escalate to Wide when ambiguity or cross-cutting work appears.

@@ -5,39 +5,39 @@
  - Validates model field against .github/models.yaml
  Implements: PRD-014/017; DEV-PRD-007/010
  */
-const fs = require("node:fs");
-const path = require("node:path");
-const { extractFrontmatter, stripQuotes } = require("../utils/frontmatter");
+const fs = require('node:fs');
+const path = require('node:path');
+const { extractFrontmatter, stripQuotes } = require('../utils/frontmatter');
 
 const FILE_EXTENSIONS = {
-  PROMPT: ".prompt.md",
-  CHATMODE: ".chatmode.md",
-  INSTRUCTIONS: ".instructions.md",
-  MARKDOWN: ".md",
+  PROMPT: '.prompt.md',
+  CHATMODE: '.chatmode.md',
+  INSTRUCTIONS: '.instructions.md',
+  MARKDOWN: '.md',
 };
 
 const REQUIRED_FIELDS = {
-  PROMPT: ["kind", "domain", "task", "thread", "matrix_ids"],
-  CHATMODE: ["kind", "domain", "task", "thread", "matrix_ids"],
-  INSTRUCTIONS: ["kind", "domain", "thread", "matrix_ids"],
+  PROMPT: ['kind', 'domain', 'task', 'thread', 'matrix_ids'],
+  CHATMODE: ['kind', 'domain', 'task', 'thread', 'matrix_ids'],
+  INSTRUCTIONS: ['kind', 'domain', 'thread', 'matrix_ids'],
 };
 
 const RECOMMENDED_FIELDS = {
-  PROMPT: ["budget"],
-  CHATMODE: ["budget"],
-  INSTRUCTIONS: ["precedence"],
+  PROMPT: ['budget'],
+  CHATMODE: ['budget'],
+  INSTRUCTIONS: ['precedence'],
 };
 
-const GITHUB_DIR = path.join(path.dirname(path.dirname(__dirname)), ".github");
+const GITHUB_DIR = path.join(path.dirname(path.dirname(__dirname)), '.github');
 
 function handleFileError(error, filePath, operation) {
   const baseMessage = `[prompt:lint] Warning: ${operation} ${filePath}`;
 
-  if (error.code === "ENOENT") {
+  if (error.code === 'ENOENT') {
     console.warn(`${baseMessage} not found`);
-  } else if (error.code === "EACCES") {
+  } else if (error.code === 'EACCES') {
     console.warn(`${baseMessage} permission denied`);
-  } else if (error instanceof SyntaxError || error.message.includes("YAML")) {
+  } else if (error instanceof SyntaxError || error.message.includes('YAML')) {
     console.warn(`${baseMessage} invalid format: ${error.message}`);
   } else {
     console.warn(`${baseMessage}: ${error.message}`);
@@ -45,36 +45,30 @@ function handleFileError(error, filePath, operation) {
 }
 
 function loadModelsConfig() {
-  const modelsPath = path.join(GITHUB_DIR, "models.yaml");
+  const modelsPath = path.join(GITHUB_DIR, 'models.yaml');
 
   try {
     if (!fs.existsSync(modelsPath)) {
-      console.warn(
-        `[prompt:lint] Warning: models.yaml not found at ${modelsPath}`,
-      );
+      console.warn(`[prompt:lint] Warning: models.yaml not found at ${modelsPath}`);
       return {};
     }
 
-    const content = fs.readFileSync(modelsPath, "utf8");
+    const content = fs.readFileSync(modelsPath, 'utf8');
     const models = {};
 
-    const lines = content.split("\n");
+    const lines = content.split('\n');
     let inDefaultsSection = false;
 
     for (const line of lines) {
       const trimmedLine = line.trim();
-      if (!trimmedLine || trimmedLine.startsWith("#")) {
+      if (!trimmedLine || trimmedLine.startsWith('#')) {
         continue;
       }
 
-      if (trimmedLine === "defaults:") {
+      if (trimmedLine === 'defaults:') {
         inDefaultsSection = true;
         continue;
-      } else if (
-        trimmedLine &&
-        !line.startsWith(" ") &&
-        !line.startsWith("\t")
-      ) {
+      } else if (trimmedLine && !line.startsWith(' ') && !line.startsWith('\t')) {
         inDefaultsSection = false;
         continue;
       }
@@ -87,7 +81,7 @@ function loadModelsConfig() {
         const key = match[2].trim();
         let value = match[3].trim();
 
-        if (indentation === "  " && key.endsWith("_model")) {
+        if (indentation === '  ' && key.endsWith('_model')) {
           value = stripQuotes(value);
           if (value && value.length > 0) {
             models[value] = true;
@@ -97,19 +91,17 @@ function loadModelsConfig() {
     }
 
     if (Object.keys(models).length === 0) {
-      console.warn(
-        `[prompt:lint] Warning: No valid models found in ${modelsPath}`,
-      );
+      console.warn(`[prompt:lint] Warning: No valid models found in ${modelsPath}`);
     }
 
     return models;
   } catch (error) {
-    handleFileError(error, modelsPath, "models.yaml");
+    handleFileError(error, modelsPath, 'models.yaml');
     return {};
   }
 }
 function loadInstructionsConfig() {
-  const instructionsPath = path.join(GITHUB_DIR, "instructions");
+  const instructionsPath = path.join(GITHUB_DIR, 'instructions');
 
   try {
     if (!fs.existsSync(instructionsPath)) {
@@ -128,34 +120,32 @@ function loadInstructionsConfig() {
         const stats = fs.statSync(filePath);
 
         if (stats.isFile()) {
-          const key = file.replace(FILE_EXTENSIONS.MARKDOWN, "");
+          const key = file.replace(FILE_EXTENSIONS.MARKDOWN, '');
           instructions[key] = true;
         }
       }
     }
 
     if (Object.keys(instructions).length === 0) {
-      console.warn(
-        `[prompt:lint] Warning: No instruction files found in ${instructionsPath}`,
-      );
+      console.warn(`[prompt:lint] Warning: No instruction files found in ${instructionsPath}`);
     }
 
     return instructions;
   } catch (error) {
-    handleFileError(error, instructionsPath, "instructions directory");
+    handleFileError(error, instructionsPath, 'instructions directory');
     return {};
   }
 }
 
 function classify(file) {
-  if (!file || typeof file !== "string") {
-    return "unknown";
+  if (!file || typeof file !== 'string') {
+    return 'unknown';
   }
 
-  if (file.endsWith(FILE_EXTENSIONS.PROMPT)) return "prompt";
-  if (file.endsWith(FILE_EXTENSIONS.CHATMODE)) return "chatmode";
-  if (file.endsWith(FILE_EXTENSIONS.INSTRUCTIONS)) return "instructions";
-  return "unknown";
+  if (file.endsWith(FILE_EXTENSIONS.PROMPT)) return 'prompt';
+  if (file.endsWith(FILE_EXTENSIONS.CHATMODE)) return 'chatmode';
+  if (file.endsWith(FILE_EXTENSIONS.INSTRUCTIONS)) return 'instructions';
+  return 'unknown';
 }
 
 function validateInstructionField(fields, findings) {
@@ -166,7 +156,7 @@ function validateInstructionField(fields, findings) {
         `Instruction file "${
           fields.instruction
         }" not found in .github/instructions/. Available instructions: ${
-          Object.keys(instructions).join(", ") || "none"
+          Object.keys(instructions).join(', ') || 'none'
         }`,
       );
     }
@@ -200,10 +190,8 @@ function validateModelField(fields, findings) {
     const models = loadModelsConfig();
     if (!models[fields.model]) {
       findings.push(
-        `Model "${
-          fields.model
-        }" not found in .github/models.yaml. Available models: ${
-          Object.keys(models).join(", ") || "none"
+        `Model "${fields.model}" not found in .github/models.yaml. Available models: ${
+          Object.keys(models).join(', ') || 'none'
         }`,
       );
     }
@@ -212,19 +200,19 @@ function validateModelField(fields, findings) {
 
 function validateTitle(text, findings) {
   if (!/^#\s+.+/m.test(text)) {
-    findings.push("Missing H1 title (# ...)");
+    findings.push('Missing H1 title (# ...)');
   }
 }
 
 function validateFrontmatterPresence(raw, findings) {
   if (!raw) {
-    findings.push("Missing frontmatter (---)");
+    findings.push('Missing frontmatter (---)');
   }
 }
 
 function lintPromptFile(file) {
   try {
-    const text = fs.readFileSync(file, "utf8");
+    const text = fs.readFileSync(file, 'utf8');
     const findings = [];
 
     validateTitle(text, findings);
@@ -239,12 +227,8 @@ function lintPromptFile(file) {
     validateInstructionField(fields, findings);
     validateModelField(fields, findings);
 
-    const errors = findings.filter(
-      (finding) => !finding.startsWith("Recommend adding"),
-    );
-    const warnings = findings.filter((finding) =>
-      finding.startsWith("Recommend adding"),
-    );
+    const errors = findings.filter((finding) => !finding.startsWith('Recommend adding'));
+    const warnings = findings.filter((finding) => finding.startsWith('Recommend adding'));
 
     return {
       ok: errors.length === 0,
@@ -252,9 +236,9 @@ function lintPromptFile(file) {
       warnings: warnings.length > 0 ? warnings : undefined,
     };
   } catch (error) {
-    if (error.code === "ENOENT") {
+    if (error.code === 'ENOENT') {
       return { ok: false, findings: [`File not found: ${file}`] };
-    } else if (error.code === "EACCES") {
+    } else if (error.code === 'EACCES') {
       return {
         ok: false,
         findings: [`Permission denied reading file: ${file}`],
@@ -268,17 +252,15 @@ function lintPromptFile(file) {
 if (require.main === module) {
   const file = process.argv[2];
   if (!file) {
-    console.error("Usage: lint.js <file>");
+    console.error('Usage: lint.js <file>');
     process.exit(2);
   }
   const res = lintPromptFile(path.resolve(file));
   if (!res.ok) {
-    console.error(
-      `[prompt:lint] FAIL ${file}:\n - ${res.findings.join("\n - ")}`,
-    );
+    console.error(`[prompt:lint] FAIL ${file}:\n - ${res.findings.join('\n - ')}`);
     process.exit(1);
   } else {
-    const allMessages = res.findings.join("\n - ");
+    const allMessages = res.findings.join('\n - ');
     const hasWarnings = res.warnings && res.warnings.length > 0;
 
     if (allMessages) {

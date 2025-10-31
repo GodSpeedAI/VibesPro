@@ -61,36 +61,36 @@ templates/
 # copier.yml example
 _templates_suffix: .jinja
 _envops:
-  block_start_string: "{%"
-  block_end_string: "%}"
+    block_start_string: "{%"
+    block_end_string: "%}"
 
 project_type:
-  type: str
-  choices:
-    - hexagonal-monorepo
-    - ai-platform
-    - hybrid
+    type: str
+    choices:
+        - hexagonal-monorepo
+        - ai-platform
+        - hybrid
 
 framework_choices:
-  type: str
-  choices:
-    - next
-    - remix
-    - expo
-  when: "{{ project_type in ['hexagonal-monorepo', 'hybrid'] }}"
+    type: str
+    choices:
+        - next
+        - remix
+        - expo
+    when: "{{ project_type in ['hexagonal-monorepo', 'hybrid'] }}"
 
 ai_features:
-  type: bool
-  default: true
-  help: Enable AI-assisted development features
+    type: bool
+    default: true
+    help: Enable AI-assisted development features
 ```
 
 **Update Mechanism**:
 
-- Conditional updates based on project type
-- Conflict resolution for modified files
-- Backup creation before updates
-- Rollback capabilities
+-   Conditional updates based on project type
+-   Conflict resolution for modified files
+-   Backup creation before updates
+-   Rollback capabilities
 
 ## SDS-MERGE-002: AI Context Management System
 
@@ -100,28 +100,28 @@ ai_features:
 
 ```typescript
 interface AIContextManager {
-  // Context source management
-  sources: {
-    specifications: SpecificationLoader;
-    codebase: CodebaseAnalyzer;
-    patterns: PatternRecognizer;
-    history: DecisionHistory;
-    learning: LearnedPatterns;
-  };
+    // Context source management
+    sources: {
+        specifications: SpecificationLoader;
+        codebase: CodebaseAnalyzer;
+        patterns: PatternRecognizer;
+        history: DecisionHistory;
+        learning: LearnedPatterns;
+    };
 
-  // Token budget management
-  tokenBudget: {
-    allocator: TokenAllocator;
-    optimizer: ContextOptimizer;
-    monitor: UsageMonitor;
-  };
+    // Token budget management
+    tokenBudget: {
+        allocator: TokenAllocator;
+        optimizer: ContextOptimizer;
+        monitor: UsageMonitor;
+    };
 
-  // Context selection
-  selector: {
-    prioritizer: ContextPrioritizer;
-    compressor: ContextCompressor;
-    cache: IntelligentCache;
-  };
+    // Context selection
+    selector: {
+        prioritizer: ContextPrioritizer;
+        compressor: ContextCompressor;
+        cache: IntelligentCache;
+    };
 }
 ```
 
@@ -129,10 +129,10 @@ interface AIContextManager {
 
 ```typescript
 interface TokenAllocation {
-  currentTask: number; // 40% - immediate context
-  architecturalContext: number; // 25% - structural patterns
-  historicalPatterns: number; // 20% - learned behaviors
-  codeContext: number; // 15% - relevant code snippets
+    currentTask: number; // 40% - immediate context
+    architecturalContext: number; // 25% - structural patterns
+    historicalPatterns: number; // 20% - learned behaviors
+    codeContext: number; // 15% - relevant code snippets
 }
 ```
 
@@ -303,26 +303,26 @@ _ai-context-injection:
 
 ```typescript
 interface BuildDecision {
-  isMonorepo: boolean;
-  hasInterdependencies: boolean;
-  taskComplexity: "simple" | "medium" | "complex";
-  aiIntegration: boolean;
+    isMonorepo: boolean;
+    hasInterdependencies: boolean;
+    taskComplexity: "simple" | "medium" | "complex";
+    aiIntegration: boolean;
 }
 
 function selectBuildStrategy(decision: BuildDecision): BuildStrategy {
-  if (!decision.isMonorepo && decision.taskComplexity === "simple") {
+    if (!decision.isMonorepo && decision.taskComplexity === "simple") {
+        return "direct-tools";
+    }
+
+    if (decision.hasInterdependencies || decision.taskComplexity === "complex") {
+        return "nx-orchestration";
+    }
+
+    if (decision.aiIntegration) {
+        return "ai-enhanced";
+    }
+
     return "direct-tools";
-  }
-
-  if (decision.hasInterdependencies || decision.taskComplexity === "complex") {
-    return "nx-orchestration";
-  }
-
-  if (decision.aiIntegration) {
-    return "ai-enhanced";
-  }
-
-  return "direct-tools";
 }
 ```
 
@@ -350,29 +350,26 @@ graph LR
 ```typescript
 // Custom ESLint rules for hexagonal architecture
 export const hexagonalArchitectureRules = {
-  "hex/no-infrastructure-in-domain": {
-    create(context) {
-      return {
-        ImportDeclaration(node) {
-          if (
-            isDomainFile(context.getFilename()) &&
-            isInfrastructureImport(node.source.value)
-          ) {
-            context.report({
-              node,
-              message: "Domain layer cannot import from infrastructure layer",
-            });
-          }
+    "hex/no-infrastructure-in-domain": {
+        create(context) {
+            return {
+                ImportDeclaration(node) {
+                    if (isDomainFile(context.getFilename()) && isInfrastructureImport(node.source.value)) {
+                        context.report({
+                            node,
+                            message: "Domain layer cannot import from infrastructure layer",
+                        });
+                    }
+                },
+            };
         },
-      };
     },
-  },
 
-  "hex/port-adapter-compliance": {
-    create(context) {
-      // Validate port/adapter pattern compliance
+    "hex/port-adapter-compliance": {
+        create(context) {
+            // Validate port/adapter pattern compliance
+        },
     },
-  },
 };
 ```
 
@@ -430,45 +427,40 @@ graph TD
 
 ```typescript
 interface TypeGenerator {
-  generateTypeScript(schema: DatabaseSchema): {
-    types: string;
-    zodSchemas: string;
-    apiTypes: string;
-  };
+    generateTypeScript(schema: DatabaseSchema): {
+        types: string;
+        zodSchemas: string;
+        apiTypes: string;
+    };
 
-  generatePython(schema: DatabaseSchema): {
-    types: string;
-    pydanticModels: string;
-    typeUtils: string;
-  };
+    generatePython(schema: DatabaseSchema): {
+        types: string;
+        pydanticModels: string;
+        typeUtils: string;
+    };
 
-  validateParity(
-    tsTypes: TypeScriptTypes,
-    pyTypes: PythonTypes,
-  ): ValidationResult;
+    validateParity(tsTypes: TypeScriptTypes, pyTypes: PythonTypes): ValidationResult;
 }
 
 class UnifiedTypeGenerator implements TypeGenerator {
-  async generateFromSupabase(
-    connectionString: string,
-  ): Promise<GenerationResult> {
-    const schema = await this.introspectSchema(connectionString);
+    async generateFromSupabase(connectionString: string): Promise<GenerationResult> {
+        const schema = await this.introspectSchema(connectionString);
 
-    const tsResult = this.generateTypeScript(schema);
-    const pyResult = this.generatePython(schema);
+        const tsResult = this.generateTypeScript(schema);
+        const pyResult = this.generatePython(schema);
 
-    const validation = this.validateParity(tsResult.types, pyResult.types);
+        const validation = this.validateParity(tsResult.types, pyResult.types);
 
-    if (!validation.isValid) {
-      throw new Error(`Type parity validation failed: ${validation.errors}`);
+        if (!validation.isValid) {
+            throw new Error(`Type parity validation failed: ${validation.errors}`);
+        }
+
+        return {
+            typescript: tsResult,
+            python: pyResult,
+            validation,
+        };
     }
-
-    return {
-      typescript: tsResult,
-      python: pyResult,
-      validation,
-    };
-  }
 }
 ```
 
@@ -480,42 +472,35 @@ class UnifiedTypeGenerator implements TypeGenerator {
 
 ```typescript
 interface AICodeGenerator {
-  generateDomain(requirements: DomainRequirements): DomainCode;
-  generateApplication(ports: PortDefinitions): ApplicationCode;
-  generateInfrastructure(adapters: AdapterSpecs): InfrastructureCode;
-  generateInterface(controllers: ControllerSpecs): InterfaceCode;
+    generateDomain(requirements: DomainRequirements): DomainCode;
+    generateApplication(ports: PortDefinitions): ApplicationCode;
+    generateInfrastructure(adapters: AdapterSpecs): InfrastructureCode;
+    generateInterface(controllers: ControllerSpecs): InterfaceCode;
 }
 
 class HexagonalAIGenerator implements AICodeGenerator {
-  constructor(
-    private aiContext: AIContextManager,
-    private patterns: ArchitecturalPatterns,
-    private templates: CodeTemplates,
-  ) {}
+    constructor(
+        private aiContext: AIContextManager,
+        private patterns: ArchitecturalPatterns,
+        private templates: CodeTemplates,
+    ) {}
 
-  async generateDomain(requirements: DomainRequirements): Promise<DomainCode> {
-    const context = await this.aiContext.getDomainContext(requirements);
-    const patterns = this.patterns.getDomainPatterns();
+    async generateDomain(requirements: DomainRequirements): Promise<DomainCode> {
+        const context = await this.aiContext.getDomainContext(requirements);
+        const patterns = this.patterns.getDomainPatterns();
 
-    // AI-assisted generation with pattern compliance
-    const entities = await this.generateEntities(
-      requirements,
-      context,
-      patterns,
-    );
-    const valueObjects = await this.generateValueObjects(requirements, context);
-    const domainServices = await this.generateDomainServices(
-      requirements,
-      context,
-    );
+        // AI-assisted generation with pattern compliance
+        const entities = await this.generateEntities(requirements, context, patterns);
+        const valueObjects = await this.generateValueObjects(requirements, context);
+        const domainServices = await this.generateDomainServices(requirements, context);
 
-    return {
-      entities,
-      valueObjects,
-      domainServices,
-      aggregates: this.combineIntoAggregates(entities, valueObjects),
-    };
-  }
+        return {
+            entities,
+            valueObjects,
+            domainServices,
+            aggregates: this.combineIntoAggregates(entities, valueObjects),
+        };
+    }
 }
 ```
 
@@ -525,78 +510,78 @@ class HexagonalAIGenerator implements AICodeGenerator {
 
 **Performance Targets**:
 
-- Template generation: < 2 minutes for complex monorepos
-- AI context loading: < 500ms for standard contexts
-- Type generation: < 30 seconds for large schemas
-- Validation feedback: < 100ms for real-time checks
+-   Template generation: < 2 minutes for complex monorepos
+-   AI context loading: < 500ms for standard contexts
+-   Type generation: < 30 seconds for large schemas
+-   Validation feedback: < 100ms for real-time checks
 
 **Caching Strategy**:
 
 ```typescript
 interface CacheManager {
-  templateCache: LRUCache<string, Template>;
-  contextCache: LRUCache<string, AIContext>;
-  typeCache: LRUCache<string, GeneratedTypes>;
-  validationCache: LRUCache<string, ValidationResult>;
+    templateCache: LRUCache<string, Template>;
+    contextCache: LRUCache<string, AIContext>;
+    typeCache: LRUCache<string, GeneratedTypes>;
+    validationCache: LRUCache<string, ValidationResult>;
 }
 
 class PerformanceOptimizer {
-  constructor(private cache: CacheManager) {}
+    constructor(private cache: CacheManager) {}
 
-  async optimizeTemplateGeneration(template: Template): Promise<Template> {
-    // Parallel generation of independent components
-    // Incremental updates for changed files only
-    // Smart dependency resolution
-  }
+    async optimizeTemplateGeneration(template: Template): Promise<Template> {
+        // Parallel generation of independent components
+        // Incremental updates for changed files only
+        // Smart dependency resolution
+    }
 
-  async optimizeAIContext(context: AIContext): Promise<AIContext> {
-    // Token-aware context pruning
-    // Relevance-based prioritization
-    // Intelligent compression
-  }
+    async optimizeAIContext(context: AIContext): Promise<AIContext> {
+        // Token-aware context pruning
+        // Relevance-based prioritization
+        // Intelligent compression
+    }
 }
 ```
 
 **Scalability Considerations**:
 
-- Embedded databases for local performance
-- Incremental type generation
-- Parallel template processing
-- Smart caching at all levels
-- Resource usage monitoring and optimization
+-   Embedded databases for local performance
+-   Incremental type generation
+-   Parallel template processing
+-   Smart caching at all levels
+-   Resource usage monitoring and optimization
 
 ## Implementation Priority
 
 ### Phase 1: Core Infrastructure
 
-- SDS-MERGE-001: Copier template system
-- SDS-MERGE-004: Hybrid build system
-- Basic validation pipeline
+-   SDS-MERGE-001: Copier template system
+-   SDS-MERGE-004: Hybrid build system
+-   Basic validation pipeline
 
 ### Phase 2: AI Integration
 
-- SDS-MERGE-002: AI context management
-- SDS-MERGE-003: Temporal learning system
-- SDS-MERGE-005: Enhanced validation
+-   SDS-MERGE-002: AI context management
+-   SDS-MERGE-003: Temporal learning system
+-   SDS-MERGE-005: Enhanced validation
 
 ### Phase 3: Advanced Features
 
-- SDS-MERGE-006: Type generation
-- SDS-MERGE-007: AI code generation
-- SDS-MERGE-008: Performance optimization
+-   SDS-MERGE-006: Type generation
+-   SDS-MERGE-007: AI code generation
+-   SDS-MERGE-008: Performance optimization
 
 ## Quality Assurance
 
 **Testing Strategy**:
 
-- Unit tests for all core components
-- Integration tests for template generation
-- Performance benchmarks for AI systems
-- End-to-end validation of generated projects
+-   Unit tests for all core components
+-   Integration tests for template generation
+-   Performance benchmarks for AI systems
+-   End-to-end validation of generated projects
 
 **Monitoring**:
 
-- AI context performance metrics
-- Template generation success rates
-- User adoption and satisfaction metrics
-- System resource usage tracking
+-   AI context performance metrics
+-   Template generation success rates
+-   User adoption and satisfaction metrics
+-   System resource usage tracking

@@ -7,20 +7,20 @@
  * Command-line interface for generating project documentation
  */
 
-import { existsSync } from "fs";
-import fs from "fs/promises";
-import path from "path";
-import { DocumentationGenerator } from "../tools/docs/generator.js";
+import { existsSync } from 'fs';
+import fs from 'fs/promises';
+import path from 'path';
+import { DocumentationGenerator } from '../tools/docs/generator.js';
 
 // Restrict paths to the current working directory and sanitize user input
 function resolveUnderCwd(p) {
-  if (typeof p !== "string" || p.length === 0) {
-    throw new Error("Invalid path");
+  if (typeof p !== 'string' || p.length === 0) {
+    throw new Error('Invalid path');
   }
 
   // Disallow null bytes which can be used to bypass path checks
-  if (p.includes("\0")) {
-    throw new Error("Invalid path");
+  if (p.includes('\0')) {
+    throw new Error('Invalid path');
   }
 
   const resolved = path.resolve(p);
@@ -28,11 +28,11 @@ function resolveUnderCwd(p) {
   const relative = path.relative(cwd, resolved);
 
   // Relative paths that start with .. escape the project root
-  if (relative === "" || relative === ".") {
+  if (relative === '' || relative === '.') {
     return resolved;
   }
 
-  if (relative.split(path.sep)[0] === "..") {
+  if (relative.split(path.sep)[0] === '..') {
     throw new Error(`Path escapes project root: ${p}`);
   }
 
@@ -85,39 +85,36 @@ Configuration file format (docs-config.json):
 async function loadConfig(configPath) {
   try {
     const safeConfigPath = resolveUnderCwd(configPath);
-    const content = await fs.readFile(safeConfigPath, "utf8");
+    const content = await fs.readFile(safeConfigPath, 'utf8');
 
-    if (safeConfigPath.endsWith(".json")) {
+    if (safeConfigPath.endsWith('.json')) {
       return JSON.parse(content);
-    } else if (
-      safeConfigPath.endsWith(".yaml") ||
-      safeConfigPath.endsWith(".yml")
-    ) {
+    } else if (safeConfigPath.endsWith('.yaml') || safeConfigPath.endsWith('.yml')) {
       // Simple YAML parsing for basic key-value pairs
-      const lines = content.split("\n");
+      const lines = content.split('\n');
       const config = {};
 
       for (const line of lines) {
         const trimmed = line.trim();
-        if (trimmed && !trimmed.startsWith("#")) {
-          const [key, ...valueParts] = trimmed.split(":");
+        if (trimmed && !trimmed.startsWith('#')) {
+          const [key, ...valueParts] = trimmed.split(':');
           if (key && valueParts.length > 0) {
-            const value = valueParts.join(":").trim();
+            const value = valueParts.join(':').trim();
 
             // Parse arrays
-            if (value.startsWith("[") && value.endsWith("]")) {
+            if (value.startsWith('[') && value.endsWith(']')) {
               config[key.trim()] = value
                 .slice(1, -1)
-                .split(",")
-                .map((s) => s.trim().replace(/"/g, ""));
+                .split(',')
+                .map((s) => s.trim().replace(/"/g, ''));
             }
             // Parse booleans
-            else if (value === "true" || value === "false") {
-              config[key.trim()] = value === "true";
+            else if (value === 'true' || value === 'false') {
+              config[key.trim()] = value === 'true';
             }
             // Parse strings
             else {
-              config[key.trim()] = value.replace(/"/g, "");
+              config[key.trim()] = value.replace(/"/g, '');
             }
           }
         }
@@ -126,7 +123,7 @@ async function loadConfig(configPath) {
       return config;
     }
 
-    throw new Error("Unsupported config file format");
+    throw new Error('Unsupported config file format');
   } catch (error) {
     console.error(`❌ Error loading config from ${configPath}:`, error.message);
     process.exit(1);
@@ -135,12 +132,12 @@ async function loadConfig(configPath) {
 
 async function loadPackageJson() {
   try {
-    if (existsSync("./package.json")) {
-      const content = await fs.readFile("./package.json", "utf8");
+    if (existsSync('./package.json')) {
+      const content = await fs.readFile('./package.json', 'utf8');
       return JSON.parse(content);
     }
   } catch (error) {
-    console.warn("⚠️  Could not load package.json:", error.message);
+    console.warn('⚠️  Could not load package.json:', error.message);
   }
   return {};
 }
@@ -151,19 +148,19 @@ function parseArguments(args) {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg === "--project-name" && i + 1 < args.length) {
+    if (arg === '--project-name' && i + 1 < args.length) {
       options.projectName = args[++i];
-    } else if (arg === "--description" && i + 1 < args.length) {
+    } else if (arg === '--description' && i + 1 < args.length) {
       options.description = args[++i];
-    } else if (arg === "--domains" && i + 1 < args.length) {
-      options.domains = args[++i].split(",").map((d) => d.trim());
-    } else if (arg === "--frameworks" && i + 1 < args.length) {
-      options.frameworks = args[++i].split(",").map((f) => f.trim());
-    } else if (arg === "--output-dir" && i + 1 < args.length) {
+    } else if (arg === '--domains' && i + 1 < args.length) {
+      options.domains = args[++i].split(',').map((d) => d.trim());
+    } else if (arg === '--frameworks' && i + 1 < args.length) {
+      options.frameworks = args[++i].split(',').map((f) => f.trim());
+    } else if (arg === '--output-dir' && i + 1 < args.length) {
       options.outputDir = args[++i];
-    } else if (arg === "--config" && i + 1 < args.length) {
+    } else if (arg === '--config' && i + 1 < args.length) {
       options.configFile = args[++i];
-    } else if (arg === "--include-ai") {
+    } else if (arg === '--include-ai') {
       options.includeAI = true;
     }
   }
@@ -172,7 +169,7 @@ function parseArguments(args) {
 }
 
 async function generateDocumentation(options) {
-  console.log("📝 Generating project documentation...");
+  console.log('📝 Generating project documentation...');
 
   // Load configuration from various sources
   let config = {};
@@ -186,29 +183,25 @@ async function generateDocumentation(options) {
 
   // Merge configuration (CLI args > config file > package.json > defaults)
   const context = {
-    projectName:
-      options.projectName ??
-      config.projectName ??
-      packageJson.name ??
-      "my-project",
+    projectName: options.projectName ?? config.projectName ?? packageJson.name ?? 'my-project',
     description:
       options.description ??
       config.description ??
       packageJson.description ??
-      "A project built with hexagonal architecture",
-    domains: options.domains ?? config.domains ?? ["core"],
-    frameworks: options.frameworks ?? config.frameworks ?? ["next"],
+      'A project built with hexagonal architecture',
+    domains: options.domains ?? config.domains ?? ['core'],
+    frameworks: options.frameworks ?? config.frameworks ?? ['next'],
     includeAI: options.includeAI ?? config.includeAI ?? false,
-    architecture: "hexagonal", // Fixed for this merger
+    architecture: 'hexagonal', // Fixed for this merger
   };
 
-  const outputDir = resolveUnderCwd(options.outputDir || "./docs");
+  const outputDir = resolveUnderCwd(options.outputDir || './docs');
 
   console.log(`📂 Output directory: ${outputDir}`);
   console.log(`🏗️  Project: ${context.projectName}`);
-  console.log(`📋 Domains: ${context.domains.join(", ")}`);
-  console.log(`🛠️  Frameworks: ${context.frameworks.join(", ")}`);
-  console.log(`🤖 AI Features: ${context.includeAI ? "enabled" : "disabled"}`);
+  console.log(`📋 Domains: ${context.domains.join(', ')}`);
+  console.log(`🛠️  Frameworks: ${context.frameworks.join(', ')}`);
+  console.log(`🤖 AI Features: ${context.includeAI ? 'enabled' : 'disabled'}`);
 
   // Generate documentation
   const generator = new DocumentationGenerator(outputDir);
@@ -220,37 +213,33 @@ async function generateDocumentation(options) {
   // avoid attempting to write undefined/null (generators may omit optional
   // sections like migration guides).
   const files = [
-    { name: "README.md", content: docs.readme },
-    { name: "ARCHITECTURE.md", content: docs.architectureGuide },
-    { name: "API-REFERENCE.md", content: docs.apiDocs },
+    { name: 'README.md', content: docs.readme },
+    { name: 'ARCHITECTURE.md', content: docs.architectureGuide },
+    { name: 'API-REFERENCE.md', content: docs.apiDocs },
     // keep optional entries here; they will be skipped if undefined
-    { name: "MIGRATION-GUIDE.md", content: docs.migrationGuide },
+    { name: 'MIGRATION-GUIDE.md', content: docs.migrationGuide },
   ];
 
-  const writableFiles = files.filter(
-    (f) => typeof f.content === "string" && f.content.length > 0,
-  );
+  const writableFiles = files.filter((f) => typeof f.content === 'string' && f.content.length > 0);
 
   if (writableFiles.length === 0) {
     console.log(
-      "⚠️  No documentation files to write (all generated sections are empty or undefined).",
+      '⚠️  No documentation files to write (all generated sections are empty or undefined).',
     );
   } else {
     for (const file of writableFiles) {
       const filePath = path.join(outputDir, file.name);
-      await fs.writeFile(filePath, file.content, "utf8");
+      await fs.writeFile(filePath, file.content, 'utf8');
       console.log(`✅ Generated ${file.name}`);
     }
   }
 
   // Validate documentation
   const validation = await generator.validateDocumentation(docs);
-  console.log(
-    `\n📊 Documentation Quality Score: ${Math.round(validation.score * 100)}%`,
-  );
+  console.log(`\n📊 Documentation Quality Score: ${Math.round(validation.score * 100)}%`);
 
   if (!validation.isValid) {
-    console.log("⚠️  Issues found:");
+    console.log('⚠️  Issues found:');
     validation.missingSection.forEach((issue) => console.log(`   - ${issue}`));
   }
 
@@ -258,7 +247,7 @@ async function generateDocumentation(options) {
 }
 
 async function generateTemplates(options) {
-  console.log("📝 Generating Copier documentation templates...");
+  console.log('📝 Generating Copier documentation templates...');
 
   let config = {};
 
@@ -269,40 +258,34 @@ async function generateTemplates(options) {
   const packageJson = await loadPackageJson();
 
   const context = {
-    projectName:
-      options.projectName ??
-      config.projectName ??
-      packageJson.name ??
-      "my-project",
+    projectName: options.projectName ?? config.projectName ?? packageJson.name ?? 'my-project',
     description:
       options.description ??
       config.description ??
       packageJson.description ??
-      "A project built with hexagonal architecture",
-    domains: options.domains ?? config.domains ?? ["core"],
-    frameworks: options.frameworks ?? config.frameworks ?? ["next"],
+      'A project built with hexagonal architecture',
+    domains: options.domains ?? config.domains ?? ['core'],
+    frameworks: options.frameworks ?? config.frameworks ?? ['next'],
     includeAI: options.includeAI ?? config.includeAI ?? false,
-    architecture: "hexagonal",
+    architecture: 'hexagonal',
   };
-  const outputDir = options.outputDir || "./templates/docs";
+  const outputDir = options.outputDir || './templates/docs';
   const safeOutputDir = resolveUnderCwd(outputDir);
 
   const generator = new DocumentationGenerator(safeOutputDir);
   await generator.generateAndSaveTemplates(context);
 
-  console.log(
-    `\n🎉 Documentation templates generated successfully in ${safeOutputDir}`,
-  );
-  console.log("📝 Template files:");
-  console.log("   - README.md.j2");
-  console.log("   - ARCHITECTURE.md.j2");
-  console.log("   - API-REFERENCE.md.j2");
+  console.log(`\n🎉 Documentation templates generated successfully in ${safeOutputDir}`);
+  console.log('📝 Template files:');
+  console.log('   - README.md.j2');
+  console.log('   - ARCHITECTURE.md.j2');
+  console.log('   - API-REFERENCE.md.j2');
 }
 
 async function validateDocumentation(options) {
-  console.log("🔍 Validating existing documentation...");
+  console.log('🔍 Validating existing documentation...');
 
-  const docsDir = resolveUnderCwd(options.outputDir || "./docs");
+  const docsDir = resolveUnderCwd(options.outputDir || './docs');
 
   if (!existsSync(docsDir)) {
     console.error(`❌ Documentation directory not found: ${docsDir}`);
@@ -310,19 +293,19 @@ async function validateDocumentation(options) {
   }
 
   // Read existing documentation files
-  const files = ["README.md", "ARCHITECTURE.md", "API-REFERENCE.md"];
+  const files = ['README.md', 'ARCHITECTURE.md', 'API-REFERENCE.md'];
   const docs = {};
 
   for (const filename of files) {
     const filePath = path.join(docsDir, filename);
 
     if (existsSync(filePath)) {
-      const content = await fs.readFile(filePath, "utf8");
-      const key = filename.replace(".md", "").toLowerCase().replace("-", "");
+      const content = await fs.readFile(filePath, 'utf8');
+      const key = filename.replace('.md', '').toLowerCase().replace('-', '');
 
-      if (filename === "README.md") docs.readme = content;
-      else if (filename === "ARCHITECTURE.md") docs.architectureGuide = content;
-      else if (filename === "API-REFERENCE.md") docs.apiDocs = content;
+      if (filename === 'README.md') docs.readme = content;
+      else if (filename === 'ARCHITECTURE.md') docs.architectureGuide = content;
+      else if (filename === 'API-REFERENCE.md') docs.apiDocs = content;
 
       console.log(`✅ Found ${filename}`);
     } else {
@@ -337,7 +320,7 @@ async function validateDocumentation(options) {
   console.log(`\n📊 Documentation Quality Report`);
   console.log(`===============================`);
   console.log(`Overall Score: ${Math.round(validation.score * 100)}%`);
-  console.log(`Status: ${validation.isValid ? "✅ Valid" : "❌ Issues Found"}`);
+  console.log(`Status: ${validation.isValid ? '✅ Valid' : '❌ Issues Found'}`);
 
   if (validation.missingSection.length > 0) {
     console.log(`\n⚠️  Missing sections:`);
@@ -357,15 +340,13 @@ async function validateDocumentation(options) {
   if (validation.isValid) {
     console.log(`\n🎉 Documentation validation passed!`);
   } else {
-    console.log(
-      `\n❌ Documentation validation failed. Please address the issues above.`,
-    );
+    console.log(`\n❌ Documentation validation failed. Please address the issues above.`);
     process.exit(1);
   }
 }
 
 async function main() {
-  if (args.length === 0 || command === "help") {
+  if (args.length === 0 || command === 'help') {
     printUsage();
     return;
   }
@@ -374,15 +355,15 @@ async function main() {
 
   try {
     switch (command) {
-      case "generate":
+      case 'generate':
         await generateDocumentation(options);
         break;
 
-      case "templates":
+      case 'templates':
         await generateTemplates(options);
         break;
 
-      case "validate":
+      case 'validate':
         await validateDocumentation(options);
         break;
 

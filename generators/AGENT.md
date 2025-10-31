@@ -13,11 +13,11 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
-- Custom Nx generators for hexagonal architecture
-- Generator templates and schematics
-- Code scaffolding following project conventions
-- Generator-first workflow enforcement
-- Copier integration patterns
+-   Custom Nx generators for hexagonal architecture
+-   Generator templates and schematics
+-   Code scaffolding following project conventions
+-   Generator-first workflow enforcement
+-   Copier integration patterns
 
 **Related Policy**: See [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) for the **generator-first development policy**.
 
@@ -64,27 +64,27 @@ generators/
 
 ```json
 {
-  "$schema": "https://json-schema.org/schema",
-  "name": "vibespro",
-  "version": "1.0.0",
-  "generators": {
-    "service": {
-      "factory": "./service/generator",
-      "schema": "./service/schema.json",
-      "description": "Generate a hexagonal service with domain, application, and infrastructure layers",
-      "aliases": ["bounded-context", "bc"]
-    },
-    "component": {
-      "factory": "./component/generator",
-      "schema": "./component/schema.json",
-      "description": "Generate a React component with tests and stories"
-    },
-    "api-endpoint": {
-      "factory": "./api-endpoint/generator",
-      "schema": "./api-endpoint/schema.json",
-      "description": "Generate a REST API endpoint with controller and tests"
+    "$schema": "https://json-schema.org/schema",
+    "name": "vibespro",
+    "version": "1.0.0",
+    "generators": {
+        "service": {
+            "factory": "./service/generator",
+            "schema": "./service/schema.json",
+            "description": "Generate a hexagonal service with domain, application, and infrastructure layers",
+            "aliases": ["bounded-context", "bc"]
+        },
+        "component": {
+            "factory": "./component/generator",
+            "schema": "./component/schema.json",
+            "description": "Generate a React component with tests and stories"
+        },
+        "api-endpoint": {
+            "factory": "./api-endpoint/generator",
+            "schema": "./api-endpoint/schema.json",
+            "description": "Generate a REST API endpoint with controller and tests"
+        }
     }
-  }
 }
 ```
 
@@ -92,11 +92,11 @@ generators/
 
 ### Use This Context When:
 
-- [ ] Scaffolding new libraries, apps, or components
-- [ ] Creating custom generators for project-specific patterns
-- [ ] Implementing generator-first workflow
-- [ ] Need to understand existing generator patterns
-- [ ] Modifying or extending generator templates
+-   [ ] Scaffolding new libraries, apps, or components
+-   [ ] Creating custom generators for project-specific patterns
+-   [ ] Implementing generator-first workflow
+-   [ ] Need to understand existing generator patterns
+-   [ ] Modifying or extending generator templates
 
 ### Refer to Other Contexts When:
 
@@ -138,73 +138,57 @@ pnpm exec nx g vibespro:service my-service
 **Standard generator structure (generator.ts):**
 
 ```typescript
-import {
-  Tree,
-  formatFiles,
-  generateFiles,
-  names,
-  offsetFromRoot,
-} from "@nx/devkit";
+import { Tree, formatFiles, generateFiles, names, offsetFromRoot } from "@nx/devkit";
 import * as path from "path";
 import { ServiceGeneratorSchema } from "./schema";
 
-export async function serviceGenerator(
-  tree: Tree,
-  options: ServiceGeneratorSchema,
-) {
-  // 1. Normalize options
-  const normalizedOptions = normalizeOptions(tree, options);
+export async function serviceGenerator(tree: Tree, options: ServiceGeneratorSchema) {
+    // 1. Normalize options
+    const normalizedOptions = normalizeOptions(tree, options);
 
-  // 2. Generate domain layer
-  addDomainLayer(tree, normalizedOptions);
+    // 2. Generate domain layer
+    addDomainLayer(tree, normalizedOptions);
 
-  // 3. Generate application layer
-  addApplicationLayer(tree, normalizedOptions);
+    // 3. Generate application layer
+    addApplicationLayer(tree, normalizedOptions);
 
-  // 4. Generate infrastructure layer
-  addInfrastructureLayer(tree, normalizedOptions);
+    // 4. Generate infrastructure layer
+    addInfrastructureLayer(tree, normalizedOptions);
 
-  // 5. Update workspace configuration
-  updateWorkspaceConfig(tree, normalizedOptions);
+    // 5. Update workspace configuration
+    updateWorkspaceConfig(tree, normalizedOptions);
 
-  // 6. Format files
-  await formatFiles(tree);
+    // 6. Format files
+    await formatFiles(tree);
 
-  return () => {
-    console.log(`✅ Service "${options.name}" created successfully`);
-  };
+    return () => {
+        console.log(`✅ Service "${options.name}" created successfully`);
+    };
 }
 
-function normalizeOptions(
-  tree: Tree,
-  options: ServiceGeneratorSchema,
-): NormalizedSchema {
-  const name = names(options.name).fileName;
-  const projectDirectory = options.directory
-    ? `${names(options.directory).fileName}/${name}`
-    : name;
-  const projectRoot = `libs/${projectDirectory}`;
+function normalizeOptions(tree: Tree, options: ServiceGeneratorSchema): NormalizedSchema {
+    const name = names(options.name).fileName;
+    const projectDirectory = options.directory ? `${names(options.directory).fileName}/${name}` : name;
+    const projectRoot = `libs/${projectDirectory}`;
 
-  return {
-    ...options,
-    projectName: name,
-    projectRoot,
-    parsedTags: options.tags
-      ? options.tags.split(",").map((t) => t.trim())
-      : [],
-  };
+    return {
+        ...options,
+        projectName: name,
+        projectRoot,
+        parsedTags: options.tags ? options.tags.split(",").map((t) => t.trim()) : [],
+    };
 }
 
 function addDomainLayer(tree: Tree, options: NormalizedSchema) {
-  const templatePath = path.join(__dirname, "files", "domain");
-  const targetPath = `${options.projectRoot}/domain`;
+    const templatePath = path.join(__dirname, "files", "domain");
+    const targetPath = `${options.projectRoot}/domain`;
 
-  generateFiles(tree, templatePath, targetPath, {
-    ...options,
-    ...names(options.projectName),
-    offsetFromRoot: offsetFromRoot(options.projectRoot),
-    template: "", // Remove __template__ from file names
-  });
+    generateFiles(tree, templatePath, targetPath, {
+        ...options,
+        ...names(options.projectName),
+        offsetFromRoot: offsetFromRoot(options.projectRoot),
+        template: "", // Remove __template__ from file names
+    });
 }
 
 // Similar for application and infrastructure layers...
@@ -216,43 +200,43 @@ export default serviceGenerator;
 
 ```json
 {
-  "$schema": "https://json-schema.org/schema",
-  "type": "object",
-  "properties": {
-    "name": {
-      "type": "string",
-      "description": "Service name",
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      },
-      "x-prompt": "What is the name of the service?"
+    "$schema": "https://json-schema.org/schema",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Service name",
+            "$default": {
+                "$source": "argv",
+                "index": 0
+            },
+            "x-prompt": "What is the name of the service?"
+        },
+        "directory": {
+            "type": "string",
+            "description": "Directory where service will be created",
+            "x-prompt": "Which directory should this be created in?"
+        },
+        "language": {
+            "type": "string",
+            "enum": ["typescript", "python"],
+            "default": "typescript",
+            "description": "Programming language",
+            "x-prompt": {
+                "message": "Which language?",
+                "type": "list",
+                "items": [
+                    { "value": "typescript", "label": "TypeScript" },
+                    { "value": "python", "label": "Python" }
+                ]
+            }
+        },
+        "tags": {
+            "type": "string",
+            "description": "Comma-separated tags for Nx boundary rules"
+        }
     },
-    "directory": {
-      "type": "string",
-      "description": "Directory where service will be created",
-      "x-prompt": "Which directory should this be created in?"
-    },
-    "language": {
-      "type": "string",
-      "enum": ["typescript", "python"],
-      "default": "typescript",
-      "description": "Programming language",
-      "x-prompt": {
-        "message": "Which language?",
-        "type": "list",
-        "items": [
-          { "value": "typescript", "label": "TypeScript" },
-          { "value": "python", "label": "Python" }
-        ]
-      }
-    },
-    "tags": {
-      "type": "string",
-      "description": "Comma-separated tags for Nx boundary rules"
-    }
-  },
-  "required": ["name"]
+    "required": ["name"]
 }
 ```
 
@@ -260,9 +244,9 @@ export default serviceGenerator;
 
 **Template file naming convention:**
 
-- Use `__templateFileName__.ts.template` pattern
-- Template variables: `<%= propertyName %>`
-- Naming helpers: `<%= className %>`, `<%= fileName %>`, `<%= constantName %>`
+-   Use `__templateFileName__.ts.template` pattern
+-   Template variables: `<%= propertyName %>`
+-   Naming helpers: `<%= className %>`, `<%= fileName %>`, `<%= constantName %>`
 
 **Example domain entity template:**
 
@@ -295,22 +279,22 @@ export class <%= className %> {
 import { names as nxNames } from "@nx/devkit";
 
 export interface Names {
-  name: string; // Original name
-  className: string; // PascalCase
-  propertyName: string; // camelCase
-  constantName: string; // UPPER_SNAKE_CASE
-  fileName: string; // kebab-case
+    name: string; // Original name
+    className: string; // PascalCase
+    propertyName: string; // camelCase
+    constantName: string; // UPPER_SNAKE_CASE
+    fileName: string; // kebab-case
 }
 
 export function getNames(name: string): Names {
-  const nx = nxNames(name);
-  return {
-    name: nx.name,
-    className: nx.className,
-    propertyName: nx.propertyName,
-    constantName: nx.constantName.toUpperCase(),
-    fileName: nx.fileName,
-  };
+    const nx = nxNames(name);
+    return {
+        name: nx.name,
+        className: nx.className,
+        propertyName: nx.propertyName,
+        constantName: nx.constantName.toUpperCase(),
+        fileName: nx.fileName,
+    };
 }
 ```
 
@@ -318,19 +302,19 @@ export function getNames(name: string): Names {
 
 **Modular instructions that apply here:**
 
-- [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - **Generator-first policy (READ THIS FIRST)**
-- [.github/instructions/nx.instructions.md](/.github/instructions/nx.instructions.md) - Nx integration and MCP tools
-- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing generated code
-- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in generators
+-   [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - **Generator-first policy (READ THIS FIRST)**
+-   [.github/instructions/nx.instructions.md](/.github/instructions/nx.instructions.md) - Nx integration and MCP tools
+-   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing generated code
+-   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in generators
 
 **Relevant prompts:**
 
-- [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Use generators first, then implement
+-   [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Use generators first, then implement
 
 **Related chat modes:**
 
-- `persona.system-architect` - Generator design guidance
-- `tdd.red` - Generate test scaffolds
+-   `persona.system-architect` - Generator design guidance
+-   `tdd.red` - Generate test scaffolds
 
 ## 💡 Examples
 
@@ -375,52 +359,34 @@ pnpm exec nx g @nx/react:component OrderList \
 
 ```typescript
 // generators/api-endpoint/generator.ts
-export async function apiEndpointGenerator(
-  tree: Tree,
-  options: ApiEndpointGeneratorSchema,
-) {
-  const normalizedOptions = normalizeOptions(tree, options);
+export async function apiEndpointGenerator(tree: Tree, options: ApiEndpointGeneratorSchema) {
+    const normalizedOptions = normalizeOptions(tree, options);
 
-  // 1. Generate controller
-  generateFiles(
-    tree,
-    path.join(__dirname, "files", "controller"),
-    normalizedOptions.controllerPath,
-    {
-      ...normalizedOptions,
-      ...names(normalizedOptions.name),
-      template: "",
-    },
-  );
+    // 1. Generate controller
+    generateFiles(tree, path.join(__dirname, "files", "controller"), normalizedOptions.controllerPath, {
+        ...normalizedOptions,
+        ...names(normalizedOptions.name),
+        template: "",
+    });
 
-  // 2. Generate DTO
-  generateFiles(
-    tree,
-    path.join(__dirname, "files", "dto"),
-    normalizedOptions.dtoPath,
-    {
-      ...normalizedOptions,
-      ...names(normalizedOptions.name),
-      template: "",
-    },
-  );
+    // 2. Generate DTO
+    generateFiles(tree, path.join(__dirname, "files", "dto"), normalizedOptions.dtoPath, {
+        ...normalizedOptions,
+        ...names(normalizedOptions.name),
+        template: "",
+    });
 
-  // 3. Generate tests
-  generateFiles(
-    tree,
-    path.join(__dirname, "files", "tests"),
-    normalizedOptions.testsPath,
-    {
-      ...normalizedOptions,
-      ...names(normalizedOptions.name),
-      template: "",
-    },
-  );
+    // 3. Generate tests
+    generateFiles(tree, path.join(__dirname, "files", "tests"), normalizedOptions.testsPath, {
+        ...normalizedOptions,
+        ...names(normalizedOptions.name),
+        template: "",
+    });
 
-  // 4. Update route configuration
-  updateRouteConfig(tree, normalizedOptions);
+    // 4. Update route configuration
+    updateRouteConfig(tree, normalizedOptions);
 
-  await formatFiles(tree);
+    await formatFiles(tree);
 }
 
 // Usage:
@@ -446,31 +412,31 @@ pnpm exec nx g @nxlv/python:lib orders-domain \
 
 ### Before Creating a Generator:
 
-- [ ] Identify repeated code pattern
-- [ ] Check if existing Nx generator can be extended
-- [ ] Design schema.json with validation
-- [ ] Plan template structure
-- [ ] Consider language-specific variations
-- [ ] Document expected usage
+-   [ ] Identify repeated code pattern
+-   [ ] Check if existing Nx generator can be extended
+-   [ ] Design schema.json with validation
+-   [ ] Plan template structure
+-   [ ] Consider language-specific variations
+-   [ ] Document expected usage
 
 ### While Building a Generator:
 
-- [ ] Implement normalizeOptions function
-- [ ] Use generateFiles for templates
-- [ ] Add validation for required options
-- [ ] Format generated files
-- [ ] Update Nx workspace configuration
-- [ ] Add Nx tags for boundary rules
-- [ ] Handle error cases gracefully
+-   [ ] Implement normalizeOptions function
+-   [ ] Use generateFiles for templates
+-   [ ] Add validation for required options
+-   [ ] Format generated files
+-   [ ] Update Nx workspace configuration
+-   [ ] Add Nx tags for boundary rules
+-   [ ] Handle error cases gracefully
 
 ### After Creating a Generator:
 
-- [ ] Test generator with various inputs
-- [ ] Document in generators/README.md
-- [ ] Add to generators.json collection
-- [ ] Create example usage in generator README
-- [ ] Add just recipe for convenience
-- [ ] Test with `just ai-scaffold`
+-   [ ] Test generator with various inputs
+-   [ ] Document in generators/README.md
+-   [ ] Add to generators.json collection
+-   [ ] Create example usage in generator README
+-   [ ] Add just recipe for convenience
+-   [ ] Test with `just ai-scaffold`
 
 ## 🔍 Quick Reference
 
@@ -541,41 +507,41 @@ names('user-profile') => {
 
 **Security in generators:**
 
-- ⚠️ **Input validation**: Sanitize all user inputs in schema
-- ⚠️ **Path traversal**: Validate directory paths
-- ⚠️ **Code injection**: Sanitize template variables
-- ⚠️ **Default values**: Use secure defaults
-- ⚠️ **File permissions**: Set appropriate permissions on generated files
+-   ⚠️ **Input validation**: Sanitize all user inputs in schema
+-   ⚠️ **Path traversal**: Validate directory paths
+-   ⚠️ **Code injection**: Sanitize template variables
+-   ⚠️ **Default values**: Use secure defaults
+-   ⚠️ **File permissions**: Set appropriate permissions on generated files
 
 **Example validation:**
 
 ```typescript
 function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
-  // Validate name
-  if (!/^[a-z][a-z0-9-]*$/.test(options.name)) {
-    throw new Error("Name must be lowercase kebab-case");
-  }
+    // Validate name
+    if (!/^[a-z][a-z0-9-]*$/.test(options.name)) {
+        throw new Error("Name must be lowercase kebab-case");
+    }
 
-  // Prevent path traversal
-  const directory = options.directory || "";
-  if (directory.includes("..")) {
-    throw new Error('Directory cannot contain ".."');
-  }
+    // Prevent path traversal
+    const directory = options.directory || "";
+    if (directory.includes("..")) {
+        throw new Error('Directory cannot contain ".."');
+    }
 
-  // Sanitize tags
-  const tags = options.tags
-    ? options.tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean)
-    : [];
+    // Sanitize tags
+    const tags = options.tags
+        ? options.tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+        : [];
 
-  return {
-    ...options,
-    name: options.name.toLowerCase(),
-    directory,
-    tags,
-  };
+    return {
+        ...options,
+        name: options.name.toLowerCase(),
+        directory,
+        tags,
+    };
 }
 ```
 
@@ -583,11 +549,11 @@ function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
 
 **Available Nx MCP Tools:**
 
-- `nx_workspace` - Get workspace structure and errors
-- `nx_generators` - List available generators
-- `nx_generator_schema` - Get generator options schema
-- `nx_open_generate_ui` - Open generator UI
-- `nx_read_generator_log` - Read generator execution log
+-   `nx_workspace` - Get workspace structure and errors
+-   `nx_generators` - List available generators
+-   `nx_generator_schema` - Get generator options schema
+-   `nx_open_generate_ui` - Open generator UI
+-   `nx_read_generator_log` - Read generator execution log
 
 **Workflow with MCP:**
 
@@ -609,33 +575,33 @@ import { Tree, readProjectConfiguration } from "@nx/devkit";
 import serviceGenerator from "./generator";
 
 describe("service generator", () => {
-  let tree: Tree;
+    let tree: Tree;
 
-  beforeEach(() => {
-    tree = createTreeWithEmptyWorkspace();
-  });
-
-  it("should generate domain, application, and infrastructure layers", async () => {
-    await serviceGenerator(tree, {
-      name: "orders",
-      language: "typescript",
+    beforeEach(() => {
+        tree = createTreeWithEmptyWorkspace();
     });
 
-    expect(tree.exists("libs/orders/domain/src/index.ts")).toBeTruthy();
-    expect(tree.exists("libs/orders/application/src/index.ts")).toBeTruthy();
-    expect(tree.exists("libs/orders/infrastructure/src/index.ts")).toBeTruthy();
-  });
+    it("should generate domain, application, and infrastructure layers", async () => {
+        await serviceGenerator(tree, {
+            name: "orders",
+            language: "typescript",
+        });
 
-  it("should configure Nx project correctly", async () => {
-    await serviceGenerator(tree, {
-      name: "orders",
-      tags: "type:service,scope:orders",
+        expect(tree.exists("libs/orders/domain/src/index.ts")).toBeTruthy();
+        expect(tree.exists("libs/orders/application/src/index.ts")).toBeTruthy();
+        expect(tree.exists("libs/orders/infrastructure/src/index.ts")).toBeTruthy();
     });
 
-    const config = readProjectConfiguration(tree, "orders-domain");
-    expect(config.tags).toContain("type:service");
-    expect(config.tags).toContain("scope:orders");
-  });
+    it("should configure Nx project correctly", async () => {
+        await serviceGenerator(tree, {
+            name: "orders",
+            tags: "type:service,scope:orders",
+        });
+
+        const config = readProjectConfiguration(tree, "orders-domain");
+        expect(config.tags).toContain("type:service");
+        expect(config.tags).toContain("scope:orders");
+    });
 });
 ```
 
@@ -653,32 +619,32 @@ pnpm exec nx build test-service-domain
 
 ### Regular Tasks
 
-- **Weekly**: Review generator usage patterns
-- **Monthly**: Update generator templates with new conventions
-- **Quarterly**: Audit generated code quality
-- **Per feature**: Consider new generator needs
+-   **Weekly**: Review generator usage patterns
+-   **Monthly**: Update generator templates with new conventions
+-   **Quarterly**: Audit generated code quality
+-   **Per feature**: Consider new generator needs
 
 ### When to Update This AGENT.md
 
-- New generators added to collection
-- Generator patterns change
-- Template conventions evolve
-- Nx version updates with breaking changes
+-   New generators added to collection
+-   Generator patterns change
+-   Template conventions evolve
+-   Nx version updates with breaking changes
 
 ### When to Create a New Generator
 
 **Consider creating a generator when:**
 
-- You're repeating the same scaffolding 3+ times
-- Pattern has clear structure and conventions
-- Would benefit other team members
-- Enforces architectural boundaries
+-   You're repeating the same scaffolding 3+ times
+-   Pattern has clear structure and conventions
+-   Would benefit other team members
+-   Enforces architectural boundaries
 
 **Don't create a generator when:**
 
-- Pattern is still evolving rapidly
-- One-off or experimental code
-- Better handled by existing generators with options
+-   Pattern is still evolving rapidly
+-   One-off or experimental code
+-   Better handled by existing generators with options
 
 ---
 

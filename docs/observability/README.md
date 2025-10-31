@@ -352,13 +352,13 @@ logs, and dashboards stay in lockstep with template output and Vector runtime be
 
 ### 8.1 Pipeline Additions
 
-- `transforms.logs_redact_pii` now imports the shared VRL program at `tools/vector/macros.vrl`
-  so traces and logs reuse the same redaction rules.
-- `transforms.logs_logfire_normalize` projects Logfire OTLP attributes (`logfire.trace_id`,
-  `logfire.span_id`, `logfire.observation_id`, etc.) into the canonical `trace_id`, `span_id`, and
-  `observation_id` fields consumed by sinks and dashboards.
-- Trace sanitization pulls the same macros via `tools/vector/traces_sanitize.vrl`, preventing
-  divergence between span and log scrubbing logic.
+-   `transforms.logs_redact_pii` now imports the shared VRL program at `tools/vector/macros.vrl`
+    so traces and logs reuse the same redaction rules.
+-   `transforms.logs_logfire_normalize` projects Logfire OTLP attributes (`logfire.trace_id`,
+    `logfire.span_id`, `logfire.observation_id`, etc.) into the canonical `trace_id`, `span_id`, and
+    `observation_id` fields consumed by sinks and dashboards.
+-   Trace sanitization pulls the same macros via `tools/vector/traces_sanitize.vrl`, preventing
+    divergence between span and log scrubbing logic.
 
 ### 8.2 Shared VRL Macros
 
@@ -383,14 +383,14 @@ just docs-lint                             # Ensures docs + template snippets st
 
 ### 8.4 Documentation & Template Sync
 
-- `docs/observability/README.md` (this guide) captures the integration details and validation flow.
-- `docs/ENVIRONMENT.md` documents local/CI environment variables for Logfire.
-- `templates/{{project_slug}}/docs/observability/logging.md.j2` ensures generated projects inherit
-  the same workflow.
-- `docs/observability/dashboards/logfire.json` defines the OpenObserve panels for Logfire metrics.
-- `tools/observability/schema.json` documents the metrics taxonomy (`logfire.span.duration`, etc.).
-- `ops/openobserve/docker-compose.yml` + `just observe-openobserve-up` spin up a local OpenObserve
-  instance when you need a real OTLP target.
+-   `docs/observability/README.md` (this guide) captures the integration details and validation flow.
+-   `docs/ENVIRONMENT.md` documents local/CI environment variables for Logfire.
+-   `templates/{{project_slug}}/docs/observability/logging.md.j2` ensures generated projects inherit
+    the same workflow.
+-   `docs/observability/dashboards/logfire.json` defines the OpenObserve panels for Logfire metrics.
+-   `tools/observability/schema.json` documents the metrics taxonomy (`logfire.span.duration`, etc.).
+-   `ops/openobserve/docker-compose.yml` + `just observe-openobserve-up` spin up a local OpenObserve
+    instance when you need a real OTLP target.
 
 Keep all three aligned when introducing new metadata, macros, or transforms.
 
@@ -455,10 +455,10 @@ bash tests/ops/test_observe_flag.sh
 
 Verifies:
 
-- ✅ Flag logic present in `lib.rs`
-- ✅ Feature gates properly configured
-- ✅ Tests pass with and without `otlp` feature
-- ✅ Documentation references exist
+-   ✅ Flag logic present in `lib.rs`
+-   ✅ Feature gates properly configured
+-   ✅ Tests pass with and without `otlp` feature
+-   ✅ Documentation references exist
 
 ### 9.5 Decision Tree
 
@@ -513,10 +513,10 @@ Is OTLP needed?
 
 ## 13. Governance & Cost Controls
 
-- **Sampling:** Defined in `vector.toml` (reduce noise).
-- **Redaction:** Apply VRL transforms to mask PII.
-- **Retention:** Managed in OpenObserve (default 90 days).
-- **Access:** Tokens managed via SOPS; distribution controlled per-environment.
+-   **Sampling:** Defined in `vector.toml` (reduce noise).
+-   **Redaction:** Apply VRL transforms to mask PII.
+-   **Retention:** Managed in OpenObserve (default 90 days).
+-   **Access:** Tokens managed via SOPS; distribution controlled per-environment.
 
 ### Logging Retention Policy
 
@@ -524,19 +524,19 @@ Is OTLP needed?
 
 **Logs vs. Traces:**
 
-- **Logs:** 14–30 days retention (higher volume, lower retention cost)
-- **Traces:** 30–90 days retention (lower volume, higher analytical value)
+-   **Logs:** 14–30 days retention (higher volume, lower retention cost)
+-   **Traces:** 30–90 days retention (lower volume, higher analytical value)
 
 Configure separate OpenObserve streams/indices:
 
-- `vibepro-logs-prod` (30-day retention)
-- `vibepro-traces-prod` (90-day retention)
+-   `vibepro-logs-prod` (30-day retention)
+-   `vibepro-traces-prod` (90-day retention)
 
 **Cost optimization:**
 
-- Logs are more verbose → shorter retention
-- Traces enable deep debugging → longer retention
-- Use `category` field to route critical logs to longer retention if needed
+-   Logs are more verbose → shorter retention
+-   Traces enable deep debugging → longer retention
+-   Use `category` field to route critical logs to longer retention if needed
 
 ---
 
@@ -550,37 +550,37 @@ VibePro implements **structured, trace-aware logging** across all languages (Rus
 
 **1. JSON-First Format:**
 
-- All logs MUST be emitted as JSON (machine-parseable)
-- No printf-style logs in production code
-- Consistent schema across Rust, Node.js, and Python
+-   All logs MUST be emitted as JSON (machine-parseable)
+-   No printf-style logs in production code
+-   Consistent schema across Rust, Node.js, and Python
 
 **2. Trace Correlation:**
 
-- Every log line includes `trace_id` and `span_id`
-- Enables correlation between logs and distributed traces
-- Full request lifecycle visibility in OpenObserve
+-   Every log line includes `trace_id` and `span_id`
+-   Enables correlation between logs and distributed traces
+-   Full request lifecycle visibility in OpenObserve
 
 **3. PII Protection:**
 
-- Never log raw PII (email, phone, IP addresses, auth tokens)
-- Use hashed identifiers: `user_id_hash`, `client_ip_hash`
-- Vector redacts accidental PII at the edge before storage
-- Redaction rules in `ops/vector/vector.toml` → `transforms.logs_redact_pii`
+-   Never log raw PII (email, phone, IP addresses, auth tokens)
+-   Use hashed identifiers: `user_id_hash`, `client_ip_hash`
+-   Vector redacts accidental PII at the edge before storage
+-   Redaction rules in `ops/vector/vector.toml` → `transforms.logs_redact_pii`
 
 **4. Log Levels:**
 
-- `error` – Actionable failures requiring immediate investigation
-- `warn` – Degraded behavior, potential issues
-- `info` – Normal operational events (default)
-- `debug` – Detailed diagnostic information (disabled in production by default)
-- ❌ **No `trace` level** – use tracing spans for fine-grained instrumentation
+-   `error` – Actionable failures requiring immediate investigation
+-   `warn` – Degraded behavior, potential issues
+-   `info` – Normal operational events (default)
+-   `debug` – Detailed diagnostic information (disabled in production by default)
+-   ❌ **No `trace` level** – use tracing spans for fine-grained instrumentation
 
 **5. Log Categories:**
 
-- `app` – General application logs (default)
-- `audit` – User actions requiring compliance tracking
-- `security` – Auth failures, rate limiting, suspicious activity
-- Use the `category` field to distinguish types, not log levels
+-   `app` – General application logs (default)
+-   `audit` – User actions requiring compliance tracking
+-   `security` – Auth failures, rate limiting, suspicious activity
+-   Use the `category` field to distinguish types, not log levels
 
 ### Language-Specific Examples
 
@@ -614,93 +614,75 @@ const log = logger("my-service");
 
 // App log
 log.info(
-  {
-    category: "app",
-    user_id_hash: "abc123",
-    trace_id: req.traceId,
-    span_id: req.spanId,
-  },
-  "request accepted",
+    {
+        category: "app",
+        user_id_hash: "abc123",
+        trace_id: req.traceId,
+        span_id: req.spanId,
+    },
+    "request accepted",
 );
 
 // Security warning
 log.warn(
-  {
-    category: "security",
-    action: "rate_limit",
-    client_ip_hash: hashIP(req.ip),
-  },
-  "client throttled",
+    {
+        category: "security",
+        action: "rate_limit",
+        client_ip_hash: hashIP(req.ip),
+    },
+    "client throttled",
 );
 
 // Error log
 log.error(
-  {
-    category: "app",
-    code: 500,
-    error: "ECONNREFUSED",
-  },
-  "upstream timeout",
+    {
+        category: "app",
+        code: 500,
+        error: "ECONNREFUSED",
+    },
+    "upstream timeout",
 );
 ```
 
-#### Python (via `structlog`)
+#### Python (via Logfire)
 
 Library: `libs/python/vibepro_logging.py`
 
 ```python
-from libs.python.vibepro_logging import configure_logger
+import logfire
 
-log = configure_logger('my-service')
+from libs.python.vibepro_logging import LogCategory, configure_logger
 
-# App log
-log.info(
-    "request accepted",
-    category="app",
-    user_id_hash="abc123",
-    trace_id=trace_context.trace_id,
-    span_id=trace_context.span_id
-)
+logger = configure_logger('my-service')
 
-# Security warning
-log.warning(
-    "client throttled",
-    category="security",
-    action="rate_limit",
-    client_ip_hash=hash_ip(request.remote_addr)
-)
-
-# Error log
-log.error(
-    "upstream timeout",
-    category="app",
-    code=500,
-    error="ECONNREFUSED"
-)
+with logfire.span('request', route='/users'):
+    logger.info('request accepted', category=LogCategory.APP, user_id_hash='abc123')
+    logger.warn('client throttled', category=LogCategory.SECURITY, action='rate_limit')
+    logger.error('upstream timeout', category=LogCategory.APP, code=500)
 ```
 
 ### Required Log Fields
 
 **Mandatory (every log line):**
 
-- `timestamp` (ISO 8601)
-- `level` (error|warn|info|debug)
-- `message` or `event`
-- `service` (e.g., "user-api", "billing-service")
-- `environment` (local|dev|staging|prod)
-- `application_version` (semver or git SHA)
-- `category` (app|audit|security)
+-   `timestamp` (ISO 8601)
+-   `level` (error|warn|info|debug)
+-   `message` or `event`
+-   `service` (e.g., "user-api", "billing-service")
+-   `environment` (local|dev|staging|prod)
+-   `application_version` (semver or git SHA)
+-   `category` (app|audit|security)
 
 **Contextual (when available):**
 
-- `trace_id` – OpenTelemetry trace ID
-- `span_id` – Current span ID
-- `user_id_hash` – Hashed user identifier (never raw ID)
-- `client_ip_hash` – Hashed IP address (never raw IP)
-- `duration_ms` – Operation timing
-- `status` – HTTP status code
-- `error` – Error type or code
-- `action` – Specific action (e.g., "login", "rate_limit")
+-   `trace_id` – OpenTelemetry trace ID
+-   `span_id` – Current span ID
+-   `user_id_hash` – Hashed user identifier (never raw ID)
+-   `client_ip_hash` – Hashed IP address (never raw IP)
+-   `duration_ms` – Operation timing
+-   `status` – HTTP status code
+-   `error` – Error type or code
+-   `action` – Specific action (e.g., "login", "rate_limit")
 
 ### Vector Configuration for Logs
 
@@ -762,7 +744,7 @@ cargo run --manifest-path apps/observe-smoke/Cargo.toml
 node tools/logging/pino-quickstart.js
 
 # Python
-python3 tools/logging/structlog-quickstart.py
+python3 tools/logging/logfire-quickstart.py
 ```
 
 **Validation tests:**
@@ -785,25 +767,25 @@ just test-logs  # Includes Logfire bootstrap smoke coverage
 
 1. **Create separate streams:**
 
-   - `vibepro-logs-{env}` for application logs
-   - `vibepro-traces-{env}` for distributed traces
+    - `vibepro-logs-{env}` for application logs
+    - `vibepro-traces-{env}` for distributed traces
 
 2. **Configure retention:**
 
-   - Logs: 14–30 days (higher volume)
-   - Traces: 30–90 days (lower volume, higher value)
+    - Logs: 14–30 days (higher volume)
+    - Traces: 30–90 days (lower volume, higher value)
 
 3. **Set up alerts:**
 
-   - `category="security"` AND `level="warn"`
-   - `code=500` AND `environment="prod"`
-   - `action="auth_failure"` rate threshold
+    - `category="security"` AND `level="warn"`
+    - `code=500` AND `environment="prod"`
+    - `action="auth_failure"` rate threshold
 
 4. **Create dashboards:**
-   - Error rate by service
-   - Security events timeline
-   - Request latency (p50, p95, p99) from logs
-   - Log volume by category
+    - Error rate by service
+    - Security events timeline
+    - Request latency (p50, p95, p99) from logs
+    - Log volume by category
 
 ### Querying Logs with Traces
 
@@ -858,10 +840,10 @@ LIMIT 100;
 
 **Performance impact:**
 
-- JSON logging overhead: ~2-5% vs printf
-- Use `debug` level sparingly in hot paths
-- Vector handles sampling/filtering at the edge
-- Consider async logging in high-throughput services
+-   JSON logging overhead: ~2-5% vs printf
+-   Use `debug` level sparingly in hot paths
+-   Vector handles sampling/filtering at the edge
+-   Consider async logging in high-throughput services
 
 ---
 
@@ -869,13 +851,13 @@ LIMIT 100;
 
 ## 14. References
 
-- [DEV-ADR-016](../dev_adr.md) — Architecture Decision
-- [DEV-SDS-017](../dev_sds.md) — System Design Specification
-- [DEV-PRD-017](../dev_prd.md) — Product Requirement
-- [dev_tdd_observability.md](../dev_tdd_observability.md) — TDD Phase Plan
-- [Vector Documentation](https://vector.dev/docs)
-- [OpenObserve Docs](https://openobserve.ai/docs)
-- [Tokio Tracing Crate](https://github.com/tokio-rs/tracing)
+-   [DEV-ADR-016](../dev_adr.md) — Architecture Decision
+-   [DEV-SDS-017](../dev_sds.md) — System Design Specification
+-   [DEV-PRD-017](../dev_prd.md) — Product Requirement
+-   [dev_tdd_observability.md](../dev_tdd_observability.md) — TDD Phase Plan
+-   [Vector Documentation](https://vector.dev/docs)
+-   [OpenObserve Docs](https://openobserve.ai/docs)
+-   [Tokio Tracing Crate](https://github.com/tokio-rs/tracing)
 
 ---
 

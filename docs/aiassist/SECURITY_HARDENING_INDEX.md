@@ -178,12 +178,12 @@ graph TD
 **Goal:** Understand risk, timeline, and resource needs
 
 1. [`SECURITY_HARDENING_SUMMARY.md`](./SECURITY_HARDENING_SUMMARY.md) - 10 min
-   - What was done
-   - Risk assessment
-   - Timeline estimate
+    - What was done
+    - Risk assessment
+    - Timeline estimate
 2. [`AI_ADR.md#ADR-006`](./AI_ADR.md#ai_adr-006--optional-security-hardening-with-tpm-backed-encryption-at-rest) - 5 min
-   - Decision rationale
-   - Alternatives considered
+    - Decision rationale
+    - Alternatives considered
 3. **Decision Point:** Approve implementation? (Low risk, 2-week timeline)
 
 ---
@@ -193,13 +193,13 @@ graph TD
 **Goal:** Validate architectural approach and crypto decisions
 
 1. [`AI_ADR.md#ADR-006`](./AI_ADR.md#ai_adr-006--optional-security-hardening-with-tpm-backed-encryption-at-rest) - 5 min
-   - High-level design
+    - High-level design
 2. [`AI_SECURITY_HARDENING.md`](./AI_SECURITY_HARDENING.md) - 45 min
-   - Section 2: Threat Model
-   - Section 3: Hardening Priorities
-   - Section 4: Crypto Decisions
-   - Appendix B: Threat Mitigation Matrix
-   - Appendix C: Comparison with Alternatives
+    - Section 2: Threat Model
+    - Section 3: Hardening Priorities
+    - Section 4: Crypto Decisions
+    - Appendix B: Threat Mitigation Matrix
+    - Appendix C: Comparison with Alternatives
 3. **Validation:** Crypto primitives sound? Threat model complete?
 
 ---
@@ -209,15 +209,15 @@ graph TD
 **Goal:** Complete assigned task with TDD discipline
 
 1. [`PHASE-006-CHECKLIST.md`](./PHASE-006-CHECKLIST.md) - **PRIMARY REFERENCE**
-   - Find your task (TASK-013, 014, or 015)
-   - Follow RED → GREEN → REFACTOR checklist
+    - Find your task (TASK-013, 014, or 015)
+    - Follow RED → GREEN → REFACTOR checklist
 2. [`AI_SECURITY_HARDENING.md`](./AI_SECURITY_HARDENING.md) - **CODE SOURCE**
-   - Section 5.2: Copy SecureDb implementation
-   - Section 5.3: Copy Dockerfile/compose
-   - Section 7: Copy test cases
+    - Section 5.2: Copy SecureDb implementation
+    - Section 5.3: Copy Dockerfile/compose
+    - Section 7: Copy test cases
 3. [`AI_TDD_PLAN.md#PHASE-006`](./AI_TDD_PLAN.md#phase-006--security-hardening--encryption-at-rest)
-   - Understand task dependencies
-   - Check exit quality gates
+    - Understand task dependencies
+    - Check exit quality gates
 4. **Execute:** Follow checklist, copy code, run tests, refactor
 
 ---
@@ -227,14 +227,14 @@ graph TD
 **Goal:** Validate security properties and threat mitigation
 
 1. [`AI_SECURITY_HARDENING.md`](./AI_SECURITY_HARDENING.md)
-   - Section 2: Threat Model - Complete?
-   - Section 4: Crypto Decisions - Sound?
-   - Section 7.3: Security Tests - Comprehensive?
-   - Appendix B: Threat Mitigation Matrix - All threats covered?
+    - Section 2: Threat Model - Complete?
+    - Section 4: Crypto Decisions - Sound?
+    - Section 7.3: Security Tests - Comprehensive?
+    - Appendix B: Threat Mitigation Matrix - All threats covered?
 2. Review implementation (post-TASK-013):
-   - `libs/security/src/secure_db.rs` - Matches specification?
-   - Tests pass? Nonce handling correct?
-   - Zeroization verified?
+    - `libs/security/src/secure_db.rs` - Matches specification?
+    - Tests pass? Nonce handling correct?
+    - Zeroization verified?
 3. **Sign-off:** Security approach approved for production?
 
 ---
@@ -244,16 +244,16 @@ graph TD
 **Goal:** Validate functionality and performance
 
 1. [`AI_SECURITY_HARDENING.md`](./AI_SECURITY_HARDENING.md)
-   - Section 7: Testing Strategy - Understand test categories
-   - Section 10: Success Metrics - Know acceptance criteria
+    - Section 7: Testing Strategy - Understand test categories
+    - Section 10: Success Metrics - Know acceptance criteria
 2. [`PHASE-006-CHECKLIST.md`](./PHASE-006-CHECKLIST.md)
-   - Exit Quality Gates section - Test checklist
+    - Exit Quality Gates section - Test checklist
 3. **Execution:**
-   - Run unit tests (TASK-013)
-   - Run integration tests (TASK-014)
-   - Run validation suite (TASK-015)
-   - Verify performance < 5% overhead
-   - Verify binary size < 2MB increase
+    - Run unit tests (TASK-013)
+    - Run integration tests (TASK-014)
+    - Run validation suite (TASK-015)
+    - Verify performance < 5% overhead
+    - Verify binary size < 2MB increase
 
 ---
 
@@ -261,11 +261,11 @@ graph TD
 
 ### Cryptographic Stack
 
-- **AEAD Cipher:** XChaCha20-Poly1305 (192-bit nonce, nonce-misuse resistant)
-- **KDF:** HKDF-SHA256 (domain separation: `db-key`, `audit-key`, `transport-key`)
-- **Master Key:** 256-bit, TPM-sealed or file-based
-- **Nonce Scheme:** 64-bit counter + 128-bit DB UUID = 192-bit unique nonce
-- **Storage:** `[24-byte nonce || ciphertext || 16-byte auth tag]` per record
+-   **AEAD Cipher:** XChaCha20-Poly1305 (192-bit nonce, nonce-misuse resistant)
+-   **KDF:** HKDF-SHA256 (domain separation: `db-key`, `audit-key`, `transport-key`)
+-   **Master Key:** 256-bit, TPM-sealed or file-based
+-   **Nonce Scheme:** 64-bit counter + 128-bit DB UUID = 192-bit unique nonce
+-   **Storage:** `[24-byte nonce || ciphertext || 16-byte auth tag]` per record
 
 ### Feature Flags
 
@@ -277,10 +277,10 @@ tpm_enabled: false # TPM sealing optional
 
 ### Performance Targets
 
-- **Encryption overhead:** < 5%
-- **Binary size increase:** < 2MB
-- **Memory overhead:** < 10MB
-- **Startup time:** < 100ms (TPM unseal + DB open)
+-   **Encryption overhead:** < 5%
+-   **Binary size increase:** < 2MB
+-   **Memory overhead:** < 10MB
+-   **Startup time:** < 100ms (TPM unseal + DB open)
 
 ### TDD Workflow
 

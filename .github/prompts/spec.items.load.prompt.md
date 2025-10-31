@@ -15,8 +15,8 @@ description: "Load specific spec items using indexes and summarize constraints."
 
 ## Inputs
 
-- Product IDs: {{ '{{PRD_IDS}}' }} {{ '{{ADR_IDS}}' }} {{ '{{SDS_IDS}}' }} {{ '{{TS_IDS}}' }}
-- Developer IDs (optional): {{ '{{DEV_IDS}}' }}
+-   Product IDs: {{ '{{PRD_IDS}}' }} {{ '{{ADR_IDS}}' }} {{ '{{SDS_IDS}}' }} {{ '{{TS_IDS}}' }}
+-   Developer IDs (optional): {{ '{{DEV_IDS}}' }}
 
 ## Task
 
@@ -26,5 +26,5 @@ description: "Load specific spec items using indexes and summarize constraints."
 
 ## Output
 
-- A consolidated brief per ID.
-- List any missing/ambiguous details and propose where to look next.
+-   A consolidated brief per ID.
+-   List any missing/ambiguous details and propose where to look next.

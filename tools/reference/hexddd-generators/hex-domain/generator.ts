@@ -5,9 +5,9 @@ import {
   names,
   addProjectConfiguration,
   readProjectConfiguration,
-} from "@nx/devkit";
-import * as path from "path";
-import { HexDomainGeneratorSchema } from "./schema";
+} from '@nx/devkit';
+import * as path from 'path';
+import { HexDomainGeneratorSchema } from './schema';
 
 interface NormalizedSchema extends HexDomainGeneratorSchema {
   projectName: string;
@@ -19,7 +19,7 @@ interface NormalizedSchema extends HexDomainGeneratorSchema {
 function normalizeOptions(
   tree: Tree,
   options: HexDomainGeneratorSchema,
-  layer: "domain" | "application" | "infrastructure",
+  layer: 'domain' | 'application' | 'infrastructure',
 ): NormalizedSchema {
   const name = names(options.name).fileName;
   const projectDirectory = `${name}/${layer}`;
@@ -39,21 +39,18 @@ function normalizeOptions(
 function addFiles(
   tree: Tree,
   options: NormalizedSchema,
-  layer: "domain" | "application" | "infrastructure",
+  layer: 'domain' | 'application' | 'infrastructure',
 ) {
   const marker = layer.toUpperCase();
   const template = `// ${marker}_EXPORTS`;
   tree.write(`${options.projectRoot}/src/index.ts`, template);
 }
 
-export async function hexDomainGenerator(
-  tree: Tree,
-  options: HexDomainGeneratorSchema,
-) {
-  const layers: ("domain" | "application" | "infrastructure")[] = [
-    "domain",
-    "application",
-    "infrastructure",
+export async function hexDomainGenerator(tree: Tree, options: HexDomainGeneratorSchema) {
+  const layers: ('domain' | 'application' | 'infrastructure')[] = [
+    'domain',
+    'application',
+    'infrastructure',
   ];
 
   for (const layer of layers) {
@@ -63,7 +60,7 @@ export async function hexDomainGenerator(
     } catch (e) {
       addProjectConfiguration(tree, normalizedOptions.projectName, {
         root: normalizedOptions.projectRoot,
-        projectType: "library",
+        projectType: 'library',
         sourceRoot: `${normalizedOptions.projectRoot}/src`,
         targets: {},
         tags: normalizedOptions.parsedTags,

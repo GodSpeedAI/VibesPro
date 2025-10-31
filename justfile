@@ -43,7 +43,7 @@ setup-python:
 	# repo-local packages from shadowing stdlib modules during installation.
 	PYTHONPATH= .venv/bin/python -m pip install --upgrade pip setuptools wheel || exit 1
 	# Add psutil because some performance tests rely on it
-	PYTHONPATH= .venv/bin/python -m pip install --upgrade pre-commit structlog mypy ruff uv psutil || exit 1
+	PYTHONPATH= .venv/bin/python -m pip install --upgrade pre-commit mypy ruff uv psutil || exit 1
 
 setup-tools:
 	@echo "🔧 Setting up development tools..."
@@ -263,7 +263,7 @@ format-python:
 
 format-node:
 	@echo "✨ Formatting Node.js code..."
-	pnpm format
+	pnpm exec nx format --all
 
 # --- Database and AI Tools ---
 db-init:

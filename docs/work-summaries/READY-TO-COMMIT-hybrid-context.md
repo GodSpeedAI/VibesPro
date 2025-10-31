@@ -121,10 +121,10 @@ rm -rf /tmp/test-hybrid-context
 
 **Low Risk** - Changes are isolated to:
 
-- Template files (only affect new generations)
-- Optional Copier variables (have sensible defaults)
-- New documentation (no breaking changes)
-- Post-generation messaging (informational only)
+-   Template files (only affect new generations)
+-   Optional Copier variables (have sensible defaults)
+-   New documentation (no breaking changes)
+-   Post-generation messaging (informational only)
 
 ## Rollback Plan
 

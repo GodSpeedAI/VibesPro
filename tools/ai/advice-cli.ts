@@ -1,11 +1,11 @@
 #!/usr/bin/env tsx
-import { spawnSync } from "node:child_process";
-import { resolve } from "node:path";
+import { spawnSync } from 'node:child_process';
+import { resolve } from 'node:path';
 
-import { AIContextManager } from "./src/context-manager.js";
-import type { ContextSource } from "./src/context-manager.js";
-import { PerformanceMonitor } from "../performance/monitor.js";
-import type { PerformanceAdvisory } from "../performance/monitor.js";
+import { AIContextManager } from './src/context-manager.js';
+import type { ContextSource } from './src/context-manager.js';
+import { PerformanceMonitor } from '../performance/monitor.js';
+import type { PerformanceAdvisory } from '../performance/monitor.js';
 
 interface RecommendationPayload {
   generated: RecommendationDTO[];
@@ -43,51 +43,43 @@ interface CliOptions {
 }
 
 function validatePayload(payload: RecommendationPayload): void {
-  if (!payload || typeof payload !== "object") {
-    throw new Error("Invalid payload: must be an object");
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid payload: must be an object');
   }
 
   if (!Array.isArray(payload.generated)) {
-    throw new Error("Invalid payload: generated must be an array");
+    throw new Error('Invalid payload: generated must be an array');
   }
 
   if (!Array.isArray(payload.existing)) {
-    throw new Error("Invalid payload: existing must be an array");
+    throw new Error('Invalid payload: existing must be an array');
   }
 
-  if (typeof payload.retention_deleted !== "number") {
-    throw new Error("Invalid payload: retention_deleted must be a number");
+  if (typeof payload.retention_deleted !== 'number') {
+    throw new Error('Invalid payload: retention_deleted must be a number');
   }
 }
 
 function validateRecommendations(recommendations: RecommendationDTO[]): void {
   recommendations.forEach((recommendation, index) => {
-    if (!recommendation.id || typeof recommendation.id !== "string") {
-      throw new Error(
-        `Invalid recommendation at index ${index}: id must be a non-empty string`,
-      );
+    if (!recommendation.id || typeof recommendation.id !== 'string') {
+      throw new Error(`Invalid recommendation at index ${index}: id must be a non-empty string`);
     }
 
-    if (
-      !recommendation.pattern_name ||
-      typeof recommendation.pattern_name !== "string"
-    ) {
+    if (!recommendation.pattern_name || typeof recommendation.pattern_name !== 'string') {
       throw new Error(
         `Invalid recommendation at index ${index}: pattern_name must be a non-empty string`,
       );
     }
 
-    if (
-      !recommendation.decision_point ||
-      typeof recommendation.decision_point !== "string"
-    ) {
+    if (!recommendation.decision_point || typeof recommendation.decision_point !== 'string') {
       throw new Error(
         `Invalid recommendation at index ${index}: decision_point must be a non-empty string`,
       );
     }
 
     if (
-      typeof recommendation.confidence !== "number" ||
+      typeof recommendation.confidence !== 'number' ||
       recommendation.confidence < 0 ||
       recommendation.confidence > 1
     ) {
@@ -96,49 +88,32 @@ function validateRecommendations(recommendations: RecommendationDTO[]): void {
       );
     }
 
-    if (
-      !recommendation.provenance ||
-      typeof recommendation.provenance !== "string"
-    ) {
+    if (!recommendation.provenance || typeof recommendation.provenance !== 'string') {
       throw new Error(
         `Invalid recommendation at index ${index}: provenance must be a non-empty string`,
       );
     }
 
-    if (
-      !recommendation.rationale ||
-      typeof recommendation.rationale !== "string"
-    ) {
+    if (!recommendation.rationale || typeof recommendation.rationale !== 'string') {
       throw new Error(
         `Invalid recommendation at index ${index}: rationale must be a non-empty string`,
       );
     }
 
-    if (
-      !recommendation.created_at ||
-      typeof recommendation.created_at !== "string"
-    ) {
+    if (!recommendation.created_at || typeof recommendation.created_at !== 'string') {
       throw new Error(
         `Invalid recommendation at index ${index}: created_at must be a non-empty string`,
       );
     }
 
-    if (
-      !recommendation.expires_at ||
-      typeof recommendation.expires_at !== "string"
-    ) {
+    if (!recommendation.expires_at || typeof recommendation.expires_at !== 'string') {
       throw new Error(
         `Invalid recommendation at index ${index}: expires_at must be a non-empty string`,
       );
     }
 
-    if (
-      !recommendation.metadata ||
-      typeof recommendation.metadata !== "object"
-    ) {
-      throw new Error(
-        `Invalid recommendation at index ${index}: metadata must be an object`,
-      );
+    if (!recommendation.metadata || typeof recommendation.metadata !== 'object') {
+      throw new Error(`Invalid recommendation at index ${index}: metadata must be an object`);
     }
 
     // Validate dates
@@ -155,65 +130,56 @@ function validateRecommendations(recommendations: RecommendationDTO[]): void {
 
 function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {
-    dbPath: resolve("tmp/ai-guidance"),
+    dbPath: resolve('tmp/ai-guidance'),
     lookback: 45,
     dryRun: false,
     limit: 10,
     retention: 90,
-    baselinePath: resolve("tmp/performance-baselines.json"),
+    baselinePath: resolve('tmp/performance-baselines.json'),
   };
 
   for (let index = 2; index < argv.length; index += 1) {
     const arg = argv[index];
     switch (arg) {
-      case "--db":
-      case "--database":
+      case '--db':
+      case '--database':
         options.dbPath = resolve(argv[++index] ?? options.dbPath);
         break;
-      case "--lookback":
-        options.lookback = Number.parseInt(
-          argv[++index] ?? `${options.lookback}`,
-          10,
-        );
+      case '--lookback':
+        options.lookback = Number.parseInt(argv[++index] ?? `${options.lookback}`, 10);
         break;
-      case "--limit":
-        options.limit = Number.parseInt(
-          argv[++index] ?? `${options.limit}`,
-          10,
-        );
+      case '--limit':
+        options.limit = Number.parseInt(argv[++index] ?? `${options.limit}`, 10);
         break;
-      case "--retention":
-        options.retention = Number.parseInt(
-          argv[++index] ?? `${options.retention}`,
-          10,
-        );
+      case '--retention':
+        options.retention = Number.parseInt(argv[++index] ?? `${options.retention}`, 10);
         break;
-      case "--dry-run":
+      case '--dry-run':
         options.dryRun = true;
         break;
-      case "--task":
+      case '--task':
         options.task = argv[++index];
         break;
-      case "--accept":
+      case '--accept':
         options.acceptId = argv[++index];
         break;
-      case "--dismiss":
+      case '--dismiss':
         options.dismissId = argv[++index];
         break;
-      case "--reason":
+      case '--reason':
         options.reason = argv[++index];
         break;
-      case "--baseline": {
+      case '--baseline': {
         const baselineArg = argv[++index];
         if (!baselineArg) {
-          console.error("Error: --baseline requires a path argument.");
+          console.error('Error: --baseline requires a path argument.');
           process.exit(1);
         }
         options.baselinePath = resolve(baselineArg);
         break;
       }
       default:
-        if (!arg.startsWith("--")) {
+        if (!arg.startsWith('--')) {
           options.task = arg;
         }
     }
@@ -223,56 +189,49 @@ function parseArgs(argv: string[]): CliOptions {
 }
 
 function runPythonExporter(options: CliOptions): RecommendationPayload {
-  const pythonModule = "temporal_db.python.export_recommendations";
+  const pythonModule = 'temporal_db.python.export_recommendations';
   const args = [
-    "-m",
+    '-m',
     pythonModule,
-    "--db",
+    '--db',
     options.dbPath,
-    "--lookback",
+    '--lookback',
     `${options.lookback}`,
-    "--limit",
+    '--limit',
     `${options.limit}`,
-    "--retention",
+    '--retention',
     `${options.retention}`,
   ];
 
   if (options.dryRun) {
-    args.push("--dry-run");
+    args.push('--dry-run');
   }
   if (options.acceptId) {
-    args.push("--feedback-action", "accept", "--feedback-id", options.acceptId);
+    args.push('--feedback-action', 'accept', '--feedback-id', options.acceptId);
     if (options.reason) {
-      args.push("--feedback-reason", options.reason);
+      args.push('--feedback-reason', options.reason);
     }
   }
   if (options.dismissId) {
-    args.push(
-      "--feedback-action",
-      "dismiss",
-      "--feedback-id",
-      options.dismissId,
-    );
+    args.push('--feedback-action', 'dismiss', '--feedback-id', options.dismissId);
     if (options.reason) {
-      args.push("--feedback-reason", options.reason);
+      args.push('--feedback-reason', options.reason);
     }
   }
 
   const env = {
     ...process.env,
-    PYTHONPATH: process.env.PYTHONPATH
-      ? `${process.env.PYTHONPATH}:${resolve(".")}`
-      : resolve("."),
+    PYTHONPATH: process.env.PYTHONPATH ? `${process.env.PYTHONPATH}:${resolve('.')}` : resolve('.'),
   };
 
-  const result = spawnSync("python", args, {
-    encoding: "utf-8",
-    stdio: ["ignore", "pipe", "pipe"],
+  const result = spawnSync('python', args, {
+    encoding: 'utf-8',
+    stdio: ['ignore', 'pipe', 'pipe'],
     env,
   });
 
   if (result.status !== 0) {
-    throw new Error(result.stderr || "Python exporter failed");
+    throw new Error(result.stderr || 'Python exporter failed');
   }
 
   try {
@@ -286,16 +245,13 @@ function runPythonExporter(options: CliOptions): RecommendationPayload {
   }
 }
 
-function mergeRecommendations(
-  payload: RecommendationPayload,
-): RecommendationDTO[] {
+function mergeRecommendations(payload: RecommendationPayload): RecommendationDTO[] {
   const map = new Map<string, RecommendationDTO>();
   [...payload.generated, ...payload.existing].forEach((recommendation) => {
     map.set(recommendation.id, recommendation);
   });
   return [...map.values()].sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
   );
 }
 
@@ -306,13 +262,9 @@ function createContextSources(
   const sources: ContextSource[] = recommendations.map((recommendation) => {
     const metadata = recommendation.metadata ?? {};
     const tagsValue = (metadata as { tags?: unknown }).tags;
-    const tags = Array.isArray(tagsValue)
-      ? tagsValue.map((tag) => String(tag))
-      : [];
-    const successRateValue = (metadata as { success_rate?: unknown })
-      .success_rate;
-    const successRate =
-      typeof successRateValue === "number" ? successRateValue : undefined;
+    const tags = Array.isArray(tagsValue) ? tagsValue.map((tag) => String(tag)) : [];
+    const successRateValue = (metadata as { success_rate?: unknown }).success_rate;
+    const successRate = typeof successRateValue === 'number' ? successRateValue : undefined;
 
     return {
       id: `pattern:${recommendation.id.slice(0, 8)}`,
@@ -324,20 +276,18 @@ function createContextSources(
       provenance: recommendation.provenance,
       performanceDelta: 0,
       async getContent() {
-        const contextsValue = (metadata as { top_contexts?: unknown })
-          .top_contexts;
+        const contextsValue = (metadata as { top_contexts?: unknown }).top_contexts;
         const contexts = Array.isArray(contextsValue)
           ? contextsValue.map((value) => String(value))
           : [];
-        const contextSection =
-          contexts.length > 0 ? `Top contexts: ${contexts.join(", ")}` : "";
+        const contextSection = contexts.length > 0 ? `Top contexts: ${contexts.join(', ')}` : '';
         return [
           recommendation.rationale,
           `Decision Point: ${recommendation.decision_point}`,
           contextSection,
         ]
           .filter(Boolean)
-          .join("\n");
+          .join('\n');
       },
     } satisfies ContextSource;
   });
@@ -346,11 +296,11 @@ function createContextSources(
     sources.push({
       id: `advisory:${advisory.workflow}:${index}`,
       priority: 0.6,
-      tags: [advisory.workflow, "telemetry"],
+      tags: [advisory.workflow, 'telemetry'],
       lastUpdated: new Date(advisory.timestamp),
       successRate: 0.4,
       patternConfidence: 0.4,
-      provenance: "performance-monitor",
+      provenance: 'performance-monitor',
       performanceDelta: advisory.deltaPct,
       async getContent() {
         return [
@@ -358,7 +308,7 @@ function createContextSources(
           `Observed: ${advisory.observed.toFixed(2)}ms`,
           `Baseline: ${advisory.baseline.toFixed(2)}ms`,
           `Threshold: ${(advisory.thresholdPct * 100).toFixed(0)}%`,
-        ].join("\n");
+        ].join('\n');
       },
     });
   });
@@ -369,19 +319,17 @@ function createContextSources(
 function printRecommendations(recommendations: RecommendationDTO[]): void {
   if (recommendations.length === 0) {
     console.log(
-      "No pattern recommendations available. Run with recent temporal snapshots to populate insights.",
+      'No pattern recommendations available. Run with recent temporal snapshots to populate insights.',
     );
     return;
   }
 
   recommendations.forEach((recommendation) => {
-    const expiry = new Date(recommendation.expires_at)
-      .toISOString()
-      .split("T")[0];
+    const expiry = new Date(recommendation.expires_at).toISOString().split('T')[0];
     console.log(
-      `- ${recommendation.pattern_name} (confidence ${(
-        recommendation.confidence * 100
-      ).toFixed(1)}%)`,
+      `- ${recommendation.pattern_name} (confidence ${(recommendation.confidence * 100).toFixed(
+        1,
+      )}%)`,
     );
     console.log(
       `  Decision Point: ${recommendation.decision_point} | Provenance: ${recommendation.provenance} | Expires: ${expiry}`,
@@ -392,7 +340,7 @@ function printRecommendations(recommendations: RecommendationDTO[]): void {
 
 function printAdvisories(advisories: PerformanceAdvisory[]): void {
   if (advisories.length === 0) {
-    console.log("No active performance advisories. Baselines are healthy.");
+    console.log('No active performance advisories. Baselines are healthy.');
     return;
   }
 
@@ -412,8 +360,8 @@ async function main(): Promise<void> {
     validatePayload(payload);
     validateRecommendations(mergedRecommendations);
 
-    console.log("=== AI Guidance Fabric ===");
-    console.log("");
+    console.log('=== AI Guidance Fabric ===');
+    console.log('');
 
     // Validate that recommendation IDs exist before recording feedback
     if (options.acceptId || options.dismissId) {
@@ -421,31 +369,25 @@ async function main(): Promise<void> {
       const exists = mergedRecommendations.some((r) => r.id === feedbackId);
       if (!exists) {
         console.error(`Error: Recommendation ID "${feedbackId}" not found.`);
-        console.log("Available recommendation IDs:");
+        console.log('Available recommendation IDs:');
         mergedRecommendations.forEach((r) => console.log(`  - ${r.id}`));
         process.exit(1);
       }
     }
 
     if (options.acceptId) {
-      console.log(
-        `Recorded acceptance feedback for recommendation ${options.acceptId}.`,
-      );
+      console.log(`Recorded acceptance feedback for recommendation ${options.acceptId}.`);
     }
     if (options.dismissId) {
-      console.log(
-        `Recorded dismissal feedback for recommendation ${options.dismissId}.`,
-      );
+      console.log(`Recorded dismissal feedback for recommendation ${options.dismissId}.`);
     }
     if (payload.retention_deleted > 0) {
-      console.log(
-        `Purged ${payload.retention_deleted} expired recommendations during refresh.`,
-      );
+      console.log(`Purged ${payload.retention_deleted} expired recommendations during refresh.`);
     }
 
-    console.log("");
-    console.log("Pattern Recommendations");
-    console.log("-----------------------");
+    console.log('');
+    console.log('Pattern Recommendations');
+    console.log('-----------------------');
     printRecommendations(mergedRecommendations);
 
     const monitor = new PerformanceMonitor({
@@ -454,9 +396,9 @@ async function main(): Promise<void> {
     });
     const advisories = monitor.getAdvisories();
 
-    console.log("");
-    console.log("Performance Advisories");
-    console.log("----------------------");
+    console.log('');
+    console.log('Performance Advisories');
+    console.log('----------------------');
     printAdvisories(advisories);
 
     if (options.task) {
@@ -478,12 +420,12 @@ async function main(): Promise<void> {
 
       const context = await manager.getOptimalContext(options.task);
 
-      console.log("");
+      console.log('');
       console.log(`Context Bundle for Task: ${options.task}`);
-      console.log("------------------------------");
+      console.log('------------------------------');
       console.log(context.content);
-      console.log("");
-      console.log("Selected Sources:");
+      console.log('');
+      console.log('Selected Sources:');
       context.sources.forEach((source) => {
         const fields = [
           `score=${source.score.toFixed(2)}`,
@@ -495,21 +437,19 @@ async function main(): Promise<void> {
             ? `perfDelta=${(source.performanceDelta * 100).toFixed(1)}%`
             : undefined,
         ].filter(Boolean);
-        console.log(`- ${source.id} (${fields.join(", ")})`);
+        console.log(`- ${source.id} (${fields.join(', ')})`);
       });
     } else {
-      console.log("");
+      console.log('');
       console.log(
         'Tip: Provide a task description (e.g., `--task "Implement API gateway"`) to generate a context bundle.',
       );
     }
 
-    console.log("");
-    console.log(
-      "Use --accept <id> or --dismiss <id> to record feedback and tune future guidance.",
-    );
+    console.log('');
+    console.log('Use --accept <id> or --dismiss <id> to record feedback and tune future guidance.');
   } catch (error) {
-    console.error("Failed to produce AI guidance:", error);
+    console.error('Failed to produce AI guidance:', error);
     process.exitCode = 1;
   }
 }

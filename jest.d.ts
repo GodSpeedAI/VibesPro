@@ -5,10 +5,7 @@ declare global {
       testUtils: {
         createTempDir: () => string;
         cleanupTempDir: (dirPath: string) => void;
-        createMockFiles: (
-          baseDir: string,
-          structure: Record<string, string>,
-        ) => void;
+        createMockFiles: (baseDir: string, structure: Record<string, string>) => void;
       };
     }
   }
@@ -16,10 +13,7 @@ declare global {
   var testUtils: {
     createTempDir: () => string;
     cleanupTempDir: (dirPath: string) => void;
-    createMockFiles: (
-      baseDir: string,
-      structure: Record<string, string>,
-    ) => void;
+    createMockFiles: (baseDir: string, structure: Record<string, string>) => void;
   };
 }
 

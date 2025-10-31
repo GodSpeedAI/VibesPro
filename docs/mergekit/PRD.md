@@ -17,16 +17,16 @@ Create a unified AI-native development platform that generates production-ready 
 
 **Acceptance Criteria**:
 
-- Running `copier copy` with template variants generates complete projects
-- Templates support conditional generation based on user preferences
-- Generated projects can be updated when templates evolve
-- Template validation ensures consistent output
+-   Running `copier copy` with template variants generates complete projects
+-   Templates support conditional generation based on user preferences
+-   Generated projects can be updated when templates evolve
+-   Template validation ensures consistent output
 
 **Success Metrics**:
 
-- Project generation time < 2 minutes for complex monorepos
-- 100% of generated projects pass validation tests
-- Template updates applied successfully in >95% of cases
+-   Project generation time < 2 minutes for complex monorepos
+-   100% of generated projects pass validation tests
+-   Template updates applied successfully in >95% of cases
 
 ## PRD-MERGE-002: AI-Enhanced Architecture Generation
 
@@ -36,16 +36,16 @@ Create a unified AI-native development platform that generates production-ready 
 
 **Acceptance Criteria**:
 
-- AI suggests appropriate port/adapter patterns based on requirements
-- Real-time validation of hexagonal architecture compliance
-- AI-generated code follows DDD and hexagonal architecture principles
-- Generated layers include proper ESLint tags and dependency constraints
+-   AI suggests appropriate port/adapter patterns based on requirements
+-   Real-time validation of hexagonal architecture compliance
+-   AI-generated code follows DDD and hexagonal architecture principles
+-   Generated layers include proper ESLint tags and dependency constraints
 
 **Success Metrics**:
 
-- AI architectural suggestions have >80% acceptance rate
-- 95% automated detection of architectural violations
-- Generated code passes all architectural compliance tests
+-   AI architectural suggestions have >80% acceptance rate
+-   95% automated detection of architectural violations
+-   Generated code passes all architectural compliance tests
 
 ## PRD-MERGE-003: Unified Build System with Justfile
 
@@ -55,16 +55,16 @@ Create a unified AI-native development platform that generates production-ready 
 
 **Acceptance Criteria**:
 
-- `just build` works for both simple and complex projects
-- `just test` executes appropriate test strategies
-- `just nx-*` commands available for advanced Nx operations
-- Task discovery through `just --list` shows available commands
+-   `just build` works for both simple and complex projects
+-   `just test` executes appropriate test strategies
+-   `just nx-*` commands available for advanced Nx operations
+-   Task discovery through `just --list` shows available commands
 
 **Success Metrics**:
 
-- 90% of developers use justfile interface instead of direct tool commands
-- Task execution time improved by 30% over direct Nx usage
-- Onboarding time reduced by 50% for new developers
+-   90% of developers use justfile interface instead of direct tool commands
+-   Task execution time improved by 30% over direct Nx usage
+-   Onboarding time reduced by 50% for new developers
 
 ## PRD-MERGE-004: Temporal Specification Management
 
@@ -83,16 +83,16 @@ specs/
 
 **Acceptance Criteria**:
 
-- All specification changes stored with timestamps
-- AI learns patterns from decision history
-- Predictive suggestions improve over time
-- Complete auditability of architectural evolution
+-   All specification changes stored with timestamps
+-   AI learns patterns from decision history
+-   Predictive suggestions improve over time
+-   Complete auditability of architectural evolution
 
 **Success Metrics**:
 
-- AI suggestion accuracy improves >20% over 30 days
-- 100% of architectural decisions captured and stored
-- Pattern recognition identifies common architectural choices
+-   AI suggestion accuracy improves >20% over 30 days
+-   100% of architectural decisions captured and stored
+-   Pattern recognition identifies common architectural choices
 
 ## PRD-MERGE-005: AI Context Management and Token Optimization
 
@@ -102,23 +102,23 @@ specs/
 
 **Features**:
 
-- Dynamic context selection based on current task
-- Token budget allocation across context types
-- Intelligent caching of frequently used patterns
-- Context compression for efficiency
+-   Dynamic context selection based on current task
+-   Token budget allocation across context types
+-   Intelligent caching of frequently used patterns
+-   Context compression for efficiency
 
 **Acceptance Criteria**:
 
-- Context window overflows < 2% of interactions
-- Average token usage reduced by 15% through optimization
-- AI maintains architectural context across long conversations
-- Context prioritization adapts to user patterns
+-   Context window overflows < 2% of interactions
+-   Average token usage reduced by 15% through optimization
+-   AI maintains architectural context across long conversations
+-   Context prioritization adapts to user patterns
 
 **Success Metrics**:
 
-- Token budget overruns < 2% of AI interactions
-- Context relevance score >85% in user evaluations
-- AI response quality maintains >4.0/5.0 rating
+-   Token budget overruns < 2% of AI interactions
+-   Context relevance score >85% in user evaluations
+-   AI response quality maintains >4.0/5.0 rating
 
 ## PRD-MERGE-006: Real-time Architectural Validation
 
@@ -128,23 +128,23 @@ specs/
 
 **Validation Types**:
 
-- Layer boundary violations
-- Dependency direction enforcement
-- Port/adapter pattern compliance
-- Domain model integrity
+-   Layer boundary violations
+-   Dependency direction enforcement
+-   Port/adapter pattern compliance
+-   Domain model integrity
 
 **Acceptance Criteria**:
 
-- Real-time ESLint integration for architectural rules
-- VS Code integration with immediate feedback
-- Validation runs on file save and git commit
-- Clear error messages with suggested fixes
+-   Real-time ESLint integration for architectural rules
+-   VS Code integration with immediate feedback
+-   Validation runs on file save and git commit
+-   Clear error messages with suggested fixes
 
 **Success Metrics**:
 
-- 95% of architectural violations caught before commit
-- Mean time to fix validation errors < 30 seconds
-- Developer satisfaction with validation feedback >4.5/5.0
+-   95% of architectural violations caught before commit
+-   Mean time to fix validation errors < 30 seconds
+-   Developer satisfaction with validation feedback >4.5/5.0
 
 ## PRD-MERGE-007: Multi-Framework Support
 
@@ -154,16 +154,16 @@ specs/
 
 **Acceptance Criteria**:
 
-- Single generator supports all three frameworks
-- Shared API client and validation schemas
-- Framework-specific optimizations (App Router for Next.js, etc.)
-- Consistent developer experience across frameworks
+-   Single generator supports all three frameworks
+-   Shared API client and validation schemas
+-   Framework-specific optimizations (App Router for Next.js, etc.)
+-   Consistent developer experience across frameworks
 
 **Success Metrics**:
 
-- All three frameworks generate without errors
-- Shared code reuse >80% across framework variants
-- Framework-specific features properly implemented
+-   All three frameworks generate without errors
+-   Shared code reuse >80% across framework variants
+-   Framework-specific features properly implemented
 
 ## PRD-MERGE-008: Type Safety and Generation
 
@@ -179,16 +179,16 @@ Supabase Schema → TypeScript Types → Python Types → Validation Schemas
 
 **Acceptance Criteria**:
 
-- Single source of truth from Supabase schema
-- TypeScript and Python type parity validation
-- Automatic PR generation on schema changes
-- zod and pydantic validation schemas generated
+-   Single source of truth from Supabase schema
+-   TypeScript and Python type parity validation
+-   Automatic PR generation on schema changes
+-   zod and pydantic validation schemas generated
 
 **Success Metrics**:
 
-- Zero type drift between languages
-- CI type validation passes 100% of the time
-- Type generation completes in <30 seconds
+-   Zero type drift between languages
+-   CI type validation passes 100% of the time
+-   Type generation completes in <30 seconds
 
 ## PRD-MERGE-009: AI-Assisted Prompt and Context Engineering
 
@@ -198,23 +198,23 @@ Supabase Schema → TypeScript Types → Python Types → Validation Schemas
 
 **Features**:
 
-- 8 specialized chat modes (product-manager, system-architect, etc.)
-- MECE modular instruction files
-- A/B testing for prompt variants
-- Token usage analytics and optimization
+-   8 specialized chat modes (product-manager, system-architect, etc.)
+-   MECE modular instruction files
+-   A/B testing for prompt variants
+-   Token usage analytics and optimization
 
 **Acceptance Criteria**:
 
-- Chat mode switching in <1 second
-- Prompt A/B tests show statistical significance
-- Token usage tracked and reported
-- Instruction modularity enables fine-grained control
+-   Chat mode switching in <1 second
+-   Prompt A/B tests show statistical significance
+-   Token usage tracked and reported
+-   Instruction modularity enables fine-grained control
 
 **Success Metrics**:
 
-- Chat mode adoption >80% of AI interactions
-- A/B testing shows >10% improvement in accepted suggestions
-- Token costs reduced by 15% through optimization
+-   Chat mode adoption >80% of AI interactions
+-   A/B testing shows >10% improvement in accepted suggestions
+-   Token costs reduced by 15% through optimization
 
 ## PRD-MERGE-010: Enterprise-Grade Security and Governance
 
@@ -224,66 +224,66 @@ Supabase Schema → TypeScript Types → Python Types → Validation Schemas
 
 **Security Features**:
 
-- Workspace trust enforcement
-- No auto-approve for AI tool usage
-- Encrypted storage of sensitive specifications
-- Complete audit trails for compliance
+-   Workspace trust enforcement
+-   No auto-approve for AI tool usage
+-   Encrypted storage of sensitive specifications
+-   Complete audit trails for compliance
 
 **Acceptance Criteria**:
 
-- Zero insecure defaults in generated projects
-- All AI tool usage requires explicit approval
-- Audit trails include timestamps and decision rationale
-- Security scans pass with zero critical findings
+-   Zero insecure defaults in generated projects
+-   All AI tool usage requires explicit approval
+-   Audit trails include timestamps and decision rationale
+-   Security scans pass with zero critical findings
 
 **Success Metrics**:
 
-- Security reviews pass 100% of the time
-- Zero security incidents in production deployments
-- Compliance audit requirements met 100%
+-   Security reviews pass 100% of the time
+-   Zero security incidents in production deployments
+-   Compliance audit requirements met 100%
 
 ## MVP Scope
 
 **Phase 1 (Core Platform)**:
 
-- PRD-MERGE-001: Copier-based generation
-- PRD-MERGE-003: Unified build system
-- PRD-MERGE-006: Basic architectural validation
+-   PRD-MERGE-001: Copier-based generation
+-   PRD-MERGE-003: Unified build system
+-   PRD-MERGE-006: Basic architectural validation
 
 **Phase 2 (AI Enhancement)**:
 
-- PRD-MERGE-002: AI-enhanced architecture generation
-- PRD-MERGE-004: Temporal specification management
-- PRD-MERGE-005: AI context management
+-   PRD-MERGE-002: AI-enhanced architecture generation
+-   PRD-MERGE-004: Temporal specification management
+-   PRD-MERGE-005: AI context management
 
 **Phase 3 (Advanced Features)**:
 
-- PRD-MERGE-007: Multi-framework support
-- PRD-MERGE-008: Type safety and generation
-- PRD-MERGE-009: AI-assisted prompt engineering
+-   PRD-MERGE-007: Multi-framework support
+-   PRD-MERGE-008: Type safety and generation
+-   PRD-MERGE-009: AI-assisted prompt engineering
 
 **Phase 4 (Enterprise Ready)**:
 
-- PRD-MERGE-010: Enterprise security and governance
-- Performance optimization
-- Comprehensive documentation
+-   PRD-MERGE-010: Enterprise security and governance
+-   Performance optimization
+-   Comprehensive documentation
 
 ## Success Criteria
 
 **Developer Experience**:
 
-- Onboarding time ≤ 15 minutes
-- Project creation ≤ 2 minutes
-- AI assistance acceptance rate >80%
+-   Onboarding time ≤ 15 minutes
+-   Project creation ≤ 2 minutes
+-   AI assistance acceptance rate >80%
 
 **Technical Excellence**:
 
-- Generated code passes all quality gates
-- Type safety maintained across all languages
-- Architectural compliance >95%
+-   Generated code passes all quality gates
+-   Type safety maintained across all languages
+-   Architectural compliance >95%
 
 **Business Impact**:
 
-- 50% reduction in time to production-ready architecture
-- Developer productivity increase >30%
-- Enterprise adoption feasibility demonstrated
+-   50% reduction in time to production-ready architecture
+-   Developer productivity increase >30%
+-   Enterprise adoption feasibility demonstrated

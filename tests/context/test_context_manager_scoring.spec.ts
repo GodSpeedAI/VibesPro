@@ -1,11 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest';
 
-import {
-  AIContextManager,
-  ContextSource,
-} from "../../tools/ai/src/context-manager.js";
+import { AIContextManager, ContextSource } from '../../tools/ai/src/context-manager.js';
 
-describe("AIContextManager scoring integration", () => {
+describe('AIContextManager scoring integration', () => {
   const buildSource = (
     overrides: Partial<ContextSource> & {
       id: string;
@@ -24,11 +21,11 @@ describe("AIContextManager scoring integration", () => {
       if (overrides.getContent) {
         return overrides.getContent();
       }
-      return "default context body";
+      return 'default context body';
     },
   });
 
-  it("applies pattern confidence boosts and performance penalties when ranking sources", async () => {
+  it('applies pattern confidence boosts and performance penalties when ranking sources', async () => {
     const manager = new AIContextManager({
       maxTokens: 1200,
       reservedTokens: 200,
@@ -44,58 +41,56 @@ describe("AIContextManager scoring integration", () => {
 
     manager.registerSources([
       buildSource({
-        id: "high-confidence-pattern",
+        id: 'high-confidence-pattern',
         priority: 0.9,
-        tags: ["integration", "hexagonal"],
+        tags: ['integration', 'hexagonal'],
         patternConfidence: 0.95,
         successRate: 0.9,
-        provenance: "ADR-018",
+        provenance: 'ADR-018',
         async getContent() {
-          return "Hexagonal architecture integration guidance.";
+          return 'Hexagonal architecture integration guidance.';
         },
       }),
       buildSource({
-        id: "stale-source",
+        id: 'stale-source',
         priority: 0.7,
-        tags: ["integration", "hexagonal"],
+        tags: ['integration', 'hexagonal'],
         patternConfidence: 0.6,
         successRate: 0.6,
         lastUpdated: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
         async getContent() {
-          return "Older integration note.";
+          return 'Older integration note.';
         },
       }),
       buildSource({
-        id: "performance-regressed",
+        id: 'performance-regressed',
         priority: 0.8,
-        tags: ["integration", "latency"],
+        tags: ['integration', 'latency'],
         patternConfidence: 0.7,
         successRate: 0.8,
         performanceDelta: 0.45,
         async getContent() {
-          return "Context source with regression warning.";
+          return 'Context source with regression warning.';
         },
       }),
     ]);
 
     const context = await manager.getOptimalContext(
-      "Design integration strategy with hexagonal ports",
+      'Design integration strategy with hexagonal ports',
     );
 
     // Check that the highest confidence source is ranked first
-    expect(context.sources[0]?.id).toBe("high-confidence-pattern");
+    expect(context.sources[0]?.id).toBe('high-confidence-pattern');
 
     // Check that the regressed source is filtered out
-    expect(
-      context.sources.some((source) => source.id === "performance-regressed"),
-    ).toBe(false);
+    expect(context.sources.some((source) => source.id === 'performance-regressed')).toBe(false);
 
     // Check confidence is in expected range instead of exact value
     expect(context.sources[0]?.confidence).toBeGreaterThan(0.9);
     expect(context.sources[0]?.confidence).toBeLessThanOrEqual(1.0);
 
     // Check that the content contains the expected pattern information
-    expect(context.content).toContain("Hexagonal architecture");
-    expect(context.content).toContain("Confidence:");
+    expect(context.content).toContain('Hexagonal architecture');
+    expect(context.content).toContain('Confidence:');
   });
 });

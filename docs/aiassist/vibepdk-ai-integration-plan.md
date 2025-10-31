@@ -6,46 +6,46 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 ## Template vs Generated Scope
 
-- **Template repository (`VibesPro/…`)** – This codebase is the Copier _source_. Any assets we import or modify must land inside the template directories (for example, `templates/{{project_slug}}/.github/`, `templates/docs/`, `templates/{{project_slug}}/tools/…`) so every future generation picks them up automatically.
-- **Generated project** – When Copier renders the template, the emitted repo should already contain the AI guardrails (.github instructions, prompts, chat modes, spec tooling, just recipes, MCP descriptors, etc.). The integration plan below focuses on wiring these assets into the template, then validating that the generated project inherits them without post-processing.
-- **Maintainer documentation (`docs/aiassist/`)** – Files under `docs/aiassist/` describe how to evolve the template itself; they are not copied into generated workspaces unless we add explicit templates.
+-   **Template repository (`VibesPro/…`)** – This codebase is the Copier _source_. Any assets we import or modify must land inside the template directories (for example, `templates/{{project_slug}}/.github/`, `templates/docs/`, `templates/{{project_slug}}/tools/…`) so every future generation picks them up automatically.
+-   **Generated project** – When Copier renders the template, the emitted repo should already contain the AI guardrails (.github instructions, prompts, chat modes, spec tooling, just recipes, MCP descriptors, etc.). The integration plan below focuses on wiring these assets into the template, then validating that the generated project inherits them without post-processing.
+-   **Maintainer documentation (`docs/aiassist/`)** – Files under `docs/aiassist/` describe how to evolve the template itself; they are not copied into generated workspaces unless we add explicit templates.
 
 ## VibePDK AI Stack Overview
 
 ### 1. `.github` (AI policy + runtime guidance)
 
-- **`copilot-instructions.md`** – top-level constitution enforcing spec-first, TDD, traceability, and type safety.
-- **`instructions/`** – modular guardrails (context, general, performance, security, style, testing, docs/dev-docs/src, commit-msg). Each file scopes directives with precedence metadata and cross-links to specs.
-- **`prompts/`** – curated prompt catalog covering spec lifecycle (feature bootstrap → plan ADR/PRD/SDS/TS → tasks), transcript conversion, traceability updates, prompt linting, debug, and performance/security reviews. Frontmatter encodes domain/task IDs, token budgets, default model (`GPT-5 mini`), and allowed tools.
-- **`chatmodes/`** – specialized chat modes (TDD phases, debug flow, spec personas, product/UX/DevOps personas) aligning with prompts and instructions.
-- **`models.yaml`** – centralizes default chat/prompt model selections.
-- **`workflows/`** – CI jobs (`markdownlint`, `node-tests`, `spec-guard`) enforcing documentation hygiene, Nx/pnpm tests, and spec traceability.
+-   **`copilot-instructions.md`** – top-level constitution enforcing spec-first, TDD, traceability, and type safety.
+-   **`instructions/`** – modular guardrails (context, general, performance, security, style, testing, docs/dev-docs/src, commit-msg). Each file scopes directives with precedence metadata and cross-links to specs.
+-   **`prompts/`** – curated prompt catalog covering spec lifecycle (feature bootstrap → plan ADR/PRD/SDS/TS → tasks), transcript conversion, traceability updates, prompt linting, debug, and performance/security reviews. Frontmatter encodes domain/task IDs, token budgets, default model (`GPT-5 mini`), and allowed tools.
+-   **`chatmodes/`** – specialized chat modes (TDD phases, debug flow, spec personas, product/UX/DevOps personas) aligning with prompts and instructions.
+-   **`models.yaml`** – centralizes default chat/prompt model selections.
+-   **`workflows/`** – CI jobs (`markdownlint`, `node-tests`, `spec-guard`) enforcing documentation hygiene, Nx/pnpm tests, and spec traceability.
 
 ### 2. `docs/` (spec-driven knowledge base)
 
-- **Spec corpus** – ADR/PRD/SDS/TS documents plus DEV-\* counterparts with matrix IDs.
-- **`specs/THREAD/...` scaffolding** – templated specs, plans, and task lists generated via `just spec-*` commands.
-- **Traceability assets** – `spec_index.md`, `dev_spec_index.md`, `traceability_matrix.md`, plus onboarding/how-to/how-it-works guides.
-- **AI context bundle** – generated into `docs/ai_context_bundle/` for chat modes.
+-   **Spec corpus** – ADR/PRD/SDS/TS documents plus DEV-\* counterparts with matrix IDs.
+-   **`specs/THREAD/...` scaffolding** – templated specs, plans, and task lists generated via `just spec-*` commands.
+-   **Traceability assets** – `spec_index.md`, `dev_spec_index.md`, `traceability_matrix.md`, plus onboarding/how-to/how-it-works guides.
+-   **AI context bundle** – generated into `docs/ai_context_bundle/` for chat modes.
 
 ### 3. `justfile` & scripts (automation)
 
-- **Spec workflow commands** – `spec-feature`, `spec-plan`, `spec-tasks` create spec skeletons.
-- **AI workflow commands** – `ai-context-bundle`, `ai-validate`, `ai-scaffold`, plus TDD/Debug phase helpers (`tdd-red`, `debug-fix`, etc.).
-- **Tooling scripts** – `scripts/bundle-context.sh`, `plan_techstack.sh`, `sync_techstack.sh`, `spec_feature.sh`, `run_prompt.sh`, `measure_tokens.sh`.
+-   **Spec workflow commands** – `spec-feature`, `spec-plan`, `spec-tasks` create spec skeletons.
+-   **AI workflow commands** – `ai-context-bundle`, `ai-validate`, `ai-scaffold`, plus TDD/Debug phase helpers (`tdd-red`, `debug-fix`, etc.).
+-   **Tooling scripts** – `scripts/bundle-context.sh`, `plan_techstack.sh`, `sync_techstack.sh`, `spec_feature.sh`, `run_prompt.sh`, `measure_tokens.sh`.
 
 ### 4. `mcp/`
 
-- **`tool_index.md`** & example tool descriptors showing how to register MCP servers (`.vscode/mcp.json`) with environment-based auth guidance.
+-   **`tool_index.md`** & example tool descriptors showing how to register MCP servers (`.vscode/mcp.json`) with environment-based auth guidance.
 
 ### 5. `generators/`
 
-- **Nx plugin** (`service/generator.ts`, `_utils/stack*.ts`) that reads resolved tech stack metadata (`tools/transformers/.derived/techstack.resolved.json`) and scaffolds services in language-specific templates, honoring feature flags (`VIBEPDK_USE_STACK_DEFAULTS`).
+-   **Nx plugin** (`service/generator.ts`, `_utils/stack*.ts`) that reads resolved tech stack metadata (`tools/transformers/.derived/techstack.resolved.json`) and scaffolds services in language-specific templates, honoring feature flags (`VIBEPDK_USE_STACK_DEFAULTS`).
 
 ### 6. Supporting directories
 
-- **`tools/`** – automation for audit, CALM transforms, docs, metrics, prompt linting, spec management, testing.
-- **`hooks/`** – Cookiecutter pre/post generation hooks enforcing naming, Python version, and providing next steps.
+-   **`tools/`** – automation for audit, CALM transforms, docs, metrics, prompt linting, spec management, testing.
+-   **`hooks/`** – Cookiecutter pre/post generation hooks enforcing naming, Python version, and providing next steps.
 
 ## Current VibesPro Snapshot
 
@@ -63,15 +63,15 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 ### Phase 0 — Prep & Specifications
 
-- Confirm/assign spec IDs (MERGE-TASK-###, ADR-MERGE-###, etc.) for this initiative.
-- Capture spec deltas in `docs/specs/` (feature spec → ADR/PRD/SDS/TS → tasks) following TDD mandate.
+-   Confirm/assign spec IDs (MERGE-TASK-###, ADR-MERGE-###, etc.) for this initiative.
+-   Capture spec deltas in `docs/specs/` (feature spec → ADR/PRD/SDS/TS → tasks) following TDD mandate.
 
 ### Phase 1 — `.github` Alignment
 
 1. Copy `{{cookiecutter.project_slug}}/.github/` from VibePDK into `templates/{{project_slug}}/.github/` (stage under `templates/{{project_slug}}/.github.ai-import/` if needed while reconciling).
 2. Merge instruction files into `templates/{{project_slug}}/.github/instructions/` preserving precedence metadata.
-   - Resolve overlaps with merger-specific `copilot-instructions.md` so generated projects carry both HexDDD+VibePDK guidance.
-   - Adopt VibePDK’s `commit-msg.instructions.md`, `ai-workflows.*`, security/perf/style docs, and ensure template frontmatter precedence stays consistent.
+    - Resolve overlaps with merger-specific `copilot-instructions.md` so generated projects carry both HexDDD+VibePDK guidance.
+    - Adopt VibePDK’s `commit-msg.instructions.md`, `ai-workflows.*`, security/perf/style docs, and ensure template frontmatter precedence stays consistent.
 3. Add prompt/chatmode catalog to `templates/{{project_slug}}/.github/prompts/` and `templates/{{project_slug}}/.github/chatmodes/`; document usage in template README.
 4. Introduce `templates/{{project_slug}}/.github/models.yaml` and update maintainer docs about default model expectations.
 5. Replace/augment template workflows under `templates/{{project_slug}}/.github/workflows/`: add `spec-guard`, `markdownlint`, `node-tests`, and reconcile with existing generated-project workflows to avoid duplicate runs.
@@ -117,11 +117,11 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 ## Risks & Mitigations
 
-- **Instruction conflicts** – Review merged `.github` files to keep merger-specific rules dominant; annotate precedence in frontmatter.
-- **CI duplication** – Consolidate existing workflows with imported ones to avoid redundant Nx/test runs.
-- **Script drift** – Harmonize shell compatibility (bash vs POSIX); ensure `set -euo pipefail` where appropriate.
-- **Model availability** – Confirm target models (`GPT-5 mini`) accessible; provide fallback models in docs.
-- **Spec debt** – Enforce `spec-*` commands and matrix updates in CI to prevent regressions.
+-   **Instruction conflicts** – Review merged `.github` files to keep merger-specific rules dominant; annotate precedence in frontmatter.
+-   **CI duplication** – Consolidate existing workflows with imported ones to avoid redundant Nx/test runs.
+-   **Script drift** – Harmonize shell compatibility (bash vs POSIX); ensure `set -euo pipefail` where appropriate.
+-   **Model availability** – Confirm target models (`GPT-5 mini`) accessible; provide fallback models in docs.
+-   **Spec debt** – Enforce `spec-*` commands and matrix updates in CI to prevent regressions.
 
 ## Immediate Next Actions
 

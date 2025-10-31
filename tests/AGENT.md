@@ -13,13 +13,13 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
-- Unit tests (Node.js/TypeScript, Python)
-- Integration tests (full workflow testing)
-- Shell tests (ShellSpec for scripts)
-- Test fixtures and utilities
-- TDD workflow support
-- Test coverage and reporting
-- Performance benchmarks
+-   Unit tests (Node.js/TypeScript, Python)
+-   Integration tests (full workflow testing)
+-   Shell tests (ShellSpec for scripts)
+-   Test fixtures and utilities
+-   TDD workflow support
+-   Test coverage and reporting
+-   Performance benchmarks
 
 **Architecture Layer**: N/A (Quality Assurance/Testing)
 
@@ -77,13 +77,13 @@ tests/
 
 ### Use This Context When:
 
-- [ ] Writing unit, integration, or shell tests
-- [ ] Following TDD workflow (Red-Green-Refactor)
-- [ ] Debugging test failures
-- [ ] Setting up test fixtures or utilities
-- [ ] Configuring test runners or coverage
-- [ ] Writing performance benchmarks
-- [ ] Creating test harnesses
+-   [ ] Writing unit, integration, or shell tests
+-   [ ] Following TDD workflow (Red-Green-Refactor)
+-   [ ] Debugging test failures
+-   [ ] Setting up test fixtures or utilities
+-   [ ] Configuring test runners or coverage
+-   [ ] Writing performance benchmarks
+-   [ ] Creating test harnesses
 
 ### Refer to Other Contexts When:
 
@@ -120,16 +120,13 @@ import assert from "node:assert";
 import { User } from "../../../../libs/auth/domain/user";
 
 describe("User", () => {
-  it("should validate email format", () => {
-    // Arrange
-    const invalidEmail = "not-an-email";
+    it("should validate email format", () => {
+        // Arrange
+        const invalidEmail = "not-an-email";
 
-    // Act & Assert
-    assert.throws(
-      () => new User({ email: invalidEmail }),
-      /Invalid email format/,
-    );
-  });
+        // Act & Assert
+        assert.throws(() => new User({ email: invalidEmail }), /Invalid email format/);
+    });
 });
 ```
 
@@ -138,15 +135,15 @@ describe("User", () => {
 ```typescript
 // libs/auth/domain/user.ts
 export class User {
-  constructor(private readonly email: string) {
-    if (!this.isValidEmail(email)) {
-      throw new Error("Invalid email format");
+    constructor(private readonly email: string) {
+        if (!this.isValidEmail(email)) {
+            throw new Error("Invalid email format");
+        }
     }
-  }
 
-  private isValidEmail(email: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
+    private isValidEmail(email: string): boolean {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
 }
 ```
 
@@ -155,18 +152,18 @@ export class User {
 ```typescript
 // Extract email validation to value object
 export class Email {
-  private constructor(private readonly value: string) {}
+    private constructor(private readonly value: string) {}
 
-  static create(email: string): Email {
-    if (!Email.isValid(email)) {
-      throw new Error("Invalid email format");
+    static create(email: string): Email {
+        if (!Email.isValid(email)) {
+            throw new Error("Invalid email format");
+        }
+        return new Email(email);
     }
-    return new Email(email);
-  }
 
-  private static isValid(email: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
+    private static isValid(email: string): boolean {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
 }
 ```
 
@@ -181,17 +178,17 @@ import { describe, it } from "node:test";
 import assert from "node:assert";
 
 describe("ContextManager", () => {
-  it("should bundle context files", () => {
-    // Arrange
-    const manager = new ContextManager("/path/to/root");
+    it("should bundle context files", () => {
+        // Arrange
+        const manager = new ContextManager("/path/to/root");
 
-    // Act
-    const result = manager.bundleContext("/output");
+        // Act
+        const result = manager.bundleContext("/output");
 
-    // Assert
-    assert.ok(result.files.size > 0);
-    assert.strictEqual(typeof result.metadata.totalTokens, "number");
-  });
+        // Assert
+        assert.ok(result.files.size > 0);
+        assert.strictEqual(typeof result.metadata.totalTokens, "number");
+    });
 });
 ```
 
@@ -201,19 +198,19 @@ describe("ContextManager", () => {
 import { jest } from "@jest/globals";
 
 describe("AuthService", () => {
-  it("should call repository when authenticating", async () => {
-    // Arrange
-    const mockRepo = {
-      findByEmail: jest.fn().mockResolvedValue(mockUser),
-    };
-    const service = new AuthService(mockRepo);
+    it("should call repository when authenticating", async () => {
+        // Arrange
+        const mockRepo = {
+            findByEmail: jest.fn().mockResolvedValue(mockUser),
+        };
+        const service = new AuthService(mockRepo);
 
-    // Act
-    await service.authenticate("user@example.com", "password");
+        // Act
+        await service.authenticate("user@example.com", "password");
 
-    // Assert
-    expect(mockRepo.findByEmail).toHaveBeenCalledWith("user@example.com");
-  });
+        // Assert
+        expect(mockRepo.findByEmail).toHaveBeenCalledWith("user@example.com");
+    });
 });
 ```
 
@@ -273,28 +270,28 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 describe("Template Generation", () => {
-  it("should generate project from template", () => {
-    // Arrange
-    const tempDir = mkdtempSync(join(tmpdir(), "test-"));
+    it("should generate project from template", () => {
+        // Arrange
+        const tempDir = mkdtempSync(join(tmpdir(), "test-"));
 
-    try {
-      // Act
-      execSync("pnpm generate", {
-        cwd: tempDir,
-        env: {
-          ...process.env,
-          CI: "true",
-        },
-      });
+        try {
+            // Act
+            execSync("pnpm generate", {
+                cwd: tempDir,
+                env: {
+                    ...process.env,
+                    CI: "true",
+                },
+            });
 
-      // Assert
-      const packageJson = join(tempDir, "package.json");
-      assert.ok(existsSync(packageJson));
-    } finally {
-      // Cleanup
-      rmSync(tempDir, { recursive: true, force: true });
-    }
-  });
+            // Assert
+            const packageJson = join(tempDir, "package.json");
+            assert.ok(existsSync(packageJson));
+        } finally {
+            // Cleanup
+            rmSync(tempDir, { recursive: true, force: true });
+        }
+    });
 });
 ```
 
@@ -348,11 +345,11 @@ End
 const testDir = ".tmp-tests";
 
 beforeEach(() => {
-  mkdirSync(testDir, { recursive: true });
+    mkdirSync(testDir, { recursive: true });
 });
 
 afterEach(() => {
-  rmSync(testDir, { recursive: true, force: true });
+    rmSync(testDir, { recursive: true, force: true });
 });
 ```
 
@@ -361,13 +358,13 @@ afterEach(() => {
 ```typescript
 // Mock file system
 jest.mock("node:fs", () => ({
-  readFileSync: jest.fn(),
-  writeFileSync: jest.fn(),
+    readFileSync: jest.fn(),
+    writeFileSync: jest.fn(),
 }));
 
 // Mock HTTP requests
 jest.mock("node:http", () => ({
-  request: jest.fn(),
+    request: jest.fn(),
 }));
 ```
 
@@ -375,10 +372,10 @@ jest.mock("node:http", () => ({
 
 **Coverage targets:**
 
-- **Domain logic**: 100% coverage (no exceptions)
-- **Application layer**: 90%+ coverage
-- **Infrastructure**: 80%+ coverage (mock external systems)
-- **Interface**: 70%+ coverage (integration tests)
+-   **Domain logic**: 100% coverage (no exceptions)
+-   **Application layer**: 90%+ coverage
+-   **Infrastructure**: 80%+ coverage (mock external systems)
+-   **Interface**: 70%+ coverage (integration tests)
 
 **Generate coverage reports:**
 
@@ -398,21 +395,21 @@ open htmlcov/index.html
 
 **Modular instructions that apply here:**
 
-- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
-- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security testing
-- [.github/instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - TDD workflows
+-   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
+-   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security testing
+-   [.github/instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - TDD workflows
 
 **Relevant prompts:**
 
-- [.github/prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
-- [.github/prompts/test-hardening.prompt.md](/.github/prompts/test-hardening.prompt.md) - Test hardening
+-   [.github/prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
+-   [.github/prompts/test-hardening.prompt.md](/.github/prompts/test-hardening.prompt.md) - Test hardening
 
 **Related chat modes:**
 
-- `tdd.red` - Write failing tests
-- `tdd.green` - Make tests pass
-- `tdd.refactor` - Improve code quality
-- `persona.qa` - Testing strategies
+-   `tdd.red` - Write failing tests
+-   `tdd.green` - Make tests pass
+-   `tdd.refactor` - Improve code quality
+-   `persona.qa` - Testing strategies
 
 ## 💡 Examples
 
@@ -426,50 +423,47 @@ import { Order, OrderStatus } from "../../../../libs/orders/domain/order";
 import { OrderId } from "../../../../libs/orders/domain/order-id";
 
 describe("Order (Domain)", () => {
-  it("should create order with pending status", () => {
-    // Arrange
-    const orderId = OrderId.create();
-    const items = [{ productId: "1", quantity: 2 }];
+    it("should create order with pending status", () => {
+        // Arrange
+        const orderId = OrderId.create();
+        const items = [{ productId: "1", quantity: 2 }];
 
-    // Act
-    const order = Order.create(orderId, items);
+        // Act
+        const order = Order.create(orderId, items);
 
-    // Assert
-    assert.strictEqual(order.status, OrderStatus.Pending);
-    assert.strictEqual(order.items.length, 2);
-  });
+        // Assert
+        assert.strictEqual(order.status, OrderStatus.Pending);
+        assert.strictEqual(order.items.length, 2);
+    });
 
-  it("should not allow negative quantities", () => {
-    // Arrange
-    const orderId = OrderId.create();
-    const items = [{ productId: "1", quantity: -1 }];
+    it("should not allow negative quantities", () => {
+        // Arrange
+        const orderId = OrderId.create();
+        const items = [{ productId: "1", quantity: -1 }];
 
-    // Act & Assert
-    assert.throws(
-      () => Order.create(orderId, items),
-      /Quantity must be positive/,
-    );
-  });
+        // Act & Assert
+        assert.throws(() => Order.create(orderId, items), /Quantity must be positive/);
+    });
 
-  it("should transition from pending to confirmed", () => {
-    // Arrange
-    const order = Order.create(OrderId.create(), []);
+    it("should transition from pending to confirmed", () => {
+        // Arrange
+        const order = Order.create(OrderId.create(), []);
 
-    // Act
-    order.confirm();
+        // Act
+        order.confirm();
 
-    // Assert
-    assert.strictEqual(order.status, OrderStatus.Confirmed);
-  });
+        // Assert
+        assert.strictEqual(order.status, OrderStatus.Confirmed);
+    });
 
-  it("should not allow confirming cancelled order", () => {
-    // Arrange
-    const order = Order.create(OrderId.create(), []);
-    order.cancel();
+    it("should not allow confirming cancelled order", () => {
+        // Arrange
+        const order = Order.create(OrderId.create(), []);
+        order.cancel();
 
-    // Act & Assert
-    assert.throws(() => order.confirm(), /Cannot confirm cancelled order/);
-  });
+        // Act & Assert
+        assert.throws(() => order.confirm(), /Cannot confirm cancelled order/);
+    });
 });
 ```
 
@@ -482,58 +476,55 @@ import assert from "node:assert";
 import { CreateOrderUseCase } from "../../../../libs/orders/application/create-order";
 
 describe("CreateOrderUseCase", () => {
-  let useCase: CreateOrderUseCase;
-  let mockOrderRepo: any;
-  let mockProductRepo: any;
+    let useCase: CreateOrderUseCase;
+    let mockOrderRepo: any;
+    let mockProductRepo: any;
 
-  beforeEach(() => {
-    // Mock repositories (ports)
-    mockOrderRepo = {
-      save: (order: any) => Promise.resolve(order),
-      findById: (id: any) => Promise.resolve(null),
-    };
+    beforeEach(() => {
+        // Mock repositories (ports)
+        mockOrderRepo = {
+            save: (order: any) => Promise.resolve(order),
+            findById: (id: any) => Promise.resolve(null),
+        };
 
-    mockProductRepo = {
-      findById: (id: string) =>
-        Promise.resolve({
-          id,
-          name: "Product",
-          price: 100,
-        }),
-    };
+        mockProductRepo = {
+            findById: (id: string) =>
+                Promise.resolve({
+                    id,
+                    name: "Product",
+                    price: 100,
+                }),
+        };
 
-    useCase = new CreateOrderUseCase(mockOrderRepo, mockProductRepo);
-  });
+        useCase = new CreateOrderUseCase(mockOrderRepo, mockProductRepo);
+    });
 
-  it("should create order successfully", async () => {
-    // Arrange
-    const input = {
-      userId: "user-1",
-      items: [{ productId: "prod-1", quantity: 2 }],
-    };
+    it("should create order successfully", async () => {
+        // Arrange
+        const input = {
+            userId: "user-1",
+            items: [{ productId: "prod-1", quantity: 2 }],
+        };
 
-    // Act
-    const result = await useCase.execute(input);
+        // Act
+        const result = await useCase.execute(input);
 
-    // Assert
-    assert.ok(result.orderId);
-    assert.strictEqual(result.status, "pending");
-  });
+        // Assert
+        assert.ok(result.orderId);
+        assert.strictEqual(result.status, "pending");
+    });
 
-  it("should throw when product not found", async () => {
-    // Arrange
-    mockProductRepo.findById = () => Promise.resolve(null);
-    const input = {
-      userId: "user-1",
-      items: [{ productId: "invalid", quantity: 2 }],
-    };
+    it("should throw when product not found", async () => {
+        // Arrange
+        mockProductRepo.findById = () => Promise.resolve(null);
+        const input = {
+            userId: "user-1",
+            items: [{ productId: "invalid", quantity: 2 }],
+        };
 
-    // Act & Assert
-    await assert.rejects(
-      async () => await useCase.execute(input),
-      /Product not found/,
-    );
-  });
+        // Act & Assert
+        await assert.rejects(async () => await useCase.execute(input), /Product not found/);
+    });
 });
 ```
 
@@ -548,30 +539,30 @@ import { Order } from "../../libs/orders/domain/order";
 import { setupTestDatabase, teardownTestDatabase } from "../helpers/db";
 
 describe("PostgresOrderRepository (Integration)", () => {
-  let repository: PostgresOrderRepository;
-  let db: any;
+    let repository: PostgresOrderRepository;
+    let db: any;
 
-  beforeAll(async () => {
-    db = await setupTestDatabase();
-    repository = new PostgresOrderRepository(db);
-  });
+    beforeAll(async () => {
+        db = await setupTestDatabase();
+        repository = new PostgresOrderRepository(db);
+    });
 
-  afterAll(async () => {
-    await teardownTestDatabase(db);
-  });
+    afterAll(async () => {
+        await teardownTestDatabase(db);
+    });
 
-  it("should save and retrieve order", async () => {
-    // Arrange
-    const order = Order.create(/* ... */);
+    it("should save and retrieve order", async () => {
+        // Arrange
+        const order = Order.create(/* ... */);
 
-    // Act
-    await repository.save(order);
-    const retrieved = await repository.findById(order.id);
+        // Act
+        await repository.save(order);
+        const retrieved = await repository.findById(order.id);
 
-    // Assert
-    assert.ok(retrieved);
-    assert.strictEqual(retrieved.id.value, order.id.value);
-  });
+        // Assert
+        assert.ok(retrieved);
+        assert.strictEqual(retrieved.id.value, order.id.value);
+    });
 });
 ```
 
@@ -628,51 +619,51 @@ def test_count_tokens_parametrized(token_counter, text, expected_min):
 
 ### Before Writing Tests:
 
-- [ ] Understand the specification (spec IDs)
-- [ ] Determine test type (unit, integration, shell)
-- [ ] Choose testing approach (TDD vs code-first)
-- [ ] Plan test cases (happy path + edge cases)
-- [ ] Set up fixtures and test data
-- [ ] Consider dependencies to mock
+-   [ ] Understand the specification (spec IDs)
+-   [ ] Determine test type (unit, integration, shell)
+-   [ ] Choose testing approach (TDD vs code-first)
+-   [ ] Plan test cases (happy path + edge cases)
+-   [ ] Set up fixtures and test data
+-   [ ] Consider dependencies to mock
 
 ### While Writing Tests:
 
-- [ ] Follow Arrange-Act-Assert pattern
-- [ ] Use descriptive test names (behavior, not implementation)
-- [ ] Test one behavior per test case
-- [ ] Include edge cases and error conditions
-- [ ] Mock external dependencies
-- [ ] Clean up resources in teardown
+-   [ ] Follow Arrange-Act-Assert pattern
+-   [ ] Use descriptive test names (behavior, not implementation)
+-   [ ] Test one behavior per test case
+-   [ ] Include edge cases and error conditions
+-   [ ] Mock external dependencies
+-   [ ] Clean up resources in teardown
 
 ### After Writing Tests:
 
-- [ ] Run tests: `just test` or `pnpm test`
-- [ ] Check coverage: `pnpm test:jest:coverage`
-- [ ] Verify all tests pass
-- [ ] Run linters: `just ai-validate`
-- [ ] Update traceability matrix with spec IDs
-- [ ] Document complex test scenarios
+-   [ ] Run tests: `just test` or `pnpm test`
+-   [ ] Check coverage: `pnpm test:jest:coverage`
+-   [ ] Verify all tests pass
+-   [ ] Run linters: `just ai-validate`
+-   [ ] Update traceability matrix with spec IDs
+-   [ ] Document complex test scenarios
 
 ### TDD Cycle Checklist:
 
 **Red Phase:**
 
-- [ ] Write failing test for next requirement
-- [ ] Run test to confirm it fails
-- [ ] Verify failure message is meaningful
+-   [ ] Write failing test for next requirement
+-   [ ] Run test to confirm it fails
+-   [ ] Verify failure message is meaningful
 
 **Green Phase:**
 
-- [ ] Write minimal code to pass test
-- [ ] Run test to confirm it passes
-- [ ] Don't add extra functionality
+-   [ ] Write minimal code to pass test
+-   [ ] Run test to confirm it passes
+-   [ ] Don't add extra functionality
 
 **Refactor Phase:**
 
-- [ ] Improve code quality
-- [ ] Remove duplication
-- [ ] Ensure tests still pass
-- [ ] Consider extracting patterns
+-   [ ] Improve code quality
+-   [ ] Remove duplication
+-   [ ] Ensure tests still pass
+-   [ ] Consider extracting patterns
 
 ## 🔍 Quick Reference
 
@@ -716,18 +707,18 @@ cargo test --manifest-path temporal_db/Cargo.toml
 
 ```json
 {
-  "preset": "ts-jest",
-  "testEnvironment": "node",
-  "testMatch": ["**/*.test.ts", "**/*.test.js"],
-  "collectCoverageFrom": ["libs/**/*.ts", "tools/**/*.ts"],
-  "coverageThreshold": {
-    "global": {
-      "branches": 80,
-      "functions": 80,
-      "lines": 80,
-      "statements": 80
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": ["**/*.test.ts", "**/*.test.js"],
+    "collectCoverageFrom": ["libs/**/*.ts", "tools/**/*.ts"],
+    "coverageThreshold": {
+        "global": {
+            "branches": 80,
+            "functions": 80,
+            "lines": 80,
+            "statements": 80
+        }
     }
-  }
 }
 ```
 
@@ -756,13 +747,13 @@ markers =
 
 ### Key Concepts
 
-- **TDD**: Test-Driven Development (Red-Green-Refactor)
-- **AAA**: Arrange-Act-Assert pattern
-- **Mocking**: Replace dependencies with test doubles
-- **Fixtures**: Reusable test data setup
-- **Coverage**: Percentage of code executed by tests
-- **Integration**: Test multiple components together
-- **Isolation**: Tests don't affect each other
+-   **TDD**: Test-Driven Development (Red-Green-Refactor)
+-   **AAA**: Arrange-Act-Assert pattern
+-   **Mocking**: Replace dependencies with test doubles
+-   **Fixtures**: Reusable test data setup
+-   **Coverage**: Percentage of code executed by tests
+-   **Integration**: Test multiple components together
+-   **Isolation**: Tests don't affect each other
 
 ### Test Types by Scope
 
@@ -777,39 +768,36 @@ markers =
 
 **Security testing priorities:**
 
-- ⚠️ **Test input validation**: Verify all inputs are validated
-- ⚠️ **Test authentication/authorization**: Verify access controls work
-- ⚠️ **Test injection vulnerabilities**: SQL, command, XSS
-- ⚠️ **Test secret handling**: Verify secrets aren't leaked
-- ⚠️ **Test error messages**: Don't expose sensitive info
-- ⚠️ **Security regression tests**: Add test for each security fix
+-   ⚠️ **Test input validation**: Verify all inputs are validated
+-   ⚠️ **Test authentication/authorization**: Verify access controls work
+-   ⚠️ **Test injection vulnerabilities**: SQL, command, XSS
+-   ⚠️ **Test secret handling**: Verify secrets aren't leaked
+-   ⚠️ **Test error messages**: Don't expose sensitive info
+-   ⚠️ **Security regression tests**: Add test for each security fix
 
 **Example security test:**
 
 ```typescript
 describe("UserController (Security)", () => {
-  it("should not expose password in error messages", async () => {
-    // Arrange
-    const invalidCredentials = { email: "user@test.com", password: "wrong" };
+    it("should not expose password in error messages", async () => {
+        // Arrange
+        const invalidCredentials = { email: "user@test.com", password: "wrong" };
 
-    // Act
-    const error = await controller.login(invalidCredentials).catch((e) => e);
+        // Act
+        const error = await controller.login(invalidCredentials).catch((e) => e);
 
-    // Assert
-    assert.ok(!error.message.includes("wrong")); // Password not in error
-    assert.strictEqual(error.message, "Invalid credentials");
-  });
+        // Assert
+        assert.ok(!error.message.includes("wrong")); // Password not in error
+        assert.strictEqual(error.message, "Invalid credentials");
+    });
 
-  it("should prevent SQL injection in email field", async () => {
-    // Arrange
-    const maliciousEmail = "'; DROP TABLE users; --";
+    it("should prevent SQL injection in email field", async () => {
+        // Arrange
+        const maliciousEmail = "'; DROP TABLE users; --";
 
-    // Act & Assert
-    await assert.rejects(
-      async () => await controller.findByEmail(maliciousEmail),
-      /Invalid email format/,
-    );
-  });
+        // Act & Assert
+        await assert.rejects(async () => await controller.findByEmail(maliciousEmail), /Invalid email format/);
+    });
 });
 ```
 
@@ -821,23 +809,23 @@ describe("UserController (Security)", () => {
 
 1. **tdd.red**: Write failing test
 
-   ```bash
-   # Activate tdd.red chat mode
-   # Describe feature → AI generates failing test
-   ```
+    ```bash
+    # Activate tdd.red chat mode
+    # Describe feature → AI generates failing test
+    ```
 
 2. **tdd.green**: Implement minimal solution
 
-   ```bash
-   # Activate tdd.green chat mode
-   # AI implements just enough to pass test
-   ```
+    ```bash
+    # Activate tdd.green chat mode
+    # AI implements just enough to pass test
+    ```
 
 3. **tdd.refactor**: Improve code
-   ```bash
-   # Activate tdd.refactor chat mode
-   # AI refactors while keeping tests green
-   ```
+    ```bash
+    # Activate tdd.refactor chat mode
+    # AI refactors while keeping tests green
+    ```
 
 ### Spec-Driven Testing
 
@@ -846,15 +834,15 @@ describe("UserController (Security)", () => {
 ```typescript
 // DEV-PRD-042, DEV-SDS-015: User authentication
 describe("AuthService", () => {
-  // DEV-PRD-042: Must support OAuth2
-  it("should authenticate via OAuth2", () => {
-    // Test implementation
-  });
+    // DEV-PRD-042: Must support OAuth2
+    it("should authenticate via OAuth2", () => {
+        // Test implementation
+    });
 
-  // DEV-SDS-015: Must validate email format
-  it("should reject invalid email formats", () => {
-    // Test implementation
-  });
+    // DEV-SDS-015: Must validate email format
+    it("should reject invalid email formats", () => {
+        // Test implementation
+    });
 });
 ```
 
@@ -881,67 +869,67 @@ Tests run automatically in CI:
 
 ### Domain Layer Testing
 
-- **Pure unit tests** - No mocks needed
-- **100% coverage** - No exceptions
-- **Focus**: Business rules, invariants, value objects
-- **No dependencies**: Test in isolation
+-   **Pure unit tests** - No mocks needed
+-   **100% coverage** - No exceptions
+-   **Focus**: Business rules, invariants, value objects
+-   **No dependencies**: Test in isolation
 
 ### Application Layer Testing
 
-- **Unit tests with mocks** - Mock repositories (ports)
-- **90%+ coverage**
-- **Focus**: Use case orchestration, validation
-- **Mock all ports**: Repository, external services
+-   **Unit tests with mocks** - Mock repositories (ports)
+-   **90%+ coverage**
+-   **Focus**: Use case orchestration, validation
+-   **Mock all ports**: Repository, external services
 
 ### Infrastructure Layer Testing
 
-- **Integration tests** - Use real dependencies when safe
-- **80%+ coverage**
-- **Focus**: Repository implementations, adapters
-- **Test databases**: Use test containers or in-memory
+-   **Integration tests** - Use real dependencies when safe
+-   **80%+ coverage**
+-   **Focus**: Repository implementations, adapters
+-   **Test databases**: Use test containers or in-memory
 
 ### Interface Layer Testing
 
-- **Integration tests** - Test full request/response
-- **70%+ coverage**
-- **Focus**: Controllers, CLI, API endpoints
-- **Use test clients**: Supertest, httptest
+-   **Integration tests** - Test full request/response
+-   **70%+ coverage**
+-   **Focus**: Controllers, CLI, API endpoints
+-   **Use test clients**: Supertest, httptest
 
 ## 🔄 Maintenance
 
 ### Regular Tasks
 
-- **Daily**: Run tests during development (watch mode)
-- **Weekly**: Review coverage reports, address gaps
-- **Monthly**: Refactor test code, reduce duplication
-- **Quarterly**: Audit test strategy, update patterns
-- **Per PR**: All tests must pass, coverage maintained
+-   **Daily**: Run tests during development (watch mode)
+-   **Weekly**: Review coverage reports, address gaps
+-   **Monthly**: Refactor test code, reduce duplication
+-   **Quarterly**: Audit test strategy, update patterns
+-   **Per PR**: All tests must pass, coverage maintained
 
 ### When to Update This AGENT.md
 
-- New test types or patterns emerge
-- Testing tools or frameworks change
-- Coverage requirements adjusted
-- TDD workflow evolves
-- Integration with new systems
+-   New test types or patterns emerge
+-   Testing tools or frameworks change
+-   Coverage requirements adjusted
+-   TDD workflow evolves
+-   Integration with new systems
 
 ### Managing Test Debt
 
 **Signs of test debt:**
 
-- Flaky tests (intermittent failures)
-- Slow test suite
-- Low coverage in critical areas
-- Brittle tests (break on refactor)
-- Duplicate test logic
+-   Flaky tests (intermittent failures)
+-   Slow test suite
+-   Low coverage in critical areas
+-   Brittle tests (break on refactor)
+-   Duplicate test logic
 
 **Remediation:**
 
-- Stabilize flaky tests or remove
-- Parallelize slow tests
-- Add tests for uncovered critical paths
-- Refactor brittle tests to test behavior
-- Extract test utilities/fixtures
+-   Stabilize flaky tests or remove
+-   Parallelize slow tests
+-   Add tests for uncovered critical paths
+-   Refactor brittle tests to test behavior
+-   Extract test utilities/fixtures
 
 ---
 
