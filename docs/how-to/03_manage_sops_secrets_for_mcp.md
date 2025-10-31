@@ -48,6 +48,12 @@ sops --input-type dotenv --output-type dotenv \
 
 This decrypts, updates the value, re-encrypts, and refreshes the MAC in one command. Replace the sample token with your real one.
 
+> ℹ️ **File type flags**
+>
+> -   Interactive edits (`sops .secrets.env.sops`) normally need no extra flags because SOPS infers the format for you.
+> -   Non-interactive commands (`--set`, `--decrypt`, `exec-env`, etc.) should always specify **both** `--input-type dotenv` and `--output-type dotenv`.  
+>     Providing only the input type forces the parser but leaves the writer in “binary” mode, which triggers `Could not marshal tree: error emitting binary store: no binary data found in tree`.
+
 ---
 
 ## Step 2 – Double-check what you changed
@@ -68,11 +74,11 @@ sops --input-type dotenv --output-type dotenv -d .secrets.env.sops \
 
 Common errors and fixes:
 
-| Error message                                               | What it means                               | Fix                                                 |
-| ----------------------------------------------------------- | ------------------------------------------- | --------------------------------------------------- |
-| `invalid character '#' looking for beginning of value`      | SOPS assumed YAML/JSON                      | Add `--input-type dotenv`                           |
-| `MAC mismatch. File has …`                                  | File contents changed without re-encryption | Reapply your change with `sops` or restore from Git |
-| `error emitting binary store: no binary data found in tree` | SOPS thinks output should be binary         | Add `--output-type dotenv`                          |
+| Error message                                               | What it means                                                     | Fix                                                         |
+| ----------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------- |
+| `invalid character '#' looking for beginning of value`      | SOPS assumed YAML/JSON                                            | Add `--input-type dotenv` (and keep it before the filename) |
+| `MAC mismatch. File has …`                                  | File contents changed without re-encryption                       | Reapply your change with `sops` or restore from Git         |
+| `error emitting binary store: no binary data found in tree` | `--input-type` forced the reader but writer stayed in binary mode | Add `--output-type dotenv` alongside `--input-type dotenv`  |
 
 Example MAC recovery when the file was hand-edited:
 

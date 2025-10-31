@@ -93,6 +93,7 @@ def cleanup_security_assets(target: Path) -> None:
 def setup_generated_project(target: Path) -> None:
     """Run initial setup commands inside the generated project."""
     skip_setup = os.environ.get("COPIER_SKIP_PROJECT_SETUP") == "1"
+    uv_no_sync = os.environ.get("UV_NO_SYNC") == "1"
 
     if skip_setup:
         print("⚠️ Skipping install/build steps (COPIER_SKIP_PROJECT_SETUP=1)")
@@ -101,17 +102,34 @@ def setup_generated_project(target: Path) -> None:
 
     print("🔧 Setting up generated project...")
     generate_types(target)
-    run(["pnpm", "install"], cwd=target)
 
-    # Only run uv sync if there's an actual Python package structure
+    # Check if pnpm is available before trying to install
+    try:
+        run(["pnpm", "install"], cwd=target)
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        print(f"   → pnpm install failed: {e}")
+        print("   → Continuing without Node.js setup...")
+
+    # Only run uv sync if there's an actual Python package structure and UV_NO_SYNC is not set
     # Python apps are generated via Nx (@nxlv/python) after template initialization
     python_packages = list(target.glob("*/__init__.py")) or list(target.glob("src/*/__init__.py"))
-    if python_packages:
-        run(["uv", "sync", "--dev"], cwd=target)
+    if python_packages and not uv_no_sync:
+        try:
+            run(["uv", "sync", "--dev"], cwd=target)
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            print(f"   → uv sync failed: {e}")
+            print("   → Continuing without Python setup...")
+    elif uv_no_sync:
+        print("   → Skipping uv sync (UV_NO_SYNC=1)")
     else:
         print("   → Skipping uv sync (no Python package found - generate via Nx later)")
 
-    run(["just", "build"], cwd=target)
+    # Check if just is available before trying to build
+    try:
+        run(["just", "build"], cwd=target)
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        print(f"   → just build failed: {e}")
+        print("   → Continuing without build step...")
 
     cleanup_security_assets(target)
 
