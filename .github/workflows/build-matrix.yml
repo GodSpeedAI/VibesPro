@@ -73,6 +73,8 @@ jobs:
       # compatibility. This avoids build aborts when runner Python is newer than
       # PyO3's checked maximum (example: CPython 3.14 vs PyO3 0.24.1 expecting <=3.13).
       PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
+      IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+      SOPS_LOADED: "false"
 
     steps:
       - name: Checkout
@@ -170,6 +172,7 @@ jobs:
       # If your unit tests/build need secrets, decrypt them. If not, the step will be skipped.
       - name: Decrypt secrets to ephemeral env (if SOPS_AGE_KEY secret provided)
         id: sops
+        if: ${{ env.IS_FORK != 'true' }}
         run: |
           # Attempt decryption only when the secret is set and the file exists.
           if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then

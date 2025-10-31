@@ -20,6 +20,8 @@ jobs:
       MISE_NONINTERACTIVE: "1"
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
+      IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+      SOPS_LOADED: "false"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -127,6 +129,7 @@ jobs:
             pnpm-${{ runner.os }}-
 
       - name: Decrypt secrets to ephemeral env (if provided)
+        if: ${{ env.IS_FORK != 'true' }}
         run: |
           # GitHub injects secrets into the environment only for run steps; check at runtime.
           # If SOPS_AGE_KEY is not provided (e.g., PRs from forks), skip decryption gracefully
