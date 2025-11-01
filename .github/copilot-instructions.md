@@ -1,100 +1,183 @@
 # AI Agent Instructions for VibesPro
 
-> **Critical Context**: VibesPro is a **Copier template repository**, not an application. Generated projects live elsewhere. This distinction fundamentally shapes all development workflows.
+> **🎯 Core Concept**: VibesPro is a **Copier template repository** that generates complete, production-ready applications—not an application itself. You modify the template (`templates/{{project_slug}}/`), which generates separate projects where users code.
 
-## 🎯 Quick Start for AI Agents
+## ⚡ Quick Start (Read This First)
 
-### What Is This Project?
+### The 30-Second Briefing
 
-**VibesPro generates production-ready applications** following hexagonal architecture + DDD. Think "cookie cutter" not "cookie"—you work on the **template**, not inside it.
+**What is this?** A Copier template that scaffolds hexagonal architecture + DDD applications with AI-enhanced workflows.
 
-**Key distinction:**
+**Your workflow:**
 
--   **This repo** = Template with Jinja2 files in `templates/{{project_slug}}/`
--   **Generated projects** = Separate directories where users actually code (e.g., `../test-output`)
+1. Modify templates in `templates/{{project_slug}}/` (Jinja2)
+2. Test generation: `just test-generation` → outputs to `../test-output`
+3. Changes in THIS repo affect ALL future generated projects
 
-### Three Golden Rules
+**Critical distinction:**
 
-1. **Generator-First**: ALWAYS check `pnpm exec nx list` before writing code
-2. **Hexagonal Architecture**: Dependencies flow INWARD only (`domain ← application ← infrastructure`)
+-   **THIS repo** = Template source code (what you modify)
+-   **Generated projects** = Output applications (e.g., `../test-output`, user projects)
+-   **Never confuse the two** when writing code or making changes
+
+### Three Immutable Rules
+
+1. **Generator-First**: Run `pnpm exec nx list` before writing ANY code—use generators to scaffold, then customize
+2. **Hexagonal Architecture**: Dependencies flow INWARD only (`domain ← application ← infrastructure`). Period.
 3. **Spec-Driven**: Every commit references spec IDs (`feat(auth): add OAuth [DEV-PRD-023]`)
 
-### Core Architecture Pattern
-
-Every generated project follows strict hexagonal layers:
-
-```
-libs/{domain}/
-├── domain/          # Pure business logic, ZERO dependencies
-│   ├── entities/    # Objects with identity
-│   └── value-objects/  # Immutable data
-├── application/     # Use cases + orchestration
-│   ├── use-cases/   # Business workflows
-│   └── ports/       # Interfaces (IUserRepository)
-└── infrastructure/  # External adapters
-    ├── repositories/  # Port implementations
-    └── adapters/    # External connections
-```
-
-**Dependency rule violation = architectural failure**
-
-### Immediate Actions for Any Task
-
-**Before you write code:**
+### Your First 5 Minutes
 
 ```bash
-# 1. Check for generators (MANDATORY)
-pnpm exec nx list
-pnpm exec nx list @nx/react  # Check specific plugin
+# 1. Setup (one time)
+just setup                    # Installs all dependencies
 
-# 2. Scaffold first, customize second
+# 2. Generate a test project
+just test-generation          # Creates ../test-output
+
+# 3. Before writing code, ALWAYS check for generators
+pnpm exec nx list             # List all available generators
+pnpm exec nx list @nx/react   # Check specific plugin
+
+# 4. Scaffold with generators (MANDATORY)
 just ai-scaffold name=@nx/js:lib my-lib
 pnpm exec nx g @nx/react:component UserProfile
 
-# 3. Understand specs
-# Look for DEV-ADR, DEV-SDS, DEV-PRD references in docs/
+# 5. Validate your changes
+just ai-validate              # Lint + typecheck
+just spec-guard               # Full quality gate
 ```
 
-**After you write code:**
+### Architecture at a Glance
 
-```bash
-just ai-validate  # Lint + typecheck + tests
-just spec-guard   # Full quality gate
+Generated projects use strict hexagonal layers:
+
+```
+libs/{domain}/
+├── domain/          # Pure business logic, ZERO external dependencies
+├── application/     # Use cases orchestrating domain logic via ports
+└── infrastructure/  # Adapters implementing ports (DB, APIs, etc.)
 ```
 
-**Common mistakes to avoid:**
+**Dependency rule**: Domain knows nothing about infrastructure. Application depends only on domain. Infrastructure implements application interfaces.
 
--   ❌ Creating libs/apps manually (use generators!)
--   ❌ Using `any` in TypeScript
--   ❌ Violating layer boundaries (domain importing infrastructure)
--   ❌ Skipping TDD for complex business logic
--   ❌ Modifying `.vscode/settings.json` without approval
+### Common Pitfalls (Avoid These)
 
-## 🏗️ Essential Architecture Knowledge
+-   ❌ Creating libs/apps manually instead of using Nx generators
+-   ❌ Using `any` in TypeScript (use `unknown` with type guards)
+-   ❌ Domain layer importing infrastructure (violates hexagonal architecture)
+-   ❌ Modifying `.vscode/settings.json` without explicit approval (security risk)
+-   ❌ Skipping tests for complex business logic
+
+---
+
+## 🏗️ Understanding the Template System
 
 ### Template vs. Generated Project (CRITICAL)
 
-**This repository** = Template (Copier + Jinja2)
+**This repository (VibesPro):**
 
--   Templates in `templates/{{project_slug}}/`
--   Test with `just test-generation` (generates to `../test-output`)
--   Configure in `copier.yml`
+-   Contains Jinja2 templates in `templates/{{project_slug}}/`
+-   Configured via `copier.yml` (defines questions and variables)
+-   Test generation: `just test-generation` → outputs to `../test-output`
+-   Changes here affect ALL future generated projects
 
-**Generated projects** = What users work with
+**Generated projects:**
 
--   Separate directories with working Nx workspace
--   Have functional `build`, `test`, `lint` targets
--   **Mirror the template's environment setup** (Devbox, mise, SOPS, Just)
--   Each project gets its own isolated environment
--   Start from `just setup` → ready to code
+-   Created by users running `copier copy gh:GodSpeedAI/VibesPro my-project`
+-   Working Nx monorepos with functional `build`, `test`, `lint` targets
+-   Include same environment setup: Devbox, mise, SOPS, Just
+-   Users work inside these projects, not inside this template repo
 
-**Environment inheritance**: Generated projects include:
+**Key implication**: When modifying code, ask yourself:
 
--   `devbox.json` - Isolated OS-level toolchain
--   `.mise.toml` - Runtime version management (Node, Python, Rust)
--   `.sops.yaml` + `.secrets.env.sops` - Encrypted secrets
--   `justfile` - Task orchestration
--   Same layered approach as described in `docs/ENVIRONMENT.md`
+-   Am I modifying the **template** (this repo)?
+-   Or am I working in a **generated project** (separate directory)?
+
+### How Template Generation Works
+
+1. User runs: `copier copy gh:GodSpeedAI/VibesPro my-project`
+2. Copier asks questions defined in `copier.yml`
+3. Jinja2 processes templates in `templates/{{project_slug}}/`
+4. Generates complete project structure in `my-project/`
+5. Runs `hooks/post_gen.py` for post-processing
+
+**Testing the flow:**
+
+```bash
+# Quick test
+just test-generation
+
+# Manual test with custom answers
+copier copy . ../test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force
+
+# Verify generated project works
+cd ../test-output
+just setup
+pnpm exec nx run-many --target=build --all
+```
+
+### Essential Just Recipes (Primary Workflow Tool)
+
+Just is the primary task orchestration tool. **Use these recipes instead of running commands directly:**
+
+| Recipe                   | Purpose                                | When to Use                        |
+| ------------------------ | -------------------------------------- | ---------------------------------- |
+| `just setup`             | Install all dependencies (Node+Python) | First time, after git pull         |
+| `just test-generation`   | Test template generation flow          | After template changes             |
+| `just test`              | Run all tests (Node+Python+Shell)      | Before committing                  |
+| `just ai-validate`       | Lint + typecheck (no tests)            | Quick validation                   |
+| `just spec-guard`        | Full quality gate (specs+prompts+docs) | Before PRs                         |
+| `just prompt-lint`       | Validate prompt files                  | After modifying `.github/prompts/` |
+| `just ai-context-bundle` | Generate AI context bundle             | For AI workflows                   |
+| `just ai-scaffold`       | Run Nx generators safely               | Creating new libs/components       |
+
+**Examples:**
+
+```bash
+# Create a new library using generator
+just ai-scaffold name=@nx/js:lib
+
+# Run full validation before commit
+just spec-guard
+
+# Test that templates generate correctly
+just test-generation
+```
+
+See `justfile` for complete list (804 lines of recipes).
+
+### Nx Workspace & MCP Integration
+
+**Nx powers the template's generated projects.** Key points:
+
+1. **Always use Nx commands** in generated projects (not direct tooling):
+
+    ```bash
+    # ✅ Correct
+    pnpm exec nx build my-lib
+    pnpm exec nx run-many --target=test --all
+
+    # ❌ Wrong
+    npm run build
+    jest
+    ```
+
+2. **Nx MCP Server tools available** (when MCP configured):
+
+    - `nx_workspace` - Understand workspace structure
+    - `nx_project_details` - Analyze specific project
+    - `nx_generators` - List available generators
+    - `nx_generator_schema` - Get generator options
+    - `nx_docs` - Search Nx documentation
+    - `nx_visualize_graph` - Show project/task dependencies
+
+3. **Generator workflow** (see `.github/instructions/generators-first.instructions.md`):
+    - Check: `pnpm exec nx list` → find generator
+    - Scaffold: `just ai-scaffold name=@nx/react:component`
+    - Customize: Add business logic to generated files
+
+**Integration**: The `AGENTS.md` file contains Nx-specific rules auto-generated by Nx Console.
 
 ### Hexagonal Architecture Enforcement
 
@@ -884,5 +967,78 @@ The `temporal_db/` stores:
 
 For detailed guidance on any topic, consult the modular instruction files in `.github/instructions/`.
 
-**Save and generated summaries in the docs/work-summaries/ folder for future reference after significant problem is solved or after milestone completed.**
+---
+
+## 📂 Key Files & Directories Reference
+
+### Template Development
+
+| Path                           | Purpose                                 |
+| ------------------------------ | --------------------------------------- |
+| `templates/{{project_slug}}/`  | Jinja2 templates for generated projects |
+| `copier.yml`                   | Template questions and configuration    |
+| `hooks/post_gen.py`            | Post-generation processing script       |
+| `tests/fixtures/test-data.yml` | Default test generation answers         |
+
+### Workflows & Orchestration
+
+| Path                 | Purpose                                |
+| -------------------- | -------------------------------------- |
+| `justfile`           | Primary task orchestration (804 lines) |
+| `.github/workflows/` | CI/CD automation                       |
+| `nx.json`            | Nx workspace configuration             |
+
+### AI & Guidance
+
+| Path                    | Purpose                             |
+| ----------------------- | ----------------------------------- |
+| `.github/instructions/` | Modular instruction files by domain |
+| `.github/prompts/`      | Task-specific prompt templates      |
+| `.github/chatmodes/`    | Specialized AI personas (30+ modes) |
+| `temporal_db/`          | Rust-based learning system (redb)   |
+| `tools/ai/`             | AI workflow utilities               |
+
+### Specifications & Documentation
+
+| Path                                   | Purpose                          |
+| -------------------------------------- | -------------------------------- |
+| `docs/dev_adr.md`                      | Architecture Decision Records    |
+| `docs/dev_prd.md`                      | Product Requirements             |
+| `docs/dev_sds.md`                      | Software Design Specification    |
+| `docs/dev_technical-specifications.md` | Technical Specifications         |
+| `docs/traceability_matrix.md`          | Requirements traceability        |
+| `docs/ENVIRONMENT.md`                  | Complete environment setup guide |
+
+### Testing
+
+| Path                 | Purpose                                 |
+| -------------------- | --------------------------------------- |
+| `tests/unit/`        | Node.js unit tests (Jest)               |
+| `tests/integration/` | Integration tests (template generation) |
+| `tests/shell/`       | ShellSpec tests for scripts             |
+| `tests/temporal/`    | Temporal database tests (Python)        |
+
+### Generated Project Structure
+
+When you run `just test-generation`, the output in `../test-output` will have:
+
+```
+../test-output/
+├── apps/              # Applications (Next.js, Remix, FastAPI)
+├── libs/              # Shared libraries (domain/application/infrastructure)
+│   └── {domain}/
+│       ├── domain/
+│       ├── application/
+│       └── infrastructure/
+├── tools/             # Development utilities
+├── temporal_db/       # Learning system database
+├── .github/           # Workflows and instructions
+├── justfile           # Task orchestration
+├── devbox.json        # OS-level toolchain
+├── .mise.toml         # Runtime versions
+└── .sops.yaml         # Secret encryption
+```
+
+**Save work summaries in `docs/work-summaries/` after completing significant milestones or solving complex problems.**
+
 **Always check which MCP tools are available and use them when appropriate.**
