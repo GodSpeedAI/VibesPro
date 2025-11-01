@@ -32,6 +32,7 @@ jobs:
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           mise --version
+          mise trust --yes .mise.toml
 
       - name: Resolve versions from .mise.toml
         id: vers
@@ -76,6 +77,7 @@ jobs:
       PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       SOPS_LOADED: "false"
+      SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
     steps:
       - name: Checkout
@@ -110,6 +112,7 @@ jobs:
                 echo "just installer failed; attempting apt fallback"
                 sudo apt-get update || true
                 sudo apt-get install -y just || echo "could not install just; continuing without just"
+              fi
             else
               brew install just || true
             fi
@@ -297,6 +300,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MISE_NONINTERACTIVE: "1"
+      SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -325,6 +329,7 @@ jobs:
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           mise --version
+          mise trust --yes .mise.toml
 
       - name: Setup runtimes
         run: mise install
