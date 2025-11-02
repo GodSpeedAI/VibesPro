@@ -1,5 +1,4 @@
-{%- set env_macros_path = "templates/" ~ project_slug ~ "/docs/_includes/env_vars.md.j2" -%}
-{%- from env_macros_path import render_logfire_env_table, default_logfire_send_to_logfire -%}
+{%- from "../_includes/env_vars.md.j2" import render_logfire_env_table, default_logfire_send_to_logfire -%}
 
 # Logfire Observability Blueprint
 
