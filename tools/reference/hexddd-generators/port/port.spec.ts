@@ -37,8 +37,11 @@ describe('portGenerator (TypeScript)', () => {
 
     const propertyName = names(portName).propertyName;
     const portInterfacePath = `libs/${domainName}/domain/src/lib/ports/${propertyName}.port.ts`;
-    // @ts-expect-error - Legacy generator test
-    const content = tree.read(portInterfacePath).toString();
+    const interfaceBuffer = tree.read(portInterfacePath);
+    if (!interfaceBuffer) {
+      throw new Error(`Expected generated file missing: ${portInterfacePath}`);
+    }
+    const content = interfaceBuffer.toString();
 
     const classifiedName = names(portName).className;
     expect(content).toContain(`export interface I${classifiedName} {`);
@@ -55,8 +58,11 @@ describe('portGenerator (TypeScript)', () => {
 
     const propertyName = names(portName).propertyName;
     const inMemoryAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/${propertyName}.in-memory.adapter.ts`;
-    // @ts-expect-error - Legacy generator test
-    const content = tree.read(inMemoryAdapterPath).toString();
+    const adapterBuffer = tree.read(inMemoryAdapterPath);
+    if (!adapterBuffer) {
+      throw new Error(`Expected generated file missing: ${inMemoryAdapterPath}`);
+    }
+    const content = adapterBuffer.toString();
 
     const classifiedName = names(portName).className;
     expect(content).toContain(`import { I${classifiedName} } from '@${domainName}/domain';`);
