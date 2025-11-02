@@ -35,6 +35,13 @@ jobs:
           # Verify installation
           sops --version
 
+          # Ensure installed version matches expected
+          if ! sops --version | grep -q "${SOPS_VERSION}"; then
+            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
+            sops --version || true
+            exit 1
+          fi
+
       - name: Configure age key (skip if not set)
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
@@ -59,7 +66,7 @@ jobs:
           echo "::debug::SOPS key file configured at $KEY_PATH"
 
       - name: Decrypt secrets
-        if: env.SKIP_DECRYPT != 'true'
+        if: ${{ env.SKIP_DECRYPT != 'true' }}
         run: |
           set -euo pipefail
 
@@ -77,7 +84,8 @@ jobs:
           # Load secrets if decrypted
           if [ -f .secrets.env ]; then
             set -a
-            source .secrets.env
+            # shellcheck disable=SC1090
+            source .secrets.env || { echo "::error:: Failed to source .secrets.env"; exit 1; }
             set +a
           fi
 

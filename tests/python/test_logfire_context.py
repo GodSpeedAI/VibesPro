@@ -5,7 +5,7 @@ from libs.python.vibepro_logging import get_logger
 
 
 @patch("libs.python.vibepro_logging.logfire")
-def test_get_logger_binds_context(mock_logfire, monkeypatch):
+def test_get_logger_configures_with_settings(mock_logfire, monkeypatch):
     """
     RED: This test should fail.
     Asserts that get_logger returns a Logfire-bound logger
@@ -14,7 +14,9 @@ def test_get_logger_binds_context(mock_logfire, monkeypatch):
     """
     # Configure the mock to simulate Logfire's logger structure
     mock_logger = mock_logfire.configure.return_value
-    mock_scoped_logger = mock_logger.with_settings.return_value
+    # Explicitly set the scoped logger returned by with_settings() for clarity
+    mock_scoped_logger = object()
+    mock_logger.with_settings.return_value = mock_scoped_logger
 
     # Use pytest's monkeypatch to temporarily clear the cached instance for isolation
     monkeypatch.setattr(vibepro_logging, "_LOGFIRE_INSTANCE", None)

@@ -17,6 +17,16 @@ description: "Structured debugging phases from report to regression."
 
 Perform deep-stack analysis of failed GitHub Actions workflows on the current working branch (or specified branch), identify root causes (not symptoms), determine best-practice solutions with zero technical debt, and generate implementation prompts for a junior AI coding agent.
 
+## Quick tool reference (one-line summaries + examples)
+
+-   Context7: Fetch up-to-date library docs and API examples. Example: `Context7.get('/vercel/next.js', topic='routing')` or `Context7.search('react useState examples')`.
+-   Exa Search: Real-time web/code search for best-practices and issue tracker evidence. Example: `Exa.search('github actions sops heredoc EOF matching')`.
+-   Exa (code context): Search code examples and patterns across public repos. Example: `Exa.find('logfire.configure usage python')`.
+-   runTests: Execute unit/integration tests and return results. Example: `runTests({ files: ['tests/unit/**'] })`.
+-   Ref: Read a specific URL or documentation page to extract precise instructions. Example: `Ref.read_url('https://docs.github.com/actions')`.
+
+Fallback strategy: If a tool call fails, first retry once; if still failing, fetch the closest local file or repo reference (e.g., read_file on workflow YAMLs) and continue analysis using repository-sourced content.
+
 ## Phase 1: Comprehensive Diagnostic Analysis
 
 ### 1.1 Branch Context Detection
