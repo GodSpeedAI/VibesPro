@@ -134,7 +134,7 @@ jobs:
           # GitHub injects secrets into the environment only for run steps; check at runtime.
           # If SOPS_AGE_KEY is not provided (e.g., PRs from forks), skip decryption gracefully
           # instead of failing the job.
-          if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
+            if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
             echo "SOPS_AGE_KEY present; attempting decryption"
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
             while IFS= read -r line || [ -n "$line" ]; do
@@ -148,11 +148,25 @@ jobs:
               fi
               key=${line%%=*}
               value=${line#*=}
+              # Validate key is a POSIX environment variable name: [a-zA-Z_][a-zA-Z0-9_]*
+              if [[ ! "$key" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+                echo "Warning: skipping invalid env var name: '$key'" >&2
+                continue
+              fi
+              # Export into current shell for subsequent steps in this run
               export "$key=$value"
+
+              # Generate a per-secret unique delimiter and ensure it doesn't appear in the value
+              delim="CI_DELIM_$RANDOM"
+              while [[ "$value" == *"$delim"* ]]; do
+                delim="CI_DELIM_$RANDOM"
+              done
+
+              # Append the variable to GITHUB_ENV using the generated, single-quoted delimiter
               {
-                echo "$key<<'EOF'"
+                echo "$key<<'$delim'"
                 echo "$value"
-                echo "EOF"
+                echo "$delim"
               } >> "$GITHUB_ENV"
             done < /tmp/ci.env
           else
