@@ -116,10 +116,9 @@ def _configure_global_logfire(service_name: str, **kwargs) -> logfire.Logfire:
     configure_kwargs.update({k: v for k, v in kwargs.items() if v is not None})
 
     if _LOGFIRE_INSTANCE is None:
-        # logfire.configure() returns None; the logfire module itself becomes configured
-        logfire.configure(**configure_kwargs)
-        # After configuration, use the logfire module directly as the logger
-        _LOGFIRE_INSTANCE = logfire
+        # logfire.configure() returns a Logfire instance in recent versions
+        # Store and return that instance for consistent behavior across versions
+        _LOGFIRE_INSTANCE = logfire.configure(**configure_kwargs)
 
     return _LOGFIRE_INSTANCE
 
