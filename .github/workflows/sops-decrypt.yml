@@ -30,11 +30,12 @@ jobs:
             echo "SOPS_AGE_KEY is not set; skipping decrypt (no secret available for this run)"
             exit 0
           fi
-          mkdir -p ~/.config/sops
-          printf "%s" "${SOPS_AGE_KEY}" > ~/.config/sops/age-key.txt
-          chmod 600 ~/.config/sops/age-key.txt
+          KEY_PATH="$HOME/.config/sops/age-key.txt"
+          mkdir -p "$(dirname "$KEY_PATH")"
+          printf "%s" "${SOPS_AGE_KEY}" > "$KEY_PATH"
+          chmod 600 "$KEY_PATH"
           # Expose the path for subsequent steps
-          echo "SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt" >> $GITHUB_ENV
+          echo "SOPS_AGE_KEY_FILE=$KEY_PATH" >> $GITHUB_ENV
 
       - name: Decrypt secrets
         if: ${{ secrets.SOPS_AGE_KEY != '' }}
