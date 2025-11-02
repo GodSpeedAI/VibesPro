@@ -196,8 +196,7 @@ jobs:
   integration-summary:
     name: Integration Test Summary
     runs-on: ubuntu-latest
-    needs:
-      [project-generation, end-to-end, performance-benchmarks, ai-workflows]
+    needs: [project-generation, end-to-end, performance-benchmarks, ai-workflows]
     if: always()
 
     steps:

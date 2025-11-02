@@ -5,16 +5,16 @@
  * Traceability: AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-001
  */
 
-import { promises as fs } from "node:fs";
-import { join } from "node:path";
-import { runCopierGeneration } from "../../utils/generation-smoke";
+import { promises as fs } from 'node:fs';
+import { join } from 'node:path';
+import { runCopierGeneration } from '../../utils/generation-smoke';
 
-describe("Generated Project Scripts", () => {
+describe('Generated Project Scripts', () => {
   let generatedProjectPath: string;
 
   beforeAll(async () => {
     generatedProjectPath = await runCopierGeneration({
-      dataFile: "tests/fixtures/test-data.yml",
+      dataFile: 'tests/fixtures/test-data.yml',
       useDefaults: true,
       force: true,
       skipPostGenSetup: true,
@@ -27,18 +27,14 @@ describe("Generated Project Scripts", () => {
     }
   });
 
-  it("should include scripts directory in generated project", async () => {
-    const scriptsDir = join(generatedProjectPath, "scripts");
+  it('should include scripts directory in generated project', async () => {
+    const scriptsDir = join(generatedProjectPath, 'scripts');
     const stats = await fs.stat(scriptsDir);
     expect(stats.isDirectory()).toBe(true);
   });
 
-  it("should include bundle-context.sh script", async () => {
-    const scriptPath = join(
-      generatedProjectPath,
-      "scripts",
-      "bundle-context.sh",
-    );
+  it('should include bundle-context.sh script', async () => {
+    const scriptPath = join(generatedProjectPath, 'scripts', 'bundle-context.sh');
     const stats = await fs.stat(scriptPath);
     expect(stats.isFile()).toBe(true);
 
@@ -47,25 +43,17 @@ describe("Generated Project Scripts", () => {
     expect(isExecutable).toBe(true);
   });
 
-  it("should have valid bash shebang in bundle-context.sh", async () => {
-    const scriptPath = join(
-      generatedProjectPath,
-      "scripts",
-      "bundle-context.sh",
-    );
-    const content = await fs.readFile(scriptPath, "utf-8");
+  it('should have valid bash shebang in bundle-context.sh', async () => {
+    const scriptPath = join(generatedProjectPath, 'scripts', 'bundle-context.sh');
+    const content = await fs.readFile(scriptPath, 'utf-8');
 
     expect(content).toMatch(/^#!\/usr\/bin\/env bash/);
   });
 
-  it("should include error handling directives", async () => {
-    const scriptPath = join(
-      generatedProjectPath,
-      "scripts",
-      "bundle-context.sh",
-    );
-    const content = await fs.readFile(scriptPath, "utf-8");
+  it('should include error handling directives', async () => {
+    const scriptPath = join(generatedProjectPath, 'scripts', 'bundle-context.sh');
+    const content = await fs.readFile(scriptPath, 'utf-8');
 
-    expect(content).toContain("set -euo pipefail");
+    expect(content).toContain('set -euo pipefail');
   });
 });

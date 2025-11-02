@@ -12,18 +12,18 @@ A **semantic routing network** of AGENT.md files throughout the project that pro
 
 ### Core Infrastructure (Phase 1 - ✅ Complete)
 
-- [.github/AGENT.md](/.github/AGENT.md) - AI development system (prompts, instructions, chat modes)
-- [docs/AGENT.md](/docs/AGENT.md) - Documentation & specifications (ADR, PRD, SDS, traceability)
-- [tools/AGENT.md](/tools/AGENT.md) - Development tools (utilities, generators, metrics)
-- [scripts/AGENT.md](/scripts/AGENT.md) - Orchestration scripts (shell automation, justfile)
+-   [.github/AGENT.md](/.github/AGENT.md) - AI development system (prompts, instructions, chat modes)
+-   [docs/AGENT.md](/docs/AGENT.md) - Documentation & specifications (ADR, PRD, SDS, traceability)
+-   [tools/AGENT.md](/tools/AGENT.md) - Development tools (utilities, generators, metrics)
+-   [scripts/AGENT.md](/scripts/AGENT.md) - Orchestration scripts (shell automation, justfile)
 
 ### Coming Soon (Phase 2)
 
-- `apps/AGENT.md` - Application interfaces
-- `libs/AGENT.md` - Business logic libraries
-- `tests/AGENT.md` - Testing infrastructure
-- `generators/AGENT.md` - Code generators
-- `templates/AGENT.md` - Jinja2 templates
+-   `apps/AGENT.md` - Application interfaces
+-   `libs/AGENT.md` - Business logic libraries
+-   `tests/AGENT.md` - Testing infrastructure
+-   `generators/AGENT.md` - Code generators
+-   `templates/AGENT.md` - Jinja2 templates
 
 ## How to Use
 
@@ -131,11 +131,11 @@ just validate-agent-files  # TODO: Add to justfile
 
 **When to update AGENT.md:**
 
-- New patterns emerge in the directory
-- Conventions change
-- Examples become outdated
-- Related contexts are added/removed
-- Security best practices evolve
+-   New patterns emerge in the directory
+-   Conventions change
+-   Examples become outdated
+-   Related contexts are added/removed
+-   Security best practices evolve
 
 **How to update:**
 
@@ -147,18 +147,18 @@ just validate-agent-files  # TODO: Add to justfile
 
 ## Learn More
 
-- [AGENT-MAP.md](/AGENT-MAP.md) - Complete navigation and routing strategy
-- [docs/work-summaries/2025-10-13-distributed-agent-system.md](/docs/work-summaries/2025-10-13-distributed-agent-system.md) - Detailed implementation summary
-- [.github/copilot-instructions.md](/.github/copilot-instructions.md) - Master project guidance
+-   [AGENT-MAP.md](/AGENT-MAP.md) - Complete navigation and routing strategy
+-   [docs/work-summaries/2025-10-13-distributed-agent-system.md](/docs/work-summaries/2025-10-13-distributed-agent-system.md) - Detailed implementation summary
+-   [.github/copilot-instructions.md](/.github/copilot-instructions.md) - Master project guidance
 
 ## Feedback
 
 This is a living system. If you find:
 
-- Missing contexts that would be valuable
-- Outdated information
-- Unclear routing logic
-- Better examples
+-   Missing contexts that would be valuable
+-   Outdated information
+-   Unclear routing logic
+-   Better examples
 
 Please update the relevant AGENT.md file or open an issue!
 

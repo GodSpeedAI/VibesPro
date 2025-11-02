@@ -13,11 +13,11 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
-- Copier templates for project generation
-- Jinja2 template syntax and patterns
-- Template variables and configuration
-- Pre-generation and post-generation hooks
-- Template validation and testing
+-   Copier templates for project generation
+-   Jinja2 template syntax and patterns
+-   Template variables and configuration
+-   Pre-generation and post-generation hooks
+-   Template validation and testing
 
 **Related Technology**: [Copier](https://copier.readthedocs.io/) + [Jinja2](https://jinja.palletsprojects.com/)
 
@@ -56,81 +56,81 @@ templates/
 # Questions to ask user during generation
 _templates_suffix: .j2
 _envops:
-  block_start_string: "{%"
-  block_end_string: "%}"
-  variable_start_string: "{{"
-  variable_end_string: "}}"
-  comment_start_string: "{#"
-  comment_end_string: "#}"
+    block_start_string: "{%"
+    block_end_string: "%}"
+    variable_start_string: "{{"
+    variable_end_string: "}}"
+    comment_start_string: "{#"
+    comment_end_string: "#}"
 
 # Project configuration
 project_name:
-  type: str
-  help: "Project name (human-readable)"
-  default: "My Awesome Project"
+    type: str
+    help: "Project name (human-readable)"
+    default: "My Awesome Project"
 
 project_slug:
-  type: str
-  help: "Project slug (kebab-case, used for directories)"
-  default: "{{ project_name|lower|replace(' ', '-') }}"
+    type: str
+    help: "Project slug (kebab-case, used for directories)"
+    default: "{{ project_name|lower|replace(' ', '-') }}"
 
 description:
-  type: str
-  help: "Project description"
-  default: ""
+    type: str
+    help: "Project description"
+    default: ""
 
 author_name:
-  type: str
-  help: "Your name"
-  default: "{{ author_name }}"
+    type: str
+    help: "Your name"
+    default: "{{ author_name }}"
 
 author_email:
-  type: str
-  help: "Your email"
-  default: "{{ author_email }}"
+    type: str
+    help: "Your email"
+    default: "{{ author_email }}"
 
 license:
-  type: str
-  help: "License"
-  choices:
-    - MIT
-    - Apache-2.0
-    - MPL-2.0
-  default: MPL-2.0
+    type: str
+    help: "License"
+    choices:
+        - MIT
+        - Apache-2.0
+        - MPL-2.0
+    default: MPL-2.0
 
 use_typescript:
-  type: bool
-  help: "Use TypeScript?"
-  default: true
+    type: bool
+    help: "Use TypeScript?"
+    default: true
 
 use_python:
-  type: bool
-  help: "Include Python support?"
-  default: false
+    type: bool
+    help: "Include Python support?"
+    default: false
 
 include_web_app:
-  type: bool
-  help: "Include Next.js web app?"
-  default: true
+    type: bool
+    help: "Include Next.js web app?"
+    default: true
 
 include_api:
-  type: bool
-  help: "Include API backend?"
-  default: true
+    type: bool
+    help: "Include API backend?"
+    default: true
 
 database:
-  type: str
-  help: "Database"
-  choices:
-    - postgresql
-    - mongodb
-    - none
-  default: postgresql
+    type: str
+    help: "Database"
+    choices:
+        - postgresql
+        - mongodb
+        - none
+    default: postgresql
 
 # Computed values
 current_year:
-  type: str
-  default: "{% now 'utc', '%Y' %}"
+    type: str
+    default: "{% now 'utc', '%Y' %}"
 ```
 
 ### Jinja2 Template Syntax
@@ -224,11 +224,11 @@ templates/
 
 ### Use This Context When:
 
-- [ ] Generating full projects with Copier
-- [ ] Working with Jinja2 template files (\*.j2)
-- [ ] Configuring copier.yml
-- [ ] Writing pre/post generation hooks
-- [ ] Testing template generation
+-   [ ] Generating full projects with Copier
+-   [ ] Working with Jinja2 template files (\*.j2)
+-   [ ] Configuring copier.yml
+-   [ ] Writing pre/post generation hooks
+-   [ ] Testing template generation
 
 ### Refer to Other Contexts When:
 
@@ -246,9 +246,9 @@ templates/
 
 **File naming:**
 
-- Template files: `filename.ext.j2`
-- Variable directories: `{{variable_name}}/`
-- Keep original extensions before `.j2` suffix
+-   Template files: `filename.ext.j2`
+-   Variable directories: `{{variable_name}}/`
+-   Keep original extensions before `.j2` suffix
 
 **Example:**
 
@@ -422,14 +422,14 @@ if __name__ == "__main__":
 
 **Modular instructions that apply here:**
 
-- [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Generator-first policy
-- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing templates
-- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in templates
+-   [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Generator-first policy
+-   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing templates
+-   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in templates
 
 **Relevant documentation:**
 
-- [Copier documentation](https://copier.readthedocs.io/)
-- [Jinja2 documentation](https://jinja.palletsprojects.com/)
+-   [Copier documentation](https://copier.readthedocs.io/)
+-   [Jinja2 documentation](https://jinja.palletsprojects.com/)
 
 ## 💡 Examples
 
@@ -573,21 +573,21 @@ pnpm dev  # API on http://localhost:3001
 
 {% if use_typescript -%}
 
-- **TypeScript** - Type-safe JavaScript
-  {% endif -%}
-  {% if include_web_app -%}
-- **Next.js** - React framework
-- **React** - UI library
-  {% endif -%}
-  {% if include_api -%}
-- **NestJS** - Node.js framework
-  {% endif -%}
-  {% if database == 'postgresql' -%}
-- **PostgreSQL** - Relational database
-  {% elif database == 'mongodb' -%}
-- **MongoDB** - Document database
-  {% endif -%}
-- **Nx** - Monorepo tooling
+-   **TypeScript** - Type-safe JavaScript
+    {% endif -%}
+    {% if include_web_app -%}
+-   **Next.js** - React framework
+-   **React** - UI library
+    {% endif -%}
+    {% if include_api -%}
+-   **NestJS** - Node.js framework
+    {% endif -%}
+    {% if database == 'postgresql' -%}
+-   **PostgreSQL** - Relational database
+    {% elif database == 'mongodb' -%}
+-   **MongoDB** - Document database
+    {% endif -%}
+-   **Nx** - Monorepo tooling
 
 ## 📝 License
 
@@ -674,11 +674,11 @@ python tools/validate-templates.py
 
 **Security in templates:**
 
-- ⚠️ **Sanitize variables**: Escape user input in templates
-- ⚠️ **Validate paths**: Check for path traversal in hooks
-- ⚠️ **No secrets**: Never include secrets in templates
-- ⚠️ **Secure defaults**: Use secure default values
-- ⚠️ **Validate hooks**: Review pre/post generation scripts
+-   ⚠️ **Sanitize variables**: Escape user input in templates
+-   ⚠️ **Validate paths**: Check for path traversal in hooks
+-   ⚠️ **No secrets**: Never include secrets in templates
+-   ⚠️ **Secure defaults**: Use secure default values
+-   ⚠️ **Validate hooks**: Review pre/post generation scripts
 
 **Example sanitization:**
 
@@ -767,17 +767,17 @@ rm -rf "$TEST_DIR"
 
 ### Regular Tasks
 
-- **Weekly**: Test template generation with latest changes
-- **Monthly**: Update dependencies in template
-- **Quarterly**: Review copier.yml questions for relevance
-- **Per feature**: Update templates to match current conventions
+-   **Weekly**: Test template generation with latest changes
+-   **Monthly**: Update dependencies in template
+-   **Quarterly**: Review copier.yml questions for relevance
+-   **Per feature**: Update templates to match current conventions
 
 ### When to Update This AGENT.md
 
-- Copier version updates
-- New template patterns emerge
-- Hook logic changes
-- Jinja2 best practices evolve
+-   Copier version updates
+-   New template patterns emerge
+-   Hook logic changes
+-   Jinja2 best practices evolve
 
 ### Common Issues & Solutions
 
@@ -870,17 +870,17 @@ rm -rf "$TEST_DIR"
 
 ### Regular Tasks
 
-- **Weekly**: Test template generation with latest changes
-- **Monthly**: Update dependencies in template
-- **Quarterly**: Review copier.yml questions for relevance
-- **Per feature**: Update templates to match current conventions
+-   **Weekly**: Test template generation with latest changes
+-   **Monthly**: Update dependencies in template
+-   **Quarterly**: Review copier.yml questions for relevance
+-   **Per feature**: Update templates to match current conventions
 
 ### When to Update This AGENT.md
 
-- Copier version updates
-- New template patterns emerge
-- Hook logic changes
-- Jinja2 best practices evolve
+-   Copier version updates
+-   New template patterns emerge
+-   Hook logic changes
+-   Jinja2 best practices evolve
 
 ### Common Issues & Solutions
 

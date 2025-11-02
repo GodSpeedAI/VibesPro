@@ -21,7 +21,7 @@
  * @see DEV-PRD-018 for requirements
  */
 
-const pino = require("pino");
+const pino = require('pino');
 
 /**
  * Create a structured logger instance.
@@ -29,17 +29,17 @@ const pino = require("pino");
  * @param {string} [service] - Service name (defaults to SERVICE_NAME env var or 'vibepro-node')
  * @returns {pino.Logger} Configured pino logger
  */
-function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
+function logger(service = process.env.SERVICE_NAME || 'vibepro-node') {
   return pino({
     // Base fields included in every log line
     base: {
       service,
-      environment: process.env.APP_ENV || "local",
-      application_version: process.env.APP_VERSION || "dev",
+      environment: process.env.APP_ENV || 'local',
+      application_version: process.env.APP_VERSION || 'dev',
     },
 
     // Use 'message' as the message key for consistency
-    messageKey: "message",
+    messageKey: 'message',
 
     // ISO 8601 timestamps
     timestamp: pino.stdTimeFunctions.isoTime,
@@ -55,9 +55,9 @@ function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
       log(obj) {
         const result = {
           ...obj,
-          trace_id: obj.trace_id || "",
-          span_id: obj.span_id || "",
-          category: obj.category || "app",
+          trace_id: obj.trace_id || '',
+          span_id: obj.span_id || '',
+          category: obj.category || 'app',
         };
 
         // Clean up duplicates from base

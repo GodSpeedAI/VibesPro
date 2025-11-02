@@ -4,7 +4,7 @@ This guide explains how to add a new dependency, library, or tool to the project
 
 ## Prerequisites
 
-- A clear understanding of which category the new technology belongs to. Refer to the `docs/reference/02_techstack_yaml_format.md` documentation if you are unsure.
+-   A clear understanding of which category the new technology belongs to. Refer to the `docs/reference/02_techstack_yaml_format.md` documentation if you are unsure.
 
 ## Step 1: Add the Technology to `techstack.yaml`
 
@@ -18,11 +18,11 @@ This guide explains how to add a new dependency, library, or tool to the project
 # techstack.yaml
 
 utility_helper_dependencies:
-  # ... other sections
-  data_processing:
-    - pandas # structured data manipulation (optional)
-    - pyarrow # columnar data + interoperability
-    - polars # new, fast data manipulation library
+    # ... other sections
+    data_processing:
+        - pandas # structured data manipulation (optional)
+        - pyarrow # columnar data + interoperability
+        - polars # new, fast data manipulation library
 ```
 
 ## Step 2: Preview the Changes (Recommended)
@@ -51,8 +51,8 @@ just sync-techstack
 
 After the sync command completes, you should verify that the project has been updated correctly. This might involve:
 
-- Checking for changes in generated JSON files.
-- Ensuring new dependencies are available to be installed.
-- Seeing updated documentation, if applicable.
+-   Checking for changes in generated JSON files.
+-   Ensuring new dependencies are available to be installed.
+-   Seeing updated documentation, if applicable.
 
 You have now successfully added a new technology to the project stack.

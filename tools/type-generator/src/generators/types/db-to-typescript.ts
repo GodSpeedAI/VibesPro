@@ -6,25 +6,13 @@ import {
   realpathSync,
   statSync,
   writeFileSync,
-} from "fs";
-import {
-  dirname,
-  isAbsolute,
-  join,
-  normalize,
-  parse,
-  relative,
-  resolve,
-} from "path";
+} from 'fs';
+import { dirname, isAbsolute, join, normalize, parse, relative, resolve } from 'path';
 
 // Import pathSecurity utilities from the JavaScript file directly
-const pathSecurity = require("../../../../utils/pathSecurity");
-const {
-  assertFilenameSafe,
-  isPathSafe,
-  resolvePathWithinWorkspace,
-  sanitizePathInput,
-} = pathSecurity;
+const pathSecurity = require('../../../../utils/pathSecurity');
+const { assertFilenameSafe, isPathSafe, resolvePathWithinWorkspace, sanitizePathInput } =
+  pathSecurity;
 
 interface ColumnDef {
   type: string;
@@ -43,35 +31,28 @@ interface DbSchema {
   [k: string]: unknown;
 }
 
-const WORKSPACE_MARKERS = ["nx.json", "pnpm-workspace.yaml", ".git"];
+const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
 
 WORKSPACE_MARKERS.forEach((marker) => {
-  if (typeof marker !== "string" || !marker.trim()) {
-    throw new Error("Workspace marker entries must be non-empty strings");
+  if (typeof marker !== 'string' || !marker.trim()) {
+    throw new Error('Workspace marker entries must be non-empty strings');
   }
 
-  if (marker.includes("/") || marker.includes("\\")) {
-    throw new Error(
-      `Workspace marker may not contain path separators: ${marker}`,
-    );
+  if (marker.includes('/') || marker.includes('\\')) {
+    throw new Error(`Workspace marker may not contain path separators: ${marker}`);
   }
 });
 
 function findWorkspaceRoot(startDir: string): string {
-  const sanitizedStartDir = sanitizePathInput(
-    startDir,
-    "workspace search path",
-  );
+  const sanitizedStartDir = sanitizePathInput(startDir, 'workspace search path');
   const normalizedStartDir = normalize(sanitizedStartDir);
   const hasTraversal = normalizedStartDir
     .split(/[\\/]+/)
     .filter(Boolean)
-    .some((segment) => segment === "..");
+    .some((segment) => segment === '..');
 
   if (hasTraversal) {
-    throw new Error(
-      "workspace search path may not contain parent directory traversals",
-    );
+    throw new Error('workspace search path may not contain parent directory traversals');
   }
 
   const absoluteStartDir = resolve(sanitizedStartDir);
@@ -80,9 +61,7 @@ function findWorkspaceRoot(startDir: string): string {
   try {
     realStartDir = realpathSync(absoluteStartDir);
   } catch (error) {
-    throw new Error(
-      `Unable to resolve workspace search path: ${absoluteStartDir}`,
-    );
+    throw new Error(`Unable to resolve workspace search path: ${absoluteStartDir}`);
   }
 
   let startStats;
@@ -93,9 +72,7 @@ function findWorkspaceRoot(startDir: string): string {
   }
 
   if (!startStats.isDirectory()) {
-    throw new Error(
-      `Workspace search path must be a directory: ${realStartDir}`,
-    );
+    throw new Error(`Workspace search path must be a directory: ${realStartDir}`);
   }
 
   let currentDir = realStartDir;
@@ -115,7 +92,7 @@ function findWorkspaceRoot(startDir: string): string {
       try {
         return existsSync(markerPath);
       } catch (error) {
-        if ((error as NodeJS.ErrnoException)?.code === "ENOENT") {
+        if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
           return false;
         }
         throw error;
@@ -140,17 +117,15 @@ export class DbToTypeScript {
   private readonly workspaceRoot: string;
 
   constructor(workspaceRoot: string = WORKSPACE_ROOT) {
-    const sanitizedRoot = sanitizePathInput(workspaceRoot, "Workspace root");
+    const sanitizedRoot = sanitizePathInput(workspaceRoot, 'Workspace root');
     const normalizedRoot = normalize(sanitizedRoot);
     const hasTraversal = normalizedRoot
       .split(/[\\/]+/)
       .filter(Boolean)
-      .some((segment) => segment === "..");
+      .some((segment) => segment === '..');
 
     if (hasTraversal) {
-      throw new Error(
-        "Workspace root may not contain parent directory traversals",
-      );
+      throw new Error('Workspace root may not contain parent directory traversals');
     }
 
     const absoluteRoot = resolve(sanitizedRoot);
@@ -158,13 +133,11 @@ export class DbToTypeScript {
     try {
       canonicalRoot = realpathSync(absoluteRoot);
     } catch (error) {
-      throw new Error(
-        `Workspace root path does not exist or is inaccessible: ${absoluteRoot}`,
-      );
+      throw new Error(`Workspace root path does not exist or is inaccessible: ${absoluteRoot}`);
     }
 
     if (!isAbsolute(canonicalRoot)) {
-      throw new Error("Workspace root must resolve to an absolute path");
+      throw new Error('Workspace root must resolve to an absolute path');
     }
 
     const stats = lstatSync(canonicalRoot);
@@ -174,43 +147,28 @@ export class DbToTypeScript {
 
     const { root } = parse(canonicalRoot);
     if (canonicalRoot === root) {
-      throw new Error(
-        "Workspace root cannot be the filesystem root directory.",
-      );
+      throw new Error('Workspace root cannot be the filesystem root directory.');
     }
 
     this.workspaceRoot = canonicalRoot;
   }
 
-  generate(
-    schemaPath: string,
-    outputDir?: string,
-  ): Record<string, Record<string, string>> {
-    const sanitizedSchemaPath = sanitizePathInput(schemaPath, "Schema path");
+  generate(schemaPath: string, outputDir?: string): Record<string, Record<string, string>> {
+    const sanitizedSchemaPath = sanitizePathInput(schemaPath, 'Schema path');
     if (!isPathSafe(sanitizedSchemaPath)) {
-      throw new Error(
-        `Schema path contains invalid path characters: ${schemaPath}`,
-      );
+      throw new Error(`Schema path contains invalid path characters: ${schemaPath}`);
     }
 
     const schema = this._parseSchema(sanitizedSchemaPath);
     const types = this._generateTypes(schema);
 
     if (outputDir) {
-      const sanitizedOutputDir = sanitizePathInput(
-        outputDir,
-        "Output directory",
-      );
+      const sanitizedOutputDir = sanitizePathInput(outputDir, 'Output directory');
       if (!isPathSafe(sanitizedOutputDir)) {
-        throw new Error(
-          `Output directory contains invalid path characters: ${outputDir}`,
-        );
+        throw new Error(`Output directory contains invalid path characters: ${outputDir}`);
       }
 
-      const resolvedOutputDir = this._resolveWorkspacePath(
-        sanitizedOutputDir,
-        "Output directory",
-      );
+      const resolvedOutputDir = this._resolveWorkspacePath(sanitizedOutputDir, 'Output directory');
       this._writeTypesToFiles(types, resolvedOutputDir);
     }
 
@@ -218,20 +176,15 @@ export class DbToTypeScript {
   }
 
   private _parseSchema(schemaPath: string): DbSchema {
-    const resolvedSchemaPath = this._resolveWorkspacePath(
-      schemaPath,
-      "Schema path",
-    );
+    const resolvedSchemaPath = this._resolveWorkspacePath(schemaPath, 'Schema path');
 
     if (!existsSync(resolvedSchemaPath)) {
       throw new Error(`Schema file not found: ${resolvedSchemaPath}`);
     }
     const realSchemaPath = realpathSync(resolvedSchemaPath);
     const relativePath = relative(this.workspaceRoot, realSchemaPath);
-    if (relativePath.startsWith("..") || isAbsolute(relativePath)) {
-      throw new Error(
-        `Schema path resolves to a location outside the workspace: ${schemaPath}`,
-      );
+    if (relativePath.startsWith('..') || isAbsolute(relativePath)) {
+      throw new Error(`Schema path resolves to a location outside the workspace: ${schemaPath}`);
     }
 
     // Check file size to prevent reading extremely large files
@@ -243,51 +196,38 @@ export class DbToTypeScript {
       );
     }
 
-    const content = readFileSync(realSchemaPath, "utf-8");
+    const content = readFileSync(realSchemaPath, 'utf-8');
     try {
       return JSON.parse(content) as DbSchema;
     } catch (error) {
       throw new Error(
-        `Failed to parse schema JSON: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
+        `Failed to parse schema JSON: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
-  private _resolveWorkspacePath(
-    targetPath: string,
-    description: string,
-  ): string {
+  private _resolveWorkspacePath(targetPath: string, description: string): string {
     const sanitized = sanitizePathInput(targetPath, description);
     if (!isPathSafe(sanitized)) {
-      throw new Error(
-        `${description} contains invalid path characters: ${targetPath}`,
-      );
+      throw new Error(`${description} contains invalid path characters: ${targetPath}`);
     }
 
-    return resolvePathWithinWorkspace(
-      sanitized,
-      this.workspaceRoot,
-      description,
-    );
+    return resolvePathWithinWorkspace(sanitized, this.workspaceRoot, description);
   }
 
-  private _generateTypes(
-    schema: DbSchema,
-  ): Record<string, Record<string, string>> {
+  private _generateTypes(schema: DbSchema): Record<string, Record<string, string>> {
     const types: Record<string, Record<string, string>> = {};
 
     // Utility function to convert table names to PascalCase
     function toPascalCase(name: string): string {
       return name
-        .replace(/[_-]+/g, " ")
-        .split(" ")
+        .replace(/[_-]+/g, ' ')
+        .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join("");
+        .join('');
     }
 
-    if (!schema.tables || typeof schema.tables !== "object") return types;
+    if (!schema.tables || typeof schema.tables !== 'object') return types;
 
     for (const [tableName, tableDefRaw] of Object.entries(schema.tables)) {
       const className = toPascalCase(tableName);
@@ -317,14 +257,11 @@ export class DbToTypeScript {
     outputDir: string,
   ): void {
     // Validate output directory
-    if (!outputDir || typeof outputDir !== "string") {
-      throw new Error("Output directory must be a non-empty string");
+    if (!outputDir || typeof outputDir !== 'string') {
+      throw new Error('Output directory must be a non-empty string');
     }
 
-    const resolvedOutputDir = this._resolveWorkspacePath(
-      outputDir,
-      "Output directory",
-    );
+    const resolvedOutputDir = this._resolveWorkspacePath(outputDir, 'Output directory');
 
     if (!existsSync(resolvedOutputDir)) {
       mkdirSync(resolvedOutputDir, { recursive: true });
@@ -337,7 +274,7 @@ export class DbToTypeScript {
     if (stats.isSymbolicLink()) {
       const realPath = realpathSync(resolvedOutputDir);
       const relativeRealPath = relative(this.workspaceRoot, realPath);
-      if (relativeRealPath.startsWith("..") || isAbsolute(relativeRealPath)) {
+      if (relativeRealPath.startsWith('..') || isAbsolute(relativeRealPath)) {
         throw new Error(
           `Output directory is a symlink pointing outside the workspace: ${resolvedOutputDir}`,
         );
@@ -356,59 +293,35 @@ export class DbToTypeScript {
       }
 
       canonicalOutputDir = realpathSync(resolvedOutputDir);
-      const relativeCanonicalPath = relative(
-        this.workspaceRoot,
-        canonicalOutputDir,
-      );
-      if (
-        relativeCanonicalPath.startsWith("..") ||
-        isAbsolute(relativeCanonicalPath)
-      ) {
-        throw new Error(
-          `Output directory resolves outside the workspace: ${resolvedOutputDir}`,
-        );
+      const relativeCanonicalPath = relative(this.workspaceRoot, canonicalOutputDir);
+      if (relativeCanonicalPath.startsWith('..') || isAbsolute(relativeCanonicalPath)) {
+        throw new Error(`Output directory resolves outside the workspace: ${resolvedOutputDir}`);
       }
     }
 
     // Validate types structure
-    if (!types || typeof types !== "object") {
-      throw new Error("Invalid types structure");
+    if (!types || typeof types !== 'object') {
+      throw new Error('Invalid types structure');
     }
 
     for (const [className, fields] of Object.entries(types)) {
       // Validate class name
-      if (
-        !className ||
-        typeof className !== "string" ||
-        className.length === 0
-      ) {
+      if (!className || typeof className !== 'string' || className.length === 0) {
         throw new Error(`Invalid class name: ${className}`);
       }
 
       // Validate field names and types
-      if (!fields || typeof fields !== "object") {
+      if (!fields || typeof fields !== 'object') {
         throw new Error(`Invalid fields for class ${className}`);
       }
 
       // Validate each field
       for (const [fieldName, fieldType] of Object.entries(fields)) {
-        if (
-          !fieldName ||
-          typeof fieldName !== "string" ||
-          fieldName.length === 0
-        ) {
-          throw new Error(
-            `Invalid field name for class ${className}: ${fieldName}`,
-          );
+        if (!fieldName || typeof fieldName !== 'string' || fieldName.length === 0) {
+          throw new Error(`Invalid field name for class ${className}: ${fieldName}`);
         }
-        if (
-          !fieldType ||
-          typeof fieldType !== "string" ||
-          fieldType.length === 0
-        ) {
-          throw new Error(
-            `Invalid field type for class ${className}.${fieldName}: ${fieldType}`,
-          );
+        if (!fieldType || typeof fieldType !== 'string' || fieldType.length === 0) {
+          throw new Error(`Invalid field type for class ${className}.${fieldName}: ${fieldType}`);
         }
       }
 
@@ -428,10 +341,10 @@ export class DbToTypeScript {
         content += `  ${fieldName}: ${fieldType};\n`;
       }
 
-      content += "}\n\n";
+      content += '}\n\n';
 
       // Check file size before writing
-      const contentSize = Buffer.byteLength(content, "utf8");
+      const contentSize = Buffer.byteLength(content, 'utf8');
       const maxSize = 1024 * 1024; // 1MB per file
       if (contentSize > maxSize) {
         throw new Error(
@@ -439,7 +352,7 @@ export class DbToTypeScript {
         );
       }
 
-      writeFileSync(filepath, content, "utf-8");
+      writeFileSync(filepath, content, 'utf-8');
     }
   }
 
@@ -449,33 +362,33 @@ export class DbToTypeScript {
     isArray: boolean = false,
   ): string {
     const typeMap: Record<string, string> = {
-      uuid: "string",
-      bigint: "string",
-      timestamptz: "string",
-      timestamp: "string",
-      date: "string",
-      time: "string",
-      integer: "number",
-      smallint: "number",
-      bigserial: "string",
-      serial: "number",
-      boolean: "boolean",
-      text: "string",
-      varchar: "string",
-      char: "string",
-      numeric: "number",
-      decimal: "number",
-      double: "number",
-      real: "number",
-      json: "unknown",
-      jsonb: "unknown",
-      bytea: "string",
+      uuid: 'string',
+      bigint: 'string',
+      timestamptz: 'string',
+      timestamp: 'string',
+      date: 'string',
+      time: 'string',
+      integer: 'number',
+      smallint: 'number',
+      bigserial: 'string',
+      serial: 'number',
+      boolean: 'boolean',
+      text: 'string',
+      varchar: 'string',
+      char: 'string',
+      numeric: 'number',
+      decimal: 'number',
+      double: 'number',
+      real: 'number',
+      json: 'unknown',
+      jsonb: 'unknown',
+      bytea: 'string',
     };
 
     const lowerType = postgresType.toLowerCase();
     let baseType = typeMap[lowerType];
     if (!baseType) {
-      baseType = "unknown";
+      baseType = 'unknown';
       console.warn(
         `[db-to-typescript] Unmapped Postgres type encountered: '${postgresType}'. Defaulting to 'unknown'.`,
       );

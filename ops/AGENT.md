@@ -13,13 +13,13 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
-- Infrastructure as Code (IaC)
-- Deployment automation and scripts
-- CI/CD pipeline configuration
-- Container orchestration (Docker, Kubernetes)
-- Monitoring and observability setup
-- Backup and disaster recovery
-- Environment configuration management
+-   Infrastructure as Code (IaC)
+-   Deployment automation and scripts
+-   CI/CD pipeline configuration
+-   Container orchestration (Docker, Kubernetes)
+-   Monitoring and observability setup
+-   Backup and disaster recovery
+-   Environment configuration management
 
 **Philosophy**: Infrastructure as code, automated deployments, observable systems
 
@@ -83,12 +83,12 @@ ops/
 
 ### Use This Context When:
 
-- [ ] Setting up deployment pipelines
-- [ ] Configuring infrastructure
-- [ ] Writing Docker/Kubernetes configs
-- [ ] Creating monitoring dashboards
-- [ ] Automating operational tasks
-- [ ] Managing secrets and environment variables
+-   [ ] Setting up deployment pipelines
+-   [ ] Configuring infrastructure
+-   [ ] Writing Docker/Kubernetes configs
+-   [ ] Creating monitoring dashboards
+-   [ ] Automating operational tasks
+-   [ ] Managing secrets and environment variables
 
 ### Refer to Other Contexts When:
 
@@ -155,60 +155,60 @@ CMD ["node", "server.js"]
 version: "3.9"
 
 services:
-  web:
-    build:
-      context: ../..
-      dockerfile: ops/docker/Dockerfile.dev
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/vibespro_dev
-    volumes:
-      - ../../:/app
-      - /app/node_modules
-    depends_on:
-      - db
-      - redis
+    web:
+        build:
+            context: ../..
+            dockerfile: ops/docker/Dockerfile.dev
+        ports:
+            - "3000:3000"
+        environment:
+            - NODE_ENV=development
+            - DATABASE_URL=postgresql://postgres:postgres@db:5432/vibespro_dev
+        volumes:
+            - ../../:/app
+            - /app/node_modules
+        depends_on:
+            - db
+            - redis
 
-  api:
-    build:
-      context: ../..
-      dockerfile: ops/docker/Dockerfile.api
-    ports:
-      - "3001:3001"
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/vibespro_dev
-      - REDIS_URL=redis://redis:6379
-    volumes:
-      - ../../:/app
-      - /app/node_modules
-    depends_on:
-      - db
-      - redis
+    api:
+        build:
+            context: ../..
+            dockerfile: ops/docker/Dockerfile.api
+        ports:
+            - "3001:3001"
+        environment:
+            - NODE_ENV=development
+            - DATABASE_URL=postgresql://postgres:postgres@db:5432/vibespro_dev
+            - REDIS_URL=redis://redis:6379
+        volumes:
+            - ../../:/app
+            - /app/node_modules
+        depends_on:
+            - db
+            - redis
 
-  db:
-    image: postgres:15-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=vibespro_dev
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    db:
+        image: postgres:15-alpine
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=vibespro_dev
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+    redis:
+        image: redis:7-alpine
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
 
 volumes:
-  postgres_data:
-  redis_data:
+    postgres_data:
+    redis_data:
 ```
 
 ### Kubernetes Patterns
@@ -220,72 +220,72 @@ volumes:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vibespro-api
-  namespace: production
-  labels:
-    app: vibespro
-    component: api
-spec:
-  replicas: 3
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-  selector:
-    matchLabels:
-      app: vibespro
-      component: api
-  template:
-    metadata:
-      labels:
+    name: vibespro-api
+    namespace: production
+    labels:
         app: vibespro
         component: api
-    spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1001
-        fsGroup: 1001
-      containers:
-        - name: api
-          image: ghcr.io/godspeedai/vibespro-api:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 3001
-              protocol: TCP
-          env:
-            - name: NODE_ENV
-              value: "production"
-            - name: PORT
-              value: "3001"
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: vibespro-secrets
-                  key: database-url
-          resources:
-            requests:
-              cpu: "250m"
-              memory: "512Mi"
-            limits:
-              cpu: "1000m"
-              memory: "1Gi"
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 3001
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 3001
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 3
-            failureThreshold: 3
+spec:
+    replicas: 3
+    strategy:
+        type: RollingUpdate
+        rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 0
+    selector:
+        matchLabels:
+            app: vibespro
+            component: api
+    template:
+        metadata:
+            labels:
+                app: vibespro
+                component: api
+        spec:
+            securityContext:
+                runAsNonRoot: true
+                runAsUser: 1001
+                fsGroup: 1001
+            containers:
+                - name: api
+                  image: ghcr.io/godspeedai/vibespro-api:latest
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 3001
+                        protocol: TCP
+                  env:
+                      - name: NODE_ENV
+                        value: "production"
+                      - name: PORT
+                        value: "3001"
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: vibespro-secrets
+                                key: database-url
+                  resources:
+                      requests:
+                          cpu: "250m"
+                          memory: "512Mi"
+                      limits:
+                          cpu: "1000m"
+                          memory: "1Gi"
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: 3001
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                      timeoutSeconds: 5
+                      failureThreshold: 3
+                  readinessProbe:
+                      httpGet:
+                          path: /ready
+                          port: 3001
+                      initialDelaySeconds: 10
+                      periodSeconds: 5
+                      timeoutSeconds: 3
+                      failureThreshold: 3
 ```
 
 **Service configuration:**
@@ -295,21 +295,21 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: vibespro-api
-  namespace: production
-  labels:
-    app: vibespro
-    component: api
+    name: vibespro-api
+    namespace: production
+    labels:
+        app: vibespro
+        component: api
 spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: 3001
-      protocol: TCP
-      name: http
-  selector:
-    app: vibespro
-    component: api
+    type: ClusterIP
+    ports:
+        - port: 80
+          targetPort: 3001
+          protocol: TCP
+          name: http
+    selector:
+        app: vibespro
+        component: api
 ```
 
 ### Terraform Infrastructure
@@ -424,49 +424,49 @@ variable "database_password" {
 ```yaml
 # ops/monitoring/prometheus/prometheus.yml
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+    scrape_interval: 15s
+    evaluation_interval: 15s
 
 alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-            - alertmanager:9093
+    alertmanagers:
+        - static_configs:
+              - targets:
+                    - alertmanager:9093
 
 rule_files:
-  - /etc/prometheus/alerts.yml
+    - /etc/prometheus/alerts.yml
 
 scrape_configs:
-  # Application metrics
-  - job_name: "vibespro-api"
-    kubernetes_sd_configs:
-      - role: pod
-        namespaces:
-          names:
-            - production
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_pod_label_app]
-        action: keep
-        regex: vibespro
-      - source_labels: [__meta_kubernetes_pod_label_component]
-        action: keep
-        regex: api
+    # Application metrics
+    - job_name: "vibespro-api"
+      kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+                names:
+                    - production
+      relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            action: keep
+            regex: vibespro
+          - source_labels: [__meta_kubernetes_pod_label_component]
+            action: keep
+            regex: api
 
-  # Node metrics
-  - job_name: "node-exporter"
-    kubernetes_sd_configs:
-      - role: node
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: "(.*):10250"
-        replacement: "${1}:9100"
-        target_label: __address__
+    # Node metrics
+    - job_name: "node-exporter"
+      kubernetes_sd_configs:
+          - role: node
+      relabel_configs:
+          - source_labels: [__address__]
+            regex: "(.*):10250"
+            replacement: "${1}:9100"
+            target_label: __address__
 
-  # PostgreSQL metrics
-  - job_name: "postgres"
-    static_configs:
-      - targets:
-          - postgres-exporter:9187
+    # PostgreSQL metrics
+    - job_name: "postgres"
+      static_configs:
+          - targets:
+                - postgres-exporter:9187
 ```
 
 **Alert rules:**
@@ -474,65 +474,65 @@ scrape_configs:
 ```yaml
 # ops/monitoring/alerting/alerts.yml
 groups:
-  - name: application
-    interval: 30s
-    rules:
-      - alert: HighErrorRate
-        expr: |
-          rate(http_requests_total{status=~"5.."}[5m])
-          / rate(http_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: "High error rate detected"
-          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.job }}"
+    - name: application
+      interval: 30s
+      rules:
+          - alert: HighErrorRate
+            expr: |
+                rate(http_requests_total{status=~"5.."}[5m])
+                / rate(http_requests_total[5m]) > 0.05
+            for: 5m
+            labels:
+                severity: critical
+            annotations:
+                summary: "High error rate detected"
+                description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.job }}"
 
-      - alert: HighResponseTime
-        expr: |
-          histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High response time"
-          description: "95th percentile response time is {{ $value }}s"
+          - alert: HighResponseTime
+            expr: |
+                histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+            for: 5m
+            labels:
+                severity: warning
+            annotations:
+                summary: "High response time"
+                description: "95th percentile response time is {{ $value }}s"
 
-      - alert: PodDown
-        expr: |
-          kube_pod_status_phase{phase!~"Running|Succeeded"} > 0
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Pod not running"
-          description: "Pod {{ $labels.pod }} is in {{ $labels.phase }} state"
+          - alert: PodDown
+            expr: |
+                kube_pod_status_phase{phase!~"Running|Succeeded"} > 0
+            for: 5m
+            labels:
+                severity: critical
+            annotations:
+                summary: "Pod not running"
+                description: "Pod {{ $labels.pod }} is in {{ $labels.phase }} state"
 ```
 
 ## 📚 Related Instructions
 
 **Modular instructions that apply here:**
 
-- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - **Security in infrastructure (CRITICAL)**
-- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Infrastructure testing
-- [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance monitoring
+-   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - **Security in infrastructure (CRITICAL)**
+-   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Infrastructure testing
+-   [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance monitoring
 
 **Relevant documentation:**
 
-- [Docker best practices](https://docs.docker.com/develop/dev-best-practices/)
-- [Kubernetes patterns](https://kubernetes.io/docs/concepts/)
-- [Terraform documentation](https://www.terraform.io/docs)
+-   [Docker best practices](https://docs.docker.com/develop/dev-best-practices/)
+-   [Kubernetes patterns](https://kubernetes.io/docs/concepts/)
+-   [Terraform documentation](https://www.terraform.io/docs)
 
 ## 💡 Examples
 
 See inline examples above for:
 
-- Multi-stage Dockerfile
-- docker-compose.yml for local development
-- Kubernetes deployment with health checks
-- Terraform infrastructure configuration
-- Prometheus monitoring setup
-- Alert rules for production
+-   Multi-stage Dockerfile
+-   docker-compose.yml for local development
+-   Kubernetes deployment with health checks
+-   Terraform infrastructure configuration
+-   Prometheus monitoring setup
+-   Alert rules for production
 
 ### Example: Deployment Script
 
@@ -588,28 +588,28 @@ echo "✅ Deployment complete!"
 
 ### Before Deploying:
 
-- [ ] Test in local environment (docker-compose)
-- [ ] Run security scans on Docker images
-- [ ] Update Kubernetes manifests with new versions
-- [ ] Review resource limits and requests
-- [ ] Verify environment variables and secrets
-- [ ] Check health check endpoints
+-   [ ] Test in local environment (docker-compose)
+-   [ ] Run security scans on Docker images
+-   [ ] Update Kubernetes manifests with new versions
+-   [ ] Review resource limits and requests
+-   [ ] Verify environment variables and secrets
+-   [ ] Check health check endpoints
 
 ### During Deployment:
 
-- [ ] Monitor logs in real-time
-- [ ] Watch for pod restarts
-- [ ] Verify health checks passing
-- [ ] Check metrics dashboards
-- [ ] Test critical user flows
+-   [ ] Monitor logs in real-time
+-   [ ] Watch for pod restarts
+-   [ ] Verify health checks passing
+-   [ ] Check metrics dashboards
+-   [ ] Test critical user flows
 
 ### After Deployment:
 
-- [ ] Verify all services healthy
-- [ ] Run smoke tests
-- [ ] Monitor error rates
-- [ ] Check performance metrics
-- [ ] Update deployment log
+-   [ ] Verify all services healthy
+-   [ ] Run smoke tests
+-   [ ] Monitor error rates
+-   [ ] Check performance metrics
+-   [ ] Update deployment log
 
 ## 🔍 Quick Reference
 
@@ -667,13 +667,13 @@ terraform destroy
 
 **Infrastructure security is paramount:**
 
-- ⚠️ **Secrets management**: Use Kubernetes secrets, AWS Secrets Manager, or HashiCorp Vault
-- ⚠️ **Network policies**: Restrict pod-to-pod communication
-- ⚠️ **Image scanning**: Scan Docker images for vulnerabilities (Trivy, Clair)
-- ⚠️ **Least privilege**: Run containers as non-root users
-- ⚠️ **Resource limits**: Set CPU/memory limits to prevent DoS
-- ⚠️ **TLS everywhere**: Encrypt all network traffic
-- ⚠️ **Access control**: Use RBAC for Kubernetes, IAM for cloud
+-   ⚠️ **Secrets management**: Use Kubernetes secrets, AWS Secrets Manager, or HashiCorp Vault
+-   ⚠️ **Network policies**: Restrict pod-to-pod communication
+-   ⚠️ **Image scanning**: Scan Docker images for vulnerabilities (Trivy, Clair)
+-   ⚠️ **Least privilege**: Run containers as non-root users
+-   ⚠️ **Resource limits**: Set CPU/memory limits to prevent DoS
+-   ⚠️ **TLS everywhere**: Encrypt all network traffic
+-   ⚠️ **Access control**: Use RBAC for Kubernetes, IAM for cloud
 
 **Example security configurations:**
 
@@ -744,17 +744,17 @@ tflint
 
 ### Regular Tasks
 
-- **Daily**: Monitor alerts, check logs
-- **Weekly**: Review resource usage, optimize costs
-- **Monthly**: Update base images, review security scans
-- **Quarterly**: Disaster recovery drills, capacity planning
+-   **Daily**: Monitor alerts, check logs
+-   **Weekly**: Review resource usage, optimize costs
+-   **Monthly**: Update base images, review security scans
+-   **Quarterly**: Disaster recovery drills, capacity planning
 
 ### When to Update This AGENT.md
 
-- New deployment targets added
-- Infrastructure patterns change
-- Monitoring strategy evolves
-- Security practices update
+-   New deployment targets added
+-   Infrastructure patterns change
+-   Monitoring strategy evolves
+-   Security practices update
 
 ---
 

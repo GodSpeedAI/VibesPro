@@ -18,11 +18,11 @@ Authorization: Bearer <your-token>
 
 ### Endpoints
 
-- **GET** /api/core - List all core entities
-- **POST** /api/core - Create new core entity
-- **GET** /api/core/:id - Get specific core entity
-- **PUT** /api/core/:id - Update core entity
-- **DELETE** /api/core/:id - Delete core entity
+-   **GET** /api/core - List all core entities
+-   **POST** /api/core - Create new core entity
+-   **GET** /api/core/:id - Get specific core entity
+-   **PUT** /api/core/:id - Update core entity
+-   **DELETE** /api/core/:id - Delete core entity
 
 ### Data Models
 
@@ -32,11 +32,11 @@ See [Type Definitions](../libs/shared/database-types/) for complete data models.
 
 ### Endpoints
 
-- **GET** /api/user - List all user entities
-- **POST** /api/user - Create new user entity
-- **GET** /api/user/:id - Get specific user entity
-- **PUT** /api/user/:id - Update user entity
-- **DELETE** /api/user/:id - Delete user entity
+-   **GET** /api/user - List all user entities
+-   **POST** /api/user - Create new user entity
+-   **GET** /api/user/:id - Get specific user entity
+-   **PUT** /api/user/:id - Update user entity
+-   **DELETE** /api/user/:id - Delete user entity
 
 ### Data Models
 
@@ -46,11 +46,11 @@ See [Type Definitions](../libs/shared/database-types/) for complete data models.
 
 ### Endpoints
 
-- **GET** /api/billing - List all billing entities
-- **POST** /api/billing - Create new billing entity
-- **GET** /api/billing/:id - Get specific billing entity
-- **PUT** /api/billing/:id - Update billing entity
-- **DELETE** /api/billing/:id - Delete billing entity
+-   **GET** /api/billing - List all billing entities
+-   **POST** /api/billing - Create new billing entity
+-   **GET** /api/billing/:id - Get specific billing entity
+-   **PUT** /api/billing/:id - Update billing entity
+-   **DELETE** /api/billing/:id - Delete billing entity
 
 ### Data Models
 
@@ -60,9 +60,9 @@ See [Type Definitions](../libs/shared/database-types/) for complete data models.
 
 ```json
 {
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human readable error message"
-  }
+    "error": {
+        "code": "ERROR_CODE",
+        "message": "Human readable error message"
+    }
 }
 ```

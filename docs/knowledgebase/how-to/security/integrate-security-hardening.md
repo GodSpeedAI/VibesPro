@@ -48,9 +48,9 @@ This guide explains how to incorporate security hardening features into the Vibe
 
 **No technical debt created because:**
 
-- All documentation follows existing patterns (ADR, PRD, SDS, TS structure)
-- Feature is opt-in via `enable_security_hardening` flag in `copier.yml`
-- Specifications complete before any implementation begins (spec-driven)
+-   All documentation follows existing patterns (ADR, PRD, SDS, TS structure)
+-   Feature is opt-in via `enable_security_hardening` flag in `copier.yml`
+-   Specifications complete before any implementation begins (spec-driven)
 
 ### Phase 2: Implementation (NEXT STEPS)
 
@@ -163,24 +163,24 @@ FROM rust:1.76
 ```yaml
 # Add these 3 variables to copier.yml
 enable_security_hardening:
-  type: bool
-  default: false # ← Defaults to OFF
-  help: "Enable TPM-backed encryption and security hardening features?"
+    type: bool
+    default: false # ← Defaults to OFF
+    help: "Enable TPM-backed encryption and security hardening features?"
 
 encryption_backend:
-  type: str
-  default: "xchacha20poly1305"
-  choices:
-    - xchacha20poly1305
-    - aes256gcm
-  when: "{{ enable_security_hardening }}"
-  help: "AEAD cipher for encryption at rest"
+    type: str
+    default: "xchacha20poly1305"
+    choices:
+        - xchacha20poly1305
+        - aes256gcm
+    when: "{{ enable_security_hardening }}"
+    help: "AEAD cipher for encryption at rest"
 
 tpm_enabled:
-  type: bool
-  default: false
-  when: "{{ enable_security_hardening }}"
-  help: "Use TPM 2.0 for key sealing?"
+    type: bool
+    default: false
+    when: "{{ enable_security_hardening }}"
+    help: "Use TPM 2.0 for key sealing?"
 ```
 
 ### Impact Analysis
@@ -221,9 +221,9 @@ Unit Tests (100ms max)
 
 ### Test Coverage Targets
 
-- **Unit tests:** 100% coverage for `libs/security/src/`
-- **Integration tests:** 90% coverage for template generation paths
-- **E2E tests:** 100% coverage for both enabled/disabled scenarios
+-   **Unit tests:** 100% coverage for `libs/security/src/`
+-   **Integration tests:** 90% coverage for template generation paths
+-   **E2E tests:** 100% coverage for both enabled/disabled scenarios
 
 ---
 
@@ -259,28 +259,28 @@ echo "⚠️ Security hardening features are archived pending fixes" >> docs/aia
 
 ### Documentation Quality (COMPLETE ✅)
 
-- [x] AI_SECURITY_HARDENING.md created with full specification
-- [x] AI_ADR-006 added to decision records
-- [x] PHASE-006 added to AI_TDD_PLAN with 3 tasks
-- [x] All code examples extracted and formalized
-- [x] Testing strategy defined with TDD approach
+-   [x] AI_SECURITY_HARDENING.md created with full specification
+-   [x] AI_ADR-006 added to decision records
+-   [x] PHASE-006 added to AI_TDD_PLAN with 3 tasks
+-   [x] All code examples extracted and formalized
+-   [x] Testing strategy defined with TDD approach
 
 ### Implementation Quality (PENDING)
 
-- [ ] TASK-013: SecureDb library passes 5 unit tests
-- [ ] TASK-014: Template generation passes 4 integration tests
-- [ ] TASK-015: Security validation suite passes 5 tests
-- [ ] Generated projects build successfully on Ubuntu 22.04+
-- [ ] Benchmarks show < 5% encryption overhead
-- [ ] Binary size increase < 2MB
-- [ ] `cargo audit` passes with no HIGH/CRITICAL issues
+-   [ ] TASK-013: SecureDb library passes 5 unit tests
+-   [ ] TASK-014: Template generation passes 4 integration tests
+-   [ ] TASK-015: Security validation suite passes 5 tests
+-   [ ] Generated projects build successfully on Ubuntu 22.04+
+-   [ ] Benchmarks show < 5% encryption overhead
+-   [ ] Binary size increase < 2MB
+-   [ ] `cargo audit` passes with no HIGH/CRITICAL issues
 
 ### User Experience (PENDING)
 
-- [ ] Feature can be enabled via single Copier prompt
-- [ ] Generated documentation explains key management
-- [ ] Docker deployment works without privileged mode
-- [ ] Key rotation documented and tested
+-   [ ] Feature can be enabled via single Copier prompt
+-   [ ] Generated documentation explains key management
+-   [ ] Docker deployment works without privileged mode
+-   [ ] Key rotation documented and tested
 
 ---
 
@@ -320,46 +320,46 @@ echo "⚠️ Security hardening features are archived pending fixes" >> docs/aia
 
 1. **Add Copier Variables** (15 minutes)
 
-   ```bash
-   # Edit copier.yml, add 3 variables from Section "Feature Flag Strategy"
-   ```
+    ```bash
+    # Edit copier.yml, add 3 variables from Section "Feature Flag Strategy"
+    ```
 
 2. **Create Library Structure** (30 minutes)
 
-   ```bash
-   mkdir -p libs/security/{src,tests/unit}
-   touch libs/security/Cargo.toml
-   touch libs/security/src/{lib.rs,secure_db.rs}
-   ```
+    ```bash
+    mkdir -p libs/security/{src,tests/unit}
+    touch libs/security/Cargo.toml
+    touch libs/security/src/{lib.rs,secure_db.rs}
+    ```
 
 3. **Copy Test Cases** (1 hour)
 
-   ```bash
-   # Copy from AI_SECURITY_HARDENING.md Section 7.1
-   # Paste into libs/security/tests/unit/secure_db_test.rs
-   ```
+    ```bash
+    # Copy from AI_SECURITY_HARDENING.md Section 7.1
+    # Paste into libs/security/tests/unit/secure_db_test.rs
+    ```
 
 4. **Copy Implementation** (2 hours)
 
-   ```bash
-   # Copy from AI_SECURITY_HARDENING.md Section 5.2
-   # Paste into libs/security/src/secure_db.rs
-   # Run: cargo test
-   ```
+    ```bash
+    # Copy from AI_SECURITY_HARDENING.md Section 5.2
+    # Paste into libs/security/src/secure_db.rs
+    # Run: cargo test
+    ```
 
 5. **Create Templates** (4 hours)
 
-   ```bash
-   # Copy Dockerfile from Section 5.3
-   # Copy docker-compose.yml from Section 5.3
-   # Add .j2 extensions and Jinja2 conditionals
-   ```
+    ```bash
+    # Copy Dockerfile from Section 5.3
+    # Copy docker-compose.yml from Section 5.3
+    # Add .j2 extensions and Jinja2 conditionals
+    ```
 
 6. **Test Generation** (2 hours)
-   ```bash
-   copier copy . /tmp/test-secure --data enable_security_hardening=true
-   cd /tmp/test-secure && cargo build
-   ```
+    ```bash
+    copier copy . /tmp/test-secure --data enable_security_hardening=true
+    cd /tmp/test-secure && cargo build
+    ```
 
 ### Total Estimated Time: 20-26 hours (vs. 50+ hours writing from scratch)
 

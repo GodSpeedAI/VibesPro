@@ -1,8 +1,8 @@
 // tests/performance/generation-benchmarks.ts
-import { PerformanceMonitor } from "../../tools/performance/monitor";
+import { PerformanceMonitor } from '../../tools/performance/monitor';
 
-describe("Generation Performance", () => {
-  it("should generate a new application within performance budget", async () => {
+describe('Generation Performance', () => {
+  it('should generate a new application within performance budget', async () => {
     const monitor = new PerformanceMonitor();
 
     await monitor.measureGenerationTime(async () => {

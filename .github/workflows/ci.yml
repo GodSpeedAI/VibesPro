@@ -32,7 +32,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: "20"
+          node-version: "20.11.1"
           cache: "pnpm"
 
       - name: Set up Python
@@ -80,13 +80,11 @@ jobs:
       - name: Validate template
         # UV_NO_SYNC=1 prevents uv from syncing dependencies during template generation test
         # This validates that the template generation process works correctly
-        # TODO: Fix post_gen.py hook to work with generated projects
         run: |
           set -e
-          echo "::notice::Template validation temporarily skipped - post_gen.py needs fixes"
-          # just test-generation || {
-          #   echo "::error::Template generation validation failed. Check 'just test-generation' output above."
-          #   exit 1
-          # }
+          just test-generation || {
+            echo "::error::Template generation validation failed. Check 'just test-generation' output above."
+            exit 1
+          }
         env:
           UV_NO_SYNC: "1"

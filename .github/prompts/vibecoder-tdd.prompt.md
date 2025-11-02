@@ -19,9 +19,9 @@ This prompt provides Test-Driven Development guidance specifically for Vibecoder
 
 ## Inputs
 
-- Feature description: {{ '{{FEATURE}}' }}
-- Test requirements: {{ '{{TESTS}}' }}
-- Code context: {{ '{{CONTEXT}}' }}
+-   Feature description: {{ '{{FEATURE}}' }}
+-   Test requirements: {{ '{{TESTS}}' }}
+-   Code context: {{ '{{CONTEXT}}' }}
 
 ## TDD Workflow
 

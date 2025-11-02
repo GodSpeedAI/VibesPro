@@ -1,23 +1,23 @@
-import { Tree } from "@nx/devkit";
-import { createTreeWithEmptyWorkspace } from "@nx/devkit/testing";
-import { hexDomainGenerator } from "../hex-domain/generator";
-import { portGenerator } from "./generator";
+import { Tree } from '@nx/devkit';
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
+import { hexDomainGenerator } from '../hex-domain/generator';
+import { portGenerator } from './generator';
 
-describe("portGenerator (Python)", () => {
+describe('portGenerator (Python)', () => {
   let tree: Tree;
-  const domainName = "test-domain";
-  const portName = "my_test_port";
+  const domainName = 'test-domain';
+  const portName = 'my_test_port';
 
   beforeEach(async () => {
     tree = createTreeWithEmptyWorkspace();
     await hexDomainGenerator(tree, { name: domainName });
   });
 
-  it("should create the port protocol and fake adapter", async () => {
+  it('should create the port protocol and fake adapter', async () => {
     await portGenerator(tree, {
       name: portName,
       domain: domainName,
-      language: "py",
+      language: 'py',
     });
 
     const portProtocolPath = `libs/${domainName}/domain/src/lib/ports/${portName}_port.py`;
@@ -27,11 +27,11 @@ describe("portGenerator (Python)", () => {
     expect(tree.exists(fakeAdapterPath)).toBe(true);
   });
 
-  it("should generate the correct content for the port protocol", async () => {
+  it('should generate the correct content for the port protocol', async () => {
     await portGenerator(tree, {
       name: portName,
       domain: domainName,
-      language: "py",
+      language: 'py',
     });
 
     const portProtocolPath = `libs/${domainName}/domain/src/lib/ports/${portName}_port.py`;
@@ -45,11 +45,11 @@ describe("portGenerator (Python)", () => {
     expect(content).toContain(`    pass`);
   });
 
-  it("should generate the correct content for the fake adapter", async () => {
+  it('should generate the correct content for the fake adapter', async () => {
     await portGenerator(tree, {
       name: portName,
       domain: domainName,
-      language: "py",
+      language: 'py',
     });
 
     const fakeAdapterPath = `libs/${domainName}/infrastructure/src/lib/adapters/${portName}_fake_adapter.py`;
@@ -57,10 +57,8 @@ describe("portGenerator (Python)", () => {
     expect(fileContent).toBeTruthy();
     const content = fileContent!.toString();
 
-    const snakeCaseDomain = domainName.replace(/-/g, "_");
-    expect(content).toContain(
-      `from ${snakeCaseDomain}.domain.ports import IMyTestPort`,
-    );
+    const snakeCaseDomain = domainName.replace(/-/g, '_');
+    expect(content).toContain(`from ${snakeCaseDomain}.domain.ports import IMyTestPort`);
     expect(content).toContain(`class MyTestPortFakeAdapter(IMyTestPort):`);
     expect(content).toContain(`    # Implement methods here`);
     expect(content).toContain(`    pass`);

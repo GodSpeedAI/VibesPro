@@ -17,11 +17,11 @@ Created `tests/env/test_devbox.sh` to validate Devbox configuration:
 
 **Test Coverage:**
 
-- ✅ Validates `devbox.json` exists at repo root
-- ✅ Checks `devbox.json` is valid JSON
-- ✅ Verifies `packages` array is present
-- ✅ Confirms essential packages are defined (git, curl, jq)
-- ✅ Validates Devbox can parse the configuration (if installed)
+-   ✅ Validates `devbox.json` exists at repo root
+-   ✅ Checks `devbox.json` is valid JSON
+-   ✅ Verifies `packages` array is present
+-   ✅ Confirms essential packages are defined (git, curl, jq)
+-   ✅ Validates Devbox can parse the configuration (if installed)
 
 **Initial Result:** Test failed (RED) - `devbox.json` existed but init_hook was invalid
 
@@ -32,47 +32,37 @@ The `devbox.json` file already existed with proper structure:
 
 ```json
 {
-  "packages": [
-    "git",
-    "curl",
-    "jq",
-    "make",
-    "ffmpeg",
-    "postgresql@15",
-    "ripgrep",
-    "fd",
-    "uv"
-  ],
-  "shell": {
-    "init_hook": ["echo 'Devbox initialized: OS toolchain ready.'"]
-  }
+    "packages": ["git", "curl", "jq", "make", "ffmpeg", "postgresql@15", "ripgrep", "fd", "uv"],
+    "shell": {
+        "init_hook": ["echo 'Devbox initialized: OS toolchain ready.'"]
+    }
 }
 ```
 
 **Fixed Test Logic:**
 
-- Updated test to use correct `devbox info` command syntax
-- Made runtime validation optional (gracefully degrades if devbox not fully initialized)
-- Fixed syntax errors in test script
+-   Updated test to use correct `devbox info` command syntax
+-   Made runtime validation optional (gracefully degrades if devbox not fully initialized)
+-   Fixed syntax errors in test script
 
 **Documentation Added:**
 Updated `docs/ENVIRONMENT.md` with comprehensive Devbox section:
 
-- What is Devbox and when to use it
-- Installation instructions
-- Usage examples (shell, run, update)
-- Configuration explanation
-- Troubleshooting guide
+-   What is Devbox and when to use it
+-   Installation instructions
+-   Usage examples (shell, run, update)
+-   Configuration explanation
+-   Troubleshooting guide
 
 ### 3. REFACTOR Phase: Developer Experience Polish
 
 **Created Boot Script:**
 Added `scripts/devbox_boot.sh` with:
 
-- Attractive ASCII banner
-- List of available tools
-- Quick command reference
-- Minimal diagnostics (PostgreSQL version)
+-   Attractive ASCII banner
+-   List of available tools
+-   Quick command reference
+-   Minimal diagnostics (PostgreSQL version)
 
 **Updated devbox.json:**
 Modified init_hook to call the boot script:
@@ -129,17 +119,17 @@ Sanity OK
 
 **Tests:**
 
-- `tests/env/test_devbox.sh` - Devbox configuration validation
+-   `tests/env/test_devbox.sh` - Devbox configuration validation
 
 **Scripts:**
 
-- `scripts/devbox_boot.sh` - Welcome banner and diagnostics
+-   `scripts/devbox_boot.sh` - Welcome banner and diagnostics
 
 ### Modified Files (3 total)
 
-- `devbox.json` - Updated init_hook to call boot script
-- `justfile` - Added `env-enter` target
-- `docs/ENVIRONMENT.md` - Added comprehensive Devbox section
+-   `devbox.json` - Updated init_hook to call boot script
+-   `justfile` - Added `env-enter` target
+-   `docs/ENVIRONMENT.md` - Added comprehensive Devbox section
 
 ## Usage Examples
 
@@ -207,55 +197,55 @@ just test-env
 
 Devbox manages system-level dependencies that aren't handled by language-specific managers:
 
-- **Databases:** PostgreSQL 15
-- **Media:** FFmpeg
-- **CLI Tools:** ripgrep, fd, jq
-- **Build Tools:** make
-- **Version Control:** git
-- **Network:** curl
+-   **Databases:** PostgreSQL 15
+-   **Media:** FFmpeg
+-   **CLI Tools:** ripgrep, fd, jq
+-   **Build Tools:** make
+-   **Version Control:** git
+-   **Network:** curl
 
 ### What Devbox DOESN'T Manage
 
-- **Node.js:** Managed by mise (Phase 2)
-- **Python:** Managed by mise + uv (Phase 2)
-- **Rust:** Managed by mise (Phase 2)
-- **Node packages:** Managed by pnpm
-- **Python packages:** Managed by uv
+-   **Node.js:** Managed by mise (Phase 2)
+-   **Python:** Managed by mise + uv (Phase 2)
+-   **Rust:** Managed by mise (Phase 2)
+-   **Node packages:** Managed by pnpm
+-   **Python packages:** Managed by uv
 
 ## Alignment with PRD/SDS
 
 This implementation fulfills Phase 1 requirements from `docs/tmp/devenv.md`:
 
-- ✅ **1.1 RED** - Wrote failing devbox test
-- ✅ **1.2 GREEN** - Validated devbox.json configuration and updated docs
-- ✅ **1.3 REFACTOR** - Added boot script and env-enter target
+-   ✅ **1.1 RED** - Wrote failing devbox test
+-   ✅ **1.2 GREEN** - Validated devbox.json configuration and updated docs
+-   ✅ **1.3 REFACTOR** - Added boot script and env-enter target
 
 Maps to specifications:
 
-- **PRD-011** (Devbox as OS boundary) ✅
-- **DEV-SPEC-006** (CI posture) - Foundation ready
-- **DEV-SPEC-008** (Testing strategy) - TDD workflow followed
+-   **PRD-011** (Devbox as OS boundary) ✅
+-   **DEV-SPEC-006** (CI posture) - Foundation ready
+-   **DEV-SPEC-008** (Testing strategy) - TDD workflow followed
 
 ## Benefits
 
 ### For Developers
 
-- **Consistent Environment:** Same tool versions across all team members
-- **No System Pollution:** Isolated from host system packages
-- **Easy Setup:** One command to enter fully-configured shell
-- **Clear Guidance:** Boot script shows available tools and commands
+-   **Consistent Environment:** Same tool versions across all team members
+-   **No System Pollution:** Isolated from host system packages
+-   **Easy Setup:** One command to enter fully-configured shell
+-   **Clear Guidance:** Boot script shows available tools and commands
 
 ### For CI/CD
 
-- **Reproducibility:** Exact same tools in CI as local development
-- **No Docker Required:** Lighter alternative to containers for tool management
-- **Fast Caching:** Nix-based caching speeds up CI runs
+-   **Reproducibility:** Exact same tools in CI as local development
+-   **No Docker Required:** Lighter alternative to containers for tool management
+-   **Fast Caching:** Nix-based caching speeds up CI runs
 
 ### For New Contributors
 
-- **Zero Configuration:** Devbox handles all OS-level setup
-- **Self-Documenting:** Boot script serves as onboarding guide
-- **Validation Built-In:** `just test-env` confirms setup is correct
+-   **Zero Configuration:** Devbox handles all OS-level setup
+-   **Self-Documenting:** Boot script serves as onboarding guide
+-   **Validation Built-In:** `just test-env` confirms setup is correct
 
 ## Next Steps (Phase 2)
 
@@ -263,11 +253,11 @@ With Devbox providing OS-level isolation, Phase 2 will add runtime version manag
 
 ### Phase 2 - mise Runtime Management
 
-- Create `.mise.toml` with Node/Python/Rust versions
-- Add `tests/env/test_mise_versions.sh`
-- Remove `.python-version` (mise becomes authoritative)
-- Update documentation with mise setup
-- Add `verify:node` target to detect Volta/mise conflicts
+-   Create `.mise.toml` with Node/Python/Rust versions
+-   Add `tests/env/test_mise_versions.sh`
+-   Remove `.python-version` (mise becomes authoritative)
+-   Update documentation with mise setup
+-   Add `verify:node` target to detect Volta/mise conflicts
 
 ### Expected Flow
 
@@ -281,24 +271,24 @@ just dev                  # Start development
 
 ## Validation Checklist
 
-- [x] All env tests pass (4/4 including devbox test)
-- [x] `just env-enter` works correctly
-- [x] Boot script displays properly
-- [x] Documentation complete and accurate
-- [x] Test validates config structure
-- [x] Test gracefully degrades without devbox installed
-- [x] No breaking changes to existing workflows
-- [x] TDD workflow followed (Red → Green → Refactor)
+-   [x] All env tests pass (4/4 including devbox test)
+-   [x] `just env-enter` works correctly
+-   [x] Boot script displays properly
+-   [x] Documentation complete and accurate
+-   [x] Test validates config structure
+-   [x] Test gracefully degrades without devbox installed
+-   [x] No breaking changes to existing workflows
+-   [x] TDD workflow followed (Red → Green → Refactor)
 
 ## Metrics
 
-- **Lines of code added:** ~220
-- **Files created:** 2
-- **Files modified:** 3
-- **Test coverage:** 1 comprehensive devbox test
-- **Time to run test:** <1 second
-- **Time to implement:** ~45 minutes
-- **TDD cycles:** 1 (Red → Green → Refactor)
+-   **Lines of code added:** ~220
+-   **Files created:** 2
+-   **Files modified:** 3
+-   **Test coverage:** 1 comprehensive devbox test
+-   **Time to run test:** <1 second
+-   **Time to implement:** ~45 minutes
+-   **TDD cycles:** 1 (Red → Green → Refactor)
 
 ## Key Learnings
 
@@ -326,9 +316,9 @@ The Devbox integration provides a solid OS boundary while staying lightweight an
 
 **Traceability:**
 
-- PRD-011: Devbox as OS boundary ✅
-- Phase 0: Test harness ✅
-- Phase 1: Devbox integration ✅
-- Phase 2: mise (next)
-- DEV-SPEC-006: CI posture (foundation ready)
-- DEV-SPEC-008: Testing strategy (TDD followed)
+-   PRD-011: Devbox as OS boundary ✅
+-   Phase 0: Test harness ✅
+-   Phase 1: Devbox integration ✅
+-   Phase 2: mise (next)
+-   DEV-SPEC-006: CI posture (foundation ready)
+-   DEV-SPEC-008: Testing strategy (TDD followed)

@@ -18,4 +18,4 @@
 // export * from './interface';
 
 // Placeholder export to prevent empty module
-export const CORE_LIB_VERSION = "0.1.0";
+export const CORE_LIB_VERSION = '0.1.0';

@@ -10,30 +10,30 @@ When invoked under `tdd-tbd` chatmode, **implement a TDD plan via Trunk-Based De
 
 1. **Inputs**
 
-   - Read the provided TDD plan (or generate from ADR/PRD/SDS if absent).
-   - Identify tasks (`TASK-###`) and their Nx project ownership.
+    - Read the provided TDD plan (or generate from ADR/PRD/SDS if absent).
+    - Identify tasks (`TASK-###`) and their Nx project ownership.
 
 2. **Create a Branching & PR Plan**
 
-   - Ensure `dev` exists; if not, create from `main`.
-   - For each task:
-     - Create `dev/task/<task-key>-<slug>` from `dev` (Draft PR → `dev`).
-     - Create sub-branches for cycles:
-       - `.../red`, `.../green`, `.../refactor`, `.../regression` (each PR → task branch).
-     - If generator specs are required, create `.../gen/<generator-name>` PRs → task branch.
-   - Define commit naming, labels, reviewers, and required checks.
+    - Ensure `dev` exists; if not, create from `main`.
+    - For each task:
+        - Create `dev/task/<task-key>-<slug>` from `dev` (Draft PR → `dev`).
+        - Create sub-branches for cycles:
+            - `.../red`, `.../green`, `.../refactor`, `.../regression` (each PR → task branch).
+        - If generator specs are required, create `.../gen/<generator-name>` PRs → task branch.
+    - Define commit naming, labels, reviewers, and required checks.
 
 3. **MCP Action List (GitHub)**
    For each branch/PR, list **exact MCP operations**:
 
-   - `ensureBranch({ name, fromRef })`
-   - `openPullRequest({ base, head, title, body, draft: true })`
-   - `setLabels({ pr, labels: [...] })`
-   - `assignReviewers({ pr, users: [...], teams: [...] })`
-   - `postComment({ pr, body })`
-   - `enableAutoMerge({ pr, method: "SQUASH" })` (where policy allows)
-   - `mergePullRequest({ pr })` once checks pass
-   - `protectBranch({ name, requiredChecks: [...] })` (if missing)
+    - `ensureBranch({ name, fromRef })`
+    - `openPullRequest({ base, head, title, body, draft: true })`
+    - `setLabels({ pr, labels: [...] })`
+    - `assignReviewers({ pr, users: [...], teams: [...] })`
+    - `postComment({ pr, body })`
+    - `enableAutoMerge({ pr, method: "SQUASH" })` (where policy allows)
+    - `mergePullRequest({ pr })` once checks pass
+    - `protectBranch({ name, requiredChecks: [...] })` (if missing)
 
 4. **Per-Cycle Work Template**
    For each task, output a block like this:
@@ -43,14 +43,14 @@ When invoked under `tdd-tbd` chatmode, **implement a TDD plan via Trunk-Based De
 
 **Branches**
 
-- Task: `dev/task/<key>-<slug>`
-- Cycles:
-  - RED: `dev/task/<key>-<slug>/red`
-  - GREEN: `dev/task/<key>-<slug>/green`
-  - REFACTOR: `dev/task/<key>-<slug>/refactor`
-  - REGRESSION: `dev/task/<key>-<slug>/regression`
-- (Optional) Generator Specs:
-  - `dev/task/<key>-<slug>/gen/<generator-name>`
+-   Task: `dev/task/<key>-<slug>`
+-   Cycles:
+    -   RED: `dev/task/<key>-<slug>/red`
+    -   GREEN: `dev/task/<key>-<slug>/green`
+    -   REFACTOR: `dev/task/<key>-<slug>/refactor`
+    -   REGRESSION: `dev/task/<key>-<slug>/regression`
+-   (Optional) Generator Specs:
+    -   `dev/task/<key>-<slug>/gen/<generator-name>`
 
 **MCP (GitHub) Actions**
 
@@ -63,10 +63,10 @@ When invoked under `tdd-tbd` chatmode, **implement a TDD plan via Trunk-Based De
 
 **Tests & Checks**
 
-- RED: add failing tests only; confirm failure reason.
-- GREEN: minimal code to pass.
-- REFACTOR: structure only; tests remain green.
-- REGRESSION: full suite; perf baseline; coverage threshold.
+-   RED: add failing tests only; confirm failure reason.
+-   GREEN: minimal code to pass.
+-   REFACTOR: structure only; tests remain green.
+-   REGRESSION: full suite; perf baseline; coverage threshold.
 
 **Nx / just Commands**
 
@@ -81,8 +81,8 @@ just ai-validate
 
 **Exit Criteria**
 
-- Sub-branch PR merged (squash) into task branch with all checks green.
-- Task PR promoted from Draft → Ready; merged (squash) into `dev`.
+-   Sub-branch PR merged (squash) into task branch with all checks green.
+-   Task PR promoted from Draft → Ready; merged (squash) into `dev`.
 
 ```
 

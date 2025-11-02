@@ -5,15 +5,12 @@
  * - Executes each file with Node, expecting them to throw on failure.
  */
 
-const fs = require("node:fs");
-const path = require("node:path");
-const { performance } = require("node:perf_hooks");
+const fs = require('node:fs');
+const path = require('node:path');
+const { performance } = require('node:perf_hooks');
 
 const ROOT = process.cwd();
-const TARGET_DIRS = [
-  path.join(ROOT, "tests", "unit"),
-  path.join(ROOT, "tests", "integration"),
-];
+const TARGET_DIRS = [path.join(ROOT, 'tests', 'unit'), path.join(ROOT, 'tests', 'integration')];
 
 /** Load all files matching *.test.js recursively */
 function gatherTests(dir) {
@@ -44,7 +41,7 @@ async function runTestFile(file) {
 async function main() {
   const files = TARGET_DIRS.flatMap(gatherTests);
   if (files.length === 0) {
-    console.log("No tests found.");
+    console.log('No tests found.');
     process.exit(0);
   }
   console.log(`Discovered ${files.length} test file(s).`);
@@ -52,18 +49,14 @@ async function main() {
   for (const f of files) {
     const r = await runTestFile(f);
     results.push(r);
-    const status = r.ok ? "PASS" : "FAIL";
+    const status = r.ok ? 'PASS' : 'FAIL';
     console.log(`${status} ${path.relative(ROOT, f)} (${r.ms} ms)`);
     if (!r.ok) {
       console.error(r.error?.stack || r.error);
     }
   }
   const failed = results.filter((r) => !r.ok);
-  console.log(
-    `\nSummary: ${results.length - failed.length} passed, ${
-      failed.length
-    } failed`,
-  );
+  console.log(`\nSummary: ${results.length - failed.length} passed, ${failed.length} failed`);
   process.exit(failed.length === 0 ? 0 : 1);
 }
 

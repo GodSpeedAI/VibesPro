@@ -3,7 +3,7 @@ name: build-matrix
 on:
   push:
     branches: [main]
-    tags: ["v*.*.*"] # enables the optional release job
+    tags: ["v*.*.*"] # enables optional release job
   pull_request:
     branches: [main]
 
@@ -32,6 +32,7 @@ jobs:
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           mise --version
+          mise trust --yes .mise.toml
 
       - name: Resolve versions from .mise.toml
         id: vers
@@ -61,11 +62,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Temporarily restrict to ubuntu-latest to avoid macOS native build failures
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         include:
           - os: ubuntu-latest
             pkg_mgr: apt
+          - os: macos-latest
+            pkg_mgr: brew
     runs-on: ${{ matrix.os }}
     env:
       MISE_NONINTERACTIVE: "1"
@@ -75,6 +77,7 @@ jobs:
       PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       SOPS_LOADED: "false"
+      SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
     steps:
       - name: Checkout
@@ -96,18 +99,23 @@ jobs:
       - name: Install just
         shell: bash
         run: |
-          # Try the official installer, fallback to apt when installer fails or is blocked
-          if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
-            set -euo pipefail
-            if curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin; then
-              sudo chmod +x /usr/local/bin/just
-            else
-              echo "just installer failed; attempting apt fallback"
-              sudo apt-get update || true
-              sudo apt-get install -y just || echo "could not install just; continuing without just"
-            fi
+          # Try to install just via mise first (preferred approach)
+          if command -v just >/dev/null 2>&1; then
+            echo "just already available via mise"
           else
-            brew install just || true
+            # Fallback to OS-specific installation
+            if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
+              set -euo pipefail
+              if curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin; then
+                sudo chmod +x /usr/local/bin/just
+              else
+                echo "just installer failed; attempting apt fallback"
+                sudo apt-get update || true
+                sudo apt-get install -y just || echo "could not install just; continuing without just"
+              fi
+            else
+              brew install just || true
+            fi
           fi
           just --version || true
 
@@ -150,6 +158,7 @@ jobs:
           key: ${{ needs.prepare.outputs.mise_cache_key }}
           restore-keys: |
             mise-${{ runner.os }}-
+
       - name: Install runtimes (Node/Python/Rust via mise)
         run: mise install
 
@@ -161,7 +170,8 @@ jobs:
         if: hashFiles('pnpm-lock.yaml') != ''
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
+          path: |
+            ~/.pnpm-store
           key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-${{ runner.os }}-
@@ -169,12 +179,12 @@ jobs:
       # ---- Secrets (Minimal CI: no direnv) ----
       # If your unit tests/build need secrets, decrypt them. If not, you can remove this step.
       # ---- Secrets (Minimal CI: no direnv) ----
-      # If your unit tests/build need secrets, decrypt them. If not, the step will be skipped.
+      # If your unit tests/build need secrets, decrypt them. If not, step will be skipped.
       - name: Decrypt secrets to ephemeral env (if SOPS_AGE_KEY secret provided)
         id: sops
         if: ${{ env.IS_FORK != 'true' }}
         run: |
-          # Attempt decryption only when the secret is set and the file exists.
+          # Attempt decryption only when secret is set and file exists.
           if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
             echo "SOPS_AGE_KEY appears set; attempting decryption..."
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
@@ -230,7 +240,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install uv (Python tool manager)
-        # Use the astral-sh/setup-uv action to install uv on the runner so `uv` is available.
+        # Use astral-sh/setup-uv action to install uv on runner so `uv` is available.
         uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06
 
       - name: Install Python dependencies (uv)
@@ -290,6 +300,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MISE_NONINTERACTIVE: "1"
+      SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -311,11 +322,14 @@ jobs:
         run: |
           curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+          devbox version
 
       - name: Install mise
         run: |
           curl https://mise.run | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+          mise --version
+          mise trust --yes .mise.toml
 
       - name: Setup runtimes
         run: mise install

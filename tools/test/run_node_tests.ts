@@ -5,15 +5,12 @@
  * - Executes each file with tsx, expecting them to throw on failure.
  */
 
-import fs from "node:fs";
-import path from "node:path";
-import { performance } from "node:perf_hooks";
+import fs from 'node:fs';
+import path from 'node:path';
+import { performance } from 'node:perf_hooks';
 
 const ROOT = process.cwd();
-const TARGET_DIRS = [
-  path.join(ROOT, "tests", "unit"),
-  path.join(ROOT, "tests", "integration"),
-];
+const TARGET_DIRS = [path.join(ROOT, 'tests', 'unit'), path.join(ROOT, 'tests', 'integration')];
 
 function gatherTests(dir: string): string[] {
   const acc: string[] = [];
@@ -40,12 +37,12 @@ async function runTestFile(file: string) {
   }
 }
 
-import { pathToFileURL } from "node:url";
+import { pathToFileURL } from 'node:url';
 
 async function main() {
   const files = TARGET_DIRS.flatMap(gatherTests);
   if (files.length === 0) {
-    console.log("No tests found.");
+    console.log('No tests found.');
     process.exit(0);
   }
   console.log(`Discovered ${files.length} test file(s).`);
@@ -53,14 +50,14 @@ async function main() {
   for (const f of files) {
     const r = await runTestFile(f);
     results.push(r);
-    const status = r.ok ? "PASS" : "FAIL";
+    const status = r.ok ? 'PASS' : 'FAIL';
     console.log(`${status} ${path.relative(ROOT, f)} (${r.ms} ms)`);
     if (!r.ok) {
       const maybeError = r as unknown as { error?: unknown };
       const err = maybeError.error;
-      if (err && typeof err === "object") {
+      if (err && typeof err === 'object') {
         const errRec = err as Record<string, unknown>;
-        const stack = errRec["stack"] as string | undefined;
+        const stack = errRec['stack'] as string | undefined;
         console.error(stack ?? String(err));
       } else {
         console.error(String(err));
@@ -68,11 +65,7 @@ async function main() {
     }
   }
   const failed = results.filter((r) => !r.ok);
-  console.log(
-    `\nSummary: ${results.length - failed.length} passed, ${
-      failed.length
-    } failed`,
-  );
+  console.log(`\nSummary: ${results.length - failed.length} passed, ${failed.length} failed`);
   process.exit(failed.length === 0 ? 0 : 1);
 }
 

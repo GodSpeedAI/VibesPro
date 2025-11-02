@@ -13,14 +13,14 @@ Phase 3 implementation hit a critical blocker: **OpenTelemetry version conflicts
 
 **What Works**:
 
-- ✅ Vector configuration validation (shell smoke test)
-- ✅ Comprehensive documentation of blocker and solutions
+-   ✅ Vector configuration validation (shell smoke test)
+-   ✅ Comprehensive documentation of blocker and solutions
 
 **What's Blocked**:
 
-- ❌ OTLP integration tests
-- ❌ Span export verification
-- ❌ End-to-end validation
+-   ❌ OTLP integration tests
+-   ❌ Span export verification
+-   ❌ End-to-end validation
 
 ---
 
@@ -28,13 +28,13 @@ Phase 3 implementation hit a critical blocker: **OpenTelemetry version conflicts
 
 ### 1. Initial Integration Test Implementation
 
-- Added `fake-opentelemetry-collector = "0.32"` dev dependency
-- Created `tests/otlp_integration.rs` with comprehensive test scenarios:
-  - Basic span export
-  - Span events
-  - Multiple spans
-  - Error status handling
-  - Redaction requirements
+-   Added `fake-opentelemetry-collector = "0.32"` dev dependency
+-   Created `tests/otlp_integration.rs` with comprehensive test scenarios:
+    -   Basic span export
+    -   Span events
+    -   Multiple spans
+    -   Error status handling
+    -   Redaction requirements
 
 ### 2. Debugging Version Conflicts
 
@@ -56,9 +56,9 @@ note: there are multiple different versions of crate `opentelemetry` in the depe
 
 ### 4. Fallback to Shell Tests
 
-- Simplified `tests/ops/test_tracing_vector.sh` to config-only validation
-- Removes Vector startup/API checks (were hanging)
-- Now provides clear signal: config syntax is valid
+-   Simplified `tests/ops/test_tracing_vector.sh` to config-only validation
+-   Removes Vector startup/API checks (were hanging)
+-   Now provides clear signal: config syntax is valid
 
 ---
 
@@ -68,42 +68,42 @@ note: there are multiple different versions of crate `opentelemetry` in the depe
 
 1. **`docs/work-summaries/observability-phase3-completion.md`**
 
-   - Comprehensive blocker analysis
-   - 4 alternative strategies with effort/risk/benefit matrix
-   - Clear recommendation: Upgrade to OpenTelemetry 0.31+
+    - Comprehensive blocker analysis
+    - 4 alternative strategies with effort/risk/benefit matrix
+    - Clear recommendation: Upgrade to OpenTelemetry 0.31+
 
 2. **`docs/dev_tdd_observability.md`**
 
-   - Complete TDD tracking for all 3 phases
-   - Phase 1 & 2 status: ✅ Complete
-   - Phase 3 status: ❌ Blocked
-   - Testing gap analysis with risk assessment
-   - Future enhancement roadmap
+    - Complete TDD tracking for all 3 phases
+    - Phase 1 & 2 status: ✅ Complete
+    - Phase 3 status: ❌ Blocked
+    - Testing gap analysis with risk assessment
+    - Future enhancement roadmap
 
 3. **This Summary**
-   - Session outcome
-   - Decision framework
-   - Next steps
+    - Session outcome
+    - Decision framework
+    - Next steps
 
 ### Code Changes
 
 1. **Modified `crates/vibepro-observe/Cargo.toml`**
 
-   - Added `fake-opentelemetry-collector = "0.32"` (currently unused due to blocker)
+    - Added `fake-opentelemetry-collector = "0.32"` (currently unused due to blocker)
 
 2. **Created `tests/otlp_integration.rs`**
 
-   - Non-compiling but well-structured
-   - Ready to work once version upgraded
+    - Non-compiling but well-structured
+    - Ready to work once version upgraded
 
 3. **Updated `tests/ops/test_tracing_vector.sh`**
 
-   - Simplified to config validation only
-   - Passes successfully
-   - Provides minimal smoke test coverage
+    - Simplified to config validation only
+    - Passes successfully
+    - Provides minimal smoke test coverage
 
 4. **Updated `justfile`**
-   - Added `observe-test` recipe (blocked by compilation errors)
+    - Added `observe-test` recipe (blocked by compilation errors)
 
 ---
 
@@ -126,24 +126,24 @@ note: there are multiple different versions of crate `opentelemetry` in the depe
 
 **Short-term Pain, Long-term Gain**:
 
-- OpenTelemetry 0.25 is from 2023 - staying on it is technical debt
-- Ecosystem has moved to 0.31+ (fake-collector, examples, tutorials)
-- Upgrade now = future-proof, enables proper testing
-- Delaying upgrade makes it harder (more code to migrate)
+-   OpenTelemetry 0.25 is from 2023 - staying on it is technical debt
+-   Ecosystem has moved to 0.31+ (fake-collector, examples, tutorials)
+-   Upgrade now = future-proof, enables proper testing
+-   Delaying upgrade makes it harder (more code to migrate)
 
 **Effort is Manageable**:
 
-- OpenTelemetry Rust has good migration patterns
-- Breaking changes mostly in advanced features
-- Our usage is straightforward (basic tracing + OTLP export)
-- Estimated 2-4 hours total (upgrade + test + validate)
+-   OpenTelemetry Rust has good migration patterns
+-   Breaking changes mostly in advanced features
+-   Our usage is straightforward (basic tracing + OTLP export)
+-   Estimated 2-4 hours total (upgrade + test + validate)
 
 **Enables Full Phase 3 Completion**:
 
-- Unblocks `fake-opentelemetry-collector` usage
-- Provides proper CI coverage for OTLP export
-- Reduces manual testing burden
-- Gives confidence in production deployments
+-   Unblocks `fake-opentelemetry-collector` usage
+-   Provides proper CI coverage for OTLP export
+-   Reduces manual testing burden
+-   Gives confidence in production deployments
 
 ---
 
@@ -154,17 +154,17 @@ note: there are multiple different versions of crate `opentelemetry` in the depe
 1. **Decision**: Confirm upgrade to OpenTelemetry 0.31+ approach
 2. **Branch**: Create `feature/observability-otel-0.31-upgrade`
 3. **Upgrade**:
-   - Update `Cargo.toml` dependencies to 0.31+
-   - Fix compilation errors (likely minimal API changes)
-   - Run existing Phase 1 & 2 tests
+    - Update `Cargo.toml` dependencies to 0.31+
+    - Fix compilation errors (likely minimal API changes)
+    - Run existing Phase 1 & 2 tests
 4. **Complete Phase 3**:
-   - Fix `tests/otlp_integration.rs` compilation
-   - Run integration tests
-   - Verify spans export correctly
+    - Fix `tests/otlp_integration.rs` compilation
+    - Run integration tests
+    - Verify spans export correctly
 5. **Validate**:
-   - Run full test suite
-   - Manual smoke test with Jaeger
-   - Update completion docs
+    - Run full test suite
+    - Manual smoke test with Jaeger
+    - Update completion docs
 
 ### Near-term (Next Sprint)
 
@@ -196,21 +196,21 @@ note: there are multiple different versions of crate `opentelemetry` in the depe
 
 **Without OTLP Integration Tests**:
 
-- ⚠️ **HIGH RISK**: No automated verification of span export
-- ⚠️ **MEDIUM RISK**: Breaking changes could go undetected
-- ✅ **MITIGATED**: Initialization & config generation well-tested
+-   ⚠️ **HIGH RISK**: No automated verification of span export
+-   ⚠️ **MEDIUM RISK**: Breaking changes could go undetected
+-   ✅ **MITIGATED**: Initialization & config generation well-tested
 
 **Current Mitigation**:
 
-- Shell test validates Vector config syntax
-- Manual testing required for full validation
-- Rely on OpenTelemetry library's test coverage
+-   Shell test validates Vector config syntax
+-   Manual testing required for full validation
+-   Rely on OpenTelemetry library's test coverage
 
 **Post-Upgrade Mitigation**:
 
-- Full integration test suite
-- CI blocks PRs with failing tests
-- Automated regression prevention
+-   Full integration test suite
+-   CI blocks PRs with failing tests
+-   Automated regression prevention
 
 ---
 
@@ -218,22 +218,22 @@ note: there are multiple different versions of crate `opentelemetry` in the depe
 
 ### Created
 
-- `docs/work-summaries/observability-phase3-completion.md`
-- `docs/dev_tdd_observability.md`
-- `docs/work-summaries/observability-phase3-session-summary.md` (this file)
-- `crates/vibepro-observe/tests/otlp_integration.rs` (non-compiling)
+-   `docs/work-summaries/observability-phase3-completion.md`
+-   `docs/dev_tdd_observability.md`
+-   `docs/work-summaries/observability-phase3-session-summary.md` (this file)
+-   `crates/vibepro-observe/tests/otlp_integration.rs` (non-compiling)
 
 ### Modified
 
-- `crates/vibepro-observe/Cargo.toml` - Added fake-collector dep
-- `tests/ops/test_tracing_vector.sh` - Simplified to config-only
-- `justfile` - Added observe-test recipe
+-   `crates/vibepro-observe/Cargo.toml` - Added fake-collector dep
+-   `tests/ops/test_tracing_vector.sh` - Simplified to config-only
+-   `justfile` - Added observe-test recipe
 
 ### Unchanged (Works as Expected)
 
-- `crates/vibepro-observe/src/lib.rs` - Phase 1 & 2 code
-- `crates/vibepro-observe/tests/lib.rs` - Phase 1 & 2 tests
-- `ops/vector/vector.toml` - Vector configuration
+-   `crates/vibepro-observe/src/lib.rs` - Phase 1 & 2 code
+-   `crates/vibepro-observe/tests/lib.rs` - Phase 1 & 2 tests
+-   `ops/vector/vector.toml` - Vector configuration
 
 ---
 
@@ -259,17 +259,17 @@ note: there are multiple different versions of crate `opentelemetry` in the depe
 
 ### Primary Documents
 
-- **Blocker Analysis**: `docs/work-summaries/observability-phase3-completion.md`
-- **TDD Tracking**: `docs/dev_tdd_observability.md`
-- **Phase 1 Summary**: `docs/work-summaries/observability-phase1-completion.md`
-- **Phase 2 Summary**: `docs/work-summaries/observability-phase2-completion.md`
+-   **Blocker Analysis**: `docs/work-summaries/observability-phase3-completion.md`
+-   **TDD Tracking**: `docs/dev_tdd_observability.md`
+-   **Phase 1 Summary**: `docs/work-summaries/observability-phase1-completion.md`
+-   **Phase 2 Summary**: `docs/work-summaries/observability-phase2-completion.md`
 
 ### External Resources
 
-- OpenTelemetry Rust 0.25: https://docs.rs/opentelemetry/0.25.0
-- OpenTelemetry Rust 0.31: https://docs.rs/opentelemetry/0.31.0
-- fake-opentelemetry-collector: https://github.com/davidB/tracing-opentelemetry-instrumentation-sdk
-- Vector OTLP Source: https://vector.dev/docs/reference/configuration/sources/otlp/
+-   OpenTelemetry Rust 0.25: https://docs.rs/opentelemetry/0.25.0
+-   OpenTelemetry Rust 0.31: https://docs.rs/opentelemetry/0.31.0
+-   fake-opentelemetry-collector: https://github.com/davidB/tracing-opentelemetry-instrumentation-sdk
+-   Vector OTLP Source: https://vector.dev/docs/reference/configuration/sources/otlp/
 
 ---
 

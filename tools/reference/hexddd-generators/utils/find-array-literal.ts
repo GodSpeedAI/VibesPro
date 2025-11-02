@@ -1,4 +1,4 @@
-import { tsquery } from "@phenomnomnominal/tsquery";
+import { tsquery } from '@phenomnomnominal/tsquery';
 
 export function findArrayLiteral(code: string, propName: string): number {
   const ast = tsquery.ast(code);
@@ -10,6 +10,6 @@ export function findArrayLiteral(code: string, propName: string): number {
     return -1;
   }
   const node = nodes[0];
-  const bracket = code.indexOf("[", node.pos);
+  const bracket = code.indexOf('[', node.pos);
   return bracket + 1;
 }

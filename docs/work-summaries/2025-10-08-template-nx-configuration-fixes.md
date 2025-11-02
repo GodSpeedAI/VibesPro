@@ -15,54 +15,54 @@ Incorporating fixes from the SEA project generation to prevent Nx and TypeScript
 
 1. **nx.json.j2**: Missing `namedInputs` section
 
-   - Causes: Nx daemon crashes with "invalid fileset" errors
-   - Impact: Build, test, and lint commands fail completely
+    - Causes: Nx daemon crashes with "invalid fileset" errors
+    - Impact: Build, test, and lint commands fail completely
 
 2. **libs/core/project.json**: Missing entirely
 
-   - Causes: Nx cannot detect the core library as a project
-   - Impact: Project not recognized in Nx graph, no task execution
+    - Causes: Nx cannot detect the core library as a project
+    - Impact: Project not recognized in Nx graph, no task execution
 
 3. **TypeScript Configurations**: Missing lib and spec configs
 
-   - `libs/core/tsconfig.json` - missing
-   - `libs/core/tsconfig.lib.json` - missing
-   - `libs/core/tsconfig.spec.json` - missing
-   - Causes: Module resolution conflicts, no test compilation setup
+    - `libs/core/tsconfig.json` - missing
+    - `libs/core/tsconfig.lib.json` - missing
+    - `libs/core/tsconfig.spec.json` - missing
+    - Causes: Module resolution conflicts, no test compilation setup
 
 4. **libs/core/index.ts**: Missing library entry point
 
-   - Causes: Path mappings have no target file
-   - Impact: Imports fail
+    - Causes: Path mappings have no target file
+    - Impact: Imports fail
 
 5. **pnpm-workspace.yaml**: Missing
 
-   - Causes: pnpm warnings about workspace configuration
-   - Impact: Suboptimal monorepo setup
+    - Causes: pnpm warnings about workspace configuration
+    - Impact: Suboptimal monorepo setup
 
 6. **ESLint Configuration**: Missing
 
-   - Root `.eslintrc.json` - missing
-   - `libs/core/.eslintrc.json` - missing
-   - Packages: @nx/eslint, eslint, @typescript-eslint/\* - missing
+    - Root `.eslintrc.json` - missing
+    - `libs/core/.eslintrc.json` - missing
+    - Packages: @nx/eslint, eslint, @typescript-eslint/\* - missing
 
 7. **Jest Configuration**: Missing
 
-   - Root `jest.config.js` - missing
-   - Root `jest.preset.js` - missing
-   - `libs/core/jest.config.ts` - missing
-   - Packages: @nx/jest, jest, ts-jest, @types/jest - missing
+    - Root `jest.config.js` - missing
+    - Root `jest.preset.js` - missing
+    - `libs/core/jest.config.ts` - missing
+    - Packages: @nx/jest, jest, ts-jest, @types/jest - missing
 
 8. **Dependencies**: Missing critical packages
 
-   - `tslib` - required by `importHelpers: true`
-   - ESLint packages
-   - Jest packages
+    - `tslib` - required by `importHelpers: true`
+    - ESLint packages
+    - Jest packages
 
 9. **Module Resolution Conflict**
-   - tsconfig.base.json uses `moduleResolution: "bundler"`
-   - But projects may need `moduleResolution: "node"` for CommonJS
-   - Causes: TypeScript compilation errors
+    - tsconfig.base.json uses `moduleResolution: "bundler"`
+    - But projects may need `moduleResolution: "node"` for CommonJS
+    - Causes: TypeScript compilation errors
 
 ## Fixes to Implement
 
@@ -70,42 +70,36 @@ Incorporating fixes from the SEA project generation to prevent Nx and TypeScript
 
 ```json
 {
-  "version": 2,
-  "npmScope": "{{ project_slug }}",
-  "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "production": [
-      "default",
-      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/.eslintrc.json"
-    ],
-    "sharedGlobals": ["{workspaceRoot}/babel.config.json"]
-  },
-  "affected": {
-    "defaultBase": "origin/main"
-  },
-  "cli": {
-    "packageManager": "pnpm"
-  },
-  "generators": {
-    "@nx/js:lib": {
-      "buildable": true
-    }
-  },
-  "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+    "version": 2,
+    "npmScope": "{{ project_slug }}",
+    "namedInputs": {
+        "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        "production": ["default", "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)", "!{projectRoot}/tsconfig.spec.json", "!{projectRoot}/jest.config.[jt]s", "!{projectRoot}/.eslintrc.json"],
+        "sharedGlobals": ["{workspaceRoot}/babel.config.json"]
     },
-    "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+    "affected": {
+        "defaultBase": "origin/main"
     },
-    "lint": {
-      "inputs": ["default", "^production", "{workspaceRoot}/.eslintrc.json"]
+    "cli": {
+        "packageManager": "pnpm"
+    },
+    "generators": {
+        "@nx/js:lib": {
+            "buildable": true
+        }
+    },
+    "targetDefaults": {
+        "build": {
+            "dependsOn": ["^build"],
+            "inputs": ["production", "^production"]
+        },
+        "test": {
+            "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+        },
+        "lint": {
+            "inputs": ["default", "^production", "{workspaceRoot}/.eslintrc.json"]
+        }
     }
-  }
 }
 ```
 
@@ -115,10 +109,10 @@ New file with Nx project configuration for the core library.
 
 ### 3. Create TypeScript Configuration Files
 
-- `libs/core/tsconfig.json.j2` - Base config
-- `libs/core/tsconfig.lib.json.j2` - Library compilation (with `moduleResolution: "node"`)
-- `libs/core/tsconfig.spec.json.j2` - Test compilation
-- `libs/core/index.ts` - Library entry point
+-   `libs/core/tsconfig.json.j2` - Base config
+-   `libs/core/tsconfig.lib.json.j2` - Library compilation (with `moduleResolution: "node"`)
+-   `libs/core/tsconfig.spec.json.j2` - Test compilation
+-   `libs/core/index.ts` - Library entry point
 
 ### 4. Create pnpm-workspace.yaml.j2
 
@@ -126,14 +120,14 @@ Simple workspace configuration for pnpm.
 
 ### 5. Create ESLint Configurations
 
-- `.eslintrc.json.j2` - Root ESLint config
-- `libs/core/.eslintrc.json.j2` - Project ESLint config
+-   `.eslintrc.json.j2` - Root ESLint config
+-   `libs/core/.eslintrc.json.j2` - Project ESLint config
 
 ### 6. Create Jest Configurations
 
-- `jest.config.js.j2` - Root Jest config
-- `jest.preset.js.j2` - Jest preset
-- `libs/core/jest.config.ts.j2` - Project Jest config
+-   `jest.config.js.j2` - Root Jest config
+-   `jest.preset.js.j2` - Jest preset
+-   `libs/core/jest.config.ts.j2` - Project Jest config
 
 ### 7. Update package.json.j2 Dependencies
 
@@ -141,24 +135,24 @@ Add missing packages:
 
 ```json
 {
-  "devDependencies": {
-    "@nx/eslint": "21.6.4",
-    "@nx/eslint-plugin": "21.6.4",
-    "@nx/jest": "21.6.4",
-    "@nx/js": "21.6.4",
-    "@nx/node": "21.6.4",
-    "@nx/workspace": "21.6.4",
-    "@types/jest": "30.0.0",
-    "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "8.46.0",
-    "@typescript-eslint/parser": "8.46.0",
-    "eslint": "9.37.0",
-    "jest": "30.2.0",
-    "nx": "21.6.4",
-    "ts-jest": "29.4.4",
-    "tslib": "2.8.1",
-    "typescript": "^5.0.0"
-  }
+    "devDependencies": {
+        "@nx/eslint": "21.6.4",
+        "@nx/eslint-plugin": "21.6.4",
+        "@nx/jest": "21.6.4",
+        "@nx/js": "21.6.4",
+        "@nx/node": "21.6.4",
+        "@nx/workspace": "21.6.4",
+        "@types/jest": "30.0.0",
+        "@types/node": "^20.0.0",
+        "@typescript-eslint/eslint-plugin": "8.46.0",
+        "@typescript-eslint/parser": "8.46.0",
+        "eslint": "9.37.0",
+        "jest": "30.2.0",
+        "nx": "21.6.4",
+        "ts-jest": "29.4.4",
+        "tslib": "2.8.1",
+        "typescript": "^5.0.0"
+    }
 }
 ```
 
@@ -168,9 +162,9 @@ Add path mapping:
 
 ```json
 {
-  "paths": {
-    "@{{ project_slug }}/core": ["libs/core/index.ts"]
-  }
+    "paths": {
+        "@{{ project_slug }}/core": ["libs/core/index.ts"]
+    }
 }
 ```
 
@@ -207,24 +201,24 @@ After implementing fixes:
 
 ✅ Generated projects will have:
 
-- Working Nx project detection
-- Functional build, lint, and test targets
-- Proper TypeScript compilation
-- ESLint code quality checks
-- Jest unit testing framework
-- No daemon crashes
-- No missing dependency errors
-- No module resolution conflicts
+-   Working Nx project detection
+-   Functional build, lint, and test targets
+-   Proper TypeScript compilation
+-   ESLint code quality checks
+-   Jest unit testing framework
+-   No daemon crashes
+-   No missing dependency errors
+-   No module resolution conflicts
 
 ## References
 
-- SEA Project Fix Summary: `/home/sprime01/projects/SEA/docs/work-summaries/2025-10-08-nx-configuration-fix.md`
-- Nx Documentation: https://nx.dev
-- Project Standards: `.github/instructions/`
+-   SEA Project Fix Summary: `/home/sprime01/projects/SEA/docs/work-summaries/2025-10-08-nx-configuration-fix.md`
+-   Nx Documentation: https://nx.dev
+-   Project Standards: `.github/instructions/`
 
 ## Compliance
 
-- ✅ Follows generator-first policy (uses Nx structure)
-- ✅ Security: No secrets, no auto-approve
-- ✅ Testing: Includes Jest setup
-- ✅ Traceability: Documented in this summary
+-   ✅ Follows generator-first policy (uses Nx structure)
+-   ✅ Security: No secrets, no auto-approve
+-   ✅ Testing: Includes Jest setup
+-   ✅ Traceability: Documented in this summary

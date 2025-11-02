@@ -25,6 +25,7 @@
     "lint:shell": "shellcheck scripts/*.sh || echo 'shellcheck not installed, skipping shell linting'",
     "docs:links": "node tools/docs/link_check.js",
     "env:audit": "node tools/audit/env_audit.js",
+    "format": "nx format --all",
     "pr:comment": "node tools/ci/pr_comment.js",
     "test:node": "node tools/test/node-smoke.cjs"
   },
@@ -55,6 +56,7 @@
     "markdownlint-cli": "^0.36.0",
     "next": "^16.0.0",
     "nx": "21.5.3",
+    "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.4.4",
     "ts-morph": "^27.0.0",

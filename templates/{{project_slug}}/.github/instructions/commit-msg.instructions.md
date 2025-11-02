@@ -8,11 +8,11 @@ precedence: 15
 
 ### ✨ Core Principles
 
-- **Clarity & Actionability:** Every commit message should make it easy to understand what changed and why—at a glance.
-- **Blend of Code & Reasoning:** Surface the rationale and context when it adds value (e.g., for architectural, non-obvious, or risky changes), but keep routine commits concise.
-- **Traceability & Automation:** Reference relevant specs, issues, or design docs to support automated workflows and future audits.
-- **Cognitive Ergonomics:** Use a small, meaningful emoji set to improve scanability—never for decoration.
-- **Validation & Risk Awareness:** Explicitly note how changes were tested, any risks introduced, and mitigation strategies.
+-   **Clarity & Actionability:** Every commit message should make it easy to understand what changed and why—at a glance.
+-   **Blend of Code & Reasoning:** Surface the rationale and context when it adds value (e.g., for architectural, non-obvious, or risky changes), but keep routine commits concise.
+-   **Traceability & Automation:** Reference relevant specs, issues, or design docs to support automated workflows and future audits.
+-   **Cognitive Ergonomics:** Use a small, meaningful emoji set to improve scanability—never for decoration.
+-   **Validation & Risk Awareness:** Explicitly note how changes were tested, any risks introduced, and mitigation strategies.
 
 ---
 
@@ -31,15 +31,15 @@ precedence: 15
 
 ### 🧠 When to Surface Analytical Context
 
-- **Do include reasoning** for:
-  - Architectural changes
-  - Non-obvious bug fixes
-  - Performance/security optimizations
-  - Trade-offs or alternatives considered
-- **Keep it concise** for:
-  - Routine refactors
-  - Simple feature additions
-  - Standard dependency updates
+-   **Do include reasoning** for:
+    -   Architectural changes
+    -   Non-obvious bug fixes
+    -   Performance/security optimizations
+    -   Trade-offs or alternatives considered
+-   **Keep it concise** for:
+    -   Routine refactors
+    -   Simple feature additions
+    -   Standard dependency updates
 
 ---
 

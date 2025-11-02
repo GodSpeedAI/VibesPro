@@ -18,21 +18,21 @@ Migrated SecureDb from sled to redb, achieving **99% overhead reduction** (800% 
 
 1. **sled is unmaintained**
 
-   - Perpetual beta status since 2020
-   - No active development or security patches
-   - Security audit flagged as concerning
+    - Perpetual beta status since 2020
+    - No active development or security patches
+    - Security audit flagged as concerning
 
 2. **Fair performance comparison**
 
-   - Previous benchmarks compared encrypted sled to plain sled
-   - Needed consistent database backend for meaningful overhead measurement
+    - Previous benchmarks compared encrypted sled to plain sled
+    - Needed consistent database backend for meaningful overhead measurement
 
 3. **redb advantages**
-   - Actively maintained (last update: weeks ago)
-   - Stable 2.x release
-   - Pure Rust (no C dependencies)
-   - Similar embedded database use case
-   - ACID guarantees
+    - Actively maintained (last update: weeks ago)
+    - Stable 2.x release
+    - Pure Rust (no C dependencies)
+    - Similar embedded database use case
+    - ACID guarantees
 
 ---
 
@@ -75,8 +75,8 @@ write_txn.commit()?;  // Explicit commit
 
 Original TASK-016 strategy (persist every 10 ops) was **insufficient** with redb's explicit transactions:
 
-- Each counter persistence = 1 full transaction
-- Total overhead: 800% → 35,000% (massive regression!)
+-   Each counter persistence = 1 full transaction
+-   Total overhead: 800% → 35,000% (massive regression!)
 
 **Solution:** Keep counter in memory, persist only on `flush()`:
 
@@ -145,23 +145,23 @@ pub fn flush(&self) -> SecureDbResult<()> {
 
 ### Security Tests ✅
 
-- **Nonce uniqueness:** Maintained (test_nonce_monotonicity)
-- **No plaintext leakage:** Verified (test_no_plaintext_on_disk)
-- **Concurrent safety:** Preserved (test_concurrent_inserts)
-- **Wrong key fails:** Works (test_wrong_key_fails)
-- **Roundtrip:** Correct (test_encrypt_decrypt_roundtrip)
+-   **Nonce uniqueness:** Maintained (test_nonce_monotonicity)
+-   **No plaintext leakage:** Verified (test_no_plaintext_on_disk)
+-   **Concurrent safety:** Preserved (test_concurrent_inserts)
+-   **Wrong key fails:** Works (test_wrong_key_fails)
+-   **Roundtrip:** Correct (test_encrypt_decrypt_roundtrip)
 
 ### Integration Tests ✅
 
-- All 5 security library unit tests pass
-- All 5 template generation integration tests pass
-- All 5 validation suite tests pass
+-   All 5 security library unit tests pass
+-   All 5 template generation integration tests pass
+-   All 5 validation suite tests pass
 
 ### Performance Tests ✅
 
-- **Overhead:** 8.4% (vs 800% with sled)
-- **Threshold:** <1000% (easily met)
-- **Conclusion:** Production-ready
+-   **Overhead:** 8.4% (vs 800% with sled)
+-   **Threshold:** <1000% (easily met)
+-   **Conclusion:** Production-ready
 
 ---
 
@@ -200,20 +200,20 @@ redb has slightly higher absolute latency but is actively maintained and stable.
 
 SecureDb v0.2.0 is appropriate for:
 
-- ✅ Configuration storage (low-medium throughput, high security)
-- ✅ API key management (small data, infrequent access)
-- ✅ User credential storage (security > performance)
-- ✅ Audit logs (append-mostly, durability critical)
-- ✅ Session data (medium throughput, moderate security)
-- ✅ **< 10,000 operations per second**
-- ✅ **Acceptable to have ~60ms added latency per 1,000 operations**
-- ✅ **Production-ready for most applications**
+-   ✅ Configuration storage (low-medium throughput, high security)
+-   ✅ API key management (small data, infrequent access)
+-   ✅ User credential storage (security > performance)
+-   ✅ Audit logs (append-mostly, durability critical)
+-   ✅ Session data (medium throughput, moderate security)
+-   ✅ **< 10,000 operations per second**
+-   ✅ **Acceptable to have ~60ms added latency per 1,000 operations**
+-   ✅ **Production-ready for most applications**
 
 SecureDb may NOT be appropriate for:
 
-- ❌ Ultra-high-throughput data pipelines (>100k ops/sec)
-- ❌ Hard real-time systems (sub-microsecond latency required)
-- ❌ Applications where ANY overhead is unacceptable
+-   ❌ Ultra-high-throughput data pipelines (>100k ops/sec)
+-   ❌ Hard real-time systems (sub-microsecond latency required)
+-   ❌ Applications where ANY overhead is unacceptable
 
 ---
 
@@ -247,14 +247,14 @@ The remaining 8.4% overhead could be further reduced:
 
 1. **In-place encryption** (~2-3% improvement)
 
-   - Use `encrypt_in_place` API to eliminate allocations
+    - Use `encrypt_in_place` API to eliminate allocations
 
 2. **Buffer pooling** (~1-2% improvement)
 
-   - Reuse buffers across operations
+    - Reuse buffers across operations
 
 3. **Batch API** (variable improvement)
-   - Add `insert_batch()` for amortized transaction costs
+    - Add `insert_batch()` for amortized transaction costs
 
 **Estimated final overhead:** ~4-6% (negligible for most use cases)
 
@@ -264,11 +264,11 @@ The remaining 8.4% overhead could be further reduced:
 
 The redb migration was successful, achieving:
 
-- ✅ Eliminated unmaintained dependency (sled)
-- ✅ 99% overhead reduction (800% → 8.4%)
-- ✅ Production-ready performance
-- ✅ All security guarantees maintained
-- ✅ All tests passing
+-   ✅ Eliminated unmaintained dependency (sled)
+-   ✅ 99% overhead reduction (800% → 8.4%)
+-   ✅ Production-ready performance
+-   ✅ All security guarantees maintained
+-   ✅ All tests passing
 
 **Recommendation:** Adopt redb as the standard embedded database for VibesPro projects. Document counter management best practices (`flush()` before shutdown).
 

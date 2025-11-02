@@ -16,10 +16,10 @@ This project follows a **generator-first approach**: always scaffold with Nx gen
 
 This ensures:
 
-- Consistent project structure across the monorepo
-- Proper Nx project configuration and dependencies
-- Adherence to hexagonal architecture patterns
-- Correct placement within the bounded context
+-   Consistent project structure across the monorepo
+-   Proper Nx project configuration and dependencies
+-   Adherence to hexagonal architecture patterns
+-   Correct placement within the bounded context
 
 ## Workflow for AI-Assisted Development
 
@@ -55,10 +55,10 @@ pnpm exec nx g @nxlv/python:app my-api
 
 **After** the generator creates the scaffold:
 
-- Add business logic specific to your domain
-- Implement interfaces per SDS/TS specs
-- Add tests following TDD workflow
-- Update documentation and traceability
+-   Add business logic specific to your domain
+-   Implement interfaces per SDS/TS specs
+-   Add tests following TDD workflow
+-   Update documentation and traceability
 
 ## Common Generators
 
@@ -155,18 +155,18 @@ When implementing from PRD/SDS/TS:
 
 Only write code from scratch when:
 
-- Modifying existing generated code (add features, fix bugs)
-- The code is purely utility/helper functions within an existing module
-- No appropriate generator exists (rare - consider creating a custom generator)
+-   Modifying existing generated code (add features, fix bugs)
+-   The code is purely utility/helper functions within an existing module
+-   No appropriate generator exists (rare - consider creating a custom generator)
 
 ## Error Handling
 
 If `just ai-scaffold` fails:
 
-- Check that pnpm/Nx are installed: `just setup`
-- Verify the generator name is correct: `pnpm exec nx list`
-- Check if the plugin is installed in package.json
-- Install missing plugins: `pnpm add -D @nx/react` (for example)
+-   Check that pnpm/Nx are installed: `just setup`
+-   Verify the generator name is correct: `pnpm exec nx list`
+-   Check if the plugin is installed in package.json
+-   Install missing plugins: `pnpm add -D @nx/react` (for example)
 
 ## Custom Generator Development
 
@@ -179,8 +179,8 @@ If you frequently create similar code patterns:
 
 ## References
 
-- Nx generators documentation: https://nx.dev/concepts/more-concepts/generating-code
-- Custom generators guide: https://nx.dev/extending-nx/recipes/local-generators
-- @nxlv/python plugin: https://github.com/lucasvieirasilva/nx-plugins
-- Just recipes: see `justfile` (lines 376-398 for `ai-scaffold`)
-- Nx integration: `.github/instructions/nx.instructions.md`
+-   Nx generators documentation: https://nx.dev/concepts/more-concepts/generating-code
+-   Custom generators guide: https://nx.dev/extending-nx/recipes/local-generators
+-   @nxlv/python plugin: https://github.com/lucasvieirasilva/nx-plugins
+-   Just recipes: see `justfile` (lines 376-398 for `ai-scaffold`)
+-   Nx integration: `.github/instructions/nx.instructions.md`

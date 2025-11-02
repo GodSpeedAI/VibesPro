@@ -4,18 +4,18 @@
  * Traceability: PRD-MERGE-006, ADR-MERGE-008, TASK-009
  */
 
-const { existsSync, mkdirSync } = require("fs");
-const fs = require("fs").promises;
-const path = require("path");
+const { existsSync, mkdirSync } = require('fs');
+const fs = require('fs').promises;
+const path = require('path');
 
-const DEFAULT_LICENSE = "MIT License";
-const FALLBACK_DESCRIPTION = "Project description pending.";
+const DEFAULT_LICENSE = 'MIT License';
+const FALLBACK_DESCRIPTION = 'Project description pending.';
 
 const normalizeArray = (value) => {
   if (Array.isArray(value)) return value.filter(Boolean);
-  if (typeof value === "string")
+  if (typeof value === 'string')
     return value
-      .split(",")
+      .split(',')
       .map((s) => s.trim())
       .filter(Boolean);
   return [];
@@ -43,27 +43,16 @@ class DocumentationGenerator {
   }
 
   normalizeContext(context = {}) {
-    const {
-      projectName,
-      description,
-      domains,
-      frameworks,
-      includeAI,
-      license,
-    } = context ?? {};
+    const { projectName, description, domains, frameworks, includeAI, license } = context ?? {};
 
     const normalizedProjectName =
-      typeof projectName === "string" && projectName.trim().length > 0
-        ? projectName
-        : "Project";
+      typeof projectName === 'string' && projectName.trim().length > 0 ? projectName : 'Project';
     const normalizedDescription =
-      typeof description === "string" && description.trim().length > 0
+      typeof description === 'string' && description.trim().length > 0
         ? description
         : FALLBACK_DESCRIPTION;
     const normalizedLicense =
-      typeof license === "string" && license.trim().length > 0
-        ? license
-        : DEFAULT_LICENSE;
+      typeof license === 'string' && license.trim().length > 0 ? license : DEFAULT_LICENSE;
 
     return {
       ...context,
@@ -78,49 +67,43 @@ class DocumentationGenerator {
 
   formatList(items, formatItem) {
     const normalized = normalizeArray(items);
-    return normalized.length > 0 ? normalized.map(formatItem).join("\n") : "";
+    return normalized.length > 0 ? normalized.map(formatItem).join('\n') : '';
   }
 
   async generateAndSaveTemplates(context) {
-    const templateDir = path.join(this.outputDir, "templates", "docs");
+    const templateDir = path.join(this.outputDir, 'templates', 'docs');
 
     this.ensureDirectory(templateDir);
 
     const readmeTemplate = this.generateReadmeTemplate(context);
     const archTemplate = this.generateArchitectureTemplate(context);
     const apiTemplate = this.generateApiTemplate(context);
-    await fs.writeFile(path.join(templateDir, "README.md.j2"), readmeTemplate);
-    await fs.writeFile(
-      path.join(templateDir, "ARCHITECTURE.md.j2"),
-      archTemplate,
-    );
-    await fs.writeFile(
-      path.join(templateDir, "API-REFERENCE.md.j2"),
-      apiTemplate,
-    );
+    await fs.writeFile(path.join(templateDir, 'README.md.j2'), readmeTemplate);
+    await fs.writeFile(path.join(templateDir, 'ARCHITECTURE.md.j2'), archTemplate);
+    await fs.writeFile(path.join(templateDir, 'API-REFERENCE.md.j2'), apiTemplate);
   }
 
   validateDocumentation(docs) {
-    const readmeContent = docs?.readme ?? "";
-    const architectureContent = docs?.architectureGuide ?? "";
-    const apiDocsContent = docs?.apiDocs ?? "";
+    const readmeContent = docs?.readme ?? '';
+    const architectureContent = docs?.architectureGuide ?? '';
+    const apiDocsContent = docs?.apiDocs ?? '';
 
     const sectionChecks = [
       {
-        condition: readmeContent.includes("Getting Started"),
-        message: "Getting Started section in README",
+        condition: readmeContent.includes('Getting Started'),
+        message: 'Getting Started section in README',
       },
       {
-        condition: readmeContent.includes("## Architecture"),
-        message: "Architecture section in README",
+        condition: readmeContent.includes('## Architecture'),
+        message: 'Architecture section in README',
       },
       {
         condition: apiDocsContent.trim().length > 0,
-        message: "API Documentation",
+        message: 'API Documentation',
       },
       {
-        condition: architectureContent.includes("Hexagonal Architecture"),
-        message: "Hexagonal Architecture explanation",
+        condition: architectureContent.includes('Hexagonal Architecture'),
+        message: 'Hexagonal Architecture explanation',
       },
     ];
 
@@ -130,10 +113,7 @@ class DocumentationGenerator {
 
     const totalChecks = sectionChecks.length;
     const failedChecks = missingSection.length;
-    const score =
-      totalChecks === 0
-        ? 1
-        : Math.max(0, (totalChecks - failedChecks) / totalChecks);
+    const score = totalChecks === 0 ? 1 : Math.max(0, (totalChecks - failedChecks) / totalChecks);
 
     return {
       isValid: missingSection.length === 0,
@@ -149,23 +129,13 @@ class DocumentationGenerator {
   }
 
   buildReadme(context) {
-    const {
-      projectName,
-      description,
-      domains,
-      frameworks,
-      includeAI,
-      license,
-    } = context;
+    const { projectName, description, domains, frameworks, includeAI, license } = context;
 
     const domainList = this.formatList(
       domains,
       (domain) => `- **${domain}**: Core business domain`,
     );
-    const frameworksList = this.formatList(
-      frameworks,
-      (framework) => `- ${framework}`,
-    );
+    const frameworksList = this.formatList(frameworks, (framework) => `- ${framework}`);
 
     const domainsSection = domainList
       ? `### Domains
@@ -197,7 +167,7 @@ This project includes AI-enhanced development workflows for:
 - Development assistance
 
 `
-      : "";
+      : '';
 
     return `# ${projectName}
 
@@ -250,17 +220,14 @@ ${license}
 
   buildApiDocs(context) {
     const { projectName, domains } = context;
-    const normalizedProjectSlug = projectName
-      .toLowerCase()
-      .replace(/\s+/g, "-");
+    const normalizedProjectSlug = projectName.toLowerCase().replace(/\s+/g, '-');
 
     const domainDocs =
       domains.length > 0
         ? domains
             .map((domain) => {
-              const domainName =
-                domain.charAt(0).toUpperCase() + domain.slice(1);
-              const domainSlug = domain.toLowerCase().replace(/\s+/g, "-");
+              const domainName = domain.charAt(0).toUpperCase() + domain.slice(1);
+              const domainSlug = domain.toLowerCase().replace(/\s+/g, '-');
               return `## ${domainName} Domain API
 
 ### Endpoints
@@ -276,7 +243,7 @@ ${license}
 See \`libs/shared/database-types/\` for complete data models.
 `;
             })
-            .join("\n")
+            .join('\n')
         : `## Domains
 
 No domain endpoints defined yet.
@@ -324,8 +291,7 @@ ${domainDocs}
       domains.length > 0
         ? domains
             .map((domain) => {
-              const domainName =
-                domain.charAt(0).toUpperCase() + domain.slice(1);
+              const domainName = domain.charAt(0).toUpperCase() + domain.slice(1);
               return `#### ${domainName} Domain
 
 - **Entities**: Core business objects with identity
@@ -334,8 +300,8 @@ ${domainDocs}
 - **Repository Interfaces**: Data access abstractions
 `;
             })
-            .join("\n\n")
-        : "";
+            .join('\n\n')
+        : '';
 
     const boundedContextsSection = domainSections
       ? `### Bounded Contexts

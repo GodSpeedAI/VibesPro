@@ -112,16 +112,14 @@ retry_attempts = 3
 [transforms.logs_redact_pii]
 type = "remap"
 inputs = ["otlp.logs"]
-files = [
-  "tools/vector/macros.vrl",
-  "ops/vector/transforms/logs_redact_pii.vrl",
-]
+files = ["tools/vector/macros.vrl", "ops/vector/transforms/logs_redact_pii.vrl"]
 
 [transforms.logs_logfire_normalize]
 type = "remap"
 inputs = ["logs_redact_pii"]
 file = "ops/vector/transforms/logs_logfire_normalize.vrl"
 
+# logs_enrich ensures .service, .environment, and .application_version metadata
 [transforms.logs_enrich]
 type = "remap"
 inputs = ["logs_logfire_normalize"]

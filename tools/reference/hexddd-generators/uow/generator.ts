@@ -1,5 +1,5 @@
-import { Tree, formatFiles } from "@nx/devkit";
-import { UowGeneratorSchema } from "./schema";
+import { Tree, formatFiles } from '@nx/devkit';
+import { UowGeneratorSchema } from './schema';
 
 /**
  * Generates the TypeScript files for the UoW.
@@ -37,7 +37,7 @@ export class UnitOfWorkInMemoryAdapter implements IUnitOfWork {
  * @param options The generator options.
  */
 function addPyFiles(tree: Tree, options: UowGeneratorSchema) {
-  const snakeCaseDomain = options.domain.replace(/-/g, "_");
+  const snakeCaseDomain = options.domain.replace(/-/g, '_');
 
   const uowProtocolContent = `from typing import Protocol, TypeVar, Callable, Awaitable
 
@@ -74,9 +74,9 @@ class UnitOfWorkSQLAlchemyAdapter(IUnitOfWork):
 }
 
 export async function uowGenerator(tree: Tree, options: UowGeneratorSchema) {
-  if (options.language === "ts") {
+  if (options.language === 'ts') {
     addTsFiles(tree, options);
-  } else if (options.language === "py") {
+  } else if (options.language === 'py') {
     addPyFiles(tree, options);
   }
 

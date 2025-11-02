@@ -13,7 +13,7 @@ permissions:
 	contents: read
 
 concurrency:
-	group: env-check-${{ github.ref }}
+	group: {% raw %}env-check-${{ github.ref }}{% endraw %}
 	cancel-in-progress: true
 
 jobs:

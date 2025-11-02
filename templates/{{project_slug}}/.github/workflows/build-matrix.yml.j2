@@ -16,7 +16,7 @@ permissions:
 	contents: read
 
 concurrency:
-	group: build-matrix-${{ github.ref }}
+	group: {% raw %}build-matrix-${{ github.ref }}{% endraw %}
 	cancel-in-progress: true
 
 jobs:
@@ -231,7 +231,7 @@ jobs:
 				if: always()
 				uses: actions/upload-artifact@v4
 				with:
-					name: build-${{ matrix.os }}-${{ github.sha }}
+					name: {% raw %}build-${{ matrix.os }}-${{ github.sha }}{% endraw %}
 					path: |
 						artifacts/**
 						dist/**

@@ -11,7 +11,7 @@ Previews the changes that would be made to the project based on the contents of 
 
 **Arguments:**
 
-- `ts=<path>` (optional): The path to the tech stack YAML file. Defaults to `techstack.yaml` in the project root.
+-   `ts=<path>` (optional): The path to the tech stack YAML file. Defaults to `techstack.yaml` in the project root.
 
 **Example:**
 
@@ -28,7 +28,7 @@ Applies the changes defined in the `techstack.yaml` file to the project. This co
 
 **Arguments:**
 
-- `ts=<path>` (optional): The path to the tech stack YAML file. Defaults to `techstack.yaml`.
+-   `ts=<path>` (optional): The path to the tech stack YAML file. Defaults to `techstack.yaml`.
 
 **Example:**
 
@@ -45,7 +45,7 @@ Performs a "dry run" of the `sync-techstack` command. It shows the changes that 
 
 **Arguments:**
 
-- `ts=<path>` (optional): The path to the tech stack YAML file. Defaults to `techstack.yaml`.
+-   `ts=<path>` (optional): The path to the tech stack YAML file. Defaults to `techstack.yaml`.
 
 **Example:**
 
