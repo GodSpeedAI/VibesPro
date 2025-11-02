@@ -11,7 +11,6 @@
 
 import { execSync, spawnSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runCopierGeneration } from '../utils/generation-smoke';
 
