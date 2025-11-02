@@ -69,8 +69,8 @@ jobs:
         run: |
           echo "Running Jest tests..."
           pnpm test:jest --runInBand --passWithNoTests || { echo "::error::Jest tests failed"; exit 1; }
-          echo "Running Vitest tests..."
-          pnpm exec vitest run tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts || { echo "::error::Vitest tests failed"; exit 1; }
+          echo "Running targeted AI guidance Jest suites..."
+          pnpm test:jest -- --runTestsByPath tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts --runInBand || { echo "::error::AI guidance Jest suites failed"; exit 1; }
           echo "Running Node smoke tests..."
           pnpm test:node || { echo "::error::Node smoke tests failed"; exit 1; }
           echo "Running pytest..."

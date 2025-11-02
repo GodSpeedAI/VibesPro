@@ -57,8 +57,8 @@ jobs:
       - name: Temporal recommendation tests
         run: python -m pytest tests/temporal/test_pattern_recommendations.py
 
-      - name: Vitest suites
-        run: pnpm exec vitest run tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts
+      - name: AI guidance Jest suites
+        run: pnpm test:jest -- --runTestsByPath tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts --runInBand
 
       - name: CLI guidance smoke
         run: bash tests/cli/test_ai_advice_command.sh
