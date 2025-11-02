@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { performance, PerformanceObserver } from 'node:perf_hooks';
 import { dirname, resolve } from 'node:path';
+import { performance, PerformanceObserver } from 'node:perf_hooks';
 
 type Severity = 'info' | 'warn' | 'critical';
 

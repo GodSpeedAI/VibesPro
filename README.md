@@ -5,6 +5,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org)
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange)](https://www.rust-lang.org)
+[![DeepWiki](https://deepwiki.com/badge-maker?url=https%3A%2F%2Fdeepwiki.com%2FSPRIME01%2FVibes-Pro)]
 
 ---
 

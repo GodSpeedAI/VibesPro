@@ -4,8 +4,22 @@ import { resolve } from 'node:path';
 
 import { AIContextManager } from './src/context-manager.js';
 import type { ContextSource } from './src/context-manager.js';
-import { PerformanceMonitor } from '../performance/monitor.js';
+import performanceMonitorModule from '../performance/monitor.js';
 import type { PerformanceAdvisory } from '../performance/monitor.js';
+
+type PerformanceMonitorCtor = typeof import('../performance/monitor.js')['PerformanceMonitor'];
+
+const PerformanceMonitor =
+  (performanceMonitorModule as { PerformanceMonitor?: PerformanceMonitorCtor })
+    .PerformanceMonitor ??
+  (performanceMonitorModule as { default?: { PerformanceMonitor?: PerformanceMonitorCtor } })
+    .default?.PerformanceMonitor;
+
+if (!PerformanceMonitor) {
+  throw new Error(
+    'PerformanceMonitor export not available from tools/performance/monitor.js. Ensure the module provides a named export.',
+  );
+}
 
 interface RecommendationPayload {
   generated: RecommendationDTO[];
