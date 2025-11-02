@@ -12,44 +12,85 @@ jobs:
 
       - name: Install sops
         run: |
-          # Install sops by downloading the official release binary (works on Ubuntu runners)
           set -euo pipefail
-          SOPS_VERSION="3.9.3"
-          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
-          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
-          sudo mv "${SOPS_FILE}" /usr/local/bin/sops
-          sudo chmod +x /usr/local/bin/sops
+          SOPS_VERSION="3.10.0"
+
+          # Use cargo install for better reliability
+          if command -v cargo >/dev/null 2>&1; then
+            cargo install sops --version "=${SOPS_VERSION}" || {
+              echo "Cargo install failed, trying binary download..."
+              SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+              curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+              sudo mv "${SOPS_FILE}" /usr/local/bin/sops
+              sudo chmod +x /usr/local/bin/sops
+            }
+          else
+            # Fallback to binary download
+            SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+            curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+            sudo mv "${SOPS_FILE}" /usr/local/bin/sops
+            sudo chmod +x /usr/local/bin/sops
+          fi
+
+          # Verify installation
           sops --version
 
       - name: Configure age key (skip if not set)
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
-          # If the repository secret isn't available (e.g., PR from fork), skip decrypt
+          set -euo pipefail
+
+          # Skip decrypt if secret isn't available (e.g., PR from fork)
           if [ -z "${SOPS_AGE_KEY:-}" ]; then
-            echo "SOPS_AGE_KEY is not set; skipping decrypt (no secret available for this run)"
+            echo "::warning::SOPS_AGE_KEY not set; skipping decrypt (no secret available for this run)"
+            echo "SKIP_DECRYPT=true" >> $GITHUB_ENV
             exit 0
           fi
+
+          # Configure age key
           KEY_PATH="$HOME/.config/sops/age-key.txt"
           mkdir -p "$(dirname "$KEY_PATH")"
           printf "%s" "${SOPS_AGE_KEY}" > "$KEY_PATH"
           chmod 600 "$KEY_PATH"
-          # Expose the path for subsequent steps
+
+          # Export for subsequent steps
           echo "SOPS_AGE_KEY_FILE=$KEY_PATH" >> $GITHUB_ENV
+          echo "::debug::SOPS key file configured at $KEY_PATH"
 
       - name: Decrypt secrets
-        if: ${{ secrets.SOPS_AGE_KEY != '' }}
+        if: env.SKIP_DECRYPT != 'true'
         run: |
           set -euo pipefail
+
+          if [ ! -f .secrets.env.sops ]; then
+            echo "::warning::.secrets.env.sops not found; skipping decrypt"
+            exit 0
+          fi
+
           sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > .secrets.env
           chmod 600 .secrets.env
+          echo "::debug::Secrets decrypted successfully"
 
       - name: Run tests
         run: |
-          # avoid echoing secrets
-          # run your test/build commands here
-          echo "(secrets decrypted)"
+          # Load secrets if decrypted
+          if [ -f .secrets.env ]; then
+            set -a
+            source .secrets.env
+            set +a
+          fi
+
+          # Run test commands (avoid echoing secrets)
+          echo "Running tests with decrypted secrets..."
+          # Add actual test commands here
 
       - name: Cleanup
         if: always()
-        run: shred -u .secrets.env || rm -f .secrets.env
+        run: |
+          if [ -f .secrets.env ]; then
+            shred -u .secrets.env 2>/dev/null || rm -f .secrets.env
+          fi
+          if [ -f "$HOME/.config/sops/age-key.txt" ]; then
+            shred -u "$HOME/.config/sops/age-key.txt" 2>/dev/null || rm -f "$HOME/.config/sops/age-key.txt"
+          fi

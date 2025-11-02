@@ -123,11 +123,22 @@ jobs:
       - name: Install SOPS
         shell: bash
         run: |
-          SOPS_VERSION="3.9.3"
+          SOPS_VERSION="3.10.0"
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
-            sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
-            sudo chmod +x /usr/local/bin/sops
+            # Use cargo install for better reliability
+            if command -v cargo >/dev/null 2>&1; then
+              cargo install sops --version "=${SOPS_VERSION}" || {
+                echo "Cargo install failed, trying binary download..."
+                curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+                sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+                sudo chmod +x /usr/local/bin/sops
+              }
+            else
+              # Fallback to binary download
+              curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+              sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+              sudo chmod +x /usr/local/bin/sops
+            fi
           else
             brew install sops
           fi
