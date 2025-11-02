@@ -23,11 +23,26 @@ jobs:
       - name: Install sops
         run: |
           set -euo pipefail
-          SOPS_VERSION="3.9.3"
-          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
-          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
-          sudo mv "${SOPS_FILE}" /usr/local/bin/sops
-          sudo chmod +x /usr/local/bin/sops
+          SOPS_VERSION="3.10.0"
+
+          # Use cargo install for better reliability
+          if command -v cargo >/dev/null 2>&1; then
+            cargo install sops --version "=${SOPS_VERSION}" || {
+              echo "Cargo install failed, trying binary download..."
+              SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+              curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+              sudo mv "${SOPS_FILE}" /usr/local/bin/sops
+              sudo chmod +x /usr/local/bin/sops
+            }
+          else
+            # Fallback to binary download
+            SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+            curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+            sudo mv "${SOPS_FILE}" /usr/local/bin/sops
+            sudo chmod +x /usr/local/bin/sops
+          fi
+
+          # Verify installation
           sops --version
 
       - name: Configure age key (skip gracefully if not set)
