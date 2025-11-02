@@ -1,5 +1,3 @@
-{%- from "../_includes/env_vars.md.j2" import render_logfire_env_table, default_logfire_send_to_logfire -%}
-
 # Logfire Observability Blueprint
 
 > Traceability: DEV-PRD-018 · DEV-SDS-018 · DEV-PRD-021
@@ -10,12 +8,21 @@ Cycle 2A will extend these notes with full instrumentation walkthroughs once
 
 ## Environment Variables
 
-{{ render_logfire_env_table(project_slug) }}
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `LOGFIRE_TOKEN` | _unset_ | API token for Logfire ingestion (store in secrets for non-local environments). |
+| `LOGFIRE_ENVIRONMENT` | `development` | Controls Logfire environment tagging to align with deployment stage. |
+| `LOGFIRE_SERVICE_NAME` | `{{ project_slug }}-api` | Service identifier surfaced in Logfire dashboards and OTEL spans. |
+| `LOGFIRE_SERVICE_VERSION` | Derived from `APP_VERSION` | Version metadata for trace correlation (optional override). |
+| `LOGFIRE_SEND_TO_LOGFIRE` | `if-token-present` | Enables remote export when a token is present; keeps local runs offline by default. |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:4318` | OTLP HTTP endpoint for spans/logs (Vector locally, OpenObserve remotely). |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` | Transport protocol expected by Logfire’s OTLP exporter. |
+| `OTEL_SERVICE_NAME` | `{{ project_slug }}-api` | Mirrors Logfire service naming for downstream OTEL tooling. |
 
 ## Local Usage
 
 - Keep `LOGFIRE_TOKEN` empty while developing locally. Set
-  `LOGFIRE_SEND_TO_LOGFIRE={{ default_logfire_send_to_logfire() }}` to control remote export when you add a token.
+  `LOGFIRE_SEND_TO_LOGFIRE=if-token-present` to control remote export when you add a token.
 - Override `LOGFIRE_ENVIRONMENT` per environment (`development`, `staging`,
   `production`) to keep dashboards segmented.
 - Point `OTEL_EXPORTER_OTLP_ENDPOINT` at your observability pipeline. The
