@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import { AIContextManager, ContextSource } from '../../tools/ai/src/context-manager.js';
 
 describe('AIContextManager scoring integration', () => {
