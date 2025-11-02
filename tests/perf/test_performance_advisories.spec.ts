@@ -1,10 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { PerformanceMonitor } from '../../tools/performance/monitor.js';
 import type { PerformanceAdvisory } from '../../tools/performance/monitor.js';
+import { PerformanceMonitor } from '../../tools/performance/monitor.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

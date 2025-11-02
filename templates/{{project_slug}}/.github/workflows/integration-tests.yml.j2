@@ -52,9 +52,9 @@ jobs:
 			- name: Run project generation tests
 				run: pnpm test:integration tests/integration/project-generation.test.ts --passWithNoTests
 				env:
-					TEST_ARCHITECTURE: ${{ matrix.architecture }}
-					TEST_AI_ENABLED: ${{ matrix.ai_enabled }}
-					TEST_FRAMEWORK: ${{ matrix.framework }}
+					TEST_ARCHITECTURE: {% raw %}${{ matrix.architecture }}{% endraw %}
+					TEST_AI_ENABLED: {% raw %}${{ matrix.ai_enabled }}{% endraw %}
+					TEST_FRAMEWORK: {% raw %}${{ matrix.framework }}{% endraw %}
 
 	end-to-end:
 		name: End-to-End Integration
@@ -185,19 +185,18 @@ jobs:
 		steps:
 			- name: Check test results
 				run: |
-					echo "Project Generation: ${{ needs['project-generation'].result }}"
-					echo "End-to-End: ${{ needs['end-to-end'].result }}"
-					echo "Performance Benchmarks: ${{ needs['performance-benchmarks'].result }}"
-					echo "AI Workflows: ${{ needs['ai-workflows'].result }}"
+					echo "Project Generation: {% raw %}${{ needs['project-generation'].result }}{% endraw %}"
+					echo "End-to-End: {% raw %}${{ needs['end-to-end'].result }}{% endraw %}"
+					echo "Performance Benchmarks: {% raw %}${{ needs['performance-benchmarks'].result }}{% endraw %}"
+					echo "AI Workflows: {% raw %}${{ needs['ai-workflows'].result }}{% endraw %}"
 
-					if [[ "${{ needs['project-generation'].result }}" == "success" &&
-								"${{ needs['end-to-end'].result }}" == "success" &&
-								"${{ needs['performance-benchmarks'].result }}" == "success" &&
-								"${{ needs['ai-workflows'].result }}" == "success" ]]; then
+					if [[ "{% raw %}${{ needs['project-generation'].result }}{% endraw %}" == "success" &&
+								"{% raw %}${{ needs['end-to-end'].result }}{% endraw %}" == "success" &&
+								"{% raw %}${{ needs['performance-benchmarks'].result }}{% endraw %}" == "success" &&
+								"{% raw %}${{ needs['ai-workflows'].result }}{% endraw %}" == "success" ]]; then
 						echo "✅ All integration tests passed!"
 						exit 0
 					else
 						echo "❌ Some integration tests failed"
 						exit 1
 					fi
-
