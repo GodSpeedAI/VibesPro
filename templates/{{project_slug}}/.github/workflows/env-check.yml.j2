@@ -72,9 +72,9 @@ jobs:
 				uses: actions/cache@v4
 				with:
 					path: /usr/local/bin/vector
-					key: vector-${{ runner.os }}-${{ hashFiles('ops/vector/vector.toml') }}
+					key: vector-{% raw %}${{ runner.os }}{% endraw %}-{% raw %}${{ hashFiles('ops/vector/vector.toml') }}{% endraw %}
 					restore-keys: |
-						vector-${{ runner.os }}-
+						vector-{% raw %}${{ runner.os }}{% endraw %}-
 
 			- name: Cache mise runtimes
 				uses: actions/cache@v4
@@ -82,9 +82,9 @@ jobs:
 					path: |
 						~/.local/share/mise
 						~/.cache/mise
-					key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+					key: mise-{% raw %}${{ runner.os }}{% endraw %}-{% raw %}${{ hashFiles('.mise.toml') }}{% endraw %}
 					restore-keys: |
-						mise-${{ runner.os }}-
+						mise-{% raw %}${{ runner.os }}{% endraw %}-
 
 			- name: Install runtimes (Node/Python/Rust via mise)
 				run: mise install
@@ -112,9 +112,9 @@ jobs:
 				uses: actions/cache@v4
 				with:
 					path: ~/.pnpm-store
-					key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+					key: pnpm-{% raw %}${{ runner.os }}{% endraw %}-{% raw %}${{ hashFiles('pnpm-lock.yaml') }}{% endraw %}
 					restore-keys: |
-						pnpm-${{ runner.os }}-
+						pnpm-{% raw %}${{ runner.os }}{% endraw %}-
 
 			- name: Decrypt secrets to ephemeral env (if provided)
 				run: |
@@ -155,4 +155,3 @@ jobs:
 			- name: Cleanup secrets
 				if: always()
 				run: rm -f /tmp/ci.env
-

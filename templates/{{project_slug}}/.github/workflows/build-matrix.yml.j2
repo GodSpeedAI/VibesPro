@@ -23,10 +23,10 @@ jobs:
 	prepare:
 		runs-on: ubuntu-latest
 		outputs:
-			mise_cache_key: ${{ steps.cache-key.outputs.mise_cache_key }}
-			node_version: ${{ steps.vers.outputs.node }}
-			python_version: ${{ steps.vers.outputs.python }}
-			rust_version: ${{ steps.vers.outputs.rust }}
+			mise_cache_key: {% raw %}${{ steps.cache-key.outputs.mise_cache_key }}{% endraw %}
+			node_version: {% raw %}${{ steps.vers.outputs.node }}{% endraw %}
+			python_version: {% raw %}${{ steps.vers.outputs.python }}{% endraw %}
+			rust_version: {% raw %}${{ steps.vers.outputs.rust }}{% endraw %}
 		steps:
 			- name: Checkout
 				uses: actions/checkout@v4
@@ -56,7 +56,7 @@ jobs:
 			- name: Compute mise cache key
 				id: cache-key
 				run: |
-					echo "mise_cache_key=mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}" >> $GITHUB_OUTPUT
+					echo "mise_cache_key=mise-{% raw %}${{ runner.os }}{% endraw %}-{% raw %}${{ hashFiles('.mise.toml') }}{% endraw %}" >> $GITHUB_OUTPUT
 
 	build-test:
 		needs: prepare
@@ -69,7 +69,7 @@ jobs:
 						pkg_mgr: apt
 					- os: macos-latest
 						pkg_mgr: brew
-		runs-on: ${{ matrix.os }}
+		runs-on: {% raw %}${{ matrix.os }}{% endraw %}
 		env:
 			MISE_NONINTERACTIVE: "1"
 
@@ -80,7 +80,7 @@ jobs:
 			- name: Install base packages
 				shell: bash
 				run: |
-					if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
+					if [ "{% raw %}${{ matrix.pkg_mgr }}{% endraw %}" = "apt" ]; then
 						sudo apt-get update
 						sudo apt-get install -y --no-install-recommends age jq make
 					else
@@ -91,7 +91,7 @@ jobs:
 			- name: Install just
 				shell: bash
 				run: |
-					if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
+					if [ "{% raw %}${{ matrix.pkg_mgr }}{% endraw %}" = "apt" ]; then
 						curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
 						sudo chmod +x /usr/local/bin/just
 					else
@@ -103,7 +103,7 @@ jobs:
 				shell: bash
 				run: |
 					SOPS_VERSION="3.9.3"
-					if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+					if [ "{% raw %}${{ matrix.os }}{% endraw %}" = "ubuntu-latest" ]; then
 						curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
 						sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
 						sudo chmod +x /usr/local/bin/sops
@@ -134,9 +134,9 @@ jobs:
 					path: |
 						~/.local/share/mise
 						~/.cache/mise
-					key: ${{ needs.prepare.outputs.mise_cache_key }}
+					key: {% raw %}${{ needs.prepare.outputs.mise_cache_key }}{% endraw %}
 					restore-keys: |
-						mise-${{ runner.os }}-
+						mise-{% raw %}${{ runner.os }}{% endraw %}-
 
 			- name: Install runtimes (Node/Python/Rust via mise)
 				run: mise install
@@ -149,9 +149,9 @@ jobs:
 				uses: actions/cache@v4
 				with:
 					path: ~/.pnpm-store
-					key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+					key: pnpm-{% raw %}${{ runner.os }}{% endraw %}-{% raw %}${{ hashFiles('pnpm-lock.yaml') }}{% endraw %}
 					restore-keys: |
-						pnpm-${{ runner.os }}-
+						pnpm-{% raw %}${{ runner.os }}{% endraw %}-
 
 			- name: Decrypt secrets to ephemeral env (if SOPS_AGE_KEY secret provided)
 				id: sops
@@ -168,7 +168,7 @@ jobs:
 
 			- name: (noop) Ensure sops step produced an output
 				run: |
-					if [ -z "${{ steps.sops.outputs.loaded }}" ]; then
+					if [ -z "{% raw %}${{ steps.sops.outputs.loaded }}{% endraw %}" ]; then
 						echo "loaded=false" >> $GITHUB_OUTPUT
 					fi
 
@@ -185,7 +185,7 @@ jobs:
 
 			- name: Enforce required secrets
 				run: |
-					if [ "$REQUIRE_SOPS_SECRETS" = 'true' ] && [ "${{ steps.sops_status.outputs.loaded }}" != 'true' ]; then
+					if [ "$REQUIRE_SOPS_SECRETS" = 'true' ] && [ "{% raw %}${{ steps.sops_status.outputs.loaded }}{% endraw %}" != 'true' ]; then
 						echo "Required secrets are not available (REQUIRE_SOPS_SECRETS=true but SOPS not loaded)."
 						exit 1
 					else
@@ -296,4 +296,3 @@ jobs:
 			- name: Cleanup secrets
 				if: always()
 				run: rm -f /tmp/ci.env
-
