@@ -63,6 +63,10 @@ jobs:
       - name: Install Node dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: TypeScript typecheck
+        # Run tsc explicitly to surface compiler errors early with clear diagnostics
+        run: pnpm exec tsc --noEmit || { echo "::error::TypeScript typecheck failed"; exit 1; }
+
       - name: Install Python dependencies
         run: uv sync --group dev --all-extras --frozen
 
