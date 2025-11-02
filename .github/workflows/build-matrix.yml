@@ -188,7 +188,24 @@ jobs:
           if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
             echo "SOPS_AGE_KEY appears set; attempting decryption..."
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
-            set -a; source /tmp/ci.env; set +a
+            while IFS= read -r line || [ -n "$line" ]; do
+              case "$line" in
+                ''|'#'*)
+                  continue
+                  ;;
+              esac
+              if [[ "$line" == export\ * ]]; then
+                line=${line#export }
+              fi
+              key=${line%%=*}
+              value=${line#*=}
+              export "$key=$value"
+              {
+                echo "$key<<'EOF'"
+                echo "$value"
+                echo "EOF"
+              } >> "$GITHUB_ENV"
+            done < /tmp/ci.env
             echo "loaded=true" >> $GITHUB_OUTPUT
           else
             echo "SOPS_AGE_KEY not set or .secrets.env.sops missing; skipping decryption."
@@ -339,9 +356,24 @@ jobs:
           if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
             echo "SOPS_AGE_KEY present; decrypting release secrets"
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
-            set -a; source /tmp/ci.env; set +a
-            # Export to GITHUB_ENV for subsequent steps
-            cat /tmp/ci.env >> $GITHUB_ENV
+            while IFS= read -r line || [ -n "$line" ]; do
+              case "$line" in
+                ''|'#'*)
+                  continue
+                  ;;
+              esac
+              if [[ "$line" == export\ * ]]; then
+                line=${line#export }
+              fi
+              key=${line%%=*}
+              value=${line#*=}
+              export "$key=$value"
+              {
+                echo "$key<<'EOF'"
+                echo "$value"
+                echo "EOF"
+              } >> "$GITHUB_ENV"
+            done < /tmp/ci.env
           else
             echo "No SOPS_AGE_KEY provided or .secrets.env.sops missing; skipping release secret decryption"
           fi
