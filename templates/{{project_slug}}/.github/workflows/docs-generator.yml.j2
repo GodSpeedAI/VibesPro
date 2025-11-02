@@ -19,7 +19,7 @@ on:
 				default: "false"
 
 concurrency:
-	group: docs-${{ github.ref }}
+	group: {% raw %}docs-${{ github.ref }}{% endraw %}
 	cancel-in-progress: true
 
 jobs:
