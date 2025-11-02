@@ -17,14 +17,18 @@ def test_get_logger_binds_context(mock_logfire):
     mock_scoped_logger = mock_logger.with_settings.return_value
 
     # Reset cached state to ensure configure() is invoked in this test
-    vibepro_logging._LOGFIRE_INSTANCE = None
+    original_instance = vibepro_logging._LOGFIRE_INSTANCE
+    try:
+        vibepro_logging._LOGFIRE_INSTANCE = None
 
-    # Call the function under test
-    logger = get_logger()
+        # Call the function under test
+        logger = get_logger()
 
-    # Assert that the logger was configured and scoped with the correct context
-    mock_logfire.configure.assert_called_once()
-    mock_logger.with_settings.assert_called_once_with(
-        tags=("service:vibepro-py", "environment:local", "application_version:dev"),
-    )
-    assert logger == mock_scoped_logger
+        # Assert that the logger was configured and scoped with the correct context
+        mock_logfire.configure.assert_called_once()
+        mock_logger.with_settings.assert_called_once_with(
+            tags=("service:vibepro-py", "environment:local", "application_version:dev"),
+        )
+        assert logger == mock_scoped_logger
+    finally:
+        vibepro_logging._LOGFIRE_INSTANCE = original_instance
