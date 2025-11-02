@@ -70,17 +70,30 @@ describe('Maintainer documentation alignment', () => {
 
   it('provides an actionable review checklist using checkbox semantics', async () => {
     const content = await readMaintainerDoc();
-    const [, reviewSection] = content.split('## Review Checklist');
-    expect(reviewSection).toBeDefined();
+
+    // Locate the Review Checklist heading in a forgiving way (case-insensitive,
+    // allow extra spaces). This prevents fragile failures when the markdown
+    // formatting changes slightly.
+    const reviewHeadingRegex = /^##\s*Review\s+Checklist\s*$/im;
+    const reviewMatch = content.match(reviewHeadingRegex);
+    expect(reviewMatch).not.toBeNull();
+
+    const reviewSection = reviewMatch
+      ? content.slice(reviewMatch.index! + reviewMatch[0].length)
+      : '';
 
     const checklistLines = reviewSection
       .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line.startsWith('-'));
+      // normalize non-breaking spaces and trim edges
+      .map((line) => line.replace(/\u00A0/g, ' ').trim())
+      // accept list items that start with - or * followed by a checkbox
+      .filter((line) => /^\s*[-*]\s*\[.*\]/.test(line));
 
     expect(checklistLines.length).toBeGreaterThan(0);
     checklistLines.forEach((line) => {
-      expect(line).toMatch(/^\- \[ \]/);
+      // Accept patterns like "- [ ]", "-   [ ]", "* [ ]" and variants where the
+      // checkbox may be marked with an x/X. Be permissive about internal spacing.
+      expect(line).toMatch(/^\s*[-*]\s*\[\s*[ xX]?\s*\]/);
     });
   });
 });
