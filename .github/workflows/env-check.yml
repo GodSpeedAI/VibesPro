@@ -154,7 +154,8 @@ jobs:
                 continue
               fi
               # Export into current shell for subsequent steps in this run
-              export "$key=$value"
+              # Quote both key and value to avoid shell interpretation of special characters
+              export "${key}"="${value}"
 
               # Generate a per-secret unique delimiter and ensure it doesn't appear in the value
               delim="CI_DELIM_$RANDOM"

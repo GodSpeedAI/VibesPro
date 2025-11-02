@@ -45,6 +45,13 @@ jobs:
           # Verify installation
           sops --version
 
+          # Ensure installed version matches expected
+          if ! sops --version | grep -q "${SOPS_VERSION}"; then
+            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
+            sops --version || true
+            exit 1
+          fi
+
       - name: Configure age key (skip gracefully if not set)
         if: ${{ env.IS_FORK != 'true' }}
         env:
@@ -94,7 +101,7 @@ jobs:
           if [ -f .secrets.env ]; then
             set -a
             # shellcheck disable=SC1090
-            source .secrets.env
+            source .secrets.env || { echo "::error:: Failed to source .secrets.env"; exit 1; }
             set +a
           else
             echo "No decrypted secrets found; running tests without them"
