@@ -116,9 +116,10 @@ def _configure_global_logfire(service_name: str, **kwargs) -> logfire.Logfire:
     configure_kwargs.update({k: v for k, v in kwargs.items() if v is not None})
 
     if _LOGFIRE_INSTANCE is None:
-        # logfire.configure() returns None; we must fetch the logger separately
+        # logfire.configure() returns None; the logfire module itself becomes configured
         logfire.configure(**configure_kwargs)
-        _LOGFIRE_INSTANCE = logfire.get_logger()
+        # After configuration, use the logfire module directly as the logger
+        _LOGFIRE_INSTANCE = logfire
 
     return _LOGFIRE_INSTANCE
 
