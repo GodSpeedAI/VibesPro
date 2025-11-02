@@ -4,8 +4,6 @@ import { join } from 'node:path';
 import type { PerformanceAdvisory } from '../../tools/performance/monitor.js';
 import { PerformanceMonitor } from '../../tools/performance/monitor.js';
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 describe('PerformanceMonitor advisories', () => {
   let tempDir: string;
   let baselinePath: string;
@@ -19,27 +17,17 @@ describe('PerformanceMonitor advisories', () => {
     rmSync(tempDir, { force: true, recursive: true });
   });
 
-  it('generates advisories when workflow regresses beyond threshold', async () => {
+  it('generates advisories when workflow regresses beyond threshold', () => {
     const monitor = new PerformanceMonitor({
       baselinePath,
       thresholds: { warn: 0.2, critical: 0.5 },
     });
 
-    await monitor.track(
-      'context-loading',
-      async () => {
-        await delay(10);
-      },
-      { workflow: 'context-loading' },
-    );
-
-    await monitor.track(
-      'context-loading',
-      async () => {
-        await delay(30);
-      },
-      { workflow: 'context-loading', token: 'secret@example.com' },
-    );
+    monitor.recordSample('context-loading', 100, { workflow: 'context-loading' });
+    monitor.recordSample('context-loading', 130, {
+      workflow: 'context-loading',
+      token: 'secret@example.com',
+    });
 
     const advisories = monitor.getAdvisories();
     expect(advisories.length).toBe(1);
@@ -54,25 +42,21 @@ describe('PerformanceMonitor advisories', () => {
     expect(baselines.get('context-loading')?.samples).toBeGreaterThanOrEqual(2);
   });
 
-  it('persists baselines to disk and reloads for future comparisons', async () => {
+  it('persists baselines to disk and reloads for future comparisons', () => {
     let monitor = new PerformanceMonitor({
       baselinePath,
       persist: true,
       thresholds: { warn: 0.2, critical: 0.4 },
     });
 
-    await monitor.track('template-generation', async () => {
-      await delay(12);
-    });
+    monitor.recordSample('template-generation', 50);
 
     monitor = new PerformanceMonitor({
       baselinePath,
       persist: true,
       thresholds: { warn: 0.1, critical: 0.4 },
     });
-    await monitor.track('template-generation', async () => {
-      await delay(20);
-    });
+    monitor.recordSample('template-generation', 80);
 
     const advisories = monitor.getAdvisories();
     expect(advisories.length).toBeGreaterThanOrEqual(1);
