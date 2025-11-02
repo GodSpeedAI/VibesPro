@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from libs.python import vibepro_logging
 from libs.python.vibepro_logging import get_logger
 
 
@@ -12,15 +13,18 @@ def test_get_logger_binds_context(mock_logfire):
     This fulfills the "Red" step of TDD Cycle 2B.
     """
     # Configure the mock to simulate Logfire's logger structure
-    mock_logger = mock_logfire.get_logger.return_value
-    mock_bound_logger = mock_logger.bind.return_value
+    mock_logger = mock_logfire.configure.return_value
+    mock_scoped_logger = mock_logger.with_settings.return_value
+
+    # Reset cached state to ensure configure() is invoked in this test
+    vibepro_logging._LOGFIRE_INSTANCE = None
 
     # Call the function under test
     logger = get_logger()
 
-    # Assert that the logger was retrieved and bound with the correct context
-    mock_logfire.get_logger.assert_called_once()
-    mock_logger.bind.assert_called_once_with(
-        service="vibepro-py", environment="local", application_version="dev"
+    # Assert that the logger was configured and scoped with the correct context
+    mock_logfire.configure.assert_called_once()
+    mock_logger.with_settings.assert_called_once_with(
+        tags=("service:vibepro-py", "environment:local", "application_version:dev"),
     )
-    assert logger == mock_bound_logger
+    assert logger == mock_scoped_logger
