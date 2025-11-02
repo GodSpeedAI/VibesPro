@@ -199,9 +199,9 @@ test-integration:
 
 test-generation:
 	@echo "🧪 Testing template generation..."
-	rm -rf ../test-output
-	copier copy . ../test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force
-	cd ../test-output && pnpm install && { \
+	rm -rf ./test-output
+	copier copy . ./test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force
+	cd ./test-output && pnpm install && { \
 		echo "🏗️ Building all projects..."; \
 		pnpm exec nx run-many --target=build --all || { \
 			echo "⚠️ Some build targets failed. Checking core domain libraries..."; \
