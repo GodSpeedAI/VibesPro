@@ -14,7 +14,7 @@ function runSmokeTests() {
 
   // Test 1: Check if package.json exists and is valid
   try {
-    const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    JSON.parse(fs.readFileSync('package.json', 'utf8'));
     console.log('✅ package.json exists and is valid');
     passed++;
   } catch (error) {
