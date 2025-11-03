@@ -243,11 +243,19 @@ function runPythonExporter(options: CliOptions): RecommendationPayload {
     PYTHONPATH: process.env.PYTHONPATH ? `${process.env.PYTHONPATH}:${resolve('.')}` : resolve('.'),
   };
 
-  const result = spawnSync('python', args, {
+  let result = spawnSync('python', args, {
     encoding: 'utf-8',
     stdio: ['ignore', 'pipe', 'pipe'],
     env,
   });
+
+  if (result.error && (result.error as NodeJS.ErrnoException).code === 'ENOENT') {
+    result = spawnSync('uv', ['run', 'python', ...args], {
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env,
+    });
+  }
 
   if (result.status !== 0) {
     throw new Error(result.stderr || 'Python exporter failed');

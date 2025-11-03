@@ -13,13 +13,13 @@ cleanup() {
 }
 trap cleanup EXIT
 
-if ! python -m temporal_db.python.export_recommendations --db "${DB_PATH}" --dry-run 2>&1; then
+if ! uv run python -m temporal_db.python.export_recommendations --db "${DB_PATH}" --dry-run 2>&1; then
   echo "Warning: export_recommendations initialization failed" >&2
 fi
 
 # Seed the temporal DB using an embedded Python here-doc. Keep the block self-contained
 # so shellcheck won't mis-parse it.
-python - <<'PY'
+uv run python - <<'PY'
 import asyncio
 import os
 from datetime import UTC, datetime, timedelta
