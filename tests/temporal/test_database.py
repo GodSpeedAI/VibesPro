@@ -1,24 +1,14 @@
 #!/usr/bin/env python3
-"""
-Test suite for temporal database functionality.
+"""Test suite for temporal database functionality."""
 
-This implements the RED phase of TDD - failing tests that define expected behavior.
-"""
+from __future__ import annotations
 
-import os
-
-# Add temporal_db to path
-import sys
-import tempfile
 from pathlib import Path
 
 import pytest
 
-project_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(project_root / "temporal_db"))
-
-from python.repository import initialize_temporal_database  # noqa: E402
-from python.types import (  # noqa: E402
+from temporal_db.python.repository import initialize_temporal_database
+from temporal_db.python.types import (
     ArchitecturalPattern,
     PatternType,
     SpecificationRecord,
@@ -29,35 +19,19 @@ from python.types import (  # noqa: E402
 class TestTemporalDatabase:
     """Test cases for temporal database functionality based on MERGE-TASK-006 requirements."""
 
-    @pytest.fixture
-    async def temp_db(self):
-        """Create a temporary database for testing."""
-        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
-            db_path = f.name
-
-        try:
-            repo = await initialize_temporal_database(db_path)
-            yield repo
-        finally:
-            await repo.close()
-            os.unlink(db_path)
-
     @pytest.mark.asyncio
-    async def test_database_initialization(self):
+    async def test_database_initialization(self, tmp_path: Path):
         """Test that database initializes successfully."""
-        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
-            db_path = f.name
-
+        db_path = tmp_path / "temporal.db"
+        repo = await initialize_temporal_database(str(db_path))
         try:
-            repo = await initialize_temporal_database(db_path)
             assert repo is not None
             assert repo.connection is not None
-            await repo.close()
         finally:
-            os.unlink(db_path)
+            await repo.close()
 
     @pytest.mark.asyncio
-    async def test_specification_storage_and_retrieval(self, temp_db):
+    async def test_specification_storage_and_retrieval(self, temporal_repository):
         """Test storing and retrieving specifications."""
         # Create test specification
         spec = SpecificationRecord.create(
@@ -69,10 +43,10 @@ class TestTemporalDatabase:
         )
 
         # Store specification
-        await temp_db.store_specification(spec)
+        await temporal_repository.store_specification(spec)
 
         # Retrieve specification
-        retrieved = await temp_db.get_latest_specification("ADR", "ADR-TEST-001")
+        retrieved = await temporal_repository.get_latest_specification("ADR", "ADR-TEST-001")
 
         assert retrieved is not None
         assert retrieved.identifier == "ADR-TEST-001"
@@ -81,7 +55,7 @@ class TestTemporalDatabase:
         assert retrieved.spec_type == SpecificationType.ADR
 
     @pytest.mark.asyncio
-    async def test_specification_versioning(self, temp_db):
+    async def test_specification_versioning(self, temporal_repository):
         """Test that specification versions are tracked correctly."""
         # Create initial specification
         spec1 = SpecificationRecord.create(
@@ -92,7 +66,7 @@ class TestTemporalDatabase:
             author="product_manager",
         )
 
-        await temp_db.store_specification(spec1)
+        await temporal_repository.store_specification(spec1)
 
         # Create updated specification
         spec2 = SpecificationRecord.create(
@@ -104,16 +78,16 @@ class TestTemporalDatabase:
         )
         spec2.version = 2
 
-        await temp_db.store_specification(spec2)
+        await temporal_repository.store_specification(spec2)
 
         # Should retrieve the latest version
-        retrieved = await temp_db.get_latest_specification("PRD", "PRD-TEST-001")
+        retrieved = await temporal_repository.get_latest_specification("PRD", "PRD-TEST-001")
 
         assert retrieved is not None
         assert retrieved.content == "Updated requirements with more details"
 
     @pytest.mark.asyncio
-    async def test_architectural_pattern_storage(self, temp_db):
+    async def test_architectural_pattern_storage(self, temporal_repository):
         """Test storing and retrieving architectural patterns."""
         pattern = ArchitecturalPattern.create(
             pattern_name="Test Repository Pattern",
@@ -126,10 +100,10 @@ class TestTemporalDatabase:
             },
         )
 
-        await temp_db.store_architectural_pattern(pattern)
+        await temporal_repository.store_architectural_pattern(pattern)
 
         # Query patterns using text-based search
-        patterns = await temp_db.get_similar_patterns("repository", 0.1, 30)
+        patterns = await temporal_repository.get_similar_patterns("repository", 0.1, 30)
 
         assert len(patterns) >= 1
         found_pattern = next(
@@ -139,10 +113,10 @@ class TestTemporalDatabase:
         assert found_pattern.pattern_type == PatternType.DOMAIN
 
     @pytest.mark.asyncio
-    async def test_decision_recording(self, temp_db):
+    async def test_decision_recording(self, temporal_repository):
         """Test recording and analyzing architectural decisions."""
         # Record multiple decisions
-        await temp_db.record_decision(
+        await temporal_repository.record_decision(
             spec_id="ADR-TEST-002",
             decision_point="database_choice",
             selected_option="PostgreSQL",
@@ -151,7 +125,7 @@ class TestTemporalDatabase:
             confidence=0.85,
         )
 
-        await temp_db.record_decision(
+        await temporal_repository.record_decision(
             spec_id="ADR-TEST-002",
             decision_point="caching_strategy",
             selected_option="Redis",
@@ -160,7 +134,7 @@ class TestTemporalDatabase:
             confidence=0.9,
         )
 
-        await temp_db.record_decision(
+        await temporal_repository.record_decision(
             spec_id="ADR-TEST-003",
             decision_point="database_choice",
             selected_option="SQLite",
@@ -170,7 +144,7 @@ class TestTemporalDatabase:
         )
 
         # Analyze decision patterns
-        patterns = await temp_db.analyze_decision_patterns(30)
+        patterns = await temporal_repository.analyze_decision_patterns(30)
 
         assert len(patterns) >= 2
 
@@ -183,7 +157,7 @@ class TestTemporalDatabase:
         assert db_pattern["selected_count"] >= 1  # At least one high confidence decision
 
     @pytest.mark.asyncio
-    async def test_pattern_usage_tracking(self, temp_db):
+    async def test_pattern_usage_tracking(self, temporal_repository):
         """Test that pattern usage is tracked correctly."""
         pattern = ArchitecturalPattern.create(
             pattern_name="Tracked Pattern",
@@ -195,10 +169,10 @@ class TestTemporalDatabase:
         pattern.use_pattern()
         pattern.use_pattern()
 
-        await temp_db.store_architectural_pattern(pattern)
+        await temporal_repository.store_architectural_pattern(pattern)
 
         # Retrieve and verify usage tracking
-        patterns = await temp_db.get_similar_patterns("tracked", 0.0, 30)
+        patterns = await temporal_repository.get_similar_patterns("tracked", 0.0, 30)
         tracked_pattern = next((p for p in patterns if p.pattern_name == "Tracked Pattern"), None)
 
         assert tracked_pattern is not None
@@ -206,7 +180,7 @@ class TestTemporalDatabase:
         assert tracked_pattern.last_used is not None
 
     @pytest.mark.asyncio
-    async def test_temporal_queries(self, temp_db):
+    async def test_temporal_queries(self, temporal_repository):
         """Test time-based queries work correctly."""
         # Store specification
         spec = SpecificationRecord.create(
@@ -217,10 +191,10 @@ class TestTemporalDatabase:
             author="tester",
         )
 
-        await temp_db.store_specification(spec)
+        await temporal_repository.store_specification(spec)
 
         # Record decision
-        await temp_db.record_decision(
+        await temporal_repository.record_decision(
             spec_id="TS-TEMPORAL-001",
             decision_point="testing_approach",
             selected_option="TDD",
@@ -230,7 +204,7 @@ class TestTemporalDatabase:
         )
 
         # Query recent decisions (should find our decision)
-        recent_patterns = await temp_db.analyze_decision_patterns(1)  # Last 1 day
+        recent_patterns = await temporal_repository.analyze_decision_patterns(1)  # Last 1 day
 
         assert len(recent_patterns) >= 1
         testing_pattern = next(
@@ -239,7 +213,7 @@ class TestTemporalDatabase:
         assert testing_pattern is not None
 
     @pytest.mark.asyncio
-    async def test_database_performance(self, temp_db):
+    async def test_database_performance(self, temporal_repository):
         """Test that database operations meet performance requirements."""
         import time
 
@@ -254,7 +228,7 @@ class TestTemporalDatabase:
                 content=f"This is performance test decision number {i}",
                 author="performance_tester",
             )
-            await temp_db.store_specification(spec)
+            await temporal_repository.store_specification(spec)
 
         storage_time = time.time() - start_time
 
@@ -265,7 +239,9 @@ class TestTemporalDatabase:
         start_time = time.time()
 
         for i in range(10):
-            retrieved = await temp_db.get_latest_specification("ADR", f"ADR-PERF-{i:03d}")
+            retrieved = await temporal_repository.get_latest_specification(
+                "ADR", f"ADR-PERF-{i:03d}"
+            )
             assert retrieved is not None
 
         retrieval_time = time.time() - start_time
@@ -274,18 +250,20 @@ class TestTemporalDatabase:
         assert retrieval_time < 1.0, f"Bulk retrieval took {retrieval_time:.2f}s, expected < 1.0s"
 
     @pytest.mark.asyncio
-    async def test_error_handling(self, temp_db):
+    async def test_error_handling(self, temporal_repository):
         """Test error handling for edge cases."""
         # Test retrieving non-existent specification
-        result = await temp_db.get_latest_specification("ADR", "NON-EXISTENT")
+        result = await temporal_repository.get_latest_specification("ADR", "NON-EXISTENT")
         assert result is None
 
         # Test querying with invalid parameters
-        patterns = await temp_db.get_similar_patterns("", -1.0, -1)  # Invalid threshold and days
+        patterns = await temporal_repository.get_similar_patterns(
+            "", -1.0, -1
+        )  # Invalid threshold and days
         assert isinstance(patterns, list)  # Should return empty list, not crash
 
     @pytest.mark.asyncio
-    async def test_data_consistency(self, temp_db):
+    async def test_data_consistency(self, temporal_repository):
         """Test that data remains consistent across operations."""
         # Store specification
         spec = SpecificationRecord.create(
@@ -296,11 +274,11 @@ class TestTemporalDatabase:
             author="consistency_tester",
         )
 
-        await temp_db.store_specification(spec)
+        await temporal_repository.store_specification(spec)
 
         # Record multiple decisions for the same spec
         for i in range(5):
-            await temp_db.record_decision(
+            await temporal_repository.record_decision(
                 spec_id="SDS-CONSISTENCY-001",
                 decision_point=f"test_point_{i}",
                 selected_option=f"option_{i}",
@@ -310,7 +288,7 @@ class TestTemporalDatabase:
             )
 
         # Verify all decisions are recorded
-        patterns = await temp_db.analyze_decision_patterns(30)
+        patterns = await temporal_repository.analyze_decision_patterns(30)
         consistency_patterns = [
             p
             for p in patterns
@@ -320,7 +298,7 @@ class TestTemporalDatabase:
         assert len(consistency_patterns) == 5
 
         # Verify specification is still retrievable
-        retrieved = await temp_db.get_latest_specification("SDS", "SDS-CONSISTENCY-001")
+        retrieved = await temporal_repository.get_latest_specification("SDS", "SDS-CONSISTENCY-001")
         assert retrieved is not None
         assert retrieved.title == "Consistency Test"
 
@@ -330,29 +308,21 @@ class TestTemporalDatabasePerformance:
     """Performance tests to ensure temporal database meets requirements."""
 
     @pytest.mark.asyncio
-    async def test_generation_time_target(self):
+    async def test_generation_time_target(self, tmp_path: Path):
         """Test that database initialization meets the 30-second target."""
         import time
 
-        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
-            db_path = f.name
+        db_path = tmp_path / "performance.db"
+        start_time = time.time()
+        repo = await initialize_temporal_database(str(db_path))
+        await repo.close()
+        init_time = time.time() - start_time
 
-        try:
-            start_time = time.time()
-            repo = await initialize_temporal_database(db_path)
-            await repo.close()
-            init_time = time.time() - start_time
-
-            # Should initialize in well under 30 seconds (target from MERGE-TASK-006)
-            assert (
-                init_time < 30.0
-            ), f"Database initialization took {init_time:.2f}s, expected < 30.0s"
-
-        finally:
-            os.unlink(db_path)
+        # Should initialize in well under 30 seconds (target from MERGE-TASK-006)
+        assert init_time < 30.0, f"Database initialization took {init_time:.2f}s, expected < 30.0s"
 
     @pytest.mark.asyncio
-    async def test_memory_usage_target(self):
+    async def test_memory_usage_target(self, tmp_path: Path):
         """Test that memory usage is reasonable."""
         import os
 
@@ -361,20 +331,17 @@ class TestTemporalDatabasePerformance:
         process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss
 
-        with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
-            db_path = f.name
+        db_path = tmp_path / "memory.db"
+        repo = await initialize_temporal_database(str(db_path))
 
         try:
-            repo = await initialize_temporal_database(db_path)
-
             # Store 100 specifications to test memory usage
             for i in range(100):
                 spec = SpecificationRecord.create(
                     spec_type=SpecificationType.ADR,
                     identifier=f"ADR-MEM-{i:03d}",
                     title=f"Memory Test {i}",
-                    content=f"This is a memory test specification number {i}"
-                    * 10,  # Larger content
+                    content=f"This is a memory test specification number {i}" * 10,
                     author="memory_tester",
                 )
                 await repo.store_specification(spec)
@@ -382,15 +349,13 @@ class TestTemporalDatabasePerformance:
             final_memory = process.memory_info().rss
             memory_increase = final_memory - initial_memory
 
-            await repo.close()
-
             # Memory increase should be reasonable (< 100MB for 100 specs)
             assert (
                 memory_increase < 100 * 1024 * 1024
             ), f"Memory increased by {memory_increase / 1024 / 1024:.1f}MB, expected < 100MB"
 
         finally:
-            os.unlink(db_path)
+            await repo.close()
 
 
 if __name__ == "__main__":

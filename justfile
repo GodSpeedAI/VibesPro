@@ -564,7 +564,10 @@ ai-advice *ARGS:
 
 test-ai-guidance:
 	@echo "🔁 Running temporal recommendation tests..."
-	@python -m pytest tests/temporal/test_pattern_recommendations.py
+	@SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck \
+	COPIER_SKIP_PROJECT_SETUP=1 \
+	UV_NO_SYNC=1 \
+	uv run pytest tests/temporal/test_pattern_recommendations.py
 	@echo "🧪 Running performance + context jest suites..."
 	@pnpm test:jest -- --runTestsByPath tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts --runInBand
 	@echo "🧪 Running CLI smoke test..."
