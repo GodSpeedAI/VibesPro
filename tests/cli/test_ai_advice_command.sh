@@ -13,6 +13,12 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# Ensure the `uv` runner is available; tests should fail fast with a clear message if it's not.
+if ! command -v uv >/dev/null 2>&1; then
+  echo "Error: required command 'uv' not found in PATH. Please install 'uv' or ensure it's available." >&2
+  exit 1
+fi
+
 if ! uv run python -m temporal_db.python.export_recommendations --db "${DB_PATH}" --dry-run 2>&1; then
   echo "Warning: export_recommendations initialization failed" >&2
 fi
