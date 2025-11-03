@@ -28,6 +28,8 @@ jobs:
     env:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
     steps:
       - uses: actions/checkout@v4
 
@@ -57,8 +59,8 @@ jobs:
       - name: Temporal recommendation tests
         run: python -m pytest tests/temporal/test_pattern_recommendations.py
 
-      - name: Vitest suites
-        run: pnpm exec vitest run tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts
+      - name: AI guidance Jest suites
+        run: pnpm test:jest -- --runTestsByPath tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts --runInBand
 
       - name: CLI guidance smoke
         run: bash tests/cli/test_ai_advice_command.sh

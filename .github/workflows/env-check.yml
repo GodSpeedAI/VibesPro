@@ -22,6 +22,8 @@ jobs:
       LANG: C.UTF-8
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       SOPS_LOADED: "false"
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -134,10 +136,42 @@ jobs:
           # GitHub injects secrets into the environment only for run steps; check at runtime.
           # If SOPS_AGE_KEY is not provided (e.g., PRs from forks), skip decryption gracefully
           # instead of failing the job.
-          if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
+            if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
             echo "SOPS_AGE_KEY present; attempting decryption"
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
-            set -a; source /tmp/ci.env; set +a
+            while IFS= read -r line || [ -n "$line" ]; do
+              case "$line" in
+                ''|'#'*)
+                  continue
+                  ;;
+              esac
+              if [[ "$line" == export\ * ]]; then
+                line=${line#export }
+              fi
+              key=${line%%=*}
+              value=${line#*=}
+              # Validate key is a POSIX environment variable name: [a-zA-Z_][a-zA-Z0-9_]*
+              if [[ ! "$key" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+                echo "Warning: skipping invalid env var name: '$key'" >&2
+                continue
+              fi
+              # Export into current shell for subsequent steps in this run
+              # Quote both key and value to avoid shell interpretation of special characters
+              export "${key}"="${value}"
+
+              # Generate a per-secret unique delimiter and ensure it doesn't appear in the value
+              delim="CI_DELIM_$RANDOM"
+              while [[ "$value" == *"$delim"* ]]; do
+                delim="CI_DELIM_$RANDOM"
+              done
+
+              # Append the variable to GITHUB_ENV using the generated, single-quoted delimiter
+              {
+                echo "$key<<'$delim'"
+                echo "$value"
+                echo "$delim"
+              } >> "$GITHUB_ENV"
+            done < /tmp/ci.env
           else
             echo "No SOPS_AGE_KEY provided or .secrets.env.sops missing; skipping decryption."
           fi

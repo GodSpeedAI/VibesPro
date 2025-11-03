@@ -13,6 +13,9 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
       - name: Setup pnpm
@@ -29,9 +32,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Install just
-        uses: taiki-e/install-action@00a367b59ffa7299659baf1168279aefe69f5516 # v2.62.10
-        with:
-          tool: just
+        shell: bash
+        run: |
+          if command -v just >/dev/null 2>&1; then
+            echo "just already installed"
+            just --version
+          else
+            curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+            echo "$HOME/.local/bin" >> $GITHUB_PATH
+          fi
       - name: Verify just installation
         run: just --version
       - name: Run Spec Guard bundle

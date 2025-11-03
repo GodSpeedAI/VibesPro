@@ -12,6 +12,7 @@ See DEV-SDS-018 and DEV-PRD-018 for schema requirements.
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from typing import TYPE_CHECKING
 
 import logfire
@@ -22,7 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover - used for type hints only
     from fastapi import FastAPI
 
 
-_LOGFIRE_CONFIGURED = False
+_LOGFIRE_INSTANCE: logfire.Logfire | None = None
 
 
 def configure_logger(service: str | None = None, **kwargs) -> logfire.Logfire:
@@ -39,7 +40,7 @@ def configure_logger(service: str | None = None, **kwargs) -> logfire.Logfire:
     """
     service_name = _resolve_service_name(service)
     logger = _configure_global_logfire(service_name=service_name, **kwargs)
-    return logger.bind(**default_metadata(service_name))
+    return _apply_metadata(logger, default_metadata(service_name))
 
 
 def default_metadata(service: str | None = None) -> dict[str, str]:
@@ -70,13 +71,13 @@ def get_logger(category: str | None = None, **kwargs) -> logfire.Logfire:
     """
     Returns a Logfire-bound logger with shared metadata.
     """
-    logger = logfire.get_logger()
+    logger = _configure_global_logfire(service_name=_resolve_service_name(None))
 
     metadata = default_metadata()
     if category:
         metadata["category"] = category
     metadata.update(kwargs)
-    return logger.bind(**metadata)
+    return _apply_metadata(logger, metadata)
 
 
 class LogCategory:
@@ -105,7 +106,7 @@ def _configure_global_logfire(service_name: str, **kwargs) -> logfire.Logfire:
     Subsequent invocations reuse the existing configuration but still return
     the logger to keep helper functions ergonomic.
     """
-    global _LOGFIRE_CONFIGURED
+    global _LOGFIRE_INSTANCE
 
     configure_kwargs: dict[str, object] = {
         "service_name": service_name,
@@ -114,8 +115,16 @@ def _configure_global_logfire(service_name: str, **kwargs) -> logfire.Logfire:
     }
     configure_kwargs.update({k: v for k, v in kwargs.items() if v is not None})
 
-    if not _LOGFIRE_CONFIGURED:
-        logfire.configure(**configure_kwargs)
-        _LOGFIRE_CONFIGURED = True
+    if _LOGFIRE_INSTANCE is None:
+        # logfire.configure() returns a Logfire instance in recent versions
+        # Store and return that instance for consistent behavior across versions
+        _LOGFIRE_INSTANCE = logfire.configure(**configure_kwargs)
 
-    return logfire.get_logger()
+    return _LOGFIRE_INSTANCE
+
+
+def _apply_metadata(logger: logfire.Logfire, metadata: Mapping[str, object]) -> logfire.Logfire:
+    tags = tuple(f"{key}:{value}" for key, value in metadata.items() if value is not None)
+    if not tags:
+        return logger
+    return logger.with_settings(tags=tags)

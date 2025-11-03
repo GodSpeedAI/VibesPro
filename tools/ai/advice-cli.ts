@@ -1,11 +1,30 @@
 #!/usr/bin/env tsx
+
 import { spawnSync } from 'node:child_process';
 import { resolve } from 'node:path';
 
-import { AIContextManager } from './src/context-manager.js';
-import type { ContextSource } from './src/context-manager.js';
-import { PerformanceMonitor } from '../performance/monitor.js';
 import type { PerformanceAdvisory } from '../performance/monitor.js';
+import * as performanceMonitorModule from '../performance/monitor.js';
+import type { ContextSource } from './src/context-manager.js';
+import { AIContextManager } from './src/context-manager.js';
+
+// Be defensive in types: the monitor module may export a named PerformanceMonitor or supply it
+// as part of the default export. Allow either shape (or undefined) so the type system matches
+// the runtime fallback logic below.
+// Runtime: the performance monitor module may expose different shapes (named export
+// or nested on default). Use a narrow, explicit any here for runtime detection and
+// fallback rather than trying to depend on fragile type-resolution of consumed
+// JS modules at compile time.
+
+const PerformanceMonitor: any =
+  (performanceMonitorModule as any).PerformanceMonitor ??
+  (performanceMonitorModule as any).default?.PerformanceMonitor;
+
+if (!PerformanceMonitor) {
+  throw new Error(
+    'PerformanceMonitor not found in tools/performance/monitor.js. The module must export PerformanceMonitor either as a named export or as the default export (module path: tools/performance/monitor.js).',
+  );
+}
 
 interface RecommendationPayload {
   generated: RecommendationDTO[];

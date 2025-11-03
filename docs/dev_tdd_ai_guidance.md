@@ -112,8 +112,8 @@ This plan drives the TDD execution for the "AI guidance fabric" defined in DEV-A
 ### CI Workflow Alignment
 
 -   Register `context-manager` Nx target in pipeline (stage: `context-suite`).
--   Ensure `just test-ai-guidance` sequences vitest run before CLI integration tests to reuse build artifacts.
--   Add flaky-test watcher to rerun vitest on failure once with verbose logging.
+-   Ensure `just test-ai-guidance` sequences the targeted Jest run before CLI integration tests to reuse build artifacts.
+-   Add flaky-test watcher to rerun the Jest suite on failure once with verbose logging.
 
 ### S.W.O.R.D Skill Focus
 
@@ -180,8 +180,8 @@ This plan drives the TDD execution for the "AI guidance fabric" defined in DEV-A
 
 ### TypeScript / Node (Performance + Context)
 
--   Location: `vibespro/src/**/*.spec.ts`
--   Framework: `vitest` (existing harness) using fake telemetry fixtures.
+-   Location: `tests/perf/*.spec.ts`, `tests/context/*.spec.ts`
+-   Framework: `jest` (ts-jest harness) using fake telemetry fixtures.
 -   Coverage Targets: ≥85% statements/functions across scoring modules.
 
 ### Shell / CLI Integration
@@ -224,8 +224,8 @@ This plan drives the TDD execution for the "AI guidance fabric" defined in DEV-A
 | Phase                            | CI Workflow Status                                     | S.W.O.R.D Skills Status                                   | Notes                                           |
 | -------------------------------- | ------------------------------------------------------ | --------------------------------------------------------- | ----------------------------------------------- |
 | Phase 1 — Temporal mining        | ✅ `temporal-suite` executing via ai-guidance workflow | ✅ Safety/WO/Reliability/DX checks automated in pytest    | Pattern retention + provenance covered by tests |
-| Phase 2 — Performance advisories | ✅ `performance-suite` vitest job                      | ✅ Sanitisation + observability instrumentation validated | Baseline persistence + redaction verified       |
-| Phase 3 — Context scoring        | ✅ `context-suite` vitest job                          | ✅ Deterministic ordering + DX metadata confirmed         | Confidence-weighted scoring shipped             |
+| Phase 2 — Performance advisories | ✅ `performance-suite` Jest job                        | ✅ Sanitisation + observability instrumentation validated | Baseline persistence + redaction verified       |
+| Phase 3 — Context scoring        | ✅ `context-suite` Jest job                            | ✅ Deterministic ordering + DX metadata confirmed         | Confidence-weighted scoring shipped             |
 | Phase 4 — Feedback surfaces      | ✅ `surfaces-suite` CLI smoke                          | ✅ Feedback + observability guardrails enforced           | CLI integrates recommendations + feedback       |
 
 > Update the table as phases complete; both columns must read ✅ prior to marking a phase complete in work summaries.
