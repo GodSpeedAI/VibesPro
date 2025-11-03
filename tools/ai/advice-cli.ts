@@ -258,7 +258,26 @@ function runPythonExporter(options: CliOptions): RecommendationPayload {
   }
 
   if (result.status !== 0) {
-    throw new Error(result.stderr || 'Python exporter failed');
+    // Build an informative error message. In some failure modes (e.g. ENOENT)
+    // spawnSync populates result.error and stderr/stdout can be empty. Prefer
+    // including result.error.message/code/stack when available so callers and
+    // logs get a useful diagnostic.
+    let msg = 'Python exporter failed';
+    if (result.error) {
+      const err = result.error as NodeJS.ErrnoException;
+      const parts: string[] = [];
+      if (err.message) parts.push(`message=${err.message}`);
+      if ((err as any).code) parts.push(`code=${(err as any).code}`);
+      if ((err as any).stack) parts.push(`stack=${(err as any).stack}`);
+      if (parts.length > 0) {
+        msg += ` (${parts.join('; ')})`;
+      }
+    } else if (result.stderr && result.stderr.length > 0) {
+      msg += `: ${result.stderr}`;
+    } else if (result.stdout && result.stdout.length > 0) {
+      msg += `: ${result.stdout}`;
+    }
+    throw new Error(msg);
   }
 
   try {
