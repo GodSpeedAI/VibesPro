@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import StrEnum
+from typing import TypeAlias
 from uuid import UUID, uuid4
 
 
@@ -109,7 +110,7 @@ class PromptFeatures:
         }
 
 
-type MetadataValue = object
+MetadataValue: TypeAlias = object
 
 
 @dataclass

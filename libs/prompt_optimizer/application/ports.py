@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import TypedDict
+from typing import TypeAlias, TypedDict
 
 from ..domain.entities import (
     FeedbackRecord,
@@ -17,7 +17,7 @@ from ..domain.entities import (
     TokenCount,
 )
 
-type MLFeatures = dict[str, int | float]
+MLFeatures: TypeAlias = dict[str, int | float]
 
 
 class OptimizationPattern(TypedDict):

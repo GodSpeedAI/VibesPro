@@ -19,6 +19,8 @@ jobs:
     env:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
 
     steps:
       - name: Checkout repository
@@ -38,7 +40,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
       - name: Install uv
         uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
@@ -47,12 +49,25 @@ jobs:
         run: uv tool install copier
 
       - name: Install just
-        uses: taiki-e/install-action@00a367b59ffa7299659baf1168279aefe69f5516 # v2.62.10
-        with:
-          tool: just
+        shell: bash
+        run: |
+          if command -v just >/dev/null 2>&1; then
+            echo "just already installed"
+            just --version
+          else
+            curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+            echo "$HOME/.local/bin" >> $GITHUB_PATH
+          fi
+
+      - name: Verify just installation
+        run: just --version
 
       - name: Install Node dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: TypeScript typecheck
+        # Run tsc explicitly (non-pretty) to surface compiler errors with clear diagnostics
+        run: pnpm exec tsc --noEmit --pretty false || { echo "::error::TypeScript typecheck failed"; exit 1; }
 
       - name: Install Python dependencies
         run: uv sync --group dev --all-extras --frozen
@@ -69,8 +84,8 @@ jobs:
         run: |
           echo "Running Jest tests..."
           pnpm test:jest --runInBand --passWithNoTests || { echo "::error::Jest tests failed"; exit 1; }
-          echo "Running Vitest tests..."
-          pnpm exec vitest run tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts || { echo "::error::Vitest tests failed"; exit 1; }
+          echo "Running targeted AI guidance Jest suites..."
+          pnpm test:jest -- --runTestsByPath tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts --runInBand || { echo "::error::AI guidance Jest suites failed"; exit 1; }
           echo "Running Node smoke tests..."
           pnpm test:node || { echo "::error::Node smoke tests failed"; exit 1; }
           echo "Running pytest..."

@@ -24,6 +24,8 @@ jobs:
     env:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
     steps:
       - uses: actions/checkout@v4
 

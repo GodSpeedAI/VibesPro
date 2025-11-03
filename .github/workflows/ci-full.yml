@@ -16,6 +16,8 @@ jobs:
     env:
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       SOPS_LOADED: "false"
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,12 +25,34 @@ jobs:
       - name: Install sops
         run: |
           set -euo pipefail
-          SOPS_VERSION="3.9.3"
-          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
-          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
-          sudo mv "${SOPS_FILE}" /usr/local/bin/sops
-          sudo chmod +x /usr/local/bin/sops
+          SOPS_VERSION="3.10.0"
+
+          # Use cargo install for better reliability
+          if command -v cargo >/dev/null 2>&1; then
+            cargo install sops --version "=${SOPS_VERSION}" || {
+              echo "Cargo install failed, trying binary download..."
+              SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+              curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+              sudo mv "${SOPS_FILE}" /usr/local/bin/sops
+              sudo chmod +x /usr/local/bin/sops
+            }
+          else
+            # Fallback to binary download
+            SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+            curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+            sudo mv "${SOPS_FILE}" /usr/local/bin/sops
+            sudo chmod +x /usr/local/bin/sops
+          fi
+
+          # Verify installation
           sops --version
+
+          # Ensure installed version matches expected
+          if ! sops --version | grep -q "${SOPS_VERSION}"; then
+            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
+            sops --version || true
+            exit 1
+          fi
 
       - name: Configure age key (skip gracefully if not set)
         if: ${{ env.IS_FORK != 'true' }}
@@ -40,10 +64,11 @@ jobs:
             echo "SOPS_AGE_KEY is not set; skipping decrypt for this run (no repo secret available)"
             echo "SOPS_LOADED=false" >> $GITHUB_ENV
           else
-            mkdir -p ~/.config/sops
-            printf "%s" "${SOPS_AGE_KEY}" > ~/.config/sops/age-key.txt
-            chmod 600 ~/.config/sops/age-key.txt
-            echo "SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt" >> $GITHUB_ENV
+            KEY_PATH="$HOME/.config/sops/age-key.txt"
+            mkdir -p "$(dirname "$KEY_PATH")"
+            printf "%s" "${SOPS_AGE_KEY}" > "$KEY_PATH"
+            chmod 600 "$KEY_PATH"
+            echo "SOPS_AGE_KEY_FILE=$KEY_PATH" >> $GITHUB_ENV
             echo "SOPS_LOADED=true" >> $GITHUB_ENV
           fi
 
@@ -78,7 +103,7 @@ jobs:
           if [ -f .secrets.env ]; then
             set -a
             # shellcheck disable=SC1090
-            source .secrets.env
+            source .secrets.env || { echo "::error:: Failed to source .secrets.env"; exit 1; }
             set +a
           else
             echo "No decrypted secrets found; running tests without them"

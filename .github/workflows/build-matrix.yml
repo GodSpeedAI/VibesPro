@@ -78,6 +78,8 @@ jobs:
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       SOPS_LOADED: "false"
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
 
     steps:
       - name: Checkout
@@ -123,11 +125,22 @@ jobs:
       - name: Install SOPS
         shell: bash
         run: |
-          SOPS_VERSION="3.9.3"
+          SOPS_VERSION="3.10.0"
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
-            sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
-            sudo chmod +x /usr/local/bin/sops
+            # Use cargo install for better reliability
+            if command -v cargo >/dev/null 2>&1; then
+              cargo install sops --version "=${SOPS_VERSION}" || {
+                echo "Cargo install failed, trying binary download..."
+                curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+                sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+                sudo chmod +x /usr/local/bin/sops
+              }
+            else
+              # Fallback to binary download
+              curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
+              sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+              sudo chmod +x /usr/local/bin/sops
+            fi
           else
             brew install sops
           fi
@@ -188,7 +201,8 @@ jobs:
           if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
             echo "SOPS_AGE_KEY appears set; attempting decryption..."
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
-            set -a; source /tmp/ci.env; set +a
+            # Delegate parsing and safe GITHUB_ENV writes to a helper script
+            bash ./scripts/decrypt-ci-env.sh /tmp/ci.env
             echo "loaded=true" >> $GITHUB_OUTPUT
           else
             echo "SOPS_AGE_KEY not set or .secrets.env.sops missing; skipping decryption."
@@ -301,6 +315,8 @@ jobs:
     env:
       MISE_NONINTERACTIVE: "1"
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -312,7 +328,7 @@ jobs:
 
       - name: Install SOPS
         run: |
-          SOPS_VERSION="3.9.3"
+          SOPS_VERSION="3.10.0"
           curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
           sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
           sudo chmod +x /usr/local/bin/sops
@@ -339,9 +355,8 @@ jobs:
           if [ -n "$SOPS_AGE_KEY" ] && [ -f .secrets.env.sops ]; then
             echo "SOPS_AGE_KEY present; decrypting release secrets"
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
-            set -a; source /tmp/ci.env; set +a
-            # Export to GITHUB_ENV for subsequent steps
-            cat /tmp/ci.env >> $GITHUB_ENV
+            # Use shared decrypt script to parse and write secrets into GITHUB_ENV
+            bash ./scripts/decrypt-ci-env.sh /tmp/ci.env
           else
             echo "No SOPS_AGE_KEY provided or .secrets.env.sops missing; skipping release secret decryption"
           fi
