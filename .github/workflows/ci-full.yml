@@ -16,6 +16,8 @@ jobs:
     env:
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       SOPS_LOADED: "false"
+      NX_NO_CLOUD: "true"
+      NX_REJECT_REMOTE_CACHE: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
