@@ -294,7 +294,7 @@ Decision
 -   Treat the temporal database, ArchitecturalPatternRecognizer, PerformanceMonitor, and AIContextManager as a unified "AI guidance fabric" that mines historical outcomes to steer future assistance.
 -   Establish shared contracts so that:
     -   Temporal snapshots feed clustering jobs that emit pattern recommendations with confidence scores and provenance metadata.
-    -   Performance telemetry produces heuristics (baseline deltas, hotspot detection) that surface prescriptive tuning advice alongside raw metrics.
+        /_ Lines 297-298 omitted _/
     -   AIContextManager scoring incorporates pattern confidence, performance advisories, and usage success rates when assembling bundles inside token budgets.
 -   Ship the fabric in incremental phases with strict TDD coverage tracked in `docs/dev_tdd_ai_guidance.md`.
 
@@ -322,22 +322,115 @@ Implementation Requirements
 3. Update `AIContextManager` (TypeScript) scoring to weight context sources using temporal success metrics and pattern confidences.
 4. Add governance guards: retention policies, opt-out flags, and anonymization for sensitive fields prior to storage.
 5. Wire a consolidated CI workflow (`.github/workflows/ai-guidance.yml`) that runs `nx run-many --target=test --projects temporal,performance,context` and the new `just test-ai-guidance` wrapper before merge.
-6. Establish the S.W.O.R.D skill rubric (Safety, Workflow Observability, Reliability, Developer experience) and require every code path surfaced by the fabric to document how it satisfies the rubric within implementation PRs.
-7. Validate via TDD plan in `docs/dev_tdd_ai_guidance.md`, covering unit, integration, and regression tests for each subsystem.
+
+---
+
+## DEV-ADR-019 — Complete Generator Specification Template for JIT AI Generator Creation
+
+Status: Active
+
+Context
+
+-   The `GENERATOR_SPEC.md` template in `templates/{{project_slug}}/docs/specs/generators/` contains TODO placeholders (line 16 and throughout Sections 3, 7, 8, 9, 10, and Review Checklist).
+-   Generator-first development policy (`.github/instructions/generators-first.instructions.md`) mandates scaffolding with Nx generators before writing custom code.
+-   AI agents attempting to create bespoke generators from the incomplete template produce hallucinated code due to missing schema documentation, validation examples, and acceptance criteria.
+-   Existing generators (`generators/service/`, example specs in `templates/{{project_slug}}/docs/specs/generators/data-access.generator.spec.md`) demonstrate patterns but lack comprehensive guidance for all generator types.
+
+Decision
+
+-   Complete the `GENERATOR_SPEC.md` template with production-ready content covering all sections (1–14), eliminating TODO placeholders.
+-   Provide comprehensive schema documentation: JSON Schema draft-07 examples for all property types (string, number, boolean, array, enum, conditional), all `x-prompt` types (input, list, confirmation, multiselect), and all `$default` sources (argv, projectName, workspaceName).
+-   Include schema ↔ TypeScript type mapping matrix to prevent drift between `schema.json` and `schema.d.ts`.
+-   Document generator composition patterns (calling other Nx generators, conditional file emission).
+-   Supply AI-specific quick-start instructions, categorized troubleshooting guide, and validation automation commands.
+-   Implement using trunk-based development with three MECE TDD cycles (A–C), each on dedicated feature branches off `dev`.
+
+Rationale
+
+-   **Zero hallucination:** Complete spec enables AI agents to generate valid Nx generators in one attempt without external context.
+-   **Generator-first enforcement:** Comprehensive examples reinforce scaffolding-before-coding workflow.
+-   **Type safety:** Mapping matrix and validation examples prevent schema/TypeScript divergence.
+-   **AI enablement:** Quick-start section reduces cognitive load; troubleshooting taxonomy accelerates debugging.
+-   **Maintainability:** Executable tests ensure spec stays current; regression harness catches breaking changes.
+-   **Composability:** Generator composition patterns enable meta-generators and advanced workflows.
+
+Consequences
+
+| Area           | Positive                                                              | Trade–off                                            |
+| -------------- | --------------------------------------------------------------------- | ---------------------------------------------------- |
+| AI Development | AI agents can create generators JIT with <5 min turnaround            | Initial investment: 10–15 hours across three cycles  |
+| Type Safety    | Schema/TypeScript parity enforced via tests and mapping table         | Must maintain synchronization in future spec updates |
+| Documentation  | Single source of truth for all generator patterns                     | Requires periodic refresh as Nx devkit evolves       |
+| Testing        | Comprehensive RED/GREEN/REFACTOR/REGRESSION test coverage             | Test maintenance overhead for spec validation        |
+| Onboarding     | New contributors can author generators without deep Nx expertise      | Requires learning spec template structure            |
+| Quality        | Validation automation (`ajv`, `just spec-guard`) catches errors early | CI pipeline adds ~30s for spec validation checks     |
+| Portability    | Template generates correctly via Copier in all generated projects     | Must test template generation flow after each cycle  |
+
+Implementation Requirements (MECE Cycles)
+
+**Cycle A — Template Foundations & Tests** (`feature/generator-spec-cycle-a`)
+
+1. Implement Jest tests using `tests/generators/utils.ts` to validate spec completeness
+
+    - **DRI:** QA Team
+    - **Dependencies:** Existing test harness, copier setup
+    - **Artifacts:** `tests/generators/spec-template.test.ts`, `tests/generators/spec-completeness.test.ts`
+    - **Exit criteria:** RED tests fail on TODO detection, pass after minimal stub content added
+
+2. Stub Sections 1, 3–10 with "TBD" comments (plan-level, not in template)
+    - **DRI:** Documentation Team
+    - **Artifacts:** Updated `GENERATOR_SPEC.md` with section headers and minimal examples
+    - **Exit criteria:** Tests pass, `grep "TODO:" GENERATOR_SPEC.md` returns zero matches
+
+**Cycle B — Schema & Pattern Depth** (`feature/generator-spec-cycle-b`)
+
+1. Populate comprehensive schema guidance with all validation types
+
+    - **DRI:** Platform Team
+    - **Dependencies:** Context7 Nx docs, existing generator schemas
+    - **Artifacts:** Complete Section 3 with schema matrix, Section 3.5 pattern library
+    - **Exit criteria:** Schema examples cover all types, mapping table complete, AJV validation passes
+
+2. Document generator composition and conditional templates
+    - **DRI:** Architecture Team
+    - **Artifacts:** Section 6 supplement, composition examples
+    - **Exit criteria:** Examples executable, references to existing Nx patterns validated
+
+**Cycle C — AI Enablement & Regression Safety** (`feature/generator-spec-cycle-c`)
+
+1. Write AI quick-start, troubleshooting taxonomy, MCP guidance
+
+    - **DRI:** AI/ML Team
+    - **Artifacts:** Sections 13–14, MCP assistance checklist
+    - **Exit criteria:** AI simulation test passes, troubleshooting covers all common errors
+
+2. Add validation automation and regression harness
+    - **DRI:** DevOps Team
+    - **Artifacts:** ShellSpec tests, `just ai-validate` integration
+    - **Exit criteria:** Full test suite passes, template generation produces TODO-free output
 
 Related Specs
 
--   DEV-PRD-018 — AI pattern intelligence & performance co-pilot
--   DEV-SDS-021 — AI guidance fabric design (to be authored)
--   DEV-SPEC-012 — Temporal database governance (existing)
--   docs/dev_tdd_ai_guidance.md — Phase-driven TDD execution plan (now including CI workflow + S.W.O.R.D closure tracking)
+-   DEV-PRD-019 — Generator Spec Completion Product Requirements
+-   DEV-SDS-019 — Generator Spec Completion Design Specification
+-   `.github/instructions/generators-first.instructions.md` — Generator-first policy
+-   `docs/plans/generator_spec_completion_plan.md` — Implementation plan with TDD cycles
+
+Migration Strategy
+
+-   Phase 1 (Cycle A): Establish test infrastructure and minimal spec outline
+-   Phase 2 (Cycle B): Fill schema/pattern content, validate with existing generators
+-   Phase 3 (Cycle C): Add AI guidance, automate validation, run full regression
+-   Post-implementation: Update `just ai-context-bundle` to include new template guidance
 
 Validation
 
--   Clustering jobs produce recommendations with confidence ≥ defined threshold and link back to source ADR/commit IDs.
--   Performance advisories highlight regressions > 20% over baseline and include remediation hints.
--   Context bundles include at least one high-confidence artifact in ≥80% of assistant responses.
--   Automated tests cover ingestion, scoring, and advisory generation per TDD plan.
+-   All tests in `tests/generators/spec-*.test.ts` pass
+-   `shellspec tests/shell/generator-spec-workflow_spec.sh` succeeds
+-   `just test-generation` produces spec without TODOs in `../test-output`
+-   AJV validation of sample schemas returns zero errors
+-   `just ai-validate` and `just spec-guard` pass clean
+-   Traceability matrix updated with new spec IDs
 
 ## Developer ergonomics considerations (summary)
 

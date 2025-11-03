@@ -955,3 +955,369 @@ log.info(
 
 -   Artifacts: New `ports` subdirectories within each domain's `application` layer; new `adapters` subdirectories within the `infrastructure` layer.
 -   Cross-references: DEV-ADR-022, DEV-PRD-023
+
+---
+
+## DEV-SDS-019 — Complete Generator Specification Template Design (addresses DEV-PRD-019)
+
+Principle: The generator specification template must be comprehensive, AI-friendly, and executable—enabling AI agents to create valid Nx generators just-in-time without hallucinations or external context.
+
+### Design Overview
+
+| Component                | Purpose                                                           | Implementation                                                         |
+| ------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Spec Template            | Single source of truth for generator patterns                     | `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`   |
+| Schema Documentation     | JSON Schema draft-07 examples covering all property types         | Section 3: Inputs/Options with validation rules and prompt types       |
+| Type Mapping Matrix      | Schema ↔ TypeScript alignment guide                              | Section 3.1: Table mapping each property to TS type + validation rules |
+| Pattern Library          | Reusable generator patterns (domain, service, component, adapter) | Section 3.5: Common Generator Patterns with executable examples        |
+| Implementation Hints     | Nx devkit usage patterns and best practices                       | Section 7: Code snippets using `@nx/devkit` helpers                    |
+| Acceptance Tests         | Test templates matching project conventions                       | Section 8: Test categories with examples from `tests/generators/*.ts`  |
+| AI Quick-Start           | Workflow steps reducing cognitive load                            | Section 13: Step-by-step generator creation process                    |
+| Troubleshooting Taxonomy | Categorized error guide (Schema/Runtime/Tests)                    | Section 14: Common errors with resolutions                             |
+| Validation Automation    | Commands for automated checking                                   | Throughout: `ajv`, `just ai-validate`, `just spec-guard` references    |
+| MCP Assistance           | External knowledge queries for grounding                          | Section 10: context7/ref/exa queries for Nx docs and examples          |
+
+### Detailed Design Sections
+
+#### Section 1: Purpose & Scope
+
+-   **Decision Tree (Mermaid):** Visual guide for when to use vs. write custom code
+-   **Use cases:** Clear examples of appropriate generator scenarios
+-   **Non-goals:** Explicit anti-patterns to prevent misuse
+
+#### Section 3: Inputs/Options (Schema)
+
+**Schema Property Types Coverage:**
+
+```typescript
+interface SchemaPropertyTypes {
+    string: {
+        validation: ["pattern", "minLength", "maxLength", "format"];
+        examples: ["kebab-case names", "email", "url"];
+    };
+    number: {
+        validation: ["minimum", "maximum", "multipleOf"];
+        examples: ["port numbers", "retry counts"];
+    };
+    boolean: {
+        defaults: true;
+        examples: ["skipTests", "buildable", "publishable"];
+    };
+    array: {
+        validation: ["minItems", "maxItems", "uniqueItems"];
+        items: "string | object";
+        examples: ["tags", "dependencies"];
+    };
+    enum: {
+        validation: ["enum values"];
+        examples: ["language: typescript|python", "framework: next|remix"];
+    };
+    conditional: {
+        keywords: ["if", "then", "else"];
+        examples: ["require boundedContext when type=domain"];
+    };
+}
+```
+
+**Prompt Types Coverage:**
+
+```json
+{
+    "x-prompt": {
+        "input": "Simple text input",
+        "list": {
+            "message": "Select option",
+            "items": [
+                { "value": "a", "label": "Option A" },
+                { "value": "b", "label": "Option B" }
+            ]
+        },
+        "confirmation": "Boolean yes/no prompt",
+        "multiselect": {
+            "message": "Select multiple",
+            "items": ["option1", "option2", "option3"]
+        }
+    }
+}
+```
+
+**Default Sources:**
+
+```json
+{
+    "$default": {
+        "$source": "argv", // Command-line argument
+        "index": 0 // Position
+    },
+    "$default": {
+        "$source": "projectName" // Current Nx project context
+    },
+    "$default": {
+        "$source": "workspaceName" // Workspace root name
+    }
+}
+```
+
+#### Section 3.1: Type Mapping Matrix
+
+| schema.json Property | TypeScript Type       | Validation Rules               | Example                         |
+| -------------------- | --------------------- | ------------------------------ | ------------------------------- |
+| `name: string`       | `name: string`        | `pattern: "^[a-z][a-z0-9-]*$"` | `"user-service"`                |
+| `port: number`       | `port?: number`       | `minimum: 3000, maximum: 9999` | `3001`                          |
+| `skipTests: boolean` | `skipTests?: boolean` | `default: false`               | `true`                          |
+| `tags: array`        | `tags?: string[]`     | `items: { type: "string" }`    | `["scope:api", "type:service"]` |
+| `type: enum`         | `type: LayerType`     | `enum: ["domain", "infra"]`    | `"domain"`                      |
+
+**Synchronization Rules:**
+
+1. Every `schema.json` property MUST have corresponding `schema.d.ts` field
+2. Optional properties in JSON (`required` array) map to TypeScript `?` suffix
+3. Enum values become TypeScript union types or string literal types
+4. Array items types must match TypeScript array element types
+
+#### Section 3.5: Common Generator Patterns
+
+**Pattern Categories:**
+
+1. **Domain Entity Generator:** Creates DDD entities with value objects
+2. **Service/Adapter Generator:** Scaffolds hexagonal layer services
+3. **Component Generator:** UI components with styling options
+4. **Conditional Schema:** Different options based on generator type
+
+Each pattern includes:
+
+-   Complete `schema.json` example
+-   Matching `schema.d.ts` interface
+-   Usage example with `pnpm nx g`
+-   Expected output files
+
+#### Section 6: Generator Composition
+
+**Calling Other Generators:**
+
+```typescript
+import { Tree } from '@nx/devkit';
+import { libraryGenerator } from '@nx/js';
+
+export default async function(tree: Tree, schema: MySchema) {
+  // Call another generator
+  await libraryGenerator(tree, {
+    name: `${schema.name}-shared`,
+    directory: 'libs/shared'
+  });
+
+  // Continue with custom logic
+  generateFiles(tree, ...);
+}
+```
+
+**Conditional File Emission:**
+
+```typescript
+// In generator.ts
+const filesToGenerate = schema.includeTests
+  ? ['src/index.ts', 'src/index.spec.ts']
+  : ['src/index.ts'];
+
+// In template files/__fileName__.ts.template
+<% if (includeTests) { %>
+import { describe, it, expect } from 'vitest';
+<% } %>
+```
+
+#### Section 7: Implementation Hints
+
+**Nx Devkit Patterns:**
+
+```typescript
+// File generation with templates
+import { generateFiles, Tree, formatFiles, names } from '@nx/devkit';
+
+const normalizedOptions = {
+  ...schema,
+  ...names(schema.name) // Provides: className, fileName, propertyName, constantName
+};
+
+generateFiles(tree, templatePath, targetPath, normalizedOptions);
+await formatFiles(tree);
+
+// Project configuration
+import { addProjectConfiguration, updateProjectConfiguration } from '@nx/devkit';
+
+addProjectConfiguration(tree, projectName, {
+  root: `libs/${projectName}`,
+  projectType: 'library',
+  sourceRoot: `libs/${projectName}/src`,
+  targets: { build: {...} },
+  tags: ['scope:domain', 'type:feature']
+});
+
+// Validation
+function validateSchema(schema: MySchema): void {
+  if (!/^[a-z][a-z0-9-]*$/.test(schema.name)) {
+    throw new Error(`Invalid name: ${schema.name}. Must be kebab-case.`);
+  }
+}
+```
+
+#### Section 8: Acceptance Tests
+
+**Test Categories with Templates:**
+
+1. **Generation Success:** Verify all expected files created
+2. **Content Validation:** Check generated file contents match spec
+3. **Schema Validation:** Reject invalid inputs with clear errors
+4. **Idempotency:** Re-running produces no diff
+5. **Project Graph:** Nx graph remains valid after generation
+6. **Target Execution:** Generated targets (build, test, lint) execute successfully
+
+**Test Harness Integration:**
+
+```typescript
+import { runGenerator } from "./utils"; // Existing project utility
+
+it("should generate all expected files", async () => {
+    const result = await runGenerator("domain-entity", {
+        name: "user",
+        boundedContext: "identity",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.files).toContain("libs/user/domain/entities/User.ts");
+});
+```
+
+#### Section 13: AI Agent Instructions
+
+**Generator Creation Workflow:**
+
+```
+Step 1: Parse Spec Requirements → Extract purpose, schema, outputs, tests
+Step 2: Generate schema.json → Use JSON Schema draft-07, include all validations
+Step 3: Generate schema.d.ts → Align exactly with schema.json using mapping matrix
+Step 4: Generate generator.ts → Import @nx/devkit, validate inputs, use templates
+Step 5: Generate Test Suite → Use patterns from tests/generators/*.test.ts
+Step 6: Validate Generator → Run dry-run, tests, lint, graph checks
+```
+
+**Common Pitfalls:**
+
+-   ❌ Using `any` type → ✅ Use proper TypeScript types
+-   ❌ Hardcoding paths → ✅ Use `path.join` and `names()` helper
+-   ❌ Skipping `formatFiles()` → ✅ Always format at end
+-   ❌ Creating circular dependencies → ✅ Respect hexagonal layers
+
+#### Section 14: Troubleshooting
+
+**Categorized Error Guide:**
+
+| Category          | Error Pattern                     | Resolution                                         |
+| ----------------- | --------------------------------- | -------------------------------------------------- |
+| Schema Validation | "Property 'x' is required"        | Add to `required` array in schema.json             |
+| Schema Validation | "Value does not match pattern"    | Adjust pattern regex or input format               |
+| Generator Runtime | "Cannot find module '@nx/devkit'" | Run `pnpm add -D @nx/devkit`                       |
+| Generator Runtime | "Tree.exists is not a function"   | Ensure `tree` parameter passed correctly           |
+| Test Failures     | "result.files missing expected"   | Check template path and output path configuration  |
+| Test Failures     | "Generated content doesn't match" | Log actual content for debugging: `tree.read(...)` |
+
+### Error Modes & Recovery
+
+**Missing Spec Sections:**
+
+-   Detection: Jest tests fail on TODO detection regex
+-   Recovery: Green phase fills sections with concrete examples
+-   Validation: `grep "TODO:" GENERATOR_SPEC.md` returns zero
+
+**Schema/TypeScript Drift:**
+
+-   Detection: Type mapping matrix validation fails
+-   Recovery: Update schema.d.ts to match schema.json properties
+-   Validation: Automated comparison in `spec-completeness.test.ts`
+
+**Invalid Schema Examples:**
+
+-   Detection: AJV validation fails on sample schemas
+-   Recovery: Fix JSON Schema syntax and validation rules
+-   Validation: `npx ajv validate -s schema.json -d test-data.json`
+
+**AI Hallucination:**
+
+-   Detection: AI simulation test produces invalid generator
+-   Recovery: Enhance spec with missing patterns and examples
+-   Validation: AI agent successfully creates generator on retry
+
+### Artifacts & Source Control
+
+**Template Files:**
+
+-   `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` — Main spec template
+-   `templates/{{project_slug}}/docs/specs/generators/data-access.generator.spec.md` — Example completed spec
+-   `templates/{{project_slug}}/docs/specs/generators/*.generator.spec.md` — Additional examples
+
+**Test Files:**
+
+-   `tests/generators/spec-template.test.ts` — Template validation tests
+-   `tests/generators/spec-completeness.test.ts` — TODO detection and section checks
+-   `tests/generators/ai-agent-simulation.test.ts` — AI workflow simulation
+-   `tests/shell/generator-spec-workflow_spec.sh` — End-to-end ShellSpec test
+
+**Supporting Files:**
+
+-   `tests/generators/utils.ts` — Existing copier-based test harness
+-   `tests/fixtures/generator-schema-sample.json` — Sample data for AJV validation
+-   `docs/generator_plan_review.md` — Gap analysis and recommendations
+-   `docs/plans/generator_spec_completion_plan.md` — TDD cycle plan
+
+### Performance & Benchmark Goals
+
+-   Template generation time: < 2 seconds (Copier processing)
+-   Spec validation time: < 5 seconds (all tests)
+-   AI generator creation time: < 5 minutes (end-to-end)
+-   Test suite execution: < 30 seconds (all generator tests)
+
+### Implementation Dependencies
+
+**Tools:**
+
+-   Jest for unit/integration tests
+-   ShellSpec for shell script validation
+-   AJV for JSON Schema validation
+-   Copier for template generation
+-   Nx devkit for generator implementation
+
+**External Knowledge:**
+
+-   Context7 Nx documentation (`/websites/nx_dev`)
+-   JSON Schema specification (draft-07)
+-   Existing Nx generator schemas (@nx/js, @nx/react, @nxlv/python)
+
+**Project Files:**
+
+-   `.github/instructions/generators-first.instructions.md` — Policy
+-   `.github/instructions/testing.instructions.md` — Test guidelines
+-   `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` — Nx devkit docs
+
+### Cross-References
+
+-   DEV-ADR-019 — Architecture decision for spec completion
+-   DEV-PRD-019 — Product requirements and success metrics
+-   `docs/generator_plan_review.md` — Detailed gap analysis
+-   `docs/plans/generator_spec_completion_plan.md` — MECE TDD cycles A–C
+-   `docs/traceability_matrix.md` — Spec ID mappings (to be updated)
+
+### Exit Criteria
+
+-   [ ] All 14 spec sections have concrete content with zero TODO markers
+-   [ ] Schema examples cover all types: string, number, boolean, array, enum, conditional
+-   [ ] All `x-prompt` types documented: input, list, confirmation, multiselect
+-   [ ] All `$default` sources documented: argv, projectName, workspaceName
+-   [ ] Type mapping matrix complete and validated
+-   [ ] Generator composition patterns with executable examples
+-   [ ] AI quick-start workflow with step-by-step instructions
+-   [ ] Troubleshooting guide categorized by error type
+-   [ ] Test templates align with `tests/generators/utils.ts` patterns
+-   [ ] Validation commands integrated: `ajv`, `just ai-validate`, `just spec-guard`
+-   [ ] `just test-generation` produces zero TODOs in `../test-output`
+-   [ ] All tests pass: Jest, ShellSpec, AJV validation
+-   [ ] Documentation reviewed and approved by platform team
+-   [ ] Traceability matrix updated with DEV-PRD-019, DEV-SDS-019, DEV-ADR-019
