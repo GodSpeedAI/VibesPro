@@ -14,7 +14,7 @@ else:
     PYTEST_COPIER_AVAILABLE = True
 
 
-def pytest_ignore_collect(collection_path: Path, config: pytest.Config):
+def pytest_ignore_collect(collection_path: Path, config: pytest.Config, **_):
     """Ignore legacy duplicate template tests that interfere with canonical test run.
 
     We intentionally keep a single canonical test: `tests/template/test_template_generation.py`
