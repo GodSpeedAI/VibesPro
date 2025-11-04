@@ -13,4 +13,12 @@ describe('GENERATOR_SPEC.md completeness', () => {
     expect(specContent).not.toContain('TBD');
     // Add more checks for empty subsections as needed
   });
+
+  it('should have a sample table for each pattern category', () => {
+    expect(specContent).toContain('### 3.5 Pattern Categories');
+    expect(specContent).toMatch(/#### Domain\n\n\|/);
+    expect(specContent).toMatch(/#### Service\n\n\|/);
+    expect(specContent).toMatch(/#### Component\n\n\|/);
+    expect(specContent).toMatch(/#### Conditional\n\n\|/);
+  });
 });
