@@ -70,19 +70,109 @@ jobs:
       - name: CLI guidance smoke
         run: bash tests/cli/test_ai_advice_command.sh
 
-      - name: Install just (fallback for runners without preinstalled just)
+      - name: Install just (robust)
         if: ${{ runner.os == 'Linux' || runner.os == 'Windows' || runner.os == 'macOS' }}
         shell: bash
         run: |
-          # install just to user-local bin if missing so subsequent just calls succeed
-          if ! command -v just >/dev/null 2>&1; then
-            echo "Installing just into ~/.local/bin"
-            mkdir -p ~/.local/bin
-            curl -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
-            echo "$HOME/.local/bin" >> $GITHUB_PATH
-          else
+          set -euo pipefail
+
+          if command -v just >/dev/null 2>&1; then
             echo "just already installed: $(command -v just)"
+            exit 0
           fi
+
+          mkdir -p "${HOME}/.local/bin"
+          export PATH="${HOME}/.local/bin:${PATH}"
+
+          os_name="$(uname -s)"
+
+          if [ "${os_name}" = "Linux" ]; then
+            sudo apt-get update -y || true
+            if sudo apt-get install -y just; then
+              echo "Installed just via apt-get"
+              echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+              exit 0
+            fi
+          elif [ "${os_name}" = "Darwin" ]; then
+            if command -v brew >/dev/null 2>&1 && brew install just; then
+              echo "Installed just via Homebrew"
+              echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+              exit 0
+            fi
+          elif expr "${os_name}" : 'MINGW' >/dev/null 2>&1 || expr "${os_name}" : 'MSYS' >/dev/null 2>&1 || expr "${os_name}" : 'CYGWIN' >/dev/null 2>&1; then
+            if command -v choco >/dev/null 2>&1 && choco install just -y; then
+              echo "Installed just via Chocolatey"
+              echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+              exit 0
+            fi
+            if command -v winget >/dev/null 2>&1 && winget install --id=Casey.Just -e --accept-package-agreements --accept-source-agreements; then
+              echo "Installed just via winget"
+              echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+              exit 0
+            fi
+          fi
+
+          VERSION="1.27.0"
+          arch="$(uname -m)"
+          archive=""
+
+          case "${os_name}" in
+            Linux)
+              case "${arch}" in
+                x86_64|amd64) archive="just-v${VERSION}-x86_64-unknown-linux-musl.tar.gz" ;;
+                aarch64|arm64) archive="just-v${VERSION}-aarch64-unknown-linux-musl.tar.gz" ;;
+                *) echo "Unsupported Linux architecture: ${arch}" >&2; exit 1 ;;
+              esac
+              ;;
+            Darwin)
+              case "${arch}" in
+                x86_64) archive="just-v${VERSION}-x86_64-apple-darwin.tar.gz" ;;
+                aarch64|arm64) archive="just-v${VERSION}-aarch64-apple-darwin.tar.gz" ;;
+                *) echo "Unsupported macOS architecture: ${arch}" >&2; exit 1 ;;
+              esac
+              ;;
+            MINGW*|MSYS*|CYGWIN*)
+              case "${arch}" in
+                x86_64|amd64) archive="just-v${VERSION}-x86_64-pc-windows-msvc.zip" ;;
+                aarch64|arm64) archive="just-v${VERSION}-aarch64-pc-windows-msvc.zip" ;;
+                *) echo "Unsupported Windows architecture: ${arch}" >&2; exit 1 ;;
+              esac
+              ;;
+            *)
+              echo "Unsupported operating system: ${os_name}" >&2
+              exit 1
+              ;;
+          esac
+
+          base_url="https://github.com/casey/just/releases/download/v${VERSION}"
+          archive_path="/tmp/${archive}"
+          echo "Downloading just from ${base_url}/${archive}"
+          curl -fsSL "${base_url}/${archive}" -o "${archive_path}"
+
+          if [[ "${archive}" == *.tar.gz ]]; then
+            tar -xzf "${archive_path}" -C /tmp
+            binary="$(find /tmp -maxdepth 2 -type f -name 'just' | head -n1)"
+            if [ -z "${binary}" ]; then
+              echo "Unable to locate extracted just binary" >&2
+              exit 1
+            fi
+            cp "${binary}" "${HOME}/.local/bin/just"
+            chmod 0755 "${HOME}/.local/bin/just"
+          elif [[ "${archive}" == *.zip ]]; then
+            unzip -q "${archive_path}" -d /tmp/just-release
+            binary="$(find /tmp/just-release -type f -name 'just.exe' | head -n1)"
+            if [ -z "${binary}" ]; then
+              echo "Unable to locate extracted just.exe binary" >&2
+              exit 1
+            fi
+            cp "${binary}" "${HOME}/.local/bin/just.exe"
+          else
+            echo "Unsupported archive format: ${archive}" >&2
+            exit 1
+          fi
+
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+          echo "Installed just to ${HOME}/.local/bin"
 
       - name: Run AI guidance test suite
         run: just test-ai-guidance
