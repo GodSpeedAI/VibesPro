@@ -3,13 +3,18 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 describe('GENERATOR_SPEC.md template', () => {
-  const specContent = readFileSync(
-    join(__dirname, '../../templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md'),
-    'utf-8',
-  );
+  let specContent: string;
+
+  beforeAll(() => {
+    specContent = readFileSync(
+      join(__dirname, '../../templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md'),
+      'utf-8',
+    );
+  });
 
   it('should not contain TODO strings in sections 1-4', () => {
     const sections = specContent.split('---');
+    expect(sections.length).toBeGreaterThanOrEqual(5);
     const sections1to4 = sections.slice(1, 5).join('---');
     expect(sections1to4).not.toContain('TODO');
   });

@@ -133,4 +133,5 @@ dev = [
     "psutil>=5.9.0",
     "fastapi>=0.120.1",
     "httpx>=0.28.1",
+    "sqlalchemy>=2.0.0",
 ]

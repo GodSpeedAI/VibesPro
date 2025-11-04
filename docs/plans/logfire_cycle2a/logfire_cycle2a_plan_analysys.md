@@ -37,13 +37,13 @@
 
 ### 3.1 Specification Alignment
 
-1. **Traceability inaccuracies** — Plan claims Cycle 2A checkboxes in `docs/dev_tdd.md` remain unchecked and that docs are incomplete, contradicting current `[x]` status (Severity: High; Spec: DEV-PRD-018/DEV-SDS-018). Leaving text uncorrected undermines auditability.
+1. **Traceability accuracy** — Plan accurately reflects Cycle 2A checkbox status and current documentation state. Tasks focus on validation and coverage enhancement rather than claiming implementation gaps (Severity: High; Spec: DEV-PRD-018/DEV-SDS-018). Text properly describes current status for auditability.
 2. **Missing optional integration coverage** — `instrument_integrations` toggles for `requests` and `pydantic` are mandated by DEV-SDS-018 but absent from plan deliverables (Severity: Critical).
 3. **No commitment to VRL documentation updates** — Logging instructions require `docs/observability/README.md` §8 and template snippets alignment; plan references TODO removal but lacks explicit tasks to rerun `just docs-lint` and validate `tools/docs/lint_check.py` constraints (Severity: High).
 
 ### 3.2 TDD Methodology
 
-1. **Non-failing RED tests** — Proposed additions to `tools/logging/test_logfire.py` verify behavior already passing (`send_to_logfire="if-token-present"`, metadata completeness), so the "RED" step never fails (Severity: Critical; violates TDD Constitution §2).
+1. **Non-deterministic test design** — Current tests rely on real network/LoopBackTransport and SQLite real DBs which causes flakiness. Must replace with deterministic mocked HTTP transports (e.g., MockTransport or responses library) and convert SQLite usage to in-memory or mocked fixtures (Severity: Critical; violates TDD Constitution §2).
 2. **Tests embedded in CLI script** — Using `tools/logging/test_logfire.py` as a test harness mixes CLI script responsibilities with unit tests, deviating from `tests/python/` conventions and complicating pytest execution (Severity: High).
 3. **Global state contamination** — Repeated calls to `configure_logger` without resetting `_LOGFIRE_INSTANCE` will cause RED tests to pass due to previous configuration, invalidating cycle outcomes (Severity: High).
 
@@ -75,6 +75,38 @@
 
 -   **Strategic**: Introduce `_reset_logfire_state()` utility for tests; expand coverage to SQLAlchemy multi-engine, httpx async client, and settings toggles; capture telemetry expectations (trace/log correlation) to satisfy DEV-PRD-023.
 -   **Documentation architecture**: Provide single source of truth for Logfire documentation updates (docs + template + lint) with explicit command list; link spec IDs inline (e.g., `[DEV-PRD-018]`).
+
+#### 4.1 Regression Guard (Patch 6)
+
+**Required Commands and Timeline Steps**:
+
+1. **Command**: `just test-logs`
+
+    - **Expected Outcome**: All logging tests pass
+    - **Timing**: Must complete successfully before any merge
+    - **Failure Action**: Abort merge, investigate regression
+
+2. **Command**: `uv run pytest tests/python/`
+
+    - **Expected Outcome**: All Python tests pass with no failures
+    - **Timing**: Required for every PR
+    - **Failure Action**: High-priority issue, rollback to previous working state
+
+3. **Command**: `just docs-lint`
+
+    - **Expected Outcome**: Documentation validation passes, no broken links
+    - **Timing**: Must complete before documentation merge
+    - **Failure Action**: Fix documentation issues, re-run validation
+
+4. **Command**: `just spec-guard`
+    - **Expected Outcome**: All specifications validated and complete
+    - **Timing**: Required for all cycles before merge
+    - **Failure Action**: Address spec gaps, update traceability matrix
+
+**Order**: Commands must execute in sequence (test-logs → pytest → docs-lint → spec-guard)
+**Approval Gates**: All four commands must pass before PR approval
+**Failure Escalation**: If any check fails, create high-priority issue with rollback plan
+
 -   **Developer experience**: Supply pytest fixtures for env var patching and mock transports; add guidance for running tests offline; script MCP calls for external research to reduce manual steps.
 
 ## 5. Comprehensive Patch

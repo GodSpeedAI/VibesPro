@@ -8,9 +8,11 @@ from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanE
 from libs.python.vibepro_logging import instrument_integrations
 
 
-def test_requests_instrumentation():
+@pytest.fixture
+def logfire_setup():
     """
-    Asserts that requests instrumentation emits spans.
+    Pytest fixture that sets up logfire with in-memory span exporting for testing.
+    Performs proper teardown to avoid breaking other tests.
     """
     try:
         from opentelemetry.instrumentation.requests import RequestsInstrumentor  # noqa: F401
@@ -22,10 +24,24 @@ def test_requests_instrumentation():
 
     # Configure logfire with our test processor
     import logfire
+
     logfire.configure(send_to_logfire=False, console=False, additional_span_processors=[processor])
 
     # Enable requests instrumentation
     logfire.instrument_requests()
+
+    yield processor, exporter
+
+    # Teardown: flush spans and shutdown
+    processor.force_flush(timeout_millis=5_000)
+    logfire.shutdown()
+
+
+def test_requests_instrumentation(logfire_setup):
+    """
+    Asserts that requests instrumentation emits spans.
+    """
+    processor, exporter = logfire_setup
 
     # Make a deterministic HTTP request by mocking the Session.send call
     with patch("requests.sessions.Session.send") as mock_send:
@@ -39,10 +55,6 @@ def test_requests_instrumentation():
         mock_send.return_value = response
 
         requests.get("https://example.test/logfire", timeout=1)
-
-    # Flush spans to ensure the exporter receives them before assertions
-    processor.force_flush(timeout_millis=5_000)
-    logfire.shutdown()
 
     # Check that spans were created
     spans = exporter.get_finished_spans()

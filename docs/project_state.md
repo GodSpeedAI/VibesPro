@@ -242,7 +242,7 @@ at /home/sprime01/projects/VibesPro/node_modules/.pnpm/@nx+js@21.5.3_@babel+trav
 
 **Files**: `pytest.ini:7`, `tests/temporal/`, `justfile:166-177`
 
-#### 3. [x]**Generator Specification Template Incomplete**
+#### 3. [x] **Generator Specification Template Incomplete**
 
 **Problem**: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` contains TODO placeholders.
 
@@ -298,7 +298,7 @@ at /home/sprime01/projects/VibesPro/node_modules/.pnpm/@nx+js@21.5.3_@babel+trav
 -   `docs/dev_tdd.md:29,69`
 -   `justfile:739`
 
-#### 5. [ ]**Prompt Execution Integration Manual**
+#### 5. [ ] **Prompt Execution Integration Manual**
 
 **Problem**: `scripts/run_prompt.sh` has TODO for VS Code/Copilot API integration.
 
