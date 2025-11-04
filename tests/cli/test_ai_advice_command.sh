@@ -13,13 +13,19 @@ cleanup() {
 }
 trap cleanup EXIT
 
-if ! python -m temporal_db.python.export_recommendations --db "${DB_PATH}" --dry-run 2>&1; then
+# Ensure the `uv` runner is available; tests should fail fast with a clear message if it's not.
+if ! command -v uv >/dev/null 2>&1; then
+  echo "Error: required command 'uv' not found in PATH. Please install 'uv' or ensure it's available." >&2
+  exit 1
+fi
+
+if ! uv run python -m temporal_db.python.export_recommendations --db "${DB_PATH}" --dry-run 2>&1; then
   echo "Warning: export_recommendations initialization failed" >&2
 fi
 
 # Seed the temporal DB using an embedded Python here-doc. Keep the block self-contained
 # so shellcheck won't mis-parse it.
-python - <<'PY'
+uv run python - <<'PY'
 import asyncio
 import os
 from datetime import UTC, datetime, timedelta
