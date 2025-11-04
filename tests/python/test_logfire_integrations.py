@@ -43,8 +43,8 @@ def test_requests_instrumentation(logfire_setup):
     """
     processor, exporter = logfire_setup
 
-    # Make a deterministic HTTP request by mocking the Session.send call
-    with patch("requests.sessions.Session.send") as mock_send:
+    # Make a deterministic HTTP request by mocking the underlying adapter call
+    with patch("requests.adapters.HTTPAdapter.send") as mock_send:
         response = requests.Response()
         prepared = requests.Request(method="GET", url="https://example.test/logfire").prepare()
         response.status_code = 200
@@ -56,12 +56,14 @@ def test_requests_instrumentation(logfire_setup):
 
         requests.get("https://example.test/logfire", timeout=1)
 
+    processor.force_flush(timeout_millis=5_000)
+
     # Check that spans were created
     spans = exporter.get_finished_spans()
     assert len(spans) > 0
 
     # Find the HTTP span
-    http_spans = [span for span in spans if "http" in span.name.lower()]
+    http_spans = [span for span in spans if span.attributes.get("http.method")]
     assert len(http_spans) > 0
 
     # Verify the span has HTTP attributes
