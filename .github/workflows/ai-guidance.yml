@@ -147,7 +147,13 @@ jobs:
           base_url="https://github.com/casey/just/releases/download/v${VERSION}"
           archive_path="/tmp/${archive}"
           echo "Downloading just from ${base_url}/${archive}"
-          curl -fsSL "${base_url}/${archive}" -o "${archive_path}"
+          curl -fsSL --fail "${base_url}/${archive}" -o "${archive_path}"
+          http_status=$?
+          if [ $http_status -ne 0 ]; then
+            echo "Download failed with HTTP status: $http_status" >&2
+            echo "URL: ${base_url}/${archive}" >&2
+            exit 1
+          fi
 
           if [[ "${archive}" == *.tar.gz ]]; then
             tar -xzf "${archive_path}" -C /tmp

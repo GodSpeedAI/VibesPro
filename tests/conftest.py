@@ -28,11 +28,7 @@ def pytest_ignore_collect(collection_path: Path, config: pytest.Config, **_):
         "test_template_generation_userdata2.py",
     }
 
-    try:
-        name = collection_path.name
-    except Exception:
-        return False
-
+    name = collection_path.name
     return name in ignored
 
 

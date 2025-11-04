@@ -1,8 +1,8 @@
 # Logfire Cycle 2A — Corrected and Updated Implementation Plan
 
 **Status:** Ready for Execution
-**Revision Date:** November 3 2025
-**Aligned With:** logfire_cycle2a_plan_analysys.md recommendations
+**Revision Date:** November 3, 2025
+**Aligned With:** logfire_cycle2a_plan_analysis.md recommendations
 
 ---
 
@@ -170,13 +170,15 @@ Rollback: revert to last A/B/C-GREEN merge and disable instrumentation temporari
 
 ## 8. Validation Checklist
 
--   [x] `_reset_logfire_state()` implemented
--   [x] Deterministic pytest modules replace CLI tests
--   [x] Integration tests cover all frameworks
--   [x] Docs sync + lint tasks defined
--   [x] Regression suite enumerated
--   [x] Risk + rollback documented
--   [x] Traceability matrix complete
+**Note**: These items represent pending deliverables. Each item will be marked complete upon successful implementation and verification.
+
+-   [ ] `_reset_logfire_state()` implemented — **Owner**: Agent A, **Success Criteria**: Function clears cached instance and tests pass with isolation
+-   [ ] Deterministic pytest modules replace CLI tests — **Owner**: Agent A, **Success Criteria**: All tests run without external network calls
+-   [ ] Integration tests cover all frameworks — **Owner**: Agent B, **Success Criteria**: SQLAlchemy, httpx, requests tests use MockTransport/mocks
+-   [ ] Docs sync + lint tasks defined — **Owner**: Agent C, **Success Criteria**: `just docs-lint` passes with no warnings
+-   [ ] Regression suite enumerated — **Owner**: Agent B, **Success Criteria**: All validation commands documented and tested
+-   [ ] Risk + rollback documented — **Owner**: Agent C, **Success Criteria**: Complete rollback procedure with triggers defined
+-   [ ] Traceability matrix complete — **Owner**: Quality Lead, **Success Criteria**: All spec IDs mapped to implementation artifacts
 
 ---
 

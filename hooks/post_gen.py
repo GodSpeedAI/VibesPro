@@ -24,6 +24,7 @@ def run(cmd: list[str], cwd: Path) -> None:
 
 
 def read_answers_file(path: Path) -> dict[str, Any]:
+    """Read and parse a YAML answers file with robust error handling."""
     if not path.exists():
         return {}
 
@@ -33,24 +34,45 @@ def read_answers_file(path: Path) -> dict[str, Any]:
         print(f"   → Unable to read {path}: {exc}")
         return {}
 
+    # PyYAML is required for this project and should always be available
     try:
         import yaml  # type: ignore
-    except ImportError:
-        data: dict[str, Any] = {}
-        for raw_line in contents.splitlines():
-            if ":" not in raw_line:
-                continue
-            key, value = raw_line.split(":", 1)
-            data[key.strip()] = value.strip().strip('"')
-        return data
 
-    try:
+        # Use safe_load to prevent arbitrary code execution
         parsed = yaml.safe_load(contents) or {}
-    except Exception as exc:  # noqa: BLE001
-        print(f"   → Unable to parse {path}: {exc}")
-        return {}
 
-    return parsed if isinstance(parsed, dict) else {}
+        if not isinstance(parsed, dict):
+            print(f"   → {path}: YAML content is not a dictionary/object")
+            return {}
+
+        return parsed
+
+    except ImportError:
+        print("   → CRITICAL: PyYAML is not available. This is a required dependency.")
+        print("   → Please install with: pip install pyyaml>=6.0")
+        return {}
+    except yaml.YAMLError as exc:
+        print(f"   → Unable to parse {path}: {exc}")
+        print("   → Note: The fallback parser is limited and only supports simple key:value pairs.")
+
+        # Limited fallback for simple key:value pairs only
+        if isinstance(contents, str) and ":" in contents:
+            data: dict[str, Any] = {}
+            for raw_line in contents.splitlines():
+                line = raw_line.strip()
+                if not line or line.startswith("#") or ":" not in line:
+                    continue
+                try:
+                    key, value = line.split(":", 1)
+                    data[key.strip()] = value.strip().strip("\"'")
+                except ValueError:
+                    # Skip malformed lines
+                    continue
+            return data
+        return {}
+    except Exception as exc:  # noqa: BLE001
+        print(f"   → Unexpected error parsing {path}: {exc}")
+        return {}
 
 
 def load_answers(target: Path) -> dict[str, Any]:
@@ -114,6 +136,193 @@ def title_case_from_slug(value: str) -> str:
     return " ".join(word.capitalize() for word in words)
 
 
+def sanitize_for_platform_id(value: str) -> str:
+    """
+    Sanitize project slug for use in platform IDs (Android packages, iOS bundles).
+    Converts to lowercase, replaces invalid characters, ensures valid segments.
+    """
+    if not value:
+        return "app"
+
+    # Convert to lowercase and replace invalid characters with dots
+    sanitized = re.sub(r"[^a-zA-Z0-9.]", ".", value.lower())
+
+    # Collapse consecutive dots
+    sanitized = re.sub(r"\.+", ".", sanitized)
+
+    # Trim leading and trailing dots
+    sanitized = sanitized.strip(".")
+
+    # Split into segments and validate each starts with a letter
+    segments = []
+    for segment in sanitized.split("."):
+        if not segment:
+            continue
+        if not segment[0].isalpha():
+            segment = f"app{segment}"
+        segments.append(segment)
+
+    # If no valid segments, use default
+    if not segments:
+        return "app"
+
+    return ".".join(segments)
+
+
+def sanitize_for_filesystem(value: str, fallback: str = "unnamed") -> str:
+    """
+    Sanitize a value for use in filesystem paths.
+    Prevents path traversal and ensures safe characters only.
+    """
+    if not value:
+        return fallback
+
+    # Trim whitespace
+    value = value.strip()
+    if not value:
+        return fallback
+
+    # Reject path traversal attempts
+    if ".." in value or value.startswith(".") or "/" in value or "\\" in value:
+        return fallback
+
+    # Allow only alphanumeric, hyphens, and underscores
+    sanitized = re.sub(r"[^a-zA-Z0-9\-_]", "-", value)
+
+    # Replace multiple hyphens/underscores with single hyphen
+    sanitized = re.sub(r"[-_]+", "-", sanitized)
+
+    # Trim leading/trailing hyphens
+    sanitized = sanitized.strip("-")
+
+    if not sanitized:
+        return fallback
+
+    return sanitized
+
+
+def validate_within_target(target: Path, path_component: str, base_dir: str) -> Path:
+    """
+    Validate that a path component stays within the target directory.
+    Returns a safe Path object or raises ValueError if validation fails.
+    """
+    safe_component = sanitize_for_filesystem(path_component)
+    full_path = target / base_dir / safe_component
+
+    # Resolve to absolute paths for comparison
+    try:
+        target_resolved = target.resolve()
+        full_path_resolved = full_path.resolve()
+
+        # Ensure the path is within target directory
+        if not str(full_path_resolved).startswith(str(target_resolved)):
+            raise ValueError(f"Path traversal detected: {path_component}")
+
+        return full_path
+    except (OSError, ValueError) as exc:
+        raise ValueError(f"Invalid path component '{path_component}': {exc}") from exc
+
+
+def sanitize_domain_name(value: str, target: Path) -> Path:
+    """
+    Sanitize domain name and validate it's within target/libs.
+    """
+    if not value:
+        raise ValueError("Domain name cannot be empty")
+
+    # Trim and lowercase
+    value = value.strip().lower()
+
+    # Use strict pattern: alphanumeric, hyphen, underscore only
+    if not re.match(r"^[a-z0-9\-_]+$", value):
+        raise ValueError(
+            f"Domain name '{value}' contains invalid characters. Only alphanumeric, hyphens, and underscores allowed."
+        )
+
+    return validate_within_target(target, value, "libs")
+
+
+def sanitize_service_name(value: str, target: Path) -> Path:
+    """
+    Sanitize service name and validate it's within target/apps.
+    """
+    if not value:
+        raise ValueError("Service name cannot be empty")
+
+    # Trim and validate characters
+    value = value.strip()
+
+    # Reject path separators, "..", leading dots
+    if any(char in value for char in ["/", "\\", ".."]) or value.startswith("."):
+        raise ValueError(f"Service name '{value}' contains invalid path characters")
+
+    # Allow only alphanumerics, dashes, underscores
+    if not re.match(r"^[a-zA-Z0-9\-_]+$", value):
+        raise ValueError(
+            f"Service name '{value}' contains invalid characters. Only alphanumeric, hyphens, and underscores allowed."
+        )
+
+    # Enforce max length
+    if len(value) > 50:
+        raise ValueError(f"Service name '{value}' is too long (max 50 characters)")
+
+    return validate_within_target(target, value, "apps")
+
+
+def sanitize_app_name(value: str, target: Path) -> Path:
+    """
+    Sanitize app name and validate it's within target/apps.
+    """
+    if not value:
+        raise ValueError("App name cannot be empty")
+
+    return validate_within_target(target, value, "apps")
+
+
+def sanitize_project_slug(value: str) -> str:
+    """
+    Sanitize project slug for general use in paths and identifiers.
+    """
+    if not value:
+        return "project"
+
+    # Convert to lowercase and replace invalid characters with dashes
+    sanitized = re.sub(r"[^a-zA-Z0-9\-]", "-", value.lower())
+
+    # Replace multiple dashes with single dash
+    sanitized = re.sub(r"-+", "-", sanitized)
+
+    # Trim leading/trailing dashes
+    sanitized = sanitized.strip("-")
+
+    if not sanitized:
+        return "project"
+
+    return sanitized
+
+
+def sanitize_domains(domains: list[str]) -> list[str]:
+    """
+    Sanitize a list of domain names to ensure they are safe.
+    """
+    sanitized_domains = []
+    for domain in domains:
+        # Trim and lowercase
+        domain = domain.strip().lower()
+
+        # Use strict pattern: alphanumeric, hyphen, underscore only
+        if re.match(r"^[a-z0-9\-_]+$", domain):
+            sanitized_domains.append(domain)
+        else:
+            # Skip invalid domains or replace with sanitized version
+            safe_domain = re.sub(r"[^a-z0-9\-_]", "-", domain)
+            if safe_domain:
+                sanitized_domains.append(safe_domain.strip("-"))
+
+    # Remove duplicates and empty strings
+    return list(dict.fromkeys([d for d in sanitized_domains if d]))
+
+
 def write_text_file(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
@@ -141,21 +350,41 @@ def build_api_client(domains: list[str]) -> str:
 
 
 def scaffold_app(target: Path, answers: dict[str, Any]) -> None:
-    app_name = str(answers.get("app_name") or answers.get("name") or "").strip()
-    if not app_name:
+    """Scaffold an app with comprehensive input validation and sanitization."""
+    # Sanitize and validate app_name
+    app_name_raw = str(answers.get("app_name") or answers.get("name") or "").strip()
+    if not app_name_raw:
+        return
+
+    try:
+        app_root = sanitize_app_name(app_name_raw, target)
+    except ValueError as exc:
+        print(f"   → Skipping app scaffold: {exc}")
         return
 
     framework = str(answers.get("app_framework") or "next").lower()
-    domains = parse_domains(answers.get("app_domains") or answers.get("domains"))
+
+    # Sanitize domains list
+    domains_raw = parse_domains(answers.get("app_domains") or answers.get("domains"))
+    if not domains_raw:
+        domains_raw = ["core"]
+    domains = sanitize_domains(domains_raw)
     if not domains:
-        domains = ["core"]
+        domains = ["core"]  # Fallback if all domains were invalid
+
     include_example = bool(answers.get("include_example_page"))
     include_supabase = bool(answers.get("include_supabase"))
     router_style = str(answers.get("app_router_style") or "pages").lower()
-    project_slug = str(answers.get("project_slug") or app_name or "app")
-    app_title = title_case_from_slug(app_name)
 
-    app_root = target / "apps" / app_name
+    # Sanitize project_slug
+    project_slug_raw = str(answers.get("project_slug") or app_name_raw or "app")
+    project_slug = sanitize_project_slug(project_slug_raw)
+
+    # Get the sanitized app name for use in configs
+    app_name = app_root.name
+
+    app_title = title_case_from_slug(app_name_raw)
+
     app_root.mkdir(parents=True, exist_ok=True)
 
     api_client_content = build_api_client(domains)
@@ -277,29 +506,40 @@ def scaffold_app(target: Path, answers: dict[str, Any]) -> None:
         )
         write_text_file(app_root / "App.tsx", expo_app)
 
+        # Sanitize project_slug for platform IDs
+        platform_safe_slug = sanitize_for_platform_id(project_slug)
+
         expo_config = {
             "expo": {
                 "name": app_title,
                 "slug": app_name,
                 "version": "1.0.0",
                 "owner": project_slug,
-                "android": {"package": f"com.{project_slug}.mobile-app"},
-                "ios": {"bundleIdentifier": f"com.{project_slug}.mobile-app"},
+                "android": {"package": f"com.{platform_safe_slug}.mobile-app"},
+                "ios": {"bundleIdentifier": f"com.{platform_safe_slug}.mobile-app"},
             }
         }
         write_text_file(app_root / "app.json", json.dumps(expo_config, indent=2))
 
 
 def scaffold_domain(target: Path, answers: dict[str, Any]) -> None:
-    domain_name = str(answers.get("domain_name") or "").strip()
-    if not domain_name:
+    """Scaffold a domain with comprehensive input validation and sanitization."""
+    domain_name_raw = str(answers.get("domain_name") or "").strip()
+    if not domain_name_raw:
         return
 
-    domain_root = target / "libs" / domain_name
-    domain_root.mkdir(parents=True, exist_ok=True)
-    words = to_words(domain_name)
+    try:
+        domain_root = sanitize_domain_name(domain_name_raw, target)
+    except ValueError as exc:
+        print(f"   → Skipping domain scaffold: {exc}")
+        return
+
+    # Get the sanitized domain name for use in configs
+    domain_name = domain_root.name
+
+    words = to_words(domain_name_raw)
     primary_pascal = words[0].capitalize() if words else "Domain"
-    domain_pascal = pascal_case(domain_name)
+    domain_pascal = pascal_case(domain_name_raw)
 
     tsconfig = {
         "extends": "../../tsconfig.base.json",
@@ -475,16 +715,24 @@ def scaffold_domain(target: Path, answers: dict[str, Any]) -> None:
 
 
 def scaffold_service(target: Path, answers: dict[str, Any]) -> None:
-    service_name = str(answers.get("name") or answers.get("service_name") or "").strip()
-    if not service_name:
+    """Scaffold a service with comprehensive input validation and sanitization."""
+    service_name_raw = str(answers.get("name") or answers.get("service_name") or "").strip()
+    if not service_name_raw:
         return
 
     language = str(answers.get("language") or "python").lower()
     if language != "python":
         return
 
-    service_root = target / "apps" / service_name / "src"
-    service_root.mkdir(parents=True, exist_ok=True)
+    try:
+        service_root = sanitize_service_name(service_name_raw, target)
+    except ValueError as exc:
+        print(f"   → Skipping service scaffold: {exc}")
+        return
+
+    # Get the sanitized service name for use in configs
+    service_name = service_root.name
+
     main_py = textwrap.dedent(
         f"""\
         from fastapi import FastAPI

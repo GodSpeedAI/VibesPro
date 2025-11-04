@@ -1,0 +1,36 @@
+{
+  "servers": {
+    "youcom-proxy": {
+      "type": "http",
+      "url": "http://localhost:3000/mcp"
+    },
+    "Context7": {
+      "type": "http",
+      "url": "https://server.smithery.ai/@upstash/context7-mcp/mcp?api_key=${env:SMITHERY_API_KEY}&profile=${env:SMITHERY_PROFILE}"
+    },
+    "Ref": {
+      "type": "http",
+      "url": "https://server.smithery.ai/@ref-tools/ref-tools-mcp/mcp?api_key=${env:SMITHERY_API_KEY}&profile=${env:SMITHERY_PROFILE}"
+    },
+    "Memory Tool": {
+      "type": "http",
+      "url": "https://server.smithery.ai/@mem0ai/mem0-memory-mcp/mcp?api_key=${env:SMITHERY_API_KEY}&profile=${env:SMITHERY_PROFILE}"
+    },
+    "Exa Search": {
+      "type": "http",
+      "url": "https://server.smithery.ai/exa/mcp?api_key=${env:SMITHERY_API_KEY}&profile=${env:SMITHERY_PROFILE}"
+    },
+    "Microsoft Docs": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
+    },
+    "Vibe Check": {
+      "type": "http",
+      "url": "https://server.smithery.ai/@PV-Bhat/vibe-check-mcp-server/mcp"
+    },
+    "GitHub": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    }
+  }
+}
