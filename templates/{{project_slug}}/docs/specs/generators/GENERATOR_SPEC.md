@@ -18,13 +18,15 @@ This generator provides a standardized way to create new components, ensuring th
 
 **When to use**  
 Use this generator when you need to create a new UI component, service, or other reusable module. The decision tree for using this generator is as follows:
+
 - Is the component reusable?
 - Does it require its own set of tests?
 - Will it be consumed by multiple other components or applications?
 
 If the answer to these questions is "yes", then this generator is the appropriate tool.
 
-**Non-goals**  
+**Non-goals**
+
 - This generator does not create application-level features.
 - It does not configure routing or navigation.
 - It does not install new dependencies.
@@ -57,16 +59,16 @@ tools/vibepro/
 
 > Keep names/types in sync with `schema.json` and `schema.d.ts`.
 
-| Name | Type | Description | Default |
-|---|---|---|---|
-| `name` | `string` | The name of the component. | |
-| `type` | `enum` | The type of component to create. | `ui` |
-| `directory` | `string` | The directory to create the component in. | |
+| Name        | Type     | Description                               | Default |
+| ----------- | -------- | ----------------------------------------- | ------- |
+| `name`      | `string` | The name of the component.                |         |
+| `type`      | `enum`   | The type of component to create.          | `ui`    |
+| `directory` | `string` | The directory to create the component in. |         |
 
 **Validation Rules**
 
--   `name` must be a valid TypeScript identifier.
--   `directory` must be a valid path.
+- `name` must be a valid TypeScript identifier.
+- `directory` must be a valid path.
 
 **Example `schema.json` (excerpt)**
 
@@ -96,20 +98,41 @@ export interface <Type>Schema {
 
 ### 3.1 Type Mapping Matrix
 
-| Schema Type | TypeScript Type |
-|---|---|
-| `string` | `string` |
-| `number` | `number` |
-| `boolean` | `boolean` |
-| `array` | `T[]` |
-| `object` | `Record<string, T>` |
+| Schema Type | TypeScript Type     |
+| ----------- | ------------------- |
+| `string`    | `string`            |
+| `number`    | `number`            |
+| `boolean`   | `boolean`           |
+| `array`     | `T[]`               |
+| `object`    | `Record<string, T>` |
 
 ### 3.5 Pattern Categories
 
-- Domain
-- Service
-- Component
-- Conditional
+#### Domain
+
+| Name     | Type     | Description                    |
+| -------- | -------- | ------------------------------ |
+| `entity` | `string` | The name of the domain entity. |
+
+#### Service
+
+| Name   | Type     | Description                      |
+| ------ | -------- | -------------------------------- |
+| `name` | `string` | The name of the service.         |
+| `port` | `number` | The port number for the service. |
+
+#### Component
+
+| Name    | Type     | Description                 |
+| ------- | -------- | --------------------------- |
+| `name`  | `string` | The name of the component.  |
+| `style` | `enum`   | The styling library to use. |
+
+#### Conditional
+
+| Name        | Type      | Description                |
+| ----------- | --------- | -------------------------- |
+| `condition` | `boolean` | The condition to evaluate. |
 
 ---
 
@@ -134,28 +157,49 @@ export interface <Type>Schema {
 
 ---
 
+## 6) Generator Composition
+
+Generators can be composed to create more complex workflows. For example, a `feature` generator could call the `component` and `service` generators to scaffold out a new feature.
+
+```typescript
+import { Tree } from "@nx/devkit";
+import { componentGenerator } from "../component/generator";
+import { serviceGenerator } from "../service/generator";
+
+export async function featureGenerator(tree: Tree, schema: any) {
+    await componentGenerator(tree, { name: schema.name, style: "css" });
+    await serviceGenerator(tree, { name: schema.name, port: 3000 });
+}
+```
+
+---
+
 ## 7) Implementation Hints (for future generator author)
 
--   Use `@nx/devkit` helpers such as `generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `names`. See `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` and `devkit-core.md`.
--   Verify tags/project graph integrity with `createProjectGraphAsync` or `readProjectConfiguration`.
--   Keep the generator idempotent; validate dry-run output matches writes.
+- Use `@nx/devkit` helpers such as `generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `names`.
+- The `generateFiles` helper can be used to create files from templates.
+- The `formatFiles` helper can be used to format the generated files.
+- The `addProjectConfiguration` and `updateProjectConfiguration` helpers can be used to update the workspace configuration.
+- The `names` helper can be used to generate different variations of a name (e.g., kebab-case, PascalCase).
+- Verify tags/project graph integrity with `createProjectGraphAsync` or `readProjectConfiguration`.
+- Keep the generator idempotent; validate dry-run output matches writes.
 
 ---
 
 ## 8) Acceptance Tests (for generator once built)
 
--   Dry run prints expected plan.
--   Generated artifacts exist with correct content.
--   `pnpm nx test <affected>` (and other targets) succeed.
--   Re-running generator produces no diff.
--   Module-boundary lint and `pnpm nx graph --focus <project>` succeed.
+- Dry run prints expected plan.
+- Generated artifacts exist with correct content.
+- `pnpm nx test <affected>` (and other targets) succeed.
+- Re-running generator produces no diff.
+- Module-boundary lint and `pnpm nx graph --focus <project>` succeed.
 
 ---
 
 ## 9) Rollback & Safety
 
--   Emit change list for revert scenarios.
--   Avoid secrets or external side effects.
+- Emit change list for revert scenarios.
+- Avoid secrets or external side effects.
 
 ---
 
@@ -171,9 +215,9 @@ just ai-validate
 
 ## MCP Assistance
 
--   **context7:** Fetch ADRs and other relevant documentation.
--   **ref:** Check for duplication and suggest refactoring opportunities.
--   **exa:** Find relevant public examples.
+- **context7:** Fetch ADRs and other relevant documentation.
+- **ref:** Check for duplication and suggest refactoring opportunities.
+- **exa:** Find relevant public examples.
 
 ---
 
@@ -188,9 +232,9 @@ pnpm nx g @myorg/vibepro:<type> sample \
 
 ## 12) Review Checklist
 
--   [ ] `schema.json` / `schema.d.ts` alignment verified.
--   [ ] Tags include `scope:<scope>` and `type:<type>` (plus extras).
--   [ ] Targets cacheable; `namedInputs` alignment checked.
--   [ ] Generator re-run idempotent; dry run accurate.
--   [ ] Tests + lint + module boundaries pass.
--   [ ] Docs updated (usage + dry-run example).
+- [ ] `schema.json` / `schema.d.ts` alignment verified.
+- [ ] Tags include `scope:<scope>` and `type:<type>` (plus extras).
+- [ ] Targets cacheable; `namedInputs` alignment checked.
+- [ ] Generator re-run idempotent; dry run accurate.
+- [ ] Tests + lint + module boundaries pass.
+- [ ] Docs updated (usage + dry-run example).

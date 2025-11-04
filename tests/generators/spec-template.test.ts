@@ -20,4 +20,16 @@ describe('GENERATOR_SPEC.md template', () => {
     expect(specContent).toContain('## 3) Inputs / Options (Schema)');
     expect(specContent).toContain('## 4) Outputs / Artifacts');
   });
+
+  it('should contain a schema enum example', () => {
+    expect(specContent).toContain('"enum":');
+  });
+
+  it('should contain a conditional logic example', () => {
+    expect(specContent).toContain('**Validation Rules**');
+  });
+
+  it('should contain a prompt type example', () => {
+    expect(specContent).toContain('The type of component to create.');
+  });
 });
