@@ -44,6 +44,7 @@
   "coverageReporters": ["text", "lcov", "html"],
   "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
   "moduleFileExtensions": ["ts", "js", "json"],
+  "modulePathIgnorePatterns": ["<rootDir>/tools/type-generator/dist"],
   "clearMocks": true,
   "restoreMocks": true
 }

@@ -1,4 +1,18 @@
-import fs from 'fs/promises';
+import type { Dirent } from 'fs';
+
+jest.mock('fs/promises', () => {
+  const actual = jest.requireActual<typeof import('fs/promises')>('fs/promises');
+  return {
+    ...actual,
+    rm: jest.fn(actual.rm),
+    writeFile: jest.fn(actual.writeFile),
+    mkdir: jest.fn(actual.mkdir),
+    readdir: jest.fn(actual.readdir),
+  };
+});
+
+import * as fs from 'fs/promises';
+const realFs = jest.requireActual<typeof import('fs/promises')>('fs/promises');
 import { buildYaml, cleanupGeneratorOutputs, runGenerator, serializeValue } from './utils';
 
 describe('serializeValue', () => {
@@ -70,6 +84,10 @@ describe('runGenerator Error Handling', () => {
     await cleanupGeneratorOutputs();
   });
 
+  afterEach(() => {
+    delete process.env.COPIER_COMMAND;
+  });
+
   it('should handle copier command not found', async () => {
     // Set an invalid copier command to simulate command not found
     process.env.COPIER_COMMAND = 'invalid-copier-command-that-does-not-exist';
@@ -119,94 +137,75 @@ describe('runGenerator Error Handling', () => {
   });
 
   it('should handle file system errors during cleanup', async () => {
-    // Mock fs.rm to throw an error during cleanup
-    const originalRm = fs.rm;
-    const mockRm = jest.fn().mockRejectedValue(new Error('Permission denied'));
-    jest.mocked(fs.rm).mockImplementation(mockRm);
+    const rmMock = jest.mocked(fs.rm);
+    rmMock.mockRejectedValueOnce(new Error('Permission denied'));
 
-    try {
-      const result = await runGenerator('app', {
-        name: 'test-app',
-        framework: 'next',
-      });
+    const result = await runGenerator('app', {
+      name: 'test-app',
+      framework: 'next',
+    });
 
-      // The generator should still return success if the main command worked
-      // but the cleanup error should be handled gracefully
-      expect(result.success).toBe(true);
-      expect(result.files).toBeDefined();
-      expect(result.files.length).toBeGreaterThan(0);
-    } finally {
-      // Restore original implementation
-      jest.mocked(fs.rm).mockImplementation(originalRm);
-    }
+    expect(result.success).toBe(true);
+    expect(result.files).toBeDefined();
+    expect(result.files.length).toBeGreaterThan(0);
+
+    rmMock.mockImplementation(realFs.rm);
   });
 
   it('should handle YAML file creation errors', async () => {
-    // Mock fs.writeFile to throw an error
-    const originalWriteFile = fs.writeFile;
-    const mockWriteFile = jest.fn().mockRejectedValue(new Error('Disk full'));
-    jest.mocked(fs.writeFile).mockImplementation(mockWriteFile);
+    const writeMock = jest.mocked(fs.writeFile);
+    writeMock.mockRejectedValueOnce(new Error('Disk full'));
 
-    try {
-      const result = await runGenerator('app', {
-        name: 'test-app',
-        framework: 'next',
-      });
+    const result = await runGenerator('app', {
+      name: 'test-app',
+      framework: 'next',
+    });
 
-      expect(result.success).toBe(false);
-      expect(result.errorMessage).toBeDefined();
-      expect(result.files).toEqual([]);
-      expect(result.errorMessage).toContain('Disk full');
-    } finally {
-      // Restore original implementation
-      jest.mocked(fs.writeFile).mockImplementation(originalWriteFile);
-    }
+    expect(result.success).toBe(false);
+    expect(result.errorMessage).toBeDefined();
+    expect(result.files).toEqual([]);
+    expect(result.errorMessage).toContain('Disk full');
+
+    writeMock.mockImplementation(realFs.writeFile);
   });
 
   it('should handle directory creation errors', async () => {
-    // Mock fs.mkdir to throw an error
-    const originalMkdir = fs.mkdir;
-    const mockMkdir = jest.fn().mockRejectedValue(new Error('Permission denied'));
-    jest.mocked(fs.mkdir).mockImplementation(mockMkdir);
+    const mkdirMock = jest.mocked(fs.mkdir);
+    mkdirMock.mockRejectedValueOnce(new Error('Permission denied'));
 
-    try {
-      const result = await runGenerator('app', {
-        name: 'test-app',
-        framework: 'next',
-      });
+    const result = await runGenerator('app', {
+      name: 'test-app',
+      framework: 'next',
+    });
 
-      expect(result.success).toBe(false);
-      expect(result.errorMessage).toBeDefined();
-      expect(result.files).toEqual([]);
-      expect(result.errorMessage).toContain('Permission denied');
-    } finally {
-      // Restore original implementation
-      jest.mocked(fs.mkdir).mockImplementation(originalMkdir);
-    }
+    expect(result.success).toBe(false);
+    expect(result.errorMessage).toBeDefined();
+    expect(result.files).toEqual([]);
+    expect(result.errorMessage).toContain('Permission denied');
+
+    mkdirMock.mockImplementation(realFs.mkdir);
   });
 
   it('should handle file collection errors', async () => {
-    // Mock fs.readdir to throw an error during file collection
-    const originalReaddir = fs.readdir;
-    const mockReaddir = jest
-      .fn()
-      .mockResolvedValueOnce(['some-file.ts']) // First call succeeds
-      .mockRejectedValueOnce(new Error('Permission denied')); // Second call fails
-    jest.mocked(fs.readdir).mockImplementation(mockReaddir);
+    const readdirMock = jest.mocked(fs.readdir);
+    readdirMock.mockResolvedValueOnce([
+      {
+        name: 'temp-directory',
+        isDirectory: () => true,
+        isFile: () => false,
+        isSymbolicLink: () => false,
+      } as unknown as Dirent,
+    ] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
+    readdirMock.mockRejectedValueOnce(new Error('Permission denied'));
 
-    try {
-      const result = await runGenerator('app', {
-        name: 'test-app',
-        framework: 'next',
-      });
+    const result = await runGenerator('app', {
+      name: 'test-app',
+      framework: 'next',
+    });
 
-      // The generator should still return success if the main command worked
-      // but the file collection error should be handled gracefully
-      expect(result.success).toBe(true);
-      expect(result.files).toBeDefined();
-    } finally {
-      // Restore original implementation
-      jest.mocked(fs.readdir).mockImplementation(originalReaddir);
-    }
+    expect(result.success).toBe(true);
+    expect(result.files).toBeDefined();
+
+    readdirMock.mockImplementation(realFs.readdir);
   });
 });

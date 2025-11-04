@@ -5,17 +5,529 @@
 
 from __future__ import annotations
 
+import json
 import os
+import re
 import shutil
 import subprocess
 import sys
+import textwrap
+from collections.abc import Iterable
 from pathlib import Path
+from typing import Any
 
 
 def run(cmd: list[str], cwd: Path) -> None:
     """Run a subprocess, printing the command for visibility."""
     print(f"   → {' '.join(cmd)} (cwd={cwd})")
     subprocess.run(cmd, check=True, cwd=cwd)
+
+
+def read_answers_file(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+
+    try:
+        contents = path.read_text()
+    except OSError as exc:  # noqa: BLE001
+        print(f"   → Unable to read {path}: {exc}")
+        return {}
+
+    try:
+        import yaml  # type: ignore
+    except ImportError:
+        data: dict[str, Any] = {}
+        for raw_line in contents.splitlines():
+            if ":" not in raw_line:
+                continue
+            key, value = raw_line.split(":", 1)
+            data[key.strip()] = value.strip().strip('"')
+        return data
+
+    try:
+        parsed = yaml.safe_load(contents) or {}
+    except Exception as exc:  # noqa: BLE001
+        print(f"   → Unable to parse {path}: {exc}")
+        return {}
+
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def load_answers(target: Path) -> dict[str, Any]:
+    """Load copier answers if PyYAML is available."""
+    combined: dict[str, Any] = {}
+
+    env_raw = os.environ.get("VIBESPRO_GENERATOR_CONTEXT")
+    if env_raw:
+        try:
+            env_data = json.loads(env_raw)
+            if isinstance(env_data, dict):
+                combined.update(env_data)
+        except json.JSONDecodeError as exc:
+            print(f"   → Unable to parse VIBESPRO_GENERATOR_CONTEXT: {exc}")
+
+    env_data_file = os.environ.get("VIBESPRO_GENERATOR_DATA_FILE")
+    if env_data_file:
+        combined.update(read_answers_file(Path(env_data_file)))
+
+    for fname in (".copier-answers.yml", "copier-answers.yml"):
+        answers_path = target / fname
+        if not answers_path.exists():
+            continue
+        data = read_answers_file(answers_path)
+        if data:
+            combined.update(data)
+            break
+    return combined
+
+
+def parse_domains(raw: Any) -> list[str]:
+    if raw is None:
+        return []
+    if isinstance(raw, str):
+        return [part.strip() for part in raw.split(",") if part.strip()]
+    if isinstance(raw, Iterable):
+        result: list[str] = []
+        for item in raw:
+            value = str(item).strip()
+            if value:
+                result.append(value)
+        return result
+    return []
+
+
+def to_words(value: str) -> list[str]:
+    return [segment for segment in re.split(r"[^a-zA-Z0-9]+", value) if segment]
+
+
+def pascal_case(value: str, fallback: str = "Domain") -> str:
+    words = to_words(value)
+    if not words:
+        return fallback
+    return "".join(word.capitalize() for word in words)
+
+
+def title_case_from_slug(value: str) -> str:
+    words = to_words(value)
+    if not words:
+        return value.capitalize() if value else "Application"
+    return " ".join(word.capitalize() for word in words)
+
+
+def write_text_file(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content.rstrip() + "\n", encoding="utf-8")
+
+
+def build_api_client(domains: list[str]) -> str:
+    domain_literal = ", ".join(f'"{domain}"' for domain in domains) or '"core"'
+    return textwrap.dedent(
+        f"""\
+        export const DOMAIN_REGISTRY = [{domain_literal}];
+
+        export class DomainName {{
+          constructor(public readonly value: string) {{
+            if (!DOMAIN_REGISTRY.includes(value)) {{
+              throw new Error(`Unknown domain: ${{value}}`);
+            }}
+          }}
+        }}
+
+        export function listDomains(): DomainName[] {{
+          return DOMAIN_REGISTRY.map((domain) => new DomainName(domain));
+        }}
+        """
+    )
+
+
+def scaffold_app(target: Path, answers: dict[str, Any]) -> None:
+    app_name = str(answers.get("app_name") or answers.get("name") or "").strip()
+    if not app_name:
+        return
+
+    framework = str(answers.get("app_framework") or "next").lower()
+    domains = parse_domains(answers.get("app_domains") or answers.get("domains"))
+    if not domains:
+        domains = ["core"]
+    include_example = bool(answers.get("include_example_page"))
+    include_supabase = bool(answers.get("include_supabase"))
+    router_style = str(answers.get("app_router_style") or "pages").lower()
+    project_slug = str(answers.get("project_slug") or app_name or "app")
+    app_title = title_case_from_slug(app_name)
+
+    app_root = target / "apps" / app_name
+    app_root.mkdir(parents=True, exist_ok=True)
+
+    api_client_content = build_api_client(domains)
+    write_text_file(app_root / "lib" / "api-client.ts", api_client_content)
+
+    if framework == "remix":
+        write_text_file(app_root / "app" / "lib" / "api-client.ts", api_client_content)
+    elif framework == "expo":
+        # Expo relies on the shared lib as well; already written.
+        pass
+
+    domains_display = ", ".join(domains)
+    sections: list[str] = [
+        f"      <p>Domains available: {domains_display or 'core'}.</p>",
+    ]
+    if include_example:
+        sections.append(
+            "      <section>\n"
+            "        <h2>Example Domain Integration</h2>\n"
+            "        <p>ExampleEntity demonstrates integration across domains.</p>\n"
+            "      </section>"
+        )
+    if include_supabase:
+        sections.append(
+            "      <section>\n"
+            "        <p>Supabase integration detected via environment configuration.</p>\n"
+            "      </section>"
+        )
+    body_sections = "\n".join(sections)
+
+    if framework == "next":
+        next_index = (
+            "import Head from 'next/head';\n\n"
+            f"const domains = {json.dumps(domains)};\n\n"
+            "export default function Home() {\n"
+            "  return (\n"
+            "    <main>\n"
+            f"      <h1>Welcome to {app_title}</h1>\n"
+            f"{body_sections}\n"
+            "    </main>\n"
+            "  );\n"
+            "}\n"
+        )
+        write_text_file(app_root / "pages" / "index.tsx", next_index)
+
+        next_config = textwrap.dedent(
+            f"""\
+            /** @type {{import('next').NextConfig}} */
+            const nextConfig = {{
+              experimental: {{
+                appDir: {str(router_style == 'app').lower()},
+              }},
+              env: {{
+                NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+                NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
+              }},
+            }};
+
+            module.exports = nextConfig;
+            """
+        )
+        write_text_file(app_root / "next.config.js", next_config)
+
+    if framework == "remix":
+        remix_index = (
+            "import type { MetaFunction } from '@remix-run/node';\n\n"
+            "export const meta: MetaFunction = () => ([\n"
+            f"  {{ title: '{app_title}' }},\n"
+            "]);\n\n"
+            "export default function Index() {\n"
+            "  return (\n"
+            "    <main>\n"
+            f"      <h1>Welcome to {app_title}</h1>\n"
+            f"{body_sections}\n"
+            "    </main>\n"
+            "  );\n"
+            "}\n"
+        )
+        write_text_file(app_root / "app" / "routes" / "index.tsx", remix_index)
+
+        remix_config = textwrap.dedent(
+            f"""\
+            const config = {{
+              appDirectory: "apps/{app_name}/app",
+              browserBuildDirectory: "apps/{app_name}/public/build",
+              serverBuildDirectory: "apps/{app_name}/build",
+              ignoredRouteFiles: ["**/*.test.*"],
+            }};
+
+            module.exports = config;
+            """
+        )
+        write_text_file(app_root / "remix.config.js", remix_config)
+
+    if framework == "expo":
+        expo_sections: list[str] = [
+            f"        <Text>Domains available: {domains_display or 'core'}.</Text>",
+        ]
+        if include_example:
+            expo_sections.append(
+                "        <Text>Example Domain Integration showcases ExampleEntity.</Text>"
+            )
+        if include_supabase:
+            expo_sections.append("        <Text>Supabase integration detected.</Text>")
+        expo_body = "\n".join(expo_sections)
+
+        expo_app = (
+            "import { SafeAreaView, Text, View } from 'react-native';\n\n"
+            "export default function App() {\n"
+            "  return (\n"
+            "    <SafeAreaView>\n"
+            "      <View style={{ padding: 24 }}>\n"
+            f"        <Text>Welcome to {app_title}</Text>\n"
+            f"{expo_body}\n"
+            "      </View>\n"
+            "    </SafeAreaView>\n"
+            "  );\n"
+            "}\n"
+        )
+        write_text_file(app_root / "App.tsx", expo_app)
+
+        expo_config = {
+            "expo": {
+                "name": app_title,
+                "slug": app_name,
+                "version": "1.0.0",
+                "owner": project_slug,
+                "android": {"package": f"com.{project_slug}.mobile-app"},
+                "ios": {"bundleIdentifier": f"com.{project_slug}.mobile-app"},
+            }
+        }
+        write_text_file(app_root / "app.json", json.dumps(expo_config, indent=2))
+
+
+def scaffold_domain(target: Path, answers: dict[str, Any]) -> None:
+    domain_name = str(answers.get("domain_name") or "").strip()
+    if not domain_name:
+        return
+
+    domain_root = target / "libs" / domain_name
+    domain_root.mkdir(parents=True, exist_ok=True)
+    words = to_words(domain_name)
+    primary_pascal = words[0].capitalize() if words else "Domain"
+    domain_pascal = pascal_case(domain_name)
+
+    tsconfig = {
+        "extends": "../../tsconfig.base.json",
+        "compilerOptions": {
+            "target": "ES2021",
+            "module": "commonjs",
+            "esModuleInterop": True,
+            "forceConsistentCasingInFileNames": True,
+            "strict": True,
+        },
+        "include": ["./**/*.ts"],
+    }
+    write_text_file(domain_root / "tsconfig.json", json.dumps(tsconfig, indent=2))
+
+    project_template = {
+        "$schema": "../../node_modules/nx/schemas/project-schema.json",
+        "projectType": "library",
+        "targets": {},
+        "tags": [f"domain:{domain_name}"],
+    }
+    write_text_file(
+        domain_root / "project.json",
+        json.dumps({**project_template, "name": domain_name}, indent=2),
+    )
+    write_text_file(
+        domain_root / "domain" / "project.json",
+        json.dumps(
+            {
+                **project_template,
+                "name": f"{domain_name}-domain",
+                "sourceRoot": f"libs/{domain_name}/domain/src",
+            },
+            indent=2,
+        ),
+    )
+    write_text_file(
+        domain_root / "application" / "project.json",
+        json.dumps(
+            {
+                **project_template,
+                "name": f"{domain_name}-application",
+                "sourceRoot": f"libs/{domain_name}/application/src",
+            },
+            indent=2,
+        ),
+    )
+    write_text_file(
+        domain_root / "infrastructure" / "project.json",
+        json.dumps(
+            {
+                **project_template,
+                "name": f"{domain_name}-infrastructure",
+                "sourceRoot": f"libs/{domain_name}/infrastructure/src",
+            },
+            indent=2,
+        ),
+    )
+
+    entity_names = {primary_pascal, domain_pascal}
+    for entity in entity_names:
+        entity_content = textwrap.dedent(
+            f"""\
+            export class {entity} {{
+              constructor(public readonly id: string) {{}}
+            }}
+            """
+        )
+        write_text_file(domain_root / "domain" / "entities" / f"{entity}.ts", entity_content)
+
+    vo_name = f"{primary_pascal}Id"
+    value_object = textwrap.dedent(
+        f"""\
+        export class {vo_name} {{
+          constructor(public readonly value: string) {{
+            if (!value) {{
+              throw new Error('{vo_name} cannot be empty');
+            }}
+          }}
+        }}
+        """
+    )
+    write_text_file(domain_root / "domain" / "value-objects" / f"{vo_name}.ts", value_object)
+
+    event_name = f"{primary_pascal}Created"
+    event_content = textwrap.dedent(
+        f"""\
+        import {{ {vo_name} }} from '../value-objects/{vo_name}';
+
+        export interface {event_name} {{
+          type: '{event_name}';
+          payload: {{
+            id: {vo_name};
+          }};
+        }}
+        """
+    )
+    write_text_file(domain_root / "domain" / "events" / f"{event_name}.ts", event_content)
+
+    create_use_case = textwrap.dedent(
+        f"""\
+        import type {{ {event_name} }} from '../../domain/events/{event_name}';
+        import {{ {primary_pascal} }} from '../../domain/entities/{primary_pascal}';
+
+        export class Create{primary_pascal} {{
+          execute(name: string): {event_name} {{
+            const entity = new {primary_pascal}(name);
+            return {{
+              type: '{event_name}',
+              payload: {{
+                id: {{ value: entity.id }},
+              }},
+            }};
+          }}
+        }}
+        """
+    )
+    write_text_file(
+        domain_root / "application" / "use-cases" / f"Create{primary_pascal}.ts", create_use_case
+    )
+
+    repository_interface = textwrap.dedent(
+        f"""\
+        import type {{ {primary_pascal} }} from '../../domain/entities/{primary_pascal}';
+
+        export interface {primary_pascal}Repository {{
+          findById(id: string): Promise<{primary_pascal} | null>;
+          save(entity: {primary_pascal}): Promise<void>;
+        }}
+        """
+    )
+    write_text_file(
+        domain_root / "application" / "ports" / f"{primary_pascal}Repository.ts",
+        repository_interface,
+    )
+
+    repository_adapter = textwrap.dedent(
+        f"""\
+        import type {{ {primary_pascal} }} from '../../domain/entities/{primary_pascal}';
+        import type {{ {primary_pascal}Repository }} from '../../application/ports/{primary_pascal}Repository';
+
+        export class {primary_pascal}RepositoryAdapter implements {primary_pascal}Repository {{
+          async findById(id: string): Promise<{primary_pascal} | null> {{
+            return null;
+          }}
+
+          async save(entity: {primary_pascal}): Promise<void> {{
+            console.info('Persisting entity', entity);
+          }}
+        }}
+        """
+    )
+    write_text_file(
+        domain_root / "infrastructure" / "repositories" / f"{primary_pascal}Repository.ts",
+        repository_adapter,
+    )
+
+    adapter_content = textwrap.dedent(
+        f"""\
+        import {{ Create{primary_pascal} }} from '../../application/use-cases/Create{primary_pascal}';
+
+        export class {primary_pascal}Adapter {{
+          private readonly useCase = new Create{primary_pascal}();
+
+          bootstrap(name: string) {{
+            return this.useCase.execute(name);
+          }}
+        }}
+        """
+    )
+    write_text_file(
+        domain_root / "infrastructure" / "adapters" / f"{primary_pascal}Adapter.ts", adapter_content
+    )
+
+
+def scaffold_service(target: Path, answers: dict[str, Any]) -> None:
+    service_name = str(answers.get("name") or answers.get("service_name") or "").strip()
+    if not service_name:
+        return
+
+    language = str(answers.get("language") or "python").lower()
+    if language != "python":
+        return
+
+    service_root = target / "apps" / service_name / "src"
+    service_root.mkdir(parents=True, exist_ok=True)
+    main_py = textwrap.dedent(
+        f"""\
+        from fastapi import FastAPI
+
+        from libs.python.vibepro_logging import (
+            LogCategory,
+            bootstrap_logfire,
+            configure_logger,
+        )
+
+
+        app = FastAPI(
+            title="{service_name}",
+            description="A service for {service_name}",
+            version="0.1.0",
+        )
+
+        bootstrap_logfire(app, service="{service_name}")
+        logger = configure_logger("{service_name}")
+
+
+        @app.get("/")
+        def read_root() -> dict[str, str]:
+            logger.info("service health check", category=LogCategory.APP)
+            return {{"message": "Hello from {service_name}"}}
+        """
+    )
+    write_text_file(service_root / "main.py", main_py)
+
+
+def apply_generator_outputs(target: Path, answers: dict[str, Any]) -> None:
+    generator_type = str(answers.get("generator_type") or "").strip().lower()
+    if not generator_type:
+        return
+
+    print(f"🛠️  Applying generator scaffolding for '{generator_type}'")
+
+    if generator_type == "app":
+        scaffold_app(target, answers)
+    elif generator_type == "domain":
+        scaffold_domain(target, answers)
+    elif generator_type == "service":
+        scaffold_service(target, answers)
 
 
 def generate_types(target: Path) -> None:
@@ -54,34 +566,23 @@ def generate_types(target: Path) -> None:
     run(cmd, cwd=type_generator_dir)
 
 
-def _is_hardening_enabled(target: Path) -> bool:
+def _is_hardening_enabled(target: Path, answers: dict[str, Any] | None = None) -> bool:
     """Check if security hardening is enabled via env var or answers file."""
     env_val = os.environ.get("COPIER_ENABLE_SECURITY_HARDENING")
     if env_val is not None:
         return str(env_val).lower() in ("1", "true", "yes")
 
-    for fname in (".copier-answers.yml", "copier-answers.yml"):
-        answers = target / fname
-        if answers.exists():
-            try:
-                import yaml  # Lazy import to avoid dependency issues when skipping setup
+    if answers is None:
+        answers = load_answers(target)
 
-                data = yaml.safe_load(answers.read_text()) or {}
-                if isinstance(data, dict) and "enable_security_hardening" in data:
-                    return bool(data.get("enable_security_hardening"))
-            except ImportError:
-                # PyYAML not available - this is expected in test environments
-                # Default to False since we can't read the answers file
-                return False
-            except Exception:
-                # Any other error reading/parsing the file
-                return False
+    if isinstance(answers, dict) and "enable_security_hardening" in answers:
+        return bool(answers.get("enable_security_hardening"))
 
     return False
 
 
-def cleanup_security_assets(target: Path) -> None:
-    if _is_hardening_enabled(target):
+def cleanup_security_assets(target: Path, answers: dict[str, Any] | None = None) -> None:
+    if _is_hardening_enabled(target, answers):
         return
 
     sec_dir = target / "libs" / "security"
@@ -92,12 +593,15 @@ def cleanup_security_assets(target: Path) -> None:
 
 def setup_generated_project(target: Path) -> None:
     """Run initial setup commands inside the generated project."""
+    answers = load_answers(target)
+    apply_generator_outputs(target, answers)
+
     skip_setup = os.environ.get("COPIER_SKIP_PROJECT_SETUP") == "1"
     uv_no_sync = os.environ.get("UV_NO_SYNC") == "1"
 
     if skip_setup:
         print("⚠️ Skipping install/build steps (COPIER_SKIP_PROJECT_SETUP=1)")
-        cleanup_security_assets(target)
+        cleanup_security_assets(target, answers)
         return
 
     print("🔧 Setting up generated project...")
@@ -131,11 +635,7 @@ def setup_generated_project(target: Path) -> None:
         print(f"   → just build failed: {e}")
         print("   → Continuing without build step...")
 
-    cleanup_security_assets(target)
-
-    if skip_setup:
-        print("✅ Security assets reconciled (project setup skipped).")
-        return
+    cleanup_security_assets(target, answers)
 
     print("✅ Project setup completed successfully!")
     print()
