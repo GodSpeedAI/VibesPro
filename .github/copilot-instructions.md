@@ -1039,6 +1039,6 @@ When you run `just test-generation`, the output in `../test-output` will have:
 └── .sops.yaml         # Secret encryption
 ```
 
-**Save work summaries in `docs/work-summaries/` after completing significant milestones or solving complex problems.**
+**Save work summaries in `docs/reports/work-summaries/` after completing significant milestones or solving complex problems.**
 
 **Always check which MCP tools are available and use them when appropriate.**
