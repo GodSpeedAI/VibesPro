@@ -1,8 +1,15 @@
 # Logfire Cycle 2A — Phased TDD Implementation Plan
 
-**Status**: Draft - Pass 1 (Header & Structure)
+**Status**: Draft — Incomplete (NOT READY FOR EXECUTION)
 **Created**: November 3, 2025
-**Target Completion**: TBD
+**Target Completion**: November 15, 2025
+
+**🚨 IMPORTANT**: This document is marked as Draft and contains incomplete sections. Do not execute as an implementation plan until:
+
+-   All sections are completed
+-   "✅ Implemented" marks are removed
+-   Validation procedures and rollback strategy are added
+-   Cycle C is fully detailed
 
 ---
 
@@ -18,11 +25,13 @@ Junior AI coding agents (A, B, C) working in parallel within the VibesPro templa
 
 ### Preconditions
 
--   [ ] Workspace trust enabled in VS Code
--   [ ] Environment setup complete: `just setup && just doctor`
--   [ ] All dependencies installed (Node, Python, Rust via mise/Devbox)
--   [ ] Access to GitHub repository with write permissions
--   [ ] MCP servers configured (GitHub, Context7, Exa, Ref, Vibe Check, Memory)
+**Note**: These are validation requirements that must be satisfied before execution. Each item should be verified and documented as complete before proceeding.
+
+-   [ ] Workspace trust enabled in VS Code — **Validation**: `just doctor` returns success
+-   [ ] Environment setup complete: `just setup && just doctor` — **Validation**: All tool versions match requirements
+-   [ ] All dependencies installed (Node, Python, Rust via mise/Devbox) — **Validation**: `node --version`, `python --version`, `rustc --version` return expected versions
+-   [ ] Access to GitHub repository with write permissions — **Validation**: Test push to feature branch succeeds
+-   [ ] MCP servers configured (GitHub, Context7, Exa, Ref, Vibe Check, Memory) — **Validation**: Each server responds to ping/query
 
 ### Branching & Coordination Rules
 
@@ -1105,7 +1114,30 @@ _Pass 5 will detail MCP integration points_
 
 ## 6. Regression Safeguards
 
-_Pass 6 will list all validation commands_
+**Required Commands and Validation Steps**:
+
+1. `just test-logs` — **Expected Outcome**: All logging tests pass
+
+    - **Timing**: Must complete successfully before any merge
+    - **Failure Action**: Abort merge, investigate regression
+
+2. `uv run pytest tests/python/` — **Expected Outcome**: All Python tests pass with no failures
+
+    - **Timing**: Required for every PR
+    - **Failure Action**: High-priority issue, rollback to previous working state
+
+3. `just docs-lint` — **Expected Outcome**: Documentation validation passes, no broken links
+
+    - **Timing**: Must complete before documentation merge
+    - **Failure Action**: Fix documentation issues, re-run validation
+
+4. `just spec-guard` — **Expected Outcome**: All specifications validated and complete
+    - **Timing**: Required for all cycles before merge
+    - **Failure Action**: Address spec gaps, update traceability matrix
+
+**Order**: Commands must execute in sequence (test-logs → pytest → docs-lint → spec-guard)
+**Approval Gates**: All four commands must pass before PR approval
+**Failure Escalation**: If any check fails, create high-priority issue with rollback plan
 
 ---
 

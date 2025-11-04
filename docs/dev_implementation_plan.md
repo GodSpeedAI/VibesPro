@@ -467,7 +467,7 @@ Regression Testing
 -   Fixture: `tests/fixtures/stacking/mode.chatmode.md` (Same header with minor variant)
 -   Expected: Single “Security Guidelines” section with later subsection overrides only where marked
 -   Assertion message format: `[Stacker] Section 'Security Guidelines' should appear once; duplicates pruned`
-      </details>
+    </details>
 
 <details>
 <summary>Task 1.3 Orchestrator: transcript logging</summary>
@@ -475,7 +475,7 @@ Regression Testing
 -   Input: create-react-component.prompt.md
 -   Expected: transcript.md appended with `timestamp|label=create-react-component|tokens=NNN|latencyMs=NNN|variant=default`
 -   Assertion message: `[Metrics] Expected transcript entry for label create-react-component`
-      </details>
+    </details>
 
 <details>
 <summary>Task 2.4 Generator determinism</summary>
@@ -484,7 +484,7 @@ Regression Testing
 -   Action: Invoke generator twice in temp dirs
 -   Expected: Directory diff equals empty
 -   Assertion message: `[Generator] Determinism failed: differences found at <path>`
-      </details>
+    </details>
 
 ---
 

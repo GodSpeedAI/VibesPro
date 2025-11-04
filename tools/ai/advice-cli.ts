@@ -12,13 +12,18 @@ import { AIContextManager } from './src/context-manager.js';
 // as part of the default export. Allow either shape (or undefined) so the type system matches
 // the runtime fallback logic below.
 // Runtime: the performance monitor module may expose different shapes (named export
-// or nested on default). Use a narrow, explicit any here for runtime detection and
+// or nested on default). Use a narrow, explicit unknown here for runtime detection and
 // fallback rather than trying to depend on fragile type-resolution of consumed
 // JS modules at compile time.
 
-const PerformanceMonitor: any =
-  (performanceMonitorModule as any).PerformanceMonitor ??
-  (performanceMonitorModule as any).default?.PerformanceMonitor;
+interface ModuleWithPerformanceMonitor {
+  PerformanceMonitor?: unknown;
+  default?: { PerformanceMonitor?: unknown };
+}
+
+const ModuleWithMonitor = performanceMonitorModule as ModuleWithPerformanceMonitor;
+const PerformanceMonitor: unknown =
+  ModuleWithMonitor.PerformanceMonitor ?? ModuleWithMonitor.default?.PerformanceMonitor;
 
 if (!PerformanceMonitor) {
   throw new Error(
@@ -260,15 +265,21 @@ function runPythonExporter(options: CliOptions): RecommendationPayload {
   if (result.status !== 0) {
     // Build an informative error message. In some failure modes (e.g. ENOENT)
     // spawnSync populates result.error and stderr/stdout can be empty. Prefer
-    // including result.error.message/code/stack when available so callers and
-    // logs get a useful diagnostic.
+    // including result.error.message/code when available but limit stack trace
+    // verbosity to prevent extremely long error messages.
     let msg = 'Python exporter failed';
     if (result.error) {
       const err = result.error as NodeJS.ErrnoException;
       const parts: string[] = [];
       if (err.message) parts.push(`message=${err.message}`);
-      if ((err as any).code) parts.push(`code=${(err as any).code}`);
-      if ((err as any).stack) parts.push(`stack=${(err as any).stack}`);
+      const errWithCode = err as { code?: string };
+      if (errWithCode.code) parts.push(`code=${errWithCode.code}`);
+      // Only include first line of stack trace to reduce verbosity
+      const errWithStack = err as { stack?: string };
+      if (errWithStack.stack) {
+        const firstStackLine = errWithStack.stack.split('\n')[0];
+        parts.push(`stack=${firstStackLine}`);
+      }
       if (parts.length > 0) {
         msg += ` (${parts.join('; ')})`;
       }
@@ -436,8 +447,13 @@ async function main(): Promise<void> {
     console.log('-----------------------');
     printRecommendations(mergedRecommendations);
 
-    const monitor = new PerformanceMonitor({
-      baselinePath: options.baselinePath,
+    const monitor = new (PerformanceMonitor as new (options: {
+      baselinePath: string;
+      persist: boolean;
+    }) => {
+      getAdvisories(): PerformanceAdvisory[];
+    })({
+      baselinePath: options.baselinePath || 'tmp/performance-baselines.json',
       persist: false,
     });
     const advisories = monitor.getAdvisories();
