@@ -199,9 +199,9 @@ test-integration:
 
 test-generation:
 	@echo "🧪 Testing template generation..."
-	rm -rf ../test-output
-	copier copy . ../test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force
-	cd ../test-output && pnpm install && { \
+	rm -rf ./test-output
+	copier copy . ./test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force
+	cd ./test-output && pnpm install && { \
 		echo "🏗️ Building all projects..."; \
 		pnpm exec nx run-many --target=build --all || { \
 			echo "⚠️ Some build targets failed. Checking core domain libraries..."; \
@@ -564,7 +564,10 @@ ai-advice *ARGS:
 
 test-ai-guidance:
 	@echo "🔁 Running temporal recommendation tests..."
-	@python -m pytest tests/temporal/test_pattern_recommendations.py
+	@SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck \
+	COPIER_SKIP_PROJECT_SETUP=1 \
+	UV_NO_SYNC=1 \
+	uv run pytest tests/temporal/test_pattern_recommendations.py
 	@echo "🧪 Running performance + context jest suites..."
 	@pnpm test:jest -- --runTestsByPath tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts --runInBand
 	@echo "🧪 Running CLI smoke test..."
