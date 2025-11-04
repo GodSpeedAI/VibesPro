@@ -22,11 +22,10 @@ def test_requests_instrumentation():
 
     # Configure logfire with our test processor
     import logfire
-
     logfire.configure(send_to_logfire=False, console=False, additional_span_processors=[processor])
 
     # Enable requests instrumentation
-    instrument_integrations(requests=True)
+    logfire.instrument_requests()
 
     # Make a deterministic HTTP request by mocking the Session.send call
     with patch("requests.sessions.Session.send") as mock_send:
@@ -43,6 +42,7 @@ def test_requests_instrumentation():
 
     # Flush spans to ensure the exporter receives them before assertions
     processor.force_flush(timeout_millis=5_000)
+    logfire.shutdown()
 
     # Check that spans were created
     spans = exporter.get_finished_spans()
