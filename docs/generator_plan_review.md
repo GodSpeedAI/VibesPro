@@ -54,7 +54,10 @@
 -   Add an AI quick-start (inputs → outputs) plus a mapping table `schema.json ←→ schema.d.ts`.
 -   Introduce validation automation: run `ajv`, `pnpm lint`, `just spec-guard`, and `grep TODO`.
 -   Document generator composition workflows (calling other Nx generators, orchestrating `nx run-many`).
--   Expand MCP section with actionable context7/ref/exa queries and pre-approved docs to fetch.
+-   Expand MCP section with actionable Context7/Ref/Exa queries and pre-approved docs to fetch.
+    -   **Context7**: MCP server for up-to-date documentation and code examples
+    -   **Ref**: MCP server for documentation and repository access
+    -   **Exa**: MCP server for web search and code context retrieval
 -   Provide visual architecture (e.g., layer diagram) alongside the mermaid decision tree.
 
 ## Comprehensive Patch
@@ -126,7 +129,9 @@
 -   Phase 2 (GREEN): Task breakdown per spec section (1–10 + MCP) with schema matrix and prompt gallery.
 -   Phase 3 (REFACTOR): Decision tree + AI quick start + troubleshooting table.
 -   Phase 4 (REGRESSION): Copier rerun, ajv validation, `just ai-validate`, AI simulation harness.
--   Appendices: Reference table, validation scripts, spec IDs assignment process.
+-   **Appendix A:** Reference table with schema.json ↔ schema.d.ts mapping
+-   **Appendix B:** Validation scripts for generator testing
+-   **Appendix C:** Spec IDs assignment process and workflows
 
 ## Validation Checklist
 

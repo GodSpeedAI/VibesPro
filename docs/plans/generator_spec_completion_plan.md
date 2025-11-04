@@ -4,7 +4,7 @@
 
 -   Deliver a production-ready `GENERATOR_SPEC.md` template that eliminates TODO placeholders, aligns with generator-first policy, and enables AI agents to author Nx generators without hallucination.
 -   Apply trunk-based development with short-lived feature branches (`base: dev`) for up to three junior AI agents working in parallel.
--   Map each change to forthcoming spec IDs (assign DEV-PRD / DEV-SDS numbers before implementation) and update the traceability matrix upon completion.
+-   Map each change to forthcoming spec IDs (spec IDs are assigned during Cycle A implementation) and update the traceability matrix upon completion.
 
 ## 2. Key Remediation Themes
 
@@ -21,7 +21,7 @@ Each cycle aligns to a dedicated branch naming pattern `feature/generator-spec-c
 ### 3.1 Cycle A — Template Foundations & Tests
 
 -   **Objective:** Rebuild RED tests with real utilities, cover full spec sections, and define doc content plan.
--   **Dependencies:** Confirm spec IDs with architecture/product owners.
+-   **Dependencies:** Spec IDs will be assigned during Cycle A implementation.
 -   **Deliverables:** Updated Jest suites in `tests/generators/`, initial spec outline without TODOs, branch `feature/generator-spec-cycle-a`.
 -   **TDD Checklist:**
     -   [ ] **RED:**
@@ -71,7 +71,7 @@ Each cycle aligns to a dedicated branch naming pattern `feature/generator-spec-c
         -   Ensure documentation uses consistent vocabulary and removes redundancy from earlier cycles.
     -   [ ] **REGRESSION:**
         -   Run full suite: `pnpm test tests/generators`, `shellspec tests/shell/generator-spec-workflow_spec.sh`, `just spec-guard`.
-        -   Update `docs/traceability_matrix.md` with completed spec IDs and new tests.
+        -   Update `docs/traceability_matrix.md` with assigned spec IDs and new tests.
 
 ## 4. Validation & Quality Gates
 
