@@ -729,6 +729,8 @@ test-logs-redaction:
 # Run log-trace correlation test (DEV-PRD-018, DEV-SDS-018)
 test-logs-correlation:
 	@echo "🧪 Testing log-trace correlation..."
+	# Guard: If workspace Cargo.toml requests edition=2024, ensure developer has a compatible toolchain
+	@bash -eu scripts/ensure_rust_toolchain.sh
 	@bash -eu tests/ops/test_log_trace_correlation.sh
 
 # Logfire smoke validation used by CI (DEV-PRD-018, DEV-SDS-018)

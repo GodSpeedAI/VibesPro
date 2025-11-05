@@ -218,6 +218,33 @@ mise install      # All runtimes from one config
 # 1 tool, 1 config file, 1 command
 ```
 
+### Pinned Rust nightly (repo toolchain)
+
+This repository requires a specific Rust nightly to build and run the observability binaries and tests (see `Cargo.toml` which may target `edition = "2024"`). To ensure reproducible developer and CI builds we pin a nightly via `rust-toolchain.toml` at the repository root. Current pin:
+
+```
+channel: nightly-2025-11-01
+```
+
+Recommended commands for developers:
+
+-   Install and set the pinned nightly for the current repo (recommended):
+
+```bash
+rustup toolchain install nightly-2025-11-01
+rustup override set nightly-2025-11-01
+```
+
+-   Run a single CI-like command without changing overrides:
+
+```bash
+RUSTUP_TOOLCHAIN=nightly-2025-11-01 just test-logs
+```
+
+Notes for CI:
+
+-   CI workflows in `.github/workflows/` have been updated to install and use the pinned nightly so runners reproduce local behavior. If you update the pinned nightly, update the workflows accordingly.
+
 ### Migration from Other Tools
 
 **From nvm:**
