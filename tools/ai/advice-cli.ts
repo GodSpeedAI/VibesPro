@@ -31,6 +31,23 @@ if (!PerformanceMonitor) {
   );
 }
 
+// Runtime validation that PerformanceMonitor has expected interface
+if (typeof PerformanceMonitor !== 'function') {
+  throw new Error('PerformanceMonitor is not callable as a constructor');
+}
+
+// Validate prototype methods exist
+const monitorCtor = PerformanceMonitor as new (options: {
+  baselinePath: string;
+  persist: boolean;
+}) => {
+  getAdvisories(): PerformanceAdvisory[];
+};
+const prototype = monitorCtor.prototype;
+if (!prototype || typeof prototype.getAdvisories !== 'function') {
+  throw new Error('PerformanceMonitor.prototype.getAdvisories method not found');
+}
+
 interface RecommendationPayload {
   generated: RecommendationDTO[];
   existing: RecommendationDTO[];
@@ -453,7 +470,7 @@ async function main(): Promise<void> {
     }) => {
       getAdvisories(): PerformanceAdvisory[];
     })({
-      baselinePath: options.baselinePath || 'tmp/performance-baselines.json',
+      baselinePath: options.baselinePath ?? resolve('tmp/performance-baselines.json'),
       persist: false,
     });
     const advisories = monitor.getAdvisories();

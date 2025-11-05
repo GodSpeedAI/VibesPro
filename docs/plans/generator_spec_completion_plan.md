@@ -1,5 +1,13 @@
 # Generator Spec Completion Plan
 
+## Overview
+
+This plan provides a systematic approach to delivering a production-ready `GENERATOR_SPEC.md` template that enables AI agents to author Nx generators without hallucination. The plan follows a Test-Driven Development (TDD) methodology with three distinct cycles that ensure comprehensive coverage, quality validation, and successful implementation.
+
+**Target Audience**: Junior AI agents working in parallel on generator specification development
+**Execution Timeline**: Sequential TDD cycles (A → B → C) with parallel testing and validation
+**Key Success Metric**: Zero TODO placeholders, full test coverage, and executable validation workflows
+
 ## 1. Purpose & Scope
 
 -   Deliver a production-ready `GENERATOR_SPEC.md` template that eliminates TODO placeholders, aligns with generator-first policy, and enables AI agents to author Nx generators without hallucination.
@@ -7,6 +15,8 @@
 -   Map each change to forthcoming spec IDs (spec IDs are assigned during Cycle A implementation) and update the traceability matrix upon completion.
 
 ## 2. Key Remediation Themes
+
+The following themes address the most critical gaps identified in CodeRabbit review and align with project documentation standards. Each theme represents a focused area of improvement that will significantly enhance the generator specification template's usability and reliability.
 
 1. **Spec Completeness:** Fill Sections 1–12 plus MCP hooks, review checklist, and appendices with concrete guidance (schema coverage, outputs, rollback, MCP lookups).
 2. **Executable TDD:** Replace hypothetical helpers with real Jest/copier harnesses, automate TODO detection, and gate progress on failing → passing tests.
@@ -16,12 +26,17 @@
 
 ## 3. Workstream Decomposition (MECE TDD Cycles)
 
+**MECE Principle**: Mutually Exclusive, Collectively Exhaustive - A framework ensuring each cycle addresses distinct aspects of generator specification while covering all necessary components comprehensively.
+
 Each cycle aligns to a dedicated branch naming pattern `feature/generator-spec-cycle-<n>` (base `dev`). Agents should merge sequentially once their acceptance criteria pass.
 
 ### 3.1 Cycle A — Template Foundations & Tests
 
--   **Objective:** Rebuild RED tests with real utilities, cover full spec sections, and define doc content plan.
--   **Dependencies:** Spec IDs will be assigned during Cycle A implementation.
+-   **Objective:** Establish the foundational framework with real testing utilities, comprehensive coverage verification, and structured documentation planning. This cycle creates the essential infrastructure that subsequent cycles depend on.
+-   **Dependencies:**
+    -   Must complete all TDD phases (RED → GREEN → REFACTOR → REGRESSION) before Cycle B
+    -   Requires workspace trust establishment and `.github/instructions/generators-first.instructions.md` review
+    -   Spec IDs will be assigned during Cycle A implementation
 -   **Deliverables:** Updated Jest suites in `tests/generators/`, initial spec outline without TODOs, branch `feature/generator-spec-cycle-a`.
 -   **TDD Checklist:**
     -   [ ] **RED:**
@@ -39,8 +54,14 @@ Each cycle aligns to a dedicated branch naming pattern `feature/generator-spec-c
 
 ### 3.2 Cycle B — Schema & Pattern Depth
 
--   **Objective:** Complete Inputs/Options, outputs, targets, conventions, and pattern library with full validation coverage and schema ↔ type parity.
--   **Deliverables:** Finalized Sections 3–7, new "Type Mapping Matrix", expanded pattern gallery, branch `feature/generator-spec-cycle-b`.
+-   **Objective:** Complete comprehensive coverage of Inputs/Options, outputs, targets, conventions, and pattern library with full validation coverage and schema ↔ type parity. This cycle deepens the technical foundation established in Cycle A by providing detailed implementation guidance.
+-   **Timeline:** 2-3 days for full TDD cycle completion
+-   **Deliverables:**
+    -   Finalized Sections 3–7 with detailed JSON Schema examples
+    -   New "Type Mapping Matrix" linking schema properties to TypeScript definitions
+    -   Expanded pattern gallery with real-world generator examples
+    -   Complete implementation of generator composition guidance
+    -   Branch `feature/generator-spec-cycle-b`
 -   **TDD Checklist:**
     -   [ ] **RED:**
         -   Extend tests to assert presence of numeric (`minimum`, `maximum`), array (`minItems`, `uniqueItems`), boolean, enum, conditional, and all `x-prompt` types (input/list/confirmation/multiselect).
@@ -83,10 +104,14 @@ Each cycle aligns to a dedicated branch naming pattern `feature/generator-spec-c
 
 ## 5. Coordination & Branching Rules
 
-1. Base branch for all work: `dev`. Merge each cycle sequentially after approvals.
-2. Keep branches short-lived (<3 days). Rebase onto `dev` before PR submission.
-3. Use commit messages referencing assigned spec IDs (e.g., `feat(generators): expand schema guidance [DEV-PRD-067]`).
-4. Document progress in `docs/work-summaries/` per cycle to capture learning for temporal DB ingestion.
+These coordination rules ensure smooth parallel development across multiple AI agents while maintaining code quality and traceability. The rules align with the project's trunk-based development strategy and generator-first policy requirements.
+
+1. **Base Branch Strategy**: Use `dev` as the base branch for all work. Merge each cycle sequentially after approvals to maintain dependency flow and avoid conflicts.
+2. **Branch Lifecycle**: Keep branches short-lived (<3 days). Rebase onto `dev` before PR submission to minimize merge complexity.
+3. **Commit Standards**: Use commit messages referencing assigned spec IDs (e.g., `feat(generators): expand schema guidance [DEV-PRD-067]`).
+4. **Knowledge Capture**: Document progress in `docs/work-summaries/` per cycle to capture learning for temporal DB ingestion.
+5. **Quality Gates**: Require all validation commands (`just ai-validate`, `just spec-guard`) to pass before merge approval.
+6. **Cross-Agent Coordination**: Use GitHub MCP for branch creation, syncing, and PR management to maintain synchronization between parallel workstreams.
 
 ## 6. Traceability & Follow-Ups
 

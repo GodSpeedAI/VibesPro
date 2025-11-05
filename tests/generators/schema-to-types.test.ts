@@ -39,12 +39,54 @@ describe('Schema to Types Parity', () => {
 
     expect(schemaProperties.sort()).toEqual(interfaceProperties.sort());
 
+    // Helper function to normalize type strings for semantic comparison
+    const normalizeTypeString = (typeString: string): string => {
+      return typeString
+        .replace(/\s+/g, ' ') // Remove all whitespace
+        .split('|') // Split by union separator
+        .map((type) => type.trim()) // Trim each type
+        .sort() // Sort union members
+        .join('|'); // Rejoin with separator
+    };
+
+    // Helper function to map JSON Schema types to TypeScript types
+    const mapJsonSchemaToTypeScript = (types: string | string[]): string => {
+      const typeArray = Array.isArray(types) ? types : [types];
+      const mappedTypes: string[] = [];
+
+      for (const type of typeArray) {
+        switch (type) {
+          case 'integer':
+            mappedTypes.push('number');
+            break;
+          case 'null':
+            mappedTypes.push('null');
+            break;
+          case 'array':
+            mappedTypes.push('unknown[]');
+            break;
+          case 'object':
+            mappedTypes.push('Record<string, unknown>');
+            break;
+          case 'string':
+          case 'number':
+          case 'boolean':
+            mappedTypes.push(type);
+            break;
+          default:
+            mappedTypes.push(type);
+        }
+      }
+
+      return mappedTypes.join(' | ');
+    };
+
     // Validate property types and optionality
     const expectedProps = new Map<string, { type: string; required: boolean }>();
     for (const [name, schema] of Object.entries(schemaJson.properties)) {
       const schemaDef = schema as { type: string | string[]; required?: string[] };
-      const types = Array.isArray(schemaDef.type) ? schemaDef.type : [schemaDef.type];
-      const typeString = types.join(' | ');
+      const mappedTypes = mapJsonSchemaToTypeScript(schemaDef.type);
+      const typeString = mappedTypes;
       const required = Array.isArray(schemaJson.required)
         ? schemaJson.required.includes(name)
         : false;
@@ -63,7 +105,12 @@ describe('Schema to Types Parity', () => {
     actualProps.forEach((actual) => {
       const expected = expectedProps.get(actual.name);
       expect(expected).toBeDefined();
-      expect(expected?.type).toBe(actual.type);
+
+      // Use semantic comparison instead of exact string equality
+      const normalizedExpected = normalizeTypeString(expected?.type || '');
+      const normalizedActual = normalizeTypeString(actual.type);
+
+      expect(normalizedActual).toBe(normalizedExpected);
       expect(expected?.required).toBe(actual.required);
     });
   });

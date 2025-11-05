@@ -6,10 +6,18 @@ describe('GENERATOR_SPEC.md template', () => {
   let specContent: string;
 
   beforeAll(() => {
-    specContent = readFileSync(
-      join(__dirname, '../../templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md'),
-      'utf-8',
-    );
+    try {
+      specContent = readFileSync(
+        join(__dirname, '../../templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md'),
+        'utf-8',
+      );
+    } catch (error) {
+      throw new Error(
+        `Failed to read GENERATOR_SPEC.md file: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    }
   });
 
   it('should not contain TODO strings in sections 1-4', () => {

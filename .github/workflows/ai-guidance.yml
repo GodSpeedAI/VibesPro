@@ -60,8 +60,26 @@ jobs:
         run: |
           SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck \
           COPIER_SKIP_PROJECT_SETUP=1 \
-          # Ensure uv synchronizes project dependencies declared in pyproject.toml
-          uv sync || true
+          # Ensure uv synchronizes project dependencies declared in pyproject.toml with retry
+          max_attempts=3
+          attempt=1
+          while [ $attempt -le $max_attempts ]; do
+            echo "Attempt $attempt of $max_attempts: Syncing Python dependencies..."
+            if uv sync --locked; then
+              echo "Dependency sync successful on attempt $attempt"
+              break
+            else
+              echo "Dependency sync failed on attempt $attempt"
+              if [ $attempt -eq $max_attempts ]; then
+                echo "Max attempts reached. Failing the workflow."
+                exit 1
+              fi
+              sleep_time=$((attempt * 2))
+              echo "Retrying in ${sleep_time} seconds..."
+              sleep $sleep_time
+            fi
+            attempt=$((attempt + 1))
+          done
           uv run pytest
 
       - name: AI guidance Jest suites
