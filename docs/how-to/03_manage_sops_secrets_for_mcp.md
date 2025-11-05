@@ -9,7 +9,7 @@ This walkthrough shows you how to **add**, **update**, and **use** secrets that 
 You’ll need:
 
 -   `sops` installed
--   Access to the private key that decrypts `.secrets.env.sops`  
+-   Access to the private key that decrypts `.secrets.env.sops`
     (most setups export `SOPS_AGE_KEY_FILE="$HOME/.config/sops/key.txt"`)
 -   A shell that loads the repo toolchain (Devbox, direnv, etc.)
 
@@ -51,7 +51,7 @@ This decrypts, updates the value, re-encrypts, and refreshes the MAC in one comm
 > ℹ️ **File type flags**
 >
 > -   Interactive edits (`sops .secrets.env.sops`) normally need no extra flags because SOPS infers the format for you.
-> -   Non-interactive commands (`--set`, `--decrypt`, `exec-env`, etc.) should always specify **both** `--input-type dotenv` and `--output-type dotenv`.  
+> -   Non-interactive commands (`--set`, `--decrypt`, `exec-env`, etc.) should always specify **both** `--input-type dotenv` and `--output-type dotenv`.
 >     Providing only the input type forces the parser but leaves the writer in “binary” mode, which triggers `Could not marshal tree: error emitting binary store: no binary data found in tree`.
 
 ---
@@ -102,6 +102,12 @@ If you use `direnv`, the provided `.envrc` already exports these variables whene
 ```bash
 printenv SMITHERY_API_KEY
 ```
+
+If you need to force a reload, run `direnv reload`. To surface parsing issues (for example, a malformed dotenv line), prefix the command with `DEV_SHOW_SOPS_WARN=1 direnv reload`—`.envrc` will now emit a warning instead of silently skipping the file.
+
+> ℹ️ **Special characters are safe**
+>
+> The `.envrc` loader now runs the decrypted payload through a Python helper before exporting each key. That means values containing `<`, `>`, `#`, spaces, or quotes no longer break the shell; you don’t need to escape them manually.
 
 ---
 

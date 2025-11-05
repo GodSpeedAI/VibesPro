@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import configparser
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -47,7 +48,7 @@ def test_temporal_and_integration_paths_are_not_excluded():
                 "-m",
                 "pytest",
                 "--collect-only",
-                "tests/temporal/test_database.py",
+                "tests/temporal/",
             ],
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -63,4 +64,6 @@ def test_temporal_and_integration_paths_are_not_excluded():
         f"stderr:\n{_short(result.stderr)}"
     )
     assert result.returncode == 0, msg
-    assert "test_database.py" in result.stdout, "Temporal database suite should be discoverable"
+    match = re.search(r"(\d+)\s+tests?\s+collected", result.stdout)
+    assert match, "Unable to determine collected test count for temporal suite"
+    assert int(match.group(1)) > 0, "Temporal tests directory should yield collected tests"

@@ -102,3 +102,7 @@ ops/openobserve/buildx/current
 ops/openobserve/buildx/activity/
 ops/openobserve/buildx/refs/
 .aider*
+
+
+.vscode/mcp.json
+mcp.json

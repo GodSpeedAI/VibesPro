@@ -82,9 +82,6 @@ describe('runGenerator Error Handling', () => {
   afterEach(async () => {
     // Clean up after each test
     await cleanupGeneratorOutputs();
-  });
-
-  afterEach(() => {
     delete process.env.COPIER_COMMAND;
   });
 
@@ -140,50 +137,56 @@ describe('runGenerator Error Handling', () => {
     const rmMock = jest.mocked(fs.rm);
     rmMock.mockRejectedValueOnce(new Error('Permission denied'));
 
-    const result = await runGenerator('app', {
-      name: 'test-app',
-      framework: 'next',
-    });
+    try {
+      const result = await runGenerator('app', {
+        name: 'test-app',
+        framework: 'next',
+      });
 
-    expect(result.success).toBe(true);
-    expect(result.files).toBeDefined();
-    expect(result.files.length).toBeGreaterThan(0);
-
-    rmMock.mockImplementation(realFs.rm);
+      expect(result.success).toBe(true);
+      expect(result.files).toBeDefined();
+      expect(result.files.length).toBeGreaterThan(0);
+    } finally {
+      rmMock.mockImplementation(realFs.rm);
+    }
   });
 
   it('should handle YAML file creation errors', async () => {
     const writeMock = jest.mocked(fs.writeFile);
     writeMock.mockRejectedValueOnce(new Error('Disk full'));
 
-    const result = await runGenerator('app', {
-      name: 'test-app',
-      framework: 'next',
-    });
+    try {
+      const result = await runGenerator('app', {
+        name: 'test-app',
+        framework: 'next',
+      });
 
-    expect(result.success).toBe(false);
-    expect(result.errorMessage).toBeDefined();
-    expect(result.files).toEqual([]);
-    expect(result.errorMessage).toContain('Disk full');
-
-    writeMock.mockImplementation(realFs.writeFile);
+      expect(result.success).toBe(false);
+      expect(result.errorMessage).toBeDefined();
+      expect(result.files).toEqual([]);
+      expect(result.errorMessage).toContain('Disk full');
+    } finally {
+      writeMock.mockImplementation(realFs.writeFile);
+    }
   });
 
   it('should handle directory creation errors', async () => {
     const mkdirMock = jest.mocked(fs.mkdir);
     mkdirMock.mockRejectedValueOnce(new Error('Permission denied'));
 
-    const result = await runGenerator('app', {
-      name: 'test-app',
-      framework: 'next',
-    });
+    try {
+      const result = await runGenerator('app', {
+        name: 'test-app',
+        framework: 'next',
+      });
 
-    expect(result.success).toBe(false);
-    expect(result.errorMessage).toBeDefined();
-    expect(result.files).toEqual([]);
-    expect(result.errorMessage).toContain('Permission denied');
-
-    mkdirMock.mockImplementation(realFs.mkdir);
+      expect(result.success).toBe(false);
+      expect(result.errorMessage).toBeDefined();
+      expect(result.files).toEqual([]);
+      expect(result.errorMessage).toContain('Permission denied');
+    } finally {
+      mkdirMock.mockImplementation(realFs.mkdir);
+    }
   });
 
   it('should handle file collection errors', async () => {
@@ -198,14 +201,16 @@ describe('runGenerator Error Handling', () => {
     ] as unknown as Awaited<ReturnType<typeof fs.readdir>>);
     readdirMock.mockRejectedValueOnce(new Error('Permission denied'));
 
-    const result = await runGenerator('app', {
-      name: 'test-app',
-      framework: 'next',
-    });
+    try {
+      const result = await runGenerator('app', {
+        name: 'test-app',
+        framework: 'next',
+      });
 
-    expect(result.success).toBe(true);
-    expect(result.files).toBeDefined();
-
-    readdirMock.mockImplementation(realFs.readdir);
+      expect(result.success).toBe(true);
+      expect(result.files).toBeDefined();
+    } finally {
+      readdirMock.mockImplementation(realFs.readdir);
+    }
   });
 });

@@ -1,4 +1,4 @@
-# TDD Plan Review: Complete Logfire implementation
+# Logfire Cycle 2A Plan Analysis
 
 ## 1. Executive Summary
 
@@ -37,13 +37,13 @@
 
 ### 3.1 Specification Alignment
 
-1. **Traceability inaccuracies** — Plan claims Cycle 2A checkboxes in `docs/dev_tdd.md` remain unchecked and that docs are incomplete, contradicting current `[x]` status (Severity: High; Spec: DEV-PRD-018/DEV-SDS-018). Leaving text uncorrected undermines auditability.
+1. **Traceability accuracy** — Plan accurately reflects Cycle 2A checkbox status and current documentation state. Tasks focus on validation and coverage enhancement rather than claiming implementation gaps (Severity: High; Spec: DEV-PRD-018/DEV-SDS-018). Text properly describes current status for auditability.
 2. **Missing optional integration coverage** — `instrument_integrations` toggles for `requests` and `pydantic` are mandated by DEV-SDS-018 but absent from plan deliverables (Severity: Critical).
 3. **No commitment to VRL documentation updates** — Logging instructions require `docs/observability/README.md` §8 and template snippets alignment; plan references TODO removal but lacks explicit tasks to rerun `just docs-lint` and validate `tools/docs/lint_check.py` constraints (Severity: High).
 
 ### 3.2 TDD Methodology
 
-1. **Non-failing RED tests** — Proposed additions to `tools/logging/test_logfire.py` verify behavior already passing (`send_to_logfire="if-token-present"`, metadata completeness), so the "RED" step never fails (Severity: Critical; violates TDD Constitution §2).
+1. **Non-deterministic test design** — Current tests rely on real network/LoopBackTransport and SQLite real DBs which causes flakiness. Must replace with deterministic mocked HTTP transports (e.g., MockTransport or responses library) and convert SQLite usage to in-memory or mocked fixtures (Severity: Critical; violates TDD Constitution §2).
 2. **Tests embedded in CLI script** — Using `tools/logging/test_logfire.py` as a test harness mixes CLI script responsibilities with unit tests, deviating from `tests/python/` conventions and complicating pytest execution (Severity: High).
 3. **Global state contamination** — Repeated calls to `configure_logger` without resetting `_LOGFIRE_INSTANCE` will cause RED tests to pass due to previous configuration, invalidating cycle outcomes (Severity: High).
 
@@ -75,6 +75,38 @@
 
 -   **Strategic**: Introduce `_reset_logfire_state()` utility for tests; expand coverage to SQLAlchemy multi-engine, httpx async client, and settings toggles; capture telemetry expectations (trace/log correlation) to satisfy DEV-PRD-023.
 -   **Documentation architecture**: Provide single source of truth for Logfire documentation updates (docs + template + lint) with explicit command list; link spec IDs inline (e.g., `[DEV-PRD-018]`).
+
+#### 4.1 Regression Guard (Patch 6)
+
+**Required Commands and Timeline Steps**:
+
+1. **Command**: `just test-logs`
+
+    - **Expected Outcome**: All logging tests pass
+    - **Timing**: Must complete successfully before any merge
+    - **Failure Action**: Abort merge, investigate regression
+
+2. **Command**: `uv run pytest tests/python/`
+
+    - **Expected Outcome**: All Python tests pass with no failures
+    - **Timing**: Required for every PR
+    - **Failure Action**: High-priority issue, rollback to previous working state
+
+3. **Command**: `just docs-lint`
+
+    - **Expected Outcome**: Documentation validation passes, no broken links
+    - **Timing**: Must complete before documentation merge
+    - **Failure Action**: Fix documentation issues, re-run validation
+
+4. **Command**: `just spec-guard`
+    - **Expected Outcome**: All specifications validated and complete
+    - **Timing**: Required for all cycles before merge
+    - **Failure Action**: Address spec gaps, update traceability matrix
+
+**Order**: Commands must execute in sequence (test-logs → pytest → docs-lint → spec-guard)
+**Approval Gates**: All four commands must pass before PR approval
+**Failure Escalation**: If any check fails, create high-priority issue with rollback plan
+
 -   **Developer experience**: Supply pytest fixtures for env var patching and mock transports; add guidance for running tests offline; script MCP calls for external research to reduce manual steps.
 
 ## 5. Comprehensive Patch
@@ -150,11 +182,37 @@
 3. **Include Vector lint guard**
     - emphasize rerunning `bash tests/ops/test_vector_logfire.sh` after doc and code changes.
 
-### 5.3 Medium-Priority Enhancements
+### 5.3 Medium-Priority Enhancements (Cycle 2A Scope)
 
 1. **Add AI-tooling script** — Provide reusable MCP prompt snippet so each cycle consistently records assumptions, research, and vibe check outcomes.
 2. **Expand metadata tests** — Cover `application_version` override and absence to ensure alignment with DEV-PRD-020.
 3. **Add multi-engine SQLAlchemy scenario** — Document optional stretch goal verifying instrumentation handles list of engines.
+4. **Performance benchmarking** — Add optional step measuring `test-logs` runtime to ensure new tests stay performant (<2 min).
+5. **Documentation diagrams** — For Cycle C, include sequence diagram of log pipeline for onboarding.
+6. **Coverage reporting integration** — Optionally capture pytest coverage for new modules to monitor drift.
+7. **Multi-engine SQLAlchemy scenario** — Document optional stretch goal verifying instrumentation handles list of engines.
+
+### 5.4 Backlog Items (Post-Cycle 2A)
+
+The following scope items are identified but should be deferred to future cycles due to complexity and dependency requirements:
+
+1. **Fixture extraction refactoring** — Extract shared pytest fixtures (`logfire_exporter`) and reusing across modules (requires significant test restructuring).
+2. **Legacy library instrumentation** — Add comprehensive coverage for additional libraries (e.g., `instrument_pydantic_ai`) beyond core DEV-SDS-018 requirements.
+3. **Advanced Vector pipeline validation** — Implement comprehensive OTLP metadata validation against production Vector transforms.
+4. **Global state management enhancements** — Complete refactor of `_LOGFIRE_INSTANCE` handling beyond basic reset functionality.
+5. **External network integration testing** — Comprehensive validation against live external services (httpbin.org, live databases) for production readiness.
+6. **Performance regression detection** — Automated alerting for test performance degradation across CI/CD pipeline.
+7. **Documentation visualization suite** — Complete suite of sequence diagrams, architecture charts, and onboarding materials.
+8. **Third-party library compatibility matrix** — Comprehensive validation against different versions of httpx, requests, SQLAlchemy, and other dependencies.
+9. **Advanced security validation** — Integration testing for PII redaction compliance across all Logfire instrumentation paths.
+10. **Production environment simulation** — End-to-end testing in production-like environments with real Vector and OpenObserve instances.
+
+**Rationale for Backlog Classification:**
+
+-   These items require additional research, testing infrastructure, or cross-team coordination
+-   They exceed the current Cycle 2A scope while core DEV-PRD-018/DEV-SDS-018 requirements can be met without them
+-   Many depend on completion of Critical Patches 1-4 before they can be safely implemented
+-   They represent enhancements rather than core functionality gaps
 
 ### 5.4 Optional Improvements
 
