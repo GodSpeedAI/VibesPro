@@ -146,7 +146,9 @@
     - Replace the GREEN command handler snippet with a design note explaining the handler should invoke the shell script (via `child_process.spawn`) and stream outputs, keeping validation logic centralised.
 2. **Patch: Add packaging targets**
     - Append a subsection defining `nx build prompt-exec-extension` using esbuild and `vsce package`, plus `just prompt-exec:package` for CI integration.
-3. \*\*Patch: Update doc plan to touch spec_index.md, traceability_matrix.md, and `docs/templates/...` so specs stay coherent.
+3. **Patch: Update doc plan to touch spec_index.md, traceability_matrix.md, and `docs/templates/...` so specs stay coherent.**
+
+4. \*\*Patch: Update doc plan to touch spec_index.md, traceability_matrix.md, and `docs/templates/...` so specs stay coherent.
 
 ### 5.3 Medium-Priority Enhancements
 

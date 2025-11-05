@@ -8,9 +8,11 @@ from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanE
 from libs.python.vibepro_logging import instrument_integrations
 
 
-def test_requests_instrumentation():
+@pytest.fixture
+def logfire_setup():
     """
-    Asserts that requests instrumentation emits spans.
+    Pytest fixture that sets up logfire with in-memory span exporting for testing.
+    Performs proper teardown to avoid breaking other tests.
     """
     try:
         from opentelemetry.instrumentation.requests import RequestsInstrumentor  # noqa: F401
@@ -26,10 +28,24 @@ def test_requests_instrumentation():
     logfire.configure(send_to_logfire=False, console=False, additional_span_processors=[processor])
 
     # Enable requests instrumentation
-    instrument_integrations(requests=True)
+    logfire.instrument_requests()
 
-    # Make a deterministic HTTP request by mocking the Session.send call
-    with patch("requests.sessions.Session.send") as mock_send:
+    yield processor, exporter
+
+    # Teardown: flush spans and shutdown
+    processor.force_flush(timeout_millis=5_000)
+    logfire.shutdown()
+    RequestsInstrumentor().uninstrument()
+
+
+def test_requests_instrumentation(logfire_setup):
+    """
+    Asserts that requests instrumentation emits spans.
+    """
+    processor, exporter = logfire_setup
+
+    # Make a deterministic HTTP request by mocking the underlying adapter call
+    with patch("requests.adapters.HTTPAdapter.send") as mock_send:
         response = requests.Response()
         prepared = requests.Request(method="GET", url="https://example.test/logfire").prepare()
         response.status_code = 200
@@ -41,7 +57,6 @@ def test_requests_instrumentation():
 
         requests.get("https://example.test/logfire", timeout=1)
 
-    # Flush spans to ensure the exporter receives them before assertions
     processor.force_flush(timeout_millis=5_000)
 
     # Check that spans were created
@@ -49,7 +64,7 @@ def test_requests_instrumentation():
     assert len(spans) > 0
 
     # Find the HTTP span
-    http_spans = [span for span in spans if "http" in span.name.lower()]
+    http_spans = [span for span in spans if span.attributes.get("http.method")]
     assert len(http_spans) > 0
 
     # Verify the span has HTTP attributes

@@ -4,11 +4,15 @@ import * as fs from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
 
+// Shared domain validation pattern used across the module
+const DOMAIN_REGEX = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
+
 export interface GeneratorResult {
   files: string[];
   success: boolean;
   outputPath: string;
   errorMessage?: string;
+  warnings?: string[];
 }
 
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
@@ -169,8 +173,27 @@ async function writeTextFile(filePath: string, content: string): Promise<void> {
   await fs.writeFile(filePath, normalized, 'utf-8');
 }
 
+/**
+ * Builds TypeScript API client contents with domain registry.
+ *
+ * Input sanitization: validates domains against a strict pattern to prevent
+ * injection risks and ensure well-formed generated code. Arrays are converted
+ * to comma-separated strings to satisfy downstream consumers that expect CSV
+ * formatting or legacy code/env-var formatting.
+ */
 function buildApiClientContents(domains: string[]): string {
-  const literal = domains.map((domain) => `'${domain}'`).join(', ') || `'core'`;
+  // Validate and sanitize domain names to prevent injection and ensure code validity
+  const validDomains = domains.map((domain) => {
+    // Strict validation: only lowercase alphanumerics, hyphens, and underscores allowed
+    if (!DOMAIN_REGEX.test(domain)) {
+      throw new Error(
+        `Invalid domain name "${domain}". Domain names must match pattern: /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/`,
+      );
+    }
+    return domain;
+  });
+
+  const literal = validDomains.map((domain) => `'${domain}'`).join(', ') || `'core'`;
   return `export const DOMAIN_REGISTRY = [${literal}];
 
 export class DomainName {
@@ -188,21 +211,67 @@ export function listDomains(): DomainName[] {
 }
 
 async function scaffoldApp(destination: string, context: Record<string, unknown>): Promise<void> {
+  // Input sanitization and validation to ensure generated code remains well-formed
   const appNameRaw = context.app_name ?? context.name ?? '';
-  const appName =
-    typeof appNameRaw === 'string' && appNameRaw.trim() ? appNameRaw.trim() : 'primary-app';
+  const appName = (() => {
+    if (typeof appNameRaw !== 'string' || !appNameRaw.trim()) {
+      return 'primary-app';
+    }
+    // Sanitize for filesystem use: trim, replace whitespace with '-', remove invalid chars
+    return appNameRaw
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-zA-Z0-9-_]/g, '');
+  })();
+
   const frameworkRaw = context.app_framework ?? 'next';
-  const framework = typeof frameworkRaw === 'string' ? frameworkRaw.toLowerCase() : 'next';
+  const framework = (() => {
+    const allowedFrameworks = ['next', 'remix', 'expo'];
+    if (typeof frameworkRaw !== 'string') return 'next';
+    const normalized = frameworkRaw.toLowerCase();
+    return allowedFrameworks.includes(normalized) ? normalized : 'next';
+  })();
+
   const domains = parseDomainList(context.app_domains ?? context.domains);
-  const domainList = domains.length > 0 ? domains : ['core'];
+  const domainList = (() => {
+    // Validate and sanitize domains
+    const validDomains = domains
+      .map((domain) => {
+        // Ensure domains are safe for use in identifiers and paths
+        if (!DOMAIN_REGEX.test(domain)) {
+          throw new Error(`Invalid domain "${domain}" in domain list`);
+        }
+        return domain;
+      })
+      .filter(Boolean);
+    return validDomains.length > 0 ? validDomains : ['core'];
+  })();
+
   const includeExample = parseBoolean(context.include_example_page);
   const includeSupabase = parseBoolean(context.include_supabase);
-  const routerStyle =
-    typeof context.app_router_style === 'string' ? context.app_router_style : 'pages';
-  const projectSlug =
-    typeof context.project_slug === 'string' && context.project_slug.trim()
-      ? context.project_slug.trim()
-      : 'project';
+
+  const routerStyle = (() => {
+    const allowedStyles = ['pages', 'app'];
+    if (typeof context.app_router_style !== 'string') return 'pages';
+    const normalized = context.app_router_style.toLowerCase();
+    return allowedStyles.includes(normalized) ? normalized : 'pages';
+  })();
+
+  const projectSlug = (() => {
+    if (typeof context.project_slug !== 'string' || !context.project_slug.trim()) {
+      return 'project';
+    }
+    // Ensure project slug is filesystem-safe and identifier-compliant
+    return (
+      context.project_slug
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-_]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') || 'project'
+    );
+  })();
+
   const appTitle = toTitleCase(appName);
 
   const appRoot = path.join(destination, 'apps', appName);
@@ -337,11 +406,30 @@ async function scaffoldDomain(
   destination: string,
   context: Record<string, unknown>,
 ): Promise<void> {
+  // Defensive validation for domain_name to ensure safe generation
   const domainNameRaw = context.domain_name ?? '';
-  const domainName =
-    typeof domainNameRaw === 'string' && domainNameRaw.trim() ? domainNameRaw.trim() : '';
+  const domainName = (() => {
+    if (typeof domainNameRaw !== 'string' || !domainNameRaw.trim()) {
+      return '';
+    }
+    const trimmed = domainNameRaw.trim();
+    // Validate against strict domain name pattern
+    const domainPattern = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
+    if (!domainPattern.test(trimmed)) {
+      throw new Error(
+        `Invalid domain name "${trimmed}". Domain names must match pattern: /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/`,
+      );
+    }
+    return trimmed;
+  })();
+
   if (!domainName) {
     return;
+  }
+
+  // Prevent path traversal by validating the domain is safe for filesystem use
+  if (domainName.includes('..') || domainName.includes('/') || domainName.includes('\\')) {
+    throw new Error(`Domain name "${domainName}" contains invalid path characters`);
   }
 
   const domainRoot = path.join(destination, 'libs', domainName);
@@ -349,10 +437,14 @@ async function scaffoldDomain(
 
   const words = splitWords(domainName);
   const firstWord = words[0] ?? '';
-  const useFirstWord = firstWord.length > 0 && /^[a-zA-Z]/.test(firstWord) && !/\d/.test(firstWord);
+  // Determine if first word is suitable as primary identifier
+  // Requirements: non-empty, starts with letter, contains no digits
+  const isValidPrimaryWord =
+    firstWord.length > 0 && /^[a-zA-Z]/.test(firstWord) && !/\d/.test(firstWord);
+  // Fallback strategy: use first alphabetic word from end of list, then first word, then default
   const fallbackWord =
     [...words].reverse().find((word) => /[a-zA-Z]/.test(word)) ?? firstWord ?? 'domain';
-  const primaryWord = useFirstWord ? firstWord : fallbackWord;
+  const primaryWord = isValidPrimaryWord ? firstWord : fallbackWord;
   const primaryPascal = toPascalCase(primaryWord, 'Domain');
   const aggregatePascal = toPascalCase(domainName);
 
@@ -675,6 +767,8 @@ export async function runGenerator(
       ? overrides.domains.join(',')
       : overrides.domains;
   } else if (Array.isArray(context.domains)) {
+    // Normalize arrays to comma-separated strings to satisfy downstream consumers
+    // that expect CSV formatting or legacy code/env-var formatting
     context.domains = (context.domains as unknown[]).map(String).join(',');
   }
 
@@ -699,13 +793,12 @@ export async function runGenerator(
     const boundedContextRaw = overrides.bounded_context ?? context.bounded_context ?? '';
     const domainName = typeof domainNameRaw === 'string' ? domainNameRaw.trim() : '';
     const boundedContext = typeof boundedContextRaw === 'string' ? boundedContextRaw.trim() : '';
-    const domainPattern = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
 
-    if (!domainName || !domainPattern.test(domainName)) {
+    if (!domainName || !DOMAIN_REGEX.test(domainName)) {
       return fail(`Invalid domain name "${domainName}"`);
     }
 
-    if (!boundedContext || !domainPattern.test(boundedContext)) {
+    if (!boundedContext || !DOMAIN_REGEX.test(boundedContext)) {
       return fail(`Invalid bounded context "${boundedContext}"`);
     }
   }
@@ -739,6 +832,7 @@ export async function runGenerator(
 
   let errorMessage: string | undefined;
   let cleanupError: unknown;
+  const warnings: string[] = [];
 
   try {
     await runCommand(copierCommand, args, { env });
@@ -755,11 +849,12 @@ export async function runGenerator(
 
   if (cleanupError) {
     const cleanupMessage = extractCommandError(cleanupError);
+    warnings.push(cleanupMessage);
     process.stderr.write(`${cleanupMessage}\n`);
   }
 
   if (errorMessage) {
-    return fail(errorMessage);
+    return { ...fail(errorMessage), warnings };
   }
 
   try {
@@ -796,6 +891,7 @@ export async function runGenerator(
     files,
     success: true,
     outputPath,
+    warnings,
   };
 }
 

@@ -847,7 +847,13 @@ LIMIT 100;
 
 ---
 
-<!-- TODO: Phase 3 Logfire integration content per DEV-PRD-018 -->
+**Logfire Integration (Phase 3)**
+
+This phase integrates `logfire` into the observability pipeline, providing a unified solution for tracing and logging in Python applications.
+
+-   **`vibepro_logging` Library:** A dedicated library (`libs/python/vibepro_logging.py`) provides helper functions to configure `logfire` and instrument common Python libraries.
+-   **`vector.toml` Updates:** The Vector configuration has been updated to process `logfire`'s OTLP output, including normalization of trace and span IDs, and PII redaction.
+-   **Testing:** The `tests/python/test_logfire_bootstrap.py` and `tests/python/test_logfire_integrations.py` files provide a suite of tests to validate the `logfire` integration.
 
 ## 14. References
 
