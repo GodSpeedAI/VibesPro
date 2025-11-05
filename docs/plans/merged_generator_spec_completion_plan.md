@@ -23,13 +23,22 @@
 
 ## 3. Cycle Overview (MECE)
 
+**MECE Principle**: Mutually Exclusive, Collectively Exhaustive - A framework ensuring each cycle addresses distinct aspects of generator specification while covering all necessary components comprehensively.
+
 -   **Cycle A — Template Foundations & Tests (Blocking for others)**
     -   RED focus: executable Jest suites for template validation and AI workflows.
     -   GREEN focus: outline + partial fills for Sections 1–4, zero TODO placeholders in touched sections.
+    -   **Dependencies**: Complete before Cycles B and C can begin
 -   **Cycle B — Schema & Pattern Depth (Depends on Cycle A)**
-    -   Build out schema coverage, type parity, pattern gallery, and generator composition guidance.
+    -   Expand JSON Schema documentation with type mapping matrix, validation patterns, and Nx generator examples
+    -   Build pattern gallery covering domain entities, services, components, and conditional templates
+    -   Implement generator composition guidance and @nx/devkit integration patterns
+    -   **Dependencies**: Requires Cycle A GREEN completion
 -   **Cycle C — AI Enablement & Regression Safety (Depends on Cycle A, parallel with B)**
-    -   Add AI workflow instructions, troubleshooting taxonomy, validation automation, regression hardening.
+    -   Develop AI agent workflow instructions with MCP tooling integration and troubleshooting taxonomy
+    -   Establish validation automation with AJV schema validation and regression safeguards
+    -   Create comprehensive testing strategy including Jest, ShellSpec, and end-to-end validation
+    -   **Dependencies**: Can run parallel to Cycle B once Cycle A is complete
 
 ## 4. Detailed Cycle Checklists
 
@@ -62,11 +71,19 @@
     -   Re-run `pnpm test tests/generators/spec-*.test.ts`; confirm previously failing tests now pass.
 
 -   [ ] **Refactor & Regression**
+
     -   Run `just ai-validate` and `just spec-guard`; document outcomes in plan.
     -   Use Vibe Check MCP to confirm no missed assumptions; log determination in Memory MCP for next cycles.
     -   Confirm `grep -R "TODO" templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` returns only TODOs assigned to later cycles.
     -   Update Section 4.1 checklist with notes, then commit via GitHub MCP including message `test(generator-spec): complete cycle a foundations [DEV-PRD-019]`.
     -   Open draft PR targeting `dev`; attach failing/passing test outputs in PR description.
+
+-   [ ] **Dependencies**
+    -   **Prerequisites**: Workspace trust established, `.github/instructions/generators-first.instructions.md` reviewed
+    -   **Specification Prerequisites**: DEV-PRD-019-A/B approved, target template structure defined
+    -   **Tooling Prerequisites**: GitHub MCP server configured, Memory MCP accessible
+    -   **Content Prerequisites**: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` exists for validation
+    -   **Sequential Dependencies**: Must complete all phases (RED → GREEN → REFACTOR → REGRESSION) before proceeding
 
 ### 4.2 Cycle B — Schema & Pattern Depth
 
@@ -138,16 +155,16 @@
 
 ## 6. Regression Safeguards
 
--   [ ] `pnpm test tests/generators/spec-*.test.ts`
--   [ ] `pnpm test tests/generators/*schema*.test.ts`
--   [ ] `pnpm test tests/generators/validation-automation.test.ts`
--   [ ] `shellspec tests/shell/generator-spec-workflow_spec.sh`
--   [ ] `just ai-validate`
--   [ ] `just spec-guard`
--   [ ] `just test`
--   [ ] `just test-generation`
--   [ ] GitHub Actions: `ci.yml`, `docs.yml`, `spec-guard.yml` (trigger or monitor via GitHub MCP)
--   [ ] Ensure `../test-output` generated project contains updated spec with zero TODO markers (`grep -R "TODO" ../test-output/docs/specs/generators/GENERATOR_SPEC.md`)
+-   [ ] `pnpm test tests/generators/spec-*.test.ts` — Execute Jest test suite for template validation
+-   [ ] `pnpm test tests/generators/*schema*.test.ts` — Run schema validation and type parity tests
+-   [ ] `pnpm test tests/generators/validation-automation.test.ts` — Execute automated validation command tests
+-   [ ] `shellspec tests/shell/generator-spec-workflow_spec.sh` — Run end-to-end ShellSpec workflow validation
+-   [ ] `just ai-validate` — Execute linting and type checking validation
+-   [ ] `just spec-guard` — Run comprehensive specification and documentation guard
+-   [ ] `just test` — Execute complete test suite (Node, Python, Shell, Integration)
+-   [ ] `just test-generation` — Validate template generation flow produces working projects
+-   [ ] GitHub Actions: `ci.yml`, `docs.yml`, `spec-guard.yml` (trigger or monitor via GitHub MCP) — Run CI workflows for continuous integration
+-   [ ] Ensure `../test-output` generated project contains updated spec with zero TODO markers (`grep -R "TODO" ../test-output/docs/specs/generators/GENERATOR_SPEC.md`) — Verify generated project has complete specification
 
 ## 7. Traceability
 

@@ -1,4 +1,4 @@
-# TDD Plan Review: Complete Logfire implementation
+# Logfire Cycle 2A Plan Analysis
 
 ## 1. Executive Summary
 
@@ -182,11 +182,37 @@
 3. **Include Vector lint guard**
     - emphasize rerunning `bash tests/ops/test_vector_logfire.sh` after doc and code changes.
 
-### 5.3 Medium-Priority Enhancements
+### 5.3 Medium-Priority Enhancements (Cycle 2A Scope)
 
 1. **Add AI-tooling script** — Provide reusable MCP prompt snippet so each cycle consistently records assumptions, research, and vibe check outcomes.
 2. **Expand metadata tests** — Cover `application_version` override and absence to ensure alignment with DEV-PRD-020.
 3. **Add multi-engine SQLAlchemy scenario** — Document optional stretch goal verifying instrumentation handles list of engines.
+4. **Performance benchmarking** — Add optional step measuring `test-logs` runtime to ensure new tests stay performant (<2 min).
+5. **Documentation diagrams** — For Cycle C, include sequence diagram of log pipeline for onboarding.
+6. **Coverage reporting integration** — Optionally capture pytest coverage for new modules to monitor drift.
+7. **Multi-engine SQLAlchemy scenario** — Document optional stretch goal verifying instrumentation handles list of engines.
+
+### 5.4 Backlog Items (Post-Cycle 2A)
+
+The following scope items are identified but should be deferred to future cycles due to complexity and dependency requirements:
+
+1. **Fixture extraction refactoring** — Extract shared pytest fixtures (`logfire_exporter`) and reusing across modules (requires significant test restructuring).
+2. **Legacy library instrumentation** — Add comprehensive coverage for additional libraries (e.g., `instrument_pydantic_ai`) beyond core DEV-SDS-018 requirements.
+3. **Advanced Vector pipeline validation** — Implement comprehensive OTLP metadata validation against production Vector transforms.
+4. **Global state management enhancements** — Complete refactor of `_LOGFIRE_INSTANCE` handling beyond basic reset functionality.
+5. **External network integration testing** — Comprehensive validation against live external services (httpbin.org, live databases) for production readiness.
+6. **Performance regression detection** — Automated alerting for test performance degradation across CI/CD pipeline.
+7. **Documentation visualization suite** — Complete suite of sequence diagrams, architecture charts, and onboarding materials.
+8. **Third-party library compatibility matrix** — Comprehensive validation against different versions of httpx, requests, SQLAlchemy, and other dependencies.
+9. **Advanced security validation** — Integration testing for PII redaction compliance across all Logfire instrumentation paths.
+10. **Production environment simulation** — End-to-end testing in production-like environments with real Vector and OpenObserve instances.
+
+**Rationale for Backlog Classification:**
+
+-   These items require additional research, testing infrastructure, or cross-team coordination
+-   They exceed the current Cycle 2A scope while core DEV-PRD-018/DEV-SDS-018 requirements can be met without them
+-   Many depend on completion of Critical Patches 1-4 before they can be safely implemented
+-   They represent enhancements rather than core functionality gaps
 
 ### 5.4 Optional Improvements
 

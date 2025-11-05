@@ -27,9 +27,10 @@ describe('GENERATOR_SPEC.md completeness', () => {
   it('should have a sample table for each pattern category', () => {
     expect(specContent).toContain('### 3.5 Pattern Categories');
     // More flexible patterns that allow variable whitespace and ensure real table structure
-    expect(specContent).toMatch(/#### Domain\s*\|.*\|.*\n/);
-    expect(specContent).toMatch(/#### Service\s*\|.*\|.*\n/);
-    expect(specContent).toMatch(/#### Component\s*\|.*\|.*\n/);
-    expect(specContent).toMatch(/#### Conditional\s*\|.*\|.*\n/);
+    // Match header then allow optional whitespace/newlines before matching pipe line
+    expect(specContent).toMatch(/#### Domain\s*\r?\n\s*\r?\n\s*\|.*\|.*\n/);
+    expect(specContent).toMatch(/#### Service\s*\r?\n\s*\r?\n\s*\|.*\|.*\n/);
+    expect(specContent).toMatch(/#### Component\s*\r?\n\s*\r?\n\s*\|.*\|.*\n/);
+    expect(specContent).toMatch(/#### Conditional\s*\r?\n\s*\r?\n\s*\|.*\|.*\n/);
   });
 });

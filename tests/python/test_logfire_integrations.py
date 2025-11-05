@@ -35,6 +35,7 @@ def logfire_setup():
     # Teardown: flush spans and shutdown
     processor.force_flush(timeout_millis=5_000)
     logfire.shutdown()
+    RequestsInstrumentor().uninstrument()
 
 
 def test_requests_instrumentation(logfire_setup):

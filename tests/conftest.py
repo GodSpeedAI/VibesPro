@@ -4,6 +4,8 @@ from shutil import copy, copytree
 
 import pytest
 
+from temporal_db.python.repository import TemporalRepository, initialize_temporal_database
+
 PYTEST_COPIER_AVAILABLE = False
 try:
     from pytest_copier.errors import RunError
@@ -14,7 +16,24 @@ else:
     PYTEST_COPIER_AVAILABLE = True
 
 
-def pytest_ignore_collect(collection_path: Path, config: pytest.Config, **_):
+try:
+    from _pytest.path import LEGACY_PATH
+except ImportError:
+    LEGACY_PATH = Path
+
+
+@pytest.fixture
+async def temporal_repository(tmp_path: Path) -> TemporalRepository:
+    """Async pytest fixture for TemporalRepository with proper cleanup."""
+    db_path = tmp_path / "test.db"
+    repo = await initialize_temporal_database(str(db_path))
+    try:
+        yield repo
+    finally:
+        await repo.close()
+
+
+def pytest_ignore_collect(collection_path: LEGACY_PATH, config: pytest.Config, **_):
     """Ignore legacy duplicate template tests that interfere with canonical test run.
 
     We intentionally keep a single canonical test: `tests/template/test_template_generation.py`

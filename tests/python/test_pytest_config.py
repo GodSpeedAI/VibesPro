@@ -47,7 +47,7 @@ def test_temporal_and_integration_paths_are_not_excluded():
                 "-m",
                 "pytest",
                 "--collect-only",
-                "tests/temporal/test_database.py",
+                "tests/temporal/",
             ],
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -63,4 +63,4 @@ def test_temporal_and_integration_paths_are_not_excluded():
         f"stderr:\n{_short(result.stderr)}"
     )
     assert result.returncode == 0, msg
-    assert "test_database.py" in result.stdout, "Temporal database suite should be discoverable"
+    assert "tests/temporal/" in result.stdout, "Temporal tests directory should be discoverable"

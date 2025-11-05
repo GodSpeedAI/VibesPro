@@ -12,7 +12,6 @@ import shutil
 import subprocess
 import sys
 import textwrap
-from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
@@ -56,7 +55,7 @@ def read_answers_file(path: Path) -> dict[str, Any]:
         print("   → Note: The fallback parser is limited and only supports simple key:value pairs.")
 
         # Limited fallback for simple key:value pairs only
-        if isinstance(contents, str) and ":" in contents:
+        if ":" in contents:
             data: dict[str, Any] = {}
             for raw_line in contents.splitlines():
                 line = raw_line.strip()
@@ -104,17 +103,31 @@ def load_answers(target: Path) -> dict[str, Any]:
 
 
 def parse_domains(raw: Any) -> list[str]:
+    """Parse domains from various input formats into a list of strings.
+
+    Args:
+        raw: Input that can be None, string, list, tuple, dict, or set
+
+    Returns:
+        List of cleaned domain strings
+    """
     if raw is None:
         return []
     if isinstance(raw, str):
         return [part.strip() for part in raw.split(",") if part.strip()]
-    if isinstance(raw, Iterable):
+    if isinstance(raw, list | tuple):
         result: list[str] = []
         for item in raw:
             value = str(item).strip()
             if value:
                 result.append(value)
         return result
+    if isinstance(raw, dict):
+        # For dicts, use keys as domain names
+        return [str(key).strip() for key in raw.keys() if str(key).strip()]
+    if isinstance(raw, set):
+        # For sets, convert to sorted list for consistency
+        return sorted(str(item).strip() for item in raw if str(item).strip())
     return []
 
 
@@ -207,18 +220,22 @@ def validate_within_target(target: Path, path_component: str, base_dir: str) -> 
     Returns a safe Path object or raises ValueError if validation fails.
     """
     safe_component = sanitize_for_filesystem(path_component)
-    full_path = target / base_dir / safe_component
+    full_path = (target / base_dir / safe_component).resolve()
 
-    # Resolve to absolute paths for comparison
+    # Ensure the path is within target directory using Path-based containment test
     try:
-        target_resolved = target.resolve()
-        full_path_resolved = full_path.resolve()
+        # Use is_relative_to() for Python 3.9+ or check parents relationship
+        if hasattr(full_path, "is_relative_to"):
+            # Python 3.9+
+            if not full_path.is_relative_to(target.resolve()):
+                raise ValueError(f"Path traversal detected: {path_component}")
+        else:
+            # Python 3.8 fallback: check if target is in the full_path's parents
+            target_resolved = target.resolve()
+            if not any(parent == target_resolved for parent in full_path.parents):
+                raise ValueError(f"Path traversal detected: {path_component}")
 
-        # Ensure the path is within target directory
-        if not str(full_path_resolved).startswith(str(target_resolved)):
-            raise ValueError(f"Path traversal detected: {path_component}")
-
-        return full_path
+        return target / base_dir / safe_component
     except (OSError, ValueError) as exc:
         raise ValueError(f"Invalid path component '{path_component}': {exc}") from exc
 
@@ -349,6 +366,125 @@ def build_api_client(domains: list[str]) -> str:
     )
 
 
+def _scaffold_next_app(
+    app_root: Path, app_name: str, app_title: str, domains: list[str], body_sections: str
+) -> None:
+    """Scaffold Next.js app-specific files and configurations."""
+    next_index = (
+        "import Head from 'next/head';\n\n"
+        f"const domains = {json.dumps(domains)};\n\n"
+        "export default function Home() {\n"
+        "  return (\n"
+        "    <main>\n"
+        f"      <h1>Welcome to {app_title}</h1>\n"
+        f"{body_sections}\n"
+        "    </main>\n"
+        "  );\n"
+        "}\n"
+    )
+    write_text_file(app_root / "pages" / "index.tsx", next_index)
+
+    next_config = textwrap.dedent(
+        """\
+        /** @type {import('next').NextConfig} */
+        const nextConfig = {
+          env: {
+            NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+            NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
+          },
+        };
+
+        module.exports = nextConfig;
+        """
+    )
+    write_text_file(app_root / "next.config.js", next_config)
+
+
+def _scaffold_remix_app(app_root: Path, app_name: str, app_title: str, body_sections: str) -> None:
+    """Scaffold Remix app-specific files and configurations."""
+    remix_index = (
+        "import type { MetaFunction } from '@remix-run/node';\n\n"
+        "export const meta: MetaFunction = () => ([\n"
+        f"  {{ title: '{app_title}' }},\n"
+        "]);\n\n"
+        "export default function Index() {\n"
+        "  return (\n"
+        "    <main>\n"
+        f"      <h1>Welcome to {app_title}</h1>\n"
+        f"{body_sections}\n"
+        "    </main>\n"
+        "  );\n"
+        "}\n"
+    )
+    write_text_file(app_root / "app" / "routes" / "index.tsx", remix_index)
+
+    remix_config = textwrap.dedent(
+        f"""\
+        const config = {{
+          appDirectory: "apps/{app_name}/app",
+          browserBuildDirectory: "apps/{app_name}/public/build",
+          serverBuildDirectory: "apps/{app_name}/build",
+          ignoredRouteFiles: ["**/*.test.*"],
+        }};
+
+        module.exports = config;
+        """
+    )
+    write_text_file(app_root / "remix.config.js", remix_config)
+
+
+def _scaffold_expo_app(
+    app_root: Path,
+    app_name: str,
+    app_title: str,
+    domains_display: str,
+    include_example: bool,
+    include_supabase: bool,
+    project_slug: str,
+) -> None:
+    """Scaffold Expo app-specific files and configurations."""
+    expo_sections: list[str] = [
+        f"        <Text>Domains available: {domains_display or 'core'}.</Text>",
+    ]
+    if include_example:
+        expo_sections.append(
+            "        <Text>Example Domain Integration showcases ExampleEntity.</Text>"
+        )
+    if include_supabase:
+        expo_sections.append("        <Text>Supabase integration detected.</Text>")
+    expo_body = "\n".join(expo_sections)
+
+    expo_app = (
+        "import { SafeAreaView, Text, View } from 'react-native';\n\n"
+        "export default function App() {\n"
+        "  return (\n"
+        "    <SafeAreaView>\n"
+        "      <View style={{ padding: 24 }}>\n"
+        f"        <Text>Welcome to {app_title}</Text>\n"
+        f"{expo_body}\n"
+        "      </View>\n"
+        "    </SafeAreaView>\n"
+        "  );\n"
+        "}\n"
+    )
+    write_text_file(app_root / "App.tsx", expo_app)
+
+    # Sanitize project_slug for platform IDs
+    platform_safe_slug = sanitize_for_platform_id(project_slug)
+
+    expo_config = {
+        "expo": {
+            "name": app_title,
+            "slug": app_name,
+            "version": "1.0.0",
+            "owner": project_slug,
+            "android": {"package": f"com.{platform_safe_slug}.mobile-app"},
+            "ios": {"bundleIdentifier": f"com.{platform_safe_slug}.mobile-app"},
+        }
+    }
+    write_text_file(app_root / "app.json", json.dumps(expo_config, indent=2))
+
+
 def scaffold_app(target: Path, answers: dict[str, Any]) -> None:
     """Scaffold an app with comprehensive input validation and sanitization."""
     # Sanitize and validate app_name
@@ -374,7 +510,6 @@ def scaffold_app(target: Path, answers: dict[str, Any]) -> None:
 
     include_example = bool(answers.get("include_example_page"))
     include_supabase = bool(answers.get("include_supabase"))
-    router_style = str(answers.get("app_router_style") or "pages").lower()
 
     # Sanitize project_slug
     project_slug_raw = str(answers.get("project_slug") or app_name_raw or "app")
@@ -415,111 +550,21 @@ def scaffold_app(target: Path, answers: dict[str, Any]) -> None:
         )
     body_sections = "\n".join(sections)
 
+    # Delegate framework-specific scaffolding to specialized helpers
     if framework == "next":
-        next_index = (
-            "import Head from 'next/head';\n\n"
-            f"const domains = {json.dumps(domains)};\n\n"
-            "export default function Home() {\n"
-            "  return (\n"
-            "    <main>\n"
-            f"      <h1>Welcome to {app_title}</h1>\n"
-            f"{body_sections}\n"
-            "    </main>\n"
-            "  );\n"
-            "}\n"
+        _scaffold_next_app(app_root, app_name, app_title, domains, body_sections)
+    elif framework == "remix":
+        _scaffold_remix_app(app_root, app_name, app_title, body_sections)
+    elif framework == "expo":
+        _scaffold_expo_app(
+            app_root,
+            app_name,
+            app_title,
+            domains_display,
+            include_example,
+            include_supabase,
+            project_slug,
         )
-        write_text_file(app_root / "pages" / "index.tsx", next_index)
-
-        next_config = textwrap.dedent(
-            f"""\
-            /** @type {{import('next').NextConfig}} */
-            const nextConfig = {{
-              experimental: {{
-                appDir: {str(router_style == 'app').lower()},
-              }},
-              env: {{
-                NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-                NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
-              }},
-            }};
-
-            module.exports = nextConfig;
-            """
-        )
-        write_text_file(app_root / "next.config.js", next_config)
-
-    if framework == "remix":
-        remix_index = (
-            "import type { MetaFunction } from '@remix-run/node';\n\n"
-            "export const meta: MetaFunction = () => ([\n"
-            f"  {{ title: '{app_title}' }},\n"
-            "]);\n\n"
-            "export default function Index() {\n"
-            "  return (\n"
-            "    <main>\n"
-            f"      <h1>Welcome to {app_title}</h1>\n"
-            f"{body_sections}\n"
-            "    </main>\n"
-            "  );\n"
-            "}\n"
-        )
-        write_text_file(app_root / "app" / "routes" / "index.tsx", remix_index)
-
-        remix_config = textwrap.dedent(
-            f"""\
-            const config = {{
-              appDirectory: "apps/{app_name}/app",
-              browserBuildDirectory: "apps/{app_name}/public/build",
-              serverBuildDirectory: "apps/{app_name}/build",
-              ignoredRouteFiles: ["**/*.test.*"],
-            }};
-
-            module.exports = config;
-            """
-        )
-        write_text_file(app_root / "remix.config.js", remix_config)
-
-    if framework == "expo":
-        expo_sections: list[str] = [
-            f"        <Text>Domains available: {domains_display or 'core'}.</Text>",
-        ]
-        if include_example:
-            expo_sections.append(
-                "        <Text>Example Domain Integration showcases ExampleEntity.</Text>"
-            )
-        if include_supabase:
-            expo_sections.append("        <Text>Supabase integration detected.</Text>")
-        expo_body = "\n".join(expo_sections)
-
-        expo_app = (
-            "import { SafeAreaView, Text, View } from 'react-native';\n\n"
-            "export default function App() {\n"
-            "  return (\n"
-            "    <SafeAreaView>\n"
-            "      <View style={{ padding: 24 }}>\n"
-            f"        <Text>Welcome to {app_title}</Text>\n"
-            f"{expo_body}\n"
-            "      </View>\n"
-            "    </SafeAreaView>\n"
-            "  );\n"
-            "}\n"
-        )
-        write_text_file(app_root / "App.tsx", expo_app)
-
-        # Sanitize project_slug for platform IDs
-        platform_safe_slug = sanitize_for_platform_id(project_slug)
-
-        expo_config = {
-            "expo": {
-                "name": app_title,
-                "slug": app_name,
-                "version": "1.0.0",
-                "owner": project_slug,
-                "android": {"package": f"com.{platform_safe_slug}.mobile-app"},
-                "ios": {"bundleIdentifier": f"com.{platform_safe_slug}.mobile-app"},
-            }
-        }
-        write_text_file(app_root / "app.json", json.dumps(expo_config, indent=2))
 
 
 def scaffold_domain(target: Path, answers: dict[str, Any]) -> None:

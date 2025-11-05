@@ -1,6 +1,14 @@
 # TDD Plan: Complete Generator Specification Template
 
-**Objective**: Enable AI agents to create bespoke Nx generators just-in-time by completing the `GENERATOR_SPEC.md` template, following generator-first principles to minimize code hallucinations.
+## Quick Start Header
+
+**Purpose**: Enable AI agents to create bespoke Nx generators just-in-time by completing the `GENERATOR_SPEC.md` template, following generator-first principles to minimize code hallucinations.
+
+**Target Audience**: Junior AI agents working in parallel on generator specification development, with basic understanding of TDD methodology and Nx ecosystem.
+
+**Execution Intent**: Sequential TDD approach (RED → GREEN → REFACTOR → REGRESSION) targeting zero TODO placeholders and comprehensive test coverage for AI-guided generator creation.
+
+**Timeline**: 10-15 hours total across 4 phases, with measurable success criteria at each stage.
 
 **Spec IDs**: DEV-PRD-TBD, DEV-SDS-TBD (to be assigned)
 **Related Files**:

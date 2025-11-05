@@ -4,11 +4,15 @@ import * as fs from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
 
+// Shared domain validation pattern used across the module
+const DOMAIN_REGEX = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
+
 export interface GeneratorResult {
   files: string[];
   success: boolean;
   outputPath: string;
   errorMessage?: string;
+  warnings?: string[];
 }
 
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
@@ -181,7 +185,7 @@ function buildApiClientContents(domains: string[]): string {
   // Validate and sanitize domain names to prevent injection and ensure code validity
   const validDomains = domains.map((domain) => {
     // Strict validation: only lowercase alphanumerics, hyphens, and underscores allowed
-    if (!/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/.test(domain)) {
+    if (!DOMAIN_REGEX.test(domain)) {
       throw new Error(
         `Invalid domain name "${domain}". Domain names must match pattern: /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/`,
       );
@@ -234,7 +238,7 @@ async function scaffoldApp(destination: string, context: Record<string, unknown>
     const validDomains = domains
       .map((domain) => {
         // Ensure domains are safe for use in identifiers and paths
-        if (!/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/.test(domain)) {
+        if (!DOMAIN_REGEX.test(domain)) {
           throw new Error(`Invalid domain "${domain}" in domain list`);
         }
         return domain;
@@ -433,10 +437,14 @@ async function scaffoldDomain(
 
   const words = splitWords(domainName);
   const firstWord = words[0] ?? '';
-  const useFirstWord = firstWord.length > 0 && /^[a-zA-Z]/.test(firstWord) && !/\d/.test(firstWord);
+  // Determine if first word is suitable as primary identifier
+  // Requirements: non-empty, starts with letter, contains no digits
+  const isValidPrimaryWord =
+    firstWord.length > 0 && /^[a-zA-Z]/.test(firstWord) && !/\d/.test(firstWord);
+  // Fallback strategy: use first alphabetic word from end of list, then first word, then default
   const fallbackWord =
     [...words].reverse().find((word) => /[a-zA-Z]/.test(word)) ?? firstWord ?? 'domain';
-  const primaryWord = useFirstWord ? firstWord : fallbackWord;
+  const primaryWord = isValidPrimaryWord ? firstWord : fallbackWord;
   const primaryPascal = toPascalCase(primaryWord, 'Domain');
   const aggregatePascal = toPascalCase(domainName);
 
@@ -785,13 +793,12 @@ export async function runGenerator(
     const boundedContextRaw = overrides.bounded_context ?? context.bounded_context ?? '';
     const domainName = typeof domainNameRaw === 'string' ? domainNameRaw.trim() : '';
     const boundedContext = typeof boundedContextRaw === 'string' ? boundedContextRaw.trim() : '';
-    const domainPattern = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
 
-    if (!domainName || !domainPattern.test(domainName)) {
+    if (!domainName || !DOMAIN_REGEX.test(domainName)) {
       return fail(`Invalid domain name "${domainName}"`);
     }
 
-    if (!boundedContext || !domainPattern.test(boundedContext)) {
+    if (!boundedContext || !DOMAIN_REGEX.test(boundedContext)) {
       return fail(`Invalid bounded context "${boundedContext}"`);
     }
   }
@@ -825,6 +832,7 @@ export async function runGenerator(
 
   let errorMessage: string | undefined;
   let cleanupError: unknown;
+  const warnings: string[] = [];
 
   try {
     await runCommand(copierCommand, args, { env });
@@ -841,11 +849,12 @@ export async function runGenerator(
 
   if (cleanupError) {
     const cleanupMessage = extractCommandError(cleanupError);
+    warnings.push(cleanupMessage);
     process.stderr.write(`${cleanupMessage}\n`);
   }
 
   if (errorMessage) {
-    return fail(errorMessage);
+    return { ...fail(errorMessage), warnings };
   }
 
   try {
@@ -882,6 +891,7 @@ export async function runGenerator(
     files,
     success: true,
     outputPath,
+    warnings,
   };
 }
 

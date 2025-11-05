@@ -190,7 +190,7 @@ just observe-validate  # Validate Vector configuration
 
 ### 🔴 Critical Priority (Blocks Production Use)
 
-#### 1. [x] **Nx Version Mismatch** (BLOCKER)
+#### 1. [ ] **Nx Version Mismatch** (BLOCKER)
 
 **Problem**: Nx core is 22.0.2 but @nx/js is 21.5.3, causing module resolution errors.
 
@@ -220,7 +220,7 @@ at /home/sprime01/projects/VibesPro/node_modules/.pnpm/@nx+js@21.5.3_@babel+trav
 
 ### 🟡 High Priority (Affects Quality/Completeness)
 
-#### 2. [x] **Python Test Coverage Gaps**
+#### 2. [ ] **Python Test Coverage Gaps**
 
 **Problem**: pytest excludes `tests/temporal` and integration suites, reducing regression coverage.
 
@@ -242,7 +242,7 @@ at /home/sprime01/projects/VibesPro/node_modules/.pnpm/@nx+js@21.5.3_@babel+trav
 
 **Files**: `pytest.ini:7`, `tests/temporal/`, `justfile:166-177`
 
-#### 3. [x] **Generator Specification Template Incomplete**
+#### 3. [ ] **Generator Specification Template Incomplete**
 
 **Problem**: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` contains TODO placeholders.
 
