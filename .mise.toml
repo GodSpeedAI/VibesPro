@@ -7,3 +7,11 @@ just = "1.43.0"
 
 [env]
 # optional shared ENV defaults
+
+
+[settings]
+# Enable idiomatic version-file behavior for selected tools to silence mise deprecation
+# warnings about idiomatic version files. This tells mise it is allowed to read tool
+# versions from idiomatic files (for example, `rust-toolchain.toml`) for the listed
+# tools. Adjust as needed or remove to disable this behavior.
+idiomatic_version_file_enable_tools = ["rust"]
