@@ -1321,3 +1321,69 @@ Step 6: Validate Generator → Run dry-run, tests, lint, graph checks
 -   [ ] All tests pass: Jest, ShellSpec, AJV validation
 -   [ ] Documentation reviewed and approved by platform team
 -   [ ] Traceability matrix updated with DEV-PRD-019, DEV-SDS-019, DEV-ADR-019
+
+---
+
+## DEV-SDS-023 — Generator Idempotency Pattern Library (addresses DEV-PRD-024)
+
+-   Principle: Generators must be rerunnable with zero diffs; deterministic patterns are documented and enforced.
+-   Deterministic Writes: Use `readProjectConfiguration`, `tree.exists`, and AST/marker utilities to avoid overwriting existing content blindly.
+-   Formatting: Call `formatFiles(tree)` and preserve sorted exports/imports to keep outputs stable.
+-   Tests: Provide Jest specs that run the generator twice and assert `git diff --exit-code === 0`, plus ShellSpec smoke tests mirroring HexDDD’s idempotency suite.
+-   Tooling: Add a shared helper in `tests/generators/` for double-run assertions; integrate with CI (`just spec-guard`).
+
+## DEV-SDS-024 — Dependency Tag Configuration & Linting (addresses DEV-PRD-025)
+
+-   Tag Taxonomy: `scope:<domain>`, `type:domain|application|infrastructure|api|ui|shared`, `layer:interface`.
+-   Generator Output: All `project.json` files emitted by generators must include the appropriate tags immediately.
+-   Lint Rules: Enable `@nx/enforce-module-boundaries` with disallow lists mapping to hexagonal layers (e.g., `type:domain` cannot depend on `type:infrastructure`).
+-   Conformance: When Nx Conformance is available, configure the enforce-project-boundaries rule to mirror lint constraints for non-JS projects.
+-   Docs: Update developer docs to explain tag usage and provide troubleshooting steps for lint failures.
+
+## DEV-SDS-025 — Unit of Work & Event Bus Reference Implementations (addresses DEV-PRD-026)
+
+-   Contracts: Scaffold `unit_of_work.ts`/`.py` and `event_bus.ts`/`.py` inside each domain’s application layer using TypeScript interfaces and Python `typing.Protocol`.
+-   In-Memory Adapters: Generators create `InMemoryUnitOfWork` and `InMemoryEventBus` implementations for fast tests.
+-   Infrastructure Adapters: Provide pre-wired Supabase repositories and message bus placeholders to show extension points.
+-   Integration: FastAPI routers retrieve UoW/Event Bus via dependency injection; React hooks obtain services already bound to UoW.
+-   Tests: Application unit tests use in-memory adapters; integration tests validate transactional behavior and event dispatch.
+
+## DEV-SDS-026 — Supabase Dev Stack Targets & Tooling (addresses DEV-PRD-027)
+
+-   Nx Targets: `tools/supabase/project.json` exports `supabase-devstack:start|stop|reset|status` run-commands invoking Docker Compose.
+-   Compose Files: Maintain `docker/docker-compose.supabase.yml` mirroring HexDDD services (db, auth, storage, studio, etc.).
+-   Environment: Provide `example.env` and generator-produced `.env.supabase.local` instructions; secrets stored in SOPS files.
+-   Tests: ShellSpec scripts cover start/stop/reset flows; optional CI job ensures stack bootstraps within budgeted time.
+-   Docs: Update `docs/ENVIRONMENT.md` and `docs/project_state.md` with quick-start and teardown guidance.
+
+## DEV-SDS-027 — Nx Upgrade Runbook (addresses DEV-PRD-028)
+
+-   Workflow: Create `docs/runbooks/nx_upgrade.md` detailing branch creation, `pnpm dlx nx migrate latest`, reviewing `migrations.json`, and applying codemods.
+-   Validation Suite: Run `pnpm install`, `pnpm lint`, `pnpm tsc --noEmit`, `nx run-many --target=test`, `just test-generation`, and `just spec-guard`.
+-   Rollback: Document restoring prior lockfiles and re-running previous Nx version if regressions appear.
+-   Communication: Capture release notes and migration highlights for generated project consumers.
+-   Scheduling: Track upgrade cadence on the platform roadmap and coordinate with downstream template consumers.
+
+## DEV-SDS-028 — Universal React Generator Design (addresses DEV-PRD-029)
+
+-   Options: `name`, `framework` (`next|remix|expo`), `apiClient` (bool), `includeExamplePage` (bool), `routerStyle` (`app|pages` for Next.js).
+-   Shared Assets: Generator ensures `libs/shared/web` (API client, schemas, errors, env) exists and is imported by generated apps.
+-   Templates: Framework-specific file trees under `generators/react/files/<framework>/` with reusable partials.
+-   Tests: Jest unit tests cover option handling; e2e generator tests in ShellSpec spin up each framework and run lint/build; idempotency covered via DEV-SDS-023 helpers.
+-   Documentation: Provide README snippets per framework plus CLI usage examples.
+
+## DEV-SDS-029 — Strict Typing Configuration (addresses DEV-PRD-030)
+
+-   TypeScript: Set `"strict": true`, `noUncheckedIndexedAccess`, and forbid implicit anys in `tsconfig.base.json`; ESLint rule `@typescript-eslint/no-explicit-any` set to error with documented escape hatches.
+-   Python: Configure `mypy.ini` with `strict = True`, enabling `warn-unused-ignores`, `disallow-any-generics`, `warn-return-any`, `no-implicit-reexport`.
+-   Tooling: Ensure `uv run mypy --strict` is part of CI quality gates (`just spec-guard`).
+-   Education: Provide snippets in developer docs illustrating branded types, `satisfies`, and Protocol usage.
+-   Monitoring: Add lint rules and scripts that fail PRs introducing `Any` types unless explicitly justified.
+
+## DEV-SDS-030 — Type Sync Workflow & Hooks (addresses DEV-PRD-031)
+
+-   CI Workflow: Add `ci/type-sync.yml` that runs Supabase schema introspection, regenerates TS/Python types, and asserts clean git state.
+-   Just Targets: Expose `just gen-types`, `just db-migrate-and-gen`, and optional `just type-sync-ci` orchestrating the full pipeline.
+-   Pre-Commit Hook: Provide `scripts/hooks/pre-commit-type-sync.sh` invoked via Just/mise to regenerate types before commit (opt-in).
+-   Failure Guidance: Document remediation steps in `docs/ENVIRONMENT.md` (rerun generator, commit regenerated types).
+-   Traceability: Update `docs/traceability_matrix.md` to map Supabase schema changes to PRDs/SDSs ensuring consistent implementation.
