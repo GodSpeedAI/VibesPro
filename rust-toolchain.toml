@@ -1,0 +1,6 @@
+[toolchain]
+# Pinned nightly for reproducible builds. Adjust the date if you want a different snapshot.
+# Recommended format: nightly-YYYY-MM-DD (examples: nightly-2025-11-01). Using a specific
+# nightly makes builds reproducible across developers and CI.
+channel = "nightly-2025-11-01"
+components = ["rustfmt", "clippy"]
