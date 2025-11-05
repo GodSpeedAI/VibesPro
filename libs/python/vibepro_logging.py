@@ -123,6 +123,18 @@ def _configure_global_logfire(service_name: str, **kwargs) -> logfire.Logfire:
     return _LOGFIRE_INSTANCE
 
 
+def _reset_logfire_state() -> None:
+    """
+    Reset the module-level cached Logfire instance. Intended for use in
+    tests to ensure deterministic, isolated behavior between test cases.
+
+    This clears `_LOGFIRE_INSTANCE` so subsequent calls to
+    `_configure_global_logfire` will create a fresh instance.
+    """
+    global _LOGFIRE_INSTANCE
+    _LOGFIRE_INSTANCE = None
+
+
 def _apply_metadata(logger: logfire.Logfire, metadata: Mapping[str, object]) -> logfire.Logfire:
     tags = tuple(f"{key}:{value}" for key, value in metadata.items() if value is not None)
     if not tags:

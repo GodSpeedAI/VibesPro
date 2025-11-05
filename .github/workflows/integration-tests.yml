@@ -110,6 +110,9 @@ jobs:
           uv tool install copier
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           source ~/.cargo/env
+          # Install and set pinned nightly for reproducible integration tests
+          rustup toolchain install nightly-2025-11-01 --no-self-update || true
+          rustup override set nightly-2025-11-01 || true
 
       - name: Run end-to-end tests
         run: pnpm test:integration tests/integration/end-to-end.test.ts --passWithNoTests

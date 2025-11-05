@@ -603,7 +603,7 @@ You have access to the following MCP servers. **Use these tools proactively** to
 
 2. **Prefer official sources first**: Context7 and Microsoft Docs for canonical information, then Exa for community solutions
 
-3. **Store important context**: Use Memory Tool to save project conventions, user preferences, and key decisions for future reference
+3. **Store important context**: Use Memory Tool to save project conventions, user preferences, assumptions, and key decisions for future reference
 
 4. **Version specificity matters**: Always use Context7 when version-specific behavior is critical
 
