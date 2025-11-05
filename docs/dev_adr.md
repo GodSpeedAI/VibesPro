@@ -538,3 +538,143 @@ Consequences:
 -   Introduces a higher level of abstraction, which may increase the initial learning curve.
 -   Results in a greater number of files and interfaces to manage.
 -   Requires consistent use of dependency injection to provide concrete adapters to the application's core.
+
+## DEV-ADR-023 — Idempotent Nx Generators with Regression Tests
+
+Status: Active
+
+Context: HexDDD ADR-007 establishes that generators must be rerunnable without creating diffs. VibesPro relies heavily on generators to scaffold template outputs, but no binding decision presently enforces idempotent behavior or regression tests.
+
+Decision: Treat generator idempotency as a non-negotiable requirement. Every generator must read before it writes, rely on deterministic formatting helpers, and include automated regression tests that execute the generator twice to assert zero diffs.
+
+Rationale:
+
+-   Prevents generator drift and merge conflicts in generated projects.
+-   Enables safe, repeatable scaffolding for AI-driven automation and CI smoke tests.
+-   Aligns the template with HexDDD’s proven workflow for generator stability.
+
+Consequences:
+
+-   Generator authors must adopt deterministic write patterns (AST, markers, sorted outputs).
+-   Test suites expand to cover double-run assertions (Jest/ShellSpec) and will fail on non-idempotent code.
+-   CI pipelines need to execute new generator regression tests.
+
+## DEV-ADR-024 — Unit of Work and Event Bus as First-Class Abstractions
+
+Status: Active
+
+Context: HexDDD ADR-006 and SDS-009/010 describe UoW and Event Bus seams that keep business logic transactional and event-driven. VibesPro references hexagonal patterns but does not currently require these primitives in generated domains.
+
+Decision: Ship canonical Unit of Work and Event Bus abstractions (with TypeScript interfaces and Python typing.Protocols) in every generated bounded context, including in-memory defaults and extension points for adapters (Supabase, message brokers, etc.).
+
+Rationale:
+
+-   Guarantees the application layer remains persistence-agnostic and testable.
+-   Provides opinionated starting points for transactional workflows and eventual consistency.
+-   Mirrors HexDDD scaffolding so users migrating projects retain behavior parity.
+
+Consequences:
+
+-   Generators must emit contracts plus baseline adapters and integration tests.
+-   Documentation and samples explain how to replace in-memory adapters with infrastructure implementations.
+-   Additional validation hooks ensure UoW/Event Bus are wired through FastAPI/React entry points.
+
+## DEV-ADR-025 — Enforce Dependency Boundaries via Nx Tags
+
+Status: Active
+
+Context: HexDDD ADR-008 enforces architectural boundaries using Nx tags and lint rules. VibesPro mentions hexagonal layering but lacks a formal, enforceable constraint system.
+
+Decision: Annotate every generated project with a standardized tag taxonomy (`scope:*`, `type:*`, `layer:*`) and enforce import rules using `@nx/enforce-module-boundaries` and Nx Conformance (when available).
+
+Rationale:
+
+-   Preserves hexagonal architecture at scale by preventing cross-layer and cross-domain coupling.
+-   Provides automated guardrails for contributors and AI agents alike.
+-   Keeps generated projects aligned with HexDDD’s enforcement strategy.
+
+Consequences:
+
+-   Generators must stamp tags into `project.json` manifests.
+-   Lint configuration becomes non-optional; lint failures block merges.
+-   Conformance checks add modest CI cost but catch violations early.
+
+## DEV-ADR-026 — Supabase Developer Stack Orchestration
+
+Status: Active
+
+Context: HexDDD ADR-015 bundles a ready-to-run Supabase stack with Nx targets so developers can reproduce schema-driven workflows locally. VibesPro adopts Supabase as the source of truth (DEV-ADR-019/020) but lacks a standardized developer stack.
+
+Decision: Provide Docker Compose assets and Nx run-command targets (`supabase-devstack:start|stop|reset|status`) that orchestrate a local Supabase environment with environment file scaffolding.
+
+Rationale:
+
+-   Ensures local development, CI, and production share identical schema workflows.
+-   Simplifies onboarding by replacing manual Supabase CLI steps with templated commands.
+-   Supports end-to-end type generation pipelines already defined in DEV-ADR-019/020.
+
+Consequences:
+
+-   Requires maintaining Docker Compose definitions and tooling scripts.
+-   Developers need Docker installed; documentation must describe resource requirements.
+-   CI jobs may optionally start the stack for integration tests.
+
+## DEV-ADR-027 — Nx Upgrade Cadence and Plugin Matrix
+
+Status: Active
+
+Context: HexDDD ADR-014 defines an explicit upgrade cadence for Nx and its plugins. VibesPro currently performs upgrades ad hoc, leading to potential drift between template and generated projects.
+
+Decision: Adopt a scheduled (e.g., quarterly) Nx upgrade window that runs `nx migrate`, updates first-party plugins and community tooling (Next, Remix, Expo, Python), and documents rollback procedures.
+
+Rationale:
+
+-   Keeps template-generated workspaces aligned with the latest Nx capabilities and security fixes.
+-   Reduces incompatibilities between template generators and downstream projects.
+-   Provides a predictable maintenance rhythm for the team.
+
+Consequences:
+
+-   Adds recurring maintenance tasks with validation gates (lint, test, type generation).
+-   Requires change management documentation (runbooks, migration notes).
+-   Potential short-term instability during upgrade windows that must be mitigated via smoke tests.
+
+## DEV-ADR-028 — Universal React Generator (Next.js, Remix, Expo)
+
+Status: Active
+
+Context: HexDDD ADR-012 consolidates React surface generators into a single, configurable workflow. VibesPro currently gestures toward domain scaffolding but lacks the unified web/mobile generator.
+
+Decision: Deliver a single generator entry point (`--framework=next|remix|expo`) that shares typed API clients, validation schemas, and error handling across all React surfaces while remaining idempotent.
+
+Rationale:
+
+-   Eliminates duplicated templates and fosters consistency across UI implementations.
+-   Simplifies maintenance and unlocks future framework additions.
+-   Provides generated projects with parity to HexDDD scaffolding expectations.
+
+Consequences:
+
+-   Generator logic grows more complex (conditional templates, shared assets).
+-   Requires comprehensive test matrices (per framework, per option combination).
+-   Documentation and samples must highlight usage for each React target.
+
+## DEV-ADR-029 — Strict Typing Policy Across Languages
+
+Status: Active
+
+Context: HexDDD ADR-010 mandates TypeScript `strict` mode and Python `mypy --strict`, along with modern type features. VibesPro’s specs cite type safety goals but do not enforce strict compiler/type-check settings.
+
+Decision: Mandate strict TypeScript compiler options and Python mypy strict mode in all generated projects, encouraging the use of `satisfies`, branded types, `typing.Protocol`, and PEP 695 aliases.
+
+Rationale:
+
+-   Ensures type regressions fail fast and prevents implicit any usage.
+-   Aligns with Supabase-driven schema workflows by catching drift at compile time.
+-   Matches HexDDD’s standard for strongly typed multi-language stacks.
+
+Consequences:
+
+-   Templates must include strict compiler settings and lint rules rejecting `any`.
+-   Contributors may need onboarding to advanced typing patterns.
+-   CI pipelines must run TypeScript and Python type checks with zero-warning thresholds.
