@@ -50,7 +50,25 @@ describe('Schema to Types Parity', () => {
     };
 
     // Helper function to map JSON Schema types to TypeScript types
-    const mapJsonSchemaToTypeScript = (types: string | string[]): string => {
+    const mapJsonSchemaToTypeScript = (schema: {
+      type?: string | string[];
+      enum?: Array<string | number | boolean | null>;
+    }): string => {
+      if (Array.isArray(schema.enum) && schema.enum.length > 0) {
+        return schema.enum
+          .map((value) => {
+            if (typeof value === 'string') {
+              return `'${value}'`;
+            }
+            return JSON.stringify(value);
+          })
+          .join(' | ');
+      }
+
+      const types = schema.type;
+      if (types === undefined || (Array.isArray(types) && types.length === 0)) {
+        return 'unknown';
+      }
       const typeArray = Array.isArray(types) ? types : [types];
       const mappedTypes: string[] = [];
 
@@ -84,8 +102,12 @@ describe('Schema to Types Parity', () => {
     // Validate property types and optionality
     const expectedProps = new Map<string, { type: string; required: boolean }>();
     for (const [name, schema] of Object.entries(schemaJson.properties)) {
-      const schemaDef = schema as { type: string | string[]; required?: string[] };
-      const mappedTypes = mapJsonSchemaToTypeScript(schemaDef.type);
+      const schemaDef = schema as {
+        type?: string | string[];
+        enum?: Array<string | number | boolean | null>;
+        required?: string[];
+      };
+      const mappedTypes = mapJsonSchemaToTypeScript(schemaDef);
       const typeString = mappedTypes;
       const required = Array.isArray(schemaJson.required)
         ? schemaJson.required.includes(name)
