@@ -82,7 +82,7 @@ tools/vibepro/
         "type": { "type": "string", "enum": ["ui", "service", "util"] },
         "directory": { "type": "string" }
     },
-    "required": ["name"]
+    "required": ["name", "type"]
 }
 ```
 
