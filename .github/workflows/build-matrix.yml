@@ -175,6 +175,18 @@ jobs:
       - name: Install runtimes (Node/Python/Rust via mise)
         run: mise install
 
+      - name: Ensure pinned Rust toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Install rustup if missing
+          if ! command -v rustup >/dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            source "$HOME/.cargo/env" || true
+          fi
+          rustup toolchain install nightly-2025-11-01 --no-self-update || true
+          rustup override set nightly-2025-11-01 || true
+
       # ---- Node package manager (optional; respects Corepack) ----
       - name: Enable corepack (optional)
         run: corepack enable
