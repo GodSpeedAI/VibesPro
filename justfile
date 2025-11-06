@@ -502,7 +502,14 @@ validate-generator-schemas:
 	@echo "🔍 Validating generator schemas..."
 	@if command -v pnpm > /dev/null 2>&1; then \
 		if pnpm exec --which tsx >/dev/null 2>&1; then \
-			pnpm exec tsx tools/validate-generator-schemas.ts; \
+			pnpm exec tsx tools/validate-generator-schemas.ts || { \
+				if command -v npx > /dev/null 2>&1; then \
+					npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+				else \
+					echo "❌ tsx ran via pnpm but missing node modules; npx not available for fallback."; \
+					exit 1; \
+				fi; \
+			}; \
 		elif command -v npx > /dev/null 2>&1; then \
 			npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
 		else \
@@ -511,7 +518,14 @@ validate-generator-schemas:
 		fi; \
 	elif command -v corepack > /dev/null 2>&1; then \
 		if corepack pnpm exec --which tsx >/dev/null 2>&1; then \
-			corepack pnpm exec tsx tools/validate-generator-schemas.ts; \
+			corepack pnpm exec tsx tools/validate-generator-schemas.ts || { \
+				if command -v npx > /dev/null 2>&1; then \
+					npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+				else \
+					echo "❌ tsx ran via corepack pnpm but missing node modules; npx not available for fallback."; \
+					exit 1; \
+				fi; \
+			}; \
 		elif command -v npx > /dev/null 2>&1; then \
 			npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
 		else \
