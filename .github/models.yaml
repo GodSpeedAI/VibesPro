@@ -1,9 +1,15 @@
 defaults:
+  default_model: GPT-5 mini
   prompt_model: GPT-5 mini
   chatmode_model: GPT-5 mini
-  default_model: GPT-5 mini
+  vibepro_chatmode: Claude Sonnet 4.5
+  tdd_chatmode: GPT-5 mini
+  spec_chatmode: GPT-5 mini
+  vibepro_prompt: GPT-5 mini
+  fallback_claude: Claude Haiku 3.0
 
 notes:
   - Centralize defaults for prompts and chat modes.
   - Individual files may override model; keep this as the single source of truth.
+  - Model keys map to the taxonomy used in prompts/chatmodes (e.g., `vibepro_chatmode`).
   - No automatic templating is wired; treat as documentation + convention.
