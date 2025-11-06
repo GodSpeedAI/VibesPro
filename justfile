@@ -501,11 +501,27 @@ debug-regress:
 validate-generator-schemas:
 	@echo "🔍 Validating generator schemas..."
 	@if command -v pnpm > /dev/null 2>&1; then \
-		pnpm exec tsx tools/validate-generator-schemas.ts; \
+		if pnpm exec --which tsx >/dev/null 2>&1; then \
+			pnpm exec tsx tools/validate-generator-schemas.ts; \
+		elif command -v npx > /dev/null 2>&1; then \
+			npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+		else \
+			echo "❌ tsx not available via pnpm and npx is missing. Install dependencies with 'just setup'."; \
+			exit 1; \
+		fi; \
 	elif command -v corepack > /dev/null 2>&1; then \
-		corepack pnpm exec tsx tools/validate-generator-schemas.ts; \
+		if corepack pnpm exec --which tsx >/dev/null 2>&1; then \
+			corepack pnpm exec tsx tools/validate-generator-schemas.ts; \
+		elif command -v npx > /dev/null 2>&1; then \
+			npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+		else \
+			echo "❌ tsx not available via corepack pnpm and npx is missing. Install dependencies with 'just setup'."; \
+			exit 1; \
+		fi; \
+	elif command -v npx > /dev/null 2>&1; then \
+		npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
 	else \
-		echo "❌ pnpm not available. Install dependencies with 'just setup' or ensure corepack can provide pnpm."; \
+		echo "❌ Neither pnpm/corepack nor npx is available to run tsx. Install dependencies with 'just setup'."; \
 		exit 1; \
 	fi
 
