@@ -1,15 +1,34 @@
 #!/usr/bin/env bash
 # Fetch GitHub Actions workflow run logs for a given commit SHA using gh (GitHub CLI).
-# Usage: ./scripts/fetch_github_actions_logs.sh <commit-sha> [output-dir]
+# Usage: ./scripts/fetch_github_actions_logs.sh <commit-sha> [output-dir] [repo]
+#   - commit-sha (required): target commit
+#   - output-dir (optional): where logs are stored (default: ./_action_logs)
+#   - repo (optional): "<owner>/<repo>". If omitted, uses $GITHUB_REPO or falls back to GodSpeedAI/VibesPro.
 # Requires: gh CLI authenticated (gh auth login) and repository access
 
 set -euo pipefail
 sha=${1:-}
 outdir=${2:-"./_action_logs"}
-repo="GodSpeedAI/VibesPro"
+repo_arg=${3:-}
+repo_default="GodSpeedAI/VibesPro"
+repo_env=${GITHUB_REPO:-}
+
+if [[ -n "${repo_arg}" ]]; then
+  repo="${repo_arg}"
+elif [[ -n "${repo_env}" ]]; then
+  repo="${repo_env}"
+else
+  repo="${repo_default}"
+fi
 
 if [[ -z "${sha}" ]]; then
-  echo "Usage: ${0} <commit-sha> [output-dir]"
+  echo "Usage: ${0} <commit-sha> [output-dir] [repo]"
+  echo "       Set GITHUB_REPO env var to change the default repository."
+  exit 2
+fi
+
+if [[ -z "${repo}" ]]; then
+  echo "Repository not specified. Provide as argument or set GITHUB_REPO."
   exit 2
 fi
 
@@ -35,7 +54,11 @@ echo "${run_list_json}" | while read -r line; do
   id=$(echo "${line}" | sed -n 's/.*"id": *\([0-9]*\).*/\1/p')
   name=$(echo "${line}" | sed -n 's/.*"name": *"\([^\"]*\)".*/\1/p')
   echo "Downloading logs for run id=${id} name=\"${name}\"..."
-  gh run download "${id}" --repo "${repo}" --dir "${outdir}/run-${id}" || echo "Download failed for run ${id}"
+  run_dir="${outdir}/run-${id}"
+  mkdir -p "${run_dir}"
+  if ! gh run view "${id}" --repo "${repo}" --log > "${run_dir}/logs.txt"; then
+    echo "Download failed for run ${id}"
+  fi
 done
 
 echo "Done. Logs (if any) stored under ${outdir}"
