@@ -222,11 +222,11 @@ Track overall progress across all phases:
 ### PHASE-003: Universal React Generator
 
 -   [ ] Shared web assets library (Cycle A)
--   [ ] Next.js generator (Cycle B)
+-   [ ] Next.js generator (Cycle B — App + Pages Router)
 -   [ ] Remix generator (Cycle C)
 -   [ ] Expo generator (Cycle D)
--   [ ] All frameworks idempotent (Cycle E)
--   [ ] **Evidence**: All 3 frameworks scaffold + build successfully
+-   [ ] All surfaces idempotent (Cycle E)
+-   [ ] **Evidence**: Next App Router, Next Pages Router, Remix, and Expo scaffolds build successfully
 
 ### PHASE-004: Type Safety & CI Integration
 

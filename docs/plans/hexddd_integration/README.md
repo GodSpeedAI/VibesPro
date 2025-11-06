@@ -108,7 +108,7 @@ hexddd_integration/
 ### PHASE-003: Universal React Generator
 
 -   **Cycles**: A (Shared Assets), B (Next.js), C (Remix), D (Expo), E (Idempotency)
--   **Key Deliverable**: Single generator scaffolds 3 frameworks
+-   **Key Deliverable**: Single generator scaffolds 4 surfaces (Next App Router, Next Pages Router, Remix, Expo)
 -   **Critical**: Largest implementation effort, high reuse value
 -   **Status**: 🔵 Not Started
 
@@ -203,4 +203,4 @@ just test-generation
 
 **Last Updated**: 2025-11-05  
 **Plan Version**: 1.0.0  
-**Aligned With**: DEV-ADR-023-029, DEV-PRD-024-031, DEV-SDS-023-030
+**Aligned With**: DEV-ADR-023 through DEV-ADR-029, DEV-PRD-024 through DEV-PRD-031, DEV-SDS-023 through DEV-SDS-030

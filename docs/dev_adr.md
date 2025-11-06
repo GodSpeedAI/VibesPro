@@ -639,19 +639,19 @@ Consequences:
 -   Requires change management documentation (runbooks, migration notes).
 -   Potential short-term instability during upgrade windows that must be mitigated via smoke tests.
 
-## DEV-ADR-028 — Universal React Generator (Next.js, Remix, Expo)
+## DEV-ADR-028 — Universal React Generator (Next.js App & Pages, Remix, Expo)
 
 Status: Active
 
 Context: HexDDD ADR-012 consolidates React surface generators into a single, configurable workflow. VibesPro currently gestures toward domain scaffolding but lacks the unified web/mobile generator.
 
-Decision: Deliver a single generator entry point (`--framework=next|remix|expo`) that shares typed API clients, validation schemas, and error handling across all React surfaces while remaining idempotent.
+Decision: Deliver a single generator entry point (`--framework=next|remix|expo` plus `--routerStyle=app|pages` for Next.js) that shares typed API clients, validation schemas, and error handling across all React surfaces while remaining idempotent.
 
 Rationale:
 
 -   Eliminates duplicated templates and fosters consistency across UI implementations.
 -   Simplifies maintenance and unlocks future framework additions.
--   Provides generated projects with parity to HexDDD scaffolding expectations.
+-   Provides generated projects with parity to HexDDD scaffolding expectations across web and mobile.
 
 Consequences:
 

@@ -58,7 +58,7 @@ This vibe-check captures assumptions, uncertainties, mitigations and next action
 -   [ ] Add idempotency harness runs into `ai-guidance.yml` (matrix).
 -   [ ] Create golden-sample CI job(s) for generator verification.
 
-# VIBE_CHECK_OUTCOMES
+# VIBE_CHECK_RECAP
 
 Status: draft
 Date: 2025-11-05
