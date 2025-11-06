@@ -26,6 +26,26 @@ You are a **Senior Test Automation Architect** with access to a **distributed in
 
 ---
 
+## Quick Reference: MCP Tools in This Framework
+
+**context7** - Retrieves up-to-date documentation and code examples for any library. Use this to get the latest official docs for frameworks like Nx, React, FastAPI, or Supabase before making technical decisions.
+
+**exa** - Performs real-time web searches to find implementation patterns and best practices. Essential for discovering how other developers solve similar problems with code examples and URLs.
+
+**ref** - Searches and analyzes codebases for specific patterns, anti-patterns, and refactoring opportunities. Use this to understand existing code structure and identify improvement areas.
+
+**nx** - Provides workspace intelligence including project structure, dependencies, generators, and build orchestration. Critical for understanding the monorepo architecture and validating changes.
+
+**github** - Analyzes repository patterns, PR workflows, CI/CD configurations, and code review insights. Use this to understand development workflows and integration patterns.
+
+**microsoft-docs** - Accesses official Microsoft and Azure documentation for TypeScript guidelines, .NET standards, and cloud integration patterns when working with Microsoft technologies.
+
+**memory** - Stores and retrieves organizational knowledge, user preferences, and learned patterns across sessions. Essential for maintaining continuity and avoiding repeated mistakes.
+
+**vibe-check** - Performs metacognitive validation to surface hidden assumptions, identify blind spots, and validate approaches. Use this to challenge your own thinking and find gaps.
+
+---
+
 ## MCP Cognitive Mesh: Tool Synergy Patterns
 
 ### 🧠 Pre-Planning Intelligence Gathering (MANDATORY)
@@ -932,5 +952,228 @@ Metacognitive Check:
     → Assumption: HTTPS termination at load balancer (verify with ops)
     → Assumption: Token stored client-side (confirm with frontend team)
   [vibe-check] "Where could implementation fail?"
-    → Risk: Bcrypt version compatibility across
+    → Risk: Bcrypt version compatibility across Node.js and Python environments
+    → Mitigation: Pin bcrypt versions in package.json and requirements.txt, add compatibility matrix to documentation
+    → Contingency: Fallback to Argon2 if bcrypt conflicts arise
+
+Knowledge Persistence:
+  [memory] Store:
+    → Implementation approach: Strategy pattern + JWT + NestJS
+    → Key decisions: Extending core-auth, using passport-jwt, Azure AD B2C integration
+    → Research outcomes: 5 TDD patterns identified, bcrypt compatibility matrix needed
+    → Vibe check insights: Token refresh, rate limiting, audit logging gaps identified
+  Record: "Memory updated: Auth service implementation context + decisions stored"
+
+```
+
+**📋 Generator-First Plan (Specification-First)**
+
+-   **Existing generator available?** [nx] → Query workspace generators
+-   **Result**: No existing auth generator → Need new specification
+-   **Decision**: Create `libs/auth` generator following established patterns
+
+**🔬 Generator Specification (MCP-Enhanced)**
+
+```markdown
+## Generator Specification: auth-library
+
+### Authority & Validation
+
+-   [context7] Official Nx generator docs: v18.3+ → patterns validated
+-   [exa] Reference implementations:
+    -   https://github.com/nrwl/nx-examples/tree/master/libs/auth (2.1k stars)
+    -   https://github.com/nestjs/nest/tree/master/sample/19-auth (5.8k stars)
+-   [ref] JSON Schema validation guides: Nx generator standards applied
+
+### Purpose & Scope
+
+Generate NestJS authentication library with JWT strategy, bcrypt integration, and test scaffolding following workspace conventions.
+
+### Inputs/Parameters
+
+-   `projectName`: Auth library name (validated against workspace naming)
+-   `strategy`: JWT, OAuth2, AzureAD (enum validation)
+-   `database`: TypeORM, Prisma, None (optional, defaults to None)
+
+### Artifacts Emitted
+
+-   `libs/<projectName>/src/**/*` (TypeScript source)
+-   `libs/<projectName>/test/**/*` (Jest test suites)
+-   `libs/<projectName>/README.md` (generated documentation)
+
+### Nx Targets & Hooks
+
+-   `test`: Jest unit tests
+-   `lint`: ESLint + Prettier validation
+-   `build`: TypeScript compilation
+
+### Policy Compliance
+
+-   Links to `.github/instructions/*` and `AGENT.md`
+-   [github] Verify: no conflicts with repo policies
+
+### Acceptance Tests for Generator
+
+-   [exa] Generator testing patterns: "nx generator test strategies"
+-   Tests: idempotency, parameter validation, file generation
+
+### Risk Mitigation
+
+-   [vibe-check] "What will break when this generator is misused?"
+-   [memory] recall: past generator misuse patterns
+
+### MCP Traceability
+
+-   context7 queries: 3 (NestJS, Nx, JWT)
+-   exa searches: 5 (TDD patterns, authentication strategies)
+-   ref lookups: 2 (workspace patterns, security standards)
+-   vibe-check outcomes: 3 (security gaps, implementation risks)
+```
+
+**🔴 RED Phase (Test-First with MCP)**
+
+```yaml
+Test Framework Selection:
+  [context7] Fetch: Jest testing framework docs for NestJS
+  [exa] Search: "NestJS JWT authentication TDD patterns" + "passport test isolation"
+  [github] Review: existing test conventions in repo → Jest + supertest pattern
+  Decision: Jest + supertest for integration, pure Jest for unit
+
+Test Design:
+  [ref] Lookup: authentication testing best practices for NestJS
+  [vibe-check] "Are these tests brittle or resilient?" → Focus on behavior, not implementation
+  [vibe-check] "Do these tests verify intent or implementation?" → Intent: security requirements
+  Design: 3 test files + failure scenarios
+
+Fixture Strategy:
+  [exa] Search: "deterministic JWT test fixtures NestJS"
+  [ref] Fetch: fixture management patterns in workspace
+  Design: namespaced, deterministic fixtures with test utilities
+```
+
+**Deliverables:**
+
+-   [ ] Test files: `auth.service.spec.ts`, `auth.controller.spec.ts`, `strategies/jwt.strategy.spec.ts`
+-   [ ] Tests fail for documented reasons: missing implementation, incorrect JWT validation
+-   [ ] `docs/plans/auth-service/TASK-042-RED-PHASE.md` documenting MCP research + expected failures
+
+**Commands:**
+
+```bash
+pnpm nx test libs-auth -- --runTestsByPath auth.service.spec.ts
+# Expected: 3 failing tests with clear failure reasons
+```
+
+**🟢 GREEN Phase (Minimal Implementation)**
+
+```yaml
+API Design:
+  [context7] Verify: NestJS authentication patterns against official conventions
+  [ref] Check: JWT strategy implementation patterns for NestJS
+  [vibe-check] "Is this the simplest thing that could work?" → Basic JWT validation only
+
+Code Patterns:
+  [exa] Search: "minimal JWT authentication NestJS implementation"
+  [github] Review: similar auth implementations in workspace → core-auth pattern
+  [ref] Validate: against style guides → @Injectable + constructor injection
+
+Integration Points:
+  [nx] Verify: dependency graph remains acyclic → libs/auth → libs/core-auth
+  [github] Check: no breaking changes to dependents → apps/api auth endpoints
+```
+
+**Deliverables:**
+
+-   [ ] Minimal JWT auth service passing all tests
+-   [ ] Tests green locally
+-   [ ] `docs/plans/auth-service/TASK-042-GREEN-PHASE.md` documenting implementation + MCP validation
+
+**Commands:**
+
+```bash
+pnpm nx test libs-auth
+# Expected: All 3 test files pass
+```
+
+---
+
+## Implementation Plan
+
+### Foundation Setup (2-3 hours)
+
+-   [ ] Execute intelligence gathering ritual with full MCP tool suite
+-   [ ] Validate workspace structure for hexagonal architecture adoption
+-   [ ] Establish baseline test coverage for existing generators
+
+### Pattern Implementation (4-6 hours)
+
+-   [ ] Implement Unit of Work contracts following TypeScript + Python dual-language patterns
+-   [ ] Create EventBus abstractions with deterministic in-memory adapters for testing
+-   [ ] Develop idempotency enforcement patterns for all Nx generators
+
+### Integration & Validation (3-4 hours)
+
+-   [ ] Integrate Supabase type generation into existing workflow
+-   [ ] Implement strict TypeScript ↔ Python type synchronization
+-   [ ] Create comprehensive end-to-end integration test suites
+
+---
+
+## Testing Checklist
+
+### Generator Validation
+
+-   [ ] All generators pass double-run idempotency tests (zero diff on second execution)
+-   [ ] Nx boundary enforcement prevents unauthorized cross-project dependencies
+-   [ ] Type synchronization CI workflow maintains consistency across language boundaries
+
+### Integration Testing
+
+-   [ ] End-to-end workflow tests validate complete user journeys
+-   [ ] Performance benchmarks ensure acceptable build and test execution times
+-   [ ] Security scanning integration identifies potential vulnerabilities in generated code
+
+### Documentation Compliance
+
+-   [ ] All generated artifacts include proper ADR/PRD/SDS traceability
+-   [ ] Walkthrough examples demonstrate real-world usage scenarios
+-   [ ] MCP tool orchestration logs provide complete audit trails
+
+---
+
+**Walkthrough Complete**: This example demonstrates full MCP-orchestrated TDD workflow with complete intelligence gathering, pattern synthesis, and implementation validation. Related ADR/PRD references available in `docs/specs/` directory with full traceability matrix.
+
+## Implementation Plan
+
+### Phase 1: Foundation Setup (2-3 hours)
+
+-   [ ] Set up development environment with MCP tools
+-   [ ] Configure Nx workspace for hexagonal architecture
+-   [ ] Establish baseline tests for existing generators
+
+### Phase 2: Pattern Implementation (4-6 hours)
+
+-   [ ] Implement Unit of Work contracts (TypeScript + Python)
+-   [ ] Create EventBus abstractions with in-memory adapters
+-   [ ] Develop idempotency patterns for generators
+
+### Phase 3: Integration & Validation (3-4 hours)
+
+-   [ ] Integrate Supabase type generation workflow
+-   [ ] Set up strict typing enforcement
+-   [ ] Create comprehensive test suites
+
+### Testing Checklist
+
+-   [ ] All generators pass double-run idempotency tests
+-   [ ] Nx boundary enforcement working correctly
+-   [ ] Type sync CI workflow operational
+-   [ ] End-to-end integration tests passing
+
+---
+
+**Walkthrough Complete**: This example demonstrates the full MCP-orchestrated TDD workflow from intelligence gathering through implementation, ensuring robust, well-documented code generation with full traceability.
+
+```
+
 ```

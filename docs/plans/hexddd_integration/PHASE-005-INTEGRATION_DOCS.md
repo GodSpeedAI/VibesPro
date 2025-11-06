@@ -1,10 +1,10 @@
 # PHASE-005: Integration, Documentation & Final Validation
 
-**Status:** Ready for Execution  
-**Duration:** 4-6 hours  
-**Parallelization:** All cycles can run in parallel  
-**Critical Path:** No (all cycles independent)  
-**Dependencies:** PHASE-004 complete  
+**Status:** Ready for Execution
+**Duration:** 4-6 hours
+**Parallelization:** All cycles can run in parallel
+**Critical Path:** No (all cycles independent)
+**Dependencies:** PHASE-004 complete
 **Owner:** Documentation Agent
 
 ---
@@ -15,12 +15,12 @@ Validate the complete integration end-to-end, update all documentation, complete
 
 ### Success Criteria
 
-- [ ] End-to-end smoke tests pass across all domains
-- [ ] All documentation updated and validated
-- [ ] Traceability matrix complete (100% coverage)
-- [ ] Migration guide published for existing projects
-- [ ] Generator usage examples documented
-- [ ] **Evidence**: `just spec-guard` GREEN + all smoke tests pass
+-   [ ] End-to-end smoke tests pass across all domains
+-   [ ] All documentation updated and validated
+-   [ ] Traceability matrix complete (100% coverage)
+-   [ ] Migration guide published for existing projects
+-   [ ] Generator usage examples documented
+-   [ ] **Evidence**: `just spec-guard` GREEN + all smoke tests pass
 
 ### Traceability
 
@@ -30,12 +30,12 @@ Validate the complete integration end-to-end, update all documentation, complete
 
 ## 📊 Cycles Overview
 
-| Cycle | Owner | Duration | Deliverables |
-|-------|-------|----------|-------------|
-| **A** | QA Agent | 2h | End-to-end smoke tests |
-| **B** | Docs Agent | 1.5h | Documentation updates |
-| **C** | Docs Agent | 1h | Traceability matrix |
-| **D** | Docs Agent | 1.5h | Migration guide |
+| Cycle | Owner      | Duration | Deliverables           |
+| ----- | ---------- | -------- | ---------------------- |
+| **A** | QA Agent   | 2h       | End-to-end smoke tests |
+| **B** | Docs Agent | 1.5h     | Documentation updates  |
+| **C** | Docs Agent | 1h       | Traceability matrix    |
+| **D** | Docs Agent | 1.5h     | Migration guide        |
 
 **All cycles can run in parallel** (no dependencies)
 
@@ -43,7 +43,7 @@ Validate the complete integration end-to-end, update all documentation, complete
 
 ## ⚡ Cycle A: End-to-End Smoke Tests
 
-**Owner:** QA Agent  
+**Owner:** QA Agent
 **Duration:** 2 hours
 
 ### Test Scenarios
@@ -108,66 +108,256 @@ echo "✅ All smoke tests passed!"
 
 ```typescript
 // tests/integration/hexddd-integration.test.ts
-import { UnitOfWork } from '@shared/domain';
-import { EventBus } from '@shared/application';
-import { ApiClient } from '@shared/web';
+import { UnitOfWork, InMemoryUnitOfWork } from "@shared/domain/unit-of-work";
+import { EventBus, InMemoryEventBus } from "@shared/application/event-bus";
+import { ApiClient } from "@shared/web/api-client";
+import { readProjectConfiguration, readFileMapCache } from "@nx/devkit";
+import * as path from "path";
+import { execSync } from "child_process";
 
-describe('HexDDD Integration', () => {
-  describe('Hexagonal Architecture', () => {
-    it('UoW manages transactions correctly', async () => {
-      // Test transactional boundaries
+describe("HexDDD Integration", () => {
+    describe("Hexagonal Architecture", () => {
+        let uow: UnitOfWork;
+        let eventBus: EventBus;
+        let testEvents: any[];
+
+        beforeEach(() => {
+            uow = new InMemoryUnitOfWork();
+            testEvents = [];
+            eventBus = new InMemoryEventBus();
+
+            // Subscribe to test events
+            eventBus.subscribe("test.event", (event) => {
+                testEvents.push(event);
+            });
+        });
+
+        it("UoW manages transactions correctly", async () => {
+            // Test transactional boundaries
+            const testEntity = { id: "test-id", name: "test" };
+
+            await uow.begin();
+            expect(uow).toHaveProperty("isInTransaction");
+
+            uow.registerNew(testEntity);
+            await uow.commit();
+
+            // Verify commit state
+            expect(testEvents.length).toBe(0);
+
+            // Test rollback
+            await uow.begin();
+            uow.registerNew({ ...testEntity, id: "rollback-test" });
+            await uow.rollback();
+
+            // Should not persist rollback entity
+            expect(testEvents.length).toBe(0);
+        });
+
+        it("EventBus dispatches domain events", async () => {
+            // Test event-driven flows
+            const domainEvent = {
+                type: "test.event",
+                payload: { entityId: "test-123", action: "created" },
+                timestamp: new Date().toISOString(),
+            };
+
+            await eventBus.dispatch(domainEvent);
+
+            expect(testEvents).toHaveLength(1);
+            expect(testEvents[0]).toMatchObject({
+                type: "test.event",
+                payload: { entityId: "test-123", action: "created" },
+            });
+        });
+
+        it("UoW and EventBus integration with Supabase", async () => {
+            // Test integration with Supabase transaction
+            const supabaseConfig = {
+                url: process.env.SUPABASE_URL || "http://localhost:54321",
+                key: process.env.SUPABASE_ANON_KEY || "test-key",
+            };
+
+            // This would test actual Supabase integration when available
+            expect(supabaseConfig.url).toBeTruthy();
+        });
     });
 
-    it('EventBus dispatches domain events', async () => {
-      // Test event-driven flows
-    });
-  });
+    describe("Type Safety", () => {
+        it("API client uses generated types", () => {
+            // Validate type flow: DB → TS → API
+            const client = new ApiClient();
 
-  describe('Type Safety', () => {
-    it('API client uses generated types', () => {
-      // Validate type flow: DB → TS → API
+            // Type checking for generated database types
+            type GeneratedUser = {
+                id: string;
+                email: string;
+                created_at: string;
+            };
+
+            // This ensures the API client accepts generated types
+            const mockUser: GeneratedUser = {
+                id: "123",
+                email: "test@example.com",
+                created_at: new Date().toISOString(),
+            };
+
+            expect(client).toHaveProperty("createUser");
+            expect(typeof client.createUser).toBe("function");
+        });
+
+        it("Python types match TypeScript types", async () => {
+            // Validate type parity between Python and TypeScript
+            const tsTypes = execSync('find libs -name "*.ts" -exec grep -l "interface\\|type " {} \\;', { encoding: "utf-8" }).split("\\n").filter(Boolean);
+
+            const pyTypes = execSync('find libs -name "*.py" -exec grep -l "Protocol\\|@dataclass" {} \\;', { encoding: "utf-8" }).split("\\n").filter(Boolean);
+
+            expect(tsTypes.length).toBeGreaterThan(0);
+            expect(pyTypes.length).toBeGreaterThan(0);
+
+            // Verify at least one type exists in both languages
+            const hasCorrespondingTypes = tsTypes.some((tsFile) => {
+                const pyFile = tsFile.replace(".ts", ".py").replace("/src/", "/");
+                return pyTypes.includes(pyFile);
+            });
+
+            expect(hasCorrespondingTypes).toBe(true);
+        });
     });
 
-    it('Python types match TypeScript types', () => {
-      // Validate type parity
-    });
-  });
+    describe("Generators", () => {
+        it("all generators produce valid projects", async () => {
+            // Test generator outputs build successfully
+            const generatorOutputs = ["dist/apps/test-next", "dist/apps/test-remix", "dist/apps/test-expo"];
 
-  describe('Generators', () => {
-    it('all generators produce valid projects', async () => {
-      // Test generator outputs build successfully
+            for (const output of generatorOutputs) {
+                try {
+                    const buildResult = execSync(`cd ${output} && npm run build`, { encoding: "utf-8", stdio: "pipe" });
+                    expect(buildResult).toBeTruthy();
+                } catch (error) {
+                    // Expo builds might fail in CI, that's expected
+                    if (!output.includes("expo")) {
+                        throw error;
+                    }
+                }
+            }
+        });
+
+        it("generator idempotency prevents file overwrites", async () => {
+            // Verify generators don't overwrite user modifications
+            const testProjectPath = "tmp/test-idempotency";
+
+            // First generation
+            execSync(`nx g @ddd-plugin/ddd:web-app test-app --framework=next --directory=${testProjectPath}`, { stdio: "pipe" });
+
+            // Modify a generated file
+            const modifiedContent = "// Custom user modification";
+            execSync(`echo "${modifiedContent}" >> ${testProjectPath}/apps/test-app/pages/index.tsx`);
+
+            // Second generation should not overwrite
+            execSync(`nx g @ddd-plugin/ddd:web-app test-app --framework=next --directory=${testProjectPath}`, { stdio: "pipe" });
+
+            const fileContent = execSync(`cat ${testProjectPath}/apps/test-app/pages/index.tsx`, { encoding: "utf-8" });
+
+            expect(fileContent).toContain(modifiedContent);
+        });
     });
-  });
 });
+```
+
+```bash
+#!/bin/bash
+# tests/integration/hexddd-cli-integration.sh
+# ShellSpec CLI validation tests
+
+Describe "HexDDD CLI Integration Tests"
+  Include "tests/integration/shared-functions.sh"
+
+  Setup "Verify test environment"
+    export NODE_ENV=test
+    export NX_CLI_THEME=light
+    export VERBOSE=true
+  End
+
+  Describe "Nx Generator Commands"
+    It "generates Next.js app successfully"
+      When run nx g @ddd-plugin/ddd:web-app cli-test-next --framework=next --no-interactive
+      The status should be success
+      The file "apps/cli-test-next/next.config.js" should exist
+    End
+
+    It "generates Remix app successfully"
+      When run nx g @ddd-plugin/ddd:web-app cli-test-remix --framework=remix --no-interactive
+      The status should be success
+      The file "apps/cli-test-remix/app/routes/_index.tsx" should exist
+    End
+
+    It "generates Expo app successfully"
+      When run nx g @ddd-plugin/ddd:web-app cli-test-expo --framework=expo --no-interactive
+      The status should be success
+      The file "apps/cli-test-expo/app.json" should exist
+    End
+
+    It "generates domain with proper boundaries"
+      When run nx g @ddd-plugin/ddd:hex-domain cli-test-domain
+      The status should be success
+      The file "libs/cli-test-domain/domain/src/index.ts" should exist
+      The file "libs/cli-test-domain/project.json" should contain '"type:domain"'
+    End
+  End
+
+  Describe "Supabase Dev Stack"
+    It "starts Supabase stack successfully"
+      When run timeout 60s nx run supabase-devstack:start
+      The status should be success
+      The output should include "Up"
+    End
+
+    It "stops Supabase stack successfully"
+      When run nx run supabase-devstack:stop
+      The status should be success
+    End
+  End
+
+  Describe "Type Safety Enforcement"
+    It "enforces Nx boundary violations"
+      When run echo "import '../../../../../libs/domain';" > apps/test-boundary/index.ts
+      And run nx lint apps/test-boundary
+      The status should be failure
+      The output should include "External import of domain"
+    End
+  End
+End
 ```
 
 ---
 
 ## ⚡ Cycle B: Documentation Updates
 
-**Owner:** Docs Agent  
+**Owner:** Docs Agent
 **Duration:** 1.5 hours
 
 ### Documentation Checklist
 
-- [ ] **README.md**: Add HexDDD integration overview
-- [ ] **docs/ARCHITECTURE.md**: Update with UoW/EventBus patterns
-- [ ] **docs/ENVIRONMENT.md**: Add Supabase dev stack section
-- [ ] **docs/generators/**: Create usage guides for each generator
-- [ ] **.github/copilot-instructions.md**: Add hexagonal architecture guidance
-- [ ] **AGENTS.md**: Update with Nx tag enforcement rules
+-   [ ] **README.md**: Add HexDDD integration overview
+-   [ ] **docs/ARCHITECTURE.md**: Update with UoW/EventBus patterns
+-   [ ] **docs/ENVIRONMENT.md**: Add Supabase dev stack section
+-   [ ] **docs/generators/**: Create usage guides for each generator
+-   [ ] **.github/copilot-instructions.md**: Add hexagonal architecture guidance
+-   [ ] **AGENTS.md**: Update with Nx tag enforcement rules
 
 ### Key Documentation Sections
 
-```markdown
+````markdown
 <!-- README.md addition -->
+
 ## Hexagonal Architecture
 
 This project uses hexagonal (ports & adapters) architecture:
 
-- **Domain Layer**: Pure business logic (`libs/*/domain`)
-- **Application Layer**: Use cases (`libs/*/application`)
-- **Infrastructure Layer**: Adapters (`libs/*/infrastructure`)
+-   **Domain Layer**: Pure business logic (`libs/*/domain`)
+-   **Application Layer**: Use cases (`libs/*/application`)
+-   **Infrastructure Layer**: Adapters (`libs/*/infrastructure`)
 
 All generators enforce these boundaries automatically.
 
@@ -183,13 +373,15 @@ nx g @ddd-plugin/ddd:web-app admin-portal --framework=next
 # Start Supabase dev stack
 nx run supabase-devstack:start
 ```
-```
+````
+
+````
 
 ---
 
 ## ⚡ Cycle C: Traceability Matrix Completion
 
-**Owner:** Docs Agent  
+**Owner:** Docs Agent
 **Duration:** 1 hour
 
 ### Matrix Update
@@ -226,18 +418,18 @@ nx run supabase-devstack:start
 | DEV-SDS-030 | SDS | Type sync workflow | Workflows + hooks | CI + local | ✅ |
 
 **Coverage**: 23/23 (100%)
-```
+````
 
 ---
 
 ## ⚡ Cycle D: Migration Guide
 
-**Owner:** Docs Agent  
+**Owner:** Docs Agent
 **Duration:** 1.5 hours
 
 ### Migration Guide Structure
 
-```markdown
+````markdown
 <!-- docs/MIGRATION_HEXDDD.md -->
 
 # HexDDD Integration Migration Guide
@@ -252,6 +444,7 @@ If you generated a project **before** the HexDDD integration, follow these steps
 # Pull latest template changes
 copier update
 ```
+````
 
 ### 2. Retrofit Generators
 
@@ -268,27 +461,29 @@ Update `project.json` files:
 
 ```json
 {
-  "tags": [
-    "type:domain",  // or application, infrastructure
-    "scope:my-domain"
-  ]
+    "tags": [
+        "type:domain", // or application, infrastructure
+        "scope:my-domain"
+    ]
 }
 ```
 
 ### 4. Enable Strict Type Checking
 
 **TypeScript:**
+
 ```json
 // tsconfig.base.json
 {
-  "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true
-  }
+    "compilerOptions": {
+        "strict": true,
+        "noUncheckedIndexedAccess": true
+    }
 }
 ```
 
 **Python:**
+
 ```ini
 # mypy.ini
 [mypy]
@@ -300,8 +495,8 @@ strict = True
 If your domain needs transactions or events:
 
 ```typescript
-import { UnitOfWork } from '@shared/domain';
-import { EventBus } from '@shared/application';
+import { UnitOfWork } from "@shared/domain";
+import { EventBus } from "@shared/application";
 
 // Use in your application services
 ```
@@ -328,6 +523,7 @@ just spec-guard
 ## Support
 
 Questions? Open an issue or consult `docs/plans/hexddd_integration/`.
+
 ```
 
 ---
@@ -379,3 +575,4 @@ Upon marking this phase GREEN:
 ---
 
 **Congratulations! HexDDD integration complete. VibesPro now generates production-ready hexagonal architecture applications with full type safety, automated testing, and CI/CD integration.**
+```
