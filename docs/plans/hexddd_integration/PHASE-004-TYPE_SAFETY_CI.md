@@ -59,7 +59,7 @@ Enforce strict type safety across TypeScript and Python, implement automated typ
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": false
+        "skipLibCheck": true
     }
 }
 ```
@@ -157,9 +157,9 @@ jobs:
               id: drift-check
               run: |
                   if git diff --exit-code; then
-                    echo "drift=true" >> $GITHUB_OUTPUT
-                  else
                     echo "drift=false" >> $GITHUB_OUTPUT
+                  else
+                    echo "drift=true" >> $GITHUB_OUTPUT
                   fi
 
             - name: Validate TypeScript types
@@ -198,7 +198,13 @@ uv run mypy --strict
 if git diff --cached --name-only | grep -q 'supabase/migrations'; then
   echo "Schema change detected, regenerating types..."
   pnpm nx run type-generator:generate
-  git add libs/shared/database-types libs/shared/type_system
+  if git diff --quiet libs/shared/database-types libs/shared/type_system; then
+    echo "Types already in sync."
+  else
+    echo "Type drift detected. Run 'just type-sync' and review generated artifacts before committing."
+    git diff --stat libs/shared/database-types libs/shared/type_system
+    exit 1
+  fi
 fi
 ```
 

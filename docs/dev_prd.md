@@ -647,7 +647,7 @@ Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using
 
 ## DEV-PRD-021 — Automated Scaffolding of Type-Safe Modules
 
--   Description: As a developer, I want to use a single Nx generator to scaffold new features or domains, including all necessary layers (domain, API, UI), so that I can create new modules quickly and consistently for the chosen frontend framework (Next.js, Remix, or Expo).
+-   Description: As a developer, I want to use a single Nx generator to scaffold new features or domains, including all necessary layers (domain, API, UI), so that I can create new modules quickly and consistently for the chosen frontend surface (Next.js App Router, Next.js Pages Router, Remix, or Expo).
 -   EARS: When I run the domain generator, the system shall create a full set of libraries for the domain, pre-populated with:
     -   A FastAPI backend API using `@nxlv/python`.
     -   Type-safe Shadcn UI components using `@nx-extend/shadcn-ui`.
@@ -722,9 +722,9 @@ Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using
 
 ## DEV-PRD-029 — Universal React App Generator
 
--   Description: As a frontend engineer, I want a single generator that outputs Next.js, Remix, or Expo apps sharing typed clients and validation logic.
--   EARS: When I invoke the generator with `--framework=remix`, it shall scaffold the Remix variant, reuse shared web assets, and remain idempotent under repeated runs.
--   DX Metrics: All supported frameworks scaffold in < 30 seconds; generator double-run tests pass across options.
+-   Description: As a frontend engineer, I want a single generator that outputs Next.js (App Router and Pages Router), Remix, or Expo apps sharing typed clients and validation logic.
+-   EARS: When I invoke the generator with `--framework=remix`, it shall scaffold the Remix variant, reuse shared web assets, and remain idempotent under repeated runs (mirrored for Next App, Next Pages, and Expo variants).
+-   DX Metrics: All supported surfaces scaffold in < 30 seconds; generator double-run tests pass across options.
 -   Supported by: DEV-ADR-028, DEV-SDS-028
 
 ---

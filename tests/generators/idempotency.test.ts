@@ -31,13 +31,23 @@ function snapshotWorkspace(root: string): Record<string, string> {
       const p = path.join(dir, name);
       const stat = fs.statSync(p);
       if (stat.isDirectory()) {
+        if (name === 'node_modules' || name === '.git') {
+          continue;
+        }
         walk(p);
-      } else if (stat.isFile()) {
-        // ignore node_modules and .git
-        if (p.includes('node_modules') || p.includes('.git')) continue;
-        const rel = path.relative(root, p);
-        result[rel] = hashFile(p);
+        continue;
       }
+      if (!stat.isFile()) {
+        continue;
+      }
+      if (
+        p.includes(`${path.sep}node_modules${path.sep}`) ||
+        p.includes(`${path.sep}.git${path.sep}`)
+      ) {
+        continue;
+      }
+      const rel = path.relative(root, p);
+      result[rel] = hashFile(p);
     }
   }
   walk(root);
@@ -74,15 +84,13 @@ describe('Generator idempotency harness', () => {
         JSON.stringify({ npmScope: 'tmp', implicitDependencies: {} }),
       );
 
-      const env = { ...process.env, GENERATOR_CMD: generator.command };
-
       // Helper to run shell command in tmp
       const run = (command: string) => {
         // run in shell to allow complex commands; return stdout+stderr and status
         return spawnSync(command, {
           shell: true,
           cwd: tmp,
-          env,
+          env: process.env,
           encoding: 'utf8',
           maxBuffer: 10 * 1024 * 1024,
         });

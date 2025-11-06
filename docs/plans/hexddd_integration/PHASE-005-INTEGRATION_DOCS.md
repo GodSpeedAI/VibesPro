@@ -75,9 +75,13 @@ echo "Testing UoW/EventBus contracts..."
 pnpm nx test shared-domain || exit 1
 
 # 5. Universal React Generator
-echo "Testing Next.js generator..."
-nx g @ddd-plugin/ddd:web-app smoke-next --framework=next --no-interactive
+echo "Testing Next.js App Router generator..."
+nx g @ddd-plugin/ddd:web-app smoke-next --framework=next --routerStyle=app --no-interactive
 nx build smoke-next || exit 1
+
+echo "Testing Next.js Pages Router generator..."
+nx g @ddd-plugin/ddd:web-app smoke-next-pages --framework=next --routerStyle=pages --no-interactive
+nx build smoke-next-pages || exit 1
 
 echo "Testing Remix generator..."
 nx g @ddd-plugin/ddd:web-app smoke-remix --framework=remix --no-interactive
@@ -85,13 +89,28 @@ nx build smoke-remix || exit 1
 
 echo "Testing Expo generator..."
 nx g @ddd-plugin/ddd:web-app smoke-expo --framework=expo --no-interactive
-echo "(Expo build skipped in smoke test)"
+nx build smoke-expo || exit 1
 
 # 6. Supabase Dev Stack
 echo "Testing Supabase dev stack..."
-nx run supabase-devstack:start
-sleep 10
-curl -f http://localhost:54323 || exit 1
+if ! nx run supabase-devstack:start; then
+  echo "Supabase start failed"
+  exit 1
+fi
+
+SUPABASE_HEALTH_URL=${SUPABASE_HEALTH_URL:-http://localhost:54323}
+MAX_ATTEMPTS=20
+SLEEP_SECONDS=2
+attempt=1
+until curl -fs "${SUPABASE_HEALTH_URL}" >/dev/null; do
+  if [ "${attempt}" -ge "${MAX_ATTEMPTS}" ]; then
+    echo "Supabase failed health checks after $((MAX_ATTEMPTS * SLEEP_SECONDS))s"
+    nx run supabase-devstack:stop || true
+    exit 1
+  fi
+  attempt=$((attempt + 1))
+  sleep "${SLEEP_SECONDS}"
+done
 nx run supabase-devstack:stop
 
 # 7. Type Sync Workflow
@@ -114,6 +133,7 @@ import { ApiClient } from "@shared/web/api-client";
 import { readProjectConfiguration, readFileMapCache } from "@nx/devkit";
 import * as path from "path";
 import { execSync } from "child_process";
+import * as fs from "fs";
 
 describe("HexDDD Integration", () => {
     describe("Hexagonal Architecture", () => {
@@ -208,9 +228,9 @@ describe("HexDDD Integration", () => {
 
         it("Python types match TypeScript types", async () => {
             // Validate type parity between Python and TypeScript
-            const tsTypes = execSync('find libs -name "*.ts" -exec grep -l "interface\\|type " {} \\;', { encoding: "utf-8" }).split("\\n").filter(Boolean);
+            const tsTypes = execSync('find libs -name "*.ts" -exec grep -l "interface\\|type " {} \\;', { encoding: "utf-8" }).split(/\r?\n/).filter(Boolean);
 
-            const pyTypes = execSync('find libs -name "*.py" -exec grep -l "Protocol\\|@dataclass" {} \\;', { encoding: "utf-8" }).split("\\n").filter(Boolean);
+            const pyTypes = execSync('find libs -name "*.py" -exec grep -l "Protocol\\|@dataclass" {} \\;', { encoding: "utf-8" }).split(/\r?\n/).filter(Boolean);
 
             expect(tsTypes.length).toBeGreaterThan(0);
             expect(pyTypes.length).toBeGreaterThan(0);
@@ -228,17 +248,38 @@ describe("HexDDD Integration", () => {
     describe("Generators", () => {
         it("all generators produce valid projects", async () => {
             // Test generator outputs build successfully
-            const generatorOutputs = ["dist/apps/test-next", "dist/apps/test-remix", "dist/apps/test-expo"];
+            const generators = [
+                {
+                    project: "test-next-app",
+                    args: "--framework=next --routerStyle=app",
+                    label: "Next.js App Router",
+                },
+                {
+                    project: "test-next-pages",
+                    args: "--framework=next --routerStyle=pages",
+                    label: "Next.js Pages Router",
+                },
+                {
+                    project: "test-remix",
+                    args: "--framework=remix",
+                    label: "Remix",
+                },
+                {
+                    project: "test-expo",
+                    args: "--framework=expo",
+                    label: "Expo",
+                },
+            ];
 
-            for (const output of generatorOutputs) {
+            for (const { project, args, label } of generators) {
+                execSync(`nx g @ddd-plugin/ddd:web-app ${project} ${args}`, { stdio: "pipe" });
                 try {
-                    const buildResult = execSync(`cd ${output} && npm run build`, { encoding: "utf-8", stdio: "pipe" });
-                    expect(buildResult).toBeTruthy();
+                    const output = execSync(`pnpm nx build ${project}`, { encoding: "utf-8", stdio: "pipe" });
+                    expect(output).toBeTruthy();
                 } catch (error) {
-                    // Expo builds might fail in CI, that's expected
-                    if (!output.includes("expo")) {
-                        throw error;
-                    }
+                    throw new Error(`${label} build failed: ${(error as Error).message}`);
+                } finally {
+                    // optional: clean up generated project artifacts if necessary
                 }
             }
         });
@@ -246,20 +287,29 @@ describe("HexDDD Integration", () => {
         it("generator idempotency prevents file overwrites", async () => {
             // Verify generators don't overwrite user modifications
             const testProjectPath = "tmp/test-idempotency";
+            try {
+                // First generation
+                execSync(`nx g @ddd-plugin/ddd:web-app test-app --framework=next --directory=${testProjectPath}`, {
+                    stdio: "pipe",
+                });
 
-            // First generation
-            execSync(`nx g @ddd-plugin/ddd:web-app test-app --framework=next --directory=${testProjectPath}`, { stdio: "pipe" });
+                // Modify a generated file
+                const modifiedContent = "// Custom user modification";
+                execSync(`echo "${modifiedContent}" >> ${testProjectPath}/apps/test-app/pages/index.tsx`);
 
-            // Modify a generated file
-            const modifiedContent = "// Custom user modification";
-            execSync(`echo "${modifiedContent}" >> ${testProjectPath}/apps/test-app/pages/index.tsx`);
+                // Second generation should not overwrite
+                execSync(`nx g @ddd-plugin/ddd:web-app test-app --framework=next --directory=${testProjectPath}`, {
+                    stdio: "pipe",
+                });
 
-            // Second generation should not overwrite
-            execSync(`nx g @ddd-plugin/ddd:web-app test-app --framework=next --directory=${testProjectPath}`, { stdio: "pipe" });
+                const fileContent = execSync(`cat ${testProjectPath}/apps/test-app/pages/index.tsx`, {
+                    encoding: "utf-8",
+                });
 
-            const fileContent = execSync(`cat ${testProjectPath}/apps/test-app/pages/index.tsx`, { encoding: "utf-8" });
-
-            expect(fileContent).toContain(modifiedContent);
+                expect(fileContent).toContain(modifiedContent);
+            } finally {
+                fs.rmSync(testProjectPath, { recursive: true, force: true });
+            }
         });
     });
 });
@@ -284,6 +334,12 @@ Describe "HexDDD CLI Integration Tests"
       When run nx g @ddd-plugin/ddd:web-app cli-test-next --framework=next --no-interactive
       The status should be success
       The file "apps/cli-test-next/next.config.js" should exist
+    End
+
+    It "generates Next.js pages app successfully"
+      When run nx g @ddd-plugin/ddd:web-app cli-test-next-pages --framework=next --routerStyle=pages --no-interactive
+      The status should be success
+      The file "apps/cli-test-next-pages/pages/index.tsx" should exist
     End
 
     It "generates Remix app successfully"
@@ -405,7 +461,7 @@ nx run supabase-devstack:start
 | DEV-PRD-026 | PRD | Transactional UoW | UoW contracts + adapters | Unit tests | ✅ |
 | DEV-PRD-027 | PRD | Supabase automation | Docker Compose + Nx targets | Start/stop tests | ✅ |
 | DEV-PRD-028 | PRD | Nx upgrade gate | Runbook + validation suite | Manual | ✅ |
-| DEV-PRD-029 | PRD | Universal React gen | Single generator, 3 frameworks | Build tests | ✅ |
+| DEV-PRD-029 | PRD | Universal React gen | Single generator, 4 surfaces (Next App, Next Pages, Remix, Expo) | Build tests | ✅ |
 | DEV-PRD-030 | PRD | Strict typing gate | TS + Python strict configs | CI checks | ✅ |
 | DEV-PRD-031 | PRD | Type sync CI | GitHub Actions workflow | Type drift detection | ✅ |
 | DEV-SDS-023 | SDS | Idempotency patterns | Pattern library + docs | Code review | ✅ |
@@ -440,8 +496,15 @@ If you generated a project **before** the HexDDD integration, follow these steps
 
 ### 1. Update Template Dependencies
 
+Ensure Copier is available before running migrations:
+
 ```bash
-# Pull latest template changes
+copier --version || pipx install copier
+```
+
+With the CLI confirmed, pull the latest template changes:
+
+```bash
 copier update
 ```
 ````

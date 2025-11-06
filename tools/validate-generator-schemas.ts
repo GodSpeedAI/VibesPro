@@ -6,6 +6,12 @@ async function validate() {
   const ajv = new Ajv({ strict: true, validateSchema: true });
   const schemas = await glob('generators/**/schema.json');
 
+  if (schemas.length === 0) {
+    console.error('❌ No generator schemas found with pattern "generators/**/schema.json".');
+    console.error(`Current working directory: ${process.cwd()}`);
+    process.exit(1);
+  }
+
   let hasErrors = false;
   for (const schemaPath of schemas) {
     try {

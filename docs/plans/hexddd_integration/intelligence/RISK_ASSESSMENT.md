@@ -28,6 +28,7 @@ Top technical, architectural, and process risks for HexDDD integration. For each
 3. Type Drift (TS ↔ Python ↔ DB)
     - Likelihood: Medium
     - Impact: Medium
+    - Detection: Type-sync CI drift outputs (git diff), schema generation failures, or mypy/tsc mismatches in pipeline runs
     - Mitigation: Type-sync CI + pre-commit checks
     - Contingency: Manual type regeneration + PR
 

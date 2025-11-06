@@ -385,7 +385,7 @@ jobs:
 -   AI hallucination: HIGH → LOW (AJV gate)
 -   Non-idempotent generators: HIGH → LOW (CI tests)
 -   Template regressions: MEDIUM → LOW (golden samples)
--   Overall risk: MEDIUM-HIGH → LOW
+-   Overall risk: MEDIUM-HIGH → LOW (validated now that Sprint 1 **and** Sprint 2 gates are complete; settles at MEDIUM if only Sprint 1 lands)
 
 ---
 
@@ -415,5 +415,5 @@ jobs:
 
 ---
 
-_Last updated: 2025-11-05_
-_Risk level: MEDIUM-HIGH (without gates) → LOW (with Sprint 1+2 complete)_
+_Last updated: 2025-11-06_
+_Risk level: MEDIUM-HIGH (without gates) → LOW (Sprint 1 + Sprint 2 landed; remains MEDIUM if Sprint 2 lags)_
