@@ -17,6 +17,7 @@ export interface GeneratorResult {
 
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 const TEST_OUTPUT_ROOT = path.join(os.tmpdir(), 'vibespro-generator-tests');
+const generatedPaths = new Set<string>();
 
 const BASE_CONTEXT: Record<string, unknown> = {
   project_name: 'Test Project',
@@ -725,6 +726,7 @@ export async function runGenerator(
 ): Promise<GeneratorResult> {
   const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const outputPath = path.join(TEST_OUTPUT_ROOT, `${generatorType}-${uniqueId}`);
+  generatedPaths.add(outputPath);
   const dataFilePath = path.join(TEST_OUTPUT_ROOT, `answers-${generatorType}-${uniqueId}.yml`);
 
   const fail = (reason: unknown): GeneratorResult => ({
@@ -831,7 +833,6 @@ export async function runGenerator(
   ];
 
   let errorMessage: string | undefined;
-  let cleanupError: unknown;
   const warnings: string[] = [];
 
   try {
@@ -841,16 +842,10 @@ export async function runGenerator(
     process.stderr.write(`${errorMessage}\n`);
   } finally {
     try {
-      await fs.rm(dataFilePath, { force: true });
+      await fs.rm(dataFilePath, { force: true, recursive: true });
     } catch (error) {
-      cleanupError = error;
+      warnings.push(extractCommandError(error));
     }
-  }
-
-  if (cleanupError) {
-    const cleanupMessage = extractCommandError(cleanupError);
-    warnings.push(cleanupMessage);
-    process.stderr.write(`${cleanupMessage}\n`);
   }
 
   if (errorMessage) {
@@ -896,18 +891,15 @@ export async function runGenerator(
 }
 
 export async function cleanupGeneratorOutputs(): Promise<void> {
-  try {
-    const entries = await fs.readdir(TEST_OUTPUT_ROOT);
-    for (const entry of entries) {
-      await fs.rm(path.join(TEST_OUTPUT_ROOT, entry), {
-        recursive: true,
-        force: true,
-      });
-    }
-  } catch (error: unknown) {
-    const err = error as { code?: string } | undefined;
-    if (err && err.code !== 'ENOENT') {
-      throw error as Error;
+  for (const outputPath of generatedPaths) {
+    try {
+      await fs.rm(outputPath, { recursive: true, force: true });
+    } catch (error: unknown) {
+      const err = error as { code?: string } | undefined;
+      if (err && err.code !== 'ENOENT') {
+        console.warn(`Failed to clean up ${outputPath}:`, error);
+      }
     }
   }
+  generatedPaths.clear();
 }

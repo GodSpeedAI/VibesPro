@@ -1,5 +1,6 @@
-import { Tree, formatFiles, generateFiles, installPackagesTask, names } from '@nx/devkit';
+import { Tree, generateFiles, installPackagesTask, names } from '@nx/devkit';
 import * as path from 'path';
+import { withIdempotency } from '../../src/generators/utils/idempotency';
 import { loadResolvedStack } from '../_utils/stack';
 import { deriveServiceDefaults } from '../_utils/stack_defaults';
 
@@ -23,7 +24,7 @@ function normalizeOptions(schema: unknown): ServiceSchema {
   };
 }
 
-export default async function (tree: Tree, schema: unknown) {
+export default withIdempotency(async function (tree: Tree, schema: unknown) {
   const options = normalizeOptions(schema);
 
   // Optional: seed defaults from resolved tech stack (if present)
@@ -55,8 +56,7 @@ export default async function (tree: Tree, schema: unknown) {
     serviceName: options.name,
   });
 
-  await formatFiles(tree);
   return () => {
     installPackagesTask(tree);
   };
-}
+});

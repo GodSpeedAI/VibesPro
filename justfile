@@ -197,6 +197,10 @@ test-integration:
 	@echo "🧪 Running integration tests..."
 	just test-generation
 
+test-generators:
+	@echo "🧪 Running generator tests..."
+	pnpm exec jest tests/generators
+
 test-generation:
 	@echo "🧪 Testing template generation..."
 	rm -rf ./test-output

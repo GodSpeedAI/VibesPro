@@ -1,4 +1,4 @@
-import { Tree } from '@nx/devkit';
+import { formatFiles, GeneratorCallback, logger, Tree } from '@nx/devkit';
 import * as ts from 'typescript';
 
 /**
@@ -88,6 +88,59 @@ export function sortExports(sourceCode: string): string {
 
   const updatedSourceFile = ts.factory.updateSourceFile(sourceFile, updatedStatements);
   return printer.printFile(updatedSourceFile);
+}
+
+/**
+ * Higher-order function to create a configurable idempotent generator wrapper.
+ * This wrapper ensures that files are formatted and a post-processing hook can be run.
+ *
+ * @param generator The base Nx generator function.
+ * @param options Configuration for the wrapper.
+ * @returns A new generator function that is idempotent.
+ */
+export function createIdempotentWrapper<T extends object>(
+  generator: (tree: Tree, options: T) => void | Promise<void | GeneratorCallback>,
+  options: {
+    postProcess?: (tree: Tree, options: T) => void | Promise<void>;
+    message?: string;
+  },
+) {
+  return async (tree: Tree, genOptions: T): Promise<GeneratorCallback> => {
+    logger.info(options.message || 'Running idempotent generator...');
+
+    // Run the base generator
+    const callback = await generator(tree, genOptions);
+
+    // Always format files for deterministic output
+    await formatFiles(tree);
+
+    // Run post-processing hook if provided
+    if (options.postProcess) {
+      await options.postProcess(tree, genOptions);
+    }
+
+    return () => {
+      if (callback) {
+        callback();
+      }
+      logger.info(`Idempotent generator finished successfully: ${options.message || 'OK'}`);
+    };
+  };
+}
+
+/**
+ * A simple HOF wrapper to make a generator idempotent by running formatFiles
+ * after the generator completes. This ensures that the output is deterministic.
+ *
+ * @param generator The base Nx generator function to wrap.
+ * @returns A new generator function that is idempotent.
+ */
+export function withIdempotency<T extends object>(
+  generator: (tree: Tree, options: T) => void | Promise<void | GeneratorCallback>,
+) {
+  return createIdempotentWrapper(generator, {
+    message: 'Running generator with idempotency...',
+  });
 }
 
 /**
