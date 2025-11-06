@@ -498,8 +498,18 @@ debug-regress:
 # Validate code quality using available tooling
 # Safe to run: degrades gracefully if pnpm or Nx are not available
 # Runs: AGENT link checker, pre-commit, lint, typecheck, and tests (if configured)
+validate-generator-schemas:
+	@echo "🔍 Validating generator schemas..."
+	@if command -v pnpm > /dev/null 2>&1; then \
+		pnpm exec tsx tools/validate-generator-schemas.ts; \
+	else \
+		echo "❌ pnpm not found. Please install dependencies with 'just setup'."; \
+		exit 1; \
+	fi
+
 ai-validate:
 	@echo "🔍 Validating project..."
+	@just validate-generator-schemas
 	@echo "Running AGENT.md link checker..."
 	@python3 tools/check_agent_links.py || true
 	@echo "Running pre-commit hooks..."
