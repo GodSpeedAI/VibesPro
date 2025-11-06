@@ -502,8 +502,10 @@ validate-generator-schemas:
 	@echo "🔍 Validating generator schemas..."
 	@if command -v pnpm > /dev/null 2>&1; then \
 		pnpm exec tsx tools/validate-generator-schemas.ts; \
+	elif command -v corepack > /dev/null 2>&1; then \
+		corepack pnpm exec tsx tools/validate-generator-schemas.ts; \
 	else \
-		echo "❌ pnpm not found. Please install dependencies with 'just setup'."; \
+		echo "❌ pnpm not available. Install dependencies with 'just setup' or ensure corepack can provide pnpm."; \
 		exit 1; \
 	fi
 
