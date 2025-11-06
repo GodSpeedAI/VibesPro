@@ -25,10 +25,11 @@ export function ensureIdempotentWrite(
     return;
   }
 
-  const existingContent = tree.read(path, 'utf-8');
-  if (existingContent === null) {
+  const existingBuffer = tree.read(path);
+  if (existingBuffer === null) {
     return; // Cannot read existing content
   }
+  const existingContent = existingBuffer.toString('utf-8');
 
   if (options.preserveMarkers) {
     // Extract user code between markers and merge
