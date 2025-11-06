@@ -498,8 +498,50 @@ debug-regress:
 # Validate code quality using available tooling
 # Safe to run: degrades gracefully if pnpm or Nx are not available
 # Runs: AGENT link checker, pre-commit, lint, typecheck, and tests (if configured)
+validate-generator-schemas:
+	@echo "🔍 Validating generator schemas..."
+	@if command -v pnpm > /dev/null 2>&1; then \
+		if pnpm exec --which tsx >/dev/null 2>&1; then \
+			pnpm exec tsx tools/validate-generator-schemas.ts || { \
+				if command -v npx > /dev/null 2>&1; then \
+					npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+				else \
+					echo "❌ tsx ran via pnpm but missing node modules; npx not available for fallback."; \
+					exit 1; \
+				fi; \
+			}; \
+		elif command -v npx > /dev/null 2>&1; then \
+			npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+		else \
+			echo "❌ tsx not available via pnpm and npx is missing. Install dependencies with 'just setup'."; \
+			exit 1; \
+		fi; \
+	elif command -v corepack > /dev/null 2>&1; then \
+		if corepack pnpm exec --which tsx >/dev/null 2>&1; then \
+			corepack pnpm exec tsx tools/validate-generator-schemas.ts || { \
+				if command -v npx > /dev/null 2>&1; then \
+					npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+				else \
+					echo "❌ tsx ran via corepack pnpm but missing node modules; npx not available for fallback."; \
+					exit 1; \
+				fi; \
+			}; \
+		elif command -v npx > /dev/null 2>&1; then \
+			npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+		else \
+			echo "❌ tsx not available via corepack pnpm and npx is missing. Install dependencies with 'just setup'."; \
+			exit 1; \
+		fi; \
+	elif command -v npx > /dev/null 2>&1; then \
+		npx --yes -p tsx -p ajv -p glob tsx tools/validate-generator-schemas.ts; \
+	else \
+		echo "❌ Neither pnpm/corepack nor npx is available to run tsx. Install dependencies with 'just setup'."; \
+		exit 1; \
+	fi
+
 ai-validate:
 	@echo "🔍 Validating project..."
+	@just validate-generator-schemas
 	@echo "Running AGENT.md link checker..."
 	@python3 tools/check_agent_links.py || true
 	@echo "Running pre-commit hooks..."

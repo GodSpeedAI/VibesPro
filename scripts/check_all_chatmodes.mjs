@@ -1,6 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+function stripQuotes(value) {
+  const trimmed = value.trim();
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1);
+  }
+  return trimmed;
+}
+
 function loadModels(modelsPath) {
   const content = fs.readFileSync(modelsPath, 'utf8');
   const lines = content.split(/\r?\n/);
@@ -23,20 +34,24 @@ function loadModels(modelsPath) {
     if (m) {
       const indent = m[1];
       const key = m[2];
-      let val = m[3].trim();
-      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'")))
-        val = val.slice(1, -1);
-      // Record mappings so we can resolve placeholders like ${ default_model }
-      // Keep reverse lookup for quick existence checks (models[val] = true)
-      if (indent === '  ' && key.endsWith('_model')) {
-        models[val] = true;
-        // store the key -> value mapping as well (e.g. default_model: "gpt-4o")
-        models[key] = val;
-        // provide convenient aliases for 'default'
-        if (key === 'default_model') {
+      let val = stripQuotes(m[3]);
+      if (!val) continue;
+      if (indent === '  ') {
+        if (models[val] === undefined) {
+          models[val] = true;
+        }
+        if (models[key] === undefined) {
+          models[key] = val;
+        }
+        if (key.endsWith('_model')) {
+          const alias = key.replace(/_model$/, '');
+          if (alias && models[alias] === undefined) {
+            models[alias] = val;
+          }
+        }
+        if (key === 'default_model' || key === 'default') {
           models.default = val;
-          models['default'] = val;
-          models.default_model = val;
+          models['default_model'] = val;
         }
       }
     }
@@ -140,6 +155,12 @@ for (const f of files) {
       failed = true;
       continue;
     }
+  }
+
+  if (!tplMatch && typeof models[model] === 'string') {
+    const mapped = models[model];
+    console.log(`[INFO] ${fp}: resolved model alias "${model}" -> "${mapped}"`);
+    resolvedModel = mapped;
   }
 
   if (!models[resolvedModel]) {

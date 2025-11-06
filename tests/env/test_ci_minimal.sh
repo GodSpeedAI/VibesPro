@@ -17,8 +17,8 @@ fi
 
 # Test 3: Workflow explicitly decrypts secrets with SOPS
 echo "  ✓ Checking for explicit SOPS decryption..."
-if ! grep -q "sops -d .secrets.env.sops" .github/workflows/env-check.yml; then
-  echo "    ❌ CI workflow should explicitly decrypt secrets with 'sops -d .secrets.env.sops'"
+if ! grep -q -E "sops.*-d.*\\.secrets\\.env\\.sops" .github/workflows/env-check.yml; then
+  echo "    ❌ CI workflow should decrypt secrets with a sops -d invocation (variations like 'sops -d .secrets.env.sops | source /dev/stdin' are acceptable)"
   exit 1
 fi
 
