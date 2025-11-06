@@ -18,6 +18,9 @@ jobs:
   # ---------- Prepare: cache keys & versions (Ubuntu) ----------
   prepare:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AQUA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       mise_cache_key: ${{ steps.cache-key.outputs.mise_cache_key }}
       node_version: ${{ steps.vers.outputs.node }}
@@ -80,6 +83,8 @@ jobs:
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
       NX_NO_CLOUD: "true"
       NX_REJECT_REMOTE_CACHE: "true"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AQUA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
@@ -329,6 +334,8 @@ jobs:
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
       NX_NO_CLOUD: "true"
       NX_REJECT_REMOTE_CACHE: "true"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AQUA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
