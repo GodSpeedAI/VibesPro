@@ -81,10 +81,20 @@ function loadModelsConfig() {
         const key = match[2].trim();
         let value = match[3].trim();
 
-        if (indentation === '  ' && key.endsWith('_model')) {
+        if (indentation === '  ') {
           value = stripQuotes(value);
           if (value && value.length > 0) {
             models[value] = true;
+            models[key] = true;
+            if (key.endsWith('_model')) {
+              const alias = key.replace(/_model$/, '');
+              if (alias.length > 0) {
+                models[alias] = true;
+              }
+            }
+            if (key === 'default_model' || key === 'default') {
+              models.default = true;
+            }
           }
         }
       }
