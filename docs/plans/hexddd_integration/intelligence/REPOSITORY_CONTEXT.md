@@ -3,6 +3,13 @@
 Status: populated (snapshot)
 Date: 2025-11-05
 
+## Snapshot maintenance
+
+-   Snapshot captured on **2025-11-05**.
+-   Refresh cadence: **weekly** or immediately after large-scale workspace scaffolds/merges.
+-   Triggers for ad-hoc refresh: new generators added, Nx upgrades, or structural changes to `libs/` / `tools/`.
+-   Maintainer: HexDDD Orchestrator (owns keeping this context current).
+
 ## Purpose
 
 Capture a current snapshot of the Nx workspace, available generators, and quick guidance for where to look for generator- or domain-related changes.
@@ -40,7 +47,7 @@ An attempt to fetch the full Nx plugin manifest from the public URL failed (unex
 
 1. Run `nx_project_details` for candidate projects (for example, `tools/type-generator`, `tools/ai`, and a few existing domain libs) to collect targets and tags programmatically. Use that to build the MECE ownership matrix.
 2. Run a GitHub search for recent PRs touching `generators/` or `libs/*/(domain|application|infrastructure)` to extract reviewer comments and failure modes.
-3. Export the Nx project graph to a local HTML (e.g., `pnpm exec nx graph --file=tmp/graph.html`) and attach or reference it in `MECE_VALIDATION.md` and `CRITICAL_PATH.md`.
+3. Export the Nx project graph to a local HTML (`mkdir -p tmp && pnpm exec nx graph --file=tmp/graph.html`) and attach or reference it in `MECE_VALIDATION.md` and `CRITICAL_PATH.md`.
 
 ## Per-project details (quick snapshot)
 

@@ -317,7 +317,7 @@ pnpm nx lint type-generator
 pnpm nx run-many -t test --all
 
 # Check for circular dependencies
-pnpm nx graph --file=graph.html
+        mkdir -p tmp && pnpm nx graph --file=tmp/graph.html
 
 # Verify no breaking changes
 just ai-validate
@@ -419,16 +419,26 @@ function captureTreeState(tree: Tree): Tree {
  * Asserts that no files changed between runs (idempotency check)
  */
 export function assertNoChanges(tree1: Tree, tree2: Tree): void {
-    const changes1 = tree1.listChanges();
-    const changes2 = tree2.listChanges();
+    const normalize = (changes: Change[]) =>
+        changes
+            .map((change) => ({
+                path: change.path,
+                type: change.type,
+                content: change.content?.toString() ?? "",
+            }))
+            .sort((a, b) => {
+                if (a.path !== b.path) return a.path.localeCompare(b.path);
+                if (a.type !== b.type) return a.type.localeCompare(b.type);
+                return a.content.localeCompare(b.content);
+            });
 
-    expect(changes1.length).toBe(changes2.length);
+    const [left, right] = [tree1, tree2].map((tree) => normalize(tree.listChanges()));
 
-    changes1.forEach((change1, idx) => {
-        const change2 = changes2[idx];
-        expect(change1.path).toBe(change2.path);
-        expect(change1.type).toBe(change2.type);
-        expect(change1.content?.toString()).toBe(change2.content?.toString());
+    expect(left.length).toBe(right.length);
+    left.forEach((entry, idx) => {
+        expect(entry.path).toBe(right[idx].path);
+        expect(entry.type).toBe(right[idx].type);
+        expect(entry.content).toBe(right[idx].content);
     });
 }
 

@@ -78,6 +78,8 @@ describe("UnitOfWork Contract", () => {
 });
 ```
 
+> ℹ️ Use the root `.env.example` as a baseline—copy it to `.env.local` (or your preferred dotenv file) and provide real Supabase keys before invoking any `supabase-devstack:*` targets.
+
 ### 🟢 GREEN Phase
 
 ```typescript
@@ -193,9 +195,9 @@ class InMemoryUnitOfWork:
         self._in_transaction = False
 
     def _clear(self) -> None:
-          self._new_entities.clear()
-          self._dirty_entities.clear()
-          self._deleted_entities.clear()
+        self._new_entities.clear()
+        self._dirty_entities.clear()
+        self._deleted_entities.clear()
 ```
 
 ### 🔵 REFACTOR Phase
@@ -282,9 +284,22 @@ export class InMemoryEventBus implements EventBus {
 
     async dispatch<T>(event: { type: string; payload: T }): Promise<void> {
         const handlers = this.subscriptions.get(event.type);
-        if (!handlers) return;
+        if (!handlers || handlers.size === 0) {
+            return;
+        }
 
-        await Promise.all(Array.from(handlers).map((handler) => Promise.resolve(handler(event))));
+        const handlerList = Array.from(handlers);
+        const results = await Promise.allSettled(handlerList.map((handler) => handler(event)));
+        const failures = results.map((result, idx) => ({ result, idx })).filter((entry): entry is { result: PromiseRejectedResult; idx: number } => entry.result.status === "rejected");
+
+        if (failures.length) {
+            const detail = failures.map(({ result, idx }) => `handler[${idx}] reason=${result.reason}`).join("; ");
+            console.error(`EventBus dispatch error for ${event.type}: ${detail}`);
+            throw new AggregateError(
+                failures.map(({ result }) => result.reason),
+                `One or more handlers failed while dispatching ${event.type}`,
+            );
+        }
     }
 }
 ```
@@ -354,12 +369,12 @@ services:
         ports:
             - "5432:5432"
         environment:
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supabase}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env.local}
             POSTGRES_DB: postgres
             PGDATA: /var/lib/postgresql/data/pgdata
         volumes:
             - ./scripts/init:/docker-entrypoint-initdb.d
-            - ./scripts/seed:/scripts/seed
+            - ./scripts/seed:/scripts/seed # mount seed SQLs (see docs/plans/hexddd_integration/scripts/seed/01-seed.sql)
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U postgres"]
             interval: 5s
@@ -391,13 +406,13 @@ services:
             GOTRUE_API_HOST: 0.0.0.0
             GOTRUE_API_PORT: 54321
             DB_DRIVER: postgres
-            DB_DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-supabase}@postgres:5432/postgres
+            DB_DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/postgres
             SITE_URL: http://localhost:3000
-            JWT_SECRET: ${JWT_SECRET:-super-secret-jwt-token}
-            ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9}
-            SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9}
-            GOTRUE_UI_ADMIN_EMAIL: admin@supabase.io
-            GOTRUE_UI_ADMIN_PASSWORD: password
+            JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+            ANON_KEY: ${ANON_KEY:?set ANON_KEY}
+            SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY:?set SERVICE_ROLE_KEY}
+            GOTRUE_UI_ADMIN_EMAIL: ${GOTRUE_UI_ADMIN_EMAIL:?set GOTRUE_UI_ADMIN_EMAIL}
+            GOTRUE_UI_ADMIN_PASSWORD: ${GOTRUE_UI_ADMIN_PASSWORD:?set GOTRUE_UI_ADMIN_PASSWORD}
 
     realtime:
         image: supabase/realtime:v2.25.45
@@ -410,10 +425,10 @@ services:
             DB_HOST: postgres
             DB_PORT: 5432
             DB_USER: postgres
-            DB_PASSWORD: ${POSTGRES_PASSWORD:-supabase}
+            DB_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
             DB_DATABASE: postgres
             DB_AFTER_CONNECT_QUERY: "SET search_path TO _realtime"
-            API_JWT_SECRET: ${JWT_SECRET:-super-secret-jwt-token}
+            API_JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
 
     storage:
         image: supabase/storage-api:v0.43.11
@@ -425,10 +440,10 @@ services:
             redis:
                 condition: service_healthy
         environment:
-            ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9}
-            SERVICE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9}
+            ANON_KEY: ${ANON_KEY:?set ANON_KEY}
+            SERVICE_KEY: ${SERVICE_ROLE_KEY:?set SERVICE_ROLE_KEY}
             POSTGREST_URL: http://postgrest:54321
-            DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-supabase}@postgres:5432/postgres
+            DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/postgres
             FILE_SIZE_LIMIT: 52428800
             STORAGE_BACKEND: file
             FILE_STORAGE_DRIVER: disk
@@ -455,11 +470,11 @@ services:
             POSTGRES_DB: postgres
             POSTGRES_PORT: 5432
             POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supabase}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
             GOTRUE_API_URL: http://gotrue:54321
-            GOTRUE_API_ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9}
-            GOTRUE_API_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9}
-            LOGFLARE_API_KEY: ${LOGFLARE_API_KEY:-set_this}
+            GOTRUE_API_ANON_KEY: ${ANON_KEY:?set ANON_KEY}
+            GOTRUE_API_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY:?set SERVICE_ROLE_KEY}
+            LOGFLARE_API_KEY: ${LOGFLARE_API_KEY:?set LOGFLARE_API_KEY}
             LOGFLARE_NODE_ID: studio
             SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-""}
 
@@ -503,7 +518,7 @@ volumes:
         "supabase-devstack:seed": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "docker exec -i $(docker compose -f docker/docker-compose.supabase.yml ps -q postgres) psql -U postgres -d postgres -f /scripts/seed/01-seed.sql",
+                "command": "docker exec -i $(docker compose -f docker/docker-compose.supabase.yml ps -q postgres) bash -lc 'set -euo pipefail; export PGPASSWORD=\"${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}\"; psql -v ON_ERROR_STOP=1 -U postgres -d postgres -f /scripts/seed/01-seed.sql'",
                 "cwd": "."
             }
         },

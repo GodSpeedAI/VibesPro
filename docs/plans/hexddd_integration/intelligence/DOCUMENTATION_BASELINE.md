@@ -22,7 +22,7 @@ This file records the authoritative documentation sources we used while performi
 -   Store downloaded CI logs under `docs/plans/hexddd_integration/intelligence/artifacts/` with a `run-<id>/` layout so the evidence is versioned alongside the intelligence.
 -   Keep a short JSON index `ci-log-index.json` mapping PR→runIDs→paths so analysts can re-run extraction quickly.
 
-# DOCUMENTATION_BASELINE
+## Status
 
 Status: draft
 Date: 2025-11-05
