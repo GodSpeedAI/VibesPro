@@ -14,6 +14,8 @@
 -   **Complete**: Phase has finished successfully ✅
 -   **Blocked**: Phase cannot proceed due to dependencies
 
+> **Phase Status Note:** This document captures the intelligence blueprint. The ✅ **COMPLETED** badge reflects that the plan, evidence templates, and checklists are authored. Execution of individual queries still happens in the logs and checklists below; keep the Execution Log and task checklist updated as each investigation actually runs.
+
 ---
 
 ## ✅ Completion Summary
