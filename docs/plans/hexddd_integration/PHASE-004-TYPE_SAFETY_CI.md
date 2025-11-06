@@ -1,10 +1,10 @@
 # PHASE-004: Type Safety & CI Integration
 
-**Status:** Ready for Execution  
-**Duration:** 6-8 hours  
-**Parallelization:** 4 cycles (A ∥ B, then C ∥ D)  
-**Critical Path:** Yes (A → C → D)  
-**Dependencies:** PHASE-003 complete  
+**Status:** Ready for Execution
+**Duration:** 6-8 hours
+**Parallelization:** 4 cycles (A ∥ B, then C ∥ D)
+**Critical Path:** Yes (A → C → D)
+**Dependencies:** PHASE-003 complete
 **Owner:** Platform Agent
 
 ---
@@ -15,33 +15,33 @@ Enforce strict type safety across TypeScript and Python, implement automated typ
 
 ### Success Criteria
 
-- [ ] TypeScript strict mode enforced (zero `any` types)
-- [ ] Python mypy strict mode enforced (≥95% coverage)
-- [ ] Automated type sync CI workflow operational
-- [ ] Pre-commit hooks validate types locally
-- [ ] All type checks pass in CI
-- [ ] **Evidence**: `pnpm tsc --noEmit && uv run mypy --strict` both GREEN
+-   [ ] TypeScript strict mode enforced (zero `any` types)
+-   [ ] Python mypy strict mode enforced (≥95% coverage)
+-   [ ] Automated type sync CI workflow operational
+-   [ ] Pre-commit hooks validate types locally
+-   [ ] All type checks pass in CI
+-   [ ] **Evidence**: `pnpm tsc --noEmit && uv run mypy --strict` both GREEN
 
 ### Traceability
 
-| Requirement | Cycle | Validation |
-|-------------|-------|------------|
-| DEV-ADR-029 | A, B | Strict typing enforced |
-| DEV-PRD-030 | A, B | Type check gates in CI |
-| DEV-PRD-031 | C, D | Automated type sync |
-| DEV-SDS-029 | A, B | Config files + lint rules |
-| DEV-SDS-030 | C, D | Workflows + hooks |
+| Requirement | Cycle | Validation                |
+| ----------- | ----- | ------------------------- |
+| DEV-ADR-029 | A, B  | Strict typing enforced    |
+| DEV-PRD-030 | A, B  | Type check gates in CI    |
+| DEV-PRD-031 | C, D  | Automated type sync       |
+| DEV-SDS-029 | A, B  | Config files + lint rules |
+| DEV-SDS-030 | C, D  | Workflows + hooks         |
 
 ---
 
 ## 📊 Cycles Overview
 
-| Cycle | Owner | Branch | Depends On | Parallel With | Duration |
-|-------|-------|--------|------------|---------------|----------|
-| **A** | Platform Agent | `feature/ts-strict` | PHASE-003 | B | 2h |
-| **B** | Platform Agent | `feature/py-strict` | PHASE-003 | A | 2h |
-| **C** | Platform Agent | `feature/type-sync-ci` | A, B | D | 3h |
-| **D** | Platform Agent | `feature/pre-commit-hooks` | A, B | C | 1h |
+| Cycle | Owner          | Branch                     | Depends On | Parallel With | Duration |
+| ----- | -------------- | -------------------------- | ---------- | ------------- | -------- |
+| **A** | Platform Agent | `feature/ts-strict`        | PHASE-003  | B             | 2h       |
+| **B** | Platform Agent | `feature/py-strict`        | PHASE-003  | A             | 2h       |
+| **C** | Platform Agent | `feature/type-sync-ci`     | A, B       | D             | 3h       |
+| **D** | Platform Agent | `feature/pre-commit-hooks` | A, B       | C             | 1h       |
 
 ---
 
@@ -53,14 +53,14 @@ Enforce strict type safety across TypeScript and Python, implement automated typ
 
 ```json
 {
-  "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": false
-  }
+    "compilerOptions": {
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": false
+    }
 }
 ```
 
@@ -69,11 +69,11 @@ Enforce strict type safety across TypeScript and Python, implement automated typ
 ```json
 // .eslintrc.json
 {
-  "rules": {
-    "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-unsafe-assignment": "error",
-    "@typescript-eslint/no-unsafe-call": "error"
-  }
+    "rules": {
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-unsafe-assignment": "error",
+        "@typescript-eslint/no-unsafe-call": "error"
+    }
 }
 ```
 
@@ -111,7 +111,7 @@ warn_unused_configs = true
 
 ## ⚡ Cycle C: Type Sync CI Workflow
 
-**Duration:** 3 hours  
+**Duration:** 3 hours
 **Depends On:** A + B
 
 ### GitHub Actions Workflow
@@ -121,58 +121,60 @@ warn_unused_configs = true
 name: Type Sync
 
 on:
-  push:
-    paths:
-      - 'supabase/migrations/**'
-      - '.github/workflows/type-sync.yml'
-  workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * 0'  # Weekly Sunday 2 AM
+    push:
+        paths:
+            - "supabase/migrations/**"
+            - ".github/workflows/type-sync.yml"
+    workflow_dispatch:
+    schedule:
+        - cron: "0 2 * * 0" # Weekly Sunday 2 AM
 
 jobs:
-  type-sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          pnpm install
-          uv pip install -r requirements.txt
-      
-      - name: Generate types from Supabase
-        run: nx run type-generator:generate
-      
-      - name: Check for type drift
-        run: |
-          git diff --exit-code || (
-            echo "Type drift detected!"
-            exit 1
-          )
-      
-      - name: Validate TypeScript types
-        run: pnpm tsc --noEmit
-      
-      - name: Validate Python types
-        run: uv run mypy --strict
-      
-      - name: Create PR if drift detected
-        if: failure()
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: 'chore(types): sync types from Supabase schema'
-          title: 'Type Sync: Auto-generated from schema changes'
-          branch: auto/type-sync
+    type-sync:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.11"
+
+            - name: Install dependencies
+              run: |
+                  pnpm install
+                  uv pip install -r requirements.txt
+
+            - name: Generate types from Supabase
+              run: nx run type-generator:generate
+
+            - name: Check for type drift
+              id: drift-check
+              run: |
+                  if git diff --exit-code; then
+                    echo "drift=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "drift=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Validate TypeScript types
+              run: pnpm tsc --noEmit
+
+            - name: Validate Python types
+              run: uv run mypy --strict
+
+            - name: Create PR if drift detected
+              if: steps.drift-check.outputs.drift == 'true'
+              uses: peter-evans/create-pull-request@v5
+              with:
+                  commit-message: "chore(types): sync types from Supabase schema"
+                  title: "Type Sync: Auto-generated from schema changes"
+                  branch: auto/type-sync
 ```
 
 ---
@@ -217,12 +219,12 @@ type-sync:
 
 ## ✅ Phase Validation Checklist
 
-- [ ] TypeScript: `strict: true`, zero `any` violations
-- [ ] Python: `mypy --strict` passes, ≥95% coverage
-- [ ] CI Workflow: Type sync runs on schema changes
-- [ ] Pre-commit Hooks: Local type validation
-- [ ] All tests: Pass with strict types
-- [ ] **PHASE-004 marked GREEN in Master Plan**
+-   [ ] TypeScript: `strict: true`, zero `any` violations
+-   [ ] Python: `mypy --strict` passes, ≥95% coverage
+-   [ ] CI Workflow: Type sync runs on schema changes
+-   [ ] Pre-commit Hooks: Local type validation
+-   [ ] All tests: Pass with strict types
+-   [ ] **PHASE-004 marked GREEN in Master Plan**
 
 ---
 
