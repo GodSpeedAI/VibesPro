@@ -174,7 +174,28 @@ export async function featureGenerator(tree: Tree, schema: any) {
 
 ---
 
-## 7) Implementation Hints (for future generator author)
+## 7) Idempotency Strategy
+
+How does this generator handle re-runs when files already exist?
+
+-   [ ] Skip (warn and do nothing)
+-   [ ] Merge (use AST/JSON update)
+-   [ ] Prompt user for conflict resolution
+-   [ ] Fail with clear error message
+
+Conflict resolution code (if applicable):
+
+```typescript
+if (tree.exists(targetPath)) {
+    // Strategy: Skip with warning
+    console.warn(`File ${targetPath} already exists, skipping`);
+    return;
+}
+```
+
+---
+
+## 8) Implementation Hints (for future generator author)
 
 -   Use `@nx/devkit` helpers such as `generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `names`.
 -   The `generateFiles` helper can be used to create files from templates.

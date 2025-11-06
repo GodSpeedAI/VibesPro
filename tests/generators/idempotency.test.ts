@@ -45,81 +45,95 @@ function snapshotWorkspace(root: string): Record<string, string> {
 }
 
 describe('Generator idempotency harness', () => {
-  const cmd = process.env.GENERATOR_CMD;
+  const generators = [
+    {
+      name: 'nx-nextjs',
+      command: 'pnpm nx g @nx/next:app test-app --no-interactive',
+    },
+    {
+      name: 'nx-remix',
+      command: 'pnpm nx g @nx/remix:app test-app --no-interactive',
+    },
+    {
+      name: 'nx-expo',
+      command: 'pnpm nx g @nx/expo:app test-app --no-interactive',
+    },
+    {
+      name: 'python-service',
+      command: 'pnpm nx g @nxlv/python:app test-app --no-interactive',
+    },
+  ];
 
-  if (!cmd) {
-    test.skip('GENERATOR_CMD not set — skipped (set env GENERATOR_CMD to run)', () => {});
-    return;
-  }
-
-  test('running generator twice produces no filesystem changes on second run', () => {
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vibespro-gen-'));
-    // Create minimal workspace files to make generator runs predictable if needed
-    fs.writeFileSync(path.join(tmp, 'package.json'), JSON.stringify({ name: 'tmp-workspace' }));
-    fs.writeFileSync(
-      path.join(tmp, 'nx.json'),
-      JSON.stringify({ npmScope: 'tmp', implicitDependencies: {} }),
-    );
-
-    const env = { ...process.env };
-
-    // Helper to run shell command in tmp
-    const run = (command: string) => {
-      // run in shell to allow complex commands; return stdout+stderr and status
-      return spawnSync(command, {
-        shell: true,
-        cwd: tmp,
-        env,
-        encoding: 'utf8',
-        maxBuffer: 10 * 1024 * 1024,
-      });
-    };
-
-    // First run
-    const first = run(cmd);
-    if (first.error) {
-      // Fail fast with diagnostics
-      throw first.error;
-    }
-    if (first.status !== 0) {
-      throw new Error(
-        `First run failed (exit ${first.status})\nstdout:\n${first.stdout}\nstderr:\n${first.stderr}`,
+  for (const generator of generators) {
+    test(`generator ${generator.name} is idempotent`, () => {
+      const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'vibespro-gen-'));
+      // Create minimal workspace files to make generator runs predictable if needed
+      fs.writeFileSync(path.join(tmp, 'package.json'), JSON.stringify({ name: 'tmp-workspace' }));
+      fs.writeFileSync(
+        path.join(tmp, 'nx.json'),
+        JSON.stringify({ npmScope: 'tmp', implicitDependencies: {} }),
       );
-    }
 
-    const snap1 = snapshotWorkspace(tmp);
+      const env = { ...process.env, GENERATOR_CMD: generator.command };
 
-    // Second run
-    const second = run(cmd);
-    if (second.error) {
-      throw second.error;
-    }
-    if (second.status !== 0) {
-      throw new Error(
-        `Second run failed (exit ${second.status})\nstdout:\n${second.stdout}\nstderr:\n${second.stderr}`,
-      );
-    }
+      // Helper to run shell command in tmp
+      const run = (command: string) => {
+        // run in shell to allow complex commands; return stdout+stderr and status
+        return spawnSync(command, {
+          shell: true,
+          cwd: tmp,
+          env,
+          encoding: 'utf8',
+          maxBuffer: 10 * 1024 * 1024,
+        });
+      };
 
-    const snap2 = snapshotWorkspace(tmp);
-
-    // Compare snapshots: files present in snap2 should have identical hashes to snap1
-    const diffs: string[] = [];
-    const keys = new Set<string>([...Object.keys(snap1), ...Object.keys(snap2)]);
-    for (const k of keys) {
-      const a = snap1[k];
-      const b = snap2[k];
-      if (a !== b) {
-        diffs.push(k);
+      // First run
+      const first = run(generator.command);
+      if (first.error) {
+        // Fail fast with diagnostics
+        throw first.error;
       }
-    }
+      if (first.status !== 0) {
+        throw new Error(
+          `First run failed (exit ${first.status})\nstdout:\n${first.stdout}\nstderr:\n${first.stderr}`,
+        );
+      }
 
-    // Clean up (best-effort)
-    try {
-      fs.rmSync(tmp, { recursive: true, force: true });
-    } catch {
-      // ignore cleanup errors
-    }
+      const snap1 = snapshotWorkspace(tmp);
 
-    expect(diffs).toEqual([]);
-  }, 120000);
+      // Second run
+      const second = run(generator.command);
+      if (second.error) {
+        throw second.error;
+      }
+      if (second.status !== 0) {
+        throw new Error(
+          `Second run failed (exit ${second.status})\nstdout:\n${second.stdout}\nstderr:\n${second.stderr}`,
+        );
+      }
+
+      const snap2 = snapshotWorkspace(tmp);
+
+      // Compare snapshots: files present in snap2 should have identical hashes to snap1
+      const diffs: string[] = [];
+      const keys = new Set<string>([...Object.keys(snap1), ...Object.keys(snap2)]);
+      for (const k of keys) {
+        const a = snap1[k];
+        const b = snap2[k];
+        if (a !== b) {
+          diffs.push(k);
+        }
+      }
+
+      // Clean up (best-effort)
+      try {
+        fs.rmSync(tmp, { recursive: true, force: true });
+      } catch {
+        // ignore cleanup errors
+      }
+
+      expect(diffs).toEqual([]);
+    }, 120000);
+  }
 });
