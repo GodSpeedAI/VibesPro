@@ -1,0 +1,16 @@
+{
+  "name": "generators-idempotency",
+  "root": "tests/generators",
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec jest --config jest.config.json --testPathPatterns=tests/generators/idempotency.test.ts",
+        "cwd": "."
+      },
+      "outputs": []
+    }
+  },
+  "tags": ["type:test", "scope:generators"]
+}
