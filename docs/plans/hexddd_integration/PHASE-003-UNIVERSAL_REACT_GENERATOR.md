@@ -1,4 +1,4 @@
-# PHASE-003: Universal React Generator (Next.js, Remix, Expo)
+# PHASE-003: Universal React Generator (Next.js App & Pages, Remix, Expo)
 
 **Status:** Ready for Execution
 **Duration:** 10-12 hours
@@ -11,17 +11,18 @@
 
 ## 🎯 Phase Objectives
 
-Create a single, unified generator that scaffolds Next.js, Remix, or Expo applications with shared type-safe API clients, validation schemas, and hexagonal architecture patterns.
+Create a single, unified generator that scaffolds Next.js (App Router and Pages Router), Remix, or Expo applications with shared type-safe API clients, validation schemas, and hexagonal architecture patterns.
 
 ### Success Criteria
 
 -   [ ] Shared web assets library created (`libs/shared/web`)
 -   [ ] Next.js generator scaffolds App Router apps
+-   [ ] Next.js generator scaffolds Pages Router apps
 -   [ ] Remix generator scaffolds v2.15+ apps
 -   [ ] Expo generator scaffolds React Native apps
 -   [ ] All frameworks use shared API client + schemas
 -   [ ] All generators idempotent (double-run tests pass)
--   [ ] **Evidence**: All 3 frameworks build successfully
+-   [ ] **Evidence**: All 4 surfaces (Next App Router, Next Pages Router, Remix, Expo) build successfully
 
 ### Traceability
 
@@ -123,6 +124,8 @@ export default async function HomePage() {
 }
 ```
 
+> 🔁 Run validation passes for both router styles (`--routerStyle=app` and `--routerStyle=pages`) so the shared assets work across both Next.js surfaces.
+
 ---
 
 ## ⚡ Cycle C: Remix Generator
@@ -197,12 +200,42 @@ export default function App() {
 ```bash
 # tests/generators/react_spec.sh
 Describe 'React Generator Idempotency'
-  It 'Next.js generator is idempotent'
-    nx g @ddd-plugin/ddd:web-app test-next --framework=next
-    first_hash=$(find apps/test-next -type f -exec md5sum {} \; | sort | md5sum)
+  It 'Next.js App Router is idempotent'
+    nx g @ddd-plugin/ddd:web-app test-next-app --framework=next --routerStyle=app
+    first_hash=$(find apps/test-next-app -type f -exec md5sum {} \; | sort | md5sum)
 
-    nx g @ddd-plugin/ddd:web-app test-next --framework=next
-    second_hash=$(find apps/test-next -type f -exec md5sum {} \; | sort | md5sum)
+    nx g @ddd-plugin/ddd:web-app test-next-app --framework=next --routerStyle=app
+    second_hash=$(find apps/test-next-app -type f -exec md5sum {} \; | sort | md5sum)
+
+    [ "$first_hash" = "$second_hash" ]
+  End
+
+  It 'Next.js Pages Router is idempotent'
+    nx g @ddd-plugin/ddd:web-app test-next-pages --framework=next --routerStyle=pages
+    first_hash=$(find apps/test-next-pages -type f -exec md5sum {} \; | sort | md5sum)
+
+    nx g @ddd-plugin/ddd:web-app test-next-pages --framework=next --routerStyle=pages
+    second_hash=$(find apps/test-next-pages -type f -exec md5sum {} \; | sort | md5sum)
+
+    [ "$first_hash" = "$second_hash" ]
+  End
+
+  It 'Remix generator is idempotent'
+    nx g @ddd-plugin/ddd:web-app test-remix --framework=remix
+    first_hash=$(find apps/test-remix -type f -exec md5sum {} \; | sort | md5sum)
+
+    nx g @ddd-plugin/ddd:web-app test-remix --framework=remix
+    second_hash=$(find apps/test-remix -type f -exec md5sum {} \; | sort | md5sum)
+
+    [ "$first_hash" = "$second_hash" ]
+  End
+
+  It 'Expo generator is idempotent'
+    nx g @ddd-plugin/ddd:web-app test-expo --framework=expo
+    first_hash=$(find apps/test-expo -type f -exec md5sum {} \; | sort | md5sum)
+
+    nx g @ddd-plugin/ddd:web-app test-expo --framework=expo
+    second_hash=$(find apps/test-expo -type f -exec md5sum {} \; | sort | md5sum)
 
     [ "$first_hash" = "$second_hash" ]
   End
@@ -214,10 +247,11 @@ End
 ## ✅ Phase Validation Checklist
 
 -   [ ] Shared web library: API client + schemas + env
--   [ ] Next.js: Scaffolds App Router with shared assets
+-   [ ] Next.js (App Router): Scaffolds with shared assets
+-   [ ] Next.js (Pages Router): Scaffolds with shared assets
 -   [ ] Remix: Scaffolds v2.15+ with loaders
 -   [ ] Expo: Scaffolds React Native with shared client
--   [ ] All frameworks: Build successfully
+-   [ ] All surfaces: Build successfully (Next App, Next Pages, Remix, Expo)
 -   [ ] Idempotency: All double-run tests pass
 -   [ ] **PHASE-003 marked GREEN in Master Plan**
 

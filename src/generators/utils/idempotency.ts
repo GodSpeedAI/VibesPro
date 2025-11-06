@@ -37,8 +37,8 @@ export function ensureIdempotentWrite(
     const mergedContent = mergeWithPreserved(content, preservedContent, options.preserveMarkers);
     tree.write(path, mergedContent);
   } else {
-    // Simple content comparison
-    if (existingContent === content) {
+    // Simple content comparison (normalize line endings first)
+    if (normalizeLineEndings(existingContent) === normalizeLineEndings(content)) {
       return; // Already correct
     }
     tree.write(path, content);
@@ -53,9 +53,40 @@ export function sortExports(sourceCode: string): string {
 
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
 
-  // AST manipulation to sort exports
-  // ... implementation details
-  return printer.printFile(sourceFile);
+  const updatedStatements = sourceFile.statements.map((statement) => {
+    if (!ts.isExportDeclaration(statement)) {
+      return statement;
+    }
+
+    const { exportClause } = statement;
+    if (!exportClause || !ts.isNamedExports(exportClause)) {
+      return statement;
+    }
+
+    const sortedElements = [...exportClause.elements].sort((a, b) =>
+      a.name.text.localeCompare(b.name.text),
+    );
+
+    const sameOrder = exportClause.elements.every(
+      (element, idx) => element === sortedElements[idx],
+    );
+    if (sameOrder) {
+      return statement;
+    }
+
+    const updatedExportClause = ts.factory.updateNamedExports(exportClause, sortedElements);
+    return ts.factory.updateExportDeclaration(
+      statement,
+      statement.modifiers,
+      statement.isTypeOnly,
+      updatedExportClause,
+      statement.moduleSpecifier,
+      statement.assertClause,
+    );
+  });
+
+  const updatedSourceFile = ts.factory.updateSourceFile(sourceFile, updatedStatements);
+  return printer.printFile(updatedSourceFile);
 }
 
 /**
@@ -63,9 +94,15 @@ export function sortExports(sourceCode: string): string {
  */
 function extractBetweenMarkers(content: string, start: string, end: string): string {
   const startIdx = content.indexOf(start);
-  const endIdx = content.indexOf(end);
-  if (startIdx === -1 || endIdx === -1) return '';
-  return content.substring(startIdx + start.length, endIdx);
+  if (startIdx === -1) {
+    return '';
+  }
+  const afterStart = startIdx + start.length;
+  const endIdx = content.indexOf(end, afterStart);
+  if (endIdx === -1 || endIdx <= startIdx) {
+    return '';
+  }
+  return content.substring(afterStart, endIdx);
 }
 
 function mergeWithPreserved(
@@ -74,5 +111,19 @@ function mergeWithPreserved(
   markers: [string, string],
 ): string {
   const [start, end] = markers;
-  return newContent.replace(`${start}${end}`, `${start}${preserved}${end}`);
+  const startIdx = newContent.indexOf(start);
+  if (startIdx === -1) {
+    return newContent;
+  }
+  const afterStart = startIdx + start.length;
+  const endIdx = newContent.indexOf(end, afterStart);
+  if (endIdx === -1) {
+    return newContent;
+  }
+
+  return `${newContent.slice(0, afterStart)}${preserved}${newContent.slice(endIdx)}`;
+}
+
+function normalizeLineEndings(value: string): string {
+  return value.replace(/\r\n?/g, '\n');
 }

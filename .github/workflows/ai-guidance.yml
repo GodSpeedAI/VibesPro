@@ -198,5 +198,11 @@ jobs:
           echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
           echo "Installed just to ${HOME}/.local/bin"
 
+      - name: Run AI validation
+        run: just ai-validate
+
+      - name: Idempotency Tests
+        run: npx nx test generators-idempotency
+
       - name: Run AI guidance test suite
         run: just test-ai-guidance

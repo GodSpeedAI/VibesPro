@@ -1143,36 +1143,9 @@ pnpm nx test libs-auth
 
 **Walkthrough Complete**: This example demonstrates full MCP-orchestrated TDD workflow with complete intelligence gathering, pattern synthesis, and implementation validation. Related ADR/PRD references available in `docs/specs/` directory with full traceability matrix.
 
-## Implementation Plan
+## General Template Guidance
 
-### Phase 1: Foundation Setup (2-3 hours)
-
--   [ ] Set up development environment with MCP tools
--   [ ] Configure Nx workspace for hexagonal architecture
--   [ ] Establish baseline tests for existing generators
-
-### Phase 2: Pattern Implementation (4-6 hours)
-
--   [ ] Implement Unit of Work contracts (TypeScript + Python)
--   [ ] Create EventBus abstractions with in-memory adapters
--   [ ] Develop idempotency patterns for generators
-
-### Phase 3: Integration & Validation (3-4 hours)
-
--   [ ] Integrate Supabase type generation workflow
--   [ ] Set up strict typing enforcement
--   [ ] Create comprehensive test suites
-
-### Testing Checklist
-
--   [ ] All generators pass double-run idempotency tests
--   [ ] Nx boundary enforcement working correctly
--   [ ] Type sync CI workflow operational
--   [ ] End-to-end integration tests passing
-
----
-
-**Walkthrough Complete**: This example demonstrates the full MCP-orchestrated TDD workflow from intelligence gathering through implementation, ensuring robust, well-documented code generation with full traceability.
+Use the implementation plan and testing checklist above as the canonical reference. When adapting the flow to new features, clone the structure, adjust scope-specific checklists, and always maintain traceability back to the governing ADR/PRD/SDS entries. The walkthrough demonstrates expected rigor; reuse it as a template rather than duplicating content verbatim.
 
 ```
 
