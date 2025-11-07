@@ -3,9 +3,13 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { cleanupGeneratorOutputs, runGenerator } from './utils';
+import { cleanupGeneratorOutputs, resetGeneratorTracking, runGenerator } from './utils';
 
 describe('Domain Generator', () => {
+  beforeEach(() => {
+    resetGeneratorTracking();
+  });
+
   afterEach(async () => {
     await cleanupGeneratorOutputs();
   });

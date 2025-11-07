@@ -13,7 +13,13 @@ jest.mock('fs/promises', () => {
 
 import * as fs from 'fs/promises';
 const realFs = jest.requireActual<typeof import('fs/promises')>('fs/promises');
-import { buildYaml, cleanupGeneratorOutputs, runGenerator, serializeValue } from './utils';
+import {
+  buildYaml,
+  cleanupGeneratorOutputs,
+  resetGeneratorTracking,
+  runGenerator,
+  serializeValue,
+} from './utils';
 
 describe('serializeValue', () => {
   it('serializes string values with quotes', () => {
@@ -77,11 +83,13 @@ describe('runGenerator Error Handling', () => {
   beforeEach(async () => {
     // Clean up any existing test outputs before each test
     await cleanupGeneratorOutputs();
+    resetGeneratorTracking();
   });
 
   afterEach(async () => {
     // Clean up after each test
     await cleanupGeneratorOutputs();
+    resetGeneratorTracking();
     delete process.env.COPIER_COMMAND;
   });
 

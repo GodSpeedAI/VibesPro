@@ -17,7 +17,18 @@ export interface GeneratorResult {
 
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 const TEST_OUTPUT_ROOT = path.join(os.tmpdir(), 'vibespro-generator-tests');
-const generatedPaths = new Set<string>();
+let generatedPaths: Set<string> | null = null;
+
+function trackGeneratedPath(outputPath: string): void {
+  if (!generatedPaths) {
+    generatedPaths = new Set<string>();
+  }
+  generatedPaths.add(outputPath);
+}
+
+export function resetGeneratorTracking(): void {
+  generatedPaths = null;
+}
 
 const BASE_CONTEXT: Record<string, unknown> = {
   project_name: 'Test Project',
@@ -726,7 +737,7 @@ export async function runGenerator(
 ): Promise<GeneratorResult> {
   const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const outputPath = path.join(TEST_OUTPUT_ROOT, `${generatorType}-${uniqueId}`);
-  generatedPaths.add(outputPath);
+  trackGeneratedPath(outputPath);
   const dataFilePath = path.join(TEST_OUTPUT_ROOT, `answers-${generatorType}-${uniqueId}.yml`);
 
   const fail = (reason: unknown): GeneratorResult => ({
@@ -842,7 +853,7 @@ export async function runGenerator(
     process.stderr.write(`${errorMessage}\n`);
   } finally {
     try {
-      await fs.rm(dataFilePath, { force: true, recursive: true });
+      await fs.rm(dataFilePath, { force: true });
     } catch (error) {
       warnings.push(extractCommandError(error));
     }
@@ -891,6 +902,11 @@ export async function runGenerator(
 }
 
 export async function cleanupGeneratorOutputs(): Promise<void> {
+  if (!generatedPaths || generatedPaths.size === 0) {
+    generatedPaths = null;
+    return;
+  }
+
   for (const outputPath of generatedPaths) {
     try {
       await fs.rm(outputPath, { recursive: true, force: true });
@@ -901,5 +917,5 @@ export async function cleanupGeneratorOutputs(): Promise<void> {
       }
     }
   }
-  generatedPaths.clear();
+  generatedPaths = null;
 }
