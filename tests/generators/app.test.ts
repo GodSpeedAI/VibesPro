@@ -3,7 +3,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { cleanupGeneratorOutputs, runGenerator } from './utils';
+import { cleanupGeneratorOutputs, resetGeneratorTracking, runGenerator } from './utils';
 
 // Helper function to verify API client content
 async function verifyApiClientContent(filePath: string, expectedDomains: string[]): Promise<void> {
@@ -48,6 +48,10 @@ async function verifyPageContent(
 }
 
 describe('Application Generator', () => {
+  beforeEach(() => {
+    resetGeneratorTracking();
+  });
+
   afterEach(async () => {
     await cleanupGeneratorOutputs();
   });

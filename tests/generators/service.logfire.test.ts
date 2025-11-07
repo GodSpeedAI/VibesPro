@@ -1,8 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { cleanupGeneratorOutputs, runGenerator } from './utils';
+import { cleanupGeneratorOutputs, resetGeneratorTracking, runGenerator } from './utils';
 
 describe('Service Generator Logfire Integration', () => {
+  beforeEach(() => {
+    resetGeneratorTracking();
+  });
+
   afterEach(async () => {
     await cleanupGeneratorOutputs();
   });
