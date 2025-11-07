@@ -8,7 +8,25 @@ To ensure that your generator is idempotent, please follow these steps:
 
 1.  **Wrap your generator with `withIdempotency`:** The `withIdempotency` wrapper will ensure that `formatFiles` is always called, which will make your generator's output deterministic.
 
-2.  **Use `ensureIdempotentWrite` for all file operations:** The `ensureIdempotentWrite` function will ensure that you don't overwrite existing files without checking their content.
+2.  **Use `ensureIdempotentWrite` for all file operations:** The `ensureIdempotentWrite` function will ensure that you don't overwrite existing files without checking their content. A typical usage pattern looks like this:
+
+    ```ts
+    import { ensureIdempotentWrite } from "../../src/generators/utils/idempotency";
+
+    try {
+        ensureIdempotentWrite(tree, targetPath, templateContent, {
+            merge: true,
+            preserveMarkers: ["// <example:start>", "// <example:end>"],
+        });
+        // The helper skips the write when the normalized content is unchanged.
+    } catch (error) {
+        // Surface conflicts or IO errors so tests can fail fast.
+        logger.error(`Unable to update ${targetPath}`, error);
+        throw error;
+    }
+    ```
+
+    When the content hasn't changed, the call is a no-op; if a write occurs (for example after merging preserved regions), handle any thrown errors the same way you would for a normal `tree.write`.
 
 3.  **Add a double-run test to the regression suite:** The double-run test will run your generator twice and assert that there are no changes after the second run. This will provide an additional layer of testing to ensure that your generator is idempotent.
 
@@ -33,3 +51,12 @@ FAIL tests/generators/idempotency.test.ts
 ```
 
 This message indicates that the `apps/my-generator/src/index.ts` file was changed after the second run of the generator. To fix this, you will need to debug your generator to determine why it is not idempotent.
+
+### Common causes of non-idempotency
+
+-   **Timestamp or version stamping:** Avoid `Date.now()` or commit hashes; inject fixed timestamps from context or strip them entirely.
+-   **Random identifiers:** Seed randomness with a deterministic value (e.g., generator options) or remove it so the same inputs always produce the same outputs.
+-   **Unsorted filesystem reads:** Always sort directory listings before writing aggregate files so order does not depend on the OS.
+-   **Environment or CWD leakage:** Read required env vars once and default to explicit values; avoid using the caller’s working directory implicitly.
+-   **Whitespace/formatting drift:** Normalize line endings and run `formatFiles` so formatting tools generate the same output every time.
+-   **Async race conditions:** Await all asynchronous writes and avoid mutating shared state from parallel promises; serialize writes when order matters.

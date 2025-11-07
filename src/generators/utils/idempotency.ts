@@ -108,22 +108,45 @@ export function createIdempotentWrapper<T extends object>(
   return async (tree: Tree, genOptions: T): Promise<GeneratorCallback> => {
     logger.info(options.message || 'Running idempotent generator...');
 
-    // Run the base generator
-    const callback = await generator(tree, genOptions);
+    const runStep = async (stepName: string, step: () => Promise<void> | void): Promise<void> => {
+      try {
+        await step();
+      } catch (error) {
+        const details =
+          error instanceof Error ? error.stack ?? error.message : JSON.stringify(error);
+        logger.error(`Idempotent generator ${stepName} step failed: ${details}`);
+        throw error;
+      }
+    };
 
-    // Always format files for deterministic output
-    await formatFiles(tree);
+    let callback: GeneratorCallback | void;
 
-    // Run post-processing hook if provided
+    await runStep('execution', async () => {
+      callback = await generator(tree, genOptions);
+    });
+
+    await runStep('formatting', async () => {
+      await formatFiles(tree);
+    });
+
     if (options.postProcess) {
-      await options.postProcess(tree, genOptions);
+      await runStep('post-processing', async () => {
+        await options.postProcess?.(tree, genOptions);
+      });
     }
 
     return async () => {
-      if (callback) {
-        await callback();
+      try {
+        if (callback) {
+          await callback();
+        }
+        logger.info(`Idempotent generator finished successfully: ${options.message || 'OK'}`);
+      } catch (error) {
+        const details =
+          error instanceof Error ? error.stack ?? error.message : JSON.stringify(error);
+        logger.error(`Idempotent generator callback failed: ${details}`);
+        throw error;
       }
-      logger.info(`Idempotent generator finished successfully: ${options.message || 'OK'}`);
     };
   };
 }

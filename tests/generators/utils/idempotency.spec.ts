@@ -25,12 +25,15 @@ describe('withIdempotency', () => {
     expect(formatFiles).toHaveBeenCalledWith(tree);
   });
 
-  it('should return a generator callback', async () => {
-    const generator = jest.fn();
+  it('should return a callback that triggers the generator callback', async () => {
+    const generatorCallback = jest.fn();
+    const generator = jest.fn().mockResolvedValue(generatorCallback);
     const idempotentGenerator = withIdempotency(generator);
 
     const callback = await idempotentGenerator(tree, {});
 
     expect(callback).toBeInstanceOf(Function);
+    await callback?.();
+    expect(generatorCallback).toHaveBeenCalled();
   });
 });
