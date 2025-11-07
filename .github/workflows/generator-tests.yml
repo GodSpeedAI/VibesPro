@@ -26,4 +26,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: generator-test-logs
-          path: /tmp
+          path: /tmp/vibespro-generator-tests/
