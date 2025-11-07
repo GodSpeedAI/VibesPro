@@ -119,9 +119,9 @@ export function createIdempotentWrapper<T extends object>(
       await options.postProcess(tree, genOptions);
     }
 
-    return () => {
+    return async () => {
       if (callback) {
-        callback();
+        await callback();
       }
       logger.info(`Idempotent generator finished successfully: ${options.message || 'OK'}`);
     };
