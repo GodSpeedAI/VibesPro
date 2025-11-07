@@ -19,6 +19,18 @@ jobs:
         run: npm install -g pnpm
       - name: Install dependencies
         run: pnpm install
+      - name: Install just
+        shell: bash
+        run: |
+          if command -v just >/dev/null 2>&1; then
+            echo "just already installed"
+            just --version
+          else
+            curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+            echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          fi
+      - name: Verify just installation
+        run: just --version
       - name: Run generator tests
         run: just test-generators
       - name: Upload logs on failure
