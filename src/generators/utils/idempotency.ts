@@ -1,4 +1,4 @@
-import { Tree } from '@nx/devkit';
+import { formatFiles, GeneratorCallback, logger, Tree } from '@nx/devkit';
 import * as ts from 'typescript';
 
 /**
@@ -88,6 +88,82 @@ export function sortExports(sourceCode: string): string {
 
   const updatedSourceFile = ts.factory.updateSourceFile(sourceFile, updatedStatements);
   return printer.printFile(updatedSourceFile);
+}
+
+/**
+ * Higher-order function to create a configurable idempotent generator wrapper.
+ * This wrapper ensures that files are formatted and a post-processing hook can be run.
+ *
+ * @param generator The base Nx generator function.
+ * @param options Configuration for the wrapper.
+ * @returns A new generator function that is idempotent.
+ */
+export function createIdempotentWrapper<T extends object>(
+  generator: (tree: Tree, options: T) => void | Promise<void | GeneratorCallback>,
+  options: {
+    postProcess?: (tree: Tree, options: T) => void | Promise<void>;
+    message?: string;
+  },
+) {
+  return async (tree: Tree, genOptions: T): Promise<GeneratorCallback> => {
+    logger.info(options.message || 'Running idempotent generator...');
+
+    const runStep = async (stepName: string, step: () => Promise<void> | void): Promise<void> => {
+      try {
+        await step();
+      } catch (error) {
+        const details =
+          error instanceof Error ? error.stack ?? error.message : JSON.stringify(error);
+        logger.error(`Idempotent generator ${stepName} step failed: ${details}`);
+        throw error;
+      }
+    };
+
+    let callback: GeneratorCallback | void;
+
+    await runStep('execution', async () => {
+      callback = await generator(tree, genOptions);
+    });
+
+    await runStep('formatting', async () => {
+      await formatFiles(tree);
+    });
+
+    if (options.postProcess) {
+      await runStep('post-processing', async () => {
+        await options.postProcess?.(tree, genOptions);
+      });
+    }
+
+    return async () => {
+      try {
+        if (callback) {
+          await callback();
+        }
+        logger.info(`Idempotent generator finished successfully: ${options.message || 'OK'}`);
+      } catch (error) {
+        const details =
+          error instanceof Error ? error.stack ?? error.message : JSON.stringify(error);
+        logger.error(`Idempotent generator callback failed: ${details}`);
+        throw error;
+      }
+    };
+  };
+}
+
+/**
+ * A simple HOF wrapper to make a generator idempotent by running formatFiles
+ * after the generator completes. This ensures that the output is deterministic.
+ *
+ * @param generator The base Nx generator function to wrap.
+ * @returns A new generator function that is idempotent.
+ */
+export function withIdempotency<T extends object>(
+  generator: (tree: Tree, options: T) => void | Promise<void | GeneratorCallback>,
+) {
+  return createIdempotentWrapper(generator, {
+    message: 'Running generator with idempotency...',
+  });
 }
 
 /**

@@ -1,0 +1,35 @@
+name: Generator Idempotency Tests
+on: [pull_request]
+jobs:
+  test-generators:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Cache pnpm modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install just
+        uses: extractions/setup-just@v1
+        with:
+          just-version: "1.24.0"
+      - name: Verify just installation
+        run: just --version
+      - name: Run generator tests
+        run: just test-generators
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generator-test-logs
+          path: /tmp/vibespro-generator-tests/
