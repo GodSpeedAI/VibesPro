@@ -1,0 +1,48 @@
+{
+  "name": "supabase",
+  "root": "tools/supabase",
+  "targets": {
+    "supabase-devstack:start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker/docker-compose.supabase.yml up -d",
+        "cwd": "."
+      }
+    },
+    "supabase-devstack:stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker/docker-compose.supabase.yml down",
+        "cwd": "."
+      }
+    },
+    "supabase-devstack:reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker/docker-compose.supabase.yml down -v && docker compose -f docker/docker-compose.supabase.yml up -d",
+        "cwd": "."
+      }
+    },
+    "supabase-devstack:status": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker/docker-compose.supabase.yml ps",
+        "cwd": "."
+      }
+    },
+    "supabase-devstack:seed": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker/docker-compose.supabase.yml exec -T postgres psql -U postgres -f /docker-entrypoint-initdb.d/01-seed.sql",
+        "cwd": "."
+      }
+    },
+    "supabase-devstack:logs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker/docker-compose.supabase.yml logs -f",
+        "cwd": "."
+      }
+    }
+  }
+}

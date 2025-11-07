@@ -20,6 +20,18 @@
         "buildTargetName": "build",
         "testTargetName": "test"
       }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "jest:test"
+      }
     }
   ],
   "targetDefaults": {
@@ -35,6 +47,11 @@
     "lint": {
       "cache": true,
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+    },
+    "@nx/js:tsc": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   },
   "generators": {
@@ -43,6 +60,11 @@
       "publishable": false,
       "strict": true
     }
+  },
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "libs",
+    "toolsDir": "tools"
   },
   "release": {
     "version": {

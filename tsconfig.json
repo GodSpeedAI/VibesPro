@@ -15,7 +15,8 @@
     "allowJs": false,
     "noEmit": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "shared": ["libs/shared/src/index.ts"]
     }
   },
   "include": ["tools/**/*.ts", "tests/**/*.ts", "generators/**/*.ts", "jest.d.ts"],

@@ -8,6 +8,7 @@
     "dbaeumer.vscode-eslint",
     "samuelcolvin.jinjahtml",
     "redhat.vscode-yaml",
-    "github.vscode-github-actions"
+    "github.vscode-github-actions",
+    "firsttris.vscode-jest-runner"
   ]
 }

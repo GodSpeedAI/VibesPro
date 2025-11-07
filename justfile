@@ -287,6 +287,19 @@ types-validate:
 	@echo "🔍 Validating type consistency..."
 	python tools/type-generator/validate.py
 
+# --- Supabase ---
+supabase-start:
+    pnpm nx supabase-devstack:start
+
+supabase-stop:
+    pnpm nx supabase-devstack:stop
+
+supabase-reset:
+    pnpm nx supabase-devstack:reset
+
+supabase-seed:
+    pnpm nx supabase-devstack:seed
+
 # --- Maintenance ---
 clean:
 	@echo "🧹 Cleaning build artifacts..."
