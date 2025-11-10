@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "id": "ApiService",
+  "title": "Create a FastAPI backend service",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Service name",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      }
+    },
+    "directory": {
+      "type": "string",
+      "description": "Directory where the service is placed",
+      "default": "apps"
+    },
+    "withLogfire": {
+      "type": "boolean",
+      "description": "Include Logfire instrumentation",
+      "default": true
+    },
+    "withHexagonal": {
+      "type": "boolean",
+      "description": "Include hexagonal architecture structure",
+      "default": true
+    },
+    "tags": {
+      "type": "string",
+      "description": "Tags for Nx dependency graph"
+    }
+  },
+  "required": ["name"]
+}

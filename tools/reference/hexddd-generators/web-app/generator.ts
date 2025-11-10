@@ -24,6 +24,76 @@ async function tryGenerateNextApp(tree: Tree, options: WebAppGeneratorSchema) {
   }
 }
 
+async function injectSharedWebIntoNextApp(tree: Tree, options: WebAppGeneratorSchema) {
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments('apps', appNames.fileName);
+  
+  if (options.routerStyle === 'app' || options.routerStyle === undefined) {
+    const pagePath = joinPathFragments(projectRoot, 'app/page.tsx');
+    if (tree.exists(pagePath)) {
+      const content = tree.read(pagePath, 'utf-8') || '';
+      
+      if (!content.includes('@shared/web')) {
+        const importStatement = `import { fetchJson, ENV } from '@shared/web';\n`;
+        const updatedContent = importStatement + content;
+        tree.write(pagePath, updatedContent);
+      }
+    }
+    
+    const libDir = joinPathFragments(projectRoot, 'app/lib');
+    const apiClientPath = joinPathFragments(libDir, 'api-client.ts');
+    if (!tree.exists(apiClientPath)) {
+      tree.write(
+        apiClientPath,
+        `import { fetchJson, ENV } from '@shared/web';
+
+export async function fetchFromApi<T>(path: string): Promise<T> {
+  const url = \`\${ENV.API_URL}\${path}\`;
+  return fetchJson<T>(url);
+}
+
+export async function postToApi<T>(path: string, data: unknown): Promise<T> {
+  const url = \`\${ENV.API_URL}\${path}\`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error('NetworkError');
+  return (await response.json()) as T;
+}
+`
+      );
+    }
+  } else {
+    const indexPath = joinPathFragments(projectRoot, 'pages/index.tsx');
+    if (tree.exists(indexPath)) {
+      const content = tree.read(indexPath, 'utf-8') || '';
+      
+      if (!content.includes('@shared/web')) {
+        const importStatement = `import { fetchJson, ENV } from '@shared/web';\nimport type { GetServerSideProps } from 'next';\n`;
+        const updatedContent = importStatement + content;
+        tree.write(indexPath, updatedContent);
+      }
+    }
+    
+    const libDir = joinPathFragments(projectRoot, 'lib');
+    const apiClientPath = joinPathFragments(libDir, 'api-client.ts');
+    if (!tree.exists(apiClientPath)) {
+      tree.write(
+        apiClientPath,
+        `import { fetchJson, ENV } from '@shared/web';
+
+export async function fetchFromApi<T>(path: string): Promise<T> {
+  const url = \`\${ENV.API_URL}\${path}\`;
+  return fetchJson<T>(url);
+}
+`
+      );
+    }
+  }
+}
+
 async function tryGenerateRemixApp(tree: Tree, options: WebAppGeneratorSchema) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -35,13 +105,67 @@ async function tryGenerateRemixApp(tree: Tree, options: WebAppGeneratorSchema) {
       directory,
       linter: 'eslint',
       unitTestRunner: 'jest',
-      // Additional options can be passed if supported by plugin version
     });
   } catch (e) {
     // eslint-disable-next-line no-console
     console.warn('[web-app] @nx/remix not available or failed, proceeding with shared lib only');
   }
 }
+
+async function injectSharedWebIntoRemixApp(tree: Tree, options: WebAppGeneratorSchema) {
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments('apps', appNames.fileName);
+  const indexRoute = joinPathFragments(projectRoot, 'app/routes/_index.tsx');
+  
+  if (tree.exists(indexRoute)) {
+    const content = tree.read(indexRoute, 'utf-8') || '';
+    
+    if (!content.includes('@shared/web')) {
+      const loaderExample = `import { json, type LoaderFunctionArgs } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+import { fetchJson, ENV } from '@shared/web';
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  try {
+    const data = await fetchJson<{ message: string }>(\`\${ENV.API_URL}/api/health\`);
+    return json(data);
+  } catch (error) {
+    console.error('Failed to load data:', error);
+    return json({ error: 'Failed to load data' }, { status: 500 });
+  }
+}
+
+export default function Index() {
+  const data = useLoaderData<typeof loader>();
+  
+  return (
+    <div>
+      <h1>Welcome to ${options.name}</h1>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+}
+`;
+      tree.write(indexRoute, loaderExample);
+    }
+  }
+  
+  const utilsDir = joinPathFragments(projectRoot, 'app/utils');
+  const apiClientPath = joinPathFragments(utilsDir, 'api-client.ts');
+  if (!tree.exists(apiClientPath)) {
+    tree.write(
+      apiClientPath,
+      `import { fetchJson, ENV } from '@shared/web';
+
+export async function fetchFromApi<T>(path: string): Promise<T> {
+  const url = \`\${ENV.API_URL}\${path}\`;
+  return fetchJson<T>(url);
+}
+`
+    );
+  }
+}
+
 
 async function tryGenerateExpoApp(tree: Tree, options: WebAppGeneratorSchema) {
   try {
@@ -60,6 +184,97 @@ async function tryGenerateExpoApp(tree: Tree, options: WebAppGeneratorSchema) {
     console.warn('[web-app] @nx/expo not available or failed, proceeding with shared lib only');
   }
 }
+
+async function injectSharedWebIntoExpoApp(tree: Tree, options: WebAppGeneratorSchema) {
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments('apps', appNames.fileName);
+  
+  const appTsxPaths = [
+    joinPathFragments(projectRoot, 'src/app/App.tsx'),
+    joinPathFragments(projectRoot, 'App.tsx'),
+  ];
+  
+  for (const appTsx of appTsxPaths) {
+    if (tree.exists(appTsx)) {
+      const content = tree.read(appTsx, 'utf-8') || '';
+      
+      if (!content.includes('@shared/web')) {
+        const expoExample = `import { useState, useEffect } from 'react';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { fetchJson, ENV } from '@shared/web';
+
+export default function App() {
+  const [data, setData] = useState<{ message: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchJson<{ message: string }>(\`\${ENV.API_URL}/api/health\`)
+      .then(setData)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome to ${options.name}</Text>
+      <Text>{data?.message || 'No data'}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+});
+`;
+        tree.write(appTsx, expoExample);
+      }
+      break;
+    }
+  }
+  
+  const utilsDir = joinPathFragments(projectRoot, 'src/utils');
+  const apiClientPath = joinPathFragments(utilsDir, 'api-client.ts');
+  if (!tree.exists(apiClientPath)) {
+    tree.write(
+      apiClientPath,
+      `import { fetchJson, ENV } from '@shared/web';
+
+export async function fetchFromApi<T>(path: string): Promise<T> {
+  const url = \`\${ENV.API_URL}\${path}\`;
+  return fetchJson<T>(url);
+}
+`
+    );
+  }
+}
+
 
 function ensureSharedWeb(tree: Tree, opts: WebAppGeneratorSchema) {
   const base = 'libs/shared/web/src/lib';
@@ -81,17 +296,25 @@ function ensureSharedWeb(tree: Tree, opts: WebAppGeneratorSchema) {
 export async function webAppGenerator(tree: Tree, options: WebAppGeneratorSchema) {
   if (options.framework === 'next') {
     await tryGenerateNextApp(tree, options);
+    if (options.apiClient !== false) {
+      await injectSharedWebIntoNextApp(tree, options);
+    }
   } else if (options.framework === 'remix') {
     await tryGenerateRemixApp(tree, options);
+    if (options.apiClient !== false) {
+      await injectSharedWebIntoRemixApp(tree, options);
+    }
   } else if (options.framework === 'expo') {
     await tryGenerateExpoApp(tree, options);
+    if (options.apiClient !== false) {
+      await injectSharedWebIntoExpoApp(tree, options);
+    }
   }
 
   if (options.apiClient !== false) {
     ensureSharedWeb(tree, options);
   }
 
-  // Optionally add example page wiring in future; keep minimal and idempotent for now
   await formatFiles(tree);
 }
 

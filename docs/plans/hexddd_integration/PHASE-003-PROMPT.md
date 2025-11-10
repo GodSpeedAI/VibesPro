@@ -1,682 +1,318 @@
-# VibesPro - PHASE-003: Universal React Generator
+# VibesPro - PHASE-003: Nx-Composed Full-Stack Generators (Frontend + Backend)
 
-> **Frontend Agent**: Complete this phase to create a unified generator for Next.js, Remix, and Expo with shared type-safe infrastructure.
+> **Full-Stack Agent**: Implement wrapper generators that compose official Nx generators with VibesPro's shared infrastructure and hexagonal architecture patterns.
 
 ---
 
-## Mission: Build one generator to rule all React frameworks with zero duplication
+## Mission: Create Nx wrapper generators for all application surfaces
 
-Create a single, universal Nx generator that scaffolds Next.js (App Router + Pages Router), Remix, and Expo applications—all sharing type-safe API clients, validation schemas, and hexagonal architecture patterns from a common web assets library.
+Build wrapper generators that delegate to official Nx framework generators and apply post-generation transformations to inject shared libraries, hexagonal architecture, and VibesPro conventions:
+
+- **Frontend**: `@nx/next`, `@nx/remix`, `@nx/expo` with shared-web integration
+- **Backend**: `@nxlv/python` with FastAPI + Logfire + Pydantic + Supabase type-sync
+
+**Key Principle**: Compose, don't replace. Let Nx generators handle framework scaffolding, we add VibesPro conventions.
 
 ---
 
 ## Success Criteria (Binary Pass/Fail)
 
--   [ ] **Shared Web Library Complete**: `libs/shared/web` provides ApiClient, Zod schemas, env config, error handling used by all frameworks
--   [ ] **Next.js App Router Generator**: Scaffolds RSC-ready apps with shared API client, builds successfully
--   [ ] **Next.js Pages Router Generator**: Scaffolds getServerSideProps/getStaticProps apps with shared client, builds successfully
--   [ ] **Remix Generator**: Scaffolds v2.15+ apps with loader/action patterns using shared client, builds successfully
--   [ ] **Expo Generator**: Scaffolds React Native apps with shared client (platform-agnostic fetch), builds successfully
--   [ ] **Zero Duplication**: All 4 frameworks import from `@shared/web`, no copy-pasted API logic
--   [ ] **Idempotency Validated**: Double-run tests pass for all 4 generators (hash stability)
--   [ ] **Zero CI Failures**: `pnpm nx run-many -t build,test,lint` passes for all generated apps
--   [ ] **Zero Technical Debt**: Follows generator patterns from PHASE-001, hexagonal from PHASE-002
--   [ ] **Production Ready**: Documentation includes framework-specific examples, traceability matrix updated
+- [ ] **Shared Web Library Complete**: `libs/shared/web` provides ApiClient, Zod schemas, env config, error handling ✅ **DONE**
+- [ ] **Next.js Wrapper Generator**: Delegates to `@nx/next:application`, injects shared-web integration, supports both App Router and Pages Router
+- [ ] **Remix Wrapper Generator**: Delegates to `@nx/remix:application`, injects shared-web integration with loader/action patterns
+- [ ] **Expo Wrapper Generator**: Delegates to `@nx/expo:application`, injects shared-web integration for React Native
+- [ ] **FastAPI Wrapper Generator**: Delegates to `@nxlv/python:fastapi-application`, injects Logfire + hexagonal architecture + Pydantic type-sync
+- [ ] **Zero Duplication**: All frontends import from `@vibes-pro/shared-web`, all backends use hexagonal ports/adapters
+- [ ] **Idempotency Validated**: Double-run tests pass for all 4 wrapper generators (frontend + backend)
+- [ ] **Backend Services Auto-Instrument**: Generated FastAPI apps include Logfire bootstrap and export OpenAPI schemas
+- [ ] **Zero CI Failures**: `pnpm nx run-many -t build,test,lint` passes for all generated apps
+- [ ] **Production Ready**: Both `nx g @vibes-pro/generators:web-app` and `nx g @vibes-pro/generators:api-service` work
 
-**Failure Mode**: If any criterion fails, continue iterating until all pass. Do not proceed to PHASE-004 with broken generators.
+**Failure Mode**: If any criterion fails, continue iterating until all pass.
 
 ---
 
 ## Context: Why This Matters
 
-**Current State**: VibesPro lacks frontend application generators. Template users must manually configure Next.js/Remix/Expo apps, duplicate API client logic across frameworks, manually wire up type-safe schemas, and manage framework-specific patterns inconsistently.
+**Current State**: VibesPro has shared web infrastructure (`libs/shared/web`) but no generators to scaffold frontend OR backend applications that use it.
 
 **Impact**:
-
--   **Template Users**: Cannot scaffold production-ready frontend apps—must spend hours setting up each framework
--   **Development Teams**: Duplicate API client code across 4 surfaces—bug fixes need 4× the work
--   **Type Safety**: Manual schema mapping between Supabase types and frontend—drift inevitable
--   **Hexagonal Architecture**: No enforcement of ports/adapters in frontend—infrastructure leaks into UI
--   **Cost of Inaction**: Weeks of setup time per project, inconsistent patterns, maintenance nightmare
+- **Template Users**: Cannot quickly scaffold Next.js/Remix/Expo/FastAPI apps with VibesPro conventions
+- **Frontend Development**: Must manually wire up shared-web library in each new frontend app
+- **Backend Development**: Must manually configure Logfire, hexagonal architecture, and Pydantic schemas for each service
+- **Type Safety**: Manual schema integration—drift inevitable between Supabase, backend, and frontend
+- **Hexagonal Architecture**: No enforcement of ports/adapters patterns
+- **Observability**: No automatic Logfire instrumentation
 
 **Target State**:
+- **Frontend**: `nx g @vibes-pro/generators:web-app my-app --framework=next` scaffolds with shared-web integration
+- **Backend**: `nx g @vibes-pro/generators:api-service my-api` scaffolds with Logfire + hexagonal architecture + Pydantic
+- All frameworks automatically configured with VibesPro conventions
+- Type-safe infrastructure ready to use out of the box
+- Consistent patterns across all surfaces (web + mobile + API)
 
--   One command generates Next.js/Remix/Expo apps: `nx g @ddd-plugin/ddd:web-app my-app --framework=next`
--   All frameworks share battle-tested API client from `libs/shared/web`
--   Type-safe schemas auto-sync with Supabase types (prepared for PHASE-004)
--   Hexagonal ports/adapters enforced via Nx boundaries
--   Consistent patterns across all surfaces—fix once, benefit everywhere
-
-**Risk Level**: **MEDIUM** → **LOW** (after completion, frontend development accelerates 10x with proven patterns)
-
----
-
-## Phase 1: Shared Infrastructure (Cycle A) (Sprint 1, Day 1)
-
-### Task 1A: Shared Web Assets Library
-
-**What**: Create `libs/shared/web` with framework-agnostic API client, Zod schemas, env config
-
-**Branch**: `feature/shared-web-assets`
-
-**Implementation Steps**:
-
-1. **Generate shared library using Nx**:
-
-```bash
-# Use generator-first approach per DEV-ADR-001
-pnpm exec nx g @nx/js:lib shared-web --directory=libs/shared --buildable --publishable=false
-```
-
-2. **🔴 RED Phase - Create failing tests**:
-
-```typescript
-// libs/shared/web/src/api-client.test.ts
-import { ApiClient } from "./api-client";
-
-describe("ApiClient", () => {
-    it("should make GET requests with type safety", async () => {
-        const client = new ApiClient("http://localhost:8000");
-        const result = await client.get<{ id: string }>("/api/test");
-        // Expected: FAIL (ApiClient doesn't exist)
-    });
-
-    it("should handle errors gracefully", async () => {
-        const client = new ApiClient("http://localhost:8000");
-        await expect(client.get("/api/404")).rejects.toThrow();
-        // Expected: FAIL
-    });
-
-    it("should include auth headers when configured", async () => {
-        const client = new ApiClient("http://localhost:8000", {
-            headers: { Authorization: "Bearer token" },
-        });
-        // Test auth header inclusion
-        // Expected: FAIL
-    });
-});
-```
-
-3. **🟢 GREEN Phase - Implement API client**:
-
-```typescript
-// libs/shared/web/src/api-client.ts
-export interface ApiClientConfig {
-    baseUrl: string;
-    headers?: Record<string, string>;
-    timeout?: number;
-}
-
-export class ApiClient {
-    private baseUrl: string;
-    private defaultHeaders: Record<string, string>;
-    private timeout: number;
-
-    constructor(baseUrl: string, config?: Partial<ApiClientConfig>) {
-        this.baseUrl = baseUrl;
-        this.defaultHeaders = config?.headers || {};
-        this.timeout = config?.timeout || 30000;
-    }
-
-    async get<T>(path: string, options?: RequestInit): Promise<T> {
-        return this.request<T>("GET", path, options);
-    }
-
-    async post<T>(path: string, body: unknown, options?: RequestInit): Promise<T> {
-        return this.request<T>("POST", path, { ...options, body: JSON.stringify(body) });
-    }
-
-    async put<T>(path: string, body: unknown, options?: RequestInit): Promise<T> {
-        return this.request<T>("PUT", path, { ...options, body: JSON.stringify(body) });
-    }
-
-    async delete<T>(path: string, options?: RequestInit): Promise<T> {
-        return this.request<T>("DELETE", path, options);
-    }
-
-    private async request<T>(method: string, path: string, options?: RequestInit): Promise<T> {
-        const url = `${this.baseUrl}${path}`;
-        const headers = {
-            "Content-Type": "application/json",
-            ...this.defaultHeaders,
-            ...(options?.headers || {}),
-        };
-
-        const response = await fetch(url, {
-            method,
-            headers,
-            ...options,
-            signal: AbortSignal.timeout(this.timeout),
-        });
-
-        if (!response.ok) {
-            throw new ApiError(response.status, await response.text());
-        }
-
-        return response.json();
-    }
-}
-
-export class ApiError extends Error {
-    constructor(
-        public status: number,
-        message: string,
-    ) {
-        super(`API Error ${status}: ${message}`);
-        this.name = "ApiError";
-    }
-}
-```
-
-4. **Implement Zod schemas**:
-
-```typescript
-// libs/shared/web/src/schemas.ts
-import { z } from "zod";
-
-// Base schemas that mirror Supabase types
-export const UuidSchema = z.string().uuid();
-export const EmailSchema = z.string().email();
-export const TimestampSchema = z.string().datetime();
-
-// Domain schemas (will integrate with Supabase types in PHASE-004)
-export const UserSchema = z.object({
-    id: UuidSchema,
-    email: EmailSchema,
-    created_at: TimestampSchema,
-    updated_at: TimestampSchema,
-});
-
-export type User = z.infer<typeof UserSchema>;
-
-// Export validation helpers
-export const validateUser = (data: unknown): User => {
-    return UserSchema.parse(data);
-};
-```
-
-5. **Environment configuration**:
-
-```typescript
-// libs/shared/web/src/env.ts
-/**
- * Framework-agnostic environment variable access
- * Supports Next.js, Remix, Expo env patterns
- */
-export const env = {
-    // API configuration
-    API_URL: getEnvVar("NEXT_PUBLIC_API_URL", "PUBLIC_API_URL", "EXPO_PUBLIC_API_URL") || "http://localhost:8000",
-
-    // Supabase configuration (for direct client usage)
-    SUPABASE_URL: getEnvVar("NEXT_PUBLIC_SUPABASE_URL", "PUBLIC_SUPABASE_URL", "EXPO_PUBLIC_SUPABASE_URL"),
-    SUPABASE_ANON_KEY: getEnvVar("NEXT_PUBLIC_SUPABASE_ANON_KEY", "PUBLIC_SUPABASE_ANON_KEY", "EXPO_PUBLIC_SUPABASE_ANON_KEY"),
-};
-
-function getEnvVar(...keys: string[]): string | undefined {
-    // Check process.env first (Node.js, Next.js, Remix)
-    if (typeof process !== "undefined" && process.env) {
-        for (const key of keys) {
-            const value = process.env[key];
-            if (value) return value;
-        }
-    }
-
-    // Fallback to Expo constants (React Native)
-    try {
-        const Constants = require("expo-constants");
-        const expoEnv = Constants.expoConfig?.extra || Constants.manifest?.extra;
-        if (expoEnv) {
-            for (const key of keys) {
-                const value = expoEnv[key];
-                if (value) return value;
-            }
-        }
-    } catch {
-        // Silently ignore if expo-constants is not available
-    }
-
-    return undefined;
-}
-```
-
-6. **🔵 REFACTOR Phase - Add error handling and utilities**:
-
-```typescript
-// libs/shared/web/src/error-handler.ts
-import { ApiError } from "./api-client";
-
-export interface ErrorResponse {
-    message: string;
-    code: string;
-    details?: unknown;
-}
-
-export function handleApiError(error: unknown): ErrorResponse {
-    if (error instanceof ApiError) {
-        return {
-            message: error.message,
-            code: `HTTP_${error.status}`,
-            details: error.status,
-        };
-    }
-
-    if (error instanceof Error) {
-        return {
-            message: error.message,
-            code: "UNKNOWN_ERROR",
-        };
-    }
-
-    return {
-        message: "An unexpected error occurred",
-        code: "UNKNOWN_ERROR",
-    };
-}
-```
-
-**Exit Criteria**:
-
--   [ ] `libs/shared/web` library created with buildable configuration
--   [ ] ApiClient implemented with GET/POST/PUT/DELETE methods
--   [ ] Zod schemas defined for common domain types
--   [ ] Environment configuration supports Next.js/Remix/Expo patterns
--   [ ] Error handling utilities complete
--   [ ] All unit tests pass: `pnpm nx test shared-web`
--   [ ] Build succeeds: `pnpm nx build shared-web`
--   [ ] **Traceability**: Code references DEV-ADR-028, DEV-SDS-028
+**Risk Level**: **LOW** (composition pattern minimizes maintenance burden)
 
 ---
 
-## Phase 2: Framework Generators (Cycles B + C + D) (Sprint 1, Days 2-3)
+## Phase 1: Next.js Wrapper Generator (Cycle B)
 
-### Task 2A: Next.js Generator (App Router + Pages Router)
+### Task 1: Create Next.js Wrapper
 
-**What**: Create generator supporting both App Router (RSC) and Pages Router patterns
+**What**: Create generator that composes `@nx/next:application` with shared-web integration
 
-**Branch**: `feature/gen-nextjs`
-
-**Dependencies**: Task 1A complete (shared web library exists)
+**Branch**: `feature/nx-wrapper-nextjs`
 
 **Implementation Steps**:
 
-1. **Create generator structure**:
-
-```bash
-pnpm exec nx g @nx/plugin:generator web-app --project=ddd-plugin
-```
-
-2. **Define schema** at `generators/web-app/schema.json`:
-
-```json
-{
-    "$schema": "https://json-schema.org/draft-07/schema",
-    "id": "WebApp",
-    "title": "Create a web application",
-    "type": "object",
-    "properties": {
-        "name": {
-            "type": "string",
-            "description": "Application name",
-            "$default": { "$source": "argv", "index": 0 }
-        },
-        "framework": {
-            "type": "string",
-            "description": "Web framework",
-            "enum": ["next", "remix", "expo"],
-            "x-prompt": "Which framework would you like to use?"
-        },
-        "routerStyle": {
-            "type": "string",
-            "description": "Next.js router style (only for framework=next)",
-            "enum": ["app", "pages"],
-            "default": "app"
-        },
-        "directory": {
-            "type": "string",
-            "description": "Directory where the app is placed",
-            "default": "apps"
-        },
-        "tags": {
-            "type": "string",
-            "description": "Tags for Nx dependency graph"
-        }
-    },
-    "required": ["name", "framework"]
-}
-```
-
-3. **Implement generator logic** at `generators/web-app/generator.ts`:
+1. **Generator already exists** at `tools/reference/hexddd-generators/web-app/generator.ts`:
 
 ```typescript
-import { Tree, formatFiles, installPackagesTask, generateFiles, joinPathFragments, addProjectConfiguration } from "@nx/devkit";
-import { WebAppGeneratorSchema } from "./schema";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-export async function webAppGenerator(tree: Tree, options: WebAppGeneratorSchema) {
-    const projectRoot = joinPathFragments(options.directory, options.name);
-
-    // Choose template based on framework
-    if (options.framework === "next") {
-        await generateNextApp(tree, options, projectRoot);
-    } else if (options.framework === "remix") {
-        await generateRemixApp(tree, options, projectRoot);
-    } else if (options.framework === "expo") {
-        await generateExpoApp(tree, options, projectRoot);
-    }
-
-    await formatFiles(tree);
-    return () => {
-        installPackagesTask(tree);
-    };
-}
-
-async function generateNextApp(tree: Tree, options: WebAppGeneratorSchema, projectRoot: string) {
-    const templatePath = options.routerStyle === "app" ? "./files/next-app" : "./files/next-pages";
-
-    generateFiles(tree, joinPathFragments(__dirname, templatePath), projectRoot, {
-        ...options,
-        tmpl: "",
-        offsetFromRoot: "../../", // Adjust based on depth
-    });
-
-    // Add to workspace
-    addProjectConfiguration(tree, options.name, {
-        root: projectRoot,
-        projectType: "application",
-        sourceRoot: `${projectRoot}/src`,
-        targets: {
-            build: {
-                executor: "@nx/next:build",
-                options: { outputPath: `dist/${projectRoot}` },
-            },
-            serve: {
-                executor: "@nx/next:server",
-                options: { dev: true, port: 3000 },
-            },
-        },
-        tags: options.tags?.split(",") || ["type:application", "framework:next"],
-    });
-}
-```
-
-4. **Create Next.js App Router templates** at `generators/web-app/files/next-app/`:
-
-```typescript
-// app/page.tsx__tmpl__
-import { ApiClient } from '@shared/web';
-
-export default async function HomePage() {
-  const client = new ApiClient(process.env.NEXT_PUBLIC_API_URL!);
-
+async function tryGenerateNextApp(tree: Tree, options: WebAppGeneratorSchema) {
   try {
-    const data = await client.get<{ message: string }>('/api/health');
-    return (
-      <main>
-        <h1>Welcome to <%= name %></h1>
-        <p>{data.message}</p>
-      </main>
-    );
-  } catch (error) {
-    return <div>Error loading data</div>;
+    const { applicationGenerator } = require('@nx/next/src/generators/application/application');
+    const appNames = names(options.name);
+    const directory = joinPathFragments('apps', appNames.fileName);
+    const appDir = options.routerStyle !== 'pages';
+    
+    await applicationGenerator(tree, {
+      name: appNames.fileName,
+      directory,
+      style: 'css',
+      unitTestRunner: 'jest',
+      linter: 'eslint',
+      appDir,
+    });
+  } catch (e) {
+    console.warn('[web-app] @nx/next not available or failed, proceeding with shared lib only');
   }
 }
 ```
 
-```typescript
-// app/layout.tsx__tmpl__
-import "./global.css";
-
-export const metadata = {
-    title: "<%= name %>",
-    description: "Generated by VibesPro",
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <html lang="en">
-            <body>{children}</body>
-        </html>
-    );
-}
-```
-
-5. **Create Next.js Pages Router templates** at `generators/web-app/files/next-pages/`:
+2. **Add post-generation transformations** to inject shared-web imports:
 
 ```typescript
-// pages/index.tsx__tmpl__
-import { GetServerSideProps } from 'next';
-import { ApiClient } from '@shared/web';
-
-interface HomePageProps {
-  data: { message: string };
+async function injectSharedWebIntoNextApp(tree: Tree, options: WebAppGeneratorSchema) {
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments('apps', appNames.fileName);
+  
+  if (options.routerStyle === 'app') {
+    // App Router: inject into app/page.tsx
+    const pagePath = joinPathFragments(projectRoot, 'app/page.tsx');
+    if (tree.exists(pagePath)) {
+      const content = tree.read(pagePath, 'utf-8');
+      const updatedContent = `import { ApiClient, ENV } from '@vibes-pro/shared-web';\n\n${content}`;
+      tree.write(pagePath, updatedContent);
+    }
+  } else {
+    // Pages Router: inject into pages/index.tsx
+    const indexPath = joinPathFragments(projectRoot, 'pages/index.tsx');
+    if (tree.exists(indexPath)) {
+      const content = tree.read(indexPath, 'utf-8');
+      const updatedContent = `import { ApiClient, ENV } from '@vibes-pro/shared-web';\nimport type { GetServerSideProps } from 'next';\n\n${content}`;
+      tree.write(indexPath, updatedContent);
+    }
+  }
+  
+  // Add example API client usage
+  await addApiClientExample(tree, projectRoot, options.routerStyle);
 }
 
-export default function HomePage({ data }: HomePageProps) {
-  return (
-    <main>
-      <h1>Welcome to <%= name %></h1>
-      <p>{data.message}</p>
-    </main>
+async function addApiClientExample(tree: Tree, projectRoot: string, routerStyle: string) {
+  const exampleDir = joinPathFragments(projectRoot, 'src/lib');
+  tree.write(
+    joinPathFragments(exampleDir, 'api-client.ts'),
+    `import { ApiClient, ENV } from '@vibes-pro/shared-web';
+
+export const apiClient = new ApiClient({
+  baseUrl: ENV.API_URL,
+});
+
+export async function fetchExample() {
+  return apiClient.get('/api/example');
+}
+`
   );
 }
-
-export const getServerSideProps: GetServerSideProps<HomePageProps> = async () => {
-  try {
-    const client = new ApiClient(process.env.NEXT_PUBLIC_API_URL!);
-    const data = await client.get<{ message: string }>('/api/health');
-    return { props: { data } };
-  } catch (error) {
-    console.error('Failed to load data:', error);
-    return { notFound: true };
-  }
-};
 ```
 
-6. **Add Next.js configuration templates**:
-
-```javascript
-// next.config.js__tmpl__
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-    reactStrictMode: true,
-    transpilePackages: ["@shared/web"],
-    env: {
-        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    },
-};
-
-module.exports = nextConfig;
-```
-
-**Exit Criteria**:
-
--   [ ] Generator creates App Router apps with RSC patterns
--   [ ] Generator creates Pages Router apps with getServerSideProps
--   [ ] Both styles import from `@shared/web` (no duplication)
--   [ ] Generated apps include next.config.js with proper transpilation
--   [ ] `pnpm nx build <generated-app>` succeeds for both router styles
--   [ ] Tests validate both `--routerStyle=app` and `--routerStyle=pages`
--   [ ] **Traceability**: Generator references DEV-ADR-028, DEV-PRD-029
-
----
-
-### Task 2B: Remix Generator
-
-**What**: Create generator for Remix v2.15+ apps with loader/action patterns
-
-**Branch**: `feature/gen-remix`
-
-**Dependencies**: Task 1A complete
-
-**Implementation Steps**:
-
-1. **Extend generator from Task 2A** to handle `framework=remix`:
+3. **Update main generator** to call Next.js flow:
 
 ```typescript
-async function generateRemixApp(tree: Tree, options: WebAppGeneratorSchema, projectRoot: string) {
-    generateFiles(tree, joinPathFragments(__dirname, "./files/remix"), projectRoot, {
-        ...options,
-        tmpl: "",
-    });
-
-    addProjectConfiguration(tree, options.name, {
-        root: projectRoot,
-        projectType: "application",
-        sourceRoot: `${projectRoot}/app`,
-        targets: {
-            build: {
-                executor: "@nx/remix:build",
-                options: { outputPath: `dist/${projectRoot}` },
-            },
-            serve: {
-                executor: "@nx/remix:serve",
-                options: { port: 3000 },
-            },
-        },
-        tags: options.tags?.split(",") || ["type:application", "framework:remix"],
-    });
+export async function webAppGenerator(tree: Tree, options: WebAppGeneratorSchema) {
+  if (options.framework === 'next') {
+    await tryGenerateNextApp(tree, options);
+    if (options.apiClient !== false) {
+      await injectSharedWebIntoNextApp(tree, options);
+    }
+  }
+  // ... other frameworks
+  
+  if (options.apiClient !== false) {
+    ensureSharedWeb(tree, options);
+  }
+  
+  await formatFiles(tree);
 }
 ```
 
-2. **Create Remix templates** at `generators/web-app/files/remix/`:
+**Exit Criteria**:
+- [ ] Wrapper delegates to `@nx/next:application` correctly
+- [ ] App Router apps (`--routerStyle=app`) scaffold with RSC patterns
+- [ ] Pages Router apps (`--routerStyle=pages`) scaffold with SSR patterns
+- [ ] Both styles import from `@vibes-pro/shared-web`
+- [ ] Generated apps include example API client usage
+- [ ] `pnpm nx build <generated-app>` succeeds for both router styles
+- [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
+
+---
+
+## Phase 2: Remix Wrapper Generator (Cycle C)
+
+### Task 2: Create Remix Wrapper
+
+**What**: Create generator that composes `@nx/remix:application` with shared-web integration
+
+**Branch**: `feature/nx-wrapper-remix`
+
+**Implementation Steps**:
+
+1. **Implement Remix delegation** (already exists):
 
 ```typescript
-// app/routes/_index.tsx__tmpl__
-import { json, type LoaderFunctionArgs } from '@remix-run/node';
+async function tryGenerateRemixApp(tree: Tree, options: WebAppGeneratorSchema) {
+  try {
+    const { applicationGenerator } = require('@nx/remix/generators');
+    const appNames = names(options.name);
+    const directory = joinPathFragments('apps', appNames.fileName);
+    
+    await applicationGenerator(tree, {
+      name: appNames.fileName,
+      directory,
+      linter: 'eslint',
+      unitTestRunner: 'jest',
+    });
+  } catch (e) {
+    console.warn('[web-app] @nx/remix not available or failed, proceeding with shared lib only');
+  }
+}
+```
+
+2. **Add Remix-specific transformations** for loader pattern:
+
+```typescript
+async function injectSharedWebIntoRemixApp(tree: Tree, options: WebAppGeneratorSchema) {
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments('apps', appNames.fileName);
+  const indexRoute = joinPathFragments(projectRoot, 'app/routes/_index.tsx');
+  
+  if (tree.exists(indexRoute)) {
+    const loaderExample = `import { json, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { ApiClient, env } from '@shared/web';
+import { ApiClient, ENV } from '@vibes-pro/shared-web';
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const client = new ApiClient({ baseUrl: ENV.API_URL });
   try {
-    const client = new ApiClient(env.API_URL);
-    const data = await client.get<{ message: string }>('/api/health');
+    const data = await client.get('/api/health');
     return json(data);
   } catch (error) {
-    console.error('Failed to load data:', error);
-    return json({ message: 'Failed to load data' }, { status: 500 });
+    return json({ error: 'Failed to load data' }, { status: 500 });
   }
 }
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
-
+  
   return (
-    <main>
-      <h1>Welcome to <%= name %></h1>
-      <p>{data.message}</p>
-    </main>
+    <div>
+      <h1>Welcome to ${options.name}</h1>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
   );
 }
-```
-
-```typescript
-// app/root.tsx__tmpl__
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
-
-export default function App() {
-    return (
-        <html lang="en">
-            <head>
-                <meta charSet="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <Meta />
-                <Links />
-            </head>
-            <body>
-                <Outlet />
-                <ScrollRestoration />
-                <Scripts />
-                <LiveReload />
-            </body>
-        </html>
-    );
+`;
+    tree.write(indexRoute, loaderExample);
+  }
 }
 ```
 
-3. **Add Remix configuration**:
+3. **Wire into main generator**:
 
-```javascript
-// remix.config.js__tmpl__
-/** @type {import('@remix-run/dev').AppConfig} */
-module.exports = {
-    ignoredRouteFiles: ["**/.*"],
-    serverModuleFormat: "esm",
-    future: {
-        v3_fetcherPersist: true,
-        v3_relativeSplatPath: true,
-        v3_throwAbortReason: true,
-    },
-};
+```typescript
+export async function webAppGenerator(tree: Tree, options: WebAppGeneratorSchema) {
+  if (options.framework === 'remix') {
+    await tryGenerateRemixApp(tree, options);
+    if (options.apiClient !== false) {
+      await injectSharedWebIntoRemixApp(tree, options);
+    }
+  }
+  // ... rest
+}
 ```
 
 **Exit Criteria**:
-
--   [ ] Generator creates Remix v2.15+ apps with loader patterns
--   [ ] Generated app imports from `@shared/web`
--   [ ] `pnpm nx build <remix-app>` succeeds
--   [ ] Loader functions use ApiClient correctly
--   [ ] **Traceability**: Code references DEV-ADR-028, DEV-PRD-029
+- [ ] Wrapper delegates to `@nx/remix:application` correctly
+- [ ] Generated app includes loader pattern with ApiClient
+- [ ] Imports from `@vibes-pro/shared-web` work correctly
+- [ ] `pnpm nx build <remix-app>` succeeds
+- [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
 
 ---
 
-### Task 2C: Expo Generator
+## Phase 3: Expo Wrapper Generator (Cycle D)
 
-**What**: Create generator for React Native apps using Expo
+### Task 3: Create Expo Wrapper
 
-**Branch**: `feature/gen-expo`
+**What**: Create generator that composes `@nx/expo:application` with shared-web integration
 
-**Dependencies**: Task 1A complete
+**Branch**: `feature/nx-wrapper-expo`
 
 **Implementation Steps**:
 
-1. **Extend generator** to handle `framework=expo`:
+1. **Implement Expo delegation** (already exists):
 
 ```typescript
-async function generateExpoApp(tree: Tree, options: WebAppGeneratorSchema, projectRoot: string) {
-    generateFiles(tree, joinPathFragments(__dirname, "./files/expo"), projectRoot, {
-        ...options,
-        tmpl: "",
+async function tryGenerateExpoApp(tree: Tree, options: WebAppGeneratorSchema) {
+  try {
+    const gen = require('@nx/expo/src/generators/application/application').default;
+    const appNames = names(options.name);
+    const directory = joinPathFragments('apps', appNames.fileName);
+    
+    await gen(tree, {
+      name: appNames.fileName,
+      directory,
+      linter: 'eslint',
+      unitTestRunner: 'jest',
     });
-
-    addProjectConfiguration(tree, options.name, {
-        root: projectRoot,
-        projectType: "application",
-        sourceRoot: `${projectRoot}/src`,
-        targets: {
-            start: {
-                executor: "@nx/expo:start",
-                options: { port: 8081 },
-            },
-            build: {
-                executor: "@nx/expo:build",
-                options: { platform: "all" },
-            },
-        },
-        tags: options.tags?.split(",") || ["type:application", "framework:expo", "platform:mobile"],
-    });
+  } catch (e) {
+    console.warn('[web-app] @nx/expo not available or failed, proceeding with shared lib only');
+  }
 }
 ```
 
-2. **Create Expo templates** at `generators/web-app/files/expo/`:
+2. **Add React Native transformations**:
 
 ```typescript
-// App.tsx__tmpl__
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import { ApiClient, env } from '@shared/web';
+async function injectSharedWebIntoExpoApp(tree: Tree, options: WebAppGeneratorSchema) {
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments('apps', appNames.fileName);
+  const appTsx = joinPathFragments(projectRoot, 'src/app/App.tsx');
+  
+  if (tree.exists(appTsx)) {
+    const expoExample = `import { useState, useEffect } from 'react';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { ApiClient, ENV } from '@vibes-pro/shared-web';
 
 export default function App() {
-  const [data, setData] = useState<{ message: string } | null>(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const client = new ApiClient(env.API_URL);
-
-    client.get<{ message: string }>('/api/health')
+    const client = new ApiClient({ baseUrl: ENV.API_URL });
+    
+    client.get('/api/health')
       .then(setData)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -700,8 +336,8 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to <%= name %></Text>
-      <Text>{data?.message}</Text>
+      <Text style={styles.title}>Welcome to ${options.name}</Text>
+      <Text>{JSON.stringify(data, null, 2)}</Text>
     </View>
   );
 }
@@ -709,9 +345,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
@@ -719,589 +354,586 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 });
-```
-
-```json
-// app.json__tmpl__
-{
-    "expo": {
-        "name": "<%= name %>",
-        "slug": "<%= name %>",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "userInterfaceStyle": "light",
-        "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "assetBundlePatterns": ["**/*"],
-        "ios": {
-            "supportsTablet": true
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#ffffff"
-            }
-        },
-        "web": {
-            "favicon": "./assets/favicon.png"
-        }
-    }
+`;
+    tree.write(appTsx, expoExample);
+  }
 }
 ```
 
 **Exit Criteria**:
-
--   [ ] Generator creates Expo apps with React Native setup
--   [ ] Generated app imports from `@shared/web` (platform-agnostic fetch)
--   [ ] `pnpm nx start <expo-app>` succeeds
--   [ ] API client works in React Native environment
--   [ ] **Traceability**: Code references DEV-ADR-028, DEV-PRD-029
+- [ ] Wrapper delegates to `@nx/expo:application` correctly
+- [ ] Generated app uses ApiClient in React Native environment
+- [ ] Imports from `@vibes-pro/shared-web` work (platform-agnostic fetch)
+- [ ] `pnpm nx start <expo-app>` succeeds
+- [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
 
 ---
 
-## Phase 3: Validation & Documentation (Cycle E) (Sprint 1, Day 4)
+## Phase 4: FastAPI Wrapper Generator (Cycle F)
 
-### Task 3A: Idempotency Validation
+### Task 4: Create FastAPI Wrapper with Logfire + Hexagonal Architecture
 
-**What**: Ensure all generators pass double-run tests with hash stability
+**What**: Create generator that composes `@nxlv/python:fastapi-application` with Logfire instrumentation, hexagonal architecture, and Pydantic type-sync
 
-**Branch**: `feature/gen-react-idempotency`
+**Branch**: `feature/nx-wrapper-fastapi`
 
-**Dependencies**: Tasks 2A, 2B, 2C complete
+**Parallel With**: Cycles B, C, D (can run in parallel with frontend generators)
 
 **Implementation Steps**:
 
-1. **Create ShellSpec tests** at `tests/generators/react_spec.sh`:
+1. **Create api-service generator structure**:
 
 ```bash
-#!/bin/bash
-# ShellSpec tests for React generator idempotency
-
-Describe 'React Generator Idempotency'
-  Describe 'Next.js App Router'
-    It 'generates identical output on second run'
-      # Clean slate
-      rm -rf tmp/test-next-app
-
-      # First generation
-      pnpm exec nx g @ddd-plugin/ddd:web-app test-next-app \
-        --framework=next --routerStyle=app --directory=tmp --no-interactive
-      first_hash=$(find tmp/test-next-app -type f -exec sha256sum {} \; | sort | sha256sum)
-
-      # Second generation
-      pnpm exec nx g @ddd-plugin/ddd:web-app test-next-app \
-        --framework=next --routerStyle=app --directory=tmp --no-interactive
-      second_hash=$(find tmp/test-next-app -type f -exec sha256sum {} \; | sort | sha256sum)
-
-      The variable first_hash should equal "$second_hash"
-
-      # Cleanup
-      rm -rf tmp/test-next-app
-    End
-  End
-
-  Describe 'Next.js Pages Router'
-    It 'generates identical output on second run'
-      rm -rf tmp/test-next-pages
-
-      pnpm exec nx g @ddd-plugin/ddd:web-app test-next-pages \
-        --framework=next --routerStyle=pages --directory=tmp --no-interactive
-      first_hash=$(find tmp/test-next-pages -type f -exec sha256sum {} \; | sort | sha256sum)
-
-      pnpm exec nx g @ddd-plugin/ddd:web-app test-next-pages \
-        --framework=next --routerStyle=pages --directory=tmp --no-interactive
-      second_hash=$(find tmp/test-next-pages -type f -exec sha256sum {} \; | sort | sha256sum)
-
-      The variable first_hash should equal "$second_hash"
-
-      rm -rf tmp/test-next-pages
-    End
-  End
-
-  Describe 'Remix'
-    It 'generates identical output on second run'
-      rm -rf tmp/test-remix
-
-      pnpm exec nx g @ddd-plugin/ddd:web-app test-remix \
-        --framework=remix --directory=tmp --no-interactive
-      first_hash=$(find tmp/test-remix -type f -exec sha256sum {} \; | sort | sha256sum)
-
-      pnpm exec nx g @ddd-plugin/ddd:web-app test-remix \
-        --framework=remix --directory=tmp --no-interactive
-      second_hash=$(find tmp/test-remix -type f -exec sha256sum {} \; | sort | sha256sum)
-
-      The variable first_hash should equal "$second_hash"
-
-      rm -rf tmp/test-remix
-    End
-  End
-
-  Describe 'Expo'
-    It 'generates identical output on second run'
-      rm -rf tmp/test-expo
-
-      pnpm exec nx g @ddd-plugin/ddd:web-app test-expo \
-        --framework=expo --directory=tmp --no-interactive
-      first_hash=$(find tmp/test-expo -type f -exec sha256sum {} \; | sort | sha256sum)
-
-      pnpm exec nx g @ddd-plugin/ddd:web-app test-expo \
-        --framework=expo --directory=tmp --no-interactive
-      second_hash=$(find tmp/test-expo -type f -exec sha256sum {} \; | sort | sha256sum)
-
-      The variable first_hash should equal "$second_hash"
-
-      rm -rf tmp/test-expo
-    End
-  End
-End
+pnpm exec nx g @nx/plugin:generator api-service --project=ddd-plugin
 ```
 
-2. **Create integration tests** at `tests/integration/react-generator.test.ts`:
+2. **Define schema** at `generators/api-service/schema.json`:
+
+```json
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "id": "ApiService",
+    "title": "Create a FastAPI backend service",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Service name",
+            "$default": { "$source": "argv", "index": 0 }
+        },
+        "directory": {
+            "type": "string",
+            "description": "Directory where the service is placed",
+            "default": "apps"
+        },
+        "withLogfire": {
+            "type": "boolean",
+            "description": "Include Logfire instrumentation",
+            "default": true
+        },
+        "withHexagonal": {
+            "type": "boolean",
+            "description": "Include hexagonal architecture structure",
+            "default": true
+        },
+        "tags": {
+            "type": "string",
+            "description": "Tags for Nx dependency graph"
+        }
+    },
+    "required": ["name"]
+}
+```
+
+3. **Implement generator logic**:
 
 ```typescript
-import { execSync } from "child_process";
-import * as fs from "fs";
-import * as path from "path";
+// generators/api-service/generator.ts
+import { Tree, formatFiles, joinPathFragments, names } from '@nx/devkit';
+import { ApiServiceGeneratorSchema } from './schema';
 
-describe("React Generator Integration", () => {
-    const tmpDir = "tmp/gen-tests";
+async function tryGenerateFastAPIApp(tree: Tree, options: ApiServiceGeneratorSchema) {
+  try {
+    const { applicationGenerator } = require('@nxlv/python/src/generators/fastapi-application/generator');
+    const appNames = names(options.name);
+    const directory = joinPathFragments(options.directory || 'apps', appNames.fileName);
+    
+    await applicationGenerator(tree, {
+      name: appNames.fileName,
+      directory,
+    });
+  } catch (e) {
+    console.warn('[api-service] @nxlv/python not available or failed, proceeding with manual setup');
+  }
+}
 
-    beforeAll(() => {
-        fs.mkdirSync(tmpDir, { recursive: true });
+async function injectLogfireBootstrap(tree: Tree, options: ApiServiceGeneratorSchema) {
+  if (!options.withLogfire) return;
+  
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments(options.directory || 'apps', appNames.fileName);
+  const mainPath = joinPathFragments(projectRoot, 'main.py');
+  
+  if (tree.exists(mainPath)) {
+    const content = tree.read(mainPath, 'utf-8');
+    
+    // Guard: Check if already injected
+    if (content.includes('from libs.python.vibepro_logging import')) {
+      return;
+    }
+    
+    const logfireImports = `from libs.python.vibepro_logging import (
+    bootstrap_logfire,
+    configure_logger,
+    LogCategory,
+)
+
+`;
+    
+    // Inject after FastAPI import
+    const updatedContent = content.replace(
+      /from fastapi import FastAPI\n/,
+      `from fastapi import FastAPI\n${logfireImports}`
+    );
+    
+    // Add bootstrap call after app initialization
+    const withBootstrap = updatedContent.replace(
+      /(app = FastAPI\([^)]*\))/,
+      `$1\n\nbootstrap_logfire(app, service="${options.name}")\nlogger = configure_logger("${options.name}")`
+    );
+    
+    tree.write(mainPath, withBootstrap);
+  }
+}
+
+async function addHexagonalStructure(tree: Tree, options: ApiServiceGeneratorSchema) {
+  if (!options.withHexagonal) return;
+  
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments(options.directory || 'apps', appNames.fileName);
+  
+  // Create hexagonal directories
+  const dirs = [
+    `${projectRoot}/domain/entities`,
+    `${projectRoot}/domain/value_objects`,
+    `${projectRoot}/application/ports`,
+    `${projectRoot}/application/use_cases`,
+    `${projectRoot}/infrastructure/adapters/in_memory`,
+    `${projectRoot}/infrastructure/adapters/supabase`,
+  ];
+  
+  dirs.forEach(dir => {
+    tree.write(`${dir}/__init__.py`, '');
+  });
+  
+  // Add repository port example
+  tree.write(
+    `${projectRoot}/application/ports/repository.py`,
+    `"""Repository port (interface) following hexagonal architecture."""
+from typing import Protocol, TypeVar, Generic
+from domain.entities import Entity
+
+T = TypeVar('T', bound=Entity)
+
+class Repository(Protocol[T]):
+    """Generic repository protocol for domain entities."""
+    
+    async def find_by_id(self, id: str) -> T | None:
+        """Find entity by ID."""
+        ...
+    
+    async def save(self, entity: T) -> None:
+        """Save entity."""
+        ...
+    
+    async def delete(self, id: str) -> None:
+        """Delete entity by ID."""
+        ...
+`
+  );
+  
+  // Add domain entity example
+  tree.write(
+    `${projectRoot}/domain/entities/__init__.py`,
+    `"""Domain entities following hexagonal architecture."""
+from dataclasses import dataclass
+from datetime import datetime
+
+@dataclass
+class Entity:
+    """Base entity with common fields."""
+    id: str
+    created_at: datetime
+    updated_at: datetime
+`
+  );
+}
+
+async function configurePydanticTypeSync(tree: Tree, options: ApiServiceGeneratorSchema) {
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments(options.directory || 'apps', appNames.fileName);
+  const schemasPath = joinPathFragments(projectRoot, 'schemas.py');
+  
+  tree.write(
+    schemasPath,
+    `"""Pydantic schemas for ${options.name}.
+
+AUTO-GENERATED from Supabase schema - do not edit manually.
+Regenerate with: just gen-types
+"""
+from pydantic import BaseModel, Field, ConfigDict
+from datetime import datetime
+
+class BaseSchema(BaseModel):
+    """Base schema with common fields."""
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: str = Field(description="UUID primary key")
+    created_at: datetime
+    updated_at: datetime
+
+# Add your domain-specific schemas here
+# They will be auto-generated from Supabase in PHASE-004
+`
+  );
+}
+
+async function addOpenAPIExport(tree: Tree, options: ApiServiceGeneratorSchema) {
+  const appNames = names(options.name);
+  const projectRoot = joinPathFragments(options.directory || 'apps', appNames.fileName);
+  const mainPath = joinPathFragments(projectRoot, 'main.py');
+  
+  if (tree.exists(mainPath)) {
+    const content = tree.read(mainPath, 'utf-8');
+    
+    // Guard: Check if already added
+    if (content.includes('/api/openapi.json')) {
+      return;
+    }
+    
+    const openapiEndpoint = `
+
+@app.get("/api/openapi.json", include_in_schema=False)
+def export_openapi():
+    """Export OpenAPI schema for frontend type generation."""
+    return app.openapi()
+`;
+    
+    tree.write(mainPath, content + openapiEndpoint);
+  }
+}
+
+export async function apiServiceGenerator(tree: Tree, options: ApiServiceGeneratorSchema) {
+  await tryGenerateFastAPIApp(tree, options);
+  
+  if (options.withLogfire !== false) {
+    await injectLogfireBootstrap(tree, options);
+  }
+  
+  if (options.withHexagonal !== false) {
+    await addHexagonalStructure(tree, options);
+  }
+  
+  await configurePydanticTypeSync(tree, options);
+  await addOpenAPIExport(tree, options);
+  
+  await formatFiles(tree);
+}
+
+export default apiServiceGenerator;
+```
+
+4. **Create tests**:
+
+```typescript
+// generators/api-service/generator.spec.ts
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
+import { Tree } from '@nx/devkit';
+import { apiServiceGenerator } from './generator';
+
+describe('api-service generator', () => {
+  let tree: Tree;
+
+  beforeEach(() => {
+    tree = createTreeWithEmptyWorkspace();
+  });
+
+  it('should create hexagonal directory structure', async () => {
+    await apiServiceGenerator(tree, {
+      name: 'test-api',
     });
 
-    afterAll(() => {
-        fs.rmSync(tmpDir, { recursive: true, force: true });
+    expect(tree.exists('apps/test-api/domain/entities/__init__.py')).toBe(true);
+    expect(tree.exists('apps/test-api/application/ports/repository.py')).toBe(true);
+    expect(tree.exists('apps/test-api/infrastructure/adapters/supabase/__init__.py')).toBe(true);
+  });
+
+  it('should inject Logfire bootstrap', async () => {
+    await apiServiceGenerator(tree, {
+      name: 'test-api',
+      withLogfire: true,
     });
 
-    it("Next.js App Router app builds successfully", () => {
-        const appName = "test-next-app-build";
+    const mainContent = tree.read('apps/test-api/main.py', 'utf-8');
+    expect(mainContent).toContain('from libs.python.vibepro_logging import');
+    expect(mainContent).toContain('bootstrap_logfire(app, service="test-api")');
+  });
 
-        execSync(`pnpm exec nx g @ddd-plugin/ddd:web-app ${appName} --framework=next --routerStyle=app --directory=${tmpDir} --no-interactive`, { stdio: "pipe" });
+  it('should add OpenAPI export endpoint', async () => {
+    await apiServiceGenerator(tree, {
+      name: 'test-api',
+    });
 
-        execSync(`pnpm exec nx build ${appName}`, {
-            stdio: "pipe",
-        });
+    const mainContent = tree.read('apps/test-api/main.py', 'utf-8');
+    expect(mainContent).toContain('/api/openapi.json');
+    expect(mainContent).toContain('def export_openapi():');
+  });
 
-        // Check that build artifacts exist
-        const nextDir = path.join(tmpDir, appName, ".next");
-        expect(fs.existsSync(nextDir)).toBe(true);
-    }, 120000);
-
-    it("Next.js Pages Router app builds successfully", () => {
-        const appName = "test-next-pages-build";
-
-        execSync(`pnpm exec nx g @ddd-plugin/ddd:web-app ${appName} --framework=next --routerStyle=pages --directory=${tmpDir} --no-interactive`, { stdio: "pipe" });
-
-        execSync(`pnpm exec nx build ${appName}`, {
-            stdio: "pipe",
-        });
-
-        // Check that build artifacts exist
-        const nextDir = path.join(tmpDir, appName, ".next");
-        expect(fs.existsSync(nextDir)).toBe(true);
-    }, 120000);
-
-    it("Remix app builds successfully", () => {
-        const appName = "test-remix-build";
-
-        execSync(`pnpm exec nx g @ddd-plugin/ddd:web-app ${appName} --framework=remix --directory=${tmpDir} --no-interactive`, { stdio: "pipe" });
-
-        execSync(`pnpm exec nx build ${appName}`, {
-            stdio: "pipe",
-        });
-
-        // Check that build artifacts exist
-        const buildDir = path.join(tmpDir, appName, "build");
-        expect(fs.existsSync(buildDir)).toBe(true);
-    }, 120000);
-
-    it("Expo app bundles successfully", () => {
-        const appName = "test-expo-build";
-
-        execSync(`pnpm exec nx g @ddd-plugin/ddd:web-app ${appName} --framework=expo --directory=${tmpDir} --no-interactive`, { stdio: "pipe" });
-
-        // Expo build takes longer, just verify project structure
-        const appJsonPath = path.join(tmpDir, appName, "app.json");
-        expect(fs.existsSync(appJsonPath)).toBe(true);
-    }, 120000);
+  it('should be idempotent (double-run produces same output)', async () => {
+    const options = { name: 'test-api' };
+    
+    await apiServiceGenerator(tree, options);
+    const firstRun = tree.listChanges();
+    
+    await apiServiceGenerator(tree, options);
+    const secondRun = tree.listChanges();
+    
+    expect(firstRun).toEqual(secondRun);
+  });
 });
 ```
 
-3. **Add justfile recipe**:
-
-```bash
-# justfile
-test-generators-react:
-    @echo "Testing React generators..."
-    shellspec tests/generators/react_spec.sh
-    pnpm test:integration --testPathPatterns=react-generator
-```
-
 **Exit Criteria**:
-
--   [ ] All 4 frameworks pass double-run hash stability tests
--   [ ] All 4 frameworks build successfully in CI
--   [ ] ShellSpec tests pass: `shellspec tests/generators/react_spec.sh`
--   [ ] Integration tests pass: `pnpm test:integration --testPathPatterns=react-generator`
--   [ ] **Traceability**: Tests reference idempotency requirements
+- [ ] Wrapper delegates to `@nxlv/python:fastapi-application` correctly
+- [ ] Generated service includes Logfire instrumentation
+- [ ] Hexagonal architecture directories created (domain, application, infrastructure)
+- [ ] Repository port example included
+- [ ] Pydantic schemas.py file created with base schema
+- [ ] OpenAPI export endpoint added to main.py
+- [ ] Generated service structure follows PHASE-002 hexagonal patterns
+- [ ] `uv run pytest apps/<service-name>` passes
+- [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029, PHASE-002 hexagonal foundations
 
 ---
 
-### Task 3B: Documentation & Examples
+## Phase 5: Validation & Idempotency (Cycle E)
 
-**What**: Document generator usage with framework-specific examples
+### Task 5: Comprehensive Testing (Frontend + Backend)
+
+**What**: Ensure all wrapper generators (frontend + backend) are idempotent and build successfully
+
+**Branch**: `feature/gen-idempotency`
+
+**Dependencies**: Cycles B, C, D, F complete
 
 **Implementation Steps**:
 
-1. **Update generator README** at `generators/web-app/README.md`:
+1. **Create unit tests** for each wrapper:
 
-````markdown
-# Web App Generator
+```typescript
+// tests/web-app-generator.spec.ts
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
+import { Tree } from '@nx/devkit';
+import { webAppGenerator } from './generator';
 
-Universal generator for Next.js, Remix, and Expo applications with shared type-safe infrastructure.
+describe('web-app generator', () => {
+  let tree: Tree;
 
-## Usage
+  beforeEach(() => {
+    tree = createTreeWithEmptyWorkspace();
+  });
 
-### Next.js App Router (React Server Components)
+  it('should delegate to @nx/next for Next.js apps', async () => {
+    await webAppGenerator(tree, {
+      name: 'test-next',
+      framework: 'next',
+      routerStyle: 'app',
+    });
+
+    expect(tree.exists('apps/test-next/next.config.js')).toBe(true);
+    expect(tree.exists('apps/test-next/app/page.tsx')).toBe(true);
+  });
+
+  it('should inject shared-web imports', async () => {
+    await webAppGenerator(tree, {
+      name: 'test-next',
+      framework: 'next',
+      apiClient: true,
+    });
+
+    const content = tree.read('apps/test-next/app/page.tsx', 'utf-8');
+    expect(content).toContain('@vibes-pro/shared-web');
+  });
+
+  it('should be idempotent (double-run produces same output)', async () => {
+    const options = { name: 'test-app', framework: 'next' as const };
+    
+    await webAppGenerator(tree, options);
+    const firstRun = tree.listChanges();
+    
+    await webAppGenerator(tree, options);
+    const secondRun = tree.listChanges();
+    
+    expect(firstRun).toEqual(secondRun);
+  });
+});
+```
+
+2. **Create integration tests**:
 
 ```bash
-pnpm exec nx g @ddd-plugin/ddd:web-app my-app --framework=next --routerStyle=app
-```
-````
+#!/bin/bash
+# tests/integration/generator-build.sh
 
-### Next.js Pages Router (Traditional SSR)
+set -e
 
-```bash
-pnpm exec nx g @ddd-plugin/ddd:web-app my-app --framework=next --routerStyle=pages
-```
+echo "=== Frontend Generators ==="
 
-### Remix
+echo "Testing Next.js App Router generation and build..."
+pnpm exec nx g @vibes-pro/generators:web-app test-next-app \
+  --framework=next --routerStyle=app --no-interactive
+pnpm exec nx build test-next-app
 
-```bash
-pnpm exec nx g @ddd-plugin/ddd:web-app my-app --framework=remix
-```
+echo "Testing Next.js Pages Router generation and build..."
+pnpm exec nx g @vibes-pro/generators:web-app test-next-pages \
+  --framework=next --routerStyle=pages --no-interactive
+pnpm exec nx build test-next-pages
 
-### Expo (React Native)
+echo "Testing Remix generation and build..."
+pnpm exec nx g @vibes-pro/generators:web-app test-remix \
+  --framework=remix --no-interactive
+pnpm exec nx build test-remix
 
-```bash
-pnpm exec nx g @ddd-plugin/ddd:web-app my-app --framework=expo
-```
+echo "Testing Expo generation..."
+pnpm exec nx g @vibes-pro/generators:web-app test-expo \
+  --framework=expo --no-interactive
+# Note: Expo builds are more complex, verify structure exists
+test -f apps/test-expo/app.json
 
-## Shared Infrastructure
+echo "=== Backend Generators ==="
 
-All generated apps import from `@shared/web`:
+echo "Testing FastAPI service generation..."
+pnpm exec nx g @vibes-pro/generators:api-service test-api --no-interactive
 
--   `ApiClient` - Type-safe HTTP client
--   Zod schemas - Runtime validation
--   Error handling utilities
--   Framework-agnostic env config
+# Verify hexagonal structure
+test -d apps/test-api/domain/entities
+test -d apps/test-api/application/ports
+test -d apps/test-api/infrastructure/adapters
 
-## Architecture
+# Verify Logfire integration
+grep -q "bootstrap_logfire" apps/test-api/main.py
 
-Generated apps follow hexagonal architecture:
+# Verify OpenAPI export
+grep -q "/api/openapi.json" apps/test-api/main.py
 
--   UI layer → Application layer → Domain layer
--   Nx boundaries enforce no infrastructure in UI
+# Run tests (if available)
+if [ -f apps/test-api/tests/test_main.py ]; then
+  uv run pytest apps/test-api/tests/test_main.py -v
+fi
 
-```
-
-```
-
-2. **Update main docs** at `docs/ARCHITECTURE.md` (add section):
-
-```markdown
-## Frontend Architecture
-
-### Universal React Generator
-
-VibesPro provides a single generator that scaffolds Next.js, Remix, or Expo apps with consistent patterns.
-
-**Shared Assets** (`libs/shared/web`):
-
--   Type-safe API client with error handling
--   Zod validation schemas
--   Environment configuration (multi-framework)
-
-**Framework Patterns**:
-
--   Next.js App Router: RSC with async server components
--   Next.js Pages Router: getServerSideProps/getStaticProps
--   Remix: loader/action patterns with deferred data
--   Expo: React hooks with platform-agnostic fetch
-
-**Hexagonal Boundaries**:
-
--   UI components (type:application, framework:next/remix/expo)
--   API client (type:infrastructure)
--   Domain logic (type:domain) - shared across all surfaces
+echo "✅ All wrapper generators validated successfully (frontend + backend)!"
 ```
 
-3. **Add to traceability matrix** at `docs/traceability_matrix.md`:
+3. **Add to CI pipeline**:
 
-```markdown
-| Spec ID     | Implementation                     | Tests                                     | Status |
-| ----------- | ---------------------------------- | ----------------------------------------- | ------ |
-| DEV-ADR-028 | generators/web-app/generator.ts    | tests/generators/react_spec.sh            | ✅     |
-| DEV-PRD-029 | generators/web-app/files/next-app/ | tests/integration/react-generator.test.ts | ✅     |
-| DEV-SDS-028 | libs/shared/web/src/api-client.ts  | libs/shared/web/src/api-client.test.ts    | ✅     |
+```yaml
+# .github/workflows/generators.yml
+name: Generator Tests
+
+on: [pull_request]
+
+jobs:
+  test-wrappers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - run: pnpm install
+      - run: pnpm nx run-many -t test --projects=tag:generator
+      - run: bash tests/integration/web-app-build.sh
 ```
 
 **Exit Criteria**:
-
--   [ ] Generator README documents all 4 frameworks
--   [ ] Architecture docs explain shared infrastructure
--   [ ] Traceability matrix updated with PHASE-003 implementations
--   [ ] Examples included for each framework
-
----
-
-## Pre-Work: Required Reading (35 min)
-
-**Priority Order** (read in this sequence):
-
-1. `docs/dev_adr.md` (section DEV-ADR-028) — 5 min: Universal generator pattern decision
-2. `docs/dev_sds.md` (section DEV-SDS-028) — 10 min: Shared assets strategy and API client design
-3. `docs/dev_prd.md` (section DEV-PRD-029) — 5 min: Framework-specific requirements
-4. `docs/plans/hexddd_integration/PHASE-001-GENERATOR_IDEMPOTENCY.md` — 10 min: Idempotency patterns to reuse
-5. `docs/plans/hexddd_integration/PHASE-002-HEXAGONAL_FOUNDATIONS.md` — 5 min: UoW/EventBus patterns for reference
-6. Skim: `.github/instructions/generators-first.instructions.md`, `docs/ARCHITECTURE.md` — Context on generator-first approach
-
-**Context Check**: After reading, you should understand:
-
--   Universal generator pattern (one generator, multiple frameworks)
--   Shared web library purpose (eliminate duplication)
--   Idempotency enforcement (hash stability, double-run tests)
--   Hexagonal boundaries (UI → Application → Domain)
--   Framework-specific patterns (RSC vs SSR vs loaders vs hooks)
+- [ ] All unit tests pass for 4 wrapper generators (3 frontend + 1 backend)
+- [ ] Integration tests verify all apps build successfully
+- [ ] Backend hexagonal structure validated (domain, application, infrastructure)
+- [ ] Backend Logfire instrumentation verified
+- [ ] Idempotency tests pass (double-run produces identical output for all generators)
+- [ ] CI pipeline includes generator validation for frontend + backend
+- [ ] **Traceability**: Idempotency requirements validated
 
 ---
 
-## Execution Protocol
+## Documentation Updates
 
-### Decision-Making Authority
+### Generator README
 
-You are **authorized** to:
-
--   Choose template file naming conventions (`.tsx__tmpl__` vs `__name__.tsx`)
--   Add framework-specific optimizations (prefetching, caching)
--   Create additional utility functions in `@shared/web`
--   Add more Zod schemas for common types
--   Choose styling approaches (CSS modules, Tailwind, styled-components)
-
-You **must ask** before:
-
--   Adding npm packages beyond Next.js/Remix/Expo essentials
--   Changing shared web library public API (ApiClient interface)
--   Modifying generator schema (required properties, enums)
--   Adding new frameworks beyond Next.js/Remix/Expo
--   Changing Nx project configuration structure
-
-### Quality Gates
-
-Run after **each task** completion:
-
-```bash
-# Shared web library (Task 1A)
-pnpm nx test shared-web                      # Must pass - unit tests
-pnpm nx build shared-web                     # Must pass - buildable output
-pnpm nx lint shared-web                      # Must pass - ESLint
-
-# Generator tasks (2A, 2B, 2C)
-pnpm exec nx g @ddd-plugin/ddd:web-app test-<framework> --framework=<framework> --no-interactive
-pnpm nx build test-<framework>               # Must pass - generated app builds
-pnpm nx lint test-<framework>                # Must pass - generated app lints
-
-# Idempotency (Task 3A)
-shellspec tests/generators/react_spec.sh     # Must pass - double-run tests
-pnpm test:integration --testPathPatterns=react-generator  # Must pass
-```
-
-**After all tasks complete**:
-
-```bash
-pnpm nx run-many -t build --all              # Must pass - all apps build
-pnpm nx run-many -t lint --all               # Must pass - all lint checks
-pnpm nx run-many -t test --all               # Must pass - all tests
-just spec-guard                              # Must pass - spec matrix + prompt lint
-```
-
-### Iteration Protocol
-
-If any check fails:
-
-1. Analyze failure root cause (build error, lint violation, test failure)
-2. Fix issue following TDD if applicable
-3. Re-run quality gates for affected task
-4. Continue until all pass
-
-**Do not proceed to next task with failing checks.**
-
----
-
-## Output Format
-
-After completing each task, provide:
+Create `tools/reference/hexddd-generators/web-app/README.md`:
 
 ```markdown
-## [Task ID] Status: [COMPLETE|BLOCKED]
+# Web App Generator
 
-### Changes Made
+Wrapper generator that composes official Nx framework generators with VibesPro's shared infrastructure.
 
--   Created: [list of new files with paths]
--   Modified: [list of changed files with paths]
--   Key implementation decisions: [bullet list]
+## Usage
 
-### Verification Results
+### Next.js (App Router)
+```bash
+nx g @vibes-pro/generators:web-app my-app --framework=next --routerStyle=app
+```
 
--   [ ] Tests pass: `<test command>` (X/X tests passing)
--   [ ] Build passes: `<build command>` (0 errors)
--   [ ] Lint passes: `<lint command>` (0 violations)
--   [ ] Documentation updated: [affected files]
+### Next.js (Pages Router)
+```bash
+nx g @vibes-pro/generators:web-app my-app --framework=next --routerStyle=pages
+```
 
-### Generated Artifacts
+### Remix
+```bash
+nx g @vibes-pro/generators:web-app my-app --framework=remix
+```
 
--   [ ] Framework: [next/remix/expo]
--   [ ] Router style: [app/pages/n/a]
--   [ ] Build output: [path to dist]
--   [ ] Example usage: [command to generate + build]
+### Expo
+```bash
+nx g @vibes-pro/generators:web-app my-app --framework=expo
+```
 
-### Traceability
+## What It Does
 
--   Spec IDs referenced: [DEV-ADR-XXX, DEV-SDS-XXX, DEV-PRD-XXX]
--   Commit message: [example conventional commit message with spec IDs]
+1. **Delegates** to official Nx generators (`@nx/next`, `@nx/remix`, `@nx/expo`)
+2. **Injects** shared-web library imports and usage examples
+3. **Ensures** `libs/shared/web` exists with ApiClient, schemas, env config
 
-### Blockers (if any)
+## Shared Infrastructure
 
-[Description + proposed solution + help needed]
+All generated apps import from `@vibes-pro/shared-web`:
 
-### Next Steps
+- `ApiClient` - Type-safe HTTP client with error handling
+- Zod schemas - Runtime validation
+- `ENV` - Framework-agnostic environment variables
+- Error types - Standardized error handling
 
-[What task comes next]
+## Architecture
+
+This generator follows the **Nx Composition Pattern**:
+- Official Nx generators handle framework scaffolding
+- Post-generation transformations inject VibesPro conventions
+- Minimal maintenance burden (Nx updates don't break our generators)
+
+See `PHASE-003-UNIVERSAL_REACT_GENERATOR.md` for full architecture details.
 ```
 
 ---
 
-## Anti-Patterns to Avoid
+## Traceability Matrix
 
-❌ **Don't**: Duplicate API client logic in each framework template
-✅ **Do**: Import `ApiClient` from `@shared/web` in all templates
-
-❌ **Don't**: Hardcode API URLs in templates
-✅ **Do**: Use `env.API_URL` from shared env config
-
-❌ **Don't**: Create framework-specific validation schemas
-✅ **Do**: Use shared Zod schemas from `@shared/web`
-
-❌ **Don't**: Skip idempotency tests ("generator seems to work")
-✅ **Do**: Run double-run hash stability tests for all frameworks
-
-❌ **Don't**: Mix template syntaxes (some use `<%= %>`, others use `__name__`)
-✅ **Do**: Choose one template syntax and use consistently
-
-❌ **Don't**: Generate apps that violate Nx boundaries (UI imports infrastructure directly)
-✅ **Do**: Route all API calls through `@shared/web` which sits in infrastructure layer
-
-❌ **Don't**: Skip documentation ("code is self-explanatory")
-✅ **Do**: Document usage examples for each framework with runnable commands
+| Component | ADR | PRD | SDS | Test Coverage |
+|-----------|-----|-----|-----|---------------|
+| Shared Web Library | DEV-ADR-028 | DEV-PRD-029 | DEV-SDS-028 | ✅ Unit + Integration |
+| Next.js Wrapper | DEV-ADR-028 | DEV-PRD-029 | DEV-SDS-028 | Pending |
+| Remix Wrapper | DEV-ADR-028 | DEV-PRD-029 | DEV-SDS-028 | Pending |
+| Expo Wrapper | DEV-ADR-028 | DEV-PRD-029 | DEV-SDS-028 | Pending |
+| FastAPI Wrapper | DEV-ADR-028 | DEV-PRD-029 | DEV-SDS-028 | Pending |
+| Idempotency (All) | DEV-ADR-028 | N/A | DEV-SDS-028 | Pending |
 
 ---
 
-## Codebase Intelligence Sources
+## Next Steps
 
-**Essential Files**:
-
--   `docs/ARCHITECTURE.md` — Hexagonal layer definitions
--   `docs/dev_adr.md` — ADR-028 (universal generator pattern)
--   `docs/dev_sds.md` — SDS-028 (shared assets strategy)
--   `docs/dev_prd.md` — PRD-029 (framework requirements)
--   `.github/instructions/generators-first.instructions.md` — Generator-first development
--   `.github/instructions/testing.instructions.md` — TDD workflow
-
-**Reference Implementations**:
-
--   Check `generators/` for existing generator patterns
--   Study `libs/` for library structure examples
--   Review `nx.json` for project configuration patterns
-
-**API/Library Documentation**:
-
--   Nx Plugin API: https://nx.dev/extending-nx/intro/getting-started
--   Next.js Documentation: https://nextjs.org/docs
--   Remix Documentation: https://remix.run/docs
--   Expo Documentation: https://docs.expo.dev
--   Zod: https://zod.dev
-
-**Related Prior Work**:
-
--   PHASE-001: Idempotency patterns (reference for double-run tests)
--   PHASE-002: Hexagonal foundations (UoW/EventBus patterns)
+After PHASE-003 completion:
+1. **PHASE-004**: Type Safety & CI Integration (strict TypeScript + Python mypy + automated type sync)
+2. **PHASE-005**: Integration & Documentation (end-to-end examples, deployment guides)
+3. **PHASE-006**: Advanced Features (multi-tenancy, RBAC, event sourcing patterns)
 
 ---
 
-## Special Considerations
+## References
 
-### Performance
-
--   Shared web library must tree-shake properly (use named exports)
--   API client should support request cancellation (AbortController)
--   Consider bundle size for Expo (React Native has stricter limits)
-
-### Security
-
--   Never commit example `.env` files with real API keys
--   Use environment variable validation in shared env config
--   API client should sanitize URLs to prevent SSRF
-
-### Compatibility
-
--   Next.js: Support both 13.x and 14.x (App Router stable in 13.4+)
--   Remix: Target v2.15+ for stable Vite support
--   Expo: Use SDK 50+ for latest React Native
--   Node.js LTS per `.mise.toml`
-
-### Framework-Specific Gotchas
-
--   **Next.js App Router**: Server components can't use hooks—only client components
--   **Next.js Pages Router**: getServerSideProps runs only on server, not in browser
--   **Remix**: Loaders run on server and client during hydration
--   **Expo**: `process.env` not available—use `expo-constants` for env vars
-
-### Observability
-
--   Add request IDs to API client for distributed tracing
--   Log framework type and router style during generation
--   Consider integration with Logfire (from PHASE-002 Supabase stack)
-
----
-
-## Begin Execution
-
-Start with **Pre-Work reading**, then proceed to **Phase 1, Task 1A** (Shared Web Assets).
-
-**Workflow**:
-
-1. Read all pre-work docs (35 min)
-2. Create branch `feature/shared-web-assets`
-3. Follow TDD cycle for Task 1A (🔴 RED → 🟢 GREEN → 🔵 REFACTOR)
-4. Run quality gates
-5. Report status using output format
-6. Proceed to Phase 2 (Tasks 2A, 2B, 2C can run in parallel if desired)
-7. Complete Phase 3 (Task 3A validation + 3B docs)
-8. Run final validation
-9. Update `docs/plans/hexddd_integration/PHASE-003-UNIVERSAL_REACT_GENERATOR.md` status to GREEN
-10. Update `docs/traceability_matrix.md` with new implementations
-
-Report status after completing each task using the output format above.
-
----
-
-**Traceability Matrix Update Required**: After phase completion, add entries mapping:
-
--   DEV-ADR-028 → `generators/web-app/generator.ts`
--   DEV-SDS-028 → `libs/shared/web/src/api-client.ts`, `libs/shared/web/src/schemas.ts`
--   DEV-PRD-029 → `generators/web-app/files/next-app/`, `generators/web-app/files/remix/`, `generators/web-app/files/expo/`
+- **Plan**: `docs/plans/hexddd_integration/PHASE-003-UNIVERSAL_REACT_GENERATOR.md`
+- **Implementation**: `tools/reference/hexddd-generators/web-app/`
+- **Shared Library**: `libs/shared/web/` (commit `3e4d6dc`)
+- **Nx Composition Pattern**: https://nx.dev/extending-nx/recipes/composing-generators
