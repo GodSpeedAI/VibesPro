@@ -720,11 +720,11 @@ Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using
 
 ---
 
-## DEV-PRD-029 — Universal React App Generator
+## DEV-PRD-029 — Nx-Composed React App Generator
 
--   Description: As a frontend engineer, I want a single generator that outputs Next.js (App Router and Pages Router), Remix, or Expo apps sharing typed clients and validation logic.
--   EARS: When I invoke the generator with `--framework=remix`, it shall scaffold the Remix variant, reuse shared web assets, and remain idempotent under repeated runs (mirrored for Next App, Next Pages, and Expo variants).
--   DX Metrics: All supported surfaces scaffold in < 30 seconds; generator double-run tests pass across options.
+-   Description: As a frontend engineer, I want a wrapper generator that leverages official Nx generators (`@nx/next`, `@nx/remix`, `@nx/expo`) and automatically injects shared-web assets, typed clients, and hexagonal architecture patterns.
+-   EARS: When I invoke `nx g @vibes-pro/generators:web-app my-app --framework=remix`, the system shall (1) delegate to `@nx/remix` for framework scaffolding, (2) inject imports from `@vibes-pro/shared-web`, (3) apply hexagonal structure patterns, and (4) remain idempotent under repeated runs. Applies to Next.js (App/Pages Router), Remix, and Expo.
+-   DX Metrics: All supported surfaces scaffold in < 30 seconds; wrapper + Nx generator combination builds successfully; idempotency tests pass; Nx generators remain updateable without forking.
 -   Supported by: DEV-ADR-028, DEV-SDS-028
 
 ---
