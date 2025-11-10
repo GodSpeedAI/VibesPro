@@ -285,7 +285,7 @@ jobs:
 
 ### Task 1B: Python mypy Strict Mode Configuration
 
-**What**: Enable mypy strict mode, add type hints to all Python code, achieve ≥95% coverage
+**What**: Enable mypy strict mode, add type hints to all Python code, achieve zero mypy errors on all public modules
 
 **Branch**: `feature/py-strict`
 
@@ -300,58 +300,7 @@ uv run mypy --strict . > tmp/mypy-baseline.txt 2>&1 || true
 # Expected: Many errors (this is the baseline)
 ```
 
-2. **Create `mypy.ini`** at repository root:
-
-```ini
-[mypy]
-# Global strict settings
-strict = True
-python_version = 3.11
-
-# Strictness flags (explicit for clarity)
-warn_unused_configs = True
-warn_redundant_casts = True
-warn_unused_ignores = True
-warn_return_any = True
-warn_unreachable = True
-
-# No implicit optionals
-no_implicit_optional = True
-strict_optional = True
-
-# Generics and Any
-disallow_any_generics = True
-disallow_subclassing_any = True
-
-# Untyped definitions
-disallow_untyped_defs = True
-disallow_incomplete_defs = True
-disallow_untyped_calls = True
-disallow_untyped_decorators = True
-
-# Imports
-no_implicit_reexport = True
-warn_no_return = True
-
-# Per-module overrides (temporary during migration)
-[mypy-tests.*]
-# Allow some leniency in tests during migration
-disallow_untyped_defs = False
-disallow_untyped_calls = False
-
-[mypy-tools.*]
-# Tools can be lenient during migration
-disallow_untyped_defs = False
-
-# Third-party libraries without stubs
-[mypy-pytest.*]
-ignore_missing_imports = True
-
-[mypy-shellspec.*]
-ignore_missing_imports = True
-```
-
-3. **Update `pyproject.toml`** with mypy config:
+2. **Configure mypy in `pyproject.toml`** (single source of truth - mypy prefers pyproject.toml over mypy.ini):
 
 ```toml
 [project]
@@ -400,7 +349,7 @@ python_classes = "Test*"
 python_functions = "test_*"
 ```
 
-4. **🟢 GREEN Phase - Add type hints systematically**:
+3. **🟢 GREEN Phase - Add type hints systematically**:
 
 **Strategy**: Start with domain layer (pure Python), then application, then infrastructure
 
@@ -502,7 +451,7 @@ type-check-all:
 -   [ ] `pyproject.toml` has mypy configuration
 -   [ ] All Python modules have type hints
 -   [ ] `uv run mypy --strict .` passes with zero errors
--   [ ] Type coverage ≥95% (verify with `mypy --html-report coverage`)
+-   [ ] Zero mypy errors on all public modules (verify with `uv run mypy --strict .`)
 -   [ ] Domain-specific `NewType` definitions created
 -   [ ] **Traceability**: Code references DEV-ADR-029, DEV-SDS-029, DEV-PRD-030
 
@@ -800,32 +749,25 @@ echo "  ✅ Python types OK"
 
 # Check if Supabase schema changed
 if git diff --cached --name-only | grep -qE 'supabase/migrations/.*\.sql$'; then
-  echo "⚠️  Supabase migration detected - regenerating types..."
+  echo "⚠️  Supabase migration detected"
 
-  # Start Supabase temporarily
-  pnpm nx supabase-devstack:start > /dev/null 2>&1
+  # Check if Supabase is already running (safe regeneration)
+  if docker ps | grep -q supabase; then
+    echo "  Supabase is running - regenerating types..."
 
-  # Generate types
-  pnpm nx run type-generator:generate
-
-  # Stop Supabase
-  pnpm nx supabase-devstack:stop > /dev/null 2>&1
-
-  # Check for type drift
-  if ! git diff --quiet libs/shared/database-types libs/shared/type_system; then
-    echo ""
-    echo "❌ Type drift detected after migration!"
-    echo "   The following files have changes:"
-    git diff --stat libs/shared/database-types libs/shared/type_system
-    echo ""
-    echo "   Please review and stage the generated type files:"
-    echo "   git add libs/shared/database-types libs/shared/type_system"
-    echo ""
-    echo "   Or run: just type-sync"
-    exit 1
+    # Generate types with timeout (30 seconds)
+    if timeout 30s pnpm nx run type-generator:generate; then
+      echo "  ✅ Types regenerated successfully"
+    else
+      echo "  ⚠️  Type generation timed out or failed - skipping (will run in CI)"
+    fi
+  else
+    echo "  ⚠️  Supabase not running - skipping type generation (will run in CI type-sync workflow)"
+    echo "     To regenerate locally: just db-up && just type-sync"
   fi
 
-  echo "  ✅ Types already in sync with schema"
+  # Note: Never block commit on type generation failures
+  # CI type-sync workflow handles comprehensive regeneration
 fi
 
 echo "✅ All pre-commit checks passed"
@@ -839,6 +781,9 @@ chmod +x .husky/pre-commit
 
 4. **Create commit-msg hook** at `.husky/commit-msg` (existing, ensure it doesn't conflict):
 
+````bash
+4. **Create commit-msg hook** at `.husky/commit-msg` (existing, ensure it doesn't conflict):
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -847,7 +792,7 @@ chmod +x .husky/pre-commit
 # ... keep existing logic ...
 
 # No additional type checks needed here
-```
+````
 
 5. **Add hook bypass instructions** to `docs/CONTRIBUTING.md`:
 
@@ -864,6 +809,58 @@ git commit -m "feat: add feature"
 # Hooks run automatically
 ```
 ````
+
+### Bypass hooks (emergency only)
+
+```bash
+git commit --no-verify -m "fix: hotfix"
+```
+
+### If hooks fail
+
+1. Fix type errors shown in output
+2. Run `just type-check-all` to verify locally
+3. Commit again
+
+### Supabase schema changes
+
+If you modify `supabase/migrations/*.sql`:
+
+1. Hooks will auto-generate types
+2. Review generated files
+3. Stage them: `git add libs/shared/database-types libs/shared/type_system`
+4. Commit again
+
+````
+
+6. **Update justfile with hook management**:
+
+```makefile
+# justfile
+install-hooks:
+    @echo "🔧 Installing pre-commit hooks..."
+    pnpm exec husky install
+    chmod +x .husky/pre-commit
+````
+
+`````
+
+5. **Add hook bypass instructions** to `docs/CONTRIBUTING.md`:
+
+````markdown
+## Pre-commit Hooks
+
+This repository uses Husky to run type checks before commits.
+
+### Normal workflow
+
+```bash
+git add .
+git commit -m "feat: add feature"
+# Hooks run automatically
+`````
+
+`````
 
 ### Bypass hooks (emergency only)
 
@@ -1038,7 +1035,7 @@ function parseWithGuard<T>(data: string, validator: (val: unknown) => val is T):
     return parsed;
 }
 ```
-````
+`````
 
 **Use type guards for runtime validation**:
 
@@ -1106,7 +1103,8 @@ Use `unknown` with type guards or generics.
 
 ### "Cannot find module types"
 
-Run `pnpm install` to regenerate types.
+Run type generation: `just type-sync` or `pnpm nx run type-generator:generate`.
+Run `pnpm install` only if new types introduce new dependencies.
 
 ### "mypy error: incompatible type"
 
@@ -1226,7 +1224,7 @@ You are **authorized** to:
 -   Choose type guard patterns and utilities
 -   Add type aliases for common patterns
 -   Create domain-specific NewTypes in Python
--   Add temporary `@ts-expect-error` with justification comments
+-   Use `@ts-expect-error` as a temporary emergency escape hatch when blocked by external library bugs or impossible refactors within release windows (max 3 exceptions per release, each with justification comment linking to tracked ticket/issue, requires reviewer approval)
 -   Configure mypy overrides for test files
 
 You **must ask** before:
@@ -1247,8 +1245,7 @@ pnpm tsc --noEmit                            # Must pass - zero errors
 pnpm nx run-many -t lint                     # Must pass - zero any violations
 
 # Task 1B (Python)
-uv run mypy --strict .                       # Must pass - zero errors
-uv run mypy --html-report coverage           # Coverage ≥95%
+uv run mypy --strict .                       # Must pass - zero errors on public modules
 
 # Task 2A (Type Sync)
 gh workflow run type-sync.yml                # Must succeed
@@ -1332,8 +1329,23 @@ After completing each task, provide:
 ❌ **Don't**: Add `any` types to "fix" errors quickly
 ✅ **Do**: Use `unknown` with type guards or proper generics
 
-❌ **Don't**: Use `@ts-ignore` or `type: ignore` without explanation
-✅ **Do**: Add detailed comment explaining why it's necessary (rare)
+❌ **Don't**: Use `@ts-ignore` or `type: ignore` (use `@ts-expect-error` only as emergency escape hatch with justification)
+✅ **Do**: Fix type errors properly, or use `@ts-expect-error` temporarily with tracked ticket for removal
+
+**Acceptable @ts-expect-error example:**
+
+```typescript
+// @ts-expect-error - External library bug in @types/package v1.2.3, tracked in DEV-123
+// TODO: Remove when library fixes type definitions
+const result = externalLib.doSomething(unsafeParam);
+```
+
+**Unacceptable @ts-expect-error example:**
+
+```typescript
+// @ts-expect-error - Too lazy to fix this now
+const result = someFunction(wrongType);
+```
 
 ❌ **Don't**: Disable strict mode for entire modules
 ✅ **Do**: Fix violations systematically, module by module

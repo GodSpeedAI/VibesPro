@@ -214,14 +214,14 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
     ```python
     # libs/shared/domain/event_bus.py
-    from typing import Protocol, Callable, Awaitable, Union, TypeVar, Generic
+    from typing import Protocol, Callable, Awaitable, Union, TypeVar, Generic, Any
 
     T = TypeVar('T')
 
     class EventBus(Protocol):
         def subscribe(self, event_type: str, handler: Callable[[T], Union[None, Awaitable[None]]]) -> None: ...
         def unsubscribe(self, event_type: str, handler: Callable) -> None: ...
-        async def dispatch(self, event: dict[str, any]) -> None: ...
+        async def dispatch(self, event: dict[str, Any]) -> None: ...
     ```
 
 3. **🔵 REFACTOR Phase - Add advanced features**:
@@ -271,41 +271,46 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
                     "lintFilePatterns": ["{projectRoot}/**/*.ts"]
                 }
             }
-        },
-        "eslintConfig": {
-            "extends": ["plugin:@nx/typescript"],
-            "rules": {
-                "@nx/enforce-module-boundaries": [
-                    "error",
-                    {
-                        "depConstraints": [
-                            {
-                                "sourceTag": "type:domain",
-                                "onlyDependOnLibsWithTags": ["type:domain"]
-                            },
-                            {
-                                "sourceTag": "type:application",
-                                "onlyDependOnLibsWithTags": ["type:domain", "type:application"]
-                            },
-                            {
-                                "sourceTag": "type:infrastructure",
-                                "onlyDependOnLibsWithTags": ["type:domain", "type:application", "type:infrastructure"]
-                            }
-                        ]
-                    }
-                ]
-            }
         }
     }
     ```
 
-2. **Tag existing libraries**:
+2. **Create `.eslintrc.json` with boundary enforcement** (Nx requires @nx/enforce-module-boundaries to live in ESLint config, not nx.json):
+
+    ```json
+    {
+        "extends": ["plugin:@nx/typescript"],
+        "rules": {
+            "@nx/enforce-module-boundaries": [
+                "error",
+                {
+                    "depConstraints": [
+                        {
+                            "sourceTag": "type:domain",
+                            "onlyDependOnLibsWithTags": ["type:domain"]
+                        },
+                        {
+                            "sourceTag": "type:application",
+                            "onlyDependOnLibsWithTags": ["type:domain", "type:application"]
+                        },
+                        {
+                            "sourceTag": "type:infrastructure",
+                            "onlyDependOnLibsWithTags": ["type:domain", "type:application", "type:infrastructure"]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+    ```
+
+3. **Tag existing libraries**:
 
     - Add `"tags": ["type:domain"]` to `libs/shared/domain/project.json`
     - Create sample application and infrastructure libs to test enforcement
     - Intentionally violate boundary (domain imports infrastructure) to verify lint catches it
 
-3. **Document tag taxonomy** in `docs/ARCHITECTURE.md`:
+4. **Document tag taxonomy** in `docs/ARCHITECTURE.md`:
     - `type:domain` - Pure business logic, no external dependencies
     - `type:application` - Use cases orchestrating domain logic
     - `type:infrastructure` - Adapters implementing ports (DB, APIs, etc.)
@@ -349,19 +354,39 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
                 }
             },
             "supabase-devstack:stop": {
-                /* ... */
+                "executor": "nx:run-commands",
+                "options": {
+                    "command": "docker compose -f docker/docker-compose.supabase.yml down",
+                    "cwd": "."
+                }
             },
             "supabase-devstack:reset": {
-                /* ... */
+                "executor": "nx:run-commands",
+                "options": {
+                    "command": "docker compose -f docker/docker-compose.supabase.yml down -v && docker compose -f docker/docker-compose.supabase.yml up -d",
+                    "cwd": "."
+                }
             },
             "supabase-devstack:status": {
-                /* ... */
+                "executor": "nx:run-commands",
+                "options": {
+                    "command": "docker compose -f docker/docker-compose.supabase.yml ps",
+                    "cwd": "."
+                }
             },
             "supabase-devstack:seed": {
-                /* ... */
+                "executor": "nx:run-commands",
+                "options": {
+                    "command": "psql -h localhost -U postgres -d postgres -f docker/scripts/seed/01-seed.sql",
+                    "cwd": "."
+                }
             },
             "supabase-devstack:logs": {
-                /* ... */
+                "executor": "nx:run-commands",
+                "options": {
+                    "command": "docker compose -f docker/docker-compose.supabase.yml logs -f",
+                    "cwd": "."
+                }
             }
         }
     }
