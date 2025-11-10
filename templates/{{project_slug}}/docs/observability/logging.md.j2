@@ -3,8 +3,45 @@
 > Traceability: DEV-PRD-018 · DEV-SDS-018 · DEV-PRD-021
 
 This guide captures the Logfire defaults shipped with the VibesPro template.
-Cycle 2A will extend these notes with full instrumentation walkthroughs once
-`bootstrap_logfire` evolves beyond the stub phased in during Cycle 1.
+
+## Python Logfire Integration (✅ Complete)
+
+The VibesPro template includes production-ready Python Logfire integration with automatic FastAPI instrumentation and trace-log correlation.
+
+### Quick Start
+
+```python
+from fastapi import FastAPI
+from libs.python.vibepro_logging import bootstrap_logfire
+
+# Create and instrument FastAPI app
+app = bootstrap_logfire(
+    FastAPI(title="{{ project_name }} API"),
+    service="{{ project_slug }}-api"
+)
+```
+
+**What this does**:
+- Configures Logfire with OTLP export to Vector
+- Instruments FastAPI to emit spans for every HTTP request
+- Binds metadata: service name, environment, version
+- Enables automatic trace-log correlation
+
+### Structured Logging
+
+```python
+from libs.python.vibepro_logging import get_logger, LogCategory
+
+logger = get_logger(category=LogCategory.APP)
+
+@app.post("/users")
+def create_user(user: UserCreate):
+    logger.info("Creating user", user_role=user.role)
+    # Logs automatically include trace_id, span_id
+    return created_user
+```
+
+For complete examples and advanced usage, see the main observability documentation at `docs/observability/README.md` section 8.5.
 
 ## Environment Variables
 

@@ -394,6 +394,251 @@ just docs-lint                             # Ensures docs + template snippets st
 
 Keep all three aligned when introducing new metadata, macros, or transforms.
 
+### 8.5 Python FastAPI Integration
+
+**Status**: ✅ Complete (Cycle 1 Phase 1B)
+
+Python services use the **Logfire SDK** for automatic FastAPI instrumentation and structured logging with full trace-log correlation.
+
+#### Installation
+
+```bash
+pip install logfire opentelemetry-exporter-otlp-proto-http
+```
+
+Or add to your `pyproject.toml`:
+
+```toml
+[project.dependencies]
+logfire = "^0.50.0"
+opentelemetry-exporter-otlp-proto-http = "^1.27.0"
+```
+
+#### Basic Setup
+
+```python
+from fastapi import FastAPI
+from libs.python.vibepro_logging import bootstrap_logfire
+
+# Create and instrument FastAPI app
+app = bootstrap_logfire(
+    FastAPI(title="User API"),
+    service="user-api"
+)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.post("/users")
+def create_user(user: UserCreate):
+    return {"id": "user-123", "email": user.email}
+```
+
+The `bootstrap_logfire()` function:
+
+-   Configures Logfire with OTLP export to Vector (localhost:4318)
+-   Instruments FastAPI to emit spans for every HTTP request
+-   Binds metadata: `service`, `environment`, `application_version`
+-   Returns the app for method chaining
+
+#### Structured Logging with Trace Correlation
+
+```python
+from libs.python.vibepro_logging import get_logger, LogCategory
+
+# Get logger with category
+logger = get_logger(category=LogCategory.APP)
+
+@app.post("/users")
+def create_user(user: UserCreate):
+    # Log with automatic trace_id/span_id correlation
+    logger.info(
+        "Creating user",
+        user_email_hash=hash(user.email),
+        user_role=user.role
+    )
+
+    # Business logic here
+    created_user = create_user_in_db(user)
+
+    logger.info("User created successfully", user_id=created_user.id)
+
+    return created_user
+```
+
+**Automatic trace-log correlation**: Every log emitted within an active span automatically includes:
+
+-   `trace_id` - Links log to request trace
+-   `span_id` - Links log to specific operation
+-   `service` - Service name (from SERVICE_NAME env var)
+-   `environment` - Environment (from APP_ENV)
+-   `application_version` - Version (from APP_VERSION)
+
+#### Log Categories
+
+Use `LogCategory` enum to organize logs by purpose:
+
+```python
+from libs.python.vibepro_logging import LogCategory
+
+app_logger = get_logger(category=LogCategory.APP)        # Application logs
+audit_logger = get_logger(category=LogCategory.AUDIT)    # Audit trail
+security_logger = get_logger(category=LogCategory.SECURITY)  # Security events
+
+# Application logging
+app_logger.info("Processing payment", amount=100.00)
+
+# Audit logging
+audit_logger.info("User action", user_id="user-123", action="delete_account")
+
+# Security logging
+security_logger.warn("Failed login attempt", ip_address="192.168.1.1")
+```
+
+#### Custom Metadata Binding
+
+Bind request-specific metadata to a logger instance:
+
+```python
+from libs.python.vibepro_logging import get_logger, LogCategory
+
+@app.get("/orders/{order_id}")
+def get_order(order_id: str, request: Request):
+    # Create logger with request metadata
+    logger = get_logger(
+        category=LogCategory.APP,
+        request_id=request.headers.get("X-Request-ID"),
+        user_id=request.state.user_id,
+        order_id=order_id
+    )
+
+    logger.info("Fetching order")  # Includes request_id, user_id, order_id
+
+    order = fetch_order(order_id)
+
+    logger.info("Order fetched", order_status=order.status)
+
+    return order
+```
+
+#### Environment Configuration
+
+Configure via environment variables:
+
+```bash
+export SERVICE_NAME=user-api
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+export APP_ENV=staging
+export APP_VERSION=v1.2.3
+```
+
+**Defaults** (when env vars not set):
+
+-   `SERVICE_NAME` → `vibepro-py`
+-   `APP_ENV` → `local`
+-   `APP_VERSION` → `dev`
+-   `OTEL_EXPORTER_OTLP_ENDPOINT` → `http://localhost:4318`
+
+#### Integration with Vector
+
+Logfire sends telemetry to Vector via OTLP HTTP:
+
+```
+Python FastAPI App
+  ↓ (Logfire SDK)
+OTLP HTTP → localhost:4318
+  ↓ (Vector source: otlp.http)
+Vector Pipeline
+  ↓ (PII redaction, sampling, enrichment)
+OpenObserve / stdout
+```
+
+Verify integration:
+
+```bash
+# Start Vector
+just observe-start
+
+# Run your FastAPI app
+VIBEPRO_OBSERVE=1 python -m uvicorn main:app --port 8000
+
+# Send test request
+curl -X GET http://localhost:8000/health
+
+# Check Vector logs (should show OTLP data received)
+tail -f tmp/vector.log
+```
+
+#### Testing
+
+Run the complete test suite:
+
+```bash
+# Unit tests (26 tests)
+python -m pytest tests/python/logging/ -v
+
+# Integration test (Vector ← Logfire)
+bash tests/ops/test_vector_logfire.sh
+
+# All observability tests
+just observe-test-all
+```
+
+#### Example Application
+
+See `apps/python-test-service/` for a complete FastAPI application demonstrating:
+
+-   Bootstrap pattern
+-   Structured logging
+-   Trace-log correlation
+-   Error tracking
+-   Custom metadata binding
+
+#### Troubleshooting
+
+**Logs not appearing in Vector**:
+
+1. Check Vector is running: `just observe-status`
+2. Verify OTLP endpoint: `echo $OTEL_EXPORTER_OTLP_ENDPOINT`
+3. Check Vector config: `just observe-validate`
+4. Enable debug logging: `LOGFIRE_LOG_LEVEL=debug python -m uvicorn main:app`
+
+**Missing trace_id in logs**:
+
+-   Ensure logging happens within an HTTP request handler (active span)
+-   For background tasks, manually create spans:
+    ```python
+    with logfire.span("background_task"):
+        logger.info("Processing")  # Now has trace_id
+    ```
+
+**PII leakage concerns**:
+
+-   Vector automatically redacts PII via `transforms.logs_redact_pii`
+-   Add custom patterns in `tools/vector/macros.vrl`
+-   Test with: `bash tests/ops/test_vector_pii_redaction.sh`
+
+#### References
+
+**Specifications**:
+
+-   DEV-PRD-018: Structured Logging with Trace Correlation
+-   DEV-SDS-018: Logfire SDK Integration
+-   DEV-ADR-017: JSON-First Structured Logging
+
+**Implementation**:
+
+-   `libs/python/vibepro_logging.py` - Logfire SDK wrapper
+-   `tests/python/logging/` - Test suite (26 tests)
+-   `tests/ops/test_vector_logfire.sh` - Integration test
+
+**Documentation**:
+
+-   `templates/{{project_slug}}/docs/observability/logging.md.j2` - Generated project docs
+-   `docs/work-summaries/cycle1-phase1b-green-completion.md` - Implementation report
+
 ---
 
 ## 9. Feature Flags & Runtime Control
