@@ -9,6 +9,10 @@ overrides:
 
 importers:
   .:
+    dependencies:
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       "@eslint/eslintrc":
         specifier: ^2.0.0
