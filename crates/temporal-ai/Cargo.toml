@@ -15,8 +15,8 @@ name = "temporal-ai"
 path = "src/bin/main.rs"
 
 [dependencies]
-# Embedding inference (TODO: Replace with candle or llama-cpp-rs)
-# llm = "1.3"  # Wrong crate - this is an API wrapper
+# Embedding inference
+llama-cpp-2 = "0.1"
 
 # Vector storage
 redb = "2.2"

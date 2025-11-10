@@ -1,14 +1,21 @@
-//! Embedding generation using GGUF models
-//!
-//! NOTE: This is currently a stub implementation.
-//! TODO: Integrate with llama-cpp-rs or candle for actual GGUF model loading.
+//! Embedding generation using GGUF models via llama.cpp
 
 use crate::{Result, TemporalAIError, EMBEDDING_DIM};
+use llama_cpp_2::{
+    context::params::LlamaContextParams,
+    llama_backend::LlamaBackend,
+    llama_batch::LlamaBatch,
+    model::{params::LlamaModelParams, LlamaModel, AddBos},
+};
 use std::path::Path;
+use std::sync::Arc;
+use std::num::NonZeroU32;
 
-/// Embedding generator
+/// Embedding generator using llama.cpp
 pub struct Embedder {
-    _model_path: std::path::PathBuf,
+    _backend: Arc<LlamaBackend>,
+    model: LlamaModel,
+    n_ctx: u32,
 }
 
 impl Embedder {
@@ -22,39 +29,88 @@ impl Embedder {
             ));
         }
 
-        eprintln!("⚠️  WARNING: Using stub embedder implementation");
-        eprintln!("⚠️  Real GGUF model loading not yet implemented");
-        eprintln!("⚠️  Generating random embeddings for testing only\n");
+        // Initialize backend
+        let backend = LlamaBackend::init()
+            .map_err(|e| TemporalAIError::ModelLoadError(format!("Backend init failed: {:?}", e)))?;
+
+        // Load model with default params
+        let model_params = LlamaModelParams::default();
+
+        let model = LlamaModel::load_from_file(&backend, model_path, &model_params)
+            .map_err(|e| TemporalAIError::ModelLoadError(format!("Model load failed: {:?}", e)))?;
+
+        // Context size for embeddings (smaller is fine for embedding models)
+        let n_ctx = 512;
 
         Ok(Self {
-            _model_path: model_path.to_path_buf(),
+            _backend: Arc::new(backend),
+            model,
+            n_ctx,
         })
     }
 
     /// Generate 768-dimensional embedding for text
-    ///
-    /// NOTE: Currently returns deterministic hash-based embeddings for testing.
-    /// Replace with actual model inference.
     pub fn embed(&self, text: &str) -> Result<Vec<f32>> {
-        // Simple deterministic embedding based on text hash
-        // This allows testing the rest of the system
-        use std::collections::hash_map::DefaultHasher;
-        use std::hash::{Hash, Hasher};
+        // Tokenize input
+        let tokens = self.model
+            .str_to_token(text, AddBos::Always)
+            .map_err(|e| TemporalAIError::InferenceError(format!("Tokenization failed: {:?}", e)))?;
 
-        let mut hasher = DefaultHasher::new();
-        text.hash(&mut hasher);
-        let seed = hasher.finish();
+        // Create context with embeddings enabled using builder pattern
+        let ctx_params = LlamaContextParams::default()
+            .with_n_ctx(Some(NonZeroU32::new(self.n_ctx).unwrap()))
+            .with_embeddings(true)  // Enable embedding mode
+            .with_n_batch(self.n_ctx);
 
-        // Generate deterministic "embedding" from seed
-        let mut embedding = Vec::with_capacity(EMBEDDING_DIM);
-        let mut rng_state = seed;
+        let mut ctx = self.model.new_context(&self._backend, ctx_params)
+            .map_err(|e| TemporalAIError::InferenceError(format!("Context creation failed: {:?}", e)))?;
 
-        for _ in 0..EMBEDDING_DIM {
-            // Simple LCG for deterministic random numbers
-            rng_state = rng_state.wrapping_mul(6364136223846793005).wrapping_add(1);
-            let val = (rng_state >> 32) as f32 / u32::MAX as f32;
-            embedding.push(val * 2.0 - 1.0); // Range [-1, 1]
+        // Create batch
+        let mut batch = LlamaBatch::new(self.n_ctx as usize, 1);
+
+        // Add tokens to batch (limit to context size)
+        let token_count = tokens.len().min(self.n_ctx as usize);
+        for (i, &token) in tokens.iter().take(token_count).enumerate() {
+            batch.add(token, i as i32, &[0], false)
+                .map_err(|e| TemporalAIError::InferenceError(format!("Batch add failed: {:?}", e)))?;
         }
+
+        // Decode batch
+        ctx.decode(&mut batch)
+            .map_err(|e| TemporalAIError::InferenceError(format!("Decode failed: {:?}", e)))?;
+
+        // Get embeddings
+        let embeddings_result = ctx.embeddings_seq_ith(0);
+        let embeddings = match embeddings_result {
+            Ok(emb) => emb,
+            Err(e) => {
+                return Err(TemporalAIError::InferenceError(
+                    format!("Failed to get embeddings: {:?}", e)
+                ));
+            }
+        };
+
+        // Convert to Vec<f32>
+        let embedding_vec: Vec<f32> = embeddings.iter().copied().collect();
+
+        // Verify dimension
+        if embedding_vec.len() != EMBEDDING_DIM {
+            eprintln!("⚠️  WARNING: Model produced {} dimensions, expected {}",
+                embedding_vec.len(), EMBEDDING_DIM);
+            eprintln!("⚠️  This might not be an embedding model");
+
+            // If we got more dimensions, truncate
+            // If we got fewer, this is an error
+            if embedding_vec.len() < EMBEDDING_DIM {
+                return Err(TemporalAIError::DimensionMismatch {
+                    expected: EMBEDDING_DIM,
+                    actual: embedding_vec.len(),
+                });
+            }
+        }
+
+        // Take only the dimensions we need (in case model produces more)
+        let mut embedding: Vec<f32> = embedding_vec.into_iter().take(EMBEDDING_DIM).collect();
 
         // L2 normalization
         let norm = embedding.iter().map(|x| x * x).sum::<f32>().sqrt();
@@ -80,44 +136,5 @@ mod tests {
     #[test]
     fn test_embedding_dimension() {
         assert_eq!(EMBEDDING_DIM, 768);
-    }
-
-    #[test]
-    fn test_deterministic_embeddings() {
-        // Same text should produce same embedding
-        let text = "test text";
-
-        let emb1 = {
-            let mut h = std::collections::hash_map::DefaultHasher::new();
-            use std::hash::{Hash, Hasher};
-            text.hash(&mut h);
-            h.finish()
-        };
-
-        let emb2 = {
-            let mut h = std::collections::hash_map::DefaultHasher::new();
-            use std::hash::{Hash, Hasher};
-            text.hash(&mut h);
-            h.finish()
-        };
-
-        assert_eq!(emb1, emb2);
-    }
-
-    #[test]
-    fn test_normalization() {
-        let text = "test normalization";
-        let embedding = vec![3.0, 4.0]; // Will have norm = 5.0
-
-        let norm = embedding.iter().map(|x| x * x).sum::<f32>().sqrt();
-        assert_eq!(norm, 5.0);
-
-        let mut normalized = embedding.clone();
-        for val in &mut normalized {
-            *val /= norm;
-        }
-
-        let new_norm = normalized.iter().map(|x| x * x).sum::<f32>().sqrt();
-        assert!((new_norm - 1.0).abs() < 0.001);
     }
 }
