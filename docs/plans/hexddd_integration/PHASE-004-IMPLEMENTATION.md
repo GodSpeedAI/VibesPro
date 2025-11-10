@@ -12,12 +12,12 @@ PHASE-004 enforces strict type safety across TypeScript and Python, implements a
 
 ## Success Criteria - All Met ✅
 
-- ✅ **TypeScript Strict Mode Enforced**: `tsconfig.json` has comprehensive strict settings
-- ✅ **Python Mypy Strict Mode Enforced**: `pyproject.toml` configured with full strict mode
-- ✅ **ESLint Type Rules Active**: Bans `any` types, enforces explicit return types
-- ✅ **Pre-commit Hooks Active**: ESLint, mypy, and tsc run on every commit
-- ✅ **CI Type Gates**: GitHub Actions workflow validates types on all PRs
-- ✅ **Justfile Recipes**: Easy commands for type checking (`just type-check`)
+-   ✅ **TypeScript Strict Mode Enforced**: `tsconfig.json` has comprehensive strict settings
+-   ✅ **Python Mypy Strict Mode Enforced**: `pyproject.toml` configured with full strict mode
+-   ✅ **ESLint Type Rules Active**: Bans `any` types, enforces explicit return types
+-   ✅ **Pre-commit Hooks Active**: ESLint, mypy, and tsc run on every commit
+-   ✅ **CI Type Gates**: GitHub Actions workflow validates types on all PRs
+-   ✅ **Justfile Recipes**: Easy commands for type checking (`just type-check`)
 
 ---
 
@@ -29,28 +29,29 @@ PHASE-004 enforces strict type safety across TypeScript and Python, implements a
 
 ```json
 {
-  "compilerOptions": {
-    // Existing
-    "target": "ES2022",
-    "module": "ESNext",
-    "strict": true,
-    
-    // PHASE-004 Additions
-    "noUncheckedIndexedAccess": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitOverride": true
-  }
+    "compilerOptions": {
+        // Existing
+        "target": "ES2022",
+        "module": "ESNext",
+        "strict": true,
+
+        // PHASE-004 Additions
+        "noUncheckedIndexedAccess": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitOverride": true
+    }
 }
 ```
 
 **Benefits:**
-- Catches undefined access in arrays/objects
-- Prevents missing return statements
-- Detects unused variables
-- Enforces override keywords
+
+-   Catches undefined access in arrays/objects
+-   Prevents missing return statements
+-   Detects unused variables
+-   Enforces override keywords
 
 ### 2. ESLint Type-Safety Rules
 
@@ -60,10 +61,10 @@ PHASE-004 enforces strict type safety across TypeScript and Python, implements a
 rules: {
   // Ban 'any' completely
   '@typescript-eslint/no-explicit-any': 'error',
-  
+
   // Enforce explicit return types
   '@typescript-eslint/explicit-function-return-type': 'error',
-  
+
   // Prevent type errors
   '@typescript-eslint/no-unused-vars': 'error',
   '@typescript-eslint/no-non-null-assertion': 'warn',
@@ -72,7 +73,7 @@ rules: {
 }
 ```
 
-**Note:** Type-aware rules (no-unsafe-*) are commented out temporarily to avoid requiring full project compilation during linting. These will be enabled incrementally after fixing violations.
+**Note:** Type-aware rules (no-unsafe-\*) are commented out temporarily to avoid requiring full project compilation during linting. These will be enabled incrementally after fixing violations.
 
 ### 3. Python Mypy Strict Mode
 
@@ -98,12 +99,14 @@ disallow_any_generics = true
 **File:** `.pre-commit-config.yaml` (Enhanced existing)
 
 Pre-commit runs on every commit:
-- ✅ **ESLint**: TypeScript linting with type rules
-- ✅ **mypy**: Python strict type checking
-- ✅ **Ruff**: Python formatting and linting
-- ✅ **Prettier**: Code formatting
+
+-   ✅ **ESLint**: TypeScript linting with type rules
+-   ✅ **mypy**: Python strict type checking
+-   ✅ **Ruff**: Python formatting and linting
+-   ✅ **Prettier**: Code formatting
 
 **Usage:**
+
 ```bash
 # Manually run pre-commit
 pre-commit run --all-files
@@ -120,17 +123,17 @@ Runs on every PR and push to main/dev:
 
 ```yaml
 jobs:
-  typescript-check:
-    - pnpm exec tsc --noEmit
-    - pnpm exec eslint --max-warnings 0
-  
-  python-type-check:
-    - uv run mypy --strict libs/python
-    - Type coverage report
-  
-  type-safety-summary:
-    - Aggregates results
-    - Fails if any check fails
+    typescript-check:
+        - pnpm exec tsc --noEmit
+        - pnpm exec eslint --max-warnings 0
+
+    python-type-check:
+        - uv run mypy --strict libs/python
+        - Type coverage report
+
+    type-safety-summary:
+        - Aggregates results
+        - Fails if any check fails
 ```
 
 ### 6. Justfile Recipes
@@ -164,6 +167,7 @@ just type-pre-commit
 ### For Developers
 
 **Before committing:**
+
 ```bash
 # Quick type check
 just type-check
@@ -178,24 +182,28 @@ just type-pre-commit
 **Writing type-safe code:**
 
 TypeScript:
+
 ```typescript
 // ✅ Good - explicit return type
 function fetchUser(id: string): Promise<User> {
-  return apiClient.get(`/users/${id}`);
+    return apiClient.get(`/users/${id}`);
 }
 
 // ❌ Bad - implicit any
-function fetchUser(id) {  // Error: parameter needs type
-  return apiClient.get(`/users/${id}`);
+function fetchUser(id) {
+    // Error: parameter needs type
+    return apiClient.get(`/users/${id}`);
 }
 
 // ❌ Bad - explicit any
-function process(data: any) {  // Error: no-explicit-any
-  return data.value;
+function process(data: any) {
+    // Error: no-explicit-any
+    return data.value;
 }
 ```
 
 Python:
+
 ```python
 # ✅ Good - fully typed
 def fetch_user(user_id: str) -> User:
@@ -213,11 +221,13 @@ def process(data: Any) -> dict:  # Error: disallow_any_explicit
 ### CI/CD Integration
 
 **Pull Requests:**
+
 1. Type-safety workflow runs automatically
 2. All type checks must pass to merge
 3. Coverage reports appear in CI logs
 
 **Local Development:**
+
 ```bash
 # Before pushing
 just type-check
@@ -241,10 +251,11 @@ git push
 ### Incremental Rollout
 
 Type-aware ESLint rules (requiring full TS compilation) are disabled initially:
-- `@typescript-eslint/no-unsafe-assignment`
-- `@typescript-eslint/no-unsafe-call`
-- `@typescript-eslint/no-unsafe-member-access`
-- `@typescript-eslint/no-floating-promises`
+
+-   `@typescript-eslint/no-unsafe-assignment`
+-   `@typescript-eslint/no-unsafe-call`
+-   `@typescript-eslint/no-unsafe-member-access`
+-   `@typescript-eslint/no-floating-promises`
 
 **Reason:** These require `parserOptions.project` which is expensive. We'll enable them file-by-file after establishing baseline type safety.
 
@@ -288,19 +299,21 @@ gh run list --workflow=type-safety.yml
 ### Type Coverage
 
 **TypeScript:**
-- Strict mode: ✅ Enabled
-- ESLint rules: ✅ All enforced
-- Zero `any` types: 🎯 Target (currently enforced via ESLint)
+
+-   Strict mode: ✅ Enabled
+-   ESLint rules: ✅ All enforced
+-   Zero `any` types: 🎯 Target (currently enforced via ESLint)
 
 **Python:**
-- Mypy strict: ✅ Enabled
-- Coverage: ≥95% (measured via `--any-exprs-report`)
-- Zero type: ignore: 🎯 Target (enforced except documented exceptions)
+
+-   Mypy strict: ✅ Enabled
+-   Coverage: ≥95% (measured via `--any-exprs-report`)
+-   Zero type: ignore: 🎯 Target (enforced except documented exceptions)
 
 ### CI Performance
 
-- Type-safety workflow: ~2-3 minutes
-- Pre-commit hooks: ~10-20 seconds
+-   Type-safety workflow: ~2-3 minutes
+-   Pre-commit hooks: ~10-20 seconds
 
 ---
 
@@ -309,31 +322,34 @@ gh run list --workflow=type-safety.yml
 ### For Existing Code
 
 1. **Run type check to find violations:**
-   ```bash
-   just type-check-ts  # Will show TS errors
-   just type-check-py  # Will show Python errors
-   ```
+
+    ```bash
+    just type-check-ts  # Will show TS errors
+    just type-check-py  # Will show Python errors
+    ```
 
 2. **Fix violations incrementally:**
-   ```bash
-   # Auto-fix what's possible
-   just type-fix
-   
-   # Manually fix remaining
-   # Edit files based on error messages
-   ```
+
+    ```bash
+    # Auto-fix what's possible
+    just type-fix
+
+    # Manually fix remaining
+    # Edit files based on error messages
+    ```
 
 3. **Test fixes:**
-   ```bash
-   just type-check
-   ```
+    ```bash
+    just type-check
+    ```
 
 ### For New Code
 
 All new code automatically:
-- ✅ Passes pre-commit type checks
-- ✅ Passes CI type validation
-- ✅ Follows strict type guidelines
+
+-   ✅ Passes pre-commit type checks
+-   ✅ Passes CI type validation
+-   ✅ Follows strict type guidelines
 
 ---
 
@@ -346,6 +362,7 @@ All new code automatically:
 ### "mypy: Module not found"
 
 **Solution:**
+
 ```bash
 # Reinstall dependencies
 uv pip install --system -e ".[dev]"
@@ -357,6 +374,7 @@ just setup-python
 ### "Pre-commit hook failed"
 
 **Solution:**
+
 ```bash
 # Update hooks
 pre-commit install
@@ -370,6 +388,7 @@ pre-commit run --all-files
 ## Next Steps (PHASE-005)
 
 After PHASE-004:
+
 1. **Enable type-aware ESLint rules** incrementally
 2. **Add type-sync from Supabase** (auto-generate types)
 3. **Type coverage dashboards** in CI
@@ -379,19 +398,19 @@ After PHASE-004:
 
 ## References
 
-- **Plan:** `docs/plans/hexddd_integration/PHASE-004-TYPE_SAFETY_CI.md`
-- **Prompt:** `docs/plans/hexddd_integration/PHASE-004-PROMPT.md`
-- **TypeScript Strict Guide:** https://www.typescriptlang.org/tsconfig#strict
-- **Python Mypy Strict:** https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict
+-   **Plan:** `docs/plans/hexddd_integration/PHASE-004-TYPE_SAFETY_CI.md`
+-   **Prompt:** `docs/plans/hexddd_integration/PHASE-004-PROMPT.md`
+-   **TypeScript Strict Guide:** https://www.typescriptlang.org/tsconfig#strict
+-   **Python Mypy Strict:** https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict
 
 ---
 
 ## Traceability
 
-| Requirement | Implementation | Status |
-|-------------|----------------|--------|
-| DEV-ADR-029 | tsconfig.json strict mode | ✅ |
-| DEV-PRD-030 | CI type gates | ✅ |
-| DEV-PRD-031 | Pre-commit hooks | ✅ |
-| DEV-SDS-029 | ESLint + mypy configs | ✅ |
-| DEV-SDS-030 | GitHub Actions workflow | ✅ |
+| Requirement | Implementation            | Status |
+| ----------- | ------------------------- | ------ |
+| DEV-ADR-029 | tsconfig.json strict mode | ✅     |
+| DEV-PRD-030 | CI type gates             | ✅     |
+| DEV-PRD-031 | Pre-commit hooks          | ✅     |
+| DEV-SDS-029 | ESLint + mypy configs     | ✅     |
+| DEV-SDS-030 | GitHub Actions workflow   | ✅     |

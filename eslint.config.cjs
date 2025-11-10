@@ -91,7 +91,7 @@ module.exports = (() => {
         // PHASE-004: Strict Type Safety Rules
         // Ban 'any' types completely
         '@typescript-eslint/no-explicit-any': 'error',
-        
+
         // Disable type-aware rules that need project references
         // We'll enable these incrementally after fixing violations
         // '@typescript-eslint/no-unsafe-assignment': 'error',

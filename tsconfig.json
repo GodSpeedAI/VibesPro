@@ -16,8 +16,6 @@
       "@/*": ["./*"],
       "@shared/web": ["libs/shared/web/src/index.ts"]
     },
-    
-    // PHASE-004: Strict Type Safety
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitReturns": true,
