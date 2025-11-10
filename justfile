@@ -897,3 +897,37 @@ type-pre-commit:
 	@pre-commit run --all-files eslint
 	@echo "✅ Pre-commit checks passed"
 
+
+# Validate generator specification completeness
+validate-generator-specs:
+	@echo "🔍 Validating generator specifications..."
+	@pnpm exec jest tests/generators/spec_completeness.test.ts --passWithNoTests
+	@pnpm exec jest tests/generators/spec_schema_examples.test.ts --passWithNoTests
+	@echo "✅ All generator specs valid"
+
+# --- Temporal AI Pattern Search ---
+
+# Initialize temporal-ai database
+temporal-ai-init:
+	@echo "🗄️  Initializing temporal-ai database..."
+	@./crates/temporal-ai/target/release/temporal-ai init
+
+# Refresh pattern database from Git history
+temporal-ai-refresh COMMITS="1000":
+	@echo "🔄 Refreshing pattern database (last {{COMMITS}} commits)..."
+	@./crates/temporal-ai/target/release/temporal-ai refresh --commits {{COMMITS}}
+
+# Query similar patterns
+temporal-ai-query QUERY TOP="5":
+	@echo "🔍 Searching for: {{QUERY}}"
+	@./crates/temporal-ai/target/release/temporal-ai query "{{QUERY}}" --top {{TOP}}
+
+# Show temporal-ai database statistics
+temporal-ai-stats:
+	@./crates/temporal-ai/target/release/temporal-ai stats
+
+# Build temporal-ai CLI
+temporal-ai-build:
+	@echo "🛠️  Building temporal-ai..."
+	@cd crates/temporal-ai && cargo build --release
+	@echo "✅ Temporal AI CLI built at: crates/temporal-ai/target/release/temporal-ai"

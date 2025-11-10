@@ -55,16 +55,20 @@ def default_metadata(service: str | None = None) -> dict[str, str]:
     }
 
 
-def bootstrap_logfire(app: FastAPI, **kwargs) -> None:
+def bootstrap_logfire(app: FastAPI, **kwargs) -> FastAPI:
     """
     Bootstrap Logfire for FastAPI applications.
     This function configures Logfire and instruments the FastAPI application
     to emit OpenTelemetry spans for each request.
     kwargs are passed to logfire.configure()
+
+    Returns:
+        The instrumented FastAPI app for chaining.
     """
     service_name = _resolve_service_name(kwargs.pop("service", None))
     _configure_global_logfire(service_name=service_name, **kwargs)
     logfire.instrument_fastapi(app)
+    return app
 
 
 def get_logger(category: str | None = None, **kwargs) -> logfire.Logfire:
@@ -108,11 +112,22 @@ def _configure_global_logfire(service_name: str, **kwargs) -> logfire.Logfire:
     """
     global _LOGFIRE_INSTANCE
 
+    # Handle send_to_logfire parameter with default
+    send_to_logfire = kwargs.pop("send_to_logfire", "if-token-present")
+
     configure_kwargs: dict[str, object] = {
         "service_name": service_name,
         "environment": os.getenv("APP_ENV", "local"),
-        "send_to_logfire": "if-token-present",
+        "send_to_logfire": send_to_logfire,
     }
+
+    # Add OTLP endpoint configuration if specified
+    otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+    if otlp_endpoint:
+        configure_kwargs["additional_span_processors"] = kwargs.pop(
+            "additional_span_processors", []
+        )
+
     configure_kwargs.update({k: v for k, v in kwargs.items() if v is not None})
 
     if _LOGFIRE_INSTANCE is None:
