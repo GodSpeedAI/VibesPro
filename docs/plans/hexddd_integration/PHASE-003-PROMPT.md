@@ -213,10 +213,28 @@ export const env = {
 };
 
 function getEnvVar(...keys: string[]): string | undefined {
-    for (const key of keys) {
-        const value = process.env[key];
-        if (value) return value;
+    // Check process.env first (Node.js, Next.js, Remix)
+    if (typeof process !== "undefined" && process.env) {
+        for (const key of keys) {
+            const value = process.env[key];
+            if (value) return value;
+        }
     }
+
+    // Fallback to Expo constants (React Native)
+    try {
+        const Constants = require("expo-constants");
+        const expoEnv = Constants.expoConfig?.extra || Constants.manifest?.extra;
+        if (expoEnv) {
+            for (const key of keys) {
+                const value = expoEnv[key];
+                if (value) return value;
+            }
+        }
+    } catch {
+        // Silently ignore if expo-constants is not available
+    }
+
     return undefined;
 }
 ```
@@ -330,8 +348,12 @@ pnpm exec nx g @nx/plugin:generator web-app --project=ddd-plugin
 3. **Implement generator logic** at `generators/web-app/generator.ts`:
 
 ```typescript
-import { Tree, formatFiles, installPackagesTask, generateFiles, joinPathFragments } from "@nx/devkit";
+import { Tree, formatFiles, installPackagesTask, generateFiles, joinPathFragments, addProjectConfiguration } from "@nx/devkit";
 import { WebAppGeneratorSchema } from "./schema";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function webAppGenerator(tree: Tree, options: WebAppGeneratorSchema) {
     const projectRoot = joinPathFragments(options.directory, options.name);
@@ -442,10 +464,14 @@ export default function HomePage({ data }: HomePageProps) {
 }
 
 export const getServerSideProps: GetServerSideProps<HomePageProps> = async () => {
-  const client = new ApiClient(process.env.NEXT_PUBLIC_API_URL!);
-  const data = await client.get<{ message: string }>('/api/health');
-
-  return { props: { data } };
+  try {
+    const client = new ApiClient(process.env.NEXT_PUBLIC_API_URL!);
+    const data = await client.get<{ message: string }>('/api/health');
+    return { props: { data } };
+  } catch (error) {
+    console.error('Failed to load data:', error);
+    return { notFound: true };
+  }
 };
 ```
 
@@ -524,9 +550,14 @@ import { useLoaderData } from '@remix-run/react';
 import { ApiClient, env } from '@shared/web';
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const client = new ApiClient(env.API_URL);
-  const data = await client.get<{ message: string }>('/api/health');
-  return json(data);
+  try {
+    const client = new ApiClient(env.API_URL);
+    const data = await client.get<{ message: string }>('/api/health');
+    return json(data);
+  } catch (error) {
+    console.error('Failed to load data:', error);
+    return json({ message: 'Failed to load data' }, { status: 500 });
+  }
 }
 
 export default function Index() {
@@ -852,12 +883,13 @@ describe("React Generator Integration", () => {
 
         execSync(`pnpm exec nx g @ddd-plugin/ddd:web-app ${appName} --framework=next --routerStyle=app --directory=${tmpDir} --no-interactive`, { stdio: "pipe" });
 
-        const buildOutput = execSync(`pnpm exec nx build ${appName}`, {
-            encoding: "utf-8",
+        execSync(`pnpm exec nx build ${appName}`, {
             stdio: "pipe",
         });
 
-        expect(buildOutput).toContain("Successfully");
+        // Check that build artifacts exist
+        const nextDir = path.join(tmpDir, appName, ".next");
+        expect(fs.existsSync(nextDir)).toBe(true);
     }, 120000);
 
     it("Next.js Pages Router app builds successfully", () => {
@@ -865,12 +897,13 @@ describe("React Generator Integration", () => {
 
         execSync(`pnpm exec nx g @ddd-plugin/ddd:web-app ${appName} --framework=next --routerStyle=pages --directory=${tmpDir} --no-interactive`, { stdio: "pipe" });
 
-        const buildOutput = execSync(`pnpm exec nx build ${appName}`, {
-            encoding: "utf-8",
+        execSync(`pnpm exec nx build ${appName}`, {
             stdio: "pipe",
         });
 
-        expect(buildOutput).toContain("Successfully");
+        // Check that build artifacts exist
+        const nextDir = path.join(tmpDir, appName, ".next");
+        expect(fs.existsSync(nextDir)).toBe(true);
     }, 120000);
 
     it("Remix app builds successfully", () => {
@@ -878,12 +911,13 @@ describe("React Generator Integration", () => {
 
         execSync(`pnpm exec nx g @ddd-plugin/ddd:web-app ${appName} --framework=remix --directory=${tmpDir} --no-interactive`, { stdio: "pipe" });
 
-        const buildOutput = execSync(`pnpm exec nx build ${appName}`, {
-            encoding: "utf-8",
+        execSync(`pnpm exec nx build ${appName}`, {
             stdio: "pipe",
         });
 
-        expect(buildOutput).toContain("Built in");
+        // Check that build artifacts exist
+        const buildDir = path.join(tmpDir, appName, "build");
+        expect(fs.existsSync(buildDir)).toBe(true);
     }, 120000);
 
     it("Expo app bundles successfully", () => {

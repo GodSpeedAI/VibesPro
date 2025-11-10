@@ -344,16 +344,27 @@ End
 -   Add badges for test coverage and build status
 -   Content:
 
-    ````markdown
-    ## Hexagonal Architecture
+    ```markdown
 
-    This project uses hexagonal (ports & adapters) architecture:
+    ```
 
-    -   **Domain Layer**: Pure business logic (`libs/*/domain`)
-    -   **Application Layer**: Use cases (`libs/*/application`)
-    -   **Infrastructure Layer**: Adapters (`libs/*/infrastructure`)
+`````
 
-    All generators enforce these boundaries automatically.
+1. **Update README.md** with HexDDD integration overview:
+
+-   Add "Hexagonal Architecture" section after project introduction
+-   Include quick start commands for generators
+-   Add badges for test coverage and build status
+-   Content:
+
+```markdown
+## Hexagonal Architecture
+
+This project uses hexagonal (ports & adapters) architecture:
+
+-   **Domain Layer**: Pure business logic (`libs/*/domain`)
+-   **Application Layer**: Use cases (`libs/*/application`)
+-   **Infrastructure Layer**: Adapters (`libs/*/infrastructure`)    All generators enforce these boundaries automatically.
 
     ### Quick Start
 
@@ -367,7 +378,6 @@ End
     # Start Supabase dev stack
     nx run supabase-devstack:start
     ```
-    ````
 
     ### Architecture Enforcement
 
@@ -381,8 +391,6 @@ End
 
     ```
 
-    ```
-
 2. **Update docs/ARCHITECTURE.md**:
 
 -   Add "Unit of Work Pattern" section with code examples
@@ -391,16 +399,16 @@ End
 -   Add "Nx Boundary Enforcement" section
 -   Content additions:
 
-    ````markdown
-    ### Unit of Work Pattern
+```markdown
+### Unit of Work Pattern
 
-    The UoW pattern manages transactional boundaries across repositories:
+The UoW pattern manages transactional boundaries across repositories:
 
-    ```typescript
-    import { UnitOfWork } from "@shared/domain";
+```typescript
+import { UnitOfWork } from "@shared/domain";
 
-    class CreateUserUseCase {
-        constructor(private uow: UnitOfWork) {}
+class CreateUserUseCase {
+    constructor(private uow: UnitOfWork) {}
 
         async execute(dto: CreateUserDto): Promise<User> {
             await this.uow.begin();
@@ -448,8 +456,6 @@ End
 
     ```
 
-    ```
-
 3. **Update docs/ENVIRONMENT.md**:
 
 -   Add "Supabase Dev Stack" section after mise/SOPS
@@ -457,12 +463,12 @@ End
 -   Add health check instructions
 -   Content:
 
-    ````markdown
-    ## Supabase Dev Stack
+```markdown
+## Supabase Dev Stack
 
-    Local Supabase instance for development:
+Local Supabase instance for development:
 
-    ```bash
+```bash
     # Start stack (PostgreSQL, PostgREST, GoTrue, Storage, Realtime)
     nx run supabase-devstack:start
 
@@ -516,7 +522,7 @@ mkdir -p docs/generators
 touch docs/generators/README.md
 touch docs/generators/hex-domain.md
 touch docs/generators/web-app.md
-```
+`````
 
 2. **Create docs/generators/README.md** (generator index):
 
@@ -527,10 +533,10 @@ This directory contains detailed usage guides for all Nx generators.
 
 ## Available Generators
 
-| Generator    | Purpose                                    | Guide                                           |
-| ------------ | ------------------------------------------ | ----------------------------------------------- |
-| `hex-domain` | Create hexagonal domain with layers        | [hex-domain.md](../../generators/hex-domain.md) |
-| `web-app`    | Universal React app (Next.js, Remix, Expo) | [web-app.md](../../generators/web-app.md)       |
+| Generator    | Purpose                                    | Guide                            |
+| ------------ | ------------------------------------------ | -------------------------------- |
+| `hex-domain` | Create hexagonal domain with layers        | [hex-domain.md](./hex-domain.md) |
+| `web-app`    | Universal React app (Next.js, Remix, Expo) | [web-app.md](./web-app.md)       |
 
 ## Common Options
 
@@ -725,10 +731,6 @@ nx g @ddd-plugin/ddd:web-app mobile --framework=expo
 nx g @ddd-plugin/ddd:web-app portal --directory=apps/customer-facing
 ```
 
-```
-
-```
-
 **Exit Criteria**:
 
 -   [ ] `docs/generators/README.md` exists with generator index
@@ -750,12 +752,21 @@ nx g @ddd-plugin/ddd:web-app portal --directory=apps/customer-facing
 -   Add after existing Nx configuration
 -   Content:
 
-    ````markdown
-    # Hexagonal Architecture Guidelines
+    ```markdown
 
-    ## Layer Dependency Rules (ENFORCED BY NX TAGS)
+    ```
 
-    **CRITICAL**: These rules are enforced by Nx linting. Violations will fail CI.
+````
+
+1. **Update AGENTS.md** with hexagonal architecture rules:
+
+-   Add after existing Nx configuration
+-   Content:
+
+```markdown
+# Hexagonal Architecture Guidelines
+
+## Layer Dependency Rules (ENFORCED BY NX TAGS)    **CRITICAL**: These rules are enforced by Nx linting. Violations will fail CI.
 
     ### Domain Layer (`type:domain`)
 
@@ -791,57 +802,56 @@ nx g @ddd-plugin/ddd:web-app portal --directory=apps/customer-facing
         ]
     }
     ```
-    ````
 
-    ## Validation
+## Validation
 
-    Run `pnpm nx run-many -t lint --all` to validate boundaries.
+Run `pnpm nx run-many -t lint --all` to validate boundaries.
 
-    Example violation error:
+Example violation error:
 
-    ```
-    A project tagged with "type:domain" cannot depend on projects tagged with "type:infrastructure"
-    ```
+````
 
-    ```
+A project tagged with "type:domain" cannot depend on projects tagged with "type:infrastructure"
 
-    ```
+```
+
+```
 
 2. **Update .github/copilot-instructions.md**:
 
 -   Add hexagonal architecture section before "Coding Standards"
 -   Content:
 
-    ````markdown
-    ### Hexagonal Architecture Enforcement
+````markdown
+### Hexagonal Architecture Enforcement
 
-    **Before creating any new code in `libs/`, check the layer you're working in:**
+**Before creating any new code in `libs/`, check the layer you're working in:**
 
-    1. **Domain Layer** (`libs/*/domain/`):
+1.  **Domain Layer** (`libs/*/domain/`):
 
-        - Pure TypeScript/Python with ZERO external dependencies
-        - Define entities, value objects, domain events
-        - Use dependency injection for repository interfaces
-        - Example:
+    -   Pure TypeScript/Python with ZERO external dependencies
+    -   Define entities, value objects, domain events
+    -   Use dependency injection for repository interfaces
+    -   Example:
 
-            ```typescript
-            // ✅ CORRECT: Pure domain entity
-            export class User {
-                constructor(
-                    private readonly id: UserId,
-                    private readonly email: Email,
-                ) {}
+    ```typescript
+    // ✅ CORRECT: Pure domain entity
+    export class User {
+        constructor(
+            private readonly id: UserId,
+            private readonly email: Email,
+        ) {}
 
-                changeEmail(newEmail: Email): void {
-                    // Pure business logic
-                }
-            }
+        changeEmail(newEmail: Email): void {
+            // Pure business logic
+        }
+    }
 
-            // ❌ WRONG: External dependency in domain
-            import { createClient } from "@supabase/supabase-js";
-            ```
+    // ❌ WRONG: External dependency in domain
+    import { createClient } from "@supabase/supabase-js";
+    ```
 
-    2. **Application Layer** (`libs/*/application/`):
+2.  **Application Layer** (`libs/*/application/`):
 
         - Import domain entities and value objects
         - Define use cases (orchestrate domain logic)
@@ -882,8 +892,8 @@ nx g @ddd-plugin/ddd:web-app portal --directory=apps/customer-facing
             }
             ```
 
-    **Validation**: Run `pnpm nx run-many -t lint --all` after changes.
-    ````
+**Validation**: Run `pnpm nx run-many -t lint --all` after changes.
+````
 
 **Exit Criteria**:
 
@@ -1022,6 +1032,8 @@ git checkout -b pre-hexddd-backup
 git commit -am "Backup before HexDDD migration"
 git checkout main
 ```
+````
+
 ````
 
 #### 2. Update Template Dependencies
@@ -1472,3 +1484,4 @@ just test-generation
 ```
 
 When all gates are GREEN, Phase 5 (and the complete HexDDD integration project) is COMPLETE. 🎉
+````
