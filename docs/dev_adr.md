@@ -639,27 +639,32 @@ Consequences:
 -   Requires change management documentation (runbooks, migration notes).
 -   Potential short-term instability during upgrade windows that must be mitigated via smoke tests.
 
-## DEV-ADR-028 — Nx Generator Composition Pattern for React Frameworks
+## DEV-ADR-028 — Nx Generator Composition Pattern for Full-Stack Applications
 
 Status: Active
 
-Context: HexDDD ADR-012 consolidates React surface generators into a single, configurable workflow. VibesPro needs to support Next.js, Remix, and Expo while avoiding maintenance burden of custom framework generators. Nx provides official, well-maintained generators (`@nx/next`, `@nx/remix`, `@nx/expo`) that handle framework-specific scaffolding.
+Context: HexDDD ADR-012 consolidates React surface generators into a single, configurable workflow. VibesPro needs to support **frontend frameworks** (Next.js, Remix, Expo) and **Python/FastAPI backends** while avoiding maintenance burden of custom generators. Nx provides official, well-maintained generators (`@nx/next`, `@nx/remix`, `@nx/expo`, `@nxlv/python`) that handle framework-specific scaffolding. VibesPro's type system relies on **FastAPI-OpenAPI-Pydantic** chain that enables end-to-end type syncing via Supabase.
 
-Decision: Create thin wrapper generators that **compose** official Nx generators using `externalSchematic` API, then apply post-generation transformations to inject shared-web patterns, hexagonal architecture imports, and VibesPro conventions.
+Decision: Create thin wrapper generators that **compose** official Nx generators using `externalSchematic` API, then apply post-generation transformations to inject:
+
+-   **Frontend**: Shared-web patterns, hexagonal architecture imports, VibesPro conventions
+-   **Backend**: FastAPI + Logfire bootstrap, Pydantic schemas, hexagonal ports/adapters, Supabase type-sync integration
 
 Rationale:
 
 -   **Leverage Official Generators**: Nx generators stay updateable; we don't fork/maintain framework-specific code.
--   **Control Integration Points**: Wrapper applies shared-web imports, error handling, and hexagonal structure after Nx scaffolding.
+-   **Control Integration Points**: Wrapper applies shared libraries, error handling, and hexagonal structure after Nx scaffolding.
 -   **Low Maintenance Burden**: Only update wrappers when Nx introduces breaking API changes.
 -   **Composition Over Creation**: Aligns with "generators-first" principle and Nx best practices.
--   **Future-Proof**: New Nx features (e.g., RSC updates, Expo SDK changes) flow through automatically.
+-   **Future-Proof**: New Nx features (e.g., RSC updates, Expo SDK changes, FastAPI patterns) flow through automatically.
+-   **Type-Safe Full Stack**: Python backend generators ensure Pydantic models sync with Supabase schema for end-to-end type safety.
 
 Consequences:
 
 -   Wrapper generators depend on Nx generator APIs (require version compatibility testing).
 -   Post-generation transformations must be idempotent and well-tested.
 -   Need to document which Nx versions are supported and how to handle breaking changes.
+-   Backend wrappers must integrate with existing `libs/python/vibepro_logging.py` and hexagonal patterns from PHASE-002.
 -   Slightly more complex setup than pure custom generators, but massively reduced long-term maintenance.
 
 ## DEV-ADR-029 — Strict Typing Policy Across Languages
