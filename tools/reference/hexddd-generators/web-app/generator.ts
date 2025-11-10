@@ -27,19 +27,19 @@ async function tryGenerateNextApp(tree: Tree, options: WebAppGeneratorSchema) {
 async function injectSharedWebIntoNextApp(tree: Tree, options: WebAppGeneratorSchema) {
   const appNames = names(options.name);
   const projectRoot = joinPathFragments('apps', appNames.fileName);
-  
+
   if (options.routerStyle === 'app' || options.routerStyle === undefined) {
     const pagePath = joinPathFragments(projectRoot, 'app/page.tsx');
     if (tree.exists(pagePath)) {
       const content = tree.read(pagePath, 'utf-8') || '';
-      
+
       if (!content.includes('@shared/web')) {
         const importStatement = `import { fetchJson, ENV } from '@shared/web';\n`;
         const updatedContent = importStatement + content;
         tree.write(pagePath, updatedContent);
       }
     }
-    
+
     const libDir = joinPathFragments(projectRoot, 'app/lib');
     const apiClientPath = joinPathFragments(libDir, 'api-client.ts');
     if (!tree.exists(apiClientPath)) {
@@ -62,21 +62,21 @@ export async function postToApi<T>(path: string, data: unknown): Promise<T> {
   if (!response.ok) throw new Error('NetworkError');
   return (await response.json()) as T;
 }
-`
+`,
       );
     }
   } else {
     const indexPath = joinPathFragments(projectRoot, 'pages/index.tsx');
     if (tree.exists(indexPath)) {
       const content = tree.read(indexPath, 'utf-8') || '';
-      
+
       if (!content.includes('@shared/web')) {
         const importStatement = `import { fetchJson, ENV } from '@shared/web';\nimport type { GetServerSideProps } from 'next';\n`;
         const updatedContent = importStatement + content;
         tree.write(indexPath, updatedContent);
       }
     }
-    
+
     const libDir = joinPathFragments(projectRoot, 'lib');
     const apiClientPath = joinPathFragments(libDir, 'api-client.ts');
     if (!tree.exists(apiClientPath)) {
@@ -88,7 +88,7 @@ export async function fetchFromApi<T>(path: string): Promise<T> {
   const url = \`\${ENV.API_URL}\${path}\`;
   return fetchJson<T>(url);
 }
-`
+`,
       );
     }
   }
@@ -116,10 +116,10 @@ async function injectSharedWebIntoRemixApp(tree: Tree, options: WebAppGeneratorS
   const appNames = names(options.name);
   const projectRoot = joinPathFragments('apps', appNames.fileName);
   const indexRoute = joinPathFragments(projectRoot, 'app/routes/_index.tsx');
-  
+
   if (tree.exists(indexRoute)) {
     const content = tree.read(indexRoute, 'utf-8') || '';
-    
+
     if (!content.includes('@shared/web')) {
       const loaderExample = `import { json, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
@@ -137,7 +137,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
-  
+
   return (
     <div>
       <h1>Welcome to ${options.name}</h1>
@@ -149,7 +149,7 @@ export default function Index() {
       tree.write(indexRoute, loaderExample);
     }
   }
-  
+
   const utilsDir = joinPathFragments(projectRoot, 'app/utils');
   const apiClientPath = joinPathFragments(utilsDir, 'api-client.ts');
   if (!tree.exists(apiClientPath)) {
@@ -161,11 +161,10 @@ export async function fetchFromApi<T>(path: string): Promise<T> {
   const url = \`\${ENV.API_URL}\${path}\`;
   return fetchJson<T>(url);
 }
-`
+`,
     );
   }
 }
-
 
 async function tryGenerateExpoApp(tree: Tree, options: WebAppGeneratorSchema) {
   try {
@@ -188,16 +187,16 @@ async function tryGenerateExpoApp(tree: Tree, options: WebAppGeneratorSchema) {
 async function injectSharedWebIntoExpoApp(tree: Tree, options: WebAppGeneratorSchema) {
   const appNames = names(options.name);
   const projectRoot = joinPathFragments('apps', appNames.fileName);
-  
+
   const appTsxPaths = [
     joinPathFragments(projectRoot, 'src/app/App.tsx'),
     joinPathFragments(projectRoot, 'App.tsx'),
   ];
-  
+
   for (const appTsx of appTsxPaths) {
     if (tree.exists(appTsx)) {
       const content = tree.read(appTsx, 'utf-8') || '';
-      
+
       if (!content.includes('@shared/web')) {
         const expoExample = `import { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
@@ -258,7 +257,7 @@ const styles = StyleSheet.create({
       break;
     }
   }
-  
+
   const utilsDir = joinPathFragments(projectRoot, 'src/utils');
   const apiClientPath = joinPathFragments(utilsDir, 'api-client.ts');
   if (!tree.exists(apiClientPath)) {
@@ -270,11 +269,10 @@ export async function fetchFromApi<T>(path: string): Promise<T> {
   const url = \`\${ENV.API_URL}\${path}\`;
   return fetchJson<T>(url);
 }
-`
+`,
     );
   }
 }
-
 
 function ensureSharedWeb(tree: Tree, opts: WebAppGeneratorSchema) {
   const base = 'libs/shared/web/src/lib';

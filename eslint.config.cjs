@@ -60,71 +60,110 @@ function maybeApplyTsEslintHelper(configArray) {
 
 module.exports = (() => {
   const base = [
-    // Apply TypeScript-aware parsing & plugin to JS/TS file patterns
+    // Global ignores - must be first
     {
-      files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
+      ignores: [
+        'node_modules/**',
+        'dist/**',
+        'coverage/**',
+        '.nx/**',
+        'tmp/**',
+        'test-output/**',
+        '**/*.js',
+        '**/*.d.ts',
+      ],
+    },
+
+    // Apply TypeScript-aware parsing & plugin to TS file patterns
+    {
+      files: ['**/*.ts', '**/*.tsx'],
       languageOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
         parser: tsParser,
+        parserOptions: {
+          project: ['./tsconfig.json'],
+          tsconfigRootDir: __dirname,
+        },
       },
       plugins: { '@typescript-eslint': tsPlugin },
       rules: {
-        // conservative baseline
-        // disable base rule in favor of the TypeScript-aware version
-        'no-unused-vars': 'off',
+        // PHASE-004: Strict Type Safety Rules
+        // Ban 'any' types completely
+        '@typescript-eslint/no-explicit-any': 'error',
+        
+        // Disable type-aware rules that need project references
+        // We'll enable these incrementally after fixing violations
+        // '@typescript-eslint/no-unsafe-assignment': 'error',
+        // '@typescript-eslint/no-unsafe-call': 'error',
+        // '@typescript-eslint/no-unsafe-member-access': 'error',
+        // '@typescript-eslint/no-unsafe-return': 'error',
+        // '@typescript-eslint/no-unsafe-argument': 'error',
+
+        // Enforce explicit types
+        '@typescript-eslint/explicit-function-return-type': [
+          'error',
+          {
+            allowExpressions: true,
+            allowTypedFunctionExpressions: true,
+            allowHigherOrderFunctions: true,
+          },
+        ],
+
+        // Async/Promise safety (disable for now)
+        // '@typescript-eslint/no-floating-promises': 'error',
+        // '@typescript-eslint/no-misused-promises': 'error',
+        // '@typescript-eslint/await-thenable': 'error',
+        // '@typescript-eslint/promise-function-async': 'error',
+
+        // Prevent common errors
         '@typescript-eslint/no-unused-vars': [
-          'warn',
+          'error',
           { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
         ],
+        '@typescript-eslint/no-non-null-assertion': 'warn',
+        '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+        '@typescript-eslint/prefer-optional-chain': 'warn',
+
+        // Code quality
+        'no-unused-vars': 'off',
         'no-console': 'off',
       },
     },
 
-    // Keep a small override for CommonJS scripts
+    // CommonJS scripts (eslint configs, etc)
     {
       files: ['**/*.cjs'],
       languageOptions: { sourceType: 'script' },
-    },
-
-    // Silence unused-vars in type declaration files — these often contain
-    // exported types where local names are intentionally unused.
-    {
-      files: ['**/*.d.ts'],
       rules: {
-        '@typescript-eslint/no-unused-vars': 'off',
-        'no-unused-vars': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
       },
     },
 
-    // Tests and fixtures frequently define variables that are intentionally
-    // unused (setup, placeholders). Relax unused-vars for tests.
+    // Tests - relax some rules
     {
       files: [
-        'tests/**',
-        'tests/*',
+        'tests/**/*.ts',
         '**/*.spec.ts',
         '**/*.test.ts',
-        '**/*.spec.js',
-        '**/*.test.js',
       ],
       rules: {
-        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-explicit-any': 'warn',
+        '@typescript-eslint/explicit-function-return-type': 'off',
       },
     },
 
-    // Generated templates and tooling often have scaffolding with unused
-    // variables; relax unused-vars there to avoid noisy warnings.
+    // Generated code and tools - more relaxed
     {
-      files: ['templates/**', 'tools/**', 'generators/**'],
+      files: ['tools/reference/**/*.ts', 'generators/**/*.ts'],
       rules: {
-        '@typescript-eslint/no-unused-vars': 'off',
-        'no-unused-vars': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/no-explicit-any': 'warn',
       },
     },
-
-    // Global ignores instead of .eslintignore
-    { ignores: ['node_modules/**', 'dist/**', 'coverage/**'] },
   ];
 
   maybeApplyTsEslintHelper(base);
