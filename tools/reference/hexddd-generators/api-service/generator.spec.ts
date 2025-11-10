@@ -77,7 +77,7 @@ describe('api-service generator', () => {
       });
 
       const secondContent = tree.read('apps/test-api/main.py', 'utf-8');
-      
+
       const logfireCount = (secondContent.match(/bootstrap_logfire/g) || []).length;
       expect(logfireCount).toBe(1);
     });
@@ -105,7 +105,7 @@ describe('api-service generator', () => {
       });
 
       expect(tree.exists('apps/test-api/application/ports/repository.py')).toBe(true);
-      
+
       const repoContent = tree.read('apps/test-api/application/ports/repository.py', 'utf-8');
       expect(repoContent).toContain('class Repository(Protocol[T])');
       expect(repoContent).toContain('async def find_by_id');
@@ -142,7 +142,7 @@ describe('api-service generator', () => {
       });
 
       expect(tree.exists('apps/test-api/schemas.py')).toBe(true);
-      
+
       const schemasContent = tree.read('apps/test-api/schemas.py', 'utf-8');
       expect(schemasContent).toContain('class BaseSchema(BaseModel)');
       expect(schemasContent).toContain('AUTO-GENERATED from Supabase schema');
@@ -189,7 +189,7 @@ describe('api-service generator', () => {
       });
 
       const secondContent = tree.read('apps/test-api/main.py', 'utf-8');
-      
+
       const openapiCount = (secondContent.match(/def export_openapi/g) || []).length;
       expect(openapiCount).toBe(1);
     });
@@ -198,15 +198,15 @@ describe('api-service generator', () => {
   describe('Idempotency', () => {
     it('should be fully idempotent (double-run produces same output)', async () => {
       const options = { name: 'test-api', withLogfire: true, withHexagonal: true };
-      
+
       await apiServiceGenerator(tree, options);
-      const firstRunChanges = tree.listChanges().map(c => ({ path: c.path, type: c.type }));
-      
+      const firstRunChanges = tree.listChanges().map((c) => ({ path: c.path, type: c.type }));
+
       const tree2 = createTreeWithEmptyWorkspace();
       await apiServiceGenerator(tree2, options);
       await apiServiceGenerator(tree2, options);
-      const secondRunChanges = tree2.listChanges().map(c => ({ path: c.path, type: c.type }));
-      
+      const secondRunChanges = tree2.listChanges().map((c) => ({ path: c.path, type: c.type }));
+
       expect(firstRunChanges.length).toBeGreaterThan(0);
       expect(secondRunChanges.length).toBe(firstRunChanges.length);
     });

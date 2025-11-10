@@ -5,19 +5,29 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
     "baseUrl": ".",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "types": ["node", "jest"],
     "allowJs": false,
     "noEmit": true,
     "paths": {
-      "@/*": ["./*"]
-    }
+      "@/*": ["./*"],
+      "@shared/web": ["libs/shared/web/src/index.ts"]
+    },
+    
+    // PHASE-004: Strict Type Safety
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "exactOptionalPropertyTypes": false
   },
   "include": ["tools/**/*.ts", "tests/**/*.ts", "generators/**/*.ts", "jest.d.ts"],
-  "exclude": ["node_modules", "dist", "coverage", "tmp", "tools/reference/**/*"]
+  "exclude": ["node_modules", "dist", "coverage", "tmp", "tools/reference/**/*", ".nx"]
 }

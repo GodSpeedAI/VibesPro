@@ -852,3 +852,48 @@ observe-verify:
 	echo "   2. Source the secrets: source .secrets.env.sops" ; \
 	echo "   3. Restart Vector to enable OpenObserve sink: just observe-start" ; \
 	echo "   4. Check OpenObserve UI for ingested traces"
+
+# --- PHASE-004: Type Safety & CI Integration ---
+
+# Run all type checks (TypeScript + Python)
+type-check: type-check-ts type-check-py
+	@echo "✅ All type checks passed"
+
+# TypeScript type checking
+type-check-ts:
+	@echo "🔍 Running TypeScript type check..."
+	@pnpm exec tsc --noEmit --project tsconfig.json
+	@echo "✅ TypeScript types valid"
+
+# TypeScript lint with type-aware rules
+lint-ts:
+	@echo "🔍 Running TypeScript ESLint..."
+	@pnpm exec eslint tools tests --ext .ts --max-warnings 0
+	@echo "✅ TypeScript lint passed"
+
+# Python type checking with mypy
+type-check-py:
+	@echo "🔍 Running Python mypy strict check..."
+	@uv run mypy --strict libs/python
+	@echo "✅ Python types valid"
+
+# Python type coverage report
+type-coverage-py:
+	@echo "📊 Generating Python type coverage report..."
+	@uv run mypy --strict --any-exprs-report=mypy-report libs/python || true
+	@if [ -f mypy-report/index.txt ]; then cat mypy-report/index.txt; fi
+
+# Fix all auto-fixable type issues
+type-fix:
+	@echo "🔧 Auto-fixing type issues..."
+	@pnpm exec eslint tools tests --ext .ts --fix
+	@uv run ruff check --fix libs/python
+	@echo "✅ Auto-fixes applied"
+
+# Pre-commit type validation (fast)
+type-pre-commit:
+	@echo "⚡ Running pre-commit type checks..."
+	@pre-commit run --all-files mypy
+	@pre-commit run --all-files eslint
+	@echo "✅ Pre-commit checks passed"
+

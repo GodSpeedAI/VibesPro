@@ -57,15 +57,15 @@ describe('web-app generator', () => {
 
     it('should be idempotent (double-run produces same output)', async () => {
       const options = { name: 'test-app', framework: 'next' as const, routerStyle: 'app' as const };
-      
+
       await webAppGenerator(tree, options);
-      const firstRunChanges = tree.listChanges().map(c => ({ path: c.path, type: c.type }));
-      
+      const firstRunChanges = tree.listChanges().map((c) => ({ path: c.path, type: c.type }));
+
       const tree2 = createTreeWithEmptyWorkspace();
       await webAppGenerator(tree2, options);
       await webAppGenerator(tree2, options);
-      const secondRunChanges = tree2.listChanges().map(c => ({ path: c.path, type: c.type }));
-      
+      const secondRunChanges = tree2.listChanges().map((c) => ({ path: c.path, type: c.type }));
+
       expect(firstRunChanges.length).toBeGreaterThan(0);
       expect(secondRunChanges.length).toBe(firstRunChanges.length);
     });
@@ -113,8 +113,8 @@ describe('web-app generator', () => {
         framework: 'expo',
       });
 
-      const appExists = tree.exists('apps/test-expo/src/app/App.tsx') || 
-                        tree.exists('apps/test-expo/App.tsx');
+      const appExists =
+        tree.exists('apps/test-expo/src/app/App.tsx') || tree.exists('apps/test-expo/App.tsx');
       expect(appExists).toBe(true);
     });
 
@@ -125,10 +125,10 @@ describe('web-app generator', () => {
         apiClient: true,
       });
 
-      const appPath = tree.exists('apps/test-expo/src/app/App.tsx') 
-        ? 'apps/test-expo/src/app/App.tsx' 
+      const appPath = tree.exists('apps/test-expo/src/app/App.tsx')
+        ? 'apps/test-expo/src/app/App.tsx'
         : 'apps/test-expo/App.tsx';
-      
+
       if (tree.exists(appPath)) {
         const content = tree.read(appPath, 'utf-8');
         expect(content).toContain('@shared/web');
@@ -178,7 +178,7 @@ describe('web-app generator', () => {
       });
 
       const secondContent = tree.read('libs/shared/web/src/lib/client.ts', 'utf-8');
-      
+
       expect(firstContent).toBe(secondContent);
     });
 
