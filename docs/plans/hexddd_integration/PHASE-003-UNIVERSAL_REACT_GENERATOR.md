@@ -1,17 +1,20 @@
-# PHASE-003: Nx-Composed React Generators (Next.js, Remix, Expo)
+# PHASE-003: Nx-Composed Full-Stack Generators (Frontend + Backend)
 
 **Status:** Ready for Execution (Updated for Nx Composition Pattern)
-**Duration:** 8-10 hours
-**Parallelization:** 5 cycles (A, then B ∥ C ∥ D, then E)
+**Duration:** 10-12 hours
+**Parallelization:** 6 cycles (A, then B ∥ C ∥ D ∥ F, then E)
 **Critical Path:** Yes (A → B → E)
 **Dependencies:** PHASE-001 + PHASE-002 complete
-**Owner:** Frontend Agent
+**Owner:** Full-Stack Agent
 
 ---
 
 ## 🎯 Phase Objectives
 
-Create wrapper generators that **compose** official Nx generators (`@nx/next`, `@nx/remix`, `@nx/expo`) and apply post-generation transformations to inject shared-web patterns, hexagonal architecture, and VibesPro conventions.
+Create wrapper generators that **compose** official Nx generators and apply post-generation transformations to inject shared libraries, hexagonal architecture, and VibesPro conventions:
+
+-   **Frontend**: `@nx/next`, `@nx/remix`, `@nx/expo` with shared-web integration
+-   **Backend**: `@nxlv/python` with FastAPI + Logfire + Pydantic + Supabase type-sync
 
 ### Success Criteria
 
@@ -19,30 +22,33 @@ Create wrapper generators that **compose** official Nx generators (`@nx/next`, `
 -   [ ] Next.js wrapper generator delegates to `@nx/next` and injects shared-web
 -   [ ] Remix wrapper generator delegates to `@nx/remix` and injects shared-web
 -   [ ] Expo wrapper generator delegates to `@nx/expo` and injects shared-web
+-   [ ] FastAPI wrapper generator delegates to `@nxlv/python` and injects Logfire + hexagonal patterns
 -   [ ] All wrappers apply idempotent transformations
 -   [ ] Generated apps build successfully with official Nx generators + our enhancements
--   [ ] **Evidence**: `nx g @vibes-pro/generators:web-app` works for all frameworks; apps build and import shared-web correctly
+-   [ ] Backend services auto-instrument with Logfire and export OpenAPI schemas
+-   [ ] **Evidence**: `nx g @vibes-pro/generators:web-app` and `nx g @vibes-pro/generators:api-service` work; apps build and integrate correctly
 
 ### Traceability
 
-| Requirement | Cycle   | Validation                               |
-| ----------- | ------- | ---------------------------------------- |
-| DEV-ADR-028 | All     | Nx composition pattern implemented       |
-| DEV-PRD-029 | B, C, D | Wrapper generators functional            |
-| DEV-SDS-028 | A, B-D  | Shared assets + post-gen transformations |
-| Idempotency | E       | Double-run tests                         |
+| Requirement | Cycle      | Validation                                  |
+| ----------- | ---------- | ------------------------------------------- |
+| DEV-ADR-028 | All        | Nx composition pattern (frontend + backend) |
+| DEV-PRD-029 | B, C, D, F | Wrapper generators functional               |
+| DEV-SDS-028 | A, B-D, F  | Shared assets + post-gen transformations    |
+| Idempotency | E          | Double-run tests (frontend + backend)       |
 
 ---
 
 ## 📊 Cycles Overview (UPDATED)
 
-| Cycle | Owner          | Branch                          | Depends On | Parallel With | Duration | Status  |
-| ----- | -------------- | ------------------------------- | ---------- | ------------- | -------- | ------- |
-| **A** | Frontend Agent | `feature/shared-web-assets`     | PHASE-002  | None          | 2h       | ✅ DONE |
-| **B** | Frontend Agent | `feature/nx-wrapper-nextjs`     | A          | C, D          | 2.5h     | Pending |
-| **C** | Frontend Agent | `feature/nx-wrapper-remix`      | A          | B, D          | 2.5h     | Pending |
-| **D** | Frontend Agent | `feature/nx-wrapper-expo`       | A          | B, C          | 2.5h     | Pending |
-| **E** | Frontend Agent | `feature/gen-react-idempotency` | B, C, D    | None          | 1.5h     | Pending |
+| Cycle | Owner             | Branch                       | Depends On | Parallel With | Duration | Status  |
+| ----- | ----------------- | ---------------------------- | ---------- | ------------- | -------- | ------- |
+| **A** | Frontend Agent    | `feature/shared-web-assets`  | PHASE-002  | None          | 2h       | ✅ DONE |
+| **B** | Frontend Agent    | `feature/nx-wrapper-nextjs`  | A          | C, D, F       | 2.5h     | Pending |
+| **C** | Frontend Agent    | `feature/nx-wrapper-remix`   | A          | B, D, F       | 2.5h     | Pending |
+| **D** | Frontend Agent    | `feature/nx-wrapper-expo`    | A          | B, C, F       | 2.5h     | Pending |
+| **F** | Backend Agent     | `feature/nx-wrapper-fastapi` | A          | B, C, D       | 2.5h     | Pending |
+| **E** | Integration Agent | `feature/gen-idempotency`    | B, C, D, F | None          | 2h       | Pending |
 
 ---
 
@@ -235,24 +241,217 @@ export default function App() {
 
 ---
 
-## ⚡ Cycle E: Idempotency Validation (UPDATED)
+## ⚡ Cycle F: FastAPI Wrapper Generator (NEW)
 
-**Owner:** Frontend Agent
-**Branch:** `feature/gen-react-idempotency`
-**Duration:** 1.5 hours
-**Depends On:** B, C, D complete
+**Owner:** Backend Agent
+**Branch:** `feature/nx-wrapper-fastapi`
+**Duration:** 2.5 hours
+**Parallel With:** B, C, D
 
-### Double-Run Tests
+### Objectives
+
+Create wrapper generator that:
+
+1. Invokes `@nxlv/python:fastapi-application` via `externalSchematic()`
+2. Applies post-generation transformations for Logfire bootstrap, hexagonal architecture, and Pydantic type-sync
+
+### Implementation Strategy
+
+```typescript
+// tools/generators/api-service/generator.ts
+import { externalSchematic, Tree } from "@nx/devkit";
+
+export async function apiServiceGenerator(tree: Tree, options: ApiServiceSchema) {
+    // 1. Delegate to @nxlv/python FastAPI generator
+    await externalSchematic(tree, "@nxlv/python", "fastapi-application", {
+        name: options.name,
+        directory: options.directory || "apps",
+    });
+
+    // 2. Apply VibesPro patterns
+    await injectLogfireBootstrap(tree, options);
+    await addHexagonalStructure(tree, options);
+    await configurePydanticTypeSync(tree, options);
+    await addOpenAPIExport(tree, options);
+
+    return () => {
+        // Post-install tasks
+    };
+}
+```
+
+### Post-Generation Transformations
+
+#### 1. Logfire Bootstrap Injection
+
+```typescript
+function injectLogfireBootstrap(tree: Tree, options: ApiServiceSchema) {
+    const mainPath = `apps/${options.name}/main.py`;
+    const content = tree.read(mainPath, "utf-8");
+
+    // Guard: Check if already injected
+    if (content.includes("from libs.python.vibepro_logging import")) {
+        return;
+    }
+
+    // Inject imports and bootstrap
+    const updatedContent = `from fastapi import FastAPI
+from libs.python.vibepro_logging import (
+    bootstrap_logfire,
+    configure_logger,
+    LogCategory,
+)
+
+app = FastAPI(
+    title="${options.name}",
+    description="Service for ${options.name}",
+    version="0.1.0",
+)
+
+bootstrap_logfire(app, service="${options.name}")
+logger = configure_logger("${options.name}")
+
+@app.get("/")
+def health_check() -> dict[str, str]:
+    logger.info("health check", category=LogCategory.APP)
+    return {"status": "healthy", "service": "${options.name}"}
+`;
+
+    tree.write(mainPath, updatedContent);
+}
+```
+
+#### 2. Hexagonal Structure
+
+```typescript
+async function addHexagonalStructure(tree: Tree, options: ApiServiceSchema) {
+    const basePath = `apps/${options.name}`;
+
+    // Create hexagonal directories
+    const dirs = [`${basePath}/domain/entities`, `${basePath}/domain/value_objects`, `${basePath}/application/ports`, `${basePath}/application/use_cases`, `${basePath}/infrastructure/adapters/in_memory`, `${basePath}/infrastructure/adapters/supabase`];
+
+    dirs.forEach((dir) => tree.write(`${dir}/.gitkeep`, ""));
+
+    // Add port example (Repository protocol)
+    tree.write(
+        `${basePath}/application/ports/repository.py`,
+        `from typing import Protocol
+from domain.entities import Entity
+
+class Repository(Protocol):
+    async def find_by_id(self, id: str) -> Entity | None: ...
+    async def save(self, entity: Entity) -> None: ...
+`,
+    );
+}
+```
+
+#### 3. Pydantic Type-Sync Configuration
+
+```typescript
+function configurePydanticTypeSync(tree: Tree, options: ApiServiceSchema) {
+    const schemasPath = `apps/${options.name}/schemas.py`;
+
+    tree.write(
+        schemasPath,
+        `# AUTO-GENERATED from Supabase schema - do not edit manually
+# Regenerate with: just gen-types
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+class BaseSchema(BaseModel):
+    """Base schema with common fields"""
+    id: str = Field(description="UUID primary key")
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True  # Enable ORM mode for SQLAlchemy
+`,
+    );
+}
+```
+
+#### 4. OpenAPI Schema Export
+
+```typescript
+function addOpenAPIExport(tree: Tree, options: ApiServiceSchema) {
+    const mainPath = `apps/${options.name}/main.py`;
+    const content = tree.read(mainPath, "utf-8");
+
+    // Add OpenAPI export endpoint
+    const openapiEndpoint = `
+@app.get("/api/openapi.json", include_in_schema=False)
+def export_openapi():
+    """Export OpenAPI schema for frontend type generation"""
+    return app.openapi()
+`;
+
+    tree.write(mainPath, content + openapiEndpoint);
+}
+```
+
+### Generated Service Structure
+
+```
+apps/my-service/
+├── main.py                    # FastAPI app with Logfire bootstrap
+├── schemas.py                 # Pydantic models (Supabase-synced)
+├── domain/
+│   ├── entities/
+│   └── value_objects/
+├── application/
+│   ├── ports/
+│   │   └── repository.py     # Protocol definitions
+│   └── use_cases/
+├── infrastructure/
+│   └── adapters/
+│       ├── in_memory/        # Test adapters
+│       └── supabase/         # Production adapters
+└── tests/
+    └── test_main.py
+```
+
+### Validation Tests
 
 ```bash
-# Test each wrapper generator
+# Generate service
+nx g @vibes-pro/generators:api-service my-api
+
+# Verify structure
+ls -la apps/my-api/application/ports/
+ls -la apps/my-api/infrastructure/adapters/
+
+# Verify Logfire instrumentation
+uv run pytest apps/my-api/tests/test_main.py -v
+
+# Verify OpenAPI export
+curl http://localhost:8000/api/openapi.json | jq '.info'
+```
+
+---
+
+## ⚡ Cycle E: Idempotency Validation (UPDATED)
+
+**Owner:** Integration Agent
+**Branch:** `feature/gen-idempotency`
+**Duration:** 2 hours
+**Depends On:** B, C, D, F complete
+
+### Double-Run Tests (Frontend + Backend)
+
+```bash
+# Test frontend generators
 nx g @vibes-pro/generators:web-app test-next --framework=next --routerStyle=app
 nx g @vibes-pro/generators:web-app test-next --framework=next --routerStyle=app --dry-run
-
-# Assert no file changes on second run
 git diff --exit-code apps/test-next/
 
-# Repeat for Remix and Expo
+# Test backend generator
+nx g @vibes-pro/generators:api-service test-api
+nx g @vibes-pro/generators:api-service test-api --dry-run
+git diff --exit-code apps/test-api/
+
+# Repeat for Remix, Expo
 ```
 
 ### Idempotency Strategy
@@ -281,17 +480,20 @@ function injectSharedWebImports(tree: Tree, appPath: string) {
 ### What Changed
 
 1. **Composition Over Creation**: Use `externalSchematic()` instead of building custom templates
-2. **Official Generators**: Delegate to `@nx/next`, `@nx/remix`, `@nx/expo`
+2. **Official Generators**: Delegate to `@nx/next`, `@nx/remix`, `@nx/expo`, `@nxlv/python`
 3. **Post-Generation Pattern**: Transform generated files instead of template-based generation
-4. **Reduced Complexity**: ~60% less code to maintain (no framework-specific templates)
-5. **Future-Proof**: Nx updates flow through automatically
+4. **Backend Integration**: Added Cycle F for Python/FastAPI wrapper generator
+5. **Type-Sync Architecture**: Backend generators now integrate FastAPI-OpenAPI-Pydantic chain for Supabase type syncing
+6. **Reduced Complexity**: ~60% less code to maintain (no framework-specific templates)
+7. **Future-Proof**: Nx updates flow through automatically for both frontend and backend
 
 ### What Stays the Same
 
 1. **Cycle A** (shared-web): Already complete, no changes needed
-2. **Success Criteria**: Same outcomes (apps build, shared-web integrated, idempotent)
-3. **Test Strategy**: Still need E2E tests and idempotency validation
-4. **Documentation**: Still provide per-framework examples
+2. **Success Criteria**: Same outcomes (apps build, shared libraries integrated, idempotent)
+3. **Test Strategy**: Still need E2E tests and idempotency validation (now includes backend)
+4. **Hexagonal Architecture**: PHASE-002 patterns still apply (ports/adapters for backend)
+5. **Documentation**: Still provide per-framework examples
 
 ---
 
@@ -312,12 +514,30 @@ function injectSharedWebImports(tree: Tree, appPath: string) {
 
 ## Success Metrics
 
--   [ ] Wrapper generators invoke official Nx generators successfully
+### Frontend Generators
+
+-   [ ] Wrapper generators invoke official Nx generators successfully (`@nx/next`, `@nx/remix`, `@nx/expo`)
 -   [ ] Generated apps compile and run (`nx build`, `nx serve`)
 -   [ ] Shared-web imports present in all generated entry files
 -   [ ] Double-run produces zero file changes (idempotent)
 -   [ ] Official Nx features (e.g., React Server Components) work without modification
+
+### Backend Generator
+
+-   [ ] Wrapper generator invokes `@nxlv/python:fastapi-application` successfully
+-   [ ] Generated services include Logfire bootstrap from `libs/python/vibepro_logging.py`
+-   [ ] Hexagonal structure (domain/application/infrastructure) scaffolded correctly
+-   [ ] Pydantic schemas configured for Supabase type-sync
+-   [ ] OpenAPI schema export endpoint (`/api/openapi.json`) responds correctly
+-   [ ] FastAPI services compile and run (`uv run uvicorn main:app`)
+-   [ ] Double-run produces zero file changes (idempotent)
+-   [ ] Logfire OpenTelemetry instrumentation active (verified via tests)
+
+### Integration
+
 -   [ ] Nx generator updates don't break wrappers (verify quarterly)
+-   [ ] End-to-end smoke test: Frontend app calls backend API successfully
+-   [ ] Type-sync workflow: Backend OpenAPI schema → Frontend types (planned PHASE-004)
 
 # tests/generators/react_spec.sh
 
@@ -377,6 +597,20 @@ second_hash=$(find apps/test-expo -type f -exec md5sum {} \; | sort | md5sum)
 ```
 
 End
+
+It 'FastAPI generator is idempotent'
+
+```bash
+nx g @ddd-plugin/ddd:api-service test-api
+first_hash=$(find apps/test-api -type f -exec md5sum {} \; | sort | md5sum)
+
+nx g @ddd-plugin/ddd:api-service test-api
+second_hash=$(find apps/test-api -type f -exec md5sum {} \; | sort | md5sum)
+
+[ "$first_hash" = "$second_hash" ]
+```
+
+End
 End
 
 ```
@@ -385,16 +619,30 @@ End
 
 ## ✅ Phase Validation Checklist
 
--   [ ] Shared web library: API client + schemas + env
+### Frontend
+
+-   [ ] Shared web library: API client + schemas + env ✅ **COMPLETE**
 -   [ ] Next.js (App Router): Scaffolds with shared assets
 -   [ ] Next.js (Pages Router): Scaffolds with shared assets
 -   [ ] Remix: Scaffolds v2.15+ with loaders
 -   [ ] Expo: Scaffolds React Native with shared client
--   [ ] All surfaces: Build successfully (Next App, Next Pages, Remix, Expo)
--   [ ] Idempotency: All double-run tests pass
+-   [ ] All frontend apps build successfully (`nx build`)
+
+### Backend
+
+-   [ ] FastAPI service: Scaffolds with Logfire bootstrap
+-   [ ] Hexagonal structure: domain/application/infrastructure directories created
+-   [ ] Pydantic schemas: Type-sync headers present
+-   [ ] OpenAPI export: `/api/openapi.json` endpoint responds
+-   [ ] Backend service runs successfully (`uv run uvicorn main:app`)
+
+### Integration & Idempotency
+
+-   [ ] All double-run tests pass (frontend + backend)
+-   [ ] End-to-end test: Frontend → Backend API call works
 -   [ ] **PHASE-003 marked GREEN in Master Plan**
 
 ---
 
-**Next Steps**: Proceed to PHASE-004 (Type Safety & CI)
+**Next Steps**: Proceed to PHASE-004 (Type Safety & CI with full-stack type-sync workflow)
 ```

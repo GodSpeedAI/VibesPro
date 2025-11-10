@@ -720,11 +720,13 @@ Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using
 
 ---
 
-## DEV-PRD-029 — Nx-Composed React App Generator
+## DEV-PRD-029 — Nx-Composed Full-Stack App Generator
 
--   Description: As a frontend engineer, I want a wrapper generator that leverages official Nx generators (`@nx/next`, `@nx/remix`, `@nx/expo`) and automatically injects shared-web assets, typed clients, and hexagonal architecture patterns.
--   EARS: When I invoke `nx g @vibes-pro/generators:web-app my-app --framework=remix`, the system shall (1) delegate to `@nx/remix` for framework scaffolding, (2) inject imports from `@vibes-pro/shared-web`, (3) apply hexagonal structure patterns, and (4) remain idempotent under repeated runs. Applies to Next.js (App/Pages Router), Remix, and Expo.
--   DX Metrics: All supported surfaces scaffold in < 30 seconds; wrapper + Nx generator combination builds successfully; idempotency tests pass; Nx generators remain updateable without forking.
+-   Description: As a developer, I want wrapper generators that leverage official Nx generators (`@nx/next`, `@nx/remix`, `@nx/expo` for frontend; `@nxlv/python` for backend) and automatically inject shared libraries, typed clients, hexagonal architecture patterns, and FastAPI-Pydantic-Supabase type-sync integration.
+-   EARS:
+    -   **Frontend**: When I invoke `nx g @vibes-pro/generators:web-app my-app --framework=remix`, the system shall (1) delegate to `@nx/remix` for framework scaffolding, (2) inject imports from `@vibes-pro/shared-web`, (3) apply hexagonal structure patterns, and (4) remain idempotent under repeated runs. Applies to Next.js (App/Pages Router), Remix, and Expo.
+    -   **Backend**: When I invoke `nx g @vibes-pro/generators:api-service my-service`, the system shall (1) delegate to `@nxlv/python` for FastAPI scaffolding, (2) inject Logfire bootstrap from `libs/python/vibepro_logging.py`, (3) apply hexagonal ports/adapters from PHASE-002, (4) configure Pydantic models for Supabase type-sync, and (5) remain idempotent under repeated runs.
+-   DX Metrics: All supported surfaces scaffold in < 30 seconds; wrapper + Nx generator combination builds successfully; idempotency tests pass; Nx generators remain updateable without forking; backend services auto-instrument with Logfire OpenTelemetry.
 -   Supported by: DEV-ADR-028, DEV-SDS-028
 
 ---
