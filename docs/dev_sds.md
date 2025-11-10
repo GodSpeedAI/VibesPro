@@ -1364,13 +1364,27 @@ Step 6: Validate Generator → Run dry-run, tests, lint, graph checks
 -   Communication: Capture release notes and migration highlights for generated project consumers.
 -   Scheduling: Track upgrade cadence on the platform roadmap and coordinate with downstream template consumers.
 
-## DEV-SDS-028 — Universal React Generator Design (addresses DEV-PRD-029)
+## DEV-SDS-028 — Nx-Composed React Generator Design (addresses DEV-PRD-029)
 
--   Options: `name`, `framework` (`next|remix|expo`), `apiClient` (bool), `includeExamplePage` (bool), `routerStyle` (`app|pages` for Next.js).
--   Shared Assets: Generator ensures `libs/shared/web` (API client, schemas, errors, env) exists and is imported by generated apps.
--   Templates: Framework-specific file trees under `generators/react/files/<framework>/` with reusable partials.
--   Tests: Jest unit tests cover option handling; e2e generator tests in ShellSpec spin up each framework and run lint/build; idempotency covered via DEV-SDS-023 helpers.
--   Documentation: Provide README snippets per framework plus CLI usage examples.
+-   **Composition Strategy**: Use Nx `externalSchematic()` API to invoke official generators:
+    -   Next.js: `@nx/next:application` (with `--appDir=true|false` for App/Pages Router)
+    -   Remix: `@nx/remix:application`
+    -   Expo: `@nx/expo:application`
+-   **Options**: `name`, `framework` (`next|remix|expo`), `routerStyle` (`app|pages` for Next.js only), `includeSharedWeb` (bool, default: true).
+-   **Post-Generation Transformations**:
+    1. Inject `@vibes-pro/shared-web` imports in entry files (app layout, root routes, App.tsx).
+    2. Add API client initialization examples with proper env config.
+    3. Inject error boundary components using shared error handlers.
+    4. Add example pages demonstrating API client usage (optional via `--includeExamplePage`).
+-   **Shared Assets Integration**: Ensure `libs/shared/web` exists; if missing, generate it first (or error with clear message).
+-   **Idempotency**: Transformation logic checks for existing imports/patterns before injecting; uses DEV-SDS-023 idempotent wrapper.
+-   **Version Compatibility**: Document supported Nx versions (track in `docs/NX_VERSION_MATRIX.md`); test against Nx 22.x initially.
+-   **Tests**:
+    -   Unit tests verify `externalSchematic` invocation and transformation logic.
+    -   E2E tests scaffold each framework, run build, verify shared-web imports present.
+    -   Idempotency tests run generator twice, assert no file changes.
+-   **Upgrade Path**: When Nx generators change breaking APIs, update wrapper only (not framework-specific templates).
+-   **Documentation**: Provide per-framework examples showing both Nx-native workflow and VibesPro wrapper usage.
 
 ## DEV-SDS-029 — Strict Typing Configuration (addresses DEV-PRD-030)
 

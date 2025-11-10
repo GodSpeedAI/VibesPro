@@ -639,25 +639,28 @@ Consequences:
 -   Requires change management documentation (runbooks, migration notes).
 -   Potential short-term instability during upgrade windows that must be mitigated via smoke tests.
 
-## DEV-ADR-028 — Universal React Generator (Next.js App & Pages, Remix, Expo)
+## DEV-ADR-028 — Nx Generator Composition Pattern for React Frameworks
 
 Status: Active
 
-Context: HexDDD ADR-012 consolidates React surface generators into a single, configurable workflow. VibesPro currently gestures toward domain scaffolding but lacks the unified web/mobile generator.
+Context: HexDDD ADR-012 consolidates React surface generators into a single, configurable workflow. VibesPro needs to support Next.js, Remix, and Expo while avoiding maintenance burden of custom framework generators. Nx provides official, well-maintained generators (`@nx/next`, `@nx/remix`, `@nx/expo`) that handle framework-specific scaffolding.
 
-Decision: Deliver a single generator entry point (`--framework=next|remix|expo` plus `--routerStyle=app|pages` for Next.js) that shares typed API clients, validation schemas, and error handling across all React surfaces while remaining idempotent.
+Decision: Create thin wrapper generators that **compose** official Nx generators using `externalSchematic` API, then apply post-generation transformations to inject shared-web patterns, hexagonal architecture imports, and VibesPro conventions.
 
 Rationale:
 
--   Eliminates duplicated templates and fosters consistency across UI implementations.
--   Simplifies maintenance and unlocks future framework additions.
--   Provides generated projects with parity to HexDDD scaffolding expectations across web and mobile.
+-   **Leverage Official Generators**: Nx generators stay updateable; we don't fork/maintain framework-specific code.
+-   **Control Integration Points**: Wrapper applies shared-web imports, error handling, and hexagonal structure after Nx scaffolding.
+-   **Low Maintenance Burden**: Only update wrappers when Nx introduces breaking API changes.
+-   **Composition Over Creation**: Aligns with "generators-first" principle and Nx best practices.
+-   **Future-Proof**: New Nx features (e.g., RSC updates, Expo SDK changes) flow through automatically.
 
 Consequences:
 
--   Generator logic grows more complex (conditional templates, shared assets).
--   Requires comprehensive test matrices (per framework, per option combination).
--   Documentation and samples must highlight usage for each React target.
+-   Wrapper generators depend on Nx generator APIs (require version compatibility testing).
+-   Post-generation transformations must be idempotent and well-tested.
+-   Need to document which Nx versions are supported and how to handle breaking changes.
+-   Slightly more complex setup than pure custom generators, but massively reduced long-term maintenance.
 
 ## DEV-ADR-029 — Strict Typing Policy Across Languages
 
