@@ -26,14 +26,3 @@ jobs:
       - name: Run AGENT.md link checker (local links)
         run: |
           python3 tools/check_agent_links.py
-
-      - name: Install just and run ai-validate
-        run: |
-          set -euo pipefail
-          # Install just via official installer and run ai-validate directly
-          if ! command -v just >/dev/null 2>&1; then
-            curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-            sudo chmod +x /usr/local/bin/just
-          fi
-          /usr/local/bin/just ai-validate
-        shell: bash

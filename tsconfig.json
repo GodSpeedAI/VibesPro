@@ -26,9 +26,9 @@
     "noUnusedParameters": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": false,
-    "exactOptionalPropertyTypes": false
+    "exactOptionalPropertyTypes": false,
+    "jsx": "react-jsx"
   },
-  "jsx": "react-jsx",
   "include": [
     "tools/**/*.ts",
     "tests/**/*.ts",
