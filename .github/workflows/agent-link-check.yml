@@ -27,21 +27,13 @@ jobs:
         run: |
           python3 tools/check_agent_links.py
 
-      - name: Install mise (provision runtimes & tools)
+      - name: Install just and run ai-validate
         run: |
-          # Install mise if missing and use it to provision tools pinned in .mise.toml
-          if ! command -v mise >/dev/null 2>&1; then
-            echo "Installing mise"
-            curl -fsSL https://mise.jdx.dev/install.sh | sh
-            export PATH="$HOME/.mise/bin:$PATH"
-          else
-            echo "mise already installed"
+          set -euo pipefail
+          # Install just via official installer and run ai-validate directly
+          if ! command -v just >/dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+            sudo chmod +x /usr/local/bin/just
           fi
-
-          # Provision runtimes and tools defined in .mise.toml (this will install pinned just)
-          mise install
-
-      - name: Run just ai-validate (via mise)
-        run: |
-          mise exec -- just ai-validate
+          /usr/local/bin/just ai-validate
         shell: bash
