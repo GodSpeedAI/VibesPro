@@ -2,8 +2,8 @@
  * Integration tests for Temporal AI Client
  */
 
+import { beforeAll, describe, expect, it } from 'vitest';
 import { TemporalAIClient, getRecommendations } from './temporal-ai-client';
-import { describe, it, expect, beforeAll } from 'vitest';
 
 describe('TemporalAIClient', () => {
   let client: TemporalAIClient;
@@ -28,10 +28,11 @@ describe('TemporalAIClient', () => {
 
     if (recommendations.length > 0) {
       const first = recommendations[0];
-      expect(first).toHaveProperty('pattern');
-      expect(first).toHaveProperty('finalScore');
-      expect(first.pattern).toHaveProperty('description');
-      expect(first.pattern).toHaveProperty('commitSha');
+      expect(first).toBeDefined();
+      expect(first?.pattern).toBeDefined();
+      expect(first?.finalScore).toBeDefined();
+      expect(first?.pattern?.description).toBeDefined();
+      expect(first?.pattern?.commitSha).toBeDefined();
     }
   }, 30000);
 

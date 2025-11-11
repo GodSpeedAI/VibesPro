@@ -533,10 +533,10 @@ This directory contains detailed usage guides for all Nx generators.
 
 ## Available Generators
 
-| Generator    | Purpose                                    | Guide                            |
-| ------------ | ------------------------------------------ | -------------------------------- |
-| `hex-domain` | Create hexagonal domain with layers        | [hex-domain.md](./hex-domain.md) |
-| `web-app`    | Universal React app (Next.js, Remix, Expo) | [web-app.md](./web-app.md)       |
+| Generator    | Purpose                                    | Guide                                           |
+| ------------ | ------------------------------------------ | ----------------------------------------------- |
+| `hex-domain` | Create hexagonal domain with layers        | [hex-domain.md](../../generators/hex-domain.md) |
+| `web-app`    | Universal React app (Next.js, Remix, Expo) | [web-app.md](../../generators/web-app.md)       |
 
 ## Common Options
 

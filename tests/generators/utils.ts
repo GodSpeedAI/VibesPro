@@ -116,7 +116,9 @@ export function extractCodeBlocks(content: string, language?: string): string[] 
   let match;
 
   while ((match = pattern.exec(content)) !== null) {
-    blocks.push(match[1]);
+    if (match[1]) {
+      blocks.push(match[1]);
+    }
   }
 
   return blocks;

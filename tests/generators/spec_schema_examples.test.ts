@@ -9,8 +9,8 @@
  * Traceability: DEV-PRD-019, DEV-SDS-019
  */
 
-import { readFileSync } from 'fs';
 import Ajv from 'ajv';
+import { readFileSync } from 'fs';
 
 const SPEC_PATH = 'templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md';
 
@@ -101,7 +101,9 @@ function extractJsonBlocks(spec: string): string[] {
   let match: RegExpExecArray | null;
 
   while ((match = jsonBlockRegex.exec(spec)) !== null) {
-    jsonBlocks.push(match[1]);
+    if (match[1]) {
+      jsonBlocks.push(match[1]);
+    }
   }
 
   return jsonBlocks;

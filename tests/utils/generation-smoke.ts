@@ -85,7 +85,12 @@ const runCopier = (targetDir: string, options: CopierOptions = {}): void => {
     env.COPIER_ENABLE_SECURITY_HARDENING = String(Boolean(options.enable_security_hardening));
   }
 
-  const result = spawnSync(command[0], command.slice(1), {
+  const firstCommand = command[0];
+  if (!firstCommand) {
+    throw new Error('Command array is empty');
+  }
+
+  const result = spawnSync(firstCommand, command.slice(1), {
     cwd: process.cwd(),
     encoding: 'utf-8',
     stdio: 'pipe',
@@ -107,7 +112,7 @@ const ensureScriptExists = async (projectRoot: string, scriptName: string): Prom
   const packageJsonPath = join(projectRoot, 'package.json');
   const raw = await fs.readFile(packageJsonPath, 'utf-8');
   const parsed = JSON.parse(raw) as { scripts?: Record<string, string> };
-  return Boolean(parsed.scripts && parsed.scripts[scriptName]);
+  return Boolean(parsed.scripts?.[scriptName]);
 };
 
 const runScript = (projectRoot: string, scriptName: string): CommandResult => {

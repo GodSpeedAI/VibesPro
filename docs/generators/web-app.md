@@ -9,4 +9,4 @@ This guide documents the `web-app` Nx generator for creating universal React app
 -   Generator outputs and integration with `libs/shared/web`
 -   Examples and troubleshooting
 
-**Status**: Documentation will be expanded as the generator implementation stabilizes. Track progress in [GitHub Issue #XXX](link-to-issue).
+**Status**: Documentation will be expanded as the generator implementation stabilizes. Track progress in the [HexDDD universal React generator plan](../plans/hexddd_integration/PHASE-003-UNIVERSAL_REACT_GENERATOR.md).

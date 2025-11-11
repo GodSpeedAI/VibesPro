@@ -45,11 +45,9 @@ export interface TemporalAIOptions {
  */
 export class TemporalAIClient {
   private binaryPath: string;
-  private dbPath: string;
 
   constructor(options: TemporalAIOptions = {}) {
     this.binaryPath = options.binaryPath || 'crates/temporal-ai/target/release/temporal-ai';
-    this.dbPath = options.dbPath || 'data/temporal-ai.redb';
   }
 
   /**
@@ -115,8 +113,8 @@ export class TemporalAIClient {
       const sizeMatch = stdout.match(/Database size: (\d+) bytes/);
 
       return {
-        totalPatterns: patternsMatch ? parseInt(patternsMatch[1], 10) : 0,
-        databaseSize: sizeMatch ? parseInt(sizeMatch[1], 10) : 0,
+        totalPatterns: patternsMatch?.[1] ? parseInt(patternsMatch[1], 10) : 0,
+        databaseSize: sizeMatch?.[1] ? parseInt(sizeMatch[1], 10) : 0,
       };
     } catch (error) {
       throw new Error(`Failed to get stats: ${error}`);
@@ -143,15 +141,19 @@ export class TemporalAIClient {
         }
 
         const [, scoreStr, commitSha, tags, description] = scoreMatch;
+        const score = scoreStr ?? '0';
+        const sha = commitSha ?? 'unknown';
+        const tagStr = tags ?? '';
+        const desc = description ?? '';
         currentRec = {
-          finalScore: parseFloat(scoreStr),
+          finalScore: parseFloat(score),
           pattern: {
-            id: commitSha,
-            description: description.replace(/ - Similarity:.*$/, ''),
+            id: sha,
+            description: desc.replace(/ - Similarity:.*$/, ''),
             filePaths: [],
-            commitSha,
+            commitSha: sha,
             timestamp: Date.now() / 1000, // placeholder
-            tags: tags.split(',').map((t) => t.trim()),
+            tags: tagStr.split(',').map((t) => t.trim()),
           },
           similarityScore: 0,
           recencyScore: 0,
@@ -162,14 +164,14 @@ export class TemporalAIClient {
 
       // Parse files line: "   Files: docs/dev_adr.md, docs/dev_sds.md"
       const filesMatch = line.match(/Files: (.+)/);
-      if (filesMatch && currentRec) {
-        currentRec.pattern!.filePaths = filesMatch[1].split(',').map((f) => f.trim());
+      if (filesMatch?.[1] && currentRec?.pattern) {
+        currentRec.pattern.filePaths = filesMatch[1].split(',').map((f) => f.trim());
       }
 
       // Parse commit line: "   Commit: f12ed6914214c3999e78720ddbfa1bf230daa1a1"
       const commitMatch = line.match(/Commit: (\w+)/);
-      if (commitMatch && currentRec) {
-        currentRec.pattern!.commitSha = commitMatch[1];
+      if (commitMatch?.[1] && currentRec?.pattern) {
+        currentRec.pattern.commitSha = commitMatch[1];
       }
     }
 

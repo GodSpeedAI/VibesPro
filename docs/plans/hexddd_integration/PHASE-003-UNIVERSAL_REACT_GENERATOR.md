@@ -252,8 +252,9 @@ export default function App() {
 
 Create wrapper generator that:
 
-1. Invokes `@nxlv/python:fastapi-application` via `externalSchematic()`
-2. Applies post-generation transformations for Logfire bootstrap, hexagonal architecture, and Pydantic type-sync
+1. Invokes `@nxlv/python:uv-project` (v21.0.4+) via `externalSchematic()` to create Python project
+2. Adds FastAPI dependencies and scaffolding on top of the generated project
+3. Applies post-generation transformations for Logfire bootstrap, hexagonal architecture, and Pydantic type-sync
 
 ### Implementation Strategy
 
@@ -262,25 +263,94 @@ Create wrapper generator that:
 import { externalSchematic, Tree } from "@nx/devkit";
 
 export async function apiServiceGenerator(tree: Tree, options: ApiServiceSchema) {
-    // 1. Delegate to @nxlv/python FastAPI generator
-    await externalSchematic(tree, "@nxlv/python", "fastapi-application", {
+    // 1. Delegate to @nxlv/python:uv-project (base Python project)
+    await externalSchematic(tree, "@nxlv/python", "uv-project", {
         name: options.name,
+        projectType: "application",
         directory: options.directory || "apps",
+        linter: "ruff", // Modern Python linter
+        unitTestRunner: "pytest",
+        buildSystem: "uv", // Fast package manager
     });
 
-    // 2. Apply VibesPro patterns
+    // 2. Add FastAPI dependencies to pyproject.toml
+    await addFastAPIDependencies(tree, options);
+
+    // 3. Scaffold FastAPI application structure
+    await scaffoldFastAPIApp(tree, options);
+
+    // 4. Apply VibesPro patterns
     await injectLogfireBootstrap(tree, options);
     await addHexagonalStructure(tree, options);
     await configurePydanticTypeSync(tree, options);
     await addOpenAPIExport(tree, options);
 
     return () => {
-        // Post-install tasks
+        // Post-install tasks: uv sync
     };
 }
 ```
 
 ### Post-Generation Transformations
+
+#### 0. Add FastAPI Dependencies
+
+```typescript
+async function addFastAPIDependencies(tree: Tree, options: ApiServiceSchema) {
+    const pyprojectPath = `apps/${options.name}/pyproject.toml`;
+    const content = tree.read(pyprojectPath, "utf-8");
+
+    // Parse TOML and add FastAPI dependencies
+    const pyproject = parse(content);
+
+    if (!pyproject.project.dependencies) {
+        pyproject.project.dependencies = [];
+    }
+
+    // Add FastAPI and related packages
+    const fastapiDeps = [
+        "fastapi>=0.115.0",
+        "uvicorn[standard]>=0.32.0",
+        "pydantic>=2.9.0",
+        "python-multipart>=0.0.12", // For file uploads
+    ];
+
+    pyproject.project.dependencies.push(...fastapiDeps);
+
+    // Write back to file
+    tree.write(pyprojectPath, stringify(pyproject));
+}
+
+async function scaffoldFastAPIApp(tree: Tree, options: ApiServiceSchema) {
+    const appPath = `apps/${options.name}`;
+    const moduleName = options.name.replace(/-/g, "_");
+
+    // Create main.py with basic FastAPI app
+    tree.write(
+        `${appPath}/${moduleName}/main.py`,
+        `"""FastAPI application for ${options.name}"""
+from fastapi import FastAPI
+
+app = FastAPI(
+    title="${options.name}",
+    description="Service for ${options.name}",
+    version="0.1.0",
+)
+
+@app.get("/")
+async def root() -> dict[str, str]:
+    return {"message": "Hello from ${options.name}"}
+
+@app.get("/health")
+async def health_check() -> dict[str, str]:
+    return {"status": "healthy", "service": "${options.name}"}
+`,
+    );
+
+    // Create __init__.py for proper module structure
+    tree.write(`${appPath}/${moduleName}/__init__.py`, `"""${options.name} service module"""\n`);
+}
+```
 
 #### 1. Logfire Bootstrap Injection
 
@@ -418,15 +488,36 @@ apps/my-service/
 # Generate service
 nx g @vibes-pro/generators:api-service my-api
 
-# Verify structure
+# Verify base Python project was created by @nxlv/python:uv-project
+test -f apps/my-api/pyproject.toml
+test -f apps/my-api/.python-version
+
+# Verify FastAPI dependencies were added
+grep "fastapi" apps/my-api/pyproject.toml
+grep "uvicorn" apps/my-api/pyproject.toml
+grep "pydantic" apps/my-api/pyproject.toml
+
+# Verify FastAPI app was scaffolded
+test -f apps/my-api/my_api/main.py
+grep "FastAPI" apps/my-api/my_api/main.py
+
+# Verify hexagonal structure
 ls -la apps/my-api/application/ports/
 ls -la apps/my-api/infrastructure/adapters/
 
+# Install dependencies and run
+cd apps/my-api
+uv sync
+uv run uvicorn my_api.main:app --host 0.0.0.0 --port 8000 &
+
 # Verify Logfire instrumentation
-uv run pytest apps/my-api/tests/test_main.py -v
+uv run pytest tests/test_main.py -v
 
 # Verify OpenAPI export
 curl http://localhost:8000/api/openapi.json | jq '.info'
+
+# Cleanup
+pkill -f uvicorn
 ```
 
 ---
@@ -480,12 +571,13 @@ function injectSharedWebImports(tree: Tree, appPath: string) {
 ### What Changed
 
 1. **Composition Over Creation**: Use `externalSchematic()` instead of building custom templates
-2. **Official Generators**: Delegate to `@nx/next`, `@nx/remix`, `@nx/expo`, `@nxlv/python`
-3. **Post-Generation Pattern**: Transform generated files instead of template-based generation
-4. **Backend Integration**: Added Cycle F for Python/FastAPI wrapper generator
-5. **Type-Sync Architecture**: Backend generators now integrate FastAPI-OpenAPI-Pydantic chain for Supabase type syncing
-6. **Reduced Complexity**: ~60% less code to maintain (no framework-specific templates)
-7. **Future-Proof**: Nx updates flow through automatically for both frontend and backend
+2. **Official Generators**: Delegate to `@nx/next`, `@nx/remix`, `@nx/expo`, `@nxlv/python:uv-project` (v21.0.4+)
+3. **FastAPI Scaffolding**: Build custom FastAPI structure on top of `uv-project` base (no native FastAPI generator exists)
+4. **Post-Generation Pattern**: Transform generated files instead of template-based generation
+5. **Backend Integration**: Added Cycle F for Python/FastAPI wrapper generator (scaffolds FastAPI on `uv-project` base)
+6. **Type-Sync Architecture**: Backend generators now integrate FastAPI-OpenAPI-Pydantic chain for Supabase type syncing
+7. **Reduced Complexity**: ~60% less code to maintain (no framework-specific templates, leverage official generators)
+8. **Future-Proof**: Nx updates flow through automatically for both frontend and backend
 
 ### What Stays the Same
 
@@ -499,12 +591,13 @@ function injectSharedWebImports(tree: Tree, appPath: string) {
 
 ## Nx Version Compatibility
 
-**Target**: Nx 22.x (current)  
+**Target**: Nx 22.x (current)
 **Tested Against**:
 
 -   `@nx/next@22.0.2`
 -   `@nx/remix@22.0.2`
 -   `@nx/expo@22.0.2`
+-   `@nxlv/python@21.0.4` (uses `uv-project` generator)
 
 **Upgrade Path**: When Nx 23.x releases, test wrappers against new API; update only if breaking changes.
 
@@ -524,7 +617,9 @@ function injectSharedWebImports(tree: Tree, appPath: string) {
 
 ### Backend Generator
 
--   [ ] Wrapper generator invokes `@nxlv/python:fastapi-application` successfully
+-   [ ] Wrapper generator invokes `@nxlv/python:uv-project` (v21.0.4+) successfully
+-   [ ] FastAPI dependencies added to generated `pyproject.toml`
+-   [ ] FastAPI app scaffolded with `main.py` and basic endpoints
 -   [ ] Generated services include Logfire bootstrap from `libs/python/vibepro_logging.py`
 -   [ ] Hexagonal structure (domain/application/infrastructure) scaffolded correctly
 -   [ ] Pydantic schemas configured for Supabase type-sync

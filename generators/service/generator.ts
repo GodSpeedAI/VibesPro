@@ -7,6 +7,7 @@ import { deriveServiceDefaults } from '../_utils/stack_defaults';
 interface ServiceSchema {
   name: string;
   language?: 'python' | 'typescript';
+  directory?: string;
 }
 
 function normalizeOptions(schema: unknown): ServiceSchema {
@@ -22,6 +23,64 @@ function normalizeOptions(schema: unknown): ServiceSchema {
         ? (s.language as 'python' | 'typescript')
         : undefined,
   };
+}
+
+async function addHexagonalStructure(tree: Tree, projectRoot: string): Promise<void> {
+  const dirs = [
+    `${projectRoot}/domain/entities`,
+    `${projectRoot}/domain/value_objects`,
+    `${projectRoot}/application/ports`,
+    `${projectRoot}/application/use_cases`,
+    `${projectRoot}/infrastructure/adapters/in_memory`,
+    `${projectRoot}/infrastructure/adapters/supabase`,
+  ];
+
+  dirs.forEach((dir) => {
+    const gitkeepPath = `${dir}/.gitkeep`;
+    if (!tree.exists(gitkeepPath)) {
+      tree.write(gitkeepPath, '');
+    }
+  });
+
+  // Add port example (Repository protocol)
+  const portPath = `${projectRoot}/application/ports/repository.py`;
+  if (!tree.exists(portPath)) {
+    tree.write(
+      portPath,
+      `"""Repository port for domain entities"""
+from typing import Protocol, TypeVar
+
+T = TypeVar('T')
+
+
+class Repository(Protocol[T]):
+    """Base repository protocol for data persistence"""
+
+    async def find_by_id(self, id: str) -> T | None:
+        """Find entity by ID"""
+        ...
+
+    async def save(self, entity: T) -> None:
+        """Save entity"""
+        ...
+`,
+    );
+  }
+}
+
+async function generatePythonService(tree: Tree, options: ServiceSchema): Promise<void> {
+  const serviceRoot = `apps/${options.name}`;
+
+  // Template-based generation with FastAPI structure
+  // TODO: Integrate @nxlv/python:uv-project when running in full Nx workspace
+  // This requires externalSchematic() which isn't available in the current setup
+  generateFiles(tree, path.join(__dirname, 'files', 'python'), serviceRoot, {
+    ...options,
+    serviceName: options.name,
+  });
+
+  // Add hexagonal architecture directories
+  await addHexagonalStructure(tree, serviceRoot);
 }
 
 export default withIdempotency(async function (tree: Tree, schema: unknown) {
@@ -48,13 +107,16 @@ export default withIdempotency(async function (tree: Tree, schema: unknown) {
   // Ensure language has a default value to satisfy TypeScript
   const language = options.language ?? 'python';
 
-  const serviceRoot = `apps/${options.name}`;
-
-  generateFiles(tree, path.join(__dirname, 'files', language), serviceRoot, {
-    ...options,
-    // properties to use in template files
-    serviceName: options.name,
-  });
+  if (language === 'python') {
+    await generatePythonService(tree, options);
+  } else {
+    // TypeScript service generation (existing template-based approach)
+    const serviceRoot = `apps/${options.name}`;
+    generateFiles(tree, path.join(__dirname, 'files', language), serviceRoot, {
+      ...options,
+      serviceName: options.name,
+    });
+  }
 
   return () => {
     installPackagesTask(tree);

@@ -15,23 +15,23 @@ describe('Schema to Types Parity', () => {
     );
 
     const schemaJsonMatch = specFileContent.match(/```json\n([\s\S]*?)```/);
-    if (!schemaJsonMatch) {
+    if (!schemaJsonMatch?.[1]) {
       throw new Error('Could not find schema.json in GENERATOR_SPEC.md');
     }
     const schemaJson = JSON.parse(schemaJsonMatch[1]);
 
     const typeFileMatch = specFileContent.match(/```ts\n([\s\S]*?)```/);
-    if (!typeFileMatch) {
+    if (!typeFileMatch?.[1]) {
       throw new Error('Could not find schema.d.ts in GENERATOR_SPEC.md');
     }
     const typeFileContent = typeFileMatch[1].replaceAll('<Type>', 'MyType');
 
     const sourceFile = project.createSourceFile('temp.ts', typeFileContent);
     const interfaces = sourceFile.getInterfaces();
-    if (interfaces.length === 0) {
+    const anInterface = interfaces[0];
+    if (!anInterface) {
       throw new Error('No interface found in generated TypeScript content');
     }
-    const anInterface = interfaces[0];
     const properties = anInterface.getProperties();
 
     const schemaProperties = Object.keys(schemaJson.properties);

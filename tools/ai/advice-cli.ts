@@ -220,7 +220,7 @@ function parseArgs(argv: string[]): CliOptions {
         break;
       }
       default:
-        if (!arg.startsWith('--')) {
+        if (arg && !arg.startsWith('--')) {
           options.task = arg;
         }
     }

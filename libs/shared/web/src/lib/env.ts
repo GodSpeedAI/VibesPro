@@ -13,16 +13,16 @@
 function getEnv(key: string, fallback?: string): string {
   // Next.js (NEXT_PUBLIC_*)
   if (typeof process !== 'undefined' && process.env) {
-    const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
-    if (value) return value;
+    const value = process.env[key] ?? process.env[`NEXT_PUBLIC_${key}`];
+    if (value !== undefined) return value;
   }
 
   // Browser (import.meta.env for Vite/Remix)
   if (typeof import.meta !== 'undefined') {
-    const meta = import.meta as { env?: Record<string, string> };
+    const meta = import.meta as { env?: Record<string, string | undefined> };
     if (meta.env) {
       const value = meta.env[key];
-      if (value) return value;
+      if (value !== undefined) return value;
     }
   }
 
