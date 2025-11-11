@@ -37,19 +37,19 @@ impl<'a> RecommendationRanker<'a> {
     }
 
     /// Create ranker with custom weights
-    pub fn with_weights(
-        store: &'a VectorStore,
-        recency: f32,
-        usage: f32,
-        similarity: f32,
-    ) -> Self {
+    pub fn with_weights(store: &'a VectorStore, recency: f32, usage: f32, similarity: f32) -> Self {
         // Normalize weights to sum to 1.0
         let total = recency + usage + similarity;
+        let (recency_weight, usage_weight, similarity_weight) = if total.abs() <= f32::EPSILON {
+            (1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0)
+        } else {
+            (recency / total, usage / total, similarity / total)
+        };
         Self {
             store,
-            recency_weight: recency / total,
-            usage_weight: usage / total,
-            similarity_weight: similarity / total,
+            recency_weight,
+            usage_weight,
+            similarity_weight,
         }
     }
 
@@ -61,16 +61,17 @@ impl<'a> RecommendationRanker<'a> {
             .into_iter()
             .map(|result| {
                 // Calculate recency score (exponential decay)
-                let days_since = (now - result.pattern.timestamp) as f32 / 86400.0;
+                let raw_days = (now - result.pattern.timestamp) as f32 / 86400.0;
+                let days_since = raw_days.max(0.0);
                 let recency_score = (-0.01 * days_since).exp();
 
                 // Get usage metrics
                 let metrics = self.store.get_metrics(&result.pattern_id).ok().flatten();
-                let usage_score = if let Some(m) = metrics {
+                let (usage_score, usage_count) = if let Some(m) = metrics {
                     // Normalize usage count (cap at 100)
-                    (m.usage_count as f32 / 100.0).min(1.0)
+                    ((m.usage_count as f32 / 100.0).min(1.0), m.usage_count)
                 } else {
-                    0.0
+                    (0.0, 0)
                 };
 
                 // Calculate final score
@@ -82,9 +83,8 @@ impl<'a> RecommendationRanker<'a> {
                 let explanation = self.generate_explanation(
                     &result.pattern,
                     result.score,
-                    recency_score,
-                    usage_score,
-                    days_since as i64,
+                    days_since.round() as i64,
+                    usage_count,
                 );
 
                 Recommendation {
@@ -113,21 +113,27 @@ impl<'a> RecommendationRanker<'a> {
         &self,
         pattern: &Pattern,
         similarity: f32,
-        _recency: f32,
-        usage: f32,
         days_ago: i64,
+        usage_count: u64,
     ) -> String {
-        let commit_short = &pattern.commit_sha[..7];
+        let commit_short: String = pattern.commit_sha.chars().take(7).collect();
+        let commit_display = if commit_short.is_empty() {
+            pattern.commit_sha.clone()
+        } else {
+            commit_short
+        };
         let tags = pattern.tags.join(", ");
+        let day_label = if days_ago == 1 { "day" } else { "days" };
 
         format!(
-            "Pattern from {} ({}): {} - Similarity: {:.1}%, Recency: {} days ago, Usage: {:.0} times",
-            commit_short,
+            "Pattern from {} ({}): {} - Similarity: {:.1}%, Recency: {} {} ago, Usage: {} times",
+            commit_display,
             tags,
             pattern.description,
             similarity * 100.0,
             days_ago,
-            usage * 100.0
+            day_label,
+            usage_count
         )
     }
 }
@@ -224,13 +230,14 @@ mod tests {
         let ranker = RecommendationRanker::new(&store);
 
         let pattern = create_test_pattern("1", Utc::now().timestamp() - 86400);
-        let explanation = ranker.generate_explanation(&pattern, 0.85, 0.95, 0.5, 1);
+        let explanation = ranker.generate_explanation(&pattern, 0.85, 1, 42);
 
         assert!(explanation.contains("abcdef1"));
         assert!(explanation.contains("rust"));
         assert!(explanation.contains("Test pattern 1"));
         assert!(explanation.contains("85")); // Similarity percentage
-        assert!(explanation.contains("1 days ago"));
+        assert!(explanation.contains("1 day ago"));
+        assert!(explanation.contains("42 times"));
     }
 
     #[test]

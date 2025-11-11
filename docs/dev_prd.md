@@ -726,7 +726,7 @@ Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using
 -   EARS:
     -   **Frontend**: When I invoke `nx g @vibes-pro/generators:web-app my-app --framework=remix`, the system shall (1) delegate to `@nx/remix` for framework scaffolding, (2) inject imports from `@vibes-pro/shared-web`, (3) apply hexagonal structure patterns, and (4) remain idempotent under repeated runs. Applies to Next.js (App/Pages Router), Remix, and Expo.
     -   **Backend**: When I invoke `nx g @vibes-pro/generators:api-service my-service`, the system shall (1) delegate to `@nxlv/python` for FastAPI scaffolding, (2) inject Logfire bootstrap from `libs/python/vibepro_logging.py`, (3) apply hexagonal ports/adapters from PHASE-002, (4) configure Pydantic models for Supabase type-sync, and (5) remain idempotent under repeated runs.
--   DX Metrics: All supported surfaces scaffold in < 30 seconds; wrapper + Nx generator combination builds successfully; idempotency tests pass; Nx generators remain updateable without forking; backend services auto-instrument with Logfire OpenTelemetry.
+-   DX Metrics: All supported surfaces scaffold in < 30 seconds; wrapper + Nx generator combination builds successfully; idempotency tests pass; 100% of Nx wrapper generators use official plugin targets (`@nx/next`, `@nx/remix`, `@nx/expo`, `@nxlv/python`) and remain compatible with at least two downstream minor releases without requiring forks; backend services auto-instrument with Logfire OpenTelemetry.
 -   Supported by: DEV-ADR-028, DEV-SDS-028
 
 ---

@@ -96,7 +96,7 @@ just ai-scaffold        # Nx generator with error handling
 just prompt-lint        # Validate .github/prompts/*.prompt.md
 ```
 
-**See `justfile` (934 lines) for complete recipe catalog.**
+**See `justfile` for the complete recipe catalog.**
 
 ## Specification-Driven Development
 
@@ -129,7 +129,7 @@ git commit -m "feat(synthesis): add Logfire integration [DEV-PRD-018]"
 
 -   `.github/instructions/*.instructions.md` - Modular guidance (MECE principle)
 -   `.github/prompts/*.prompt.md` - Reusable prompt templates
--   `.github/chatmodes/*.chatmode.md` - 32+ specialized personas
+-   `.github/chatmodes/*.chatmode.md` - Specialized personas stored per file
 -   `tools/prompt/` - Prompt linting and planning tools
 -   `tools/ai/` - Context bundling and scaffolding
 
@@ -143,7 +143,7 @@ git commit -m "feat(synthesis): add Logfire integration [DEV-PRD-018]"
 
 ### Temporal Learning
 
--   `temporal_db/` - Rust redb database (migrated from sled, TASK-017)
+-   `temporal_db/` - Rust redb database
 -   Stores: specifications, patterns, architectural decisions
 -   Keys: `spec:{id}:{timestamp_nanos}`, `pattern:{id}:{timestamp_nanos}`
 -   See `temporal_db/README.md` for query patterns
@@ -214,14 +214,14 @@ Instructions in `.github/instructions/` stack by precedence:
 
 ### Chat Modes & Prompts
 
--   **32+ personas** in `.github/chatmodes/` (e.g., `tdd.red`, `debug.start`, `persona.navigator`)
+-   **Personas** live in `.github/chatmodes/` (e.g., `tdd.red`, `debug.start`, `persona.navigator`)
 -   **Prompts** in `.github/prompts/` (e.g., `spec.implement.prompt.md`, `tdd.workflow.prompt.md`)
 -   **Validate prompts:** `just prompt-lint`
 -   **Context bundling:** `just ai-context-bundle` → `docs/ai_context_bundle/`
 
 ### Temporal Learning Database
 
--   **Location:** `temporal_db/` (Rust redb, migrated from sled in TASK-017)
+-   **Location:** `temporal_db/` (Rust redb)
 -   **Stores:** Specs, patterns, architectural decisions
 -   **Key format:** `spec:{id}:{timestamp_nanos}`, `pattern:{id}:{timestamp_nanos}`
 -   **Use:** Query before major architectural decisions (see `temporal_db/README.md`)
@@ -232,7 +232,7 @@ Instructions in `.github/instructions/` stack by precedence:
 
 1. **Check for generator:** `pnpm exec nx list` → `just ai-scaffold name=<generator>`
 2. **Review specs:** Check `docs/dev_prd.md`, `dev_sds.md`, `dev_adr.md`
-3. **Verify architecture:** Ensure hexagonal layer boundaries (`domain ← application ← infrastructure`)
+3. **Verify architecture:** Ensure hexagonal dependency flow (`infrastructure → application → domain`)
 
 ### After Changes
 

@@ -7,7 +7,9 @@ See DEV-SDS-025
 """
 
 import asyncio
-from collections.abc import Awaitable, Callable
+import logging
+import threading
+from collections.abc import Callable, Coroutine
 
 
 class InMemoryEventBus:
@@ -18,38 +20,55 @@ class InMemoryEventBus:
     """
 
     def __init__(self) -> None:
-        self._handlers: dict[type, list[Callable[[object], None | Awaitable[None]]]] = {}
+        self._handlers: dict[
+            type, list[Callable[[object], None | Coroutine[None, None, None]]]
+        ] = {}
+        self._lock = threading.Lock()
+        self._logger = logging.getLogger(__name__)
 
     def publish(self, event: object) -> None:
         event_type = type(event)
-        handlers = self._handlers.get(event_type, [])
+        with self._lock:
+            handlers = list(self._handlers.get(event_type, []))
 
+        loop = asyncio.get_running_loop()
         for handler in handlers:
             try:
                 result = handler(event)
                 if asyncio.iscoroutine(result):
-                    # mypy: allow coroutine scheduling
-                    asyncio.create_task(result)  # type: ignore[misc]
-            except Exception as e:
-                print(f"Handler error for {event_type.__name__}: {e}")
+                    task: asyncio.Task[None] = loop.create_task(result)
+                    task.add_done_callback(self._handle_task_exception)
+            except Exception as exc:
+                self._logger.error(
+                    "Handler error for %s: %s", event_type.__name__, exc, exc_info=exc
+                )
 
     def subscribe(
-        self, event_type: type, handler: Callable[[object], None | Awaitable[None]]
+        self, event_type: type, handler: Callable[[object], None | Coroutine[None, None, None]]
     ) -> None:
-        if event_type not in self._handlers:
-            self._handlers[event_type] = []
-        self._handlers[event_type].append(handler)
+        with self._lock:
+            handlers = self._handlers.setdefault(event_type, [])
+            if handler not in handlers:
+                handlers.append(handler)
 
     def unsubscribe(
-        self, event_type: type, handler: Callable[[object], None | Awaitable[None]]
+        self, event_type: type, handler: Callable[[object], None | Coroutine[None, None, None]]
     ) -> None:
-        if event_type in self._handlers:
-            try:
-                self._handlers[event_type].remove(handler)
-                if not self._handlers[event_type]:
-                    del self._handlers[event_type]
-            except ValueError:
-                pass
+        with self._lock:
+            if event_type in self._handlers:
+                try:
+                    self._handlers[event_type].remove(handler)
+                    if not self._handlers[event_type]:
+                        del self._handlers[event_type]
+                except ValueError:
+                    pass
 
     def clear(self) -> None:
-        self._handlers.clear()
+        with self._lock:
+            self._handlers.clear()
+
+    def _handle_task_exception(self, task: asyncio.Task[None]) -> None:
+        try:
+            task.result()
+        except Exception as exc:  # pragma: no cover - logs only
+            self._logger.error("Async event handler failed", exc_info=exc)

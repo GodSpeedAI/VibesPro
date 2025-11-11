@@ -10,7 +10,6 @@
 //! - **Vector Store** (`vector_store`): Persistent redb storage for embeddings and metadata
 //! - **Similarity Search** (`similarity`): Cosine similarity over vector space
 //! - **Recommendation Ranker** (`ranker`): Multi-factor scoring with recency and usage metrics
-//! - **Observability Aggregator** (`observability_aggregator`): Correlation with performance data
 //!
 //! ## Usage
 //!
@@ -44,18 +43,18 @@
 
 pub mod embedder;
 pub mod pattern_extractor;
+pub mod ranker;
 pub mod schema;
 pub mod similarity;
 pub mod vector_store;
-pub mod ranker;
 
 // Re-exports
 pub use embedder::Embedder;
 pub use pattern_extractor::{Pattern, PatternExtractor};
+pub use ranker::{Recommendation, RecommendationRanker};
 pub use schema::{EmbeddingRecord, PerformanceMetrics};
-pub use similarity::{SimilaritySearch, SimilarityResult, SearchFilters};
+pub use similarity::{SearchFilters, SimilarityResult, SimilaritySearch};
 pub use vector_store::VectorStore;
-pub use ranker::{RecommendationRanker, Recommendation};
 
 /// Error types for the temporal-ai crate
 #[derive(Debug, thiserror::Error)]
@@ -85,36 +84,6 @@ pub enum TemporalAIError {
     IoError(#[from] std::io::Error),
 }
 
-impl From<redb::CommitError> for TemporalAIError {
-    fn from(err: redb::CommitError) -> Self {
-        TemporalAIError::DatabaseError(redb::Error::from(err))
-    }
-}
-
-impl From<redb::DatabaseError> for TemporalAIError {
-    fn from(err: redb::DatabaseError) -> Self {
-        TemporalAIError::DatabaseError(redb::Error::from(err))
-    }
-}
-
-impl From<redb::StorageError> for TemporalAIError {
-    fn from(err: redb::StorageError) -> Self {
-        TemporalAIError::DatabaseError(redb::Error::from(err))
-    }
-}
-
-impl From<redb::TableError> for TemporalAIError {
-    fn from(err: redb::TableError) -> Self {
-        TemporalAIError::DatabaseError(redb::Error::from(err))
-    }
-}
-
-impl From<redb::TransactionError> for TemporalAIError {
-    fn from(err: redb::TransactionError) -> Self {
-        TemporalAIError::DatabaseError(redb::Error::from(err))
-    }
-}
-
 impl From<serde_json::Error> for TemporalAIError {
     fn from(err: serde_json::Error) -> Self {
         TemporalAIError::SerializationError(err.to_string())
@@ -140,12 +109,3 @@ pub const EMBEDDING_DIM: usize = 768;
 
 /// Current schema version for embeddings
 pub const SCHEMA_VERSION: u8 = 1;
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test_constants() {
-        assert_eq!(super::EMBEDDING_DIM, 768);
-        assert_eq!(super::SCHEMA_VERSION, 1);
-    }
-}

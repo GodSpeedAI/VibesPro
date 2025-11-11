@@ -95,12 +95,14 @@ class TestEntityTracking:
 
     @pytest.mark.asyncio
     async def test_clear_tracking_on_commit(self, uow: UnitOfWork) -> None:
-        entity = TestEntity("1", "Test")
+        entity_new = TestEntity("1", "New")
+        entity_dirty = TestEntity("2", "Dirty")
+        entity_deleted = TestEntity("3", "Deleted")
 
         await uow.begin()
-        uow.register_new(entity)
-        uow.register_dirty(entity)
-        uow.register_deleted(entity)
+        uow.register_new(entity_new)
+        uow.register_dirty(entity_dirty)
+        uow.register_deleted(entity_deleted)
 
         await uow.commit()
 
@@ -110,12 +112,14 @@ class TestEntityTracking:
 
     @pytest.mark.asyncio
     async def test_clear_tracking_on_rollback(self, uow: UnitOfWork) -> None:
-        entity = TestEntity("1", "Test")
+        entity_new = TestEntity("1", "New")
+        entity_dirty = TestEntity("2", "Dirty")
+        entity_deleted = TestEntity("3", "Deleted")
 
         await uow.begin()
-        uow.register_new(entity)
-        uow.register_dirty(entity)
-        uow.register_deleted(entity)
+        uow.register_new(entity_new)
+        uow.register_dirty(entity_dirty)
+        uow.register_deleted(entity_deleted)
 
         await uow.rollback()
 

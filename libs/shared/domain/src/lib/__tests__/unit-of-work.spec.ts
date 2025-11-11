@@ -34,6 +34,16 @@ describe('UnitOfWork Contract (TypeScript)', () => {
       await uow.commit();
       await expect(uow.commit()).rejects.toThrow('No active transaction');
     });
+
+    it('should throw error when rolling back without active transaction', async () => {
+      await expect(uow.rollback()).rejects.toThrow('No active transaction');
+    });
+
+    it('should throw error when double-rolling back', async () => {
+      await uow.begin();
+      await uow.rollback();
+      await expect(uow.rollback()).rejects.toThrow('No active transaction');
+    });
   });
 
   describe('Entity Tracking', () => {

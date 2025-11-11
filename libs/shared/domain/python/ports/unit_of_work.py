@@ -6,13 +6,14 @@ Protocol definition for the Unit of Work pattern in Python.
 See DEV-ADR-024, DEV-PRD-025, DEV-SDS-024
 """
 
-from collections.abc import Awaitable, Callable
-from typing import Protocol, TypeVar
+from collections.abc import Awaitable, Callable, Sequence
+from typing import Generic, Protocol, Self, TypeVar
 
 T = TypeVar("T")
+E = TypeVar("E")
 
 
-class UnitOfWork(Protocol):
+class UnitOfWork(Protocol, Generic[E]):
     """
     Unit of Work Pattern - Python Protocol
 
@@ -36,31 +37,35 @@ class UnitOfWork(Protocol):
         """Check if a transaction is currently active."""
         ...
 
-    def register_new(self, entity: object) -> None:
+    def register_new(self, entity: E) -> None:
         """Register a new entity to be inserted."""
         ...
 
-    def register_dirty(self, entity: object) -> None:
+    def register_dirty(self, entity: E) -> None:
         """Register an existing entity that has been modified."""
         ...
 
-    def register_deleted(self, entity: object) -> None:
+    def register_deleted(self, entity: E) -> None:
         """Register an entity to be deleted."""
         ...
 
-    def get_new(self) -> list[object]:
+    def get_new(self) -> Sequence[E]:
         """Get all entities registered as new."""
         ...
 
-    def get_dirty(self) -> list[object]:
+    def get_dirty(self) -> Sequence[E]:
         """Get all entities registered as dirty."""
         ...
 
-    def get_deleted(self) -> list[object]:
+    def get_deleted(self) -> Sequence[E]:
         """Get all entities registered for deletion."""
         ...
 
-    async def with_transaction(self, work: Callable[[], Awaitable[T]]) -> T:
+    def clear(self) -> None:
+        """Clear all tracked entities."""
+        ...
+
+    async def with_transaction(self, work: Callable[[Self], Awaitable[T]]) -> T:
         """
         Execute work within a transaction.
 

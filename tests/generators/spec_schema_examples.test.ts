@@ -12,21 +12,18 @@
 import { readFileSync } from 'fs';
 import Ajv from 'ajv';
 
+const SPEC_PATH = 'templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md';
+
 describe('Generator Spec Schema Examples', () => {
   const ajv = new Ajv({ strict: false, validateFormats: false });
+  let specContents: string;
+
+  beforeAll(() => {
+    specContents = readFileSync(SPEC_PATH, 'utf-8');
+  });
 
   test('GENERATOR_SPEC.md schema examples are valid JSON', () => {
-    const specPath = 'templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md';
-    const spec = readFileSync(specPath, 'utf-8');
-
-    // Extract JSON code blocks
-    const jsonBlockRegex = /```json\n([\s\S]*?)\n```/g;
-    const jsonBlocks: string[] = [];
-    let match;
-
-    while ((match = jsonBlockRegex.exec(spec)) !== null) {
-      jsonBlocks.push(match[1]);
-    }
+    const jsonBlocks = extractJsonBlocks(specContents);
 
     expect(jsonBlocks.length).toBeGreaterThan(0);
 
@@ -41,23 +38,13 @@ describe('Generator Spec Schema Examples', () => {
   });
 
   test('GENERATOR_SPEC.md schema examples are valid JSON Schema', () => {
-    const specPath = 'templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md';
-    const spec = readFileSync(specPath, 'utf-8');
-
-    // Extract JSON code blocks
-    const jsonBlockRegex = /```json\n([\s\S]*?)\n```/g;
-    const jsonBlocks: string[] = [];
-    let match;
-
-    while ((match = jsonBlockRegex.exec(spec)) !== null) {
-      jsonBlocks.push(match[1]);
-    }
+    const jsonBlocks = extractJsonBlocks(specContents);
 
     // Find schema-like blocks (contain "$schema" or have type/properties)
     const schemaBlocks = jsonBlocks.filter((block) => {
       try {
         const parsed = JSON.parse(block);
-        return parsed.$schema || (parsed.type && parsed.properties);
+        return Boolean(parsed.$schema || parsed.type || parsed.properties);
       } catch {
         return false;
       }
@@ -82,37 +69,40 @@ describe('Generator Spec Schema Examples', () => {
   });
 
   test('Type mapping matrix covers essential JSON Schema types', () => {
-    const specPath = 'templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md';
-    const spec = readFileSync(specPath, 'utf-8');
-
     const essentialTypes = ['string', 'number', 'boolean', 'array', 'object'];
 
     essentialTypes.forEach((type) => {
       // Check if type appears in a table row (markdown table format)
       const tableRowRegex = new RegExp(`\\|.*\`${type}\`.*\\|`, 'i');
-      expect(spec).toMatch(tableRowRegex);
+      expect(specContents).toMatch(tableRowRegex);
     });
   });
 
   test('Schema examples include validation keywords', () => {
-    const specPath = 'templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md';
-    const spec = readFileSync(specPath, 'utf-8');
-
     // Common validation keywords that should appear
     const validationKeywords = ['type', 'properties', 'required'];
 
     validationKeywords.forEach((keyword) => {
-      expect(spec).toContain(`"${keyword}"`);
+      expect(specContents).toContain(`"${keyword}"`);
     });
   });
 
   test('Schema examples show TypeScript interface mapping', () => {
-    const specPath = 'templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md';
-    const spec = readFileSync(specPath, 'utf-8');
-
     // Should have TypeScript code blocks with interfaces
-    expect(spec).toContain('```ts');
-    expect(spec).toContain('interface');
-    expect(spec).toContain('Schema');
+    expect(specContents).toContain('```ts');
+    expect(specContents).toContain('interface');
+    expect(specContents).toContain('Schema');
   });
 });
+
+function extractJsonBlocks(spec: string): string[] {
+  const jsonBlockRegex = /```json\n([\s\S]*?)\n```/g;
+  const jsonBlocks: string[] = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = jsonBlockRegex.exec(spec)) !== null) {
+    jsonBlocks.push(match[1]);
+  }
+
+  return jsonBlocks;
+}

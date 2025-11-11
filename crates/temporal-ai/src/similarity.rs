@@ -3,8 +3,8 @@
 use crate::pattern_extractor::Pattern;
 use crate::vector_store::VectorStore;
 use crate::{Result, TemporalAIError};
-use std::collections::BinaryHeap;
 use std::cmp::Ordering;
+use std::collections::BinaryHeap;
 
 /// Similarity search result
 #[derive(Debug, Clone)]
@@ -73,15 +73,8 @@ impl<'a> SimilaritySearch<'a> {
         let mut heap = BinaryHeap::with_capacity(k + 1);
 
         for pattern_id in pattern_ids {
-            // Get embedding
-            let embedding = match self.store.get_embedding(&pattern_id)? {
-                Some(emb) => emb,
-                None => continue,
-            };
-
-            // Get pattern metadata
-            let pattern = match self.store.get_pattern(&pattern_id)? {
-                Some(p) => p,
+            let (embedding, pattern) = match self.store.get_embedding_and_pattern(&pattern_id)? {
+                Some(data) => data,
                 None => continue,
             };
 
@@ -141,11 +134,12 @@ impl<'a> SimilaritySearch<'a> {
 
         // If file path glob specified, use file path index
         if let Some(glob_str) = &filters.file_path_glob {
-            let glob_pattern = glob::Pattern::new(glob_str)
-                .map_err(|e| TemporalAIError::IoError(std::io::Error::new(
+            let glob_pattern = glob::Pattern::new(glob_str).map_err(|e| {
+                TemporalAIError::IoError(std::io::Error::new(
                     std::io::ErrorKind::InvalidInput,
-                    e.to_string()
-                )))?;
+                    e.to_string(),
+                ))
+            })?;
 
             // This is inefficient - in production we'd need better indexing
             let all_patterns = self.store.list_patterns()?;
@@ -190,13 +184,9 @@ pub fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
 /// SIMD-optimized dot product (x86_64)
 #[cfg(target_arch = "x86_64")]
 fn dot_product_simd(a: &[f32], b: &[f32]) -> f32 {
-    #[cfg(target_feature = "avx")]
-    {
+    if std::arch::is_x86_feature_detected!("avx") {
         unsafe { dot_product_avx(a, b) }
-    }
-
-    #[cfg(not(target_feature = "avx"))]
-    {
+    } else {
         dot_product_fallback(a, b)
     }
 }

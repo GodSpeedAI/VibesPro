@@ -49,21 +49,21 @@ export class ApiClient {
   async post<T>(path: string, body?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>('POST', path, {
       ...options,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   }
 
   async put<T>(path: string, body?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>('PUT', path, {
       ...options,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   }
 
   async patch<T>(path: string, body?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>('PATCH', path, {
       ...options,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   }
 
@@ -72,7 +72,7 @@ export class ApiClient {
   }
 
   private async request<T>(method: string, path: string, options?: RequestInit): Promise<T> {
-    const url = path.startsWith('http') ? path : `${this.baseUrl}${path}`;
+    const url = this.resolveUrl(path);
 
     const headers = {
       ...this.defaultHeaders,
@@ -94,7 +94,7 @@ export class ApiClient {
 
       if (!response.ok) {
         const errorText = await response.text();
-        const error = new ApiError(response.status, errorText);
+        const error = new ApiError(response.status, errorText || response.statusText);
 
         if (this.onError) {
           this.onError(error);
@@ -103,12 +103,29 @@ export class ApiClient {
         throw error;
       }
 
-      const contentType = response.headers.get('content-type');
-      if (contentType?.includes('application/json')) {
-        return response.json();
+      if (this.isNoContentResponse(method, response)) {
+        return undefined as T;
       }
 
-      return response.text() as Promise<T>;
+      const raw = await response.text();
+      if (!raw) {
+        return undefined as T;
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (contentType?.includes('application/json')) {
+        try {
+          return JSON.parse(raw) as T;
+        } catch (parseError) {
+          throw new ApiError(
+            response.status,
+            'Failed to parse JSON response',
+            parseError instanceof Error ? parseError.message : raw,
+          );
+        }
+      }
+
+      return raw as T;
     } catch (error) {
       clearTimeout(timeoutId);
 
@@ -138,5 +155,33 @@ export class ApiClient {
    */
   clearAuthToken(): void {
     delete this.defaultHeaders['Authorization'];
+  }
+
+  private resolveUrl(path: string): string {
+    if (path.startsWith('http')) {
+      return path;
+    }
+
+    if (!this.baseUrl) {
+      return path;
+    }
+
+    const normalizedBase = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl;
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+    return `${normalizedBase}${normalizedPath}`;
+  }
+
+  private isNoContentResponse(method: string, response: Response): boolean {
+    if (method === 'HEAD') {
+      return true;
+    }
+
+    if (response.status === 204 || response.status === 205 || response.status === 304) {
+      return true;
+    }
+
+    const contentLength = response.headers.get('content-length');
+    return contentLength === '0';
   }
 }

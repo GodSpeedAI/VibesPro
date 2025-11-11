@@ -99,6 +99,7 @@ exclude = [
     # Exclude any path that contains Jinja-style template braces to avoid
     # treating placeholders like {{domain_name}} as real package names.
     "^.*\\{\\{.*\\}\\}.*$",
+    "target/.*",
     "scripts/",
 ]
 [[tool.mypy.overrides]]

@@ -23,6 +23,7 @@ export interface UnitOfWork {
 
   /**
    * Rollback the current transaction and discard all registered changes.
+   * @throws Error if no transaction is active
    */
   rollback(): Promise<void>;
 
@@ -34,18 +35,21 @@ export interface UnitOfWork {
   /**
    * Register a new entity to be inserted.
    * @param entity The entity to register as new
+   * @throws Error if no transaction is active
    */
   registerNew<T>(entity: T): void;
 
   /**
    * Register an existing entity that has been modified.
    * @param entity The entity to register as dirty
+   * @throws Error if no transaction is active
    */
   registerDirty<T>(entity: T): void;
 
   /**
    * Register an entity to be deleted.
    * @param entity The entity to register for deletion
+   * @throws Error if no transaction is active
    */
   registerDeleted<T>(entity: T): void;
 

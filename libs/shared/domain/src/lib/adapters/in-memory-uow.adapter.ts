@@ -22,14 +22,13 @@ export class InMemoryUnitOfWork implements UnitOfWork {
   }
 
   async commit(): Promise<void> {
-    if (!this.inTransaction) {
-      throw new Error('No active transaction');
-    }
+    this.ensureTransactionActive();
     this.clear();
     this.inTransaction = false;
   }
 
   async rollback(): Promise<void> {
+    this.ensureTransactionActive();
     this.clear();
     this.inTransaction = false;
   }
@@ -39,27 +38,46 @@ export class InMemoryUnitOfWork implements UnitOfWork {
   }
 
   registerNew<T>(entity: T): void {
-    this.newEntities.push(entity);
+    this.ensureTransactionActive();
+    this.removeFromCollections(entity, ['dirty', 'deleted']);
+
+    if (!this.contains(this.newEntities, entity)) {
+      this.newEntities.push(entity);
+    }
   }
 
   registerDirty<T>(entity: T): void {
-    this.dirtyEntities.push(entity);
+    this.ensureTransactionActive();
+
+    if (this.contains(this.newEntities, entity)) {
+      return;
+    }
+
+    this.removeFromCollections(entity, ['deleted']);
+    if (!this.contains(this.dirtyEntities, entity)) {
+      this.dirtyEntities.push(entity);
+    }
   }
 
   registerDeleted<T>(entity: T): void {
-    this.deletedEntities.push(entity);
+    this.ensureTransactionActive();
+    this.removeFromCollections(entity, ['new', 'dirty']);
+
+    if (!this.contains(this.deletedEntities, entity)) {
+      this.deletedEntities.push(entity);
+    }
   }
 
   getNew<T = unknown>(): T[] {
-    return this.newEntities as T[];
+    return [...this.newEntities] as T[];
   }
 
   getDirty<T = unknown>(): T[] {
-    return this.dirtyEntities as T[];
+    return [...this.dirtyEntities] as T[];
   }
 
   getDeleted<T = unknown>(): T[] {
-    return this.deletedEntities as T[];
+    return [...this.deletedEntities] as T[];
   }
 
   async withTransaction<T>(work: () => Promise<T>): Promise<T> {
@@ -78,5 +96,30 @@ export class InMemoryUnitOfWork implements UnitOfWork {
     this.newEntities = [];
     this.dirtyEntities = [];
     this.deletedEntities = [];
+  }
+
+  private ensureTransactionActive(): void {
+    if (!this.inTransaction) {
+      throw new Error('No active transaction');
+    }
+  }
+
+  private contains(collection: unknown[], entity: unknown): boolean {
+    return collection.some((item) => item === entity);
+  }
+
+  private removeFromCollections(
+    entity: unknown,
+    collections: Array<'new' | 'dirty' | 'deleted'>,
+  ): void {
+    if (collections.includes('new')) {
+      this.newEntities = this.newEntities.filter((item) => item !== entity);
+    }
+    if (collections.includes('dirty')) {
+      this.dirtyEntities = this.dirtyEntities.filter((item) => item !== entity);
+    }
+    if (collections.includes('deleted')) {
+      this.deletedEntities = this.deletedEntities.filter((item) => item !== entity);
+    }
   }
 }
