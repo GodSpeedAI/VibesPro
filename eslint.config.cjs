@@ -135,9 +135,6 @@ module.exports = (() => {
     {
       files: ['**/*.cjs'],
       languageOptions: { sourceType: 'script' },
-      rules: {
-        '@typescript-eslint/no-require-imports': 'off',
-      },
     },
 
     // Tests - relax some rules

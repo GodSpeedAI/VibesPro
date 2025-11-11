@@ -16,7 +16,7 @@ This document codifies the domain-driven design (DDD) and hexagonal architecture
 
 ## Domain Layer
 
-The domain layer is dependency-free and encoded in strict TypeScript/Python types. Generators enforce immutability where appropriate and discourage `any`, ensuring RPg safe imports.
+The domain layer is dependency-free and encoded in strict TypeScript/Python types. Generators enforce immutability where appropriate and discourage `any`, ensuring type-safe imports.
 
 ### Entities and Value Objects
 

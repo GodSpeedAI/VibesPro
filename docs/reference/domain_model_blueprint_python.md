@@ -120,6 +120,8 @@ libs/orders/
 └── README.md
 ```
 
+When a workspace needs multiple domains, duplicate this structure under `libs/{domain_name}/` (for example `libs/customers/`, `libs/payments/`). Each domain keeps its own `domain/`, `application/`, `infrastructure/`, and `interface/` packages plus its own `pyproject.toml`/`project.json` metadata to avoid namespace collisions. Update the generator answers (or project manifests) for each new domain so Nx targets, imports, and tests remain isolated.
+
 ## Python-specific patterns, conventions and tools
 
 -   Protocols & typing
@@ -129,7 +131,7 @@ libs/orders/
 -   Async-first patterns
 
     -   Use `async def` / `await` for use-cases and adapters where IO is expected.
-    -   UnitOfWork implements async context manager semantics (either `__aenter__/__aexit__` or explicit `begin/commit/rollback`).
+    -   UnitOfWork scaffolds as an async context manager (`__aenter__/__aexit__`) by default so use-cases call `async with`. If a manual `begin` / `commit` / `rollback` workflow is required, choose the “manual transaction mode” answer in the Python generator prompts (see `generators/python-app/schema.json`) to switch templates.
 
 -   Pydantic for DTOs & validation
 
@@ -142,7 +144,7 @@ libs/orders/
 
 -   Persistence skeletons
 
-    -   SQLAlchemy (sync) or SQLAlchemy + asyncpg (async) adapters are scaffolded based on template choices.
+    -   SQLAlchemy (sync) or SQLAlchemy’s async dialect paired with the `asyncpg` driver are scaffolded based on template choices.
     -   Supabase adapters are provided as a skeleton with TODOs and mapping helpers.
 
 -   Event bus & async queues

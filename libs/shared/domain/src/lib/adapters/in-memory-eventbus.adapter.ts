@@ -1,4 +1,4 @@
-import { EventBus } from '../ports/event-bus.port';
+import { EventBus, EventDescriptor, EventHandler } from '../ports/event-bus.port';
 
 /**
  * In-Memory Event Bus Adapter
@@ -9,56 +9,47 @@ import { EventBus } from '../ports/event-bus.port';
  * @see DEV-SDS-025 - Event Bus Contract Design
  */
 export class InMemoryEventBus implements EventBus<unknown> {
-  private handlers: Map<string, Array<(event: unknown) => void | Promise<void>>> = new Map();
+  private handlers: Map<string, EventHandler<unknown>[]> = new Map();
 
-  publish(event: unknown): void {
+  async publish(event: unknown): Promise<void> {
     const eventName = this.getEventName(event);
     const eventHandlers = this.handlers.get(eventName);
 
     if (eventHandlers && eventHandlers.length > 0) {
-      const results = eventHandlers.map((handler) => {
-        try {
-          const result = handler(event);
-          return result instanceof Promise
-            ? result.catch((err) => ({ error: err }))
-            : Promise.resolve();
-        } catch (error) {
-          return Promise.resolve({ error });
-        }
-      });
+      const errors: Error[] = [];
 
-      Promise.allSettled(results).then((outcomes) => {
-        const errors = outcomes
-          .filter(
-            (r): r is PromiseFulfilledResult<{ error: Error }> =>
-              r.status === 'fulfilled' && r.value && 'error' in r.value,
-          )
-          .map((r) => r.value.error);
+      await Promise.all(
+        eventHandlers.map(async (handler) => {
+          try {
+            await handler(event);
+          } catch (error) {
+            errors.push(error instanceof Error ? error : new Error('Unknown event handler error'));
+          }
+        }),
+      );
 
-        if (errors.length > 0) {
-          console.error(`${errors.length} handler(s) failed for event ${eventName}:`, errors);
-        }
-      });
+      if (errors.length > 0) {
+        console.error(`${errors.length} handler(s) failed for event ${eventName}:`, errors);
+      }
     }
   }
 
-  subscribe(
-    event: { name?: string } | { constructor?: { name: string } },
-    handler: (event: unknown) => void | Promise<void>,
-  ): void {
+  subscribe(event: EventDescriptor, handler: EventHandler<unknown>): void {
     const eventName = this.getEventName(event);
 
     if (!this.handlers.has(eventName)) {
       this.handlers.set(eventName, []);
     }
 
-    this.handlers.get(eventName)!.push(handler);
+    const eventHandlers = this.handlers.get(eventName)!;
+    if (eventHandlers.includes(handler)) {
+      return;
+    }
+
+    eventHandlers.push(handler);
   }
 
-  unsubscribe(
-    event: { name?: string } | { constructor?: { name: string } },
-    handler: (event: unknown) => void | Promise<void>,
-  ): void {
+  unsubscribe(event: EventDescriptor, handler: EventHandler<unknown>): void {
     const eventName = this.getEventName(event);
     const eventHandlers = this.handlers.get(eventName);
 

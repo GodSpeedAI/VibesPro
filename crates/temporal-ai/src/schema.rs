@@ -1,6 +1,6 @@
 //! Database schema definitions for the temporal AI vector store
 
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use redb::TableDefinition;
 use serde::{Deserialize, Serialize};
 
@@ -28,7 +28,7 @@ pub const TAG_INDEX: TableDefinition<&str, &str> = TableDefinition::new("tag_idx
 /// Embedding record stored in the vector database
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmbeddingRecord {
-    /// 768-dimensional embedding vector
+    /// Embedding vector with length [`crate::EMBEDDING_DIM`]
     pub vector: Vec<f32>,
 
     /// Precomputed L2 norm for optimization
@@ -44,6 +44,12 @@ pub struct EmbeddingRecord {
 impl EmbeddingRecord {
     /// Create a new embedding record with L2 normalization
     pub fn new(vector: Vec<f32>) -> Self {
+        assert_eq!(
+            vector.len(),
+            crate::EMBEDDING_DIM,
+            "Expected embedding vectors of length {}",
+            crate::EMBEDDING_DIM
+        );
         let norm = Self::compute_norm(&vector);
         Self {
             vector,
@@ -60,7 +66,7 @@ impl EmbeddingRecord {
 
     /// Get the normalized vector
     pub fn normalized(&self) -> Vec<f32> {
-        if self.norm == 0.0 {
+        if self.norm.abs() <= f32::EPSILON {
             return self.vector.clone();
         }
         self.vector.iter().map(|x| x / self.norm).collect()

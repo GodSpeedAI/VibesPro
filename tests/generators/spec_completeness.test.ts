@@ -15,30 +15,40 @@ import { join } from 'path';
 
 describe('Generator Spec Completeness', () => {
   const specPattern = 'templates/{{project_slug}}/docs/specs/generators/*.md';
-  const specFiles = glob.sync(specPattern);
+  let specFiles: string[] = [];
 
-  if (specFiles.length === 0) {
-    throw new Error(`No spec files found matching pattern: ${specPattern}`);
-  }
+  beforeAll(() => {
+    specFiles = glob.sync(specPattern);
 
-  test.each(specFiles)('%s contains no TODO markers', (file) => {
-    const content = readFileSync(file, 'utf-8');
+    if (specFiles.length === 0) {
+      throw new Error(`No spec files found matching pattern: ${specPattern}`);
+    }
+  });
+
+  test('spec files contain no TODO markers', () => {
     const todoMarkers = ['TODO', 'FIXME', 'TBD', 'PLACEHOLDER', 'XXX', 'HACK'];
+    const failures: string[] = [];
 
-    const foundMarkers: string[] = [];
-    todoMarkers.forEach((marker) => {
-      const regex = new RegExp(`\\b${marker}\\b`, 'gi');
-      const matches = content.match(regex);
-      if (matches) {
-        foundMarkers.push(...matches);
+    specFiles.forEach((file) => {
+      const content = readFileSync(file, 'utf-8');
+      const foundMarkers: string[] = [];
+
+      todoMarkers.forEach((marker) => {
+        const regex = new RegExp(`\\b${marker}\\b`, 'gi');
+        const matches = content.match(regex);
+        if (matches) {
+          foundMarkers.push(...matches);
+        }
+      });
+
+      if (foundMarkers.length > 0) {
+        failures.push(`${file}: ${foundMarkers.join(', ')}`);
       }
     });
 
-    if (foundMarkers.length > 0) {
-      fail(`Found ${foundMarkers.length} placeholder marker(s): ${foundMarkers.join(', ')}`);
+    if (failures.length > 0) {
+      fail(`Found placeholder markers:\n${failures.join('\n')}`);
     }
-
-    expect(foundMarkers).toHaveLength(0);
   });
 
   test('GENERATOR_SPEC.md has all required sections', () => {
@@ -66,8 +76,6 @@ describe('Generator Spec Completeness', () => {
     if (missingSections.length > 0) {
       fail(`Missing required sections: ${missingSections.join(', ')}`);
     }
-
-    expect(missingSections).toHaveLength(0);
   });
 
   test('GENERATOR_SPEC.md has sufficient code examples', () => {
@@ -86,14 +94,22 @@ describe('Generator Spec Completeness', () => {
     const specPath = 'templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md';
     const spec = readFileSync(specPath, 'utf-8');
 
-    // Check for type mapping matrix section
     expect(spec).toContain('Type Mapping Matrix');
 
-    // Check for common JSON Schema types
     const requiredTypes = ['string', 'number', 'boolean', 'array', 'object'];
-    requiredTypes.forEach((type) => {
-      expect(spec).toContain(type);
-    });
+    const matrixSection = extractTypeMappingSection(spec);
+    const discoveredTypes = new Set<string>();
+
+    const rowRegex = /\|\s*([a-zA-Z]+)\s*\|/g;
+    let match: RegExpExecArray | null;
+    while ((match = rowRegex.exec(matrixSection)) !== null) {
+      discoveredTypes.add(match[1].toLowerCase());
+    }
+
+    const missingTypes = requiredTypes.filter((type) => !discoveredTypes.has(type));
+    if (missingTypes.length > 0) {
+      fail(`Missing type mappings for: ${missingTypes.join(', ')}`);
+    }
   });
 
   test('GENERATOR_SPEC.md has idempotency strategy', () => {
@@ -115,3 +131,17 @@ describe('Generator Spec Completeness', () => {
     });
   });
 });
+
+function extractTypeMappingSection(spec: string): string {
+  const heading = '### 3.1 Type Mapping Matrix';
+  const headingIndex = spec.indexOf(heading);
+
+  if (headingIndex === -1) {
+    return spec;
+  }
+
+  const afterHeading = spec.slice(headingIndex + heading.length);
+  const nextSectionIndex = afterHeading.indexOf('\n## ');
+
+  return nextSectionIndex === -1 ? afterHeading : afterHeading.slice(0, nextSectionIndex);
+}

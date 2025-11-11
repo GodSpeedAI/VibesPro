@@ -910,20 +910,36 @@ validate-generator-specs:
 # Initialize temporal-ai database
 temporal-ai-init:
 	@echo "🗄️  Initializing temporal-ai database..."
+	@if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+		echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+		exit 1; \
+	fi
 	@./crates/temporal-ai/target/release/temporal-ai init
 
 # Refresh pattern database from Git history
 temporal-ai-refresh COMMITS="1000":
 	@echo "🔄 Refreshing pattern database (last {{COMMITS}} commits)..."
+	@if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+		echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+		exit 1; \
+	fi
 	@./crates/temporal-ai/target/release/temporal-ai refresh --commits {{COMMITS}}
 
 # Query similar patterns
 temporal-ai-query QUERY TOP="5":
 	@echo "🔍 Searching for: {{QUERY}}"
+	@if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+		echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+		exit 1; \
+	fi
 	@./crates/temporal-ai/target/release/temporal-ai query "{{QUERY}}" --top {{TOP}}
 
 # Show temporal-ai database statistics
 temporal-ai-stats:
+	@if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+		echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+		exit 1; \
+	fi
 	@./crates/temporal-ai/target/release/temporal-ai stats
 
 # Build temporal-ai CLI

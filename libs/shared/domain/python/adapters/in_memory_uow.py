@@ -32,12 +32,12 @@ class InMemoryUnitOfWork:
         self._in_transaction = True
 
     async def commit(self) -> None:
-        if not self._in_transaction:
-            raise RuntimeError("No active transaction")
+        self._ensure_transaction_active()
         self._clear()
         self._in_transaction = False
 
     async def rollback(self) -> None:
+        self._ensure_transaction_active()
         self._clear()
         self._in_transaction = False
 
@@ -45,13 +45,24 @@ class InMemoryUnitOfWork:
         return self._in_transaction
 
     def register_new(self, entity: object) -> None:
-        self._new_entities.append(entity)
+        self._ensure_transaction_active()
+        self._remove_entity(entity, from_lists=("dirty", "deleted"))
+        if entity not in self._new_entities:
+            self._new_entities.append(entity)
 
     def register_dirty(self, entity: object) -> None:
-        self._dirty_entities.append(entity)
+        self._ensure_transaction_active()
+        if entity in self._new_entities:
+            return
+        self._remove_entity(entity, from_lists=("deleted",))
+        if entity not in self._dirty_entities:
+            self._dirty_entities.append(entity)
 
     def register_deleted(self, entity: object) -> None:
-        self._deleted_entities.append(entity)
+        self._ensure_transaction_active()
+        self._remove_entity(entity, from_lists=("new", "dirty"))
+        if entity not in self._deleted_entities:
+            self._deleted_entities.append(entity)
 
     def get_new(self) -> list[object]:
         return list(self._new_entities)
@@ -76,3 +87,15 @@ class InMemoryUnitOfWork:
         self._new_entities.clear()
         self._dirty_entities.clear()
         self._deleted_entities.clear()
+
+    def _ensure_transaction_active(self) -> None:
+        if not self._in_transaction:
+            raise RuntimeError("No active transaction")
+
+    def _remove_entity(self, entity: object, from_lists: tuple[str, ...]) -> None:
+        if "new" in from_lists and entity in self._new_entities:
+            self._new_entities = [item for item in self._new_entities if item is not entity]
+        if "dirty" in from_lists and entity in self._dirty_entities:
+            self._dirty_entities = [item for item in self._dirty_entities if item is not entity]
+        if "deleted" in from_lists and entity in self._deleted_entities:
+            self._deleted_entities = [item for item in self._deleted_entities if item is not entity]

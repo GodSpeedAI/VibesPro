@@ -7,28 +7,34 @@ See DEV-ADR-024, DEV-PRD-026, DEV-SDS-025
 """
 
 from collections.abc import Awaitable, Callable
-from typing import Protocol
+from typing import Protocol, TypeVar
+
+E = TypeVar("E")
 
 
-class EventBus(Protocol):
+class EventBus(Protocol[E]):
     """
     Event Bus Pattern - Python Protocol
 
     Provides publish-subscribe mechanism for domain events.
     """
 
-    def publish(self, event: object) -> None:
+    def publish(self, event: E) -> None:
         """Publish an event to all subscribers."""
         ...
 
     def subscribe(
-        self, event_type: type, handler: Callable[[object], None | Awaitable[None]]
+        self,
+        event_type: type[E],
+        handler: Callable[[E], None | Awaitable[None]],
     ) -> None:
         """Subscribe to events of a specific type."""
         ...
 
     def unsubscribe(
-        self, event_type: type, handler: Callable[[object], None | Awaitable[None]]
+        self,
+        event_type: type[E],
+        handler: Callable[[E], None | Awaitable[None]],
     ) -> None:
         """Unsubscribe a handler from events."""
         ...

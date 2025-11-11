@@ -12,7 +12,9 @@ fn main() -> Result<()> {
     if !model_path.exists() {
         eprintln!("Error: Model not found at {}", model_path.display());
         eprintln!("\nDownload from:");
-        eprintln!("  https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embedding-gemma-300M-Q4_K_M.gguf");
+        eprintln!(
+            "  https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embeddinggemma-300M-Q8_0.gguf"
+        );
         std::process::exit(1);
     }
 
@@ -34,7 +36,11 @@ fn main() -> Result<()> {
         let embedding = embedder.embed(text)?;
         let duration = start.elapsed();
 
-        println!("✓ ({:.2}ms, {} dims)", duration.as_millis(), embedding.len());
+        println!(
+            "✓ ({:.2}ms, {} dims)",
+            duration.as_millis(),
+            embedding.len()
+        );
 
         // Verify dimension
         assert_eq!(embedding.len(), 768, "Expected 768 dimensions");

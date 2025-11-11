@@ -8,6 +8,8 @@
 
 import { readFileSync } from 'fs';
 
+const PLACEHOLDER_MARKERS = ['TODO', 'FIXME', 'TBD', 'PLACEHOLDER', 'XXX', 'HACK'];
+
 export interface ValidationResult {
   valid: boolean;
   errors: string[];
@@ -31,20 +33,12 @@ export function validateGeneratorSpec(specPath: string): ValidationResult {
     const content = readFileSync(specPath, 'utf-8');
 
     // Check for TODO markers
-    const todoMarkers = ['TODO', 'FIXME', 'TBD', 'PLACEHOLDER', 'XXX', 'HACK'];
-    const foundMarkers: string[] = [];
-
-    todoMarkers.forEach((marker) => {
-      const regex = new RegExp(`\\b${marker}\\b`, 'gi');
-      const matches = content.match(regex);
-      if (matches) {
-        foundMarkers.push(...matches);
-      }
-    });
-
-    if (foundMarkers.length > 0) {
+    const placeholders = countPlaceholders(content, PLACEHOLDER_MARKERS);
+    if (placeholders.count > 0) {
       errors.push(
-        `Found ${foundMarkers.length} TODO/placeholder marker(s): ${foundMarkers.join(', ')}`,
+        `Found ${placeholders.count} TODO/placeholder marker(s): ${placeholders.matches.join(
+          ', ',
+        )}`,
       );
     }
 
@@ -95,7 +89,8 @@ export function validateGeneratorSpec(specPath: string): ValidationResult {
       errors.push(`Missing @nx/devkit helper references: ${missingHelpers.join(', ')}`);
     }
   } catch (error) {
-    errors.push(`Failed to read spec file: ${error}`);
+    const message = error instanceof Error ? error.message : String(error);
+    errors.push(`Failed to read spec file: ${message}`);
   }
 
   return {
@@ -112,9 +107,10 @@ export function validateGeneratorSpec(specPath: string): ValidationResult {
  * @returns Array of code block contents
  */
 export function extractCodeBlocks(content: string, language?: string): string[] {
-  const pattern = language
-    ? new RegExp(`\`\`\`${language}\\n([\\s\\S]*?)\\n\`\`\``, 'g')
-    : /```[\s\S]*?\n([\s\S]*?)\n```/g;
+  const escapedLanguage = language ? escapeRegExp(language) : undefined;
+  const pattern = escapedLanguage
+    ? new RegExp(`\`\`\`${escapedLanguage}(?:[^\r\n]*)?[\r\n]+([\\s\\S]*?)\n?\`\`\``, 'g')
+    : /```(?:[^\r\n]*)?[\r\n]+([\s\S]*?)\n?```/g;
 
   const blocks: string[] = [];
   let match;
@@ -146,17 +142,25 @@ export function checkSections(content: string, sections: string[]): SectionCheck
  * @param content - Text content to check
  * @returns Count of TODO/FIXME/etc markers found
  */
-export function countPlaceholders(content: string): number {
-  const markers = ['TODO', 'FIXME', 'TBD', 'PLACEHOLDER', 'XXX', 'HACK'];
+export function countPlaceholders(
+  content: string,
+  markers: string[] = PLACEHOLDER_MARKERS,
+): { count: number; matches: string[] } {
   let count = 0;
+  const matches: string[] = [];
 
   markers.forEach((marker) => {
     const regex = new RegExp(`\\b${marker}\\b`, 'gi');
-    const matches = content.match(regex);
-    if (matches) {
-      count += matches.length;
+    const markerMatches = content.match(regex);
+    if (markerMatches) {
+      count += markerMatches.length;
+      matches.push(...markerMatches);
     }
   });
 
-  return count;
+  return { count, matches };
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

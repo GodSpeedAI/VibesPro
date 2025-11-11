@@ -38,11 +38,7 @@ def test_log_without_span_graceful_degradation(clean_env):
     configure_logger(service="test-service")
     logger = get_logger(category=LogCategory.APP)
 
-    # No active span - this should not raise exception
-    try:
-        logger.info("log without span")
-    except Exception as e:
-        pytest.fail(f"Logging without span raised exception: {e}")
+    logger.info("log without span")
 
 
 def test_multiple_logger_instances(clean_env):
@@ -71,11 +67,7 @@ def test_logger_with_custom_metadata(clean_env):
     # Verify logger created successfully
     assert logger is not None
 
-    # Verify logging works with custom metadata
-    try:
-        logger.info("test message with metadata")
-    except Exception as e:
-        pytest.fail(f"Logging with custom metadata raised exception: {e}")
+    logger.info("test message with metadata")
 
 
 def test_logger_category_variations(clean_env):
@@ -89,8 +81,4 @@ def test_logger_category_variations(clean_env):
         logger = get_logger(category=category)
         assert logger is not None
 
-        # Verify logging works
-        try:
-            logger.info(f"test message for category {category}")
-        except Exception as e:
-            pytest.fail(f"Logging for category {category} raised exception: {e}")
+        logger.info(f"test message for category {category}")

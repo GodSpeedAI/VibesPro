@@ -48,8 +48,8 @@ def test_configure_logger_otlp_endpoint(clean_env):
     assert os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") == "http://localhost:4318"
 
 
-def test_configure_logger_metadata_binding(clean_env):
-    """Verify environment and version metadata are bound to all log events."""
+def test_default_metadata_reflects_env_overrides(clean_env):
+    """Verify default_metadata reflects environment overrides."""
     os.environ["APP_ENV"] = "staging"
     os.environ["APP_VERSION"] = "v1.2.3"
     os.environ["SERVICE_NAME"] = "test-service"
@@ -63,8 +63,8 @@ def test_configure_logger_metadata_binding(clean_env):
     assert metadata["service"] == "test-service"
 
 
-def test_configure_logger_defaults_when_env_missing(clean_env):
-    """Verify graceful defaults when environment variables are missing."""
+def test_default_metadata_defaults_when_env_missing(clean_env):
+    """Verify default_metadata applies graceful defaults when env vars missing."""
     # Clear all env vars
     for key in ["SERVICE_NAME", "APP_ENV", "APP_VERSION"]:
         if key in os.environ:
@@ -100,6 +100,30 @@ def test_configure_logger_send_to_logfire_false(clean_env):
 
     # Verify logger still configured (local logging works)
     assert logger is not None
+
+    base_logger = getattr(logger, "_logger", None)
+    handler_owner = base_logger if base_logger is not None else logger
+    handler_names = [
+        f"{handler.__module__}.{handler.__class__.__name__}".lower()
+        for handler in getattr(handler_owner, "handlers", []) or []
+    ]
+    assert all("logfire" not in name for name in handler_names), handler_names
+
+    processor_names: list[str] = []
+    processor_sources = [
+        getattr(logger, "processors", None),
+        getattr(logger, "_processors", None),
+        getattr(base_logger, "processors", None) if base_logger else None,
+        getattr(logger, "span_processors", None),
+    ]
+    for source in processor_sources:
+        if isinstance(source, list | tuple):
+            processor_names.extend(
+                f"{proc.__module__}.{proc.__class__.__name__}".lower()
+                for proc in source
+                if proc is not None
+            )
+    assert all("logfire" not in name for name in processor_names), processor_names
 
 
 def test_reset_logfire_state(clean_env):

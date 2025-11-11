@@ -12,6 +12,10 @@ from collections.abc import Generator
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import (
+    InMemorySpanExporter,
+)
 
 
 @pytest.fixture
@@ -52,4 +56,17 @@ def fastapi_app() -> FastAPI:
 @pytest.fixture
 def test_client(fastapi_app: FastAPI) -> TestClient:
     """Create FastAPI test client."""
-    return TestClient(fastapi_app)
+    return TestClient(fastapi_app, raise_server_exceptions=False)
+
+
+@pytest.fixture
+def span_exporter() -> Generator[tuple[InMemorySpanExporter, SimpleSpanProcessor], None, None]:
+    """Provide in-memory span exporter + processor for instrumentation tests."""
+    exporter = InMemorySpanExporter()
+    processor = SimpleSpanProcessor(exporter)
+    try:
+        yield exporter, processor
+    finally:
+        processor.force_flush()
+        processor.shutdown()
+        exporter.clear()

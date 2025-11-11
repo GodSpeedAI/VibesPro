@@ -25,7 +25,7 @@ from libs.python.vibepro_logging import (
 pytestmark = pytest.mark.usefixtures("clean_env")
 
 
-def test_metadata_environment_bound(clean_env):
+def test_metadata_environment_bound():
     """Verify APP_ENV metadata is bound to all log events."""
     os.environ["APP_ENV"] = "staging"
     os.environ["SERVICE_NAME"] = "test-service"
@@ -37,7 +37,7 @@ def test_metadata_environment_bound(clean_env):
     assert metadata["environment"] == "staging"
 
 
-def test_metadata_version_bound(clean_env):
+def test_metadata_version_bound():
     """Verify APP_VERSION metadata is bound to all log events."""
     os.environ["APP_VERSION"] = "v1.2.3"
     os.environ["SERVICE_NAME"] = "test-service"
@@ -49,7 +49,7 @@ def test_metadata_version_bound(clean_env):
     assert metadata["application_version"] == "v1.2.3"
 
 
-def test_metadata_service_name_bound(clean_env):
+def test_metadata_service_name_bound():
     """Verify SERVICE_NAME metadata is bound to all log events."""
     os.environ["SERVICE_NAME"] = "user-api"
     _reset_logfire_state()
@@ -60,7 +60,7 @@ def test_metadata_service_name_bound(clean_env):
     assert metadata["service"] == "user-api"
 
 
-def test_metadata_category_bound(clean_env):
+def test_metadata_category_bound():
     """Verify category metadata is bound correctly."""
     _reset_logfire_state()
     configure_logger(service="test-service")
@@ -80,7 +80,7 @@ def test_metadata_category_bound(clean_env):
     security_logger.info("security message")
 
 
-def test_metadata_custom_fields_bound(clean_env):
+def test_metadata_custom_fields_bound():
     """Verify custom metadata via get_logger(**kwargs) is bound to log events."""
     _reset_logfire_state()
     configure_logger(service="test-service")
@@ -93,7 +93,7 @@ def test_metadata_custom_fields_bound(clean_env):
     logger.info("test message")
 
 
-def test_metadata_persistent_across_log_calls(clean_env):
+def test_metadata_persistent_across_log_calls():
     """Verify metadata persists across multiple log calls from same logger."""
     _reset_logfire_state()
     configure_logger(service="test-service")
@@ -101,11 +101,11 @@ def test_metadata_persistent_across_log_calls(clean_env):
 
     # Multiple log calls should not raise errors
     logger.info("first message")
-    logger.warn("second message")
+    logger.warning("second message")
     logger.error("third message")
 
 
-def test_metadata_isolation_between_loggers(clean_env):
+def test_metadata_isolation_between_loggers():
     """Verify metadata is isolated between different logger instances."""
     _reset_logfire_state()
     configure_logger(service="test-service")
@@ -121,11 +121,12 @@ def test_metadata_isolation_between_loggers(clean_env):
     logger_b.info("message from B")
 
 
-def test_default_metadata_function(clean_env):
+def test_default_metadata_function():
     """Verify default_metadata() returns correct structure."""
     os.environ["SERVICE_NAME"] = "my-service"
     os.environ["APP_ENV"] = "production"
     os.environ["APP_VERSION"] = "v2.0.0"
+    _reset_logfire_state()
 
     metadata = default_metadata("my-service")
 

@@ -45,20 +45,22 @@ jobs:
           python-version: "3.11"
           cache: "pip"
 
-      - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: "0.5.17"
 
       - name: Install Python dependencies
         run: |
-          uv pip install --system -e ".[dev]"
+          uv pip install -e ".[dev]"
 
-      - name: Run mypy strict check
-        run: uv run mypy --strict libs/python
-
-      - name: Check Python type coverage
+      - name: Run mypy strict check with report
         run: |
-          echo "Checking mypy coverage..."
-          uv run mypy --strict --any-exprs-report=mypy-report libs/python || true
+          uv run mypy --strict --any-exprs-report=mypy-report libs/python
+
+      - name: Print mypy coverage summary
+        if: always()
+        run: |
           if [ -f mypy-report/index.txt ]; then
             cat mypy-report/index.txt
           fi

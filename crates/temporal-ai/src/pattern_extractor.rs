@@ -1,11 +1,13 @@
 //! Git commit pattern extraction
 
 use crate::{Result, TemporalAIError};
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use git2::{Commit, DiffOptions, Repository};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use std::collections::HashSet;
+use std::fmt::Write;
 use std::path::{Path, PathBuf};
 
 /// Extracted pattern from Git commit history
@@ -33,13 +35,15 @@ pub struct Pattern {
 impl Pattern {
     /// Generate unique ID from content
     fn generate_id(commit_sha: &str, description: &str) -> String {
-        use std::collections::hash_map::DefaultHasher;
-        use std::hash::{Hash, Hasher};
-
-        let mut hasher = DefaultHasher::new();
-        commit_sha.hash(&mut hasher);
-        description.hash(&mut hasher);
-        format!("{:x}", hasher.finish())
+        let mut hasher = Sha256::new();
+        hasher.update(commit_sha.as_bytes());
+        hasher.update(description.as_bytes());
+        let digest = hasher.finalize();
+        let mut id = String::with_capacity(digest.len() * 2);
+        for byte in digest {
+            write!(&mut id, "{:02x}", byte).expect("write to string");
+        }
+        id
     }
 }
 
@@ -56,8 +60,9 @@ impl PatternExtractor {
 
         // Conventional commits: type(scope)?: subject
         let conventional_commit_re = Regex::new(
-            r"^(feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\([^)]+\))?: (.+)$"
-        ).unwrap();
+            r"^(feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\([^)]+\))?: (.+)$",
+        )
+        .unwrap();
 
         Ok(Self {
             repo,
@@ -72,11 +77,10 @@ impl PatternExtractor {
 
         let mut patterns = Vec::new();
 
-        for (i, oid) in revwalk.enumerate() {
-            if i >= count {
+        for oid in revwalk {
+            if patterns.len() >= count {
                 break;
             }
-
             let oid = oid?;
             let commit = self.repo.find_commit(oid)?;
 
@@ -99,11 +103,12 @@ impl PatternExtractor {
         revwalk.push_head()?;
 
         let mut patterns = Vec::new();
-        let glob_pattern = glob::Pattern::new(glob)
-            .map_err(|e| TemporalAIError::IoError(std::io::Error::new(
+        let glob_pattern = glob::Pattern::new(glob).map_err(|e| {
+            TemporalAIError::IoError(std::io::Error::new(
                 std::io::ErrorKind::InvalidInput,
-                e.to_string()
-            )))?;
+                e.to_string(),
+            ))
+        })?;
 
         for oid in revwalk {
             let oid = oid?;
@@ -137,7 +142,11 @@ impl PatternExtractor {
 
             let commit_time = commit.time().seconds();
 
-            if commit_time < since || commit_time > until {
+            if commit_time < since {
+                break;
+            }
+
+            if commit_time > until {
                 continue;
             }
 
@@ -228,9 +237,11 @@ impl PatternExtractor {
 
         let mut diff_opts = DiffOptions::new();
         let diff = if let Some(parent) = parent_tree {
-            self.repo.diff_tree_to_tree(Some(&parent), Some(&tree), Some(&mut diff_opts))?
+            self.repo
+                .diff_tree_to_tree(Some(&parent), Some(&tree), Some(&mut diff_opts))?
         } else {
-            self.repo.diff_tree_to_tree(None, Some(&tree), Some(&mut diff_opts))?
+            self.repo
+                .diff_tree_to_tree(None, Some(&tree), Some(&mut diff_opts))?
         };
 
         diff.foreach(
@@ -274,7 +285,7 @@ impl PatternExtractor {
             if path.contains("react") || path.ends_with(".jsx") || path.ends_with(".tsx") {
                 tags.insert("react".to_string());
             }
-            if path.contains("fastapi") || path.contains("api") && path.ends_with(".py") {
+            if path.contains("fastapi") || (path.contains("api") && path.ends_with(".py")) {
                 tags.insert("fastapi".to_string());
             }
         }
@@ -292,8 +303,9 @@ mod tests {
         let extractor = PatternExtractor {
             repo: unsafe { std::mem::zeroed() }, // Not used in this test
             conventional_commit_re: Regex::new(
-                r"^(feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\([^)]+\))?: (.+)$"
-            ).unwrap(),
+                r"^(feat|fix|docs|style|refactor|perf|test|chore|build|ci)(\([^)]+\))?: (.+)$",
+            )
+            .unwrap(),
         };
 
         let (typ, desc) = extractor.parse_commit_message("feat(auth): add JWT validation");

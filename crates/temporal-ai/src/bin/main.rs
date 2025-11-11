@@ -2,7 +2,9 @@
 
 use anyhow::{Context, Result};
 use std::path::PathBuf;
-use temporal_ai::{Embedder, PatternExtractor, RecommendationRanker, SimilaritySearch, VectorStore};
+use temporal_ai::{
+    Embedder, PatternExtractor, RecommendationRanker, SimilaritySearch, VectorStore,
+};
 
 #[derive(Debug)]
 enum Command {
@@ -97,24 +99,24 @@ fn main() -> Result<()> {
             let model_path = get_model_path();
             if !model_path.exists() {
                 anyhow::bail!(
-                    "Model not found: {}\n\nDownload it from:\n  https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embedding-gemma-300M-Q4_K_M.gguf",
+                    "Model not found: {}\n\nDownload it from:\n  https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embeddinggemma-300M-Q8_0.gguf",
                     model_path.display()
                 );
             }
 
-            let embedder = Embedder::from_gguf(&model_path)
-                .context("Failed to load embedding model")?;
+            let embedder =
+                Embedder::from_gguf(&model_path).context("Failed to load embedding model")?;
             println!("✓ Model loaded");
 
             println!("Opening database...");
-            let store = VectorStore::open(&get_db_path())
-                .context("Failed to open database")?;
+            let store = VectorStore::open(&get_db_path()).context("Failed to open database")?;
             println!("✓ Database opened");
 
             println!("Extracting patterns from last {} commits...", commits);
-            let extractor = PatternExtractor::new(get_repo_path())
-                .context("Failed to open Git repository")?;
-            let patterns = extractor.extract_recent(commits)
+            let extractor =
+                PatternExtractor::new(get_repo_path()).context("Failed to open Git repository")?;
+            let patterns = extractor
+                .extract_recent(commits)
                 .context("Failed to extract patterns")?;
 
             println!("✓ Extracted {} patterns", patterns.len());
@@ -170,7 +172,12 @@ fn main() -> Result<()> {
 
             println!("\n=== Top {} Recommendations ===\n", top);
             for (i, rec) in recommendations.iter().take(top).enumerate() {
-                println!("{}. [Score: {:.3}] {}", i + 1, rec.final_score, rec.explanation);
+                println!(
+                    "{}. [Score: {:.3}] {}",
+                    i + 1,
+                    rec.final_score,
+                    rec.explanation
+                );
                 println!("   Files: {}", rec.pattern.file_paths.join(", "));
                 println!("   Commit: {}\n", rec.pattern.commit_sha);
             }
@@ -184,7 +191,8 @@ fn main() -> Result<()> {
 
             println!("=== Temporal AI Database Statistics ===\n");
             println!("Total patterns: {}", patterns.len());
-            println!("Database size: {} bytes ({:.2} MB)",
+            println!(
+                "Database size: {} bytes ({:.2} MB)",
                 store.size()?,
                 store.size()? as f64 / 1_000_000.0
             );

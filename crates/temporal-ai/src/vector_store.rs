@@ -1,9 +1,12 @@
 //! Vector storage using redb embedded database
 
 use crate::pattern_extractor::Pattern;
-use crate::schema::{EmbeddingRecord, PerformanceMetrics, EMBEDDINGS, FILE_PATH_INDEX, METADATA, METRICS, TAG_INDEX};
+use crate::schema::{
+    EmbeddingRecord, PerformanceMetrics, EMBEDDINGS, FILE_PATH_INDEX, METADATA, METRICS, TAG_INDEX,
+};
 use crate::{Result, TemporalAIError};
-use redb::{Database, ReadableTable, TableDefinition};
+use redb::{Database, ReadableTable, Table, TableDefinition};
+use std::collections::HashSet;
 use std::path::Path;
 
 /// Vector store for embeddings and metadata
@@ -61,41 +64,17 @@ impl VectorStore {
             // Update file path index
             let mut file_path_index = write_txn.open_table(FILE_PATH_INDEX)?;
             for file_path in &pattern.file_paths {
-                let mut pattern_ids: Vec<String> = {
-                    let existing = file_path_index.get(file_path.as_str())?;
-                    if let Some(val) = existing {
-                        serde_json::from_str(val.value())?
-                    } else {
-                        Vec::new()
-                    }
-                }; // existing is dropped here
-
-                if !pattern_ids.contains(&pattern.id) {
-                    pattern_ids.push(pattern.id.clone());
-                }
-
-                let updated = serde_json::to_string(&pattern_ids)?;
-                file_path_index.insert(file_path.as_str(), updated.as_str())?;
+                Self::update_index_entry(
+                    &mut file_path_index,
+                    file_path.as_str(),
+                    pattern.id.as_str(),
+                )?;
             }
 
             // Update tag index
             let mut tag_index = write_txn.open_table(TAG_INDEX)?;
             for tag in &pattern.tags {
-                let mut pattern_ids: Vec<String> = {
-                    let existing = tag_index.get(tag.as_str())?;
-                    if let Some(val) = existing {
-                        serde_json::from_str(val.value())?
-                    } else {
-                        Vec::new()
-                    }
-                }; // existing is dropped here
-
-                if !pattern_ids.contains(&pattern.id) {
-                    pattern_ids.push(pattern.id.clone());
-                }
-
-                let updated = serde_json::to_string(&pattern_ids)?;
-                tag_index.insert(tag.as_str(), updated.as_str())?;
+                Self::update_index_entry(&mut tag_index, tag.as_str(), pattern.id.as_str())?;
             }
         }
 
@@ -141,6 +120,30 @@ impl VectorStore {
         } else {
             Ok(None)
         }
+    }
+    /// Fetch embedding and metadata together
+    pub fn get_embedding_and_pattern(
+        &self,
+        pattern_id: &str,
+    ) -> Result<Option<(Vec<f32>, Pattern)>> {
+        let read_txn = self.db.begin_read()?;
+        let embeddings = read_txn.open_table(EMBEDDINGS)?;
+        let metadata = read_txn.open_table(METADATA)?;
+
+        let embedding_bytes = match embeddings.get(pattern_id)? {
+            Some(bytes) => bytes,
+            None => return Ok(None),
+        };
+
+        let pattern_json = match metadata.get(pattern_id)? {
+            Some(json) => json,
+            None => return Ok(None),
+        };
+
+        let record: EmbeddingRecord = rmp_serde::from_slice(embedding_bytes.value())?;
+        let pattern: Pattern = serde_json::from_str(pattern_json.value())?;
+
+        Ok(Some((record.vector, pattern)))
     }
 
     /// Get all pattern IDs (for full scan)
@@ -200,6 +203,29 @@ impl VectorStore {
         Ok(())
     }
 
+    fn update_index_entry(
+        table: &mut Table<&str, &str>,
+        key: &str,
+        pattern_id: &str,
+    ) -> Result<()> {
+        let existing = table.get(key)?;
+        let mut ids: HashSet<String> = if let Some(value) = existing {
+            serde_json::from_str(value.value())?
+        } else {
+            HashSet::new()
+        };
+
+        let inserted = ids.insert(pattern_id.to_string());
+        if inserted || existing.is_none() {
+            let mut sorted: Vec<_> = ids.into_iter().collect();
+            sorted.sort();
+            let updated = serde_json::to_string(&sorted)?;
+            table.insert(key, updated.as_str())?;
+        }
+
+        Ok(())
+    }
+
     /// Batch insert for efficiency
     pub fn insert_batch(&self, records: &[(Pattern, Vec<f32>)]) -> Result<()> {
         let write_txn = self.db.begin_write()?;
@@ -225,39 +251,15 @@ impl VectorStore {
 
                 // Update indexes
                 for file_path in &pattern.file_paths {
-                    let mut pattern_ids: Vec<String> = {
-                        let existing = file_path_index.get(file_path.as_str())?;
-                        if let Some(val) = existing {
-                            serde_json::from_str(val.value())?
-                        } else {
-                            Vec::new()
-                        }
-                    };
-
-                    if !pattern_ids.contains(&pattern.id) {
-                        pattern_ids.push(pattern.id.clone());
-                    }
-
-                    let updated = serde_json::to_string(&pattern_ids)?;
-                    file_path_index.insert(file_path.as_str(), updated.as_str())?;
+                    Self::update_index_entry(
+                        &mut file_path_index,
+                        file_path.as_str(),
+                        pattern.id.as_str(),
+                    )?;
                 }
 
                 for tag in &pattern.tags {
-                    let mut pattern_ids: Vec<String> = {
-                        let existing = tag_index.get(tag.as_str())?;
-                        if let Some(val) = existing {
-                            serde_json::from_str(val.value())?
-                        } else {
-                            Vec::new()
-                        }
-                    };
-
-                    if !pattern_ids.contains(&pattern.id) {
-                        pattern_ids.push(pattern.id.clone());
-                    }
-
-                    let updated = serde_json::to_string(&pattern_ids)?;
-                    tag_index.insert(tag.as_str(), updated.as_str())?;
+                    Self::update_index_entry(&mut tag_index, tag.as_str(), pattern.id.as_str())?;
                 }
             }
         }
@@ -359,6 +361,56 @@ mod tests {
         let rust_patterns = store.find_by_tag("rust")?;
         assert_eq!(rust_patterns.len(), 1);
         assert_eq!(rust_patterns[0], pattern.id);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_find_by_file_path_index() -> Result<()> {
+        let dir = tempdir()?;
+        let db_path = dir.path().join("test.redb");
+        let store = VectorStore::open(&db_path)?;
+
+        let mut pattern = create_test_pattern();
+        pattern.id = "file-path-pattern".to_string();
+        pattern.file_paths = vec!["src/lib.rs".to_string()];
+        store.insert(&pattern, vec![0.1; 768])?;
+
+        let matches = store.find_by_file_path("src/lib.rs")?;
+        assert_eq!(matches, vec![pattern.id]);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_insert_batch_persists_records() -> Result<()> {
+        let dir = tempdir()?;
+        let db_path = dir.path().join("test.redb");
+        let store = VectorStore::open(&db_path)?;
+
+        let mut pattern1 = create_test_pattern();
+        pattern1.id = "batch-1".to_string();
+        pattern1.file_paths = vec!["src/one.rs".to_string()];
+
+        let mut pattern2 = create_test_pattern();
+        pattern2.id = "batch-2".to_string();
+        pattern2.file_paths = vec!["src/two.rs".to_string()];
+        pattern2.commit_sha = "def456".to_string();
+
+        let records = vec![
+            (pattern1.clone(), vec![0.1; 768]),
+            (pattern2.clone(), vec![0.2; 768]),
+        ];
+
+        store.insert_batch(&records)?;
+
+        let patterns = store.list_patterns()?;
+        assert_eq!(patterns.len(), 2);
+        assert!(patterns.contains(&pattern1.id));
+        assert!(patterns.contains(&pattern2.id));
+
+        let file_matches = store.find_by_file_path("src/two.rs")?;
+        assert_eq!(file_matches, vec![pattern2.id]);
 
         Ok(())
     }
