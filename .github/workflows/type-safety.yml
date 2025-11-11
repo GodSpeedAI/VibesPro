@@ -45,18 +45,14 @@ jobs:
           python-version: "3.11"
           cache: "pip"
 
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v2
-        with:
-          version: "0.5.17"
-
       - name: Install Python dependencies
         run: |
-          uv pip install -e ".[dev]"
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
 
       - name: Run mypy strict check with report
         run: |
-          uv run mypy --strict --any-exprs-report=mypy-report libs/python
+          python -m mypy --strict --any-exprs-report=mypy-report libs/python
 
       - name: Print mypy coverage summary
         if: always()
