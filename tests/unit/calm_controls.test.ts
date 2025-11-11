@@ -1,4 +1,4 @@
-const { runCalmControls } = require('../../tools/calm/controls_runner');
+import { runCalmControls } from '../../tools/calm/controls_runner';
 
 describe('CALM Controls Tests', () => {
   it('should run calm controls and return valid result', () => {

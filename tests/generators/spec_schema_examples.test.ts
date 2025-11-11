@@ -39,7 +39,7 @@ describe('Generator Spec Schema Examples', () => {
     const schemaBlocks = jsonBlocks.filter((block) => {
       try {
         const parsed = JSON.parse(block);
-        return Boolean(parsed.$schema || parsed.type || parsed.properties);
+        return Boolean(parsed.$schema ?? parsed.type ?? parsed.properties);
       } catch {
         return false;
       }

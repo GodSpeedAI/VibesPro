@@ -33,7 +33,7 @@ describe('Justfile Recipes', () => {
           .filter((line) => line.trim() && !line.startsWith('Available recipes:'))
           .map((line) => line.trim().split(/\s+/)[0])
           .filter((r): r is string => r !== undefined);
-      } catch (error) {
+      } catch {
         recipes = [];
       }
     });
@@ -85,7 +85,7 @@ describe('Justfile Recipes', () => {
           .filter((line) => line.trim() && !line.startsWith('Available recipes:'))
           .map((line) => line.trim().split(/\s+/)[0])
           .filter((r): r is string => r !== undefined);
-      } catch (error) {
+      } catch {
         recipes = [];
       }
     });

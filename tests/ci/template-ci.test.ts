@@ -9,6 +9,24 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
 
+interface WorkflowStep {
+  name?: string;
+  run?: string;
+  uses?: string;
+  with?: Record<string, string>;
+}
+
+interface WorkflowJob {
+  steps?: WorkflowStep[];
+}
+
+interface WorkflowContent {
+  jobs?: Record<string, WorkflowJob>;
+  permissions?: {
+    contents?: string;
+  };
+}
+
 const TEMPLATE_WORKFLOWS_DIR = join(
   __dirname,
   '../../templates/{{project_slug}}/.github/workflows',
@@ -33,22 +51,24 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
   });
 
   describe('Spec Guard Workflow Steps', () => {
-    let workflowContent: any;
+    let workflowContent: WorkflowContent;
 
     beforeAll(() => {
       const workflowPath = join(TEMPLATE_WORKFLOWS_DIR, 'spec-guard.yml');
       const content = readFileSync(workflowPath, 'utf-8');
-      workflowContent = parse(content);
+      workflowContent = parse(content) as WorkflowContent;
     });
 
     it('should run just test-generation command', () => {
       const ciJob = workflowContent.jobs?.ci;
-      expect(ciJob).toBeDefined();
+      if (!ciJob) {
+        throw new Error('ci job not found');
+      }
 
-      const steps = ciJob.steps || [];
+      const steps = ciJob.steps ?? [];
       const testGenStep = steps.find(
-        (step: any) =>
-          step.run?.includes('just test-generation') ||
+        (step: WorkflowStep) =>
+          step.run?.includes('just test-generation') ??
           step.name?.toLowerCase().includes('test generation'),
       );
 
@@ -57,13 +77,15 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
 
     it('should run pnpm prompt:lint command', () => {
       const ciJob = workflowContent.jobs?.ci;
-      expect(ciJob).toBeDefined();
+      if (!ciJob) {
+        throw new Error('ci job not found');
+      }
 
-      const steps = ciJob.steps || [];
+      const steps = ciJob.steps ?? [];
       const promptLintStep = steps.find(
-        (step: any) =>
-          step.run?.includes('pnpm prompt:lint') ||
-          step.run?.includes('just prompt-lint') ||
+        (step: WorkflowStep) =>
+          step.run?.includes('pnpm prompt:lint') ??
+          step.run?.includes('just prompt-lint') ??
           step.name?.toLowerCase().includes('lint prompt'),
       );
 
@@ -72,13 +94,15 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
 
     it('should run pnpm spec:matrix command', () => {
       const ciJob = workflowContent.jobs?.ci;
-      expect(ciJob).toBeDefined();
+      if (!ciJob) {
+        throw new Error('ci job not found');
+      }
 
-      const steps = ciJob.steps || [];
+      const steps = ciJob.steps ?? [];
       const specMatrixStep = steps.find(
-        (step: any) =>
-          step.run?.includes('pnpm spec:matrix') ||
-          step.run?.includes('just spec-matrix') ||
+        (step: WorkflowStep) =>
+          step.run?.includes('pnpm spec:matrix') ??
+          step.run?.includes('just spec-matrix') ??
           step.name?.toLowerCase().includes('traceability matrix'),
       );
 
@@ -87,46 +111,54 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
   });
 
   describe('Caching Configuration', () => {
-    let specGuardWorkflow: any;
-    let nodeTestsWorkflow: any;
+    let specGuardWorkflow: WorkflowContent;
+    let nodeTestsWorkflow: WorkflowContent;
 
     beforeAll(() => {
       const specGuardPath = join(TEMPLATE_WORKFLOWS_DIR, 'spec-guard.yml');
       const nodeTestsPath = join(TEMPLATE_WORKFLOWS_DIR, 'node-tests.yml');
 
-      specGuardWorkflow = parse(readFileSync(specGuardPath, 'utf-8'));
-      nodeTestsWorkflow = parse(readFileSync(nodeTestsPath, 'utf-8'));
+      specGuardWorkflow = parse(readFileSync(specGuardPath, 'utf-8')) as WorkflowContent;
+      nodeTestsWorkflow = parse(readFileSync(nodeTestsPath, 'utf-8')) as WorkflowContent;
     });
 
     it('should use setup-node-pnpm composite action in spec-guard workflow', () => {
       const ciJob = specGuardWorkflow.jobs?.ci;
-      expect(ciJob).toBeDefined();
+      if (!ciJob) {
+        throw new Error('ci job not found');
+      }
 
       const setupStep = ciJob.steps?.find(
-        (step: any) =>
-          step.uses?.includes('setup-node-pnpm') || step.name?.toLowerCase().includes('setup node'),
+        (step: WorkflowStep) =>
+          step.uses?.includes('setup-node-pnpm') ?? step.name?.toLowerCase().includes('setup node'),
       );
 
       expect(setupStep).toBeDefined();
-      expect(setupStep.uses || setupStep.with).toBeDefined();
+      if (setupStep) {
+        expect(setupStep.uses ?? setupStep.with).toBeDefined();
+      }
     });
 
     it('should use setup-node-pnpm composite action in node-tests workflow', () => {
       const testJob = nodeTestsWorkflow.jobs?.test;
-      expect(testJob).toBeDefined();
+      if (!testJob) {
+        throw new Error('test job not found');
+      }
 
       const setupStep = testJob.steps?.find(
-        (step: any) =>
-          step.uses?.includes('setup-node-pnpm') || step.name?.toLowerCase().includes('setup node'),
+        (step: WorkflowStep) =>
+          step.uses?.includes('setup-node-pnpm') ?? step.name?.toLowerCase().includes('setup node'),
       );
 
       expect(setupStep).toBeDefined();
-      expect(setupStep.uses || setupStep.with).toBeDefined();
+      if (setupStep) {
+        expect(setupStep.uses ?? setupStep.with).toBeDefined();
+      }
     });
   });
 
   describe('Environment Variable Documentation', () => {
-    let specGuardWorkflow: any;
+    let specGuardWorkflow: string;
 
     beforeAll(() => {
       const workflowPath = join(TEMPLATE_WORKFLOWS_DIR, 'spec-guard.yml');
@@ -137,9 +169,9 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
     it('should document environment variables in workflow comments', () => {
       // Check for comments documenting key environment variables or workflow purpose
       const hasComments =
-        specGuardWorkflow.includes('# Environment') ||
-        specGuardWorkflow.includes('# Spec Guard') ||
-        specGuardWorkflow.includes('# CI') ||
+        specGuardWorkflow.includes('# Environment') ??
+        specGuardWorkflow.includes('# Spec Guard') ??
+        specGuardWorkflow.includes('# CI') ??
         specGuardWorkflow.includes('# Automation');
 
       expect(hasComments).toBe(true);
@@ -147,7 +179,7 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
   });
 
   describe('Node.js Version Consistency', () => {
-    let workflows: { name: string; content: any }[];
+    let workflows: { name: string; content: WorkflowContent }[];
 
     beforeAll(() => {
       const workflowFiles = ['spec-guard.yml', 'node-tests.yml', 'markdownlint.yml'];
@@ -160,9 +192,9 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
 
     it('should use Node.js 20.x consistently across workflows', () => {
       workflows.forEach(({ name: _name, content }) => {
-        const jobs = content.jobs || {};
-        Object.entries(jobs).forEach(([_jobName, job]: [string, any]) => {
-          const setupNodeStep = job.steps?.find((step: any) => step.uses?.includes('setup-node'));
+        const jobs = content.jobs ?? {};
+        Object.entries(jobs).forEach(([_jobName, job]: [string, WorkflowJob]) => {
+          const setupNodeStep = job.steps?.find((step) => step.uses?.includes('setup-node'));
 
           if (setupNodeStep) {
             const nodeVersion = setupNodeStep.with?.['node-version'];
@@ -174,14 +206,17 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
   });
 
   describe('Permissions Configuration', () => {
-    let nodeTestsWorkflow: any;
+    let nodeTestsWorkflow: WorkflowContent;
 
     beforeAll(() => {
       const workflowPath = join(TEMPLATE_WORKFLOWS_DIR, 'node-tests.yml');
-      nodeTestsWorkflow = parse(readFileSync(workflowPath, 'utf-8'));
+      nodeTestsWorkflow = parse(readFileSync(workflowPath, 'utf-8')) as WorkflowContent;
     });
 
     it('should have explicit permissions set', () => {
+      if (!nodeTestsWorkflow.permissions) {
+        throw new Error('Permissions not found');
+      }
       expect(nodeTestsWorkflow.permissions).toBeDefined();
       expect(nodeTestsWorkflow.permissions.contents).toBe('read');
     });

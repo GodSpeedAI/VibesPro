@@ -31,7 +31,7 @@ jobs:
         run: pnpm exec tsc --noEmit --project tsconfig.json
 
       - name: Run ESLint with Type Checking
-        run: pnpm exec eslint tools tests --ext .ts || true
+        run: pnpm exec eslint tools tests --ext .ts --max-warnings 0
 
   python-type-check:
     name: Python Type Check (mypy)

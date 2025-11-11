@@ -67,7 +67,7 @@ export function validateGeneratorSpec(specPath: string): ValidationResult {
 
     // Check for code examples
     const codeBlockRegex = /```[\s\S]*?```/g;
-    const codeBlocks = content.match(codeBlockRegex) || [];
+    const codeBlocks = content.match(codeBlockRegex) ?? [];
 
     if (codeBlocks.length < 10) {
       errors.push(
