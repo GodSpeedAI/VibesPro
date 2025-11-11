@@ -71,6 +71,7 @@ module.exports = (() => {
         'test-output/**',
         '**/*.js',
         '**/*.d.ts',
+        'apps/*/pages/_app.tsx',
       ],
     },
 

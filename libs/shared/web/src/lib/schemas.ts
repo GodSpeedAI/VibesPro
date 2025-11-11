@@ -35,7 +35,16 @@ export const PaginationSchema = z.object({
 export type Pagination = z.infer<typeof PaginationSchema>;
 
 // API response wrapper
-export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
+export const ApiResponseSchema = <T extends z.ZodTypeAny>(
+  dataSchema: T,
+): z.ZodObject<{
+  data: T;
+  meta: z.ZodOptional<
+    z.ZodObject<{
+      pagination: z.ZodOptional<typeof PaginationSchema>;
+    }>
+  >;
+}> =>
   z.object({
     data: dataSchema,
     meta: z

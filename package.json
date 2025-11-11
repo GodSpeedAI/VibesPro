@@ -80,6 +80,9 @@
   "pnpm": {
     "overrides": {
       "esbuild@<=0.24.2": "^0.25.0"
+    },
+    "patchedDependencies": {
+      "nx@22.0.2": "patches/nx@22.0.2.patch"
     }
   },
   "dependencies": {

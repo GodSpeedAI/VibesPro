@@ -14,7 +14,9 @@
     "noEmit": true,
     "paths": {
       "@/*": ["./*"],
-      "@shared/web": ["libs/shared/web/src/index.ts"]
+      "@shared/web": ["libs/shared/web/src/index.ts"],
+      "nx/src/native/index": ["types/nx-fixes/native-index.d.ts"],
+      "nx/src/project-graph/error-types": ["types/nx-fixes/project-graph-error-types.d.ts"]
     },
     "strict": true,
     "noUncheckedIndexedAccess": true,
@@ -26,6 +28,16 @@
     "noPropertyAccessFromIndexSignature": false,
     "exactOptionalPropertyTypes": false
   },
-  "include": ["tools/**/*.ts", "tests/**/*.ts", "generators/**/*.ts", "jest.d.ts"],
+  "include": [
+    "tools/**/*.ts",
+    "tests/**/*.ts",
+    "generators/**/*.ts",
+    "types/**/*.d.ts",
+    "jest.d.ts",
+    "libs/**/*.ts",
+    "libs/**/*.tsx",
+    "apps/**/*.ts",
+    "apps/**/*.tsx"
+  ],
   "exclude": ["node_modules", "dist", "coverage", "tmp", "tools/reference/**/*", ".nx"]
 }

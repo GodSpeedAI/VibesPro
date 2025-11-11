@@ -33,12 +33,12 @@ export class ApiClient {
   private onError?: (error: ApiError) => void;
 
   constructor(config: ApiClientConfig = {}) {
-    this.baseUrl = config.baseUrl || '';
+    this.baseUrl = config.baseUrl ?? '';
     this.defaultHeaders = {
       'Content-Type': 'application/json',
       ...config.headers,
     };
-    this.timeout = config.timeout || 30000;
+    this.timeout = config.timeout ?? 30000;
     this.onError = config.onError;
   }
 
@@ -76,7 +76,7 @@ export class ApiClient {
 
     const headers = {
       ...this.defaultHeaders,
-      ...(options?.headers || {}),
+      ...(options?.headers ?? {}),
     };
 
     const controller = new AbortController();

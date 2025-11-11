@@ -11,7 +11,8 @@
 
 import { readFileSync } from 'fs';
 import { glob } from 'glob';
-import { join } from 'path';
+// join is imported but may not be used in all test paths
+// import { join } from 'path';
 
 describe('Generator Spec Completeness', () => {
   const specPattern = 'templates/{{project_slug}}/docs/specs/generators/*.md';
@@ -103,7 +104,9 @@ describe('Generator Spec Completeness', () => {
     const rowRegex = /\|\s*([a-zA-Z]+)\s*\|/g;
     let match: RegExpExecArray | null;
     while ((match = rowRegex.exec(matrixSection)) !== null) {
-      discoveredTypes.add(match[1].toLowerCase());
+      if (match[1]) {
+        discoveredTypes.add(match[1].toLowerCase());
+      }
     }
 
     const missingTypes = requiredTypes.filter((type) => !discoveredTypes.has(type));

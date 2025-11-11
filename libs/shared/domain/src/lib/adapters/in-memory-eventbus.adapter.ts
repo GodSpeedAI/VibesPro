@@ -37,11 +37,11 @@ export class InMemoryEventBus implements EventBus<unknown> {
   subscribe(event: EventDescriptor, handler: EventHandler<unknown>): void {
     const eventName = this.getEventName(event);
 
-    if (!this.handlers.has(eventName)) {
-      this.handlers.set(eventName, []);
+    let eventHandlers = this.handlers.get(eventName);
+    if (!eventHandlers) {
+      eventHandlers = [];
+      this.handlers.set(eventName, eventHandlers);
     }
-
-    const eventHandlers = this.handlers.get(eventName)!;
     if (eventHandlers.includes(handler)) {
       return;
     }

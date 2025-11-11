@@ -159,9 +159,9 @@ describe('TASK-011: Template CI Pipeline Validation', () => {
     });
 
     it('should use Node.js 20.x consistently across workflows', () => {
-      workflows.forEach(({ name, content }) => {
+      workflows.forEach(({ name: _name, content }) => {
         const jobs = content.jobs || {};
-        Object.entries(jobs).forEach(([jobName, job]: [string, any]) => {
+        Object.entries(jobs).forEach(([_jobName, job]: [string, any]) => {
           const setupNodeStep = job.steps?.find((step: any) => step.uses?.includes('setup-node'));
 
           if (setupNodeStep) {
