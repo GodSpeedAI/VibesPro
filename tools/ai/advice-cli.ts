@@ -439,7 +439,7 @@ async function main(): Promise<void> {
 
     // Validate that recommendation IDs exist before recording feedback
     if (options.acceptId || options.dismissId) {
-      const feedbackId = options.acceptId || options.dismissId;
+      const feedbackId = options.acceptId ?? options.dismissId;
       const exists = mergedRecommendations.some((r) => r.id === feedbackId);
       if (!exists) {
         console.error(`Error: Recommendation ID "${feedbackId}" not found.`);

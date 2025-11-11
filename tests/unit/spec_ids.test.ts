@@ -1,4 +1,4 @@
-const ids = require('../../tools/spec/ids');
+import * as ids from '../../tools/spec/ids';
 
 describe('Spec IDs Tests', () => {
   it('should extract IDs from text', () => {

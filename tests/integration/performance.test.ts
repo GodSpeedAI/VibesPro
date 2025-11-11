@@ -60,7 +60,7 @@ describe('Performance Integration', () => {
         cwd: projectPath,
         stdio: 'pipe',
       });
-    } catch (error) {
+    } catch {
       // Some builds might fail due to missing dependencies in test environment
       // This is acceptable for performance measurement
       console.warn('Build failed in test environment, but timing was measured');

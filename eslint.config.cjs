@@ -69,9 +69,12 @@ module.exports = (() => {
         '.nx/**',
         'tmp/**',
         'test-output/**',
+        'tools/reference/**',
         '**/*.js',
         '**/*.d.ts',
+        '**/*.sh',
         'apps/*/pages/_app.tsx',
+        'tools/test/node-smoke.cjs',
       ],
     },
 
@@ -125,6 +128,7 @@ module.exports = (() => {
         '@typescript-eslint/no-non-null-assertion': 'warn',
         '@typescript-eslint/prefer-nullish-coalescing': 'warn',
         '@typescript-eslint/prefer-optional-chain': 'warn',
+        '@typescript-eslint/no-require-imports': 'error',
 
         // Code quality
         'no-unused-vars': 'off',
@@ -136,6 +140,9 @@ module.exports = (() => {
     {
       files: ['**/*.cjs'],
       languageOptions: { sourceType: 'script' },
+      rules: {
+        '@typescript-eslint/no-require-imports': 'off',
+      },
     },
 
     // Tests - relax some rules

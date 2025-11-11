@@ -129,7 +129,7 @@ describe('Schema to Types Parity', () => {
       expect(expected).toBeDefined();
 
       // Use semantic comparison instead of exact string equality
-      const normalizedExpected = normalizeTypeString(expected?.type || '');
+      const normalizedExpected = normalizeTypeString(expected?.type ?? '');
       const normalizedActual = normalizeTypeString(actual.type);
 
       expect(normalizedActual).toBe(normalizedExpected);
