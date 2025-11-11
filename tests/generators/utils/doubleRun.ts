@@ -38,7 +38,7 @@ export function snapshotWorkspace(tree: Tree): Record<string, string> {
     }
     result[change.path] = crypto
       .createHash('sha1')
-      .update(change.content || '')
+      .update(change.content ?? '')
       .digest('hex');
   }
   return result;

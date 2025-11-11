@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "jest"],
-    "allowJs": false,
+    "allowJs": true,
     "noEmit": true,
     "paths": {
       "@/*": ["./*"],
@@ -35,6 +35,7 @@
     "generators/**/*.ts",
     "types/**/*.d.ts",
     "jest.d.ts",
+    "tools/**/*.d.ts",
     "libs/**/*.ts",
     "libs/**/*.tsx",
     "apps/**/*.ts",

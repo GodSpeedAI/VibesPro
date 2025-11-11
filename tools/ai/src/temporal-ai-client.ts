@@ -21,6 +21,7 @@ const PatternSchema = z.object({
   tags: z.array(z.string()),
 });
 
+export type Pattern = z.infer<typeof PatternSchema>;
 const RecommendationSchema = z.object({
   pattern: PatternSchema,
   similarityScore: z.number(),
@@ -29,8 +30,6 @@ const RecommendationSchema = z.object({
   finalScore: z.number(),
   explanation: z.string(),
 });
-
-export type Pattern = z.infer<typeof PatternSchema>;
 export type Recommendation = z.infer<typeof RecommendationSchema>;
 
 export interface TemporalAIOptions {
@@ -47,7 +46,7 @@ export class TemporalAIClient {
   private binaryPath: string;
 
   constructor(options: TemporalAIOptions = {}) {
-    this.binaryPath = options.binaryPath || 'crates/temporal-ai/target/release/temporal-ai';
+    this.binaryPath = options.binaryPath ?? 'crates/temporal-ai/target/release/temporal-ai';
   }
 
   /**
@@ -137,7 +136,10 @@ export class TemporalAIClient {
       if (scoreMatch) {
         if (currentRec) {
           // Save previous recommendation
-          recommendations.push(currentRec as Recommendation);
+          const parsed = RecommendationSchema.safeParse(currentRec);
+          if (parsed.success) {
+            recommendations.push(parsed.data);
+          }
         }
 
         const [, scoreStr, commitSha, tags, description] = scoreMatch;
@@ -176,7 +178,10 @@ export class TemporalAIClient {
     }
 
     if (currentRec) {
-      recommendations.push(currentRec as Recommendation);
+      const parsed = RecommendationSchema.safeParse(currentRec);
+      if (parsed.success) {
+        recommendations.push(parsed.data);
+      }
     }
 
     return recommendations;

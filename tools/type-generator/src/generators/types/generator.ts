@@ -27,7 +27,7 @@ export function mapPostgresToTypeScript(
     bytea: 'string',
   };
 
-  let baseType = typeMap[postgresType.toLowerCase()] || 'unknown';
+  let baseType = typeMap[postgresType.toLowerCase()] ?? 'unknown';
 
   if (isArray) {
     baseType = `${baseType}[]`;
