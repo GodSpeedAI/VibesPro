@@ -81,7 +81,7 @@ describe('Generator Spec Completeness', () => {
 
     // Extract code blocks (markdown ```...```)
     const codeBlockRegex = /```[\s\S]*?```/g;
-    const codeBlocks = spec.match(codeBlockRegex) || [];
+    const codeBlocks = spec.match(codeBlockRegex) ?? [];
 
     // Should have at least 8 code examples (updated based on current state)
     expect(codeBlocks.length).toBeGreaterThanOrEqual(8);

@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-const budgets = require('../../tools/prompt/budgets');
-const lint = require('../../tools/prompt/lint');
+import * as budgets from '../../tools/prompt/budgets';
+import * as lint from '../../tools/prompt/lint';
 
 describe('Prompt Tools Tests', () => {
   // Use an isolated temp directory for fixtures so tests don't dirty the repo

@@ -6,7 +6,7 @@ import path from 'node:path';
 const SNAP_DIR = path.join(process.cwd(), 'tests', 'snapshots');
 const SNAP_SUFFIX = '.snapshot.json';
 
-function snapPath(name: string) {
+function snapPath(name: string): string {
   return path.join(SNAP_DIR, `${name}${SNAP_SUFFIX}`);
 }
 
@@ -27,15 +27,17 @@ export function compareSnapshot(name: string, content: string): boolean {
     const now = JSON.parse(content);
 
     // Stable stringify with sorted keys for deterministic comparison
-    const stable = (v: any): string => {
+    const stable = (v: unknown): string => {
       if (v === null || typeof v !== 'object') return JSON.stringify(v);
       if (Array.isArray(v)) return `[${v.map((x) => stable(x)).join(',')}]`;
-      const keys = Object.keys(v).sort();
-      return `{${keys.map((k) => `${JSON.stringify(k)}:${stable(v[k])}`).join(',')}}`;
+      const keys = Object.keys(v as object).sort();
+      return `{${keys
+        .map((k) => `${JSON.stringify(k)}:${stable((v as Record<string, unknown>)[k])}`)
+        .join(',')}}`;
     };
 
     return stable(ex) === stable(now);
-  } catch (err) {
+  } catch {
     // Fallback to plain string compare if not valid JSON
     return existing.trimEnd() === content.trimEnd();
   }

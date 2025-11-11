@@ -89,7 +89,7 @@ describe('MCP Descriptor Files', () => {
       expect(content).toMatch(/^# /);
 
       // No duplicate h1s
-      const h1Count = (content.match(/^# /gm) || []).length;
+      const h1Count = (content.match(/^# /gm) ?? []).length;
       expect(h1Count).toBeLessThanOrEqual(1);
     });
 
@@ -101,7 +101,7 @@ describe('MCP Descriptor Files', () => {
       expect(content).toMatch(/^# /);
 
       // No duplicate h1s
-      const h1Count = (content.match(/^# /gm) || []).length;
+      const h1Count = (content.match(/^# /gm) ?? []).length;
       expect(h1Count).toBeLessThanOrEqual(1);
     });
 
