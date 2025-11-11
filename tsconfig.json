@@ -28,6 +28,7 @@
     "noPropertyAccessFromIndexSignature": false,
     "exactOptionalPropertyTypes": false
   },
+  "jsx": "react-jsx",
   "include": [
     "tools/**/*.ts",
     "tests/**/*.ts",
@@ -39,5 +40,16 @@
     "apps/**/*.ts",
     "apps/**/*.tsx"
   ],
-  "exclude": ["node_modules", "dist", "coverage", "tmp", "tools/reference/**/*", ".nx"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "tmp",
+    "tools/reference/**/*",
+    ".nx",
+    "templates/**",
+    "apps/{{app_name}}/**",
+    "libs/{{domain_name}}/**",
+    "apps/**/templates/**"
+  ]
 }
