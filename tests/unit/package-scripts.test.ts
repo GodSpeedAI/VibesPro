@@ -11,8 +11,12 @@
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 
+interface PackageJson {
+  scripts: Record<string, string>;
+}
+
 describe('Package Script Wiring', () => {
-  let packageJson: any;
+  let packageJson: PackageJson;
 
   beforeAll(async () => {
     const packageJsonPath = join(process.cwd(), 'package.json');

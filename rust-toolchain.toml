@@ -1,6 +1,5 @@
 [toolchain]
-# Pinned nightly for reproducible builds. Adjust the date if you want a different snapshot.
-# Recommended format: nightly-YYYY-MM-DD (examples: nightly-2025-11-01). Using a specific
-# nightly makes builds reproducible across developers and CI.
-channel = "nightly-2025-11-01"
+# Using stable Rust for compatibility with redb 2.2.x
+# edition2024 features are not yet stabilized, so we pin to stable
+channel = "stable"
 components = ["rustfmt", "clippy"]

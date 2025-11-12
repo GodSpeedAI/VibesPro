@@ -5,19 +5,52 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
     "baseUrl": ".",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "types": ["node", "jest"],
-    "allowJs": false,
+    "allowJs": true,
     "noEmit": true,
     "paths": {
-      "@/*": ["./*"]
-    }
+      "@/*": ["./*"],
+      "@shared/web": ["libs/shared/web/src/index.ts"],
+      "nx/src/native/index": ["types/nx-fixes/native-index.d.ts"],
+      "nx/src/project-graph/error-types": ["types/nx-fixes/project-graph-error-types.d.ts"]
+    },
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "exactOptionalPropertyTypes": false,
+    "jsx": "react-jsx"
   },
-  "include": ["tools/**/*.ts", "tests/**/*.ts", "generators/**/*.ts", "jest.d.ts"],
-  "exclude": ["node_modules", "dist", "coverage", "tmp", "tools/reference/**/*"]
+  "include": [
+    "tools/**/*.ts",
+    "tests/**/*.ts",
+    "generators/**/*.ts",
+    "types/**/*.d.ts",
+    "jest.d.ts",
+    "tools/**/*.d.ts",
+    "libs/**/*.ts",
+    "libs/**/*.tsx",
+    "apps/**/*.ts",
+    "apps/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "tmp",
+    "tools/reference/**/*",
+    ".nx",
+    "templates/**",
+    "apps/{{app_name}}/**",
+    "libs/{{domain_name}}/**",
+    "apps/**/templates/**"
+  ]
 }

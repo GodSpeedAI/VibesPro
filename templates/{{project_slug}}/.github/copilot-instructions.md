@@ -402,7 +402,7 @@ just build             # Via justfile orchestration
 
 ### Available Chat Modes
 
-[KEEP: These are provided by the template]
+[KEEP: These are provided by VibesPro]
 
 #### Development Workflows
 
@@ -413,7 +413,7 @@ just build             # Via justfile orchestration
 
 -   **meta.customize-instructions** - Customize these copilot instructions interactively
 
-[CUSTOMIZE: List based on those in the templates/my-project/.github/chatmodes directory and add project-specific chat modes if you create them]
+[CUSTOMIZE: List additional chat modes from .github/chatmodes/ and add project-specific modes if you create them]
 
 ### Task-Specific Prompts
 
@@ -424,7 +424,7 @@ Key prompts in `.github/prompts/`:
 | `customize.copilot-instructions.prompt.md` | Customize these instructions |
 | `tdd.workflow.prompt.md`                   | TDD workflow guidance        |
 
-[CUSTOMIZE: Document additional prompts based on the templates/my-project/.github/prompts directory and add project-specific prompts if you create them]
+[CUSTOMIZE: Document additional prompts from .github/prompts/ and add project-specific prompts if you create them]
 
 ### Context Generation
 

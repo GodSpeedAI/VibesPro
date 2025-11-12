@@ -1,587 +1,2280 @@
-# VibesPro Project State Report
+# VibesPro Project State Analysis & Implementation Plan
 
-**Report Generated**: November 4, 2025
-**Current Version**: v0.3.0 (Released October 12, 2025)
-**Repository**: GodSpeedAI/VibesPro
-**Branch**: main
+## Executive Summary
 
----
-
-VibesPro is a **Copier template repository** that generates production-ready, AI-enhanced Nx monorepos following hexagonal architecture and domain-driven design principles. The template has reached v0.3.0 with significant improvements to production readiness. Several critical issues have been resolved, making the template more stable for generated projects.**Critical Distinction**: This repository contains template source code that generates separate projects. Work happens in generated projects, not in this template repo. All modifications must follow the generator-first, spec-driven workflow.**Current Maturity**:- ✅ Core template generation: **Production-ready**- ✅ Observability stack: **Production-ready** (v0.3.0)- ✅ **Nx dependency alignment**: **Resolved** (all packages aligned to v22.0.2)- ✅ **Python test coverage**: **Resolved** (no pytest exclusions, temporal tests work)- ✅ **Generator specification template**: **Resolved** (comprehensive template)- ✅ **Distributed AGENT system**: **Resolved** (13 AGENT.md files implemented)- ⚠️ **AGENT validation tools**: **Partial** (files exist, validation recipe missing)- ⚠️ **Developer tooling**: **Functional with known gaps**
-
-## Repository Purpose & Architecture
-
-### What VibesPro Is
-
-A **Copier-based template** that scaffolds:
-
--   Nx monorepos with TypeScript/Python/Rust support
--   Hexagonal architecture (domain ← application ← infrastructure)
--   Domain-driven design with bounded contexts
--   AI-enhanced development workflows (30+ chat modes, custom prompts)
--   Production-grade observability (Rust tracing → Vector → OpenObserve)
--   Reproducible environments (Devbox + mise + SOPS + Just)
-
-**References**:
-
--   `.github/copilot-instructions.md:3-25` - Template vs. generated project distinction
--   `README.md:1-50` - Project purpose and vision
--   `docs/dev_adr.md` - Architectural decisions
--   `copier.yml:1-467` - Template configuration and questions
-
-### How It Works
-
-1. **User runs**: `copier copy gh:GodSpeedAI/VibesPro my-project`
-2. **Copier prompts** for project details (name, domains, frameworks, etc.)
-3. **Jinja2 templates** in `templates/{{project_slug}}/` are processed
-4. **Post-generation hook** (`hooks/post_gen.py`) runs type generation and setup
-5. **Generated project** is a working Nx monorepo ready for development
-
-**Test flow**: `just test-generation` → outputs to `../test-output`
-
-**References**:
-
--   `copier.yml:24` - Post-generation tasks
--   `hooks/post_gen.py:1-171` - Setup automation
--   `.github/copilot-instructions.md:95-120` - Generation workflow
-
-### Architecture Principles
-
-**Three Immutable Rules** (`.github/copilot-instructions.md:26-30`):
-
-1. **Generator-First**: Always use Nx generators before writing code
-2. **Hexagonal Architecture**: Dependencies flow inward only (domain ← application ← infrastructure)
-3. **Spec-Driven**: Every commit references spec IDs (ADR/PRD/SDS/TS)
-
-**Layered Environment Strategy** (`docs/ENVIRONMENT.md:7-18`):
-
-1. **Devbox** - OS-level toolchain (git, curl, jq, postgresql, etc.)
-2. **mise** - Runtime management (Node, Python, Rust versions)
-3. **SOPS** - Encrypted secrets (`.secrets.env.sops`)
-4. **Just** - Task orchestration (804 lines, `justfile:1-804`)
-5. **pnpm** - Node package management
-6. **uv** - Python package and environment management
+VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal architecture Nx monorepos with AI-enhanced workflows. Analysis reveals **99 documented specifications** with **14 distributed AGENT.md files**, complete observability stack, and comprehensive testing infrastructure. Three critical gaps identified requiring phased TDD implementation.
 
 ---
 
-## Tooling & Workflow Expectations
+## Current State Assessment
 
-### Core Workflows
+### Production-Ready Capabilities ✅
 
-**Setup** (`justfile:8-20`, `docs/ENVIRONMENT.md:25-32`):
+| Component               | Specs                         | Status               | Evidence                                                 |
+| ----------------------- | ----------------------------- | -------------------- | -------------------------------------------------------- |
+| **Observability Stack** | DEV-ADR-016, SDS-017, PRD-017 | Complete (6 phases)  | `crates/vibepro-observe/`, `ops/vector/`, 10 test suites |
+| **Environment Setup**   | DEV-ADR-011-015, PRD-011-016  | Complete             | Devbox, mise, SOPS, 5 test suites in `tests/env/`        |
+| **AGENT System**        | AGENT-SYSTEM.md, AGENT-MAP.md | Complete (Phase 1+2) | 14 AGENT.md files across all directories                 |
+| **Nx Configuration**    | Package alignment             | Complete             | All @nx packages at v22.0.2                              |
+| **Python Testing**      | pytest coverage               | Complete             | No exclusions, temporal tests functional                 |
+| **Core Template**       | Hexagonal architecture        | Complete             | `templates/{{project_slug}}/` generates working projects |
 
-```bash
-just setup          # Install all dependencies (Node + Python + Tools)
-just doctor         # Verify environment health
-just test-env       # Run environment validation tests
+### Critical Gaps Requiring Implementation ⚠️
+
+```mermaid
+graph TD
+    A[Current State v0.3.0] --> B{Critical Gaps}
+    B --> C[Python Logfire Implementation<br/>DEV-PRD-018, SDS-018]
+    B --> D[Generator Spec TODO Elimination<br/>DEV-PRD-019, SDS-019, ADR-019]
+    B --> E[Temporal AI Guidance Fabric<br/>DEV-ADR-018 Proposed]
+
+    C --> F[Blocks: Python FastAPI observability]
+    D --> G[Blocks: AI generator creation quality]
+    E --> H[Blocks: Advanced AI pattern learning]
+
+    style C fill:#ff9999
+    style D fill:#ff9999
+    style E fill:#ffcc99
 ```
 
-**Quality Gates** (`justfile:96-110`):
+---
 
-```bash
-just spec-guard     # Full quality gate (specs + prompts + docs + tests)
-just ai-validate    # Lint + typecheck + optional tests
-just prompt-lint    # Validate all prompt files
-just spec-matrix    # Check traceability matrix
+## Gap Analysis: Incomplete Specifications
+
+### Gap 1: Python Logfire Implementation (CRITICAL PATH)
+
+**Specifications:**
+
+-   DEV-PRD-018: Structured Logging with Trace Correlation
+-   DEV-SDS-018: Logfire SDK Integration
+
+**Current State:**
+
+-   Rust observability: ✅ Complete (vibepro-observe crate functional)
+-   Node.js logging: ✅ Complete (Pino with trace correlation)
+-   Python logging: ❌ **Stub implementation only**
+
+**Evidence:**
+
+-   `libs/python/vibepro_logging.py:1-143` - Functions exist but marked "design targets"
+-   `docs/dev_prd.md:220` - "Python implementation planned for DEV-TDD cycle 2A"
+
+**Blocking:**
+
+-   FastAPI request tracing
+-   Python service observability
+-   Unified log-trace correlation across all services
+
+**Dependencies:**
+
+-   ✅ Vector pipeline ready (accepts OTLP)
+-   ✅ OpenObserve configured
+-   ✅ SOPS secrets management
+-   ❌ Logfire SDK integration incomplete
+
+---
+
+### Gap 2: Generator Spec TODO Elimination (HIGH PRIORITY)
+
+**Specifications:**
+
+-   DEV-PRD-019: Complete Generator Specification Template
+-   DEV-SDS-019: Generator Spec Completion Design
+-   DEV-ADR-019: Complete Generator Specification Template ADR
+
+**Current State:**
+
+-   Template exists: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` (261 lines)
+-   Content: ✅ Structure complete
+-   Quality: ❌ Contains TODO placeholders
+
+**Evidence:**
+
+-   PRD-019 acceptance test: `grep "TODO:" GENERATOR_SPEC.md` must return zero
+-   Plan exists: `docs/plans/merged_generator_spec_completion_plan.md`
+
+**Blocking:**
+
+-   AI agent generator creation accuracy (90% success rate target)
+-   Schema hallucination prevention
+-   Type safety enforcement in generated code
+
+**Dependencies:**
+
+-   ✅ Nx devkit patterns documented
+-   ✅ Existing generator examples (feature-slice, data-access, route-contract)
+-   ❌ TODO markers must be replaced with concrete guidance
+
+---
+
+### Gap 3: Temporal AI Guidance Fabric (PROPOSED)
+
+**Specifications:**
+
+-   DEV-ADR-018: Temporal AI Intelligence Fabric
+
+**Current State:**
+
+-   Status: **Proposed** (not yet Active)
+-   Dependencies: DEV-ADR-016, ADR-017 (both ✅ complete)
+-   Temporal DB: ✅ Exists (`temporal_db/`, redb-based)
+-   AI integration: ❌ No pattern recommendation engine
+
+**Evidence:**
+
+-   `docs/dev_adr.md` - ADR-018 marked "Proposed"
+-   `docs/dev_tdd_ai_guidance.md` - Implementation plan exists
+
+**Blocking:**
+
+-   Advanced AI pattern suggestions
+-   Historical decision context for AI agents
+-   Automated architecture compliance recommendations
+
+**Dependencies:**
+
+-   ✅ Observability foundation (ADR-016/17)
+-   ✅ Temporal database infrastructure
+-   ❌ Requires formal PRD/SDS authoring before Phase 2
+
+---
+
+## Desired End State
+
+### Vision: VibesPro v1.0 Production Certification
+
+**Core Capabilities:**
+
+1. **Complete Observability** - Unified telemetry across Rust, Node.js, Python with <1µs overhead
+2. **AI-Guided Development** - Temporal intelligence providing pattern recommendations from project history
+3. **Zero-Hallucination Generators** - Complete specs enabling 90%+ first-attempt success for AI-generated code
+4. **Production Certification** - Battle-tested at scale with security audit and reliability benchmarks
+
+**Quantified Targets:**
+
+-   Python observability coverage: 95%+ FastAPI endpoints auto-traced
+-   Generator spec completeness: 0 TODO markers, 100% concrete examples
+-   AI pattern recommendation accuracy: 80%+ developer acceptance
+-   Specification traceability: 100% specs mapped to implementations
+
+---
+
+## Implementation Plan: MECE TDD Cycles
+
+### Dependency Graph
+
+```mermaid
+graph LR
+    subgraph "Critical Path"
+        A[Cycle 1: Python Logfire<br/>DEV-PRD-018, SDS-018] --> B[Cycle 2: Generator Spec<br/>DEV-PRD-019, SDS-019]
+        B --> C[Cycle 3: Temporal AI<br/>DEV-ADR-018]
+    end
+
+    A --> D[Python FastAPI Observability]
+    B --> E[AI Generator Quality]
+    C --> F[Pattern Intelligence]
+
+    D --> G[v0.4.0 Release]
+    E --> G
+    F --> H[v1.0 Production]
+
+    style A fill:#ff9999
+    style B fill:#ffcc99
+    style C fill:#99ccff
+    style H fill:#99ff99
 ```
 
-**Testing** (`justfile:156-230`):
+---
 
-```bash
-just test           # Run all tests (Node + Python + Shell + Integration)
-just test-nx        # Nx-based test execution
-just test-python    # pytest suite
-just test-node      # Node.js tests
-just test-generation # Full template generation smoke test
+## Cycle 1: Python Logfire Implementation (RED → GREEN → REFACTOR)
+
+**Objective:** Complete structured logging with trace correlation for Python services
+
+**Specifications:** DEV-PRD-018, DEV-SDS-018, DEV-ADR-017
+
+**Exit Criteria:**
+
+-   ✅ All tests in `tests/ops/test_vector_logfire.sh` pass
+-   ✅ FastAPI auto-instrumentation functional (`logfire.instrument_fastapi()`)
+-   ✅ Logs contain mandatory fields: `trace_id`, `span_id`, `service`, `environment`, `application_version`
+-   ✅ PII redaction verified in OpenObserve
+-   ✅ 95%+ FastAPI endpoints produce correlated spans
+
+---
+
+### Phase 1A: RED - Test Infrastructure (Blocking: All implementation)
+
+**Files to Create:**
+
+```
+tests/python/logging/
+├── test_logfire_configuration.py          # Unit tests for configure_logger()
+├── test_logfire_fastapi.py                # FastAPI instrumentation tests
+├── test_logfire_trace_correlation.py      # Trace ID propagation tests
+├── test_logfire_metadata.py               # Metadata binding tests
+└── conftest.py                             # Pytest fixtures
 ```
 
-**Observability** (`justfile:709-804`, `docs/observability/README.md:63-125`):
+**Test Requirements:**
 
-```bash
-just observe-start     # Start Vector edge collector
-just observe-stop      # Stop Vector gracefully
-just observe-test-all  # Run complete observability test suite
-just observe-validate  # Validate Vector configuration
+**File:** `tests/python/logging/test_logfire_configuration.py`
+
+```python
+# Test Cases (RED - these will fail initially):
+def test_configure_logger_sets_service_name():
+    """Verify SERVICE_NAME env var binding"""
+    # Assert: logger configured with service='test-service'
+
+def test_configure_logger_otlp_endpoint():
+    """Verify OTLP_ENDPOINT configuration"""
+    # Assert: OTLP exporter points to Vector (localhost:4318)
+
+def test_configure_logger_metadata_binding():
+    """Verify environment, version metadata"""
+    # Assert: APP_ENV, APP_VERSION bound to all log events
 ```
 
-### Specification-Driven Development
-
-**Document Hierarchy** (`docs/dev_adr.md`, `docs/dev_prd.md`, `docs/dev_sds.md`):
-
-1. **ADR** (Architecture Decision Records) - Highest authority
-2. **SDS** (Software Design Spec) - System design constraints
-3. **TS** (Technical Specifications) - Implementation details
-4. **PRD** (Product Requirements) - Feature requirements
-5. **DEV-\*** - Developer-specific specs
-
-**Traceability** (`docs/traceability_matrix.md:1-178`):
-
--   178 tracked specifications (ADR-001 through DEV-SDS-022)
--   Every spec maps to implementation artifacts
--   Commit messages must reference spec IDs
-
-### Generator-First Policy
-
-**Before writing ANY code** (`.github/instructions/generators-first.instructions.md:1-182`):
-
-1. Check for Nx generators: `pnpm exec nx list`
-2. Use generator first: `just ai-scaffold name=@nx/js:lib`
-3. Then customize generated code
-
-**Available Nx Plugins** (verified via terminal):
-
--   @nx/jest, @nx/js, @nx/node, @nx/react, @nx/workspace (installed)
--   @nx/next, @nx/remix, @nx/expo, @nx/express, @nx/nest (available)
-
----
-
-## Current Capabilities vs. Intended Features
-
-### ✅ Production-Ready Components
-
-| Component                    | Status               | Evidence                                                                                                |
-| ---------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------- |
-| **Core Template Generation** | ✅ Functional        | Templates generate working Nx monorepos with libs/apps/tools (`just test-generation` passes)            |
-| **Hexagonal Architecture**   | ✅ Enforced          | Domain/application/infrastructure layers in `templates/{{project_slug}}/libs/`                          |
-| **Observability Stack**      | ✅ Complete (v0.3.0) | Rust `vibepro-observe` + Vector + OpenObserve, 8 test suites, comprehensive docs (`CHANGELOG.md:15-92`) |
-| **Environment Setup**        | ✅ Functional        | Devbox + mise + SOPS + Just working in local and CI (`docs/ENVIRONMENT.md:1-2398`)                      |
-| **AI Chat Modes**            | ✅ Complete          | 30+ persona modes (TDD, Debug, Product, DevOps, Spec) in `.github/chatmodes/`                           |
-| **Prompt System**            | ✅ Functional        | Modular instructions + task-specific prompts in `.github/prompts/` and `.github/instructions/`          |
-| **Specification Docs**       | ✅ Comprehensive     | 448 lines ADR, 543 lines PRD, 958 lines SDS, 200+ lines TS                                              |
-| **CI/CD Workflows**          | ✅ Operational       | 17 workflows in `.github/workflows/` (ci, spec-guard, security, etc.)                                   |
-
-### ⚠️ Components Requiring Attention
-
-| Component                        | Current State                | Target State          | Blocker/Gap                                                                                                                          |
-| -------------------------------- | ---------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Nx Dependency Mismatch**       | ❌ **CRITICAL**              | Nx version alignment  | `nx.json` error: Cannot find module 'nx/src/command-line/release/config/use-legacy-versioning' - Nx 22.0.2 vs @nx/js 21.5.3 mismatch |
-| **Python Test Coverage**         | ⚠️ Partial                   | Full regression suite | `pytest.ini:7` excludes `tests/temporal` and integration suites pending async fixture updates                                        |
-| **Logfire Instrumentation**      | ⚠️ Documented but incomplete | Full implementation   | `templates/{{project_slug}}/docs/observability/logging.md.j2:5` has TODO for Cycle 2A completion                                     |
-| **Generator Spec Template**      | ⚠️ Placeholder content       | Concrete guidance     | `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md:16` contains TODO placeholders                                   |
-| **Distributed AGENT System**     | ⚠️ Phase 1 only              | Phase 2 coverage      | Core directories covered, need apps/libs/tests/generators (`AGENT-SYSTEM.md:20`)                                                     |
-| **Prompt Execution Integration** | ⚠️ Manual workflow           | Automated integration | `scripts/run_prompt.sh:27` has TODO for VS Code/Copilot API integration                                                              |
-
-### 📋 Planned Features (Documented but Not Implemented)
-
-| Feature                      | Spec Reference                                        | Notes                                                        |
-| ---------------------------- | ----------------------------------------------------- | ------------------------------------------------------------ |
-| **Windows .ps1 Wrappers**    | `docs/dev_technical-specifications.md` (DEV-SPEC-011) | Scripts currently bash-only, future work for Windows support |
-| **Token Budget Config**      | `docs/dev_technical-specifications.md` (DEV-SPEC-011) | Centralized JSON for per-mode token limits                   |
-| **Minimal Node CLI**         | `docs/dev_technical-specifications.md` (DEV-SPEC-011) | Cross-platform prompt rendering and linting                  |
-| **Chezmoi Bootstrap**        | `docs/dev_sds.md:187-195` (DEV-SDS-016)               | Optional first-run automation for fresh machines             |
-| **Custom Domain Generators** | `.github/copilot-instructions.md:163-178`             | Service generator using `domain.yaml`                        |
-
----
-
-## Outstanding Work, Defects, and Ambiguities
-
-### 🔴 Critical Priority (Blocks Production Use)
-
-#### 1. [✅] **Nx Version Mismatch** (RESOLVED)
-
-**Problem**: Nx core is 22.0.2 but @nx/js is 21.5.3, causing module resolution errors.
-
-**Status**: ✅ **RESOLVED** - All @nx packages aligned to version 22.0.2
-
-**Evidence**: All @nx packages in `package.json` are now at version 22.0.2
-
-**Verification**: `pnpm exec nx list` shows no version conflicts
-
-**Files**: `package.json:29-50`, `nx.json:1`
-
----
-
-### 🟡 High Priority (Affects Quality/Completeness)
-
-#### 2. [✅] **Python Test Coverage Gaps** (RESOLVED)
-
-**Problem**: pytest excludes `tests/temporal` and integration suites, reducing regression coverage.
-
-**Status**: ✅ **RESOLVED** - pytest.ini shows no norecursedirs exclusions
-
-**Evidence**:
-
--   `pytest.ini` contains no `norecursedirs` exclusions
--   `tests/temporal/` directory exists with 23 tests that collect successfully
--   Full test suite runs: `uv run pytest tests/temporal/` works
-
-**Verification**: `uv run pytest tests/temporal/ -v --collect-only` shows 23 tests
-
-**Files**: `tests/temporal/`, `justfile:166-177`
-
-#### 3. [✅] **Generator Specification Template Incomplete** (RESOLVED)
-
-**Problem**: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` contains TODO placeholders.
-
-**Status**: ✅ **RESOLVED** - Template is complete with comprehensive documentation
-
-**Evidence**:
-
--   `GENERATOR_SPEC.md` contains complete specification template
--   Includes schema format documentation, examples, and acceptance criteria
--   Covers TypeScript type mapping, pattern categories, and implementation hints
--   Contains validation checklist and MCP assistance guidance
-
-**Verification**: Template provides complete generator specification framework
-
-**Files**: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`
-
----
-
-### 🟠 Medium Priority (Affects Developer Experience)
-
-#### 4. [✅] **Logfire Instrumentation Cycle 2A Pending** (RESOLVED)
-
-**Problem**: Logfire docs published but implementation deferred to "Cycle 2A".
-
-**Status**: ✅ **RESOLVED** - Logging documentation is complete and functional
-
-**Evidence**:
-
--   `templates/{{project_slug}}/docs/observability/logging.md.j2` contains comprehensive logging guide
--   No TODO notes found in logging documentation
--   Complete environment variables, deployment checklist, and validation commands documented
--   Vector integration and OTLP configuration fully specified
-
-**Verification**: Logging documentation provides complete implementation guide
-
-**Files**:
-
--   `templates/{{project_slug}}/docs/observability/logging.md.j2`
--   `docs/observability/README.md:850`
--   `justfile:739`
-
-#### 5. [ ] **Prompt Execution Integration Manual**
-
-**Problem**: `scripts/run_prompt.sh` has TODO for VS Code/Copilot API integration.
-
-**Evidence**: `scripts/run_prompt.sh:27` - "TODO: Integrate with the VS Code CLI or Copilot API here"
-
-**Impact**:
-
--   Prompts must be run manually
--   No automation for prompt-driven workflows
--   A/B testing and metrics collection incomplete
-
-**Recommended Action**:
-
-1. **Decision required**: Document explicit manual workflow OR build VS Code integration
-2. If manual: Update docs to clarify prompt execution is user-initiated
-3. If automated: Research VS Code Extension API for prompt execution
-4. Update `.github/prompts/` documentation with execution model
-5. Ensure spec-guard quality gate remains enforced
-
-**Files**: `scripts/run_prompt.sh:27`, `justfile:96`
-
-#### 6. [✅] **Distributed AGENT System Phase 2 Incomplete** (RESOLVED)
-
-**Problem**: Only Phase 1 (core directories) complete; Phase 2 (apps/libs/tests/generators) pending.
-
-**Status**: ✅ **RESOLVED** - Phase 2 is complete with 13 AGENT.md files throughout project
-
-**Evidence**:
-
--   13 AGENT.md files found: `.github/`, `docs/`, `tools/`, `scripts/`, `apps/`, `libs/`, `tests/`, `generators/`, `templates/`, `hooks/`, `architecture/`, `temporal_db/`, `ops/`
--   All Phase 2 directories now have AGENT.md coverage
--   Distributed agent system provides comprehensive context coverage
-
-**Verification**: `find . -name "AGENT.md" -type f` shows complete coverage
-
-**Files**: `AGENT-SYSTEM.md:3,20,127`, `templates/{{project_slug}}/apps/`, `templates/{{project_slug}}/libs/`
-
----
-
-### 🟢 Low Priority (Nice-to-Have Enhancements)
-
-#### 7. [⚠️] **Missing `just validate-agent-files` Recipe** (PARTIALLY RESOLVED)
-
-**Problem**: Recipe referenced in docs but not implemented.
-
-**Status**: ⚠️ **PARTIALLY RESOLVED** - AGENT.md files exist but validation recipe missing
-
-**Evidence**:
-
--   13 AGENT.md files found throughout project structure
--   No `validate-agent-files.sh` script exists
--   No `validate-agent-files` recipe in `justfile`
--   Referenced in `AGENT-SYSTEM.md:127`
-
-**Files**: `AGENT-SYSTEM.md:127`, `justfile`
-
-#### 7. [⚠️] **Missing `just validate-agent-files` Recipe** (PARTIALLY RESOLVED)
-
-**Problem**: Recipe referenced in docs but not implemented.
-
-**Status**: ⚠️ **PARTIALLY RESOLVED** - AGENT.md files exist but validation recipe missing
-
-**Evidence**:
-
--   13 AGENT.md files found throughout project structure
--   No `validate-agent-files.sh` script exists
--   No `validate-agent-files` recipe in `justfile`
--   Referenced in `AGENT-SYSTEM.md:127`
-
-**Recommended Action**: Add to `justfile`:
-
-```bash
-validate-agent-files:
-    @echo "🔍 Validating AGENT.md files..."
-    @bash scripts/validate-agent-files.sh
+**File:** `tests/python/logging/test_logfire_fastapi.py`
+
+```python
+def test_fastapi_auto_instrumentation():
+    """Verify logfire.instrument_fastapi() creates spans"""
+    # Given: FastAPI app with logfire.instrument_fastapi()
+    # When: GET /test endpoint called
+    # Then: Span created with http.method, http.route, http.status_code
+
+def test_fastapi_trace_propagation():
+    """Verify downstream service calls propagate trace context"""
+    # Given: Service A calls Service B via httpx
+    # Then: Both share same trace_id, parent-child span relationship
 ```
 
-**Files**: `AGENT-SYSTEM.md:127`, `justfile`
+**File:** `tests/python/logging/test_logfire_trace_correlation.py`
 
-#### 8. **Windows PowerShell Script Wrappers**
+```python
+def test_log_contains_trace_id():
+    """Verify logs emitted within span contain trace_id"""
+    # Given: Active tracing span
+    # When: logger.info("message") called
+    # Then: Log event contains trace_id matching span
 
-**Problem**: Bash-only scripts limit Windows compatibility.
+def test_log_without_span_graceful():
+    """Verify logging outside span doesn't crash"""
+    # When: logger.info() called with no active span
+    # Then: Log emitted with trace_id=null (graceful degradation)
+```
 
-**Evidence**: `docs/dev_technical-specifications.md` (DEV-SPEC-011) - Future enhancement
+**Acceptance Criteria:**
 
-**Recommended Action**: Lower priority; document requirement for WSL/Git Bash on Windows until wrappers are created.
-
-#### 9. **Centralized Token Budget Configuration**
-
-**Problem**: Token limits hard-coded in prompt files rather than central config.
-
-**Evidence**: `docs/dev_technical-specifications.md` (DEV-SPEC-011)
-
-**Recommended Action**: Create `.github/prompt-config.json` with per-mode token budgets.
-
----
-
-## Risks and Mitigations
-
-### Technical Risks
-
-| Risk                                             | Likelihood | Impact   | Mitigation                                                      |
-| ------------------------------------------------ | ---------- | -------- | --------------------------------------------------------------- |
-| Nx version mismatch breaks generation            | High       | Critical | **IMMEDIATE**: Align package versions, test generation flow     |
-| Temporal test exclusions miss regressions        | Medium     | High     | Prioritize async fixture modernization                          |
-| Logfire incomplete creates user confusion        | Medium     | Medium   | Complete Cycle 2A or update docs to clarify status              |
-| Dependency vulnerabilities in generated projects | Low        | High     | Regular `pnpm audit` and Dependabot monitoring (already active) |
-
-### Process Risks
-
-| Risk                                           | Likelihood | Impact | Mitigation                                  |
-| ---------------------------------------------- | ---------- | ------ | ------------------------------------------- |
-| Template changes bypass generator-first policy | Medium     | Medium | Enforce via PR reviews and pre-commit hooks |
-| Spec drift from implementation                 | Low        | Medium | `just spec-guard` enforces traceability     |
-| Generated projects diverge from template       | Low        | High   | Regular `just test-generation` in CI        |
+-   ✅ All test files created with RED status (tests fail)
+-   ✅ Test coverage includes: configuration, instrumentation, correlation, metadata
+-   ✅ Pytest fixtures provide: FastAPI test client, mock OTLP collector, cleanup
 
 ---
 
-## Verification Steps & Acceptance Criteria
+### Phase 1B: GREEN - Minimal Implementation (Blocking: Refactor)
 
-### Template Health Checks
+**Files to Modify:**
 
-**Run these commands to verify template health**:
+**File:** `libs/python/vibepro_logging.py`
+
+**Current State (lines 1-143):**
+
+-   Stub functions with NotImplementedError
+-   Docstrings define intended behavior
+-   No actual Logfire SDK calls
+
+**Implementation Requirements:**
+
+```python
+# Line ~20: Add imports
+import logfire
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+
+# Line ~40: Implement configure_logger()
+def configure_logger(
+    service: str | None = None,
+    send_to_logfire: bool = True,
+    **kwargs
+) -> None:
+    """Configure Logfire with OTLP export to Vector"""
+    service_name = service or os.getenv("SERVICE_NAME", "unknown-service")
+
+    # Configure OTLP exporter
+    otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
+
+    logfire.configure(
+        service_name=service_name,
+        send_to_logfire=send_to_logfire,
+        additional_span_processors=[
+            OTLPSpanExporter(endpoint=otlp_endpoint)
+        ],
+        **kwargs
+    )
+
+    # Bind metadata
+    logfire.configure(
+        environment=os.getenv("APP_ENV", "development"),
+        application_version=os.getenv("APP_VERSION", "unknown")
+    )
+
+# Line ~80: Implement bootstrap_logfire()
+def bootstrap_logfire(app: FastAPI, **kwargs) -> FastAPI:
+    """Auto-instrument FastAPI with Logfire"""
+    configure_logger(**kwargs)
+    logfire.instrument_fastapi(app)
+    return app
+
+# Line ~120: Implement get_logger()
+def get_logger(category: str = "app", **metadata) -> logfire.Logger:
+    """Get logger with category and metadata binding"""
+    return logfire.with_tags(category=category, **metadata)
+```
+
+**Environment Variables Required:**
+
+-   `SERVICE_NAME` - Service identifier
+-   `OTEL_EXPORTER_OTLP_ENDPOINT` - Vector endpoint (default: http://localhost:4318)
+-   `OTEL_EXPORTER_OTLP_PROTOCOL` - Protocol (default: http/protobuf)
+-   `APP_ENV` - Environment (dev/staging/prod)
+-   `APP_VERSION` - Application version
+
+**Acceptance Criteria:**
+
+-   ✅ All tests in Phase 1A now pass (GREEN)
+-   ✅ `pytest tests/python/logging/ -v` returns 0 failures
+-   ✅ FastAPI test app emits spans to mock OTLP collector
+-   ✅ Logs contain trace_id when within active span
+
+---
+
+### Phase 1C: REFACTOR - Integration & Documentation (Blocking: Cycle 1 Exit)
+
+**Files to Update:**
+
+**File:** `docs/observability/README.md`
+
+**Section to Add (after line 150):**
+
+````markdown
+### Python FastAPI Integration
+
+**Installation:**
 
 ```bash
-# 1. Environment setup
-just setup && just doctor && just test-env
+pip install logfire opentelemetry-exporter-otlp-proto-http
+```
+````
 
-# 2. Dependency alignment
-pnpm list nx @nx/js @nx/jest @nx/node @nx/react
-# Expected: All @nx/* packages same major version as nx core
+**Basic Setup:**
 
-# 3. Full quality gate
-just spec-guard
-# Expected: All checks pass (specs, prompts, docs, linting)
+```python
+from fastapi import FastAPI
+from libs.python.vibepro_logging import bootstrap_logfire
 
-# 4. Template generation smoke test
-just test-generation
-# Expected: ../test-output generated, builds pass
+app = FastAPI()
+bootstrap_logfire(app, service="user-api")
 
-# 5. Generated project verification
-cd ../test-output
-pnpm install
-pnpm exec nx run-many --target=build --all
-# Expected: Core domain libraries build successfully
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+```
 
-# 6. Observability validation
+**Structured Logging:**
+
+```python
+from libs.python.vibepro_logging import get_logger
+
+logger = get_logger(category="app")
+
+@app.post("/users")
+def create_user(user: UserCreate):
+    logger.info("Creating user", user_email_hash=hash(user.email))
+    # Auto-traced: trace_id, span_id added to log
+```
+
+**Environment Configuration:**
+
+```bash
+export SERVICE_NAME=user-api
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+export APP_ENV=staging
+export APP_VERSION=v1.2.3
+```
+
+````
+
+**File:** `templates/{{project_slug}}/docs/observability/logging.md.j2`
+
+**Lines to Update (remove TODO at line 5):**
+
+Replace:
+```markdown
+<!-- TODO: Complete Logfire integration in Cycle 2A -->
+````
+
+With:
+
+````markdown
+## Python Logfire Integration (Complete)
+
+See main observability docs for Python FastAPI setup.
+
+**Quick Start:**
+
+```python
+from libs.python.vibepro_logging import bootstrap_logfire
+bootstrap_logfire(app, service="my-service")
+```
+````
+
+````
+
+**File:** `tests/ops/test_vector_logfire.sh`
+
+**Validation Test to Add:**
+
+```bash
+#!/usr/bin/env bash
+# Test: Vector receives OTLP logs from Python Logfire
+
+set -euo pipefail
+
+# Start Vector
 just observe-start
-cargo run -p apps/observe-smoke
-just observe-test-all
-# Expected: All 8 observability test suites pass
+
+# Run Python test app
+cd apps/python-test-service
+VIBEPRO_OBSERVE=1 python -m uvicorn main:app --port 8001 &
+APP_PID=$!
+
+# Send test request
+sleep 2
+curl -X GET http://localhost:8001/health
+
+# Check Vector logs for received OTLP data
+if ! grep -q "OTLP logs received" /tmp/vector.log; then
+    echo "FAIL: Vector did not receive OTLP logs"
+    exit 1
+fi
+
+# Cleanup
+kill $APP_PID
+just observe-stop
+
+echo "✅ Python Logfire → Vector integration working"
+````
+
+**Acceptance Criteria:**
+
+-   ✅ Documentation updated with Python examples
+-   ✅ TODO marker removed from logging.md.j2
+-   ✅ Integration test passes: `just observe-test-vector-logfire`
+-   ✅ Example FastAPI app included in `apps/python-test-service/`
+
+---
+
+### Cycle 1 Exit Criteria
+
+**Validation Commands:**
+
+```bash
+pytest tests/python/logging/ -v --cov=libs/python/vibepro_logging
+just observe-test-all  # Includes test_vector_logfire.sh
+just docs-lint         # Verify markdown updates
 ```
 
-### Acceptance Criteria for Production Readiness
+**Success Metrics:**
 
-**Before v1.0.0 release, ALL must pass**:
+-   ✅ Test coverage ≥95% for vibepro_logging.py
+-   ✅ All 10 observability test suites pass (including new Python tests)
+-   ✅ Zero TODO markers in observability documentation
+-   ✅ Python FastAPI tracing demonstrated in example app
 
--   [ ] ✅ Nx dependency versions aligned (nx@22.x === @nx/js@22.x)
--   [ ] ✅ `pnpm exec nx list` shows no errors
--   [ ] ✅ `just test-generation` generates working project
--   [ ] ✅ Generated project builds without errors
--   [ ] ✅ All Python tests pass (no pytest exclusions)
--   [ ] ✅ Logfire Cycle 2A complete OR docs updated to clarify status
--   [ ] ✅ Generator spec template populated with concrete guidance
--   [ ] ✅ Distributed AGENT system Phase 2 complete
--   [ ] ✅ `just spec-guard` passes in CI
--   [ ] ✅ Security scan passes (0 critical/high vulnerabilities)
--   [ ] ✅ Observability stack validated end-to-end
+**Traceability:**
+
+-   Update `docs/traceability_matrix.md`: Mark DEV-PRD-018, DEV-SDS-018 as "Complete"
+-   Create work summary: `docs/work-summaries/logfire-cycle2a-completion.md`
 
 ---
 
-## Recommended Next Actions (Priority Order)
+## Cycle 2: Generator Spec TODO Elimination (RED → GREEN → REFACTOR)
 
-### Immediate (This Week)
+**Objective:** Achieve zero TODO markers in generator specification template
 
-1. **Fix Nx Dependency Mismatch** (BLOCKER)
+**Specifications:** DEV-PRD-019, DEV-SDS-019, DEV-ADR-019
 
-    - Run: `pnpm update @nx/js@22.0.2 @nx/jest@22.0.2 @nx/node@22.0.2 @nx/react@22.0.2 @nx/workspace@22.0.2`
-    - Verify: `pnpm exec nx list`
-    - Test: `just test-generation`
-    - Commit with spec ID: `fix(deps): align nx plugin versions [DEV-PRD-001]`
+**Exit Criteria:**
 
-2. **Validate Current State**
-    - Run full test suite: `just test`
-    - Run quality gate: `just spec-guard`
-    - Check errors: Get comprehensive error list
-    - Document any new issues discovered
-
-### Short-Term (Next 2 Weeks)
-
-3. **Modernize Python Async Fixtures**
-
-    - Review `tests/temporal/` fixture requirements
-    - Update to pytest-asyncio best practices
-    - Remove `pytest.ini` exclusions
-    - Verify: `uv run pytest` passes all suites
-
-### Short-Term (Next 2 Weeks)
-
-3. **Enhance Windows Compatibility**
-
-    - Create PowerShell wrappers for bash scripts
-    - Test on Windows with WSL fallback docs
-    - Update documentation for Windows users
-
-4. **Implement Centralized Token Budget Configuration**
-    - Create `.github/prompt-config.json` with per-mode token budgets
-    - Update prompt files to reference centralized config
-    - Implement budget enforcement in prompt tools
-
-### Medium-Term (Next Month)
-
-5. **Documentation Review & Maintenance**
-
-    - Link-check all docs: `just docs-lint`
-    - Update stale references in project_state.md
-    - Ensure spec traceability complete
-    - Review and update AGENT-MAP.md navigation
-
-6. **Performance Optimization**
-
-    - Benchmark template generation times
-    - Optimize Nx workspace configuration
-    - Review and improve build performance
-
-7. **Developer Experience Enhancements**
-    - Improve error messages and debugging output
-    - Add more comprehensive examples
-    - Create onboarding checklist for new developers
-
-### Long-Term (Future Releases)
-
-8. **Custom Domain Generators**
-
-    - Build service generator using `domain.yaml`
-    - Document generator patterns
-    - Create domain-specific generator templates
-
-9. **Advanced AI Workflows**
-
-    - Enhance prompt execution with VS Code integration
-    - Add A/B testing for prompt variations
-    - Implement metrics collection and analysis
-
-10. **Multi-Platform Support**
-
-    - Expand beyond Linux/macOS/Windows to cloud IDEs
-    - Support GitHub Codespaces, Gitpod, Replit
-    - Create platform-specific setup automation
-
-11. **Ecosystem Expansion**
-    - Create plugin system for third-party generators
-    - Add support for additional frontend frameworks
-    - Build integration with popular DevOps tools
+-   ✅ `grep -r "TODO:" templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` returns 0 matches
+-   ✅ AI agent simulation test passes (generates valid schema.json from spec alone)
+-   ✅ All sections have concrete examples (no placeholders)
+-   ✅ Schema ↔ TypeScript mapping matrix complete
 
 ---
 
-## Key Files Reference
+### Phase 2A: RED - Spec Validation Tests (Blocking: TODO elimination)
 
-### Critical Template Files
+**Files to Create:**
 
--   `copier.yml` - Template questions and configuration (467 lines)
--   `templates/{{project_slug}}/` - Jinja2 templates for generated projects
--   `hooks/post_gen.py` - Post-generation automation (171 lines)
+```
+tests/generators/
+├── spec_completeness.test.ts              # Detects TODO/TBD/FIXME markers
+├── spec_schema_examples.test.ts           # Validates JSON Schema examples
+├── ai_agent_simulation.test.ts            # Simulates AI reading spec
+└── spec_mapping_matrix.test.ts            # Validates TypeScript type mappings
+```
 
-### Specification Documents
+**Test Requirements:**
 
--   `docs/dev_adr.md` - Architecture Decision Records (448 lines, 22 ADRs)
--   `docs/dev_prd.md` - Product Requirements (543 lines, 23 PRDs)
--   `docs/dev_sds.md` - Software Design Spec (958 lines, 22 SDS)
--   `docs/dev_technical-specifications.md` - Technical Specifications (200+ lines)
--   `docs/traceability_matrix.md` - Requirements traceability (178 specs tracked)
+**File:** `tests/generators/spec_completeness.test.ts`
 
-### Core Guidance
+```typescript
+import { readFileSync } from "fs";
+import { glob } from "glob";
 
--   `.github/copilot-instructions.md` - Master AI instructions (1045 lines)
--   `.github/instructions/` - Modular instruction files (12 files)
--   `.github/prompts/` - Task-specific prompts (30+ files)
--   `.github/chatmodes/` - Persona chat modes (30+ modes)
+describe("Generator Spec Completeness", () => {
+    const specFiles = glob.sync("templates/{{project_slug}}/docs/specs/generators/*.md");
 
-### Tooling & Automation
+    test.each(specFiles)("%s contains no TODO markers", (file) => {
+        const content = readFileSync(file, "utf-8");
+        const todoMatches = content.match(/TODO|FIXME|TBD|PLACEHOLDER/gi);
+        expect(todoMatches).toBeNull();
+    });
 
--   `justfile` - Task orchestration (804 lines, 50+ recipes)
--   `package.json` - Node dependencies and scripts
--   `pytest.ini` - Python test configuration
--   `nx.json` - Nx workspace configuration
+    test("GENERATOR_SPEC.md has all required sections", () => {
+        const spec = readFileSync("templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md", "utf-8");
 
-### Observability
+        const requiredSections = ["## Purpose & Scope", "## Invocation & Placement", "## Inputs / Options Schema", "## Type Mapping Matrix", "## Pattern Categories", "## Outputs / Artifacts", "## Generator Composition", "## Idempotency Strategy", "## Implementation Hints"];
 
--   `docs/observability/README.md` - Observability documentation (871 lines)
--   `crates/vibepro-observe/` - Rust instrumentation crate
--   `ops/vector/` - Vector configuration and transforms
--   `templates/{{project_slug}}/docs/observability/logging.md.j2` - Generated project docs
+        requiredSections.forEach((section) => {
+            expect(spec).toContain(section);
+        });
+    });
+});
+```
+
+**File:** `tests/generators/spec_schema_examples.test.ts`
+
+````typescript
+import Ajv from "ajv";
+
+describe("Generator Spec Schema Examples", () => {
+    const ajv = new Ajv({ strict: true });
+
+    test("GENERATOR_SPEC.md schema examples are valid JSON Schema draft-07", () => {
+        const spec = readFileSync("templates/.../GENERATOR_SPEC.md", "utf-8");
+
+        // Extract JSON code blocks
+        const schemaBlocks = spec.match(/```json\n([\s\S]*?)\n```/g);
+        expect(schemaBlocks).toBeTruthy();
+
+        schemaBlocks!.forEach((block) => {
+            const json = JSON.parse(block.replace(/```json\n|\n```/g, ""));
+            const valid = ajv.validateSchema(json);
+            expect(valid).toBe(true);
+        });
+    });
+
+    test("Type mapping matrix covers all JSON Schema types", () => {
+        const spec = readFileSync("templates/.../GENERATOR_SPEC.md", "utf-8");
+
+        const requiredTypes = ["string", "boolean", "number", "array", "object", "enum"];
+        requiredTypes.forEach((type) => {
+            expect(spec).toContain(`| \`${type}\``); // Markdown table format
+        });
+    });
+});
+````
+
+**File:** `tests/generators/ai_agent_simulation.test.ts`
+
+```typescript
+describe("AI Agent Simulation", () => {
+    test("AI can generate valid schema.json from GENERATOR_SPEC.md alone", async () => {
+        // Simulate AI reading spec
+        const spec = readFileSync("templates/.../GENERATOR_SPEC.md", "utf-8");
+
+        // Extract guidance from spec sections
+        const schemaGuidance = extractSection(spec, "Inputs / Options Schema");
+        const typeMapping = extractSection(spec, "Type Mapping Matrix");
+
+        // AI generates schema (mock implementation)
+        const generatedSchema = await mockAIGenerateSchema(schemaGuidance, typeMapping);
+
+        // Validate generated schema
+        const ajv = new Ajv();
+        expect(ajv.validateSchema(generatedSchema)).toBe(true);
+
+        // Verify required properties
+        expect(generatedSchema.properties).toHaveProperty("name");
+        expect(generatedSchema.properties).toHaveProperty("directory");
+    });
+});
+```
+
+**Acceptance Criteria:**
+
+-   ✅ All test files created with RED status (tests fail on TODO presence)
+-   ✅ Tests cover: completeness, schema validity, AI simulation, type mappings
+-   ✅ Run: `pnpm test:jest tests/generators/spec_*.test.ts` → failures expected
+
+---
+
+### Phase 2B: GREEN - TODO Elimination & Content Completion (Blocking: Refactor)
+
+**File:** `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`
+
+**Current TODO Locations (lines to replace):**
+
+**Section 1: Purpose & Scope (lines 14-34)**
+
+Current (line 16):
+
+```markdown
+<!-- TODO: Add concrete decision tree for when to use this generator -->
+```
+
+Replace with:
+
+````markdown
+**When to Use This Generator:**
+
+```mermaid
+graph TD
+    A[Need to create code?] -->|Yes| B{Can Nx generator handle it?}
+    B -->|Yes| C[Use built-in Nx generator]
+    B -->|No| D{Domain-specific pattern?}
+    D -->|Yes| E[Use custom VibePro generator]
+    D -->|No| F[Manual implementation]
+
+    C --> G[pnpm nx g @nx/react:component]
+    E --> H[pnpm nx g @myorg/vibepro:entity]
+```
+````
+
+**Use this generator if:**
+
+-   Creating domain entities (User, Order, Product)
+-   Scaffolding hexagonal layers (domain/application/infrastructure)
+-   Generating API contracts (route-contract, data-access)
+
+**Do NOT use if:**
+
+-   Simple React component (use @nx/react:component)
+-   Library setup (use @nx/js:lib)
+-   One-off custom code
+
+````
+
+**Section 3: Inputs / Options Schema (lines 58-97)**
+
+Current (line 72):
+```markdown
+<!-- TODO: Add validation pattern examples (regex, enum, conditional) -->
+````
+
+Replace with:
+
+````markdown
+**Validation Examples:**
+
+```json
+{
+    "properties": {
+        "email": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            "description": "Valid email address"
+        },
+        "port": {
+            "type": "number",
+            "minimum": 1024,
+            "maximum": 65535,
+            "description": "Port number (1024-65535)"
+        },
+        "environment": {
+            "type": "string",
+            "enum": ["development", "staging", "production"],
+            "description": "Deployment environment"
+        },
+        "features": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Feature flags"
+        }
+    },
+    "required": ["email", "environment"]
+}
+```
+````
+
+**Conditional Validation (if/then/else):**
+
+```json
+{
+    "if": {
+        "properties": { "type": { "const": "database" } }
+    },
+    "then": {
+        "required": ["connectionString"],
+        "properties": {
+            "connectionString": { "type": "string" }
+        }
+    }
+}
+```
+
+````
+
+**Section 4: Type Mapping Matrix (lines 99-107)**
+
+Current (line 103):
+```markdown
+<!-- TODO: Complete TypeScript type mapping for all JSON Schema types -->
+````
+
+Replace with:
+
+```markdown
+**Complete Type Mapping Matrix:**
+
+| JSON Schema Type | TypeScript Type                  | Example Schema                                   | Example TS Interface                |
+| ---------------- | -------------------------------- | ------------------------------------------------ | ----------------------------------- |
+| `string`         | `string`                         | `{"type": "string"}`                             | `name: string`                      |
+| `boolean`        | `boolean`                        | `{"type": "boolean"}`                            | `enabled: boolean`                  |
+| `number`         | `number`                         | `{"type": "number"}`                             | `port: number`                      |
+| `integer`        | `number`                         | `{"type": "integer"}`                            | `count: number`                     |
+| `array`          | `Array<T>`                       | `{"type": "array", "items": {"type": "string"}}` | `tags: string[]`                    |
+| `object`         | `Record<string, T>` or interface | `{"type": "object"}`                             | `metadata: Record<string, unknown>` |
+| `enum`           | `union type`                     | `{"enum": ["a", "b"]}`                           | `type: 'a' \| 'b'`                  |
+| `const`          | `literal type`                   | `{"const": "value"}`                             | `literal: 'value'`                  |
+| `oneOf`          | `union type`                     | `{"oneOf": [{...}, {...}]}`                      | `A \| B`                            |
+| `allOf`          | `intersection`                   | `{"allOf": [{...}, {...}]}`                      | `A & B`                             |
+
+**Special Cases:**
+
+| Pattern           | Schema                                      | TypeScript                                 |
+| ----------------- | ------------------------------------------- | ------------------------------------------ |
+| Optional property | `{"type": "string"}` not in `required`      | `name?: string`                            |
+| Nullable          | `{"type": ["string", "null"]}`              | `name: string \| null`                     |
+| Default value     | `{"type": "string", "default": "foo"}`      | `name: string = 'foo'` (in implementation) |
+| Format hint       | `{"type": "string", "format": "date-time"}` | `createdAt: Date` (convert in code)        |
+```
+
+**Section 6: Generator Composition (lines 160-172)**
+
+Current (line 165):
+
+```markdown
+<!-- TODO: Add concrete example of multi-generator workflow -->
+```
+
+Replace with:
+
+````markdown
+**Composition Pattern Example:**
+
+**Scenario:** Create a complete feature slice (domain + API + UI)
+
+```typescript
+// generators/feature-slice/index.ts
+import { Tree, formatFiles } from "@nx/devkit";
+import { runGenerator } from "@nx/devkit";
+
+export default async function (tree: Tree, schema: FeatureSliceSchema) {
+    // 1. Generate domain entity
+    await runGenerator(tree, "@myorg/vibepro:entity", {
+        name: schema.entityName,
+        domain: schema.domain,
+        directory: `libs/${schema.domain}/domain/entities`,
+    });
+
+    // 2. Generate data access layer
+    await runGenerator(tree, "@myorg/vibepro:data-access", {
+        entity: schema.entityName,
+        domain: schema.domain,
+        repository: true,
+    });
+
+    // 3. Generate API routes
+    await runGenerator(tree, "@myorg/vibepro:route-contract", {
+        entity: schema.entityName,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+    });
+
+    // 4. Generate React UI components
+    await runGenerator(tree, "@nx/react:component", {
+        name: `${schema.entityName}List`,
+        project: schema.uiProject,
+    });
+
+    await formatFiles(tree);
+}
+```
+````
+
+**Result:** One command creates full vertical slice
+
+```bash
+pnpm nx g @myorg/vibepro:feature-slice user --domain=identity --ui-project=web
+```
+
+**Generated:**
+
+-   `libs/identity/domain/entities/user.entity.ts`
+-   `libs/identity/application/repositories/user.repository.ts`
+-   `libs/identity/infrastructure/data-access/user.data-access.ts`
+-   `apps/api/src/routes/users.route.ts`
+-   `apps/web/src/components/UserList.tsx`
+
+````
+
+**Section 8: Implementation Hints (lines 198+)**
+
+Current (line 205):
+```markdown
+<!-- TODO: Add @nx/devkit utility examples -->
+````
+
+Replace with:
+
+````markdown
+**Essential @nx/devkit Utilities:**
+
+```typescript
+import { Tree, generateFiles, joinPathFragments, updateJson, formatFiles, names } from "@nx/devkit";
+
+// File generation
+generateFiles(
+    tree,
+    joinPathFragments(__dirname, "./files"), // Template directory
+    targetPath, // Output directory
+    {
+        ...schema,
+        ...names(schema.name), // name, className, propertyName, fileName
+        template: "", // Remove .template suffix
+    },
+);
+
+// JSON updates (package.json, tsconfig.json)
+updateJson(tree, "package.json", (json) => {
+    json.dependencies = { ...json.dependencies, "new-dep": "^1.0.0" };
+    return json;
+});
+
+// Tree operations
+tree.write("path/to/file.ts", content);
+tree.exists("path/to/file.ts"); // boolean
+tree.read("path/to/file.ts"); // Buffer | null
+tree.delete("path/to/file.ts");
+
+// Formatting
+await formatFiles(tree); // Run Prettier on modified files
+```
+````
+
+**Template Variable Helpers:**
+
+```typescript
+import { names } from "@nx/devkit";
+
+const n = names("user-profile");
+// n.name          => 'user-profile'
+// n.className     => 'UserProfile'
+// n.propertyName  => 'userProfile'
+// n.constantName  => 'USER_PROFILE'
+// n.fileName      => 'user-profile'
+```
+
+````
+
+**Acceptance Criteria:**
+- ✅ All TODO markers replaced with concrete content
+- ✅ Tests from Phase 2A now pass (GREEN)
+- ✅ `grep -r "TODO\|FIXME\|TBD" GENERATOR_SPEC.md` returns 0 matches
+- ✅ All 9 required sections have examples
+
+---
+
+### Phase 2C: REFACTOR - Validation & Documentation (Blocking: Cycle 2 Exit)
+
+**Files to Update:**
+
+**File:** `tests/generators/utils.ts`
+
+**Add helper function:**
+
+```typescript
+export function validateGeneratorSpec(specPath: string): ValidationResult {
+  const content = fs.readFileSync(specPath, 'utf-8');
+
+  const errors: string[] = [];
+
+  // Check for TODOs
+  const todos = content.match(/TODO|FIXME|TBD|PLACEHOLDER/gi);
+  if (todos) {
+    errors.push(`Found ${todos.length} TODO markers`);
+  }
+
+  // Check required sections
+  const requiredSections = [
+    'Purpose & Scope',
+    'Invocation & Placement',
+    'Inputs / Options Schema',
+    'Type Mapping Matrix',
+    'Pattern Categories',
+    'Outputs / Artifacts',
+    'Generator Composition',
+    'Idempotency Strategy',
+    'Implementation Hints'
+  ];
+
+  requiredSections.forEach(section => {
+    if (!content.includes(`## ${section}`)) {
+      errors.push(`Missing section: ${section}`);
+    }
+  });
+
+  // Check for concrete examples (not just headers)
+  const codeBlocks = content.match(/```[\s\S]*?```/g) || [];
+  if (codeBlocks.length < 10) {
+    errors.push(`Insufficient examples: only ${codeBlocks.length} code blocks`);
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+````
+
+**File:** `docs/plans/merged_generator_spec_completion_plan.md`
+
+**Add completion report at end:**
+
+```markdown
+## Completion Report
+
+**Date:** [Auto-populated]
+**Status:** ✅ Complete
+
+**Validation Results:**
+
+-   TODO markers: 0
+-   Required sections: 9/9
+-   Code examples: 15+
+-   Schema examples valid: ✅
+-   AI simulation test: ✅ PASS
+
+**Traceability:**
+
+-   DEV-PRD-019: Complete
+-   DEV-SDS-019: Complete
+-   DEV-ADR-019: Complete
+
+**Artifacts:**
+
+-   `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` (updated)
+-   `tests/generators/spec_*.test.ts` (6 new test files, all passing)
+-   `tests/generators/utils.ts` (spec validation helper)
+```
+
+**File:** `justfile`
+
+**Add validation recipe (line ~390):**
+
+```makefile
+# Validate generator specification completeness
+validate-generator-specs:
+    @echo "Validating generator specifications..."
+    pnpm exec jest tests/generators/spec_completeness.test.ts
+    pnpm exec jest tests/generators/spec_schema_examples.test.ts
+    pnpm exec jest tests/generators/ai_agent_simulation.test.ts
+    @echo "✅ All generator specs valid"
+```
+
+**Acceptance Criteria:**
+
+-   ✅ Validation helper function added to `tests/generators/utils.ts`
+-   ✅ Completion report added to implementation plan
+-   ✅ `just validate-generator-specs` recipe works
+-   ✅ All specs pass validation
+
+---
+
+### Cycle 2 Exit Criteria
+
+**Validation Commands:**
+
+```bash
+just validate-generator-specs
+pnpm test:jest tests/generators/ -v
+grep -r "TODO\|FIXME" templates/{{project_slug}}/docs/specs/generators/
+```
+
+**Success Metrics:**
+
+-   ✅ Zero TODO/FIXME markers in all generator specs
+-   ✅ AI simulation test passes (generates valid schema from spec alone)
+-   ✅ 100% section completeness (9/9 required sections with examples)
+-   ✅ Schema examples validate against JSON Schema draft-07
+
+**Traceability:**
+
+-   Update `docs/traceability_matrix.md`: Mark DEV-PRD-019, DEV-SDS-019, DEV-ADR-019 as "Complete"
+-   Create work summary: `docs/work-summaries/generator-spec-completion.md`
+
+---
+
+## Cycle 3: Temporal AI Guidance Fabric (RED → GREEN → REFACTOR)
+
+**Objective:** Promote DEV-ADR-018 from Proposed → Active with pattern recommendation engine
+
+**Specifications:** DEV-ADR-018 (new), DEV-PRD-018-AI (to create), DEV-SDS-018-AI (to create)
+
+**Dependencies:**
+
+-   ✅ DEV-ADR-016 Complete (Observability)
+-   ✅ DEV-ADR-017 Complete (Structured Logging)
+-   ✅ Temporal DB infrastructure exists (`temporal_db/`)
+
+**Exit Criteria:**
+
+-   ✅ AI pattern recommendation engine functional
+-   ✅ Historical decision context surfaced to AI agents
+-   ✅ 80%+ developer acceptance of AI suggestions
+-   ✅ Temporal DB integration with observability traces
+
+---
+
+### Phase 3A: RED - Specification Authoring (Blocking: Implementation)
+
+**Files to Create:**
+
+```
+docs/
+├── dev_prd_ai_guidance.md                 # Product requirements for AI guidance
+└── dev_sds_ai_guidance.md                 # Software design for pattern engine
+```
+
+**File:** `docs/dev_prd_ai_guidance.md`
+
+**Required Sections:**
+
+```markdown
+# DEV-PRD-020: Temporal AI Guidance Fabric
+
+## Overview
+
+As a developer using AI assistants, I want pattern recommendations based on project history so that architectural decisions remain consistent and learnings compound over time.
+
+## EARS (Event → Action → Response)
+
+| Event                                              | Action                                         | Response                                           |
+| -------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------- |
+| Developer asks "How should I implement auth?"      | AI queries temporal DB for prior auth patterns | Suggests pattern used in 3 previous services       |
+| AI generates code violating hexagonal architecture | Pattern engine detects violation               | AI receives correction with historical context     |
+| New domain created                                 | Temporal DB records domain structure           | Future domain generation suggests similar patterns |
+
+## User Stories
+
+### US-020-A: Pattern Recommendation
+
+**As a** developer
+**I want** AI to suggest patterns from project history
+**So that** I follow established conventions without manual research
+
+**Acceptance Criteria:**
+
+-   AI queries temporal DB when asked for implementation guidance
+-   Suggestions include: pattern name, example code, when it was used, why it worked
+-   Recommendations ranked by relevance and recency
+
+### US-020-B: Architecture Violation Detection
+
+**As a** developer
+**I want** immediate feedback when AI suggests code violating architecture rules
+**So that** hexagonal boundaries remain intact
+
+**Acceptance Criteria:**
+
+-   AI-generated code checked against temporal DB constraints
+-   Violations surfaced with: rule violated, correction, historical example
+-   Feedback provided within 2 seconds of code generation
+
+### US-020-C: Learning from Observability
+
+**As an** AI system
+**I want** to correlate code patterns with observability metrics
+**So that** I recommend patterns with proven performance characteristics
+
+**Acceptance Criteria:**
+
+-   Temporal DB ingests span data from OpenObserve
+-   Pattern recommendations include: avg latency, error rate, usage frequency
+-   AI avoids suggesting patterns with high error rates
+
+## DX Metrics
+
+-   Pattern recommendation accuracy: >80% developer acceptance
+-   Query latency: <100ms for pattern lookups
+-   Temporal DB growth: <10MB per 1000 commits
+-   False positive rate: <5% for architecture violations
+
+## Dependencies
+
+-   DEV-ADR-016: Observability (✅ Complete)
+-   DEV-ADR-017: Structured Logging (✅ Complete)
+-   DEV-ADR-018: Temporal AI Intelligence Fabric (Proposed → Active)
+-   Temporal DB: redb infrastructure (✅ Exists)
+```
+
+**File:** `docs/dev_sds_ai_guidance.md`
+
+**Required Sections:**
+
+````markdown
+# DEV-SDS-020: Temporal AI Guidance Fabric Design
+
+## Architecture
+
+```mermaid
+graph TD
+    A[AI Agent] -->|Query| B[Pattern Recommendation Engine]
+    B -->|Read| C[Temporal DB<br/>redb]
+    C -->|Patterns| D[Pattern Matcher]
+    C -->|Metrics| E[Observability Aggregator]
+
+    F[OpenObserve] -->|Span Data| E
+    G[Git Commits] -->|Code Patterns| H[Pattern Extractor]
+    H -->|Write| C
+
+    D --> I[Ranked Recommendations]
+    E --> I
+    I --> A
+```
+````
+
+## Components
+
+### 1. Pattern Extractor (Rust)
+
+**Location:** `crates/temporal-ai/src/pattern_extractor.rs`
+
+**Responsibilities:**
+
+-   Parse Git commits for code patterns
+-   Extract: generators used, file structures, dependency choices
+-   Store in temporal DB with timestamp and context
+
+**Interface:**
+
+```rust
+pub trait PatternExtractor {
+    fn extract_from_commit(&self, commit: &Commit) -> Vec<Pattern>;
+    fn store_pattern(&self, pattern: Pattern) -> Result<(), Error>;
+}
+```
+
+### 2. Pattern Recommendation Engine (Rust)
+
+**Location:** `crates/temporal-ai/src/recommendation_engine.rs`
+
+**Responsibilities:**
+
+-   Query temporal DB for similar past scenarios
+-   Rank patterns by: recency, success rate, relevance
+-   Return top 3-5 recommendations with context
+
+**Interface:**
+
+```rust
+pub struct RecommendationQuery {
+    context: String,          // "implementing authentication"
+    domain: Option<String>,   // "identity"
+    framework: Option<String> // "fastapi"
+}
+
+pub trait RecommendationEngine {
+    fn recommend(&self, query: RecommendationQuery) -> Vec<Recommendation>;
+}
+
+pub struct Recommendation {
+    pattern_name: String,
+    example_code: String,
+    rationale: String,
+    success_rate: f64,  // from observability
+    last_used: DateTime<Utc>
+}
+```
+
+### 3. Observability Aggregator (Rust)
+
+**Location:** `crates/temporal-ai/src/observability_aggregator.rs`
+
+**Responsibilities:**
+
+-   Query OpenObserve for span metrics
+-   Correlate code patterns with performance data
+-   Update pattern success rates in temporal DB
+
+**Interface:**
+
+```rust
+pub struct PatternMetrics {
+    pattern_id: String,
+    avg_latency_ms: f64,
+    error_rate: f64,
+    usage_count: u64
+}
+
+pub trait ObservabilityAggregator {
+    async fn fetch_metrics(&self, pattern_id: &str) -> Result<PatternMetrics, Error>;
+    fn update_pattern_success_rate(&self, pattern_id: &str, metrics: PatternMetrics);
+}
+```
+
+### 4. AI Agent Integration (TypeScript)
+
+**Location:** `tools/ai/temporal-ai-client.ts`
+
+**Responsibilities:**
+
+-   Bridge between AI agents and Rust recommendation engine
+-   Format recommendations for AI consumption
+-   Cache frequent queries
+
+**Interface:**
+
+```typescript
+export interface TemporalAIClient {
+    queryPatterns(context: string, options?: QueryOptions): Promise<Recommendation[]>;
+    recordFeedback(recommendationId: string, accepted: boolean): Promise<void>;
+}
+```
+
+## Data Model
+
+**Temporal DB Schema (redb tables):**
+
+```rust
+// PATTERNS_TABLE
+struct Pattern {
+    id: String,              // UUID
+    name: String,            // "jwt-authentication"
+    code_snippet: String,    // Example implementation
+    domain: Option<String>,  // "identity"
+    framework: String,       // "fastapi"
+    created_at: i64,         // Unix timestamp
+    success_rate: f64,       // 0.0-1.0
+    metadata: String         // JSON
+}
+
+// PATTERN_USAGE_TABLE
+struct PatternUsage {
+    pattern_id: String,
+    commit_sha: String,
+    file_path: String,
+    used_at: i64
+}
+
+// PATTERN_METRICS_TABLE
+struct PatternMetrics {
+    pattern_id: String,
+    avg_latency_ms: f64,
+    error_rate: f64,
+    p95_latency_ms: f64,
+    updated_at: i64
+}
+```
+
+## Implementation Phases
+
+### Phase 3A: Specification (Current)
+
+-   Create DEV-PRD-020, DEV-SDS-020
+-   Promote DEV-ADR-018 to Active
+
+### Phase 3B: Pattern Extractor
+
+-   Extract patterns from Git history
+-   Store in temporal DB
+
+### Phase 3C: Recommendation Engine
+
+-   Query patterns by context
+-   Rank by relevance and success
+
+### Phase 3D: Observability Integration
+
+-   Fetch span metrics from OpenObserve
+-   Correlate with code patterns
+
+### Phase 3E: AI Agent Integration
+
+-   TypeScript client for recommendations
+-   Cache and feedback loop
+
+```
+
+**Acceptance Criteria:**
+- ✅ DEV-PRD-020 complete with EARS, user stories, DX metrics
+- ✅ DEV-SDS-020 complete with architecture, components, data model
+- ✅ DEV-ADR-018 updated: Status "Proposed" → "Active"
+- ✅ Specifications reviewed and approved
+
+---
+
+### Phase 3B: GREEN - Pattern Extractor Implementation (Blocking: Recommendation Engine)
+
+**Files to Create:**
+
+```
+
+crates/temporal-ai/
+├── Cargo.toml # New Rust crate
+├── src/
+│ ├── lib.rs # Crate root
+│ ├── pattern_extractor.rs # Git pattern extraction
+│ ├── models.rs # Data structures
+│ └── db.rs # Temporal DB integration
+└── tests/
+└── pattern_extractor_tests.rs # Unit tests
+
+````
+
+**File:** `crates/temporal-ai/Cargo.toml`
+
+```toml
+[package]
+name = "temporal-ai"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+redb = "2.0"
+git2 = "0.18"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = "0.4"
+anyhow = "1.0"
+regex = "1.10"
+````
+
+**File:** `crates/temporal-ai/src/pattern_extractor.rs`
+
+```rust
+use git2::{Commit, Repository};
+use regex::Regex;
+use crate::models::Pattern;
+use crate::db::TemporalDB;
+
+pub struct PatternExtractor {
+    repo: Repository,
+    db: TemporalDB,
+}
+
+impl PatternExtractor {
+    pub fn new(repo_path: &str, db: TemporalDB) -> Result<Self, anyhow::Error> {
+        let repo = Repository::open(repo_path)?;
+        Ok(Self { repo, db })
+    }
+
+    pub fn extract_from_commit(&self, commit: &Commit) -> Vec<Pattern> {
+        let mut patterns = Vec::new();
+
+        // Extract generator usage from commit message
+        if let Some(generator) = self.extract_generator_usage(commit) {
+            patterns.push(generator);
+        }
+
+        // Extract file structure patterns from diff
+        if let Some(structure) = self.extract_file_structure(commit) {
+            patterns.push(structure);
+        }
+
+        patterns
+    }
+
+    fn extract_generator_usage(&self, commit: &Commit) -> Option<Pattern> {
+        let message = commit.message()?;
+
+        // Pattern: "feat(domain): add User entity [DEV-ADR-021]"
+        let generator_regex = Regex::new(r"(entity|service|repository|component)").ok()?;
+
+        if let Some(capture) = generator_regex.captures(message) {
+            Some(Pattern {
+                id: uuid::Uuid::new_v4().to_string(),
+                name: format!("{}-generator", &capture[1]),
+                code_snippet: String::new(), // Extracted from diff
+                domain: None,
+                framework: "nx".to_string(),
+                created_at: commit.time().seconds(),
+                success_rate: 1.0, // Initial assumption
+                metadata: serde_json::json!({
+                    "commit_sha": commit.id().to_string(),
+                    "message": message
+                }).to_string()
+            })
+        } else {
+            None
+        }
+    }
+
+    fn extract_file_structure(&self, commit: &Commit) -> Option<Pattern> {
+        // Analyze tree diff to identify patterns:
+        // - libs/{domain}/domain/entities/*.ts → entity pattern
+        // - libs/{domain}/application/use-cases/*.ts → use-case pattern
+        // TODO: Implement diff analysis
+        None
+    }
+
+    pub fn store_pattern(&self, pattern: Pattern) -> Result<(), anyhow::Error> {
+        self.db.insert_pattern(pattern)
+    }
+}
+```
+
+**File:** `crates/temporal-ai/src/db.rs`
+
+```rust
+use redb::{Database, ReadableTable, TableDefinition};
+use crate::models::Pattern;
+
+const PATTERNS_TABLE: TableDefinition<&str, &str> = TableDefinition::new("patterns");
+
+pub struct TemporalDB {
+    db: Database,
+}
+
+impl TemporalDB {
+    pub fn open(path: &str) -> Result<Self, anyhow::Error> {
+        let db = Database::create(path)?;
+        let write_txn = db.begin_write()?;
+        write_txn.open_table(PATTERNS_TABLE)?;
+        write_txn.commit()?;
+
+        Ok(Self { db })
+    }
+
+    pub fn insert_pattern(&self, pattern: Pattern) -> Result<(), anyhow::Error> {
+        let write_txn = self.db.begin_write()?;
+        {
+            let mut table = write_txn.open_table(PATTERNS_TABLE)?;
+            let json = serde_json::to_string(&pattern)?;
+            table.insert(pattern.id.as_str(), json.as_str())?;
+        }
+        write_txn.commit()?;
+        Ok(())
+    }
+
+    pub fn query_patterns(&self, context: &str) -> Result<Vec<Pattern>, anyhow::Error> {
+        let read_txn = self.db.begin_read()?;
+        let table = read_txn.open_table(PATTERNS_TABLE)?;
+
+        let mut results = Vec::new();
+        for item in table.iter()? {
+            let (_, value) = item?;
+            let pattern: Pattern = serde_json::from_str(value.value())?;
+
+            // Simple keyword match (improve with embeddings later)
+            if pattern.name.contains(context) || pattern.metadata.contains(context) {
+                results.push(pattern);
+            }
+        }
+
+        Ok(results)
+    }
+}
+```
+
+**File:** `crates/temporal-ai/src/models.rs`
+
+```rust
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Pattern {
+    pub id: String,
+    pub name: String,
+    pub code_snippet: String,
+    pub domain: Option<String>,
+    pub framework: String,
+    pub created_at: i64,
+    pub success_rate: f64,
+    pub metadata: String,
+}
+```
+
+**Tests:** `crates/temporal-ai/tests/pattern_extractor_tests.rs`
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_extract_generator_usage_from_commit() {
+        // Mock commit with message "feat(identity): add User entity [DEV-ADR-021]"
+        let extractor = PatternExtractor::new(".", TemporalDB::open(":memory:").unwrap()).unwrap();
+        // Assert: Pattern extracted with name "entity-generator"
+    }
+
+    #[test]
+    fn test_store_and_query_patterns() {
+        let db = TemporalDB::open(":memory:").unwrap();
+        let pattern = Pattern {
+            id: "test-1".to_string(),
+            name: "jwt-authentication".to_string(),
+            // ...
+        };
+
+        db.insert_pattern(pattern.clone()).unwrap();
+        let results = db.query_patterns("jwt").unwrap();
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].id, "test-1");
+    }
+}
+```
+
+**Acceptance Criteria:**
+
+-   ✅ Pattern extractor parses Git commits
+-   ✅ Patterns stored in temporal DB (redb)
+-   ✅ Basic keyword query works
+-   ✅ Tests pass: `cargo test --manifest-path crates/temporal-ai/Cargo.toml`
+
+---
+
+### Phase 3C: GREEN - Recommendation Engine (Blocking: AI Integration)
+
+**File:** `crates/temporal-ai/src/recommendation_engine.rs`
+
+```rust
+use crate::db::TemporalDB;
+use crate::models::Pattern;
+
+pub struct RecommendationQuery {
+    pub context: String,
+    pub domain: Option<String>,
+    pub framework: Option<String>,
+}
+
+pub struct Recommendation {
+    pub pattern_name: String,
+    pub example_code: String,
+    pub rationale: String,
+    pub success_rate: f64,
+    pub last_used: i64,
+}
+
+pub struct RecommendationEngine {
+    db: TemporalDB,
+}
+
+impl RecommendationEngine {
+    pub fn new(db: TemporalDB) -> Self {
+        Self { db }
+    }
+
+    pub fn recommend(&self, query: RecommendationQuery) -> Vec<Recommendation> {
+        let patterns = self.db.query_patterns(&query.context).unwrap_or_default();
+
+        // Filter by domain/framework
+        let filtered: Vec<Pattern> = patterns.into_iter()
+            .filter(|p| {
+                if let Some(ref domain) = query.domain {
+                    p.domain.as_ref() == Some(domain)
+                } else {
+                    true
+                }
+            })
+            .filter(|p| {
+                if let Some(ref framework) = query.framework {
+                    &p.framework == framework
+                } else {
+                    true
+                }
+            })
+            .collect();
+
+        // Rank by success rate and recency
+        let mut ranked = filtered;
+        ranked.sort_by(|a, b| {
+            let score_a = a.success_rate + (a.created_at as f64 / 1e9); // Recency bonus
+            let score_b = b.success_rate + (b.created_at as f64 / 1e9);
+            score_b.partial_cmp(&score_a).unwrap()
+        });
+
+        // Top 5 recommendations
+        ranked.into_iter()
+            .take(5)
+            .map(|p| Recommendation {
+                pattern_name: p.name.clone(),
+                example_code: p.code_snippet.clone(),
+                rationale: format!("Used in {} with {}% success rate", p.domain.unwrap_or_default(), (p.success_rate * 100.0) as u32),
+                success_rate: p.success_rate,
+                last_used: p.created_at,
+            })
+            .collect()
+    }
+}
+```
+
+**Tests:** Add to `crates/temporal-ai/tests/recommendation_engine_tests.rs`
+
+```rust
+#[test]
+fn test_recommend_returns_top_patterns() {
+    let db = TemporalDB::open(":memory:").unwrap();
+
+    // Insert 10 patterns
+    for i in 0..10 {
+        db.insert_pattern(Pattern {
+            id: format!("pattern-{}", i),
+            name: "authentication".to_string(),
+            success_rate: 0.5 + (i as f64 / 20.0),  // Varying success
+            created_at: 1000 + i * 100,              // Varying recency
+            // ...
+        }).unwrap();
+    }
+
+    let engine = RecommendationEngine::new(db);
+    let results = engine.recommend(RecommendationQuery {
+        context: "authentication".to_string(),
+        domain: None,
+        framework: None,
+    });
+
+    // Should return top 5, sorted by score
+    assert_eq!(results.len(), 5);
+    assert!(results[0].success_rate >= results[1].success_rate);
+}
+```
+
+**Acceptance Criteria:**
+
+-   ✅ Recommendation engine ranks patterns by success + recency
+-   ✅ Returns top 5 recommendations
+-   ✅ Filters by domain and framework
+-   ✅ Tests pass
+
+---
+
+### Phase 3D: REFACTOR - AI Agent Integration (Blocking: Cycle 3 Exit)
+
+**File:** `tools/ai/temporal-ai-client.ts`
+
+```typescript
+import { spawn } from "child_process";
+
+export interface Recommendation {
+    patternName: string;
+    exampleCode: string;
+    rationale: string;
+    successRate: number;
+    lastUsed: number;
+}
+
+export interface QueryOptions {
+    domain?: string;
+    framework?: string;
+    limit?: number;
+}
+
+export class TemporalAIClient {
+    private rustBinaryPath: string;
+
+    constructor(binaryPath: string = "./crates/temporal-ai/target/release/temporal-ai") {
+        this.rustBinaryPath = binaryPath;
+    }
+
+    async queryPatterns(context: string, options?: QueryOptions): Promise<Recommendation[]> {
+        return new Promise((resolve, reject) => {
+            const args = ["query", context];
+
+            if (options?.domain) args.push("--domain", options.domain);
+            if (options?.framework) args.push("--framework", options.framework);
+
+            const proc = spawn(this.rustBinaryPath, args);
+            let stdout = "";
+
+            proc.stdout.on("data", (data) => {
+                stdout += data.toString();
+            });
+
+            proc.on("close", (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Temporal AI query failed with code ${code}`));
+                } else {
+                    const recommendations: Recommendation[] = JSON.parse(stdout);
+                    resolve(recommendations);
+                }
+            });
+        });
+    }
+
+    async recordFeedback(recommendationId: string, accepted: boolean): Promise<void> {
+        // Update success rate in temporal DB
+        return new Promise((resolve, reject) => {
+            const args = ["feedback", recommendationId, accepted ? "1" : "0"];
+            const proc = spawn(this.rustBinaryPath, args);
+
+            proc.on("close", (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Feedback recording failed`));
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+}
+```
+
+**File:** `crates/temporal-ai/src/bin/temporal-ai.rs`
+
+```rust
+// CLI wrapper for recommendation engine
+
+use clap::{Parser, Subcommand};
+use temporal_ai::{RecommendationEngine, TemporalDB, RecommendationQuery};
+
+#[derive(Parser)]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    Query {
+        context: String,
+        #[arg(long)]
+        domain: Option<String>,
+        #[arg(long)]
+        framework: Option<String>,
+    },
+    Feedback {
+        recommendation_id: String,
+        accepted: u8,  // 0 or 1
+    },
+}
+
+fn main() {
+    let cli = Cli::parse();
+    let db = TemporalDB::open("temporal_db/project_specs.db").unwrap();
+
+    match cli.command {
+        Commands::Query { context, domain, framework } => {
+            let engine = RecommendationEngine::new(db);
+            let results = engine.recommend(RecommendationQuery {
+                context,
+                domain,
+                framework,
+            });
+
+            let json = serde_json::to_string(&results).unwrap();
+            println!("{}", json);
+        }
+        Commands::Feedback { recommendation_id, accepted } => {
+            // Update success rate based on feedback
+            // TODO: Implement feedback loop
+        }
+    }
+}
+```
+
+**Update:** `crates/temporal-ai/Cargo.toml`
+
+```toml
+[[bin]]
+name = "temporal-ai"
+path = "src/bin/temporal-ai.rs"
+
+[dependencies]
+# Add to existing:
+clap = { version = "4.4", features = ["derive"] }
+```
+
+**Integration Test:** `tests/integration/temporal_ai.test.ts`
+
+```typescript
+import { TemporalAIClient } from "../../tools/ai/temporal-ai-client";
+
+describe("Temporal AI Integration", () => {
+    let client: TemporalAIClient;
+
+    beforeAll(() => {
+        // Build Rust binary first
+        execSync("cargo build --release --manifest-path crates/temporal-ai/Cargo.toml");
+        client = new TemporalAIClient();
+    });
+
+    test("queries patterns and returns recommendations", async () => {
+        const results = await client.queryPatterns("authentication", {
+            framework: "fastapi",
+        });
+
+        expect(results).toBeInstanceOf(Array);
+        expect(results.length).toBeGreaterThan(0);
+        expect(results[0]).toHaveProperty("patternName");
+        expect(results[0]).toHaveProperty("successRate");
+    });
+
+    test("records developer feedback", async () => {
+        await expect(client.recordFeedback("pattern-123", true)).resolves.not.toThrow();
+    });
+});
+```
+
+**Acceptance Criteria:**
+
+-   ✅ TypeScript client calls Rust binary
+-   ✅ Recommendations returned as JSON
+-   ✅ Feedback loop functional
+-   ✅ Integration test passes
+
+---
+
+### Cycle 3 Exit Criteria
+
+**Validation Commands:**
+
+```bash
+cargo test --manifest-path crates/temporal-ai/Cargo.toml
+pnpm test:integration tests/integration/temporal_ai.test.ts
+just validate-temporal-ai
+```
+
+**Success Metrics:**
+
+-   ✅ DEV-ADR-018 status: Proposed → Active
+-   ✅ Pattern extraction from Git history functional
+-   ✅ Recommendation engine returns ranked suggestions
+-   ✅ AI agent integration working (TypeScript ↔ Rust)
+-   ✅ Developer acceptance rate >80% (measure after deployment)
+
+**Traceability:**
+
+-   Update `docs/traceability_matrix.md`: Add DEV-PRD-020, DEV-SDS-020
+-   Mark DEV-ADR-018 as "Active"
+-   Create work summary: `docs/work-summaries/temporal-ai-guidance-completion.md`
+
+---
+
+## Implementation Sequence & Dependencies
+
+```mermaid
+graph TD
+    A[Start: VibesPro v0.3.0] --> B[Cycle 1: Python Logfire]
+    B --> C{Cycle 1 Exit Gates}
+    C -->|Pass| D[Cycle 2: Generator Spec]
+    C -->|Fail| B
+
+    D --> E{Cycle 2 Exit Gates}
+    E -->|Pass| F[Cycle 3: Temporal AI]
+    E -->|Fail| D
+
+    F --> G{Cycle 3 Exit Gates}
+    G -->|Pass| H[VibesPro v1.0<br/>Production Ready]
+    G -->|Fail| F
+
+    B --> B1[Phase 1A: RED Tests]
+    B1 --> B2[Phase 1B: GREEN Implementation]
+    B2 --> B3[Phase 1C: REFACTOR Docs]
+
+    D --> D1[Phase 2A: RED Validation]
+    D1 --> D2[Phase 2B: GREEN TODO Elimination]
+    D2 --> D3[Phase 2C: REFACTOR Utils]
+
+    F --> F1[Phase 3A: RED Specs]
+    F1 --> F2[Phase 3B: GREEN Extractor]
+    F2 --> F3[Phase 3C: GREEN Recommender]
+    F3 --> F4[Phase 3D: REFACTOR Integration]
+
+    style H fill:#99ff99
+    style B fill:#ff9999
+    style D fill:#ffcc99
+    style F fill:#99ccff
+```
+
+**Critical Path:**
+
+1. **Cycle 1** (Python Logfire) blocks unified observability
+2. **Cycle 2** (Generator Spec) blocks AI generator quality
+3. **Cycle 3** (Temporal AI) blocks pattern intelligence
+
+**Parallelization Opportunities:**
+
+-   ❌ None - Each cycle depends on previous completion
+-   Within each cycle: RED/GREEN/REFACTOR phases are sequential (TDD)
+
+---
+
+## AI Agent Task Specifications
+
+### Cycle 1 Tasks (Python Logfire)
+
+**Task 1.A.1: Create Test Infrastructure**
+
+```yaml
+objective: Create pytest test files for Logfire implementation
+files_to_create:
+  - tests/python/logging/test_logfire_configuration.py
+  - tests/python/logging/test_logfire_fastapi.py
+  - tests/python/logging/test_logfire_trace_correlation.py
+  - tests/python/logging/test_logfire_metadata.py
+  - tests/python/logging/conftest.py
+test_requirements:
+  - Use pytest fixtures for FastAPI test client
+  - Mock OTLP collector using pytest-httpserver
+  - Test cases must initially FAIL (RED phase)
+  - Coverage: configuration, instrumentation, correlation, metadata
+acceptance:
+  - "pytest tests/python/logging/ --collect-only" shows 15+ tests
+  - "pytest tests/python/logging/" exits with failures (expected)
+traceability: DEV-PRD-018, DEV-SDS-018
+```
+
+**Task 1.B.1: Implement Logfire Configuration**
+
+```yaml
+objective: Replace stub implementation with working Logfire SDK integration
+files_to_modify:
+  - libs/python/vibepro_logging.py (lines 40-80, 120-143)
+code_patterns:
+  - Import: "import logfire, from opentelemetry import trace"
+  - Function: configure_logger() - Initialize Logfire with OTLP endpoint
+  - Function: bootstrap_logfire() - Call logfire.instrument_fastapi(app)
+  - Function: get_logger() - Return logfire.with_tags(category, **metadata)
+environment_variables:
+  - SERVICE_NAME (default: "unknown-service")
+  - OTEL_EXPORTER_OTLP_ENDPOINT (default: "http://localhost:4318")
+  - APP_ENV (default: "development")
+  - APP_VERSION (default: "unknown")
+acceptance:
+  - "pytest tests/python/logging/" exits with 0 failures (GREEN)
+  - "mypy libs/python/vibepro_logging.py --strict" passes
+traceability: DEV-SDS-018, DEV-ADR-017
+```
+
+**Task 1.C.1: Update Observability Documentation**
+
+```yaml
+objective: Add Python FastAPI integration guide to observability docs
+files_to_modify:
+  - docs/observability/README.md (add section after line 150)
+  - templates/{{project_slug}}/docs/observability/logging.md.j2 (remove TODO line 5)
+content_requirements:
+  - Code examples: Basic setup, structured logging, environment config
+  - Installation instructions: pip install logfire opentelemetry-exporter-otlp-proto-http
+  - Configuration: Environment variables table
+acceptance:
+  - "just docs-lint" passes (markdownlint)
+  - "grep 'TODO' docs/observability/" returns 0 matches
+  - Python examples render correctly in markdown
+traceability: DEV-PRD-018
+```
+
+---
+
+### Cycle 2 Tasks (Generator Spec)
+
+**Task 2.A.1: Create Spec Validation Tests**
+
+```yaml
+objective: Create Jest tests detecting TODO markers and validating spec completeness
+files_to_create:
+  - tests/generators/spec_completeness.test.ts
+  - tests/generators/spec_schema_examples.test.ts
+  - tests/generators/ai_agent_simulation.test.ts
+  - tests/generators/spec_mapping_matrix.test.ts
+test_requirements:
+  - Scan for TODO/FIXME/TBD/PLACEHOLDER markers
+  - Validate 9 required sections present
+  - Check JSON Schema examples with Ajv validator
+  - Simulate AI generating schema.json from spec
+acceptance:
+  - "pnpm test:jest tests/generators/spec_*.test.ts" shows failures (expected RED)
+  - Tests detect current TODO markers in GENERATOR_SPEC.md
+traceability: DEV-PRD-019, DEV-SDS-019
+```
+
+**Task 2.B.1: Replace TODO Markers with Content**
+
+```yaml
+objective: Eliminate all TODO markers in GENERATOR_SPEC.md with concrete guidance
+file_to_modify: templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md
+sections_to_complete:
+  - lines 16: Add decision tree (Mermaid diagram)
+  - lines 72: Add validation pattern examples (regex, enum, conditional)
+  - lines 103: Complete TypeScript type mapping matrix (10+ types)
+  - lines 165: Add generator composition example (multi-generator workflow)
+  - lines 205: Add @nx/devkit utility examples (generateFiles, updateJson, names)
+content_patterns:
+  - Code blocks: Minimum 15 examples (JSON Schema, TypeScript, bash)
+  - Tables: Type mapping matrix (10 rows), special cases (4 rows)
+  - Diagrams: 1 Mermaid decision tree, 1 composition flow
+acceptance:
+  - "grep -r 'TODO\|FIXME\|TBD' GENERATOR_SPEC.md" returns 0 matches
+  - "pnpm test:jest tests/generators/spec_*.test.ts" exits 0 (GREEN)
+  - AI simulation test generates valid schema.json
+traceability: DEV-ADR-019
+```
+
+**Task 2.C.1: Add Validation Utilities**
+
+```yaml
+objective: Create reusable spec validation helpers and Just recipe
+files_to_create:
+  - tests/generators/utils.ts (function: validateGeneratorSpec)
+files_to_modify:
+  - justfile (add recipe: validate-generator-specs at line ~390)
+  - docs/plans/merged_generator_spec_completion_plan.md (add completion report)
+implementation:
+  - validateGeneratorSpec() checks: TODO markers, required sections, code block count
+  - Just recipe runs: spec_completeness, spec_schema_examples, ai_agent_simulation tests
+  - Completion report includes: validation results, traceability, artifacts
+acceptance:
+  - "just validate-generator-specs" runs all spec tests
+  - Validation helper returns { valid: true, errors: [] } for completed specs
+traceability: DEV-SDS-019
+```
+
+---
+
+### Cycle 3 Tasks (Temporal AI)
+
+**Task 3.A.1: Author AI Guidance Specifications**
+
+```yaml
+objective: Create PRD and SDS for Temporal AI Guidance Fabric
+files_to_create:
+    - docs/dev_prd_ai_guidance.md (DEV-PRD-020)
+    - docs/dev_sds_ai_guidance.md (DEV-SDS-020)
+files_to_modify:
+    - docs/dev_adr.md (DEV-ADR-018: Status "Proposed" → "Active")
+content_requirements:
+    - PRD: EARS tables, user stories (3+), DX metrics
+    - SDS: Architecture diagram (Mermaid), components (4), data model (redb schema)
+    - ADR: Update dependencies section (mark ADR-016/17 as complete)
+acceptance:
+    - PRD contains ≥3 user stories with acceptance criteria
+    - SDS contains architecture diagram + 4 component interfaces
+    - DEV-ADR-018 status updated to "Active"
+traceability: DEV-ADR-018
+```
+
+**Task 3.B.1: Implement Pattern Extractor**
+
+```yaml
+objective: Create Rust crate extracting code patterns from Git history
+files_to_create:
+  - crates/temporal-ai/Cargo.toml
+  - crates/temporal-ai/src/lib.rs
+  - crates/temporal-ai/src/pattern_extractor.rs
+  - crates/temporal-ai/src/models.rs
+  - crates/temporal-ai/src/db.rs
+  - crates/temporal-ai/tests/pattern_extractor_tests.rs
+dependencies:
+  - redb = "2.0"
+  - git2 = "0.18"
+  - serde = { version = "1.0", features = ["derive"] }
+  - regex = "1.10"
+implementation:
+  - PatternExtractor::extract_from_commit() parses commit message and diff
+  - TemporalDB::insert_pattern() stores in redb
+  - Pattern struct: id, name, code_snippet, domain, framework, created_at, success_rate
+acceptance:
+  - "cargo test --manifest-path crates/temporal-ai/Cargo.toml" passes
+  - Patterns stored in temporal_db/project_specs.db
+traceability: DEV-SDS-020
+```
+
+**Task 3.C.1: Implement Recommendation Engine**
+
+```yaml
+objective: Create pattern recommendation engine with ranking
+file_to_create: crates/temporal-ai/src/recommendation_engine.rs
+implementation:
+    - RecommendationEngine::recommend() queries temporal DB
+    - Filters by domain and framework
+    - Ranks by: success_rate + recency_bonus
+    - Returns top 5 Recommendation structs
+data_flow:
+    - Input: RecommendationQuery { context, domain?, framework? }
+    - Output: Vec<Recommendation> (sorted by score descending)
+acceptance:
+    - Returns top 5 recommendations for given context
+    - Ranking: higher success_rate + more recent = higher rank
+    - Tests pass: recommendation_engine_tests.rs
+traceability: DEV-SDS-020
+```
+
+**Task 3.D.1: Create TypeScript AI Client**
+
+```yaml
+objective: Bridge TypeScript AI agents with Rust recommendation engine
+files_to_create:
+  - tools/ai/temporal-ai-client.ts
+  - crates/temporal-ai/src/bin/temporal-ai.rs (CLI wrapper)
+  - tests/integration/temporal_ai.test.ts
+implementation:
+  - TemporalAIClient spawns Rust binary: ./crates/temporal-ai/target/release/temporal-ai
+  - CLI subcommands: query (returns JSON), feedback (updates success rate)
+  - Integration test builds Rust binary before running
+dependencies:
+  - Add to Cargo.toml: clap = { version = "4.4", features = ["derive"] }
+acceptance:
+  - "pnpm test:integration tests/integration/temporal_ai.test.ts" passes
+  - client.queryPatterns('authentication') returns Recommendation[]
+  - client.recordFeedback('pattern-123', true) updates DB
+traceability: DEV-SDS-020
+```
+
+---
+
+## Validation & Quality Gates
+
+### Per-Cycle Gates
+
+**Cycle 1 Exit Gate:**
+
+```bash
+# Must pass all before proceeding to Cycle 2
+pytest tests/python/logging/ -v --cov=libs/python/vibepro_logging --cov-report=term --cov-fail-under=95
+just observe-test-all
+just docs-lint
+grep -r "TODO" docs/observability/  # Must return 0 matches
+```
+
+**Cycle 2 Exit Gate:**
+
+```bash
+# Must pass all before proceeding to Cycle 3
+just validate-generator-specs
+pnpm test:jest tests/generators/ -v
+grep -r "TODO\|FIXME" templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md  # Must return 0 matches
+```
+
+**Cycle 3 Exit Gate:**
+
+```bash
+# Must pass all before v1.0 release
+cargo test --manifest-path crates/temporal-ai/Cargo.toml
+pnpm test:integration tests/integration/temporal_ai.test.ts
+just validate-temporal-ai
+# Developer acceptance rate >80% (measured post-deployment)
+```
+
+---
+
+## Traceability Updates
+
+### Post-Cycle 1
+
+**File:** `docs/traceability_matrix.md`
+
+```markdown
+| Spec ID     | Status      | Implementation                 | Tests                            | Documentation                |
+| ----------- | ----------- | ------------------------------ | -------------------------------- | ---------------------------- |
+| DEV-PRD-018 | ✅ Complete | libs/python/vibepro_logging.py | tests/python/logging/            | docs/observability/README.md |
+| DEV-SDS-018 | ✅ Complete | libs/python/vibepro_logging.py | tests/ops/test_vector_logfire.sh | templates/.../logging.md.j2  |
+| DEV-ADR-017 | ✅ Complete | Python Logfire SDK             | Integration tests                | Observability docs           |
+```
+
+**File:** `docs/work-summaries/logfire-cycle2a-completion.md`
+
+```markdown
+# Logfire Cycle 2A Completion Report
+
+**Date:** [Auto-populated]
+**Cycle:** 1 (Python Logfire Implementation)
+**Status:** ✅ Complete
+
+## Objectives Achieved
+
+-   ✅ Python FastAPI auto-instrumentation functional
+-   ✅ Trace-log correlation working
+-   ✅ PII redaction validated in Vector
+-   ✅ 95%+ FastAPI endpoints auto-traced
+
+## Validation Results
+
+-   pytest coverage: 97%
+-   Integration tests: 10/10 passing
+-   Documentation: 0 TODO markers
+
+## Traceability
+
+-   DEV-PRD-018: Complete
+-   DEV-SDS-018: Complete
+-   DEV-ADR-017: Complete
+```
+
+### Post-Cycle 2
+
+```markdown
+| Spec ID     | Status      | Implementation              | Tests                             | Documentation   |
+| ----------- | ----------- | --------------------------- | --------------------------------- | --------------- |
+| DEV-PRD-019 | ✅ Complete | GENERATOR_SPEC.md (0 TODOs) | tests/generators/spec\_\*.test.ts | Spec template   |
+| DEV-SDS-019 | ✅ Complete | Validation utilities        | Jest + utils                      | Completion plan |
+| DEV-ADR-019 | ✅ Complete | Complete spec template      | AI simulation test                | Generator docs  |
+```
+
+### Post-Cycle 3
+
+```markdown
+| Spec ID     | Status      | Implementation                  | Tests               | Documentation          |
+| ----------- | ----------- | ------------------------------- | ------------------- | ---------------------- |
+| DEV-PRD-020 | ✅ Complete | crates/temporal-ai/             | temporal_ai.test.ts | dev_prd_ai_guidance.md |
+| DEV-SDS-020 | ✅ Complete | Recommendation engine           | Rust unit tests     | dev_sds_ai_guidance.md |
+| DEV-ADR-018 | ✅ Active   | Pattern extractor + recommender | Integration tests   | ADR updated            |
+```
+
+---
+
+## Success Metrics Dashboard
+
+| Metric                              | Current (v0.3.0) | Target (v1.0)      | Cycle |
+| ----------------------------------- | ---------------- | ------------------ | ----- |
+| **Python Observability Coverage**   | 0%               | 95%+               | 1     |
+| **FastAPI Auto-Tracing**            | N/A              | 95% endpoints      | 1     |
+| **Generator Spec TODO Markers**     | 8+               | 0                  | 2     |
+| **AI Schema Generation Success**    | Unknown          | 90%+ first attempt | 2     |
+| **Pattern Recommendation Accuracy** | N/A              | 80%+ acceptance    | 3     |
+| **Temporal DB Pattern Count**       | 0                | 100+               | 3     |
+| **AI Guidance Query Latency**       | N/A              | <100ms             | 3     |
+
+---
+
+## Risk Mitigation
+
+| Risk                                    | Probability | Impact | Mitigation                                              |
+| --------------------------------------- | ----------- | ------ | ------------------------------------------------------- |
+| Logfire SDK API changes                 | Low         | High   | Pin exact version in Cargo.toml, monitor release notes  |
+| OpenObserve sink authentication failure | Medium      | Medium | Comprehensive test coverage in test_openobserve_sink.sh |
+| AI simulation test false positives      | Medium      | High   | Use real Ajv validation, not mocked JSON                |
+| Temporal DB performance degradation     | Low         | Medium | Benchmark pattern queries (<100ms SLA)                  |
+| Developer rejection of AI suggestions   | Medium      | High   | Feedback loop in Cycle 3D measures acceptance rate      |
 
 ---
 
 ## Conclusion
 
-VibesPro has achieved significant maturity with v0.3.0, delivering a production-ready observability stack, comprehensive AI-enhanced development workflows, and resolved critical dependency issues. The template now offers a more stable foundation for generated projects.
+This implementation plan provides:
 
-**Current Status Highlights**:
+✅ **MECE TDD Cycles** - Strict Red-Green-Refactor phases with clear exit criteria
+✅ **Critical Path Prioritization** - Python Logfire → Generator Spec → Temporal AI sequence blocks key features
+✅ **High-Detail AI Tasks** - Specific file paths, code patterns, test requirements, acceptance criteria
+✅ **Architecture Diagrams** - Mermaid visualizations for dependencies, flows, and state transitions
+✅ **Focused Gap Analysis** - Only incomplete specifications (DEV-PRD-018, PRD-019, ADR-018)
+✅ **Traceability** - Every task maps to spec IDs with post-cycle matrix updates
 
-✅ **Major Critical Issues Resolved**:
-
--   Nx dependency alignment (all packages at v22.0.2)
--   Python test coverage gaps (pytest exclusions removed, temporal tests functional)
--   Generator specification template (comprehensive framework implemented)
--   Distributed AGENT system (13 AGENT.md files across project structure)
--   Logfire instrumentation cycle (complete documentation and implementation)
-
-⚠️ **Remaining Areas for Improvement**:
-
--   AGENT validation tooling (partial - files exist, validation recipe needed)
--   Prompt execution automation (manual workflow documented)
--   Windows PowerShell wrapper scripts (nice-to-have)
-
-**Immediate Focus for Continued Improvement**:
-
-1. Implement `just validate-agent-files` recipe
-2. Create Windows PowerShell wrappers for bash scripts
-3. Add centralized token budget configuration
-4. Enhance prompt execution automation options
-
-**Status Summary**:
-
--   ✅ Template system: Production-ready
--   ✅ Observability: Production-ready
--   ✅ Core dependencies: Aligned and functional
--   ✅ Test coverage: Comprehensive (including temporal database tests)
--   ✅ AI workflows: Comprehensive AGENT system implemented
--   ⚠️ Tooling gaps: Minor enhancements needed
-
-**Confidence Level**: High (core systems solid, critical issues resolved, only minor enhancements remain)
+**Next Action:** Execute Cycle 1 Phase 1A (Python Logfire RED tests) when ready to begin implementation.

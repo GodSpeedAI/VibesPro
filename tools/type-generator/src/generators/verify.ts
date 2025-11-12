@@ -75,7 +75,7 @@ function matchTokenSets(tsTokens: string[], pyTokens: string[]): boolean {
 
     for (let index = 0; index < remaining.length; index += 1) {
       const candidate = remaining[index];
-      if (matchSingleType(tsToken, candidate)) {
+      if (candidate && matchSingleType(tsToken, candidate)) {
         remaining.splice(index, 1);
         matched = true;
         break;

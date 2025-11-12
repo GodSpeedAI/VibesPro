@@ -7,7 +7,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import type { GeneratedDocs, ProjectContext, ValidationResult } from './types.js';
 
 export class DocumentationGenerator {
-  constructor(private readonly outputDir: string) {
+  constructor(outputDir: string) {
     if (!existsSync(outputDir)) {
       mkdirSync(outputDir, { recursive: true });
     }

@@ -37,24 +37,24 @@ jobs:
 
       - name: Install just
         run: |
-          # Attempt official installer then fallback to apt; do not fail the job on installer network issues
+          # Prefer official installer and fail fast if it has issues
           set -euo pipefail
-          if curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin; then
-            sudo chmod +x /usr/local/bin/just
-          else
-            echo "just installer failed; attempting apt fallback"
-            sudo apt-get update || true
-            sudo apt-get install -y just || echo "could not install just; continuing without just"
-          fi
-          just --version || true
+          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+          sudo chmod +x /usr/local/bin/just
+          just --version
 
       - name: Install SOPS
         run: |
-          SOPS_VERSION="3.9.3"
-          SOPS_CHECKSUM="835ee92ef7269e1e40d69cbe5e1042975f3cd38044e8a0fa3c1a13543b7dcfaa"
-          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
-          echo "${SOPS_CHECKSUM}  sops-v${SOPS_VERSION}.linux.amd64" | sha256sum -c -
-          sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+          set -euo pipefail
+          SOPS_VERSION="3.11.0"
+          SOPS_CHECKSUM="775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
+          SOPS_BINARY="sops-v${SOPS_VERSION}.linux.amd64"
+          SOPS_SHA="${SOPS_BINARY}.sha256"
+          rm -f "${SOPS_BINARY}" "${SOPS_SHA}"
+          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_BINARY}"
+          echo "${SOPS_CHECKSUM}  ${SOPS_BINARY}" > "${SOPS_SHA}"
+          sha256sum -c "${SOPS_SHA}"
+          sudo mv "${SOPS_BINARY}" /usr/local/bin/sops
           sudo chmod +x /usr/local/bin/sops
           sops --version
 
@@ -107,8 +107,8 @@ jobs:
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
             source "$HOME/.cargo/env" || true
           fi
-          rustup toolchain install nightly-2025-11-01 --no-self-update || true
-          rustup override set nightly-2025-11-01 || true
+          rustup toolchain install nightly-2024-11-01 --no-self-update
+          rustup override set nightly-2024-11-01
 
       - name: Validate Vector config
         run: |

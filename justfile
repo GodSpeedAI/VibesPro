@@ -85,7 +85,17 @@ verify-node:
 # --- Developer Experience ---
 dev:
 	@echo "🚀 Starting development servers..."
-	pnpm exec nx run-many --target=serve --all --parallel=5
+	@if command -v pnpm >/dev/null 2>&1; then \
+		if [ -f nx.json ]; then \
+			pnpm exec nx run-many --target=serve --all --parallel=5; \
+		else \
+			echo "❌ nx.json not found. Run 'just setup' first."; \
+			exit 1; \
+		fi; \
+	else \
+		echo "❌ pnpm not found. Run 'just setup' first."; \
+		exit 1; \
+	fi
 
 spec-matrix:
 	pnpm spec:matrix
@@ -852,3 +862,98 @@ observe-verify:
 	echo "   2. Source the secrets: source .secrets.env.sops" ; \
 	echo "   3. Restart Vector to enable OpenObserve sink: just observe-start" ; \
 	echo "   4. Check OpenObserve UI for ingested traces"
+
+# --- PHASE-004: Type Safety & CI Integration ---
+
+# Run all type checks (TypeScript + Python)
+type-check: type-check-ts type-check-py
+	@echo "✅ All type checks passed"
+
+# TypeScript type checking
+type-check-ts:
+	@echo "🔍 Running TypeScript type check..."
+	@pnpm exec tsc --noEmit --project tsconfig.json
+	@echo "✅ TypeScript types valid"
+
+# TypeScript lint with type-aware rules
+lint-ts:
+	@echo "🔍 Running TypeScript ESLint..."
+	@pnpm exec eslint tools tests --ext .ts --max-warnings 0
+	@echo "✅ TypeScript lint passed"
+
+# Python type checking with mypy
+type-check-py:
+	@echo "🔍 Running Python mypy strict check..."
+	@uv run mypy --strict libs/python
+	@echo "✅ Python types valid"
+
+# Python type coverage report
+type-coverage-py:
+	@echo "📊 Generating Python type coverage report..."
+	@uv run mypy --strict --any-exprs-report=mypy-report libs/python || true
+	@if [ -f mypy-report/index.txt ]; then cat mypy-report/index.txt; fi
+
+# Fix all auto-fixable type issues
+type-fix:
+	@echo "🔧 Auto-fixing type issues..."
+	@pnpm exec eslint tools tests --ext .ts --fix
+	@uv run ruff check --fix libs/python
+	@echo "✅ Auto-fixes applied"
+
+# Pre-commit type validation (fast)
+type-pre-commit:
+	@echo "⚡ Running pre-commit type checks..."
+	@pre-commit run --all-files mypy
+	@pre-commit run --all-files eslint
+	@echo "✅ Pre-commit checks passed"
+
+
+# Validate generator specification completeness
+validate-generator-specs:
+	@echo "🔍 Validating generator specifications..."
+	@pnpm exec jest tests/generators/spec_completeness.test.ts --passWithNoTests
+	@pnpm exec jest tests/generators/spec_schema_examples.test.ts --passWithNoTests
+	@echo "✅ All generator specs valid"
+
+# --- Temporal AI Pattern Search ---
+
+# Initialize temporal-ai database
+temporal-ai-init:
+	@echo "🗄️  Initializing temporal-ai database..."
+	@if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+		echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+		exit 1; \
+	fi
+	@./crates/temporal-ai/target/release/temporal-ai init
+
+# Refresh pattern database from Git history
+temporal-ai-refresh COMMITS="1000":
+	@echo "🔄 Refreshing pattern database (last {{COMMITS}} commits)..."
+	@if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+		echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+		exit 1; \
+	fi
+	@./crates/temporal-ai/target/release/temporal-ai refresh --commits {{COMMITS}}
+
+# Query similar patterns
+temporal-ai-query QUERY TOP="5":
+	@echo "🔍 Searching for: {{QUERY}}"
+	@if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+		echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+		exit 1; \
+	fi
+	@./crates/temporal-ai/target/release/temporal-ai query "{{QUERY}}" --top {{TOP}}
+
+# Show temporal-ai database statistics
+temporal-ai-stats:
+	@if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+		echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+		exit 1; \
+	fi
+	@./crates/temporal-ai/target/release/temporal-ai stats
+
+# Build temporal-ai CLI
+temporal-ai-build:
+	@echo "🛠️  Building temporal-ai..."
+	@cd crates/temporal-ai && cargo build --release
+	@echo "✅ Temporal AI CLI built at: crates/temporal-ai/target/release/temporal-ai"

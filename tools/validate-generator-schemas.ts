@@ -11,7 +11,7 @@ function isModuleMissing(error: unknown, moduleName: string): boolean {
   );
 }
 
-async function loadAjv() {
+async function loadAjv(): Promise<typeof import('ajv').default | null> {
   try {
     const mod = await import('ajv');
     return mod.default ?? (mod as unknown as typeof import('ajv').default);
@@ -26,7 +26,7 @@ async function loadAjv() {
   }
 }
 
-async function loadGlob() {
+async function loadGlob(): Promise<typeof import('glob').glob | null> {
   try {
     const mod = await import('glob');
     return mod.glob;
@@ -41,7 +41,7 @@ async function loadGlob() {
   }
 }
 
-async function validate() {
+async function validate(): Promise<void> {
   const AjvCtor = await loadAjv();
   const globFn = await loadGlob();
 

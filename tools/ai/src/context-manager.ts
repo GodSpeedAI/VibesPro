@@ -429,6 +429,9 @@ export class AIContextManager {
 
     if (selected.length === 0 && ranked.length > 0) {
       const best = ranked[0];
+      if (!best) {
+        return selected;
+      }
       const capped =
         best.tokens <= availableTokens
           ? best
@@ -437,11 +440,14 @@ export class AIContextManager {
               ...this.tokenizer.trim(best.content, availableTokens),
             };
 
-      selected.push({
-        ...best,
-        content: capped.content,
-        tokens: capped.tokens,
-      });
+      if (capped.source) {
+        selected.push({
+          ...best,
+          content: capped.content,
+          tokens: capped.tokens,
+          source: capped.source,
+        });
+      }
     }
 
     return selected;

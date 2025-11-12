@@ -58,7 +58,7 @@ describe('bundle-context.sh script', () => {
       // Check if file is executable (Unix permissions)
       const isExecutable = (stats.mode & 0o111) !== 0;
       expect(isExecutable).toBe(true);
-    } catch (error) {
+    } catch {
       throw new Error(`Script not found or not executable: ${scriptPath}`);
     }
   });

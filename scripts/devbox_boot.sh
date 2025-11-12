@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ "${DEVBOX_BOOT_SILENT:-0}" == "1" ]]; then
+  exit 0
+fi
+
 # Devbox boot script - displays banner and basic diagnostics
 # Called when entering devbox shell
 
