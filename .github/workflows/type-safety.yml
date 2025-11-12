@@ -16,7 +16,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: "pnpm@9.0.0"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,7 +28,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run TypeScript Compiler Check
-        run: pnpm exec tsc --noEmit --project tsconfig.json
+        run: |
+          # Run tsc and capture errors to a file so the summary step can show them clearly
+          pnpm exec tsc --noEmit --project tsconfig.json 2> .github/tsc-errors.txt || (
+            echo "❌ TypeScript compilation failed — errors below:";
+            cat .github/tsc-errors.txt;
+            exit 1
+          )
 
       - name: Run ESLint with Type Checking
         run: pnpm exec eslint tools tests --ext .ts --max-warnings 0
@@ -52,7 +58,12 @@ jobs:
 
       - name: Run mypy strict check with report
         run: |
-          python -m mypy --strict --any-exprs-report=mypy-report libs/python
+          # Run mypy and capture stderr to a file so failures are clearly printed in the logs
+          python -m mypy --strict --any-exprs-report=mypy-report libs/python 2> .github/mypy-errors.txt || (
+            echo "❌ mypy type checking failed — errors below:";
+            cat .github/mypy-errors.txt;
+            exit 1
+          )
 
       - name: Print mypy coverage summary
         if: always()
