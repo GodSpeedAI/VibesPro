@@ -26,7 +26,9 @@ function gatherTests(dir: string): string[] {
 
 async function runTestFile(
   file: string,
-): Promise<{ file: string; ok: true; ms: number } | { file: string; ok: false; error: unknown; ms: number }> {
+): Promise<
+  { file: string; ok: true; ms: number } | { file: string; ok: false; error: unknown; ms: number }
+> {
   const start = performance.now();
   try {
     // Using dynamic import so tsx can compile on the fly
