@@ -70,6 +70,8 @@ describe('api-service generator', () => {
       });
 
       const firstContent = tree.read('apps/test-api/main.py', 'utf-8');
+      // use firstContent to satisfy unused variable checks and ensure file exists
+      expect(firstContent).toBeTruthy();
 
       await apiServiceGenerator(tree, {
         name: 'test-api',
@@ -78,7 +80,7 @@ describe('api-service generator', () => {
 
       const secondContent = tree.read('apps/test-api/main.py', 'utf-8');
 
-      const logfireCount = (secondContent.match(/bootstrap_logfire/g) || []).length;
+      const logfireCount = ((secondContent ?? '').match(/bootstrap_logfire/g) || []).length;
       expect(logfireCount).toBe(1);
     });
   });
@@ -183,6 +185,8 @@ describe('api-service generator', () => {
       });
 
       const firstContent = tree.read('apps/test-api/main.py', 'utf-8');
+      // use firstContent to satisfy unused variable checks and ensure file exists
+      expect(firstContent).toBeTruthy();
 
       await apiServiceGenerator(tree, {
         name: 'test-api',
@@ -190,7 +194,7 @@ describe('api-service generator', () => {
 
       const secondContent = tree.read('apps/test-api/main.py', 'utf-8');
 
-      const openapiCount = (secondContent.match(/def export_openapi/g) || []).length;
+      const openapiCount = ((secondContent ?? '').match(/def export_openapi/g) || []).length;
       expect(openapiCount).toBe(1);
     });
   });
