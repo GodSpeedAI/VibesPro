@@ -45,11 +45,16 @@ jobs:
 
       - name: Install SOPS
         run: |
+          set -euo pipefail
           SOPS_VERSION="3.11.0"
-          SOPS_CHECKSUM="f3d74d83006954f0d8cf770ad7e5380504270ded5a62f33eb2548ce5461af3b3"
-          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
-          echo "${SOPS_CHECKSUM}  sops-v${SOPS_VERSION}.linux.amd64" | sha256sum -c -
-          sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+          SOPS_CHECKSUM="775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
+          SOPS_BINARY="sops-v${SOPS_VERSION}.linux.amd64"
+          SOPS_SHA="${SOPS_BINARY}.sha256"
+          rm -f "${SOPS_BINARY}" "${SOPS_SHA}"
+          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_BINARY}"
+          echo "${SOPS_CHECKSUM}  ${SOPS_BINARY}" > "${SOPS_SHA}"
+          sha256sum -c "${SOPS_SHA}"
+          sudo mv "${SOPS_BINARY}" /usr/local/bin/sops
           sudo chmod +x /usr/local/bin/sops
           sops --version
 
