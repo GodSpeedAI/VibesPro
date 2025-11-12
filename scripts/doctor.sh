@@ -57,5 +57,39 @@ for cmd in git jq uv corepack postgresql; do
   fi
 done
 
-echo "
-Doctor finished. No secrets are printed by this script."
+printf '\nDev / environment tool availability checks:\n'
+failed=0
+
+check_and_print() {
+  local name="$1"
+  local hint="$2"
+  if command -v "${name}" >/dev/null 2>&1; then
+    # Try to print a one-line version; fall back to 'available'
+    ver=$("${name}" --version 2>&1 || true)
+    if [[ -n "${ver}" ]]; then
+      # show first non-empty line
+      printf '  %s: ' "${name}"; echo "${ver}" | sed -n '1p'
+    else
+      printf '  %s: available\n' "${name}"
+    fi
+  else
+    printf '  %s: (not found)%s\n' "${name}" "${hint}"
+    failed=$((failed+1))
+  fi
+}
+
+# Check devbox, sops, vector, direnv
+check_and_print devbox " — install: https://github.com/jetpack-io/devbox"
+check_and_print sops " — install: https://github.com/mozilla/sops"
+check_and_print vector " — install: https://vector.dev/"
+check_and_print direnv " — install: https://direnv.net/"
+
+printf '\nDoctor finished. No secrets are printed by this script.\n'
+
+if [[ "${failed:-0}" -ne 0 ]]; then
+  printf '\nSummary: %s check(s) missing. Install the missing tools or consult the links above.\n' "${failed}"
+  exit 1
+else
+  printf '\nSummary: all checks passed.\n'
+fi
+printf '\nDoctor finished. No secrets are printed by this script.\n'
