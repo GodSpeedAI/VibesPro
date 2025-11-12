@@ -3,7 +3,7 @@
  */
 
 import { beforeAll, describe, expect, it } from 'vitest';
-import { TemporalAIClient, getRecommendations } from './temporal-ai-client';
+import { TemporalAIClient, getRecommendations } from './temporal-ai-client.js';
 
 describe('TemporalAIClient', () => {
   let client: TemporalAIClient;
