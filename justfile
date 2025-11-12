@@ -85,7 +85,17 @@ verify-node:
 # --- Developer Experience ---
 dev:
 	@echo "🚀 Starting development servers..."
-	pnpm exec nx run-many --target=serve --all --parallel=5
+	@if command -v pnpm >/dev/null 2>&1; then \
+		if [ -f nx.json ]; then \
+			pnpm exec nx run-many --target=serve --all --parallel=5; \
+		else \
+			echo "❌ nx.json not found. Run 'just setup' first."; \
+			exit 1; \
+		fi; \
+	else \
+		echo "❌ pnpm not found. Run 'just setup' first."; \
+		exit 1; \
+	fi
 
 spec-matrix:
 	pnpm spec:matrix

@@ -4,6 +4,7 @@
     "curl",
     "just",
     "jq",
+    "shellcheck",
     "ffmpeg",
     "postgresql@15",
     "ripgrep",
