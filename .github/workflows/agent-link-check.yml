@@ -16,9 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.11"
       - name: Install requirements
         run: |
           python -m pip install --upgrade pip
@@ -26,22 +26,3 @@ jobs:
       - name: Run AGENT.md link checker (local links)
         run: |
           python3 tools/check_agent_links.py
-
-      - name: Install mise (provision runtimes & tools)
-        run: |
-          # Install mise if missing and use it to provision tools pinned in .mise.toml
-          if ! command -v mise >/dev/null 2>&1; then
-            echo "Installing mise"
-            curl -fsSL https://mise.jdx.dev/install.sh | sh
-            export PATH="$HOME/.mise/bin:$PATH"
-          else
-            echo "mise already installed"
-          fi
-
-          # Provision runtimes and tools defined in .mise.toml (this will install pinned just)
-          mise install
-
-      - name: Run just ai-validate (via mise)
-        run: |
-          mise exec -- just ai-validate
-        shell: bash

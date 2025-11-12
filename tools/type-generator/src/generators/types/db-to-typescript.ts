@@ -10,7 +10,7 @@ import {
 import { dirname, isAbsolute, join, normalize, parse, relative, resolve } from 'path';
 
 // Import pathSecurity utilities from the JavaScript file directly
-const pathSecurity = require('../../../../utils/pathSecurity');
+import * as pathSecurity from '../../../utils/pathSecurity';
 const { assertFilenameSafe, isPathSafe, resolvePathWithinWorkspace, sanitizePathInput } =
   pathSecurity;
 
@@ -60,14 +60,14 @@ function findWorkspaceRoot(startDir: string): string {
   let realStartDir: string;
   try {
     realStartDir = realpathSync(absoluteStartDir);
-  } catch (error) {
+  } catch {
     throw new Error(`Unable to resolve workspace search path: ${absoluteStartDir}`);
   }
 
   let startStats;
   try {
     startStats = lstatSync(realStartDir);
-  } catch (error) {
+  } catch {
     throw new Error(`Workspace search path does not exist: ${realStartDir}`);
   }
 
@@ -91,11 +91,11 @@ function findWorkspaceRoot(startDir: string): string {
       const markerPath = join(currentDir, marker);
       try {
         return existsSync(markerPath);
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+      } catch (e) {
+        if ((e as NodeJS.ErrnoException)?.code === 'ENOENT') {
           return false;
         }
-        throw error;
+        throw e;
       }
     });
 
@@ -132,7 +132,7 @@ export class DbToTypeScript {
     let canonicalRoot: string;
     try {
       canonicalRoot = realpathSync(absoluteRoot);
-    } catch (error) {
+    } catch {
       throw new Error(`Workspace root path does not exist or is inaccessible: ${absoluteRoot}`);
     }
 
@@ -240,8 +240,8 @@ export class DbToTypeScript {
         const columnDef = colDefRaw as ColumnDef;
         const tsType = this.mapPostgresToTypeScript(
           columnDef.type,
-          columnDef.nullable || false,
-          columnDef.is_array || false,
+          columnDef.nullable ?? false,
+          columnDef.is_array ?? false,
         );
         fields[colName] = tsType;
       }

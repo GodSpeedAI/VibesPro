@@ -24,7 +24,11 @@ function gatherTests(dir: string): string[] {
   return acc;
 }
 
-async function runTestFile(file: string) {
+async function runTestFile(
+  file: string,
+): Promise<
+  { file: string; ok: true; ms: number } | { file: string; ok: false; error: unknown; ms: number }
+> {
   const start = performance.now();
   try {
     // Using dynamic import so tsx can compile on the fly
@@ -39,7 +43,7 @@ async function runTestFile(file: string) {
 
 import { pathToFileURL } from 'node:url';
 
-async function main() {
+async function main(): Promise<void> {
   const files = TARGET_DIRS.flatMap(gatherTests);
   if (files.length === 0) {
     console.log('No tests found.');

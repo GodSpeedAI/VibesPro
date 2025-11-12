@@ -1364,13 +1364,63 @@ Step 6: Validate Generator → Run dry-run, tests, lint, graph checks
 -   Communication: Capture release notes and migration highlights for generated project consumers.
 -   Scheduling: Track upgrade cadence on the platform roadmap and coordinate with downstream template consumers.
 
-## DEV-SDS-028 — Universal React Generator Design (addresses DEV-PRD-029)
+## DEV-SDS-028 — Nx-Composed Full-Stack Generator Design (addresses DEV-PRD-029)
 
--   Options: `name`, `framework` (`next|remix|expo`), `apiClient` (bool), `includeExamplePage` (bool), `routerStyle` (`app|pages` for Next.js).
--   Shared Assets: Generator ensures `libs/shared/web` (API client, schemas, errors, env) exists and is imported by generated apps.
--   Templates: Framework-specific file trees under `generators/react/files/<framework>/` with reusable partials.
--   Tests: Jest unit tests cover option handling; e2e generator tests in ShellSpec spin up each framework and run lint/build; idempotency covered via DEV-SDS-023 helpers.
--   Documentation: Provide README snippets per framework plus CLI usage examples.
+### Frontend Generators
+
+-   **Composition Strategy**: Use Nx `externalSchematic()` API to invoke official generators:
+    -   Next.js: `@nx/next:application` (with `--appDir=true|false` for App/Pages Router)
+    -   Remix: `@nx/remix:application`
+    -   Expo: `@nx/expo:application`
+-   **Options**: `name`, `framework` (`next|remix|expo`), `routerStyle` (`app|pages` for Next.js only), `includeSharedWeb` (bool, default: true).
+-   **Post-Generation Transformations**:
+    1. Inject `@vibes-pro/shared-web` imports in entry files (app layout, root routes, App.tsx).
+    2. Add API client initialization examples with proper env config.
+    3. Inject error boundary components using shared error handlers.
+    4. Add example pages demonstrating API client usage (optional via `--includeExamplePage`).
+-   **Shared Assets Integration**: Ensure `libs/shared/web` exists; if missing, generate it first (or error with clear message).
+-   **Idempotency**: Transformation logic checks for existing imports/patterns before injecting; uses DEV-SDS-023 idempotent wrapper.
+-   **Version Compatibility**: Document supported Nx versions (track in `docs/NX_VERSION_MATRIX.md`); test against Nx 22.x initially.
+
+### Backend Generators (Python/FastAPI)
+
+-   **Composition Strategy**: Use Nx `externalSchematic()` API to invoke `@nxlv/python:fastapi-application`.
+-   **Options**: `name`, `directory` (default: `apps`), `includePorts` (bool, default: true, generates hexagonal ports/adapters).
+-   **Post-Generation Transformations**:
+    1. Inject Logfire bootstrap from `libs/python/vibepro_logging.py` into `main.py`:
+        ```python
+        from libs.python.vibepro_logging import bootstrap_logfire, configure_logger
+        bootstrap_logfire(app, service="<service-name>")
+        logger = configure_logger("<service-name>")
+        ```
+    2. Add hexagonal port/adapter scaffolding:
+        - `application/ports/` (Repository, UnitOfWork protocols)
+        - `infrastructure/adapters/in_memory/` (test adapters)
+        - `domain/` (entity/value object stubs)
+    3. Configure Pydantic models with Supabase type-sync comment headers:
+        ```python
+        # AUTO-GENERATED from Supabase schema - do not edit manually
+        from pydantic import BaseModel
+        ```
+    4. Add OpenAPI schema export endpoint for frontend type generation.
+-   **Shared Infrastructure Integration**: Ensure `libs/python/vibepro_logging.py` and `libs/shared/domain/python/ports/` exist (from PHASE-002).
+-   **Idempotency**: Check for existing Logfire imports, port directories before injecting.
+-   **Version Compatibility**: Track `@nxlv/python` versions alongside `@nx/*` in `docs/NX_VERSION_MATRIX.md`.
+
+### Unified Testing Strategy
+
+-   **Unit Tests**: Verify `externalSchematic` invocation and transformation logic for both frontend and backend.
+-   **E2E Tests**: Scaffold each framework (Next.js, Remix, Expo, FastAPI), run build/serve, verify:
+    -   Frontend: shared-web imports present, API client works
+    -   Backend: Logfire instrumentation active, hexagonal structure present, OpenAPI endpoint responds
+-   **Idempotency Tests**: Run generator twice, assert no file changes for both frontend and backend.
+-   **Type-Sync Integration Test**: Generate FastAPI service, export OpenAPI schema, verify Pydantic models align with Supabase types.
+
+### Documentation Requirements
+
+-   Provide per-framework examples showing both Nx-native workflow and VibesPro wrapper usage.
+-   Document backend FastAPI-OpenAPI-Pydantic type chain and Supabase integration points.
+-   Include upgrade path for both frontend (`@nx/*`) and backend (`@nxlv/python`) generator changes.
 
 ## DEV-SDS-029 — Strict Typing Configuration (addresses DEV-PRD-030)
 

@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: en-US
+tone_instructions: "Generate AI-executable fix instructions: Specify exact locations, describe the problem mechanically, provide step-by-step implementation. No ambiguity—your output becomes another agent's input."
+reviews:
+  # ... other review settings
+  path_filters:
+    # 1. Exclude everything first
+    - "!**/*"
+    # 2. Then, explicitly include the contents of your target folder
+    # The pattern 'docs/plans/tmp/**' includes all files and folders
+    # recursively within the 'docs/plans/tmp/' directory.
+    - "docs/plans/tmp/**"

@@ -281,7 +281,7 @@ Validation
 
 ## DEV-ADR-018 — Temporal AI intelligence fabric for guidance & optimization
 
-Status: Proposed
+Status: Active
 
 Context
 
@@ -291,37 +291,68 @@ Context
 
 Decision
 
--   Treat the temporal database, ArchitecturalPatternRecognizer, PerformanceMonitor, and AIContextManager as a unified "AI guidance fabric" that mines historical outcomes to steer future assistance.
+-   Implement embedding-based pattern search using embedding-gemma-300M (GGUF Q4_K_M, 300M params, 768-dim vectors) for semantic similarity over Git commit history.
+-   Use rustformers/llm for CPU-only inference and redb for embedded vector storage with zero external dependencies.
+-   Build recommendation engine with cosine similarity search, combining similarity scores with recency and usage metrics.
 -   Establish shared contracts so that:
-    -   Temporal snapshots feed clustering jobs that emit pattern recommendations with confidence scores and provenance metadata.
-        /_ Lines 297-298 omitted _/
-    -   AIContextManager scoring incorporates pattern confidence, performance advisories, and usage success rates when assembling bundles inside token budgets.
--   Ship the fabric in incremental phases with strict TDD coverage tracked in `docs/dev_tdd_ai_guidance.md`.
+    -   Git history → pattern extraction → embedding generation → vector storage pipeline
+    -   Semantic search returns top-k patterns ranked by similarity + recency + usage
+    -   AIContextManager scoring incorporates pattern confidence and usage success rates when assembling bundles inside token budgets.
+-   Ship the fabric in incremental phases with strict TDD coverage tracked in Cycle 3 implementation plan.
 
 Rationale
 
--   **Higher-confidence guidance:** Learning from past successful artifacts reduces generic answers and aligns suggestions with proven solutions.
--   **Operational awareness:** Performance heuristics turn telemetry into prescriptive advice, shrinking iteration loops when regressions appear.
+-   **Higher-confidence guidance:** Semantic search over proven patterns reduces generic answers and aligns suggestions with historical solutions.
+-   **Zero external dependencies:** Local CPU inference eliminates API costs and latency; redb provides embedded storage.
+-   **Operational awareness:** Performance metrics feed into ranking algorithm to prioritize proven patterns.
 -   **Context quality:** Injecting temporal success data into context scoring increases bundle relevance without exceeding budgets.
--   **Reuse existing assets:** Builds on the temporal DB, telemetry hooks, and context manager that already exist in the platform.
+-   **Proven technology:** embedding-gemma-300M specifically designed for semantic similarity; 300M params balance quality and speed.
 
 Consequences
 
-| Area           | Positive                                                          | Trade–off                                                      |
-| -------------- | ----------------------------------------------------------------- | -------------------------------------------------------------- |
-| Developer DX   | Proactive, context-aware recommendations with confidence metadata | Requires new UI/CLI surfacing for confidence + advisories      |
-| Data           | Unified governance for temporal insights and telemetry            | Must harden retention/PII policies before expanding data usage |
-| Operations     | Scheduled clustering jobs create predictable cadence              | Background jobs add operational overhead and monitoring needs  |
-| Performance    | Automated hotspots caught earlier                                 | Additional telemetry processing may add slight CPU/memory cost |
-| Implementation | Clear traceability via ADR → PRD → TDD plan                       | Coordination needed across Rust, Node, and TypeScript modules  |
+| Area           | Positive                                                          | Trade–off                                                         |
+| -------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Developer DX   | Proactive, context-aware recommendations with confidence metadata | Requires ~200MB model download and initial indexing               |
+| Data           | Embedded storage in single redb file (~47MB for 10k patterns)     | Must implement retention policies for pattern pruning             |
+| Operations     | Background refresh jobs for pattern indexing                      | CPU usage during embedding generation (<500ms per pattern)        |
+| Performance    | Sub-second recommendations (<500ms P95 end-to-end)                | Similarity search O(n) scales to ~100k patterns before ANN needed |
+| Implementation | Clear specs (DEV-PRD-020, DEV-SDS-020) with Rust/TypeScript FFI   | Coordination needed across Rust core and TypeScript client        |
 
 Implementation Requirements
 
-1. Extend `ArchitecturalPatternRecognizer` (Python) to consume temporal DB snapshots, emit `pattern_recommendation` records, and persist confidence + provenance fields.
-2. Expand `PerformanceMonitor` (TypeScript/Node) spans to calculate baseline deltas and publish `performance_advisory` artifacts into redb.
-3. Update `AIContextManager` (TypeScript) scoring to weight context sources using temporal success metrics and pattern confidences.
-4. Add governance guards: retention policies, opt-out flags, and anonymization for sensitive fields prior to storage.
-5. Wire a consolidated CI workflow (`.github/workflows/ai-guidance.yml`) that runs `nx run-many --target=test --projects temporal,performance,context` and the new `just test-ai-guidance` wrapper before merge.
+1. **Phase 3A: Specifications** ✅
+
+    - DEV-PRD-020: Product requirements with EARS tables and user stories
+    - DEV-SDS-020: Software design with 6 core components and redb schema
+    - DEV-ADR-018: Status updated to Active (this change)
+
+2. **Phase 3B: Embedding Infrastructure**
+
+    - Download embedding-gemma-300M model (~180MB GGUF)
+    - Implement `embedder.rs` with llm integration
+    - Implement `vector_store.rs` with redb (3 tables: EMBEDDINGS, METADATA, METRICS)
+    - Implement `similarity.rs` with SIMD-optimized cosine similarity
+    - Implement `pattern_extractor.rs` with git2 for commit parsing
+    - Performance targets: <500ms embedding, <100ms search (10k patterns)
+
+3. **Phase 3C: Recommendation Engine**
+
+    - Implement `ranker.rs` with weighted scoring (similarity 50%, recency 20%, usage 30%)
+    - Build CLI binary for pattern refresh and query
+    - Create TypeScript FFI bindings via NAPI-RS
+    - Write integration tests for end-to-end pipeline
+
+4. **Phase 3D: Observability Integration**
+    - Implement `observability_aggregator.rs` to query OpenObserve metrics
+    - Correlate pattern recommendations with performance data
+    - Add tracing spans for all operations
+    - Create dashboard queries for recommendation effectiveness
+
+Dependencies
+
+-   Rust crates: `llm`, `redb`, `git2`, `anyhow`, `serde`, `napi`
+-   Model: embedding-gemma-300M-Q4_K_M.gguf from Hugging Face
+-   TypeScript: NAPI-RS bindings for Node.js integration
 
 ---
 
@@ -639,25 +670,33 @@ Consequences:
 -   Requires change management documentation (runbooks, migration notes).
 -   Potential short-term instability during upgrade windows that must be mitigated via smoke tests.
 
-## DEV-ADR-028 — Universal React Generator (Next.js App & Pages, Remix, Expo)
+## DEV-ADR-028 — Nx Generator Composition Pattern for Full-Stack Applications
 
 Status: Active
 
-Context: HexDDD ADR-012 consolidates React surface generators into a single, configurable workflow. VibesPro currently gestures toward domain scaffolding but lacks the unified web/mobile generator.
+Context: HexDDD ADR-012 consolidates React surface generators into a single, configurable workflow. VibesPro needs to support **frontend frameworks** (Next.js, Remix, Expo) and **Python/FastAPI backends** while avoiding maintenance burden of custom generators. Nx provides official, well-maintained generators (`@nx/next`, `@nx/remix`, `@nx/expo`, `@nxlv/python`) that handle framework-specific scaffolding. VibesPro's type system relies on **FastAPI-OpenAPI-Pydantic** chain that enables end-to-end type syncing via Supabase.
 
-Decision: Deliver a single generator entry point (`--framework=next|remix|expo` plus `--routerStyle=app|pages` for Next.js) that shares typed API clients, validation schemas, and error handling across all React surfaces while remaining idempotent.
+Decision: Create thin wrapper generators that **compose** official Nx generators using `externalSchematic` API, then apply post-generation transformations to inject:
+
+-   **Frontend**: Shared-web patterns, hexagonal architecture imports, VibesPro conventions
+-   **Backend**: FastAPI + Logfire bootstrap, Pydantic schemas, hexagonal ports/adapters, Supabase type-sync integration
 
 Rationale:
 
--   Eliminates duplicated templates and fosters consistency across UI implementations.
--   Simplifies maintenance and unlocks future framework additions.
--   Provides generated projects with parity to HexDDD scaffolding expectations across web and mobile.
+-   **Leverage Official Generators**: Nx generators stay updateable; we don't fork/maintain framework-specific code.
+-   **Control Integration Points**: Wrapper applies shared libraries, error handling, and hexagonal structure after Nx scaffolding.
+-   **Low Maintenance Burden**: Only update wrappers when Nx introduces breaking API changes.
+-   **Composition Over Creation**: Aligns with "generators-first" principle and Nx best practices.
+-   **Future-Proof**: New Nx features (e.g., RSC updates, Expo SDK changes, FastAPI patterns) flow through automatically.
+-   **Type-Safe Full Stack**: Python backend generators ensure Pydantic models sync with Supabase schema for end-to-end type safety.
 
 Consequences:
 
--   Generator logic grows more complex (conditional templates, shared assets).
--   Requires comprehensive test matrices (per framework, per option combination).
--   Documentation and samples must highlight usage for each React target.
+-   Wrapper generators depend on Nx generator APIs (require version compatibility testing).
+-   Post-generation transformations must be idempotent and well-tested.
+-   Need to document which Nx versions are supported and how to handle breaking changes.
+-   Backend wrappers must integrate with existing `libs/python/vibepro_logging.py` and hexagonal patterns from PHASE-002.
+-   Slightly more complex setup than pure custom generators, but massively reduced long-term maintenance.
 
 ## DEV-ADR-029 — Strict Typing Policy Across Languages
 

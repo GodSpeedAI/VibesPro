@@ -44,7 +44,7 @@ describe('Maintainer documentation alignment', () => {
     const frontmatterMatch = content.match(/^---\n[\s\S]*?\n---/);
     expect(frontmatterMatch).not.toBeNull();
 
-    const matrixLines = frontmatterMatch![0]
+    const matrixLines = (frontmatterMatch?.[0] ?? '')
       .split('\n')
       .map((line) => line.trim())
       .filter((line) => line.startsWith('- '));
@@ -59,7 +59,7 @@ describe('Maintainer documentation alignment', () => {
     const headingLevels = content
       .split('\n')
       .filter((line) => /^#+\s/.test(line))
-      .map((line) => line.match(/^#+/)![0].length);
+      .map((line) => line.match(/^#+/)?.[0].length ?? 0);
 
     expect(headingLevels[0]).toBe(1);
     headingLevels.slice(1).forEach((level) => {
@@ -79,7 +79,7 @@ describe('Maintainer documentation alignment', () => {
     expect(reviewMatch).not.toBeNull();
 
     const reviewSection = reviewMatch
-      ? content.slice(reviewMatch.index! + reviewMatch[0].length)
+      ? content.slice((reviewMatch.index ?? 0) + reviewMatch[0].length)
       : '';
 
     const checklistLines = reviewSection

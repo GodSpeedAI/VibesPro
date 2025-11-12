@@ -1,5 +1,5 @@
 language: en-US
-tone_instructions: "Be concise and focus on critical issues only"
+tone_instructions: "Generate concise, actionable, and unambiguous fix instructions. Specify exact file paths and edits; focus on mechanical details required for automated or manual application. Focus on critical functional issues only. Avoid unnecessary explanations or context."
 reviews:
   profile: assertive
   commit_status: true
@@ -10,16 +10,25 @@ reviews:
     branches:
       - main
       - dev
+    exclude_globs:
+      - "dist/**"
+      - "test-output/**"
   tools:
     eslint:
       enabled: true
-      config_file: templates/{{project_slug}}/.eslintrc.cjs # adjust to actual path
+      config_file: eslint.config.cjs
     ruff:
       enabled: true
-      config_file: pyproject.toml # or ruff.toml if you split it
+      config_file: templates/{{project_slug}}/pyproject.toml.j2
 knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - "docs/mergekit/**/*.md"
-      - "docs/**/*.md"
+      - ".github/copilot-instructions.md"
+      - ".github/instructions/*.md"
+      - "docs/dev_adr.md"
+      - "docs/dev_prd.md"
+      - "docs/dev_sds.md"
+      - "docs/dev_technical-specifications.md"
+      - "AGENTS.md"
+      - "**/AGENTS.md"

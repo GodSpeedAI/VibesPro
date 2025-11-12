@@ -6,9 +6,9 @@ describe('Database Performance', () => {
     const monitor = new PerformanceMonitor();
 
     // Placeholder for database operations
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const metrics = monitor.getMetrics();
+    monitor.getMetrics();
     // Assuming a hypothetical metric for database operations
     // This would need to be properly implemented in the PerformanceMonitor
     // expect(metrics.databaseQueryTime).toBeLessThan(500);

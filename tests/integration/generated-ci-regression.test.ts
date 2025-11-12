@@ -9,7 +9,6 @@
  * template changes and proper pnpm/corepack integration.
  */
 
-import { execSync, spawnSync } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import { runCopierGeneration } from '../utils/generation-smoke';
@@ -21,36 +20,6 @@ const generateProject = async (): Promise<string> => {
     include_ai_workflows: true,
     architecture_style: 'hexagonal',
   });
-};
-
-const runCIScriptDryRun = (
-  projectRoot: string,
-  scriptName: string,
-): { status: number; stdout: string; stderr: string } => {
-  const result = spawnSync('pnpm', ['run', scriptName, '--dry-run'], {
-    cwd: projectRoot,
-    encoding: 'utf-8',
-    env: { ...process.env, CI: 'true' },
-  });
-
-  return {
-    status: result.status ?? 1,
-    stdout: result.stdout ?? '',
-    stderr: result.stderr ?? '',
-  };
-};
-
-const checkCorepackEnabled = (projectRoot: string): boolean => {
-  try {
-    const result = execSync('corepack --version', {
-      cwd: projectRoot,
-      encoding: 'utf-8',
-      stdio: 'pipe',
-    });
-    return result.trim().length > 0;
-  } catch {
-    return false;
-  }
 };
 
 const checkPnpmDetection = async (projectRoot: string): Promise<boolean> => {
@@ -184,8 +153,8 @@ describe('Generated Project CI Validation', () => {
         );
 
       // Verify checkout comes first
-      const checkoutStep = steps[0].toLowerCase();
-      expect(checkoutStep).toMatch(/checkout|name.*checkout/i);
+      const checkoutStep = steps[0];
+      expect(checkoutStep?.toLowerCase()).toMatch(/checkout|name.*checkout/i);
 
       // Verify setup steps come before execution steps
       const setupIndex = steps.findIndex((s) => s.includes('Setup') || s.includes('Install'));

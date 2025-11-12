@@ -1,4 +1,4 @@
-# 🌟 VibesPro – Your AI-Powered Architecture Companion
+# 🌟 VibesPro – Cognitive Infrastructure Platform
 
 [![CI](https://github.com/GodSpeedAI/VibesPro/actions/workflows/ci.yml/badge.svg)](https://github.com/GodSpeedAI/VibesPro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
@@ -7,99 +7,211 @@
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange)](https://www.rust-lang.org)
 [![DeepWiki](https://img.shields.io/badge/DeepWiki-View-orange)](https://deepwiki.com/SPRIME01/Vibes-Pro)
 
----
+> **Your software agency in a box. Cognitive infrastructure that synthesizes production-ready applications with embedded AI development teams.**
 
-## 📋 Important: Template vs. Generated Project
+VibesPro is **AI-native meta-infrastructure** that combines architectural intelligence, temporal learning, and autonomous workflows to synthesize complete development platforms. Each synthesized application ships with its own AI development team—32+ specialized agents that understand your domain, enforce your patterns, and evolve with your decisions.
 
-**VibesPro is a Copier template, not a standalone application.**
-
--   🎨 **This repository** contains the template that generates projects
--   🏗️ **You work in** the projects that VibesPro generates for you
--   🚀 **Quick start:** `copier copy gh:GodSpeedAI/VibesPro my-project`
-
-Think of VibesPro as a **cookie cutter** 🍪—you don't work inside the cookie cutter, you use it to create cookies (projects) that you then customize and enjoy!
+**Think: Infrastructure-as-Code meets AI-Powered Software Agency.**
 
 ---
 
-## 🎬 Picture This...
+## 🎯 Cognitive Infrastructure Architecture
 
-It's Monday morning. Your team just got greenlit to build a new service. You know the business logic inside and out, but the thought of setting up _yet another_ codebase makes you weary. Copy-pasting from the last project? Risky. Starting from scratch? Days of boilerplate await.
+**VibesPro operates as a self-contained software development agency.**
 
-**What if, instead, you could describe what you need and have a perfectly structured, production-ready application appear—architecture solid, tests included, documentation written—all in the time it takes to grab a coffee?**
+When you initialize with VibesPro, you're deploying:
 
-That's VibesPro.
+-   🏗️ **Application Infrastructure** – Enterprise-grade Nx monorepo with hexagonal architecture
+-   🤖 **AI Development Team** – 32+ specialized agents (architects, TDD coaches, debuggers, product managers)
+-   🧠 **Institutional Memory** – Temporal learning system that captures every architectural decision
+-   📊 **Production Telemetry** – OpenTelemetry + Vector observability stack
+-   🔧 **Platform Engineering** – Reproducible environments via Devbox + Mise + SOPS
 
----
-
-## 🚀 The Simple Truth
-
-**VibesPro is like having an expert architect sitting beside you**, one who:
-
--   **Remembers every decision** your team has made (and why)
--   **Speaks your language** (TypeScript, Python, Rust—pick your flavor)
--   **Never forgets best practices** (hexagonal architecture, domain-driven design, type safety)
--   **Gets smarter over time** (learning from your patterns and preferences)
-
-Think of it as a **GPS for software architecture**—you tell it where you want to go, and it creates the clearest path there, avoiding potholes and dead ends.
+**Each synthesized application IS a self-sustaining development platform.** VibesPro is the cognitive layer that creates it.
 
 ---
 
-## ✨ How It Works (The Human Way)
+## 🎯 Platform Components (Your AI Software Agency)
 
-### Step 1: **Generate Your Project from the Template**
+**VibesPro deploys six integrated systems that function as a complete development organization:**
+
+### 1. **Application Synthesis Engine**
+
+-   Architectural intelligence that synthesizes enterprise-grade codebases
+-   Hexagonal architecture with enforced domain boundaries
+-   Multi-language synthesis (TypeScript, Python, Rust)
+-   Nx monorepo orchestration for scalable organization
+
+### 2. **AI Development Team**
+
+-   **32+ Specialized Agents** – System architects, TDD coaches, debuggers, security analysts, product managers
+-   **Modular Expertise** – 16 domain-specific knowledge systems (MECE organizational principle)
+-   **26 Workflow Protocols** – Proven methodologies for specs, testing, security, performance
+-   **Cognitive Context Management** – Intelligent information retrieval and synthesis
+
+### 3. **Institutional Memory System**
+
+-   **Temporal Knowledge Store** – Rust-based redb persistence layer
+-   **Decision Archaeology** – Complete history of PRD/SDS/ADR/TS with temporal context
+-   **Pattern Intelligence** – Query organizational knowledge before architectural decisions
+-   **Evolutionary Understanding** – Tracks how your architecture adapts over time
+
+### 4. **Production Observability Infrastructure**
+
+-   **OpenTelemetry Instrumentation** – Distributed tracing with <1µs overhead
+-   **Vector Data Pipeline** – Transformation, PII redaction, routing
+-   **OpenObserve Storage** – Long-term analytics and SQL querying
+-   **Runtime Flags** – Enable/disable with `VIBEPRO_OBSERVE` environment variable
+
+### 5. **Development Environment Platform**
+
+-   **Devbox** – Reproducible OS-level toolchain
+-   **Mise** – Node/Python/Rust version management
+-   **SOPS** – Secret encryption and management
+-   **Just** – Cross-platform task orchestration
+
+### 6. **Quality & Compliance System**
+
+-   **Specification-Driven Development** – Traceability matrix for all changes
+-   **Generator-First Policy** – Enforced via Nx generators
+-   **Type Safety** – TypeScript strict mode, Python mypy, Rust compile checks
+-   **Security Guardrails** – Pre-commit hooks, PII redaction, input validation
+
+---
+
+## 🚀 Cognitive Infrastructure Philosophy
+
+**VibesPro is your software development agency, packaged as deployable infrastructure.**
+
+Traditional software agency: Hire team → Train on domain → Build processes → Scale gradually → Transfer knowledge
+
+**VibesPro approach:** Deploy platform → Agents active immediately → Domain captured → Scales infinitely → Knowledge compounds
+
+Each initialized application **IS** a self-sustaining software agency with AI agents that understand your domain, enforce architectural excellence, and accumulate institutional wisdom
+
+---
+
+## ✨ Deployment Protocol
+
+### Phase 1: Agency Initialization
 
 ```bash
+# Deploy your cognitive infrastructure
 copier copy gh:GodSpeedAI/VibesPro my-project-name
-# Answer a few friendly questions about your project
 ```
 
-Imagine ordering a custom coffee: "I'd like a web API with user authentication, using TypeScript and PostgreSQL." VibesPro captures your vision, just like that barista who remembers your usual order.
+**During deployment, you configure:**
 
-### Step 2: **Watch Your Project Take Shape**
+-   Technical stack (TypeScript/Python/Rust)
+-   Capability modules (Authentication, APIs, UI, Telemetry)
+-   Domain boundaries (user-management, orders, inventory, payments)
+-   AI agent specializations and workflows
+
+**VibesPro synthesizes your agency:**
+
+-   Enterprise monorepo with hexagonal architecture (Nx orchestration)
+-   AI development team (32+ specialized agents, 26 workflow protocols, 16 knowledge domains)
+-   Institutional memory system (Rust-based temporal database)
+-   Production observability infrastructure (OpenTelemetry + Vector + OpenObserve)
+-   Platform engineering layer (Devbox + Mise + SOPS)
+
+### Phase 2: Agency Activation
 
 ```bash
 cd my-project-name
-just setup
-# Minutes later, not days...
+just setup          # Brings all agency systems online
+just doctor         # Validates agency operational readiness
 ```
 
-Behind the scenes, intelligent templates assemble your application like an expert chef preparing a dish—each layer (interface, business logic, database) perfectly placed, nothing missing, nothing extra.
+**Agency activation sequence:**
 
-**What you get:**
+-   🏗️ **Build Systems** – Nx 22+ with intelligent caching and dependency orchestration
+-   🤖 **AI Agent Team** – 32+ specialists contextualized to YOUR domain and architecture
+-   🧠 **Institutional Memory** – Temporal database begins recording organizational knowledge
+-   📊 **Telemetry Infrastructure** – OpenTelemetry → Vector → OpenObserve pipeline operational
+-   🔐 **Security Operations** – SOPS encryption, PII redaction, validation enforcement
+-   📚 **Knowledge Management** – Specs (PRD/SDS/ADR/TS), traceability system, documentation automation
 
--   📂 A complete, organized workspace (think: a well-organized kitchen, not a junk drawer)
--   ✅ Tests already written (your safety net is built-in)
--   📚 Documentation that actually explains things (imagine instructions that make sense)
--   🔐 Security baked in, not bolted on later
--   🛠️ **Complete development setup** – Nx, TypeScript, ESLint, Jest all configured and working
--   🎯 **Zero manual configuration** – Run `pnpm install` and start coding immediately
--   🔄 **Production-ready from day one** – Build, lint, and test targets work out of the box
-
-### Step 3: **Start Building What Matters**
+### Phase 3: Operate with AI Development Team
 
 ```bash
+# AI agents enforce architectural integrity
+pnpm exec nx list                    # Discover available capabilities
+
+# Agents guide synthesis of new capabilities
+pnpm exec nx g @nx/js:lib user-domain
+
+# AI team orchestrates development workflows:
+# - 'tdd.red' agent: Designs failing test cases
+# - 'tdd.green' agent: Implements minimal viable solution
+# - 'tdd.refactor' agent: Optimizes while preserving correctness
+
+# Activate production telemetry
+export VIBEPRO_OBSERVE=1
 pnpm dev
-# Your app is running. Really.
 ```
 
-No configuration hell. No "works on my machine" surprises. Just clean, working code ready for your unique ideas.
+**Your AI development team operates continuously:**
+
+-   Consults institutional memory for proven architectural patterns
+-   Enforces hexagonal architecture and domain boundaries
+-   Maintains specification traceability across all changes
+-   Evolves recommendations based on accumulated organizational wisdom
+
+**Outcome: You have a software development agency that scales infinitely, never forgets, and compounds expertise over time.**
 
 ---
 
-## 🧠 The Secret Ingredient: Memory That Matters
+## 🧠 Cognitive Systems: Agency Intelligence
 
-Here's where VibesPro becomes truly different.
+**VibesPro operates as cognitive infrastructure with three intelligence layers:**
 
-Every project you create teaches it something. Made a decision about how to handle authentication? Chose a specific pattern for error handling? **VibesPro remembers**—and suggests those same smart choices next time.
+### Institutional Memory System
 
-It's like muscle memory for your entire team. New developer joins? They inherit the wisdom of every project that came before, automatically.
+Rust-based redb database (`temporal_db/`) stores:
 
-**Powered by temporal intelligence:**
+-   📋 **Specifications** – PRD, SDS, ADR, TS with timestamps
+-   🎯 **Proven Patterns** – What worked, what didn't, and why
+-   📊 **Architectural Decisions** – Context, rationale, trade-offs
+-   🔄 **Change History** – Time-series tracking of evolution
 
--   🕰️ Tracks decisions across time
--   🎯 Suggests patterns that worked before
--   🔄 Improves recommendations with each project
--   💾 Stores knowledge locally (your insights stay yours)
+Query before major decisions: "What authentication architectures have we validated in production?"
+
+### Agent Knowledge Architecture (MECE)
+
+16 specialized knowledge domains in `.github/instructions/` with hierarchical authority:
+
+1. `security.instructions.md` (precedence: 10) – HIGHEST authority
+2. `ai-workflows.constitution.instructions.md` (10) – Governance
+3. `generators-first.instructions.md` (15) – Generator-first policy
+4. `testing.instructions.md` (35) – TDD/test strategy
+5. `general.instructions.md` (50) – Base guidance
+
+### 32+ Specialized Chat Modes
+
+Located in `.github/chatmodes/`:
+
+**Development Personas:**
+
+-   `persona.navigator` – Elite multi-language coding (MCP integration)
+-   `persona.system-architect` – Architectural guidance
+-   `persona.senior-backend` / `senior-frontend` – Domain-specific patterns
+
+**Workflow Modes:**
+
+-   **TDD**: `tdd.red`, `tdd.green`, `tdd.refactor`
+-   **Debug**: `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`
+-   **Specs**: `spec.lean`, `spec.wide`, `spec.nfr`
+-   **Product**: `product.manager`, `product.features-list`
+
+### Workflow Protocol Library
+
+26 proven methodologies in `.github/prompts/`:
+
+-   `spec.implement.prompt.md` – Specification-driven implementation
+-   `tdd.workflow.prompt.md` – Test-driven development protocols
+-   `sec.review.prompt.md` – Security compliance audits
+-   `perf.analyze.prompt.md` – Performance engineering analysis
 
 ---
 
@@ -122,115 +234,132 @@ It's like muscle memory for your entire team. New developer joins? They inherit 
 
 ---
 
-## 🏗️ Under the Hood (Without the Jargon)
-
-Think of your application like a **modern building**:
-
-**🏛️ Interface Layer** (The Lobby)
-
--   Where users and systems enter
--   Web pages, API endpoints, command-line tools
--   First impression matters; this layer makes it welcoming
-
-**🎯 Application Layer** (The Concierge)
-
--   Coordinates everything
--   Routes requests to the right place
--   Handles the "what happens when" logic
-
-**💎 Domain Layer** (The Vault)
-
--   Your business rules and logic
--   The crown jewels that make your app unique
--   Protected, pure, and portable
-
-**🔌 Infrastructure Layer** (The Utilities)
-
--   Databases, external services, technical plumbing
--   Swappable and upgradeable without touching business logic
-
----
-
 ## 🚦 Get Started in Three Commands
 
 ```bash
-# 1. Generate your project from the VibesPro template
+# 1. Deploy your cognitive infrastructure
 copier copy gh:GodSpeedAI/VibesPro my-awesome-project
 
-# 2. Set up the generated project's environment
+# 2. Activate the agency environment
 cd my-awesome-project && just setup
 
-# 3. See it in action (really, it's ready)
+# 3. Begin operations
 pnpm dev
 ```
 
-**That's it.** You're building.
+**That's it.** Your software agency is operational.
 
-> 💡 **Note:** Don't clone the VibesPro repository to work from it directly. VibesPro is a **template** that generates new projects. You use Copier to create a project FROM this template, then work in that generated project.
-
----
-
-Developer quickstart (venv)
-
-If you're contributing to the template itself (editing files in this repo), we recommend creating a local Python virtual environment (`.venv`) and following the quickstart venv steps in `docs/QUICKSTART.md` (see the "Recommended: Python dev tools" section). After creating the venv, run `pnpm run typecheck` and `just ai-validate` to verify mypy, linters and pre-commit hooks are working locally.
-
-## 🎁 What's In The Box?
-
-### For Product Teams
-
--   ⚡ **Launch in hours, not weeks** – Complete applications generated in minutes
--   🎯 **Stay aligned** – Everyone follows the same proven architecture patterns
--   📈 **Ship with confidence** – Built-in testing and security guardrails
--   ✅ **No setup friction** – Every generated project works immediately after `pnpm install`
-
-### For Developers
-
--   🧰 **Stop reinventing** – Reusable templates for common patterns
--   🔍 **Find answers fast** – Documentation generated alongside code
--   🤝 **Onboard quickly** – Consistent structure across all projects
--   🎨 **Complete tooling** – Nx monorepo, ESLint, Jest, TypeScript all pre-configured
--   ⚡ **Instant productivity** – Run `npx nx build`, `lint`, `test` immediately—no setup needed
-
-### For Architects
-
--   🏛️ **Enforce standards** – Hexagonal architecture and DDD built-in
--   📊 **Track decisions** – Temporal database captures architectural choices
--   🔄 **Evolve patterns** – AI learns from your team's wisdom
--   🎯 **Zero configuration drift** – Every project starts with the same solid foundation
+> 💡 **Note:** Don't clone VibesPro directly. VibesPro is cognitive infrastructure that **synthesizes** complete software agencies. Use Copier to deploy an agency instance, then operate from that synthesized workspace.
 
 ---
 
-## 🛠️ Essential Commands (Your Daily Tools)
+**Platform Development**
 
-| What You Want                    | What You Type                                   | What Happens                                                   |
-| -------------------------------- | ----------------------------------------------- | -------------------------------------------------------------- |
-| **Generate a new project**       | `copier copy gh:GodSpeedAI/VibesPro my-project` | Creates a new project from the template                        |
-| **Set up generated project**     | `cd my-project && just setup`                   | Installs all tools and dependencies in your new project        |
-| **Check environment health**     | `just doctor`                                   | Reports tool versions and PATH configuration                   |
-| **Run environment tests**        | `just test-env`                                 | Validates development environment setup                        |
-| **Check quality before pushing** | `just spec-guard`                               | Runs all validators—like spell-check for architecture          |
-| **Test the template**            | `just test-generation`                          | Makes sure generated projects actually work (for contributors) |
-| **Run all tests**                | `pnpm nx run-many --target=test`                | Confidence that nothing broke                                  |
+If you're contributing to VibesPro itself (editing this repository), create a local Python virtual environment (`.venv`) following `docs/QUICKSTART.md` (see "Recommended: Python dev tools"). After venv creation, run `pnpm run typecheck` and `just ai-validate` to verify type checking, linters, and pre-commit hooks.
 
-> 📝 **For Template Contributors:** If you're developing VibesPro itself, clone this repo and run `just setup` to set up the development environment. Most users should use Copier to generate projects instead.
->
-> 📚 **Environment Setup:** See [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) for detailed environment configuration, testing, and troubleshooting guides.
+## 🎁 Agency Capabilities
+
+### Application Engineering Infrastructure
+
+-   **Nx Orchestration** (v22+) – Enterprise build system with intelligent caching
+-   **TypeScript Strict Mode** – Zero-tolerance type safety enforcement
+-   **Python with mypy** – Comprehensive static type analysis
+-   **Rust Toolchain** – High-performance systems (temporal database, telemetry)
+-   **Testing Systems** – Jest, pytest, ShellSpec, cargo test
+-   **Code Quality** – ESLint, Ruff, ShellCheck with automated enforcement
+
+### AI Agent Team Deployment
+
+-   **32+ Specialized Agents** – Architecture, TDD, debugging, security, product, DevOps
+-   **Knowledge Architecture** – MECE principle with hierarchical authority model
+-   **Workflow Protocol Library** – 26 proven methodologies for development tasks
+-   **Institutional Memory** – Rust redb persistence for all organizational knowledge
+-   **Context Intelligence** – Cognitive bundling and synthesis operations
+-   **Quality Assurance** – Automated validation and compliance checking
+
+### Production Observability (v0.3.0)
+
+-   **OpenTelemetry** – Distributed tracing with <1µs overhead
+-   **Vector Pipeline** – OTLP ingestion, VRL transforms, routing
+-   **OpenObserve Storage** – Long-term trace analytics with SQL
+-   **Structured Logging** – Node.js (Pino), Python (Logfire)
+-   **PII Redaction** – Automatic sensitive data removal
+-   **Feature Flags** – Runtime enable/disable via `VIBEPRO_OBSERVE`
+
+### Environment Management (v0.2.0)
+
+-   **Devbox** – Reproducible OS-level toolchain
+-   **Mise** – Node/Python/Rust version management
+-   **SOPS** – Secret encryption (`.secrets.env.sops`)
+-   **Just** – Portable task orchestration
+-   **Validation Suite** – 11+ environment tests
 
 ---
 
-## 📖 The Story of Quality
+## 🛠️ Platform Operations
 
-We don't just generate code—we generate _confidence_.
+### For Application Developers
 
-**Every template goes through:**
+```bash
+# Bootstrap your development platform
+copier copy gh:GodSpeedAI/VibesPro my-project
 
--   ✅ **Type safety checks** (TypeScript, Python, Rust—all verified)
--   ✅ **Architecture validation** (hexagonal patterns enforced)
--   ✅ **Security scanning** (vulnerabilities caught before they ship)
--   ✅ **Performance testing** (your app starts fast, stays fast)
--   ✅ **Documentation generation** (explanations written for humans)
+# Activate platform components
+cd my-project
+just setup              # Initialize all infrastructure layers
+just doctor             # Validate platform health
+just test-env           # Verify environment configuration
 
-**The promise:** If VibesPro generates it, it works. Period.
+# Operate with AI development team
+pnpm exec nx list       # Discover available generators
+pnpm exec nx g @nx/js:lib user-domain  # AI-orchestrated scaffolding
+export VIBEPRO_OBSERVE=1 && pnpm dev   # Start with telemetry active
+
+# Platform quality gates
+just spec-guard         # Validate specs, prompts, documentation
+just ai-validate        # Lint + typecheck across platform
+pnpm nx run-many --target=test --all  # Execute test suite
+```
+
+### For Meta-Infrastructure Contributors
+
+```bash
+# Clone the meta-infrastructure repository
+git clone https://github.com/GodSpeedAI/VibesPro.git
+cd VibesPro
+just setup              # Bootstrap development environment
+
+# Meta-infrastructure development
+just test-generation    # Test synthesis pipeline
+just ai-validate        # Validate AI agent system
+just prompt-lint        # Lint workflow protocols
+just spec-guard         # Full quality compliance gate
+
+# Platform development
+just ai-context-bundle  # Generate cognitive context bundles
+just ai-scaffold name=@nx/js:lib  # Test generator integration
+```
+
+> 📚 **Platform Documentation:**
+> • [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) – Environment architecture
+> • [.github/copilot-instructions.md](.github/copilot-instructions.md) – AI agent operational guide
+> • [docs/observability/README.md](docs/observability/README.md) – Telemetry infrastructure
+
+---
+
+## 📖 Quality Assurance Model
+
+We don't synthesize code—we synthesize **certified engineering capability**.
+
+**Every synthesized application undergoes:**
+
+-   ✅ **Type safety verification** (TypeScript, Python, Rust—zero tolerance for type errors)
+-   ✅ **Architecture compliance** (hexagonal patterns enforced at synthesis time)
+-   ✅ **Security hardening** (vulnerabilities prevented, not patched)
+-   ✅ **Performance validation** (fast boot, predictable runtime characteristics)
+-   ✅ **Documentation synthesis** (human-readable explanations generated automatically)
+
+**The contract:** If VibesPro synthesizes it, it's production-ready. Period.
 
 ---
 
@@ -256,11 +385,11 @@ Comprehensive development environment setup with automated validation:
 **What This Means:**
 
 ```bash
-# Clone or generate a project
+# Deploy cognitive infrastructure
 copier copy gh:GodSpeedAI/VibesPro my-project
 cd my-project
 
-# Single command setup (detects your environment automatically)
+# Single command activation (environment auto-detection)
 just setup
 
 # Everything validated and ready
@@ -385,10 +514,10 @@ See: `docs/observability/README.md` for complete setup and operational guides.
 ### v0.1.0 – Complete Nx & TypeScript Configuration (October 2025)
 
 **The Problem We Solved:**
-Early generated projects required manual configuration of Nx, ESLint, Jest, and TypeScript settings. Developers faced daemon crashes, module resolution errors, and missing dependencies that took hours to fix.
+Early synthesized applications required manual configuration of Nx, ESLint, Jest, and TypeScript settings. Developers faced daemon crashes, module resolution errors, and missing dependencies that took hours to fix.
 
 **The Solution:**
-Generated projects now include **complete, production-ready development infrastructure**:
+Synthesized applications now include **complete, production-ready development infrastructure**:
 
 ✅ **Nx Workspace** – Fully configured with proper `namedInputs` (no more daemon crashes!)
 ✅ **TypeScript** – Strict mode enabled with zero compilation errors
@@ -431,69 +560,67 @@ npx nx show projects   ✅ Projects detected instantly
 
 -   Upgraded Nx packages: 19.8.4 → 21.6.4
 -   Added 10+ development dependencies
--   Created 13 configuration files in template
+-   Created 13 configuration files in synthesis layer
 -   Fixed TypeScript `moduleResolution` conflicts
 -   Included proper error handling patterns for strict mode
 
-See: `docs/workdocs/template-nx-fixes-complete.md` for full details.
+See: `docs/workdocs/template-nx-fixes-complete.md` for implementation details.
 
 ---
 
-## 🗺️ Your Journey Ahead
+## 🗺️ Release History & Roadmap
 
-### ✅ **v0.3.0 – Shipped!** (October 2025)
+### ✅ **v0.3.0 – Production Observability** (October 2025)
 
--   📊 **Production-ready observability stack** – Complete 3-layer architecture
--   🦀 **Rust-native instrumentation** – `vibepro-observe` crate with OpenTelemetry
--   📡 **Vector data pipeline** – OTLP ingestion, transformation, and routing
--   🔍 **OpenObserve storage** – Long-term trace and log analytics
--   📝 **Structured logging** – Node.js (Pino) and Python (Logfire) libraries
--   🔒 **Security & privacy** – PII redaction and encrypted credentials
--   ⚡ **Runtime feature flags** – `VIBEPRO_OBSERVE` environment control
--   🧪 **Comprehensive testing** – 8 test suites validate the pipeline
--   📚 **Complete documentation** – 630+ lines of operational guides
+**Complete 3-layer observability stack:**
 
-### ✅ **v0.2.0 – Shipped!** (October 2025)
+-   🦀 Rust instrumentation (`vibepro-observe` crate with OpenTelemetry)
+-   📡 Vector data pipeline (OTLP ingestion, VRL transforms, routing)
+-   🔍 OpenObserve storage (long-term trace analytics)
+-   📝 Structured logging (Node.js Pino, Python Logfire)
+-   🔒 PII redaction, SOPS secrets, runtime flags (`VIBEPRO_OBSERVE`)
+-   🧪 8 test suites, 630+ lines documentation
 
--   🛠️ **Complete development environment setup** – Devbox, Mise, SOPS integration
--   🔄 **CI/CD improvements** – Environment validation workflows and build matrix
--   ✅ **Environment testing suite** – Comprehensive validation in `tests/env/`
--   📚 **Environment documentation** – Complete setup guide in `docs/ENVIRONMENT.md`
--   🎯 **Just task awareness** – Tasks detect and adapt to local configuration
--   🔐 **Secure secret management** – SOPS encryption out of the box
--   🚦 **Tool conflict guards** – Volta/Mise coexistence checks
+**Performance:** <1µs span overhead, <3% CPU at 1k spans/s, zero impact when disabled
+
+### ✅ **v0.2.0 – Environment & CI** (October 2025)
+
+**Reproducible development environments:**
+
+-   🛠️ Devbox integration (OS-level toolchain)
+-   🔄 Mise tool management (Node/Python/Rust versions)
+-   🔐 SOPS secret encryption
+-   ✅ Environment test suite (11+ tests in `tests/env/`)
+-   📚 Complete `docs/ENVIRONMENT.md`
+-   🎯 Just task environment awareness
+-   🚦 Volta/Mise coexistence guards
 
 ### ✅ **v0.1.0 – Foundation** (October 2025)
 
--   ✨ Complete project generation with hexagonal architecture
--   🤖 AI-powered temporal knowledge base
--   💻 TypeScript, Python, and Rust support
--   🧪 Automated testing and documentation
--   🎯 Complete Nx, ESLint, Jest configuration out of the box
--   🛠️ Zero-config development setup—projects work immediately after `pnpm install`
--   📦 All dependencies and tooling pre-configured (upgraded to Nx 21.6.4)
--   🎨 Intelligent customization with audit-first approach
--   📚 Interactive onboarding for generated projects
+**Core platform:**
 
-### 🔜 **v0.4.0 – AI Enhancements** (Q1 2026)
+-   ✨ Hexagonal architecture generation
+-   🤖 Temporal knowledge base (Rust redb)
+-   💻 TypeScript/Python/Rust support
+-   🎯 Complete Nx 22+ configuration
+-   🛠️ Zero-config dev setup (ESLint, Jest, mypy)
+-   📦 All dependencies pre-configured
 
--   🧠 **Enhanced AI pattern prediction** – Smarter suggestions based on project context
--   ⚡ **Performance optimization toolkit** – Automated performance analysis and recommendations
--   🎯 **Extended context awareness** – Deeper understanding of project architecture and patterns
+### 🔜 **v0.4.0 – AI Platform Evolution** (Q4 2025)
 
-### 🏗️ **v0.5.0 – Ecosystem Expansion** (Q2 2026)
+Planned:
 
--   🏪 **Template marketplace** – Share your patterns with the community
--   🎨 **Additional domain generators** – E-commerce, auth, analytics, and more
--   🔌 **Plugin system** – Extend VibesPro with custom generators
--   🌐 **Multi-cloud support** – AWS, Azure, GCP deployment templates
+-   🧠 Enhanced pattern recognition from temporal database
+-   📊 Automated architecture validation and suggestions
+-   🎯 Context-aware AI recommendations
+-   ⚡ Performance profiling and optimization toolkit
 
-### 🏆 **v1.0 – Production Ready** (Q3 2026)
+### 🏗️ **Future** (2026+)
 
--   🎓 **Enterprise certification** – Battle-tested at scale
--   📖 **Complete documentation refresh** – Comprehensive guides and tutorials
--   🔒 **Security hardening** – Full security audit and certification
--   🚀 **Performance benchmarks** – Proven scalability and reliability
+-   🏪 Community knowledge marketplace for organizational patterns
+-   🎨 Additional domain synthesizers (auth, e-commerce, analytics)
+-   🔌 Extension system for custom agent capabilities
+-   🌐 Multi-cloud infrastructure patterns (AWS, Azure, GCP)
 
 ---
 
@@ -512,49 +639,73 @@ Building VibesPro is a team effort. Whether you're an engineer, architect, or AI
 
 ---
 
-## 📊 Why This Works (The Evidence)
+## 📊 Measured Impact
 
-Since teams started using VibesPro:
+**Synthesized Application Quality:**
 
--   ⚡ **95% faster setup** – Weeks of scaffolding collapsed to minutes
--   🎯 **100% architecture compliance** – No shortcuts, no technical debt
--   🧠 **80%+ AI acceptance** – Suggested improvements that developers actually use
--   ⏱️ **<30 second generation** – Fresh coffee, fresh codebase
--   🚀 **<2 minute builds** – From code to running application
--   ✅ **Zero manual configuration** – All Nx, ESLint, Jest, TypeScript settings included (v0.1.0)
--   🔧 **1-2 hours saved per project** – No more fixing daemon crashes or dependency issues
--   🎨 **60-70% fewer questions** – Audit-first customization detects project setup automatically
--   🛠️ **Consistent environments** – Devbox + Mise eliminate "works on my machine" issues (v0.2.0)
--   🔄 **CI reliability** – Environment validation ensures builds pass first time (v0.2.0)
--   📊 **Production observability** – Complete telemetry pipeline with <1µs overhead (v0.3.0)
--   🔍 **Full trace visibility** – End-to-end request tracking with OpenTelemetry (v0.3.0)
+-   ✅ **100% architecture compliance** – Hexagonal boundaries enforced at synthesis time
+-   🎯 **Zero manual configuration** – All tooling pre-configured (Nx, ESLint, Jest, mypy)
+-   ⚡ **<30 second synthesis** – Complete application infrastructure deployed
+-   🚀 **<2 minute operational readiness** – From synthesis to passing tests
+-   🛠️ **Environment determinism** – Devbox + Mise = guaranteed reproducibility
 
----
+**AI Development System:**
 
-## 🌍 The Bigger Picture
+-   🤖 **32+ specialized chat modes** – TDD, debugging, specs, product planning
+-   📋 **16 modular instructions** – MECE principle with precedence stacking
+-   🧠 **Temporal learning** – Query past architectural decisions
+-   🎯 **Generator-first enforcement** – Prevents inconsistent code structure
 
-Software development shouldn't feel like starting from zero every time. The same patterns, the same problems, the same solutions—rebuilt over and over.
+**Observability (v0.3.0):**
 
-**VibesPro changes that.**
+-   � **<1µs span overhead** – Minimal performance impact
+-   🔍 **Full distributed tracing** – End-to-end request tracking
+-   � **Vector pipeline** – <3% CPU at 1k spans/s
+-   ⚡ **Runtime flags** – Zero overhead when `VIBEPRO_OBSERVE=0`
 
-Imagine a world where:
+**Developer Experience:**
 
--   Junior developers inherit senior-level architecture from day one
--   Teams ship faster because the foundation is already solid
--   Best practices spread automatically, not through painful meetings
--   Every project makes the next one easier
-
-**That world is what we're building. One generated project at a time.**
+-   ⏱️ **95% faster setup** – Minutes vs weeks
+-   🔧 **1-2 hours saved per project** – No dependency debugging
+-   � **CI reliability** – Environment validation catches issues early
+-   📚 **Living documentation** – Specs, ADRs, traceability maintained
 
 ---
 
-## 📚 Learn More
+## 📚 Documentation & Resources
 
--   **📖 Full Documentation** – `docs/README.md`
--   **🏗️ Architecture Deep Dive** – `docs/ARCHITECTURE.md`
--   **🎓 Tutorials** – `docs/how-to/`
--   **🤖 AI Workflows** – `docs/aiassist/`
--   **🔬 Technical Specs** – `docs/spec_index.md`
+### Getting Started
+
+-   **📖 [Quick Start](docs/QUICKSTART.md)** – 5-minute setup guide
+-   **🛠️ [Environment Setup](docs/ENVIRONMENT.md)** – Devbox, Mise, SOPS configuration
+-   **🤖 [AI Agent Guide](.github/copilot-instructions.md)** – Essential workflows for AI coding
+
+### Architecture & Specs
+
+-   **🏛️ [Software Design](docs/dev_sds.md)** – System architecture (DEV-SDS specs)
+-   **📋 [Product Requirements](docs/dev_prd.md)** – Feature requirements (DEV-PRD specs)
+-   **🎯 [Architecture Decisions](docs/dev_adr.md)** – ADRs with rationale
+-   **🔬 [Technical Specifications](docs/dev_technical-specifications.md)** – Implementation details
+-   **🗺️ [Traceability Matrix](docs/traceability_matrix.md)** – Spec-to-code mapping
+
+### AI Workflows
+
+-   **🤖 [Chat Modes](.github/chatmodes/)** – 32+ specialized personas
+-   **📝 [Prompts](.github/prompts/)** – 26 reusable templates
+-   **📋 [Instructions](.github/instructions/)** – 16 modular guidance files
+-   **🧠 [Temporal Database](temporal_db/README.md)** – Learning system usage
+
+### Observability (v0.3.0)
+
+-   **� [Observability Guide](docs/observability/README.md)** – 630+ line operational guide
+-   **🔍 OpenTelemetry + Vector + OpenObserve setup**
+-   **📡 VRL transforms, PII redaction, sampling**
+
+### Development
+
+-   **� [Nx Generators](docs/nx-generators-guide.md)** – Generator-first workflow
+-   **🧪 [Testing Strategy](docs/testing/)** – TDD, unit, integration, shell tests
+-   **� [Security Guidelines](.github/instructions/security.instructions.md)** – Security-first practices
 
 ---
 
@@ -576,11 +727,11 @@ We follow what we call **"The Photoshop Rule"** — a simple way to understand h
 
 It's the same with VibesPro:
 
--   ✅ **Use VibesPro freely inside your organization** — generate projects, build applications, support your development workflows
+-   ✅ **Use VibesPro freely inside your organization** — deploy agencies, build applications, support your development operations
 -   ✅ **Use it to create outputs** (applications, services, codebases) and use or sell those outputs however you like
--   ✅ **Modify and customize** templates and generators for your team's needs
+-   ✅ **Modify and customize** synthesis patterns and agent workflows for your team's needs
 -   ❌ **Don't resell VibesPro itself** — you can't package it up and offer it as a hosted platform or SaaS to third parties without a commercial license
--   ❌ **Don't strip out VibesPro's core** to make a competing generator service
+-   ❌ **Don't strip out VibesPro's core** to make a competing cognitive infrastructure service
 
 **Dual License Structure:**
 
@@ -593,18 +744,44 @@ See `LICENSE` for complete legal terms.
 
 ---
 
-## 💡 The Invitation
-
-**You don't need to be an expert to build like one.**
-
-That's the promise of VibesPro. Whether you're starting your first project or your hundredth, the path is clear, the tools are ready, and the architecture is sound.
-
-**Ready to see what your team can build when the foundation is already perfect?**
+## � Get Started
 
 ```bash
+# Deploy your software agency
+copier copy gh:GodSpeedAI/VibesPro my-project
+
+# Activate and operate
+cd my-project
 just setup
-# Your journey begins here
+pnpm dev
 ```
+
+**Platform Development:**
+
+```bash
+# Clone VibesPro platform
+git clone https://github.com/GodSpeedAI/VibesPro.git
+cd VibesPro
+just setup
+
+# Test synthesis pipeline
+just test-generation
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Whether you're:
+
+-   🐛 Reporting bugs or suggesting features
+-   📝 Improving documentation
+-   🔧 Fixing issues or adding functionality
+-   🎨 Creating new chat modes or prompts
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+**Philosophy:** Test first, ship confidently, learn continuously.
 
 ---
 

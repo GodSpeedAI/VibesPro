@@ -1147,6 +1147,8 @@ pnpm nx test libs-auth
 
 Use the implementation plan and testing checklist above as the canonical reference. When adapting the flow to new features, clone the structure, adjust scope-specific checklists, and always maintain traceability back to the governing ADR/PRD/SDS entries. The walkthrough demonstrates expected rigor; reuse it as a template rather than duplicating content verbatim.
 
+**Note that work you do should be incremental to manage your context window effectively.**
+
 ```
 
 ```

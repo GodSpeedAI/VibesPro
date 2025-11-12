@@ -1,12 +1,10 @@
 import {
   Tree,
   formatFiles,
-  getWorkspaceLayout,
   names,
   addProjectConfiguration,
   readProjectConfiguration,
 } from '@nx/devkit';
-import * as path from 'path';
 import { HexDomainGeneratorSchema } from './schema';
 
 interface NormalizedSchema extends HexDomainGeneratorSchema {
@@ -17,7 +15,6 @@ interface NormalizedSchema extends HexDomainGeneratorSchema {
 }
 
 function normalizeOptions(
-  tree: Tree,
   options: HexDomainGeneratorSchema,
   layer: 'domain' | 'application' | 'infrastructure',
 ): NormalizedSchema {
@@ -54,7 +51,7 @@ export async function hexDomainGenerator(tree: Tree, options: HexDomainGenerator
   ];
 
   for (const layer of layers) {
-    const normalizedOptions = normalizeOptions(tree, options, layer);
+    const normalizedOptions = normalizeOptions(options, layer);
     try {
       readProjectConfiguration(tree, normalizedOptions.projectName);
     } catch (e) {

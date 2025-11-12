@@ -50,6 +50,11 @@ docs/tmp/
 *.db
 *.sqlite
 temporal_db/*.redb
+data/*.redb
+
+# AI Models (large binary files)
+models/*.gguf
+models/*.bin
 
 # Logs
 *.log
