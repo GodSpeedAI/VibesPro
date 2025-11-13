@@ -111,3 +111,7 @@ ops/openobserve/buildx/refs/
 
 .vscode/mcp.json
 mcp.json
+
+# Models/Data
+models/*.gguf
+data/*.redb
