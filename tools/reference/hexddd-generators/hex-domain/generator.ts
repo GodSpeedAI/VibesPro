@@ -1,8 +1,8 @@
 import {
   Tree,
+  addProjectConfiguration,
   formatFiles,
   names,
-  addProjectConfiguration,
   readProjectConfiguration,
 } from '@nx/devkit';
 import { HexDomainGeneratorSchema } from './schema';
