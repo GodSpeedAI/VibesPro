@@ -47,34 +47,39 @@ Summary: Real-time analytics dashboard showing key metrics, user activity, and s
 Source: docs/dev_adr.md#adr-001
 Summary: Enable TypeScript strict mode for type safety, better tooling support, and reduced runtime errors.
 
-## ADR-002 — Hexagonal Architecture Pattern
+## ADR-001 — Native config-only prompt system
 
-Source: docs/dev_adr.md#adr-002
-Summary: Apply ports and adapters pattern to decouple business logic from infrastructure concerns.
+Source: docs/specs/ (see traceability_matrix.md)
+Summary: Adopt a native, configuration-only approach for prompt definitions to simplify management and version control.
+
+## ADR-002 — Modular instruction stacking
+
+Source: docs/specs/ (see traceability_matrix.md)
+Summary: Implement a modular instruction stacking mechanism for prompts, allowing reusable and composable directives.
 
 ### SDS Specifications
 
-## SDS-001 — Authentication Service Architecture
+## SDS-001 — Prompt system architecture
 
-Source: docs/dev_sds.md#sds-001
-Summary: Hexagonal design for auth service with OAuth adapters, token management, and session persistence.
+Source: docs/specs/ (see traceability_matrix.md)
+Summary: Design the architecture for the prompt system, including prompt parsing, execution, and output handling.
 
-## SDS-002 — API Gateway Design
+## SDS-002 — Instruction stacking design
 
-Source: docs/dev_sds.md#sds-002
-Summary: Rate-limited gateway with request routing, auth middleware, and centralized error handling.
+Source: docs/specs/ (see traceability_matrix.md)
+Summary: Detail the design of the instruction stacking mechanism, covering instruction types, order, and conflict resolution.
 
 ### TS Specifications
 
-## TS-001 — Rate Limiting Implementation
+## TS-001 — Prompt file format
 
-Source: docs/dev_technical-specifications.md#ts-001
-Summary: Sliding window rate limiter using Redis with 100 req/min limit and graceful degradation.
+Source: docs/specs/ (see traceability_matrix.md)
+Summary: Specify the file format for prompt definitions, including metadata, input parameters, and instruction blocks.
 
-## TS-002 — Database Migration Strategy
+## TS-002 — Instruction file format
 
-Source: docs/dev_technical-specifications.md#ts-002
-Summary: Zero-downtime migrations using shadow tables, dual-write pattern, and automated rollback capability.
+Source: docs/specs/ (see traceability_matrix.md)
+Summary: Define the file format for individual instructions, detailing their structure, parameters, and execution logic.
 
 ---
 

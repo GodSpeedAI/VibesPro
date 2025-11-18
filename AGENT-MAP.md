@@ -20,6 +20,15 @@ This map shows the distributed AGENT.md system that replicates the semantic rout
 -   [tools/AGENT.md](/tools/AGENT.md) - Development Tools (utilities, generators, metrics)
 -   [scripts/AGENT.md](/scripts/AGENT.md) - Orchestration Scripts (shell automation, justfile integration)
 
+## Core Custom Agents (ADR-0001)
+
+-   `.github/agents/planner.core.agent.md` — idea → plan generator
+-   `.github/agents/spec.author.agent.md` — PRD / SDS / TS authoring
+-   `.github/agents/implementer.core.agent.md` — generator-first implementation
+-   `.github/agents/reviewer.core.agent.md` — reviews, traceability, tests
+-   `.github/agents/context.curator.agent.md` — context bundles & temporal persistence
+-   `.github/agents/mcp.orchestrator.agent.md` — MCP health & orchestration
+
 ### 🏗️ Application Architecture (Phase 2)
 
 -   [apps/AGENT.md](/apps/AGENT.md) - Application Interfaces (web, mobile, CLI, API)
