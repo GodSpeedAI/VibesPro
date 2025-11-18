@@ -107,6 +107,19 @@ The implementation follows a strict 5-phase approach with autonomous agent coord
 - Performance monitoring and optimization
 - Validation and quality assurance
 
+### Core Custom Agents (Repository-level)
+
+The repository standardizes on a minimal set of core custom agents (see `docs/adr/ADR-0001-ai-migration-to-custom-agents.md`) that implement the PDD/SDD lifecycle and MCP orchestration. These cores should be present in `.github/agents/` and used as the primary routing targets for legacy personas.
+
+-   `planner.core` — idea → plan generator (links to specs, recommended generators)
+-   `spec.author` — PRD / SDS / TS authoring and refinement
+-   `implementer.core` — generator-first implementation + TDD cycles
+-   `reviewer.core` — review, traceability, and merge validation
+-   `context.curator` — context bundle creation, pruning, and persistence
+-   `mcp.orchestrator` — MCP health, routing, and multi-tool sequences
+
+Use these cores as composition primitives rather than proliferating mode-level personas across templates.
+
 **Synchronization Points**:
 
 - After each phase completion

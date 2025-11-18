@@ -75,4 +75,11 @@ if [[ -f "${REPO_ROOT}/techstack.yaml" ]]; then
   cp "${REPO_ROOT}/techstack.yaml" "${OUTPUT_DIR}/techstack.yaml"
 fi
 
+# 5) Include repository agent definitions so core agents are available in bundle
+if [[ -d "${REPO_ROOT}/.github/agents" ]]; then
+  find "${REPO_ROOT}/.github/agents" -maxdepth 1 -type f -name '*.agent.md' -print0 2>/dev/null | while IFS= read -r -d '' agent; do
+    cp "${agent}" "${OUTPUT_DIR}/agents-$(basename "${agent}")"
+  done
+fi
+
 echo "Context bundle created at: ${OUTPUT_DIR}"
