@@ -682,11 +682,19 @@ Building VibesPro is a team effort. Whether you're an engineer, architect, or AI
 
 ### Architecture & Specs
 
+<<<<<<< HEAD
 - **🏛️ [Software Design](docs/dev_sds.md)** – System architecture (DEV-SDS specs)
 - **📋 [Product Requirements](docs/dev_prd.md)** – Feature requirements (DEV-PRD specs)
 - **🎯 [Architecture Decisions](docs/dev_adr.md)** – ADRs with rationale
 - **🔬 [Technical Specifications](docs/dev_technical-specifications.md)** – Implementation details
 - **🗺️ [Traceability Matrix](docs/traceability_matrix.md)** – Spec-to-code mapping
+=======
+-   **🏛️ [Software Design](docs/specs/)** – System architecture (DEV-SDS specs)
+-   **📋 [Product Requirements](docs/specs/)** – Feature requirements (DEV-PRD specs)
+-   **🎯 [Architecture Decisions](docs/specs/)** – ADRs with rationale
+-   **🔬 [Technical Specifications](docs/specs/)** – Implementation details
+-   **🗺️ [Traceability Matrix](docs/traceability_matrix.md)** – Spec-to-code mapping
+>>>>>>> f48ea57 (refactor: Reorganize specifications into a domain-oriented structure, update spec tools, and introduce new agent definitions.)
 
 ### AI Workflows
 

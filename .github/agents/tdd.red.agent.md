@@ -8,6 +8,10 @@ model: ${ default_model }
 name: "TDD Red Mode"
 description: "Write failing test - check generators first"
 tools: ["codebase", "search", "runTests"]
+handoffs:
+ - label: implement
+  agent: implementer.core
+  prompt: "Implement failing test via generator-first flow"
 ---
 
 # TDD Red Mode
