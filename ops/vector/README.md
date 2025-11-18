@@ -271,9 +271,9 @@ observe:logs:
 
 ## 12. References
 
--   [DEV-ADR-016](../../docs/dev_adr.md) — Adoption decision
--   [DEV-SDS-017](../../docs/dev_sds.md) — System design
--   [DEV-PRD-017](../../docs/dev_prd.md) — Product requirements
+-   [DEV-ADR-016](../../docs/specs/observability/observability.adr.md) — Adoption decision
+-   [DEV-SDS-017](../../docs/specs/observability/observability.sds.md) — System design
+-   [DEV-PRD-017](../../docs/specs/observability/observability.prd.md) — Product requirements
 -   [Observability Guide](../../docs/observability/README.md) — Developer how-to
 -   Vector docs: [https://vector.dev/docs/](https://vector.dev/docs/)
 -   OpenObserve docs: [https://openobserve.ai/docs/](https://openobserve.ai/docs/)

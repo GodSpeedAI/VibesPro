@@ -119,13 +119,26 @@ function addSpecIdToMatrix(rows, specId, filePath, rootDir) {
 }
 
 function buildMatrix(rootDir) {
-  const files = gatherMarkdownFiles(path.join(rootDir, 'docs'));
+  const files = gatherMarkdownFiles(path.join(rootDir, 'docs/specs'));
   const rows = new Map(); // id -> { artifacts: Set, status, notes }
+  const idSourceMap = new Map(); // id -> filePath (for uniqueness check)
 
   for (const f of files) {
     // Extract IDs from content (existing functionality)
     const contentIds = extractIdsFromFile(f);
     for (const specId of contentIds) {
+      // Uniqueness check: Ensure ID is defined in only one spec file (ignoring references in other docs if we were scanning all docs, but here we scan specs)
+      // Actually, extractIdsFromFile finds *definitions* (headers), so duplicates are errors.
+      if (idSourceMap.has(specId.id) && idSourceMap.get(specId.id) !== f) {
+        throw new Error(
+          `Duplicate Spec ID definition found: ${specId.id} in ${path.relative(
+            rootDir,
+            f,
+          )} and ${path.relative(rootDir, idSourceMap.get(specId.id))}`,
+        );
+      }
+      idSourceMap.set(specId.id, f);
+
       addSpecIdToMatrix(rows, specId, f, rootDir);
     }
 

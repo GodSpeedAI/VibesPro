@@ -39,30 +39,32 @@ Summary: Real-time analytics dashboard showing key metrics, user activity, and s
 
 ## ADR-001 — Use TypeScript Strict Mode
 Source: docs/dev_adr.md#adr-001
+## ADR-001 — Native config-only prompt system
+Source: docs/specs/ (see traceability_matrix.md)
 Summary: Enable TypeScript strict mode for type safety, better tooling support, and reduced runtime errors.
 
-## ADR-002 — Hexagonal Architecture Pattern
-Source: docs/dev_adr.md#adr-002
+## ADR-002 — Modular instruction stacking
+Source: docs/specs/ (see traceability_matrix.md)
 Summary: Apply ports and adapters pattern to decouple business logic from infrastructure concerns.
 
 ### SDS Specifications
 
-## SDS-001 — Authentication Service Architecture
-Source: docs/dev_sds.md#sds-001
+## SDS-001 — Prompt system architecture
+Source: docs/specs/ (see traceability_matrix.md)
 Summary: Hexagonal design for auth service with OAuth adapters, token management, and session persistence.
 
-## SDS-002 — API Gateway Design
-Source: docs/dev_sds.md#sds-002
+## SDS-002 — Instruction stacking design
+Source: docs/specs/ (see traceability_matrix.md)
 Summary: Rate-limited gateway with request routing, auth middleware, and centralized error handling.
 
 ### TS Specifications
 
-## TS-001 — Rate Limiting Implementation
-Source: docs/dev_technical-specifications.md#ts-001
+## TS-001 — Prompt file format
+Source: docs/specs/ (see traceability_matrix.md)
 Summary: Sliding window rate limiter using Redis with 100 req/min limit and graceful degradation.
 
-## TS-002 — Database Migration Strategy
-Source: docs/dev_technical-specifications.md#ts-002
+## TS-002 — Instruction file format
+Source: docs/specs/ (see traceability_matrix.md)
 Summary: Zero-downtime migrations using shadow tables, dual-write pattern, and automated rollback capability.
 
 ---
