@@ -109,7 +109,7 @@ ops/openobserve/buildx/refs/
 .aider*
 
 
-.vscode/mcp.json
+/.vscode/mcp.json
 mcp.json
 
 # Models/Data
