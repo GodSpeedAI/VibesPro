@@ -21,7 +21,7 @@ Purpose
 
 Responsibilities
 
--   Perform static and semantic checks (lint, typecheck, basic coverage expectations).
--   Verify commit messages for spec IDs per `docs/commit_message_guidelines.md`.
--   Optionally initiate `vibe-check` to validate assumptions and surface non-obvious risks.
--   Approve or request changes and note lessons into `memory`.
+- Perform static and semantic checks (lint, typecheck, basic coverage expectations).
+- Verify commit messages for spec IDs per `docs/commit_message_guidelines.md`.
+- Optionally initiate `vibe-check` to validate assumptions and surface non-obvious risks.
+- Approve or request changes and note lessons into `memory`.

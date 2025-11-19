@@ -54,18 +54,18 @@ Supported by: DEV-ADR-014, DEV-SDS-015
 
 ## DEV-PRD-027 — Supabase Dev Stack Automation
 
--   Description: As a developer, I want a one-command Supabase stack so that local environments mirror production quickly.
--   EARS: When I run `nx run tools-supabase:supabase-devstack:start`, the stack shall start using generated environment files, and matching `stop|reset|status` targets shall behave consistently.
--   DX Metrics: First-time setup < 5 minutes; integration smoke tests rely on the same targets.
--   Supported by: DEV-ADR-026, DEV-SDS-026
+- Description: As a developer, I want a one-command Supabase stack so that local environments mirror production quickly.
+- EARS: When I run `nx run tools-supabase:supabase-devstack:start`, the stack shall start using generated environment files, and matching `stop|reset|status` targets shall behave consistently.
+- DX Metrics: First-time setup < 5 minutes; integration smoke tests rely on the same targets.
+- Supported by: DEV-ADR-026, DEV-SDS-026
 
 ---
 
 ## DEV-PRD-028 — Nx Upgrade Quality Gate
 
--   Description: As a maintainer, I want a documented Nx upgrade pipeline so that template and generated projects stay current without regressions.
--   EARS: During scheduled upgrade windows, the system shall run `nx migrate`, update plugins, regenerate types, and execute lint/test/typecheck/generator smoke suites before merge.
--   DX Metrics: Upgrades ship within two weeks of an Nx release; rollback steps documented for every upgrade.
--   Supported by: DEV-ADR-027, DEV-SDS-027
+- Description: As a maintainer, I want a documented Nx upgrade pipeline so that template and generated projects stay current without regressions.
+- EARS: During scheduled upgrade windows, the system shall run `nx migrate`, update plugins, regenerate types, and execute lint/test/typecheck/generator smoke suites before merge.
+- DX Metrics: Upgrades ship within two weeks of an Nx release; rollback steps documented for every upgrade.
+- Supported by: DEV-ADR-027, DEV-SDS-027
 
 ---

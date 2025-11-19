@@ -60,15 +60,15 @@ Decision: Provide Docker Compose assets and Nx run-command targets (`supabase-de
 
 Rationale:
 
--   Ensures local development, CI, and production share identical schema workflows.
--   Simplifies onboarding by replacing manual Supabase CLI steps with templated commands.
--   Supports end-to-end type generation pipelines already defined in DEV-ADR-019/020.
+- Ensures local development, CI, and production share identical schema workflows.
+- Simplifies onboarding by replacing manual Supabase CLI steps with templated commands.
+- Supports end-to-end type generation pipelines already defined in DEV-ADR-019/020.
 
 Consequences:
 
--   Requires maintaining Docker Compose definitions and tooling scripts.
--   Developers need Docker installed; documentation must describe resource requirements.
--   CI jobs may optionally start the stack for integration tests.
+- Requires maintaining Docker Compose definitions and tooling scripts.
+- Developers need Docker installed; documentation must describe resource requirements.
+- CI jobs may optionally start the stack for integration tests.
 
 ## DEV-ADR-027 — Nx Upgrade Cadence and Plugin Matrix
 
@@ -80,12 +80,12 @@ Decision: Adopt a scheduled (e.g., quarterly) Nx upgrade window that runs `nx mi
 
 Rationale:
 
--   Keeps template-generated workspaces aligned with the latest Nx capabilities and security fixes.
--   Reduces incompatibilities between template generators and downstream projects.
--   Provides a predictable maintenance rhythm for the team.
+- Keeps template-generated workspaces aligned with the latest Nx capabilities and security fixes.
+- Reduces incompatibilities between template generators and downstream projects.
+- Provides a predictable maintenance rhythm for the team.
 
 Consequences:
 
--   Adds recurring maintenance tasks with validation gates (lint, test, type generation).
--   Requires change management documentation (runbooks, migration notes).
--   Potential short-term instability during upgrade windows that must be mitigated via smoke tests.
+- Adds recurring maintenance tasks with validation gates (lint, test, type generation).
+- Requires change management documentation (runbooks, migration notes).
+- Potential short-term instability during upgrade windows that must be mitigated via smoke tests.

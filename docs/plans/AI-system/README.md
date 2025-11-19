@@ -16,19 +16,19 @@ This directory contains planning documents for aligning VibesPro's distributed A
 
 ### Primary Plan
 
--   **[ai-profile-architecture-alignment.md](./ai-profile-architecture-alignment.md)**
-    -   Complete phased implementation plan
-    -   5 phases, 13 cycles with detailed RED/GREEN/Verification steps
-    -   Follows PLAN_TEMPLATE.md structure
-    -   Includes dependency graphs, checklists, and audit trails
+- **[ai-profile-architecture-alignment.md](./ai-profile-architecture-alignment.md)**
+    - Complete phased implementation plan
+    - 5 phases, 13 cycles with detailed RED/GREEN/Verification steps
+    - Follows PLAN_TEMPLATE.md structure
+    - Includes dependency graphs, checklists, and audit trails
 
 ### Analysis
 
--   **[current-vs-target-analysis.md](./current-vs-target-analysis.md)**
-    -   Side-by-side comparison of current vs. target state
-    -   Gap analysis for all artifact types
-    -   Frontmatter standardization requirements
-    -   Migration strategy and success criteria
+- **[current-vs-target-analysis.md](./current-vs-target-analysis.md)**
+    - Side-by-side comparison of current vs. target state
+    - Gap analysis for all artifact types
+    - Frontmatter standardization requirements
+    - Migration strategy and success criteria
 
 ---
 
@@ -96,34 +96,34 @@ graph TD
 
 ### Phase 1 Complete When:
 
--   ✅ All 75 artifacts inventoried (17 instructions + 26 prompts + 32 chatmodes)
--   ✅ Gap analysis document generated
--   ✅ Migration strategy defined
+- ✅ All 75 artifacts inventoried (17 instructions + 26 prompts + 32 chatmodes)
+- ✅ Gap analysis document generated
+- ✅ Migration strategy defined
 
 ### Phase 2 Complete When:
 
--   ✅ All frontmatter validates against schemas
--   ✅ `profileId` added to all artifacts
--   ✅ Field names standardized
+- ✅ All frontmatter validates against schemas
+- ✅ `profileId` added to all artifacts
+- ✅ Field names standardized
 
 ### Phase 3 Complete When:
 
--   ✅ `profile.jsonc` manifest created and validated
--   ✅ Profile composer dry-run succeeds
--   ✅ Token budget report generated
+- ✅ `profile.jsonc` manifest created and validated
+- ✅ Profile composer dry-run succeeds
+- ✅ Token budget report generated
 
 ### Phase 4 Complete When:
 
--   ✅ CI validation workflow passing
--   ✅ All `just ai-profile-*` commands work
--   ✅ Validation suite reports GREEN
+- ✅ CI validation workflow passing
+- ✅ All `just ai-profile-*` commands work
+- ✅ Validation suite reports GREEN
 
 ### Phase 5 Complete When:
 
--   ✅ Profile GPG-signed and verified
--   ✅ Audit trail logging active
--   ✅ Documentation updated
--   ✅ Team trained
+- ✅ Profile GPG-signed and verified
+- ✅ Audit trail logging active
+- ✅ Documentation updated
+- ✅ Team trained
 
 ---
 
@@ -190,17 +190,17 @@ node scripts/audit-logger.js --query '{"event": "profile_composed"}'
 
 ### Specifications
 
--   [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) - AI System Profile Architecture
+- [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) - AI System Profile Architecture
 
 ### Current System
 
--   [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) - Distributed agent routing
--   [AGENT-MAP.md](../../AGENT-MAP.md) - Navigation hub
--   [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - Master AI guidance
+- [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) - Distributed agent routing
+- [AGENT-MAP.md](../../AGENT-MAP.md) - Navigation hub
+- [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - Master AI guidance
 
 ### Templates
 
--   [PLAN_TEMPLATE.md](../PLAN_TEMPLATE.md) - Planning document template
+- [PLAN_TEMPLATE.md](../PLAN_TEMPLATE.md) - Planning document template
 
 ---
 
@@ -243,9 +243,9 @@ When executing cycles:
 
 ## ❓ Questions & Support
 
--   Review [current-vs-target-analysis.md](./current-vs-target-analysis.md) for detailed context
--   Check [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) for specification details
--   Consult [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) for current system architecture
+- Review [current-vs-target-analysis.md](./current-vs-target-analysis.md) for detailed context
+- Check [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) for specification details
+- Consult [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) for current system architecture
 
 ---
 

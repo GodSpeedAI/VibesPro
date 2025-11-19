@@ -4,9 +4,9 @@
 
 ## DEV-ADR-005 — Security by default: workspace trust and tool safety
 
--   Decision: Respect workspace trust boundaries; never enable chat.tools.autoApprove; centralize safety instructions.
--   Rationale: Prevent prompt-injection and RCE; protect developer machines.
--   DX Impact: Confidence in running examples; fewer security reviews blocked.
+- Decision: Respect workspace trust boundaries; never enable chat.tools.autoApprove; centralize safety instructions.
+- Rationale: Prevent prompt-injection and RCE; protect developer machines.
+- DX Impact: Confidence in running examples; fewer security reviews blocked.
 
 ## DEV-ADR-013 — Secrets managed by SOPS; ephemeral decryption
 

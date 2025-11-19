@@ -113,16 +113,16 @@ Logs are automatically correlated with traces when:
 ## References
 
 <<<<<<< HEAD
+
 - [DEV-ADR-017](../../docs/dev_adr.md#dev-adr-017) - Architecture Decision
 - [DEV-PRD-018](../../docs/dev_prd.md#dev-prd-018) - Product Requirements
 - [DEV-SDS-018](../../docs/dev_sds.md#dev-sds-018) - Software Design Spec
+- # [Logging Policy](../../docs/ENVIRONMENT.md#logging-policy) - Operational Guidelines
+- [DEV-ADR-017](../../docs/specs/observability/observability.adr.md#dev-adr-017) - Architecture Decision
+- [DEV-PRD-018](../../docs/specs/observability/observability.prd.md#dev-prd-018) - Product Requirements
+- [DEV-SDS-018](../../docs/specs/observability/observability.sds.md#dev-sds-018) - Software Design Spec
 - [Logging Policy](../../docs/ENVIRONMENT.md#logging-policy) - Operational Guidelines
-=======
--   [DEV-ADR-017](../../docs/specs/observability/observability.adr.md#dev-adr-017) - Architecture Decision
--   [DEV-PRD-018](../../docs/specs/observability/observability.prd.md#dev-prd-018) - Product Requirements
--   [DEV-SDS-018](../../docs/specs/observability/observability.sds.md#dev-sds-018) - Software Design Spec
--   [Logging Policy](../../docs/ENVIRONMENT.md#logging-policy) - Operational Guidelines
->>>>>>> f48ea57 (refactor: Reorganize specifications into a domain-oriented structure, update spec tools, and introduce new agent definitions.)
+    > > > > > > > f48ea57 (refactor: Reorganize specifications into a domain-oriented structure, update spec tools, and introduce new agent definitions.)
 
 ## Testing
 

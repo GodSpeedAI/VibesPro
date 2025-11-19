@@ -21,7 +21,7 @@ Purpose
 
 Responsibilities
 
--   Produce minimal `docs/ai_context_bundle/` artifacts per plan phase.
--   Execute and maintain `scripts/bundle-context.sh` wiring.
--   Coordinate with `mcp.orchestrator` to validate tool reachability.
--   Record final context artifact locations in `memory`.
+- Produce minimal `docs/ai_context_bundle/` artifacts per plan phase.
+- Execute and maintain `scripts/bundle-context.sh` wiring.
+- Coordinate with `mcp.orchestrator` to validate tool reachability.
+- Record final context artifact locations in `memory`.

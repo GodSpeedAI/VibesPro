@@ -243,23 +243,23 @@ profileId: "com.vibespro.ai-profile"
 
 ### Instructions (17 files)
 
--   ✅ Already have: `description`, `kind`, `domain`, `precedence`
--   ⚠️ Need to add: `profileId`
--   ⚠️ Need to rename: `applyTo` → `applyToGlob`
+- ✅ Already have: `description`, `kind`, `domain`, `precedence`
+- ⚠️ Need to add: `profileId`
+- ⚠️ Need to rename: `applyTo` → `applyToGlob`
 
 ### Prompts (26 files)
 
--   ✅ Already have: `kind`, `description`, `domain`, `task`
--   ⚠️ Need to add: `profileId`, `variables` array
--   ⚠️ Need to standardize: `model` (map "GPT-5 mini" → "gpt-4-turbo")
--   ⚠️ Optional: `mode` (most already have this)
+- ✅ Already have: `kind`, `description`, `domain`, `task`
+- ⚠️ Need to add: `profileId`, `variables` array
+- ⚠️ Need to standardize: `model` (map "GPT-5 mini" → "gpt-4-turbo")
+- ⚠️ Optional: `mode` (most already have this)
 
 ### Chat Modes (32 files)
 
--   ✅ Already have: `description`
--   ⚠️ Need to add: `id`, `kind: chatmode`, `profileId`, `handoffs`
--   ⚠️ Need to rename: `name` → `id`
--   ⚠️ Optional: `tools`, `model`
+- ✅ Already have: `description`
+- ⚠️ Need to add: `id`, `kind: chatmode`, `profileId`, `handoffs`
+- ⚠️ Need to rename: `name` → `id`
+- ⚠️ Optional: `tools`, `model`
 
 ---
 
@@ -304,22 +304,22 @@ profileId: "com.vibespro.ai-profile"
     "toolPolicy": {
         "allowedToolSets": ["vibespro-tools"],
         "requireMcpTrust": true,
-        "autoApproveTools": false // Enforced
+        "autoApproveTools": false, // Enforced
     },
     "security": {
         "requireSignature": true,
         "signedBy": "vibespro-team",
-        "allowedHosts": []
-    }
+        "allowedHosts": [],
+    },
 }
 ```
 
 **Audit Trail:**
 
--   Every profile composition logged
--   Tool invocations tracked
--   MCP access recorded
--   Query-able audit logs
+- Every profile composition logged
+- Tool invocations tracked
+- MCP access recorded
+- Query-able audit logs
 
 ---
 
@@ -327,10 +327,10 @@ profileId: "com.vibespro.ai-profile"
 
 ### Current State
 
--   ❌ No token tracking
--   ❌ No budget limits
--   ❌ No pruning strategy
--   ⚠️ Risk of context window overflow
+- ❌ No token tracking
+- ❌ No budget limits
+- ❌ No pruning strategy
+- ⚠️ Risk of context window overflow
 
 ### Target State
 
@@ -341,11 +341,11 @@ profileId: "com.vibespro.ai-profile"
     "tokenPresets": {
         "baseInstructions": 400, // Security + AI workflows
         "fileContextReserve": 2400, // Code files
-        "recentHistoryCount": 3 // Message history
+        "recentHistoryCount": 3, // Message history
     },
     "modelPreferences": {
-        "contextWindow": 128000 // GPT-4 Turbo limit
-    }
+        "contextWindow": 128000, // GPT-4 Turbo limit
+    },
 }
 ```
 
@@ -364,37 +364,37 @@ Total Used:          1,821 tokens (1.4% of 128k)
 
 ### Phase 1: Inventory (Week 1)
 
--   Scan all 17 instructions, 26 prompts, 32 chatmodes
--   Extract existing frontmatter patterns
--   Generate gap analysis
+- Scan all 17 instructions, 26 prompts, 32 chatmodes
+- Extract existing frontmatter patterns
+- Generate gap analysis
 
 ### Phase 2: Standardization (Week 1-2)
 
--   Update all frontmatter in parallel
--   Add `profileId` to all artifacts
--   Rename fields to match schema
--   Validate with linter
+- Update all frontmatter in parallel
+- Add `profileId` to all artifacts
+- Rename fields to match schema
+- Validate with linter
 
 ### Phase 3: Infrastructure (Week 2-3)
 
--   Create profile directory structure
--   Generate `profile.jsonc` manifest
--   Implement composer and token budget
--   Define toolsets
+- Create profile directory structure
+- Generate `profile.jsonc` manifest
+- Implement composer and token budget
+- Define toolsets
 
 ### Phase 4: Integration (Week 3)
 
--   Create CI validation workflow
--   Add `just` recipes
--   Implement validation suite
--   Test end-to-end
+- Create CI validation workflow
+- Add `just` recipes
+- Implement validation suite
+- Test end-to-end
 
 ### Phase 5: Production (Week 4)
 
--   Implement GPG signing
--   Add audit trail logging
--   Update documentation
--   Team training
+- Implement GPG signing
+- Add audit trail logging
+- Update documentation
+- Team training
 
 ---
 
@@ -410,15 +410,15 @@ Total Used:          1,821 tokens (1.4% of 128k)
 
 ### Final Acceptance
 
--   [ ] Profile manifest validates against schema
--   [ ] All artifacts have valid frontmatter
--   [ ] Token budget within limits
--   [ ] Security policy enforced (`autoApproveTools: false`)
--   [ ] CI pipeline green
--   [ ] Signature verified
--   [ ] Backward compatibility maintained
--   [ ] Documentation complete
--   [ ] Team trained
+- [ ] Profile manifest validates against schema
+- [ ] All artifacts have valid frontmatter
+- [ ] Token budget within limits
+- [ ] Security policy enforced (`autoApproveTools: false`)
+- [ ] CI pipeline green
+- [ ] Signature verified
+- [ ] Backward compatibility maintained
+- [ ] Documentation complete
+- [ ] Team trained
 
 ---
 
@@ -446,6 +446,6 @@ Total Used:          1,821 tokens (1.4% of 128k)
 
 **Related Documents:**
 
--   [AI Profile Architecture Alignment Plan](./ai-profile-architecture-alignment.md)
--   [DEV-SDS-AI-PROFILE-001 Specification](../specs/ai-system-profile-architecture.md)
--   [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md)
+- [AI Profile Architecture Alignment Plan](./ai-profile-architecture-alignment.md)
+- [DEV-SDS-AI-PROFILE-001 Specification](../specs/ai-system-profile-architecture.md)
+- [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md)

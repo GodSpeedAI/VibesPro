@@ -4,59 +4,59 @@
 
 ## DEV-SDS-001 — Repository layout for discoverability (addresses DEV-PRD-001, DEV-PRD-007)
 
--   Principle: Put the obvious things in obvious places.
--   Design:
-    -   `.github/copilot-instructions.md` — repo-wide guidance.
-    -   `.github/instructions/*.instructions.md` — MECE components: security, performance, style, general, context.
-    -   `.github/prompts/*.prompt.md` — reusable prompt templates; frontmatter metadata.
-    -   `.github/chatmodes/*.chatmode.md` — 8 personas; synergy notes.
-    -   `.vscode/settings.json` — prompt/mode discovery locations; safe defaults.
-    -   `scripts/` — orchestration helpers; token metrics; A/B wrappers.
--   DX Effect: Zero-hunt for files; predictable imports; fast onboarding.
+- Principle: Put the obvious things in obvious places.
+- Design:
+    - `.github/copilot-instructions.md` — repo-wide guidance.
+    - `.github/instructions/*.instructions.md` — MECE components: security, performance, style, general, context.
+    - `.github/prompts/*.prompt.md` — reusable prompt templates; frontmatter metadata.
+    - `.github/chatmodes/*.chatmode.md` — 8 personas; synergy notes.
+    - `.vscode/settings.json` — prompt/mode discovery locations; safe defaults.
+    - `scripts/` — orchestration helpers; token metrics; A/B wrappers.
+- DX Effect: Zero-hunt for files; predictable imports; fast onboarding.
 
 ## DEV-SDS-002 — Instruction stacking algorithm (addresses DEV-PRD-002, DEV-PRD-006)
 
--   Contract: Ordered list of instruction files → concatenated with precedence.
--   Rules:
-    -   Order: repo-wide → mode → prompt; later items may override earlier ones only where documented.
-    -   Pruning: remove duplicate headings/sections; cap tokens per stack via metrics.
--   Error modes: Missing file, circular include, token overflow; provide clear messages.
+- Contract: Ordered list of instruction files → concatenated with precedence.
+- Rules:
+    - Order: repo-wide → mode → prompt; later items may override earlier ones only where documented.
+    - Pruning: remove duplicate headings/sections; cap tokens per stack via metrics.
+- Error modes: Missing file, circular include, token overflow; provide clear messages.
 
 ## DEV-SDS-003 — Persona chat modes (addresses DEV-PRD-003)
 
--   Structure: Frontmatter (name, description, tools, model) + body instructions + synergy section (links to security/perf/style instructions).
--   UX: One-click selection; consistent output format; guidance for handoffs between roles.
+- Structure: Frontmatter (name, description, tools, model) + body instructions + synergy section (links to security/perf/style instructions).
+- UX: One-click selection; consistent output format; guidance for handoffs between roles.
 
 ## DEV-SDS-004 — Tasks orchestrator pattern (addresses DEV-PRD-004, DEV-PRD-010)
 
--   Inputs: prompt file, variant flag, target selection (file/folder), metrics toggle.
--   Outputs: logged token/latency; variant label.
--   Behavior: Run prompt, collect metrics, optionally split traffic 50/50 for A/B.
+- Inputs: prompt file, variant flag, target selection (file/folder), metrics toggle.
+- Outputs: logged token/latency; variant label.
+- Behavior: Run prompt, collect metrics, optionally split traffic 50/50 for A/B.
 
 ## DEV-SDS-005 — Security defaults and trust (addresses DEV-PRD-005)
 
--   Defaults: Disable chat.tools.autoApprove; honor workspace trust; prepend safety instructions.
--   Validation: CI job verifies settings.json posture and presence of safety instructions in stacks.
+- Defaults: Disable chat.tools.autoApprove; honor workspace trust; prepend safety instructions.
+- Validation: CI job verifies settings.json posture and presence of safety instructions in stacks.
 
 ## DEV-SDS-006 — Prompt-as-code lifecycle (addresses DEV-PRD-007)
 
--   Stages: Edit → Lint → Plan (preview effective prompt) → Run (A/B) → Evaluate → Merge.
--   Artifacts: Lint report, plan diff, metrics dashboard.
+- Stages: Edit → Lint → Plan (preview effective prompt) → Run (A/B) → Evaluate → Merge.
+- Artifacts: Lint report, plan diff, metrics dashboard.
 
 ## DEV-SDS-007 — CALM/Wasp/Nx bridging (addresses DEV-PRD-008)
 
--   Contract: Wasp-style spec drives features; CALM defines interfaces/controls; Nx generators output reversible services.
--   Validation: CALM controls run pre-generation; fail fast on violations.
+- Contract: Wasp-style spec drives features; CALM defines interfaces/controls; Nx generators output reversible services.
+- Validation: CALM controls run pre-generation; fail fast on violations.
 
 ## DEV-SDS-008 — Declarative-first with hooks (addresses DEV-PRD-009)
 
--   Design: Keep configuration declarative; expose hooks in tasks for retrieval, branching, and post-processing.
--   Guardrails: Limit hook scope and sanitize inputs.
+- Design: Keep configuration declarative; expose hooks in tasks for retrieval, branching, and post-processing.
+- Guardrails: Limit hook scope and sanitize inputs.
 
 ## DEV-SDS-009 — Evaluation hooks and token budgets (addresses DEV-PRD-010)
 
--   Design: Token/latency logging always on when tasks run; optional quality/safety post-processing.
--   Budgets: Per-mode budgets with warnings and hard caps; configurable thresholds.
+- Design: Token/latency logging always on when tasks run; optional quality/safety post-processing.
+- Budgets: Per-mode budgets with warnings and hard caps; configurable thresholds.
 
 ## DEV-SDS-016 — Chezmoi optional bootstrap (addresses DEV-PRD-011/012)
 
@@ -70,40 +70,39 @@ Artifacts: Chezmoi templates (outside repo), docs pointer only.
 
 ## DEV-SDS-019 — Database Schema and Migration Workflow (addresses DEV-PRD-022)
 
--   Principle: Database schema changes are atomic, version-controlled, and trigger downstream effects.
--   Design:
-    -   **Migrations:** Use the native Supabase CLI for managing database migrations (`supabase/migrations/*.sql`). Each migration file contains plain SQL and is timestamped for ordering.
-    -   **Local Development:** A `just db-migrate` command will apply all new migrations to the local Dockerized Supabase instance.
-    -   **CI/CD:** The production deployment pipeline will run migrations against the production database before deploying the application code.
-    -   **Workflow:** To create a change, a developer runs a command that creates a new, empty migration file. After adding SQL, they run the migration and regeneration command.
--   Artifacts: `supabase/migrations/`, `justfile` targets for `db-migrate`, `db-reset`.
--   Cross-references: DEV-ADR-020, DEV-PRD-022
+- Principle: Database schema changes are atomic, version-controlled, and trigger downstream effects.
+- Design:
+    - **Migrations:** Use the native Supabase CLI for managing database migrations (`supabase/migrations/*.sql`). Each migration file contains plain SQL and is timestamped for ordering.
+    - **Local Development:** A `just db-migrate` command will apply all new migrations to the local Dockerized Supabase instance.
+    - **CI/CD:** The production deployment pipeline will run migrations against the production database before deploying the application code.
+    - **Workflow:** To create a change, a developer runs a command that creates a new, empty migration file. After adding SQL, they run the migration and regeneration command.
+- Artifacts: `supabase/migrations/`, `justfile` targets for `db-migrate`, `db-reset`.
+- Cross-references: DEV-ADR-020, DEV-PRD-022
 
 ---
 
 ## DEV-SDS-020 — Type Generation and Propagation Pipeline (addresses DEV-PRD-020, DEV-PRD-022)
 
--   Principle: Generated types are artifacts derived from a single source of truth and should never be manually edited.
--   Design:
-    -   **TypeScript Generation:** A `just gen-types-ts` command will execute `npx supabase gen types typescript --local`. The output is piped to a central, shared library file: `libs/shared/types/src/database.types.ts`.
-    -   **Python Generation:** A custom script or tool will be used to convert the TypeScript types or introspect the database to generate Pydantic models in `libs/shared/types-py/src/models.py`. This ensures parity.
-    -   **Orchestration:** A top-level `just gen-types` command will run both the TypeScript and Python generation steps in sequence. This command is chained with `db-migrate` in the main workflow command.
-    -   **CI Validation:** A CI check will run the `gen-types` command and fail if the output differs from what is committed in the repository, ensuring generated types are never stale.
--   Artifacts: `libs/shared/types/src/database.types.ts`, `libs/shared/types-py/src/models.py`, `justfile` targets.
--   Cross-references: DEV-ADR-019, DEV-ADR-020, DEV-PRD-020
+- Principle: Generated types are artifacts derived from a single source of truth and should never be manually edited.
+- Design:
+    - **TypeScript Generation:** A `just gen-types-ts` command will execute `npx supabase gen types typescript --local`. The output is piped to a central, shared library file: `libs/shared/types/src/database.types.ts`.
+    - **Python Generation:** A custom script or tool will be used to convert the TypeScript types or introspect the database to generate Pydantic models in `libs/shared/types-py/src/models.py`. This ensures parity.
+    - **Orchestration:** A top-level `just gen-types` command will run both the TypeScript and Python generation steps in sequence. This command is chained with `db-migrate` in the main workflow command.
+    - **CI Validation:** A CI check will run the `gen-types` command and fail if the output differs from what is committed in the repository, ensuring generated types are never stale.
+- Artifacts: `libs/shared/types/src/database.types.ts`, `libs/shared/types-py/src/models.py`, `justfile` targets.
+- Cross-references: DEV-ADR-019, DEV-ADR-020, DEV-PRD-020
 
 ---
 
 ## DEV-SDS-022 — Ports and Adapters Design for Hexagonal Architecture (addresses DEV-ADR-022)
 
--   Principle: The application's core logic depends on abstractions (ports), not on concrete implementations. Adapters provide the concrete implementations for these abstractions.
--   Design:
-
-    -   **Port Definition:** Ports will be defined as technology-agnostic interfaces within the `libs/<domain>/application` directory. To facilitate testing and dependency inversion, each port will be defined as an abstract contract.
+- Principle: The application's core logic depends on abstractions (ports), not on concrete implementations. Adapters provide the concrete implementations for these abstractions.
+- Design:
+    - **Port Definition:** Ports will be defined as technology-agnostic interfaces within the `libs/<domain>/application` directory. To facilitate testing and dependency inversion, each port will be defined as an abstract contract.
 
         Example:
 
-    -   Structural implementation (preferred — no inheritance needed)
+    - Structural implementation (preferred — no inheritance needed)
 
         ```python
         # libs/auth/infrastructure/adapters/supabase_user_repository.py
@@ -120,7 +119,7 @@ Artifacts: Chezmoi templates (outside repo), docs pointer only.
             ...
         ```
 
-        -   Explicit inheritance (use only if needed)
+        - Explicit inheritance (use only if needed)
 
         ```python
         # libs/auth/infrastructure/adapters/supabase_user_repository.py
@@ -137,16 +136,15 @@ Artifacts: Chezmoi templates (outside repo), docs pointer only.
         ```
 
         Notes:
+        - Keep return type User | None (or Optional[User]) to satisfy strict typing.
+        - Use @runtime_checkable on the Protocol only if you plan to call isinstance()/issubclass() checks at runtime.
+        - Ensure import paths match the monorepo layout and run mypy/ruff as part of the TDD/validation workflow.
+        - **Driving (API/UI) Adapters:** FastAPI routes (`api` layer) and UI components (`ui` layer) will act as driving adapters. They will depend on the application services, which are injected with the port interfaces.
 
-        -   Keep return type User | None (or Optional[User]) to satisfy strict typing.
-        -   Use @runtime_checkable on the Protocol only if you plan to call isinstance()/issubclass() checks at runtime.
-        -   Ensure import paths match the monorepo layout and run mypy/ruff as part of the TDD/validation workflow.
-        -   **Driving (API/UI) Adapters:** FastAPI routes (`api` layer) and UI components (`ui` layer) will act as driving adapters. They will depend on the application services, which are injected with the port interfaces.
+    - **Dependency Injection:** Application services will be initialized with implementations of the ports. This will be managed by the application's main entry point or a dependency injection framework.
 
-    -   **Dependency Injection:** Application services will be initialized with implementations of the ports. This will be managed by the application's main entry point or a dependency injection framework.
-
--   Artifacts: New `ports` subdirectories within each domain's `application` layer; new `adapters` subdirectories within the `infrastructure` layer.
--   Cross-references: DEV-ADR-022, DEV-PRD-023
+- Artifacts: New `ports` subdirectories within each domain's `application` layer; new `adapters` subdirectories within the `infrastructure` layer.
+- Cross-references: DEV-ADR-022, DEV-PRD-023
 
 ---
 
@@ -173,9 +171,9 @@ Principle: The generator specification template must be comprehensive, AI-friend
 
 #### Section 1: Purpose & Scope
 
--   **Decision Tree (Mermaid):** Visual guide for when to use vs. write custom code
--   **Use cases:** Clear examples of appropriate generator scenarios
--   **Non-goals:** Explicit anti-patterns to prevent misuse
+- **Decision Tree (Mermaid):** Visual guide for when to use vs. write custom code
+- **Use cases:** Clear examples of appropriate generator scenarios
+- **Non-goals:** Explicit anti-patterns to prevent misuse
 
 #### Section 3: Inputs/Options (Schema)
 
@@ -278,10 +276,10 @@ interface SchemaPropertyTypes {
 
 Each pattern includes:
 
--   Complete `schema.json` example
--   Matching `schema.d.ts` interface
--   Usage example with `pnpm nx g`
--   Expected output files
+- Complete `schema.json` example
+- Matching `schema.d.ts` interface
+- Usage example with `pnpm nx g`
+- Expected output files
 
 #### Section 6: Generator Composition
 
@@ -394,10 +392,10 @@ Step 6: Validate Generator → Run dry-run, tests, lint, graph checks
 
 **Common Pitfalls:**
 
--   ❌ Using `any` type → ✅ Use proper TypeScript types
--   ❌ Hardcoding paths → ✅ Use `path.join` and `names()` helper
--   ❌ Skipping `formatFiles()` → ✅ Always format at end
--   ❌ Creating circular dependencies → ✅ Respect hexagonal layers
+- ❌ Using `any` type → ✅ Use proper TypeScript types
+- ❌ Hardcoding paths → ✅ Use `path.join` and `names()` helper
+- ❌ Skipping `formatFiles()` → ✅ Always format at end
+- ❌ Creating circular dependencies → ✅ Respect hexagonal layers
 
 #### Section 14: Troubleshooting
 
@@ -416,134 +414,134 @@ Step 6: Validate Generator → Run dry-run, tests, lint, graph checks
 
 **Missing Spec Sections:**
 
--   Detection: Jest tests fail on TODO detection regex
--   Recovery: Green phase fills sections with concrete examples
--   Validation: `grep "TODO:" GENERATOR_SPEC.md` returns zero
+- Detection: Jest tests fail on TODO detection regex
+- Recovery: Green phase fills sections with concrete examples
+- Validation: `grep "TODO:" GENERATOR_SPEC.md` returns zero
 
 **Schema/TypeScript Drift:**
 
--   Detection: Type mapping matrix validation fails
--   Recovery: Update schema.d.ts to match schema.json properties
--   Validation: Automated comparison in `spec-completeness.test.ts`
+- Detection: Type mapping matrix validation fails
+- Recovery: Update schema.d.ts to match schema.json properties
+- Validation: Automated comparison in `spec-completeness.test.ts`
 
 **Invalid Schema Examples:**
 
--   Detection: AJV validation fails on sample schemas
--   Recovery: Fix JSON Schema syntax and validation rules
--   Validation: `npx ajv validate -s schema.json -d test-data.json`
+- Detection: AJV validation fails on sample schemas
+- Recovery: Fix JSON Schema syntax and validation rules
+- Validation: `npx ajv validate -s schema.json -d test-data.json`
 
 **AI Hallucination:**
 
--   Detection: AI simulation test produces invalid generator
--   Recovery: Enhance spec with missing patterns and examples
--   Validation: AI agent successfully creates generator on retry
+- Detection: AI simulation test produces invalid generator
+- Recovery: Enhance spec with missing patterns and examples
+- Validation: AI agent successfully creates generator on retry
 
 ### Artifacts & Source Control
 
 **Template Files:**
 
--   `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` — Main spec template
--   `templates/{{project_slug}}/docs/specs/generators/data-access.generator.spec.md` — Example completed spec
--   `templates/{{project_slug}}/docs/specs/generators/*.generator.spec.md` — Additional examples
+- `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` — Main spec template
+- `templates/{{project_slug}}/docs/specs/generators/data-access.generator.spec.md` — Example completed spec
+- `templates/{{project_slug}}/docs/specs/generators/*.generator.spec.md` — Additional examples
 
 **Test Files:**
 
--   `tests/generators/spec-template.test.ts` — Template validation tests
--   `tests/generators/spec-completeness.test.ts` — TODO detection and section checks
--   `tests/generators/ai-agent-simulation.test.ts` — AI workflow simulation
--   `tests/shell/generator-spec-workflow_spec.sh` — End-to-end ShellSpec test
+- `tests/generators/spec-template.test.ts` — Template validation tests
+- `tests/generators/spec-completeness.test.ts` — TODO detection and section checks
+- `tests/generators/ai-agent-simulation.test.ts` — AI workflow simulation
+- `tests/shell/generator-spec-workflow_spec.sh` — End-to-end ShellSpec test
 
 **Supporting Files:**
 
--   `tests/generators/utils.ts` — Existing copier-based test harness
--   `tests/fixtures/generator-schema-sample.json` — Sample data for AJV validation
--   `docs/generator_plan_review.md` — Gap analysis and recommendations
--   `docs/plans/generator_spec_completion_plan.md` — TDD cycle plan
+- `tests/generators/utils.ts` — Existing copier-based test harness
+- `tests/fixtures/generator-schema-sample.json` — Sample data for AJV validation
+- `docs/generator_plan_review.md` — Gap analysis and recommendations
+- `docs/plans/generator_spec_completion_plan.md` — TDD cycle plan
 
 ### Performance & Benchmark Goals
 
--   Template generation time: < 2 seconds (Copier processing)
--   Spec validation time: < 5 seconds (all tests)
--   AI generator creation time: < 5 minutes (end-to-end)
--   Test suite execution: < 30 seconds (all generator tests)
+- Template generation time: < 2 seconds (Copier processing)
+- Spec validation time: < 5 seconds (all tests)
+- AI generator creation time: < 5 minutes (end-to-end)
+- Test suite execution: < 30 seconds (all generator tests)
 
 ### Implementation Dependencies
 
 **Tools:**
 
--   Jest for unit/integration tests
--   ShellSpec for shell script validation
--   AJV for JSON Schema validation
--   Copier for template generation
--   Nx devkit for generator implementation
+- Jest for unit/integration tests
+- ShellSpec for shell script validation
+- AJV for JSON Schema validation
+- Copier for template generation
+- Nx devkit for generator implementation
 
 **External Knowledge:**
 
--   Context7 Nx documentation (`/websites/nx_dev`)
--   JSON Schema specification (draft-07)
--   Existing Nx generator schemas (@nx/js, @nx/react, @nxlv/python)
+- Context7 Nx documentation (`/websites/nx_dev`)
+- JSON Schema specification (draft-07)
+- Existing Nx generator schemas (@nx/js, @nx/react, @nxlv/python)
 
 **Project Files:**
 
--   `.github/instructions/generators-first.instructions.md` — Policy
--   `.github/instructions/testing.instructions.md` — Test guidelines
--   `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` — Nx devkit docs
+- `.github/instructions/generators-first.instructions.md` — Policy
+- `.github/instructions/testing.instructions.md` — Test guidelines
+- `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` — Nx devkit docs
 
 ### Cross-References
 
--   DEV-ADR-019 — Architecture decision for spec completion
--   DEV-PRD-019 — Product requirements and success metrics
--   `docs/generator_plan_review.md` — Detailed gap analysis
--   `docs/plans/generator_spec_completion_plan.md` — MECE TDD cycles A–C
--   `docs/traceability_matrix.md` — Spec ID mappings (to be updated)
+- DEV-ADR-019 — Architecture decision for spec completion
+- DEV-PRD-019 — Product requirements and success metrics
+- `docs/generator_plan_review.md` — Detailed gap analysis
+- `docs/plans/generator_spec_completion_plan.md` — MECE TDD cycles A–C
+- `docs/traceability_matrix.md` — Spec ID mappings (to be updated)
 
 ### Exit Criteria
 
--   [ ] All 14 spec sections have concrete content with zero TODO markers
--   [ ] Schema examples cover all types: string, number, boolean, array, enum, conditional
--   [ ] All `x-prompt` types documented: input, list, confirmation, multiselect
--   [ ] All `$default` sources documented: argv, projectName, workspaceName
--   [ ] Type mapping matrix complete and validated
--   [ ] Generator composition patterns with executable examples
--   [ ] AI quick-start workflow with step-by-step instructions
--   [ ] Troubleshooting guide categorized by error type
--   [ ] Test templates align with `tests/generators/utils.ts` patterns
--   [ ] Validation commands integrated: `ajv`, `just ai-validate`, `just spec-guard`
--   [ ] `just test-generation` produces zero TODOs in `../test-output`
--   [ ] All tests pass: Jest, ShellSpec, AJV validation
--   [ ] Documentation reviewed and approved by platform team
--   [ ] Traceability matrix updated with DEV-PRD-019, DEV-SDS-019, DEV-ADR-019
+- [ ] All 14 spec sections have concrete content with zero TODO markers
+- [ ] Schema examples cover all types: string, number, boolean, array, enum, conditional
+- [ ] All `x-prompt` types documented: input, list, confirmation, multiselect
+- [ ] All `$default` sources documented: argv, projectName, workspaceName
+- [ ] Type mapping matrix complete and validated
+- [ ] Generator composition patterns with executable examples
+- [ ] AI quick-start workflow with step-by-step instructions
+- [ ] Troubleshooting guide categorized by error type
+- [ ] Test templates align with `tests/generators/utils.ts` patterns
+- [ ] Validation commands integrated: `ajv`, `just ai-validate`, `just spec-guard`
+- [ ] `just test-generation` produces zero TODOs in `../test-output`
+- [ ] All tests pass: Jest, ShellSpec, AJV validation
+- [ ] Documentation reviewed and approved by platform team
+- [ ] Traceability matrix updated with DEV-PRD-019, DEV-SDS-019, DEV-ADR-019
 
 ---
 
 ## DEV-SDS-024 — Dependency Tag Configuration & Linting (addresses DEV-PRD-025)
 
--   Tag Taxonomy: `scope:<domain>`, `type:domain|application|infrastructure|api|ui|shared`, `layer:interface`.
--   Generator Output: All `project.json` files emitted by generators must include the appropriate tags immediately.
--   Lint Rules: Enable `@nx/enforce-module-boundaries` with disallow lists mapping to hexagonal layers (e.g., `type:domain` cannot depend on `type:infrastructure`).
--   Conformance: When Nx Conformance is available, configure the enforce-project-boundaries rule to mirror lint constraints for non-JS projects.
--   Docs: Update developer docs to explain tag usage and provide troubleshooting steps for lint failures.
+- Tag Taxonomy: `scope:<domain>`, `type:domain|application|infrastructure|api|ui|shared`, `layer:interface`.
+- Generator Output: All `project.json` files emitted by generators must include the appropriate tags immediately.
+- Lint Rules: Enable `@nx/enforce-module-boundaries` with disallow lists mapping to hexagonal layers (e.g., `type:domain` cannot depend on `type:infrastructure`).
+- Conformance: When Nx Conformance is available, configure the enforce-project-boundaries rule to mirror lint constraints for non-JS projects.
+- Docs: Update developer docs to explain tag usage and provide troubleshooting steps for lint failures.
 
 ## DEV-SDS-025 — Unit of Work & Event Bus Reference Implementations (addresses DEV-PRD-026)
 
--   Contracts: Scaffold `unit_of_work.ts`/`.py` and `event_bus.ts`/`.py` inside each domain’s application layer using TypeScript interfaces and Python `typing.Protocol`.
--   In-Memory Adapters: Generators create `InMemoryUnitOfWork` and `InMemoryEventBus` implementations for fast tests.
--   Infrastructure Adapters: Provide pre-wired Supabase repositories and message bus placeholders to show extension points.
--   Integration: FastAPI routers retrieve UoW/Event Bus via dependency injection; React hooks obtain services already bound to UoW.
--   Tests: Application unit tests use in-memory adapters; integration tests validate transactional behavior and event dispatch.
+- Contracts: Scaffold `unit_of_work.ts`/`.py` and `event_bus.ts`/`.py` inside each domain’s application layer using TypeScript interfaces and Python `typing.Protocol`.
+- In-Memory Adapters: Generators create `InMemoryUnitOfWork` and `InMemoryEventBus` implementations for fast tests.
+- Infrastructure Adapters: Provide pre-wired Supabase repositories and message bus placeholders to show extension points.
+- Integration: FastAPI routers retrieve UoW/Event Bus via dependency injection; React hooks obtain services already bound to UoW.
+- Tests: Application unit tests use in-memory adapters; integration tests validate transactional behavior and event dispatch.
 
 ## DEV-SDS-029 — Strict Typing Configuration (addresses DEV-PRD-030)
 
--   TypeScript: Set `"strict": true`, `noUncheckedIndexedAccess`, and forbid implicit anys in `tsconfig.base.json`; ESLint rule `@typescript-eslint/no-explicit-any` set to error with documented escape hatches.
--   Python: Configure `mypy.ini` with `strict = True`, enabling `warn-unused-ignores`, `disallow-any-generics`, `warn-return-any`, `no-implicit-reexport`.
--   Tooling: Ensure `uv run mypy --strict` is part of CI quality gates (`just spec-guard`).
--   Education: Provide snippets in developer docs illustrating branded types, `satisfies`, and Protocol usage.
--   Monitoring: Add lint rules and scripts that fail PRs introducing `Any` types unless explicitly justified.
+- TypeScript: Set `"strict": true`, `noUncheckedIndexedAccess`, and forbid implicit anys in `tsconfig.base.json`; ESLint rule `@typescript-eslint/no-explicit-any` set to error with documented escape hatches.
+- Python: Configure `mypy.ini` with `strict = True`, enabling `warn-unused-ignores`, `disallow-any-generics`, `warn-return-any`, `no-implicit-reexport`.
+- Tooling: Ensure `uv run mypy --strict` is part of CI quality gates (`just spec-guard`).
+- Education: Provide snippets in developer docs illustrating branded types, `satisfies`, and Protocol usage.
+- Monitoring: Add lint rules and scripts that fail PRs introducing `Any` types unless explicitly justified.
 
 ## DEV-SDS-030 — Type Sync Workflow & Hooks (addresses DEV-PRD-031)
 
--   CI Workflow: Add `ci/type-sync.yml` that runs Supabase schema introspection, regenerates TS/Python types, and asserts clean git state.
--   Just Targets: Expose `just gen-types`, `just db-migrate-and-gen`, and optional `just type-sync-ci` orchestrating the full pipeline.
--   Pre-Commit Hook: Provide `scripts/hooks/pre-commit-type-sync.sh` invoked via Just/mise to regenerate types before commit (opt-in).
--   Failure Guidance: Document remediation steps in `docs/ENVIRONMENT.md` (rerun generator, commit regenerated types).
--   Traceability: Update `docs/traceability_matrix.md` to map Supabase schema changes to PRDs/SDSs ensuring consistent implementation.
+- CI Workflow: Add `ci/type-sync.yml` that runs Supabase schema introspection, regenerates TS/Python types, and asserts clean git state.
+- Just Targets: Expose `just gen-types`, `just db-migrate-and-gen`, and optional `just type-sync-ci` orchestrating the full pipeline.
+- Pre-Commit Hook: Provide `scripts/hooks/pre-commit-type-sync.sh` invoked via Just/mise to regenerate types before commit (opt-in).
+- Failure Guidance: Document remediation steps in `docs/ENVIRONMENT.md` (rerun generator, commit regenerated types).
+- Traceability: Update `docs/traceability_matrix.md` to map Supabase schema changes to PRDs/SDSs ensuring consistent implementation.

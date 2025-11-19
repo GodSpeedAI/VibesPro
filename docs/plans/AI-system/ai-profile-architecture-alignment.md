@@ -16,30 +16,30 @@ Align VibesPro's distributed AI system (AGENT\*.md, instructions, prompts, chatm
 
 **Existing Assets:**
 
--   `.github/copilot-instructions.md` - Master AI guidance (Supreme authority)
--   `.github/instructions/*.instructions.md` - 17 modular MECE instruction files
--   `.github/prompts/*.prompt.md` - 26 reusable prompt templates
--   `.github/chatmodes/*.chatmode.md` - 32 specialized personas
--   `AGENT-SYSTEM.md` - Distributed agent routing system
--   `AGENT-MAP.md` - Navigation hub
--   Directory-specific `AGENT.md` files (`.github/`, `docs/`, `tools/`, `scripts/`, `templates/`)
+- `.github/copilot-instructions.md` - Master AI guidance (Supreme authority)
+- `.github/instructions/*.instructions.md` - 17 modular MECE instruction files
+- `.github/prompts/*.prompt.md` - 26 reusable prompt templates
+- `.github/chatmodes/*.chatmode.md` - 32 specialized personas
+- `AGENT-SYSTEM.md` - Distributed agent routing system
+- `AGENT-MAP.md` - Navigation hub
+- Directory-specific `AGENT.md` files (`.github/`, `docs/`, `tools/`, `scripts/`, `templates/`)
 
 **Target State:**
 
--   Unified profile manifest (`profile.jsonc`) orchestrating all components
--   Standardized frontmatter across all artifacts
--   Token budget management and pruning strategy
--   Security boundaries and tool access policies
--   CI/CD validation pipeline
--   Signature verification and audit trails
+- Unified profile manifest (`profile.jsonc`) orchestrating all components
+- Standardized frontmatter across all artifacts
+- Token budget management and pruning strategy
+- Security boundaries and tool access policies
+- CI/CD validation pipeline
+- Signature verification and audit trails
 
 ### 1.3 Key Considerations
 
--   Maintain backward compatibility with existing workflows
--   Preserve MECE principle for instruction stacking
--   Ensure security guidelines remain highest precedence
--   Enable auditable, reproducible AI behavior
--   Support team-wide profile distribution
+- Maintain backward compatibility with existing workflows
+- Preserve MECE principle for instruction stacking
+- Ensure security guidelines remain highest precedence
+- Enable auditable, reproducible AI behavior
+- Support team-wide profile distribution
 
 ---
 
@@ -93,14 +93,14 @@ _To be filled iteratively..._
 
 ### ✅ Phase Checklist
 
--   [ ] Catalog all instruction files — _Updated By:_ TBD
--   [ ] Catalog all prompt files — _Updated By:_ TBD
--   [ ] Catalog all chatmode files — _Updated By:_ TBD
--   [ ] Catalog all AGENT\*.md files — _Updated By:_ TBD
--   [ ] Analyze current frontmatter patterns — _Updated By:_ TBD
--   [ ] Map to target profile schema — _Updated By:_ TBD
--   [ ] Generate gap analysis report — _Updated By:_ TBD
--   [ ] **Mark Phase as Complete** once all cycles are GREEN and evidence is verified.
+- [ ] Catalog all instruction files — _Updated By:_ TBD
+- [ ] Catalog all prompt files — _Updated By:_ TBD
+- [ ] Catalog all chatmode files — _Updated By:_ TBD
+- [ ] Catalog all AGENT\*.md files — _Updated By:_ TBD
+- [ ] Analyze current frontmatter patterns — _Updated By:_ TBD
+- [ ] Map to target profile schema — _Updated By:_ TBD
+- [ ] Generate gap analysis report — _Updated By:_ TBD
+- [ ] **Mark Phase as Complete** once all cycles are GREEN and evidence is verified.
 
 ### Cycle Summary Table
 
@@ -120,19 +120,19 @@ _To be filled iteratively..._
 
 #### ✅ Cycle Checklist
 
--   [ ] Scan `.github/instructions/` directory — _Updated By:_ TBD
--   [ ] Scan `.github/prompts/` directory — _Updated By:_ TBD
--   [ ] Scan `.github/chatmodes/` directory — _Updated By:_ TBD
--   [ ] Scan for all `AGENT*.md` files — _Updated By:_ TBD
--   [ ] Extract existing frontmatter patterns — _Updated By:_ TBD
--   [ ] Generate structured inventory JSON — _Updated By:_ TBD
--   [ ] **Mark Cycle as Complete** after validation passes and artifacts logged.
+- [ ] Scan `.github/instructions/` directory — _Updated By:_ TBD
+- [ ] Scan `.github/prompts/` directory — _Updated By:_ TBD
+- [ ] Scan `.github/chatmodes/` directory — _Updated By:_ TBD
+- [ ] Scan for all `AGENT*.md` files — _Updated By:_ TBD
+- [ ] Extract existing frontmatter patterns — _Updated By:_ TBD
+- [ ] Generate structured inventory JSON — _Updated By:_ TBD
+- [ ] **Mark Cycle as Complete** after validation passes and artifacts logged.
 
 #### RED Phase
 
--   Expected outcome: Structured inventory of all AI artifacts
--   Validation: JSON schema validation for inventory format
--   Test: `node scripts/validate-inventory.js`
+- Expected outcome: Structured inventory of all AI artifacts
+- Validation: JSON schema validation for inventory format
+- Test: `node scripts/validate-inventory.js`
 
 #### GREEN Phase
 
@@ -170,8 +170,8 @@ node scripts/validate-inventory.js
 
 **Artifacts to Store:**
 
--   `/docs/plans/AI-system/artifacts/inventory/ai-artifacts-inventory.json`
--   `/docs/plans/AI-system/artifacts/inventory/inventory-summary.md`
+- `/docs/plans/AI-system/artifacts/inventory/ai-artifacts-inventory.json`
+- `/docs/plans/AI-system/artifacts/inventory/inventory-summary.md`
 
 Label → **1A-GREEN**
 
@@ -186,19 +186,19 @@ Label → **1A-GREEN**
 
 #### ✅ Cycle Checklist
 
--   [ ] Load inventory from 1A — _Updated By:_ TBD
--   [ ] Compare against profile schema requirements — _Updated By:_ TBD
--   [ ] Identify missing frontmatter fields — _Updated By:_ TBD
--   [ ] Identify non-standard patterns — _Updated By:_ TBD
--   [ ] Generate migration strategy — _Updated By:_ TBD
--   [ ] Document gaps in markdown report — _Updated By:_ TBD
--   [ ] **Mark Cycle as Complete** after validation passes and artifacts logged.
+- [ ] Load inventory from 1A — _Updated By:_ TBD
+- [ ] Compare against profile schema requirements — _Updated By:_ TBD
+- [ ] Identify missing frontmatter fields — _Updated By:_ TBD
+- [ ] Identify non-standard patterns — _Updated By:_ TBD
+- [ ] Generate migration strategy — _Updated By:_ TBD
+- [ ] Document gaps in markdown report — _Updated By:_ TBD
+- [ ] **Mark Cycle as Complete** after validation passes and artifacts logged.
 
 #### RED Phase
 
--   Expected outcome: Comprehensive gap analysis report
--   Validation: All gaps categorized and prioritized
--   Test: Manual review of gap report
+- Expected outcome: Comprehensive gap analysis report
+- Validation: All gaps categorized and prioritized
+- Test: Manual review of gap report
 
 #### GREEN Phase
 
@@ -228,8 +228,8 @@ node scripts/analyze-gaps.js
 
 **Artifacts to Store:**
 
--   `/docs/plans/AI-system/artifacts/gaps/gap-analysis.md`
--   `/docs/plans/AI-system/artifacts/gaps/migration-strategy.md`
+- `/docs/plans/AI-system/artifacts/gaps/gap-analysis.md`
+- `/docs/plans/AI-system/artifacts/gaps/migration-strategy.md`
 
 Label → **1B-GREEN**
 
@@ -245,12 +245,12 @@ Label → **1B-GREEN**
 
 ### ✅ Phase Checklist
 
--   [ ] Standardize instruction frontmatter — _Updated By:_ TBD
--   [ ] Standardize prompt frontmatter — _Updated By:_ TBD
--   [ ] Standardize chatmode frontmatter — _Updated By:_ TBD
--   [ ] Add missing metadata fields — _Updated By:_ TBD
--   [ ] Validate all frontmatter — _Updated By:_ TBD
--   [ ] **Mark Phase as Complete** once all cycles are GREEN and evidence is verified.
+- [ ] Standardize instruction frontmatter — _Updated By:_ TBD
+- [ ] Standardize prompt frontmatter — _Updated By:_ TBD
+- [ ] Standardize chatmode frontmatter — _Updated By:_ TBD
+- [ ] Add missing metadata fields — _Updated By:_ TBD
+- [ ] Validate all frontmatter — _Updated By:_ TBD
+- [ ] **Mark Phase as Complete** once all cycles are GREEN and evidence is verified.
 
 ### Cycle Summary Table
 
@@ -271,12 +271,12 @@ Label → **1B-GREEN**
 
 #### ✅ Cycle Checklist
 
--   [ ] Update frontmatter schema for instructions — _Updated By:_ TBD
--   [ ] Add missing `applyToGlob` fields — _Updated By:_ TBD
--   [ ] Ensure all have `kind: instructions` — _Updated By:_ TBD
--   [ ] Validate precedence values — _Updated By:_ TBD
--   [ ] Run validation tests — _Updated By:_ TBD
--   [ ] **Mark Cycle as Complete** after validation passes.
+- [ ] Update frontmatter schema for instructions — _Updated By:_ TBD
+- [ ] Add missing `applyToGlob` fields — _Updated By:_ TBD
+- [ ] Ensure all have `kind: instructions` — _Updated By:_ TBD
+- [ ] Validate precedence values — _Updated By:_ TBD
+- [ ] Run validation tests — _Updated By:_ TBD
+- [ ] **Mark Cycle as Complete** after validation passes.
 
 #### Target Schema (from DEV-SDS-AI-PROFILE-001 §3.2.1)
 
@@ -396,13 +396,13 @@ Label → **2C-GREEN**
 
 ### ✅ Phase Checklist
 
--   [ ] Create profile directory structure — _Updated By:_ TBD
--   [ ] Generate profile.jsonc manifest — _Updated By:_ TBD
--   [ ] Implement Profile Composer — _Updated By:_ TBD
--   [ ] Implement token budget calculator — _Updated By:_ TBD
--   [ ] Create toolset definitions — _Updated By:_ TBD
--   [ ] Link MCP server configurations — _Updated By:_ TBD
--   [ ] **Mark Phase as Complete** once all cycles are GREEN.
+- [ ] Create profile directory structure — _Updated By:_ TBD
+- [ ] Generate profile.jsonc manifest — _Updated By:_ TBD
+- [ ] Implement Profile Composer — _Updated By:_ TBD
+- [ ] Implement token budget calculator — _Updated By:_ TBD
+- [ ] Create toolset definitions — _Updated By:_ TBD
+- [ ] Link MCP server configurations — _Updated By:_ TBD
+- [ ] **Mark Phase as Complete** once all cycles are GREEN.
 
 ### Cycle Summary Table
 
@@ -475,15 +475,15 @@ Label → **3A-GREEN**
     "manifestVersion": 1,
     "instructions": [
         ".github/instructions/security.instructions.md",
-        ".github/instructions/ai-workflows.constitution.instructions.md"
+        ".github/instructions/ai-workflows.constitution.instructions.md",
         // ... all instruction files
     ],
     "prompts": [
-        ".github/prompts/tdd.workflow.prompt.md"
+        ".github/prompts/tdd.workflow.prompt.md",
         // ... all prompt files
     ],
     "chatModes": [
-        ".github/chatmodes/tdd.red.chatmode.md"
+        ".github/chatmodes/tdd.red.chatmode.md",
         // ... all chatmode files
     ],
     "toolSets": ["toolsets/vibespro-tools.jsonc"],
@@ -491,23 +491,23 @@ Label → **3A-GREEN**
     "modelPreferences": {
         "default": "gpt-4-turbo",
         "fallback": "gpt-3.5-turbo",
-        "contextWindow": 128000
+        "contextWindow": 128000,
     },
     "tokenPresets": {
         "baseInstructions": 400,
         "fileContextReserve": 2400,
-        "recentHistoryCount": 3
+        "recentHistoryCount": 3,
     },
     "toolPolicy": {
         "allowedToolSets": ["vibespro-tools"],
         "requireMcpTrust": true,
-        "autoApproveTools": false
+        "autoApproveTools": false,
     },
     "security": {
         "requireSignature": false, // Phase 5
         "signedBy": "",
-        "allowedHosts": []
-    }
+        "allowedHosts": [],
+    },
 }
 ```
 
@@ -629,13 +629,13 @@ Label → **3D-GREEN**
 
 ### ✅ Phase Checklist
 
--   [ ] Create profile validation workflow — _Updated By:_ TBD
--   [ ] Implement frontmatter validation — _Updated By:_ TBD
--   [ ] Implement manifest validation — _Updated By:_ TBD
--   [ ] Add secret scanning — _Updated By:_ TBD
--   [ ] Create token budget reporting — _Updated By:_ TBD
--   [ ] Integrate with existing `just` commands — _Updated By:_ TBD
--   [ ] **Mark Phase as Complete** once all validation passes.
+- [ ] Create profile validation workflow — _Updated By:_ TBD
+- [ ] Implement frontmatter validation — _Updated By:_ TBD
+- [ ] Implement manifest validation — _Updated By:_ TBD
+- [ ] Add secret scanning — _Updated By:_ TBD
+- [ ] Create token budget reporting — _Updated By:_ TBD
+- [ ] Integrate with existing `just` commands — _Updated By:_ TBD
+- [ ] **Mark Phase as Complete** once all validation passes.
 
 ### Cycle Summary Table
 
@@ -850,12 +850,12 @@ Label → **4C-GREEN**
 
 ### ✅ Phase Checklist
 
--   [ ] Implement GPG signing — _Updated By:_ TBD
--   [ ] Create audit trail logging — _Updated By:_ TBD
--   [ ] Security policy enforcement — _Updated By:_ TBD
--   [ ] Documentation updates — _Updated By:_ TBD
--   [ ] Team training materials — _Updated By:_ TBD
--   [ ] **Mark Phase as Complete** once production-ready.
+- [ ] Implement GPG signing — _Updated By:_ TBD
+- [ ] Create audit trail logging — _Updated By:_ TBD
+- [ ] Security policy enforcement — _Updated By:_ TBD
+- [ ] Documentation updates — _Updated By:_ TBD
+- [ ] Team training materials — _Updated By:_ TBD
+- [ ] **Mark Phase as Complete** once production-ready.
 
 ### Cycle Summary Table
 
@@ -975,10 +975,10 @@ Label → **5A-GREEN**
         "mode": "chatmode-id",
         "tools": ["tool-id-1"],
         "tokenUsage": 1234,
-        "approved": true
+        "approved": true,
     },
     "outcome": "success|failure",
-    "error": null
+    "error": null,
 }
 ```
 
@@ -1076,36 +1076,36 @@ The VibesPro AI profile is automatically loaded from `.vscode/profiles/vibespro-
 
 ### TDD Workflow
 
--   `tdd.red` - Write failing tests
--   `tdd.green` - Implement minimal solution
--   `tdd.refactor` - Improve code quality
+- `tdd.red` - Write failing tests
+- `tdd.green` - Implement minimal solution
+- `tdd.refactor` - Improve code quality
 
 ### Debug Workflow
 
--   `debug.start` - Understand the issue
--   `debug.repro` - Create minimal reproduction
--   `debug.fix` - Implement the fix
+- `debug.start` - Understand the issue
+- `debug.repro` - Create minimal reproduction
+- `debug.fix` - Implement the fix
 
 ### Specification Workflows
 
--   `spec.lean` - Lightweight specification
--   `spec.wide` - Comprehensive specification
+- `spec.lean` - Lightweight specification
+- `spec.wide` - Comprehensive specification
 
 ## Using Prompts
 
 Load prompts via VS Code command palette:
 
--   `TDD Workflow` → Apply TDD guidance
--   `Spec Implement` → Implement from specification
--   `Security Review` → Run security audit
+- `TDD Workflow` → Apply TDD guidance
+- `Spec Implement` → Implement from specification
+- `Security Review` → Run security audit
 
 ## Token Budget
 
 The profile reserves:
 
--   400 tokens for base instructions
--   2400 tokens for file context
--   3 messages of history
+- 400 tokens for base instructions
+- 2400 tokens for file context
+- 3 messages of history
 
 Total context window: 128k tokens
 ```
@@ -1119,22 +1119,22 @@ Add section:
 
 The distributed AGENT system integrates with the unified AI profile:
 
--   **AGENT.md files** → Referenced by profile composer for local context
--   **Instructions** → Merged by precedence into base context
--   **Prompts** → Available via profile prompt library
--   **Chat Modes** → Orchestrated by profile workflow engine
+- **AGENT.md files** → Referenced by profile composer for local context
+- **Instructions** → Merged by precedence into base context
+- **Prompts** → Available via profile prompt library
+- **Chat Modes** → Orchestrated by profile workflow engine
 
 See `docs/how-to/ai-profile-usage.md` for details.
 ```
 
 **3. Team Training Checklist**
 
--   [ ] Profile architecture overview
--   [ ] How to use chat modes and handoffs
--   [ ] Understanding token budgets
--   [ ] Security policies and tool approval
--   [ ] Audit trail querying
--   [ ] Profile signing process
+- [ ] Profile architecture overview
+- [ ] How to use chat modes and handoffs
+- [ ] Understanding token budgets
+- [ ] Security policies and tool approval
+- [ ] Audit trail querying
+- [ ] Profile signing process
 
 Label → **5C-GREEN**
 
@@ -1179,43 +1179,43 @@ Each item must have auditable evidence before being marked complete.
 
 ### Phase 1: Inventory & Analysis
 
--   [ ] **Artifact Inventory Complete** — **Agent:** Analysis, **Depends On:** None, **Evidence:** `/docs/plans/AI-system/artifacts/inventory/ai-artifacts-inventory.json`
--   [ ] **Gap Analysis Complete** — **Agent:** Analysis, **Depends On:** 1A, **Evidence:** `/docs/plans/AI-system/artifacts/gaps/gap-analysis.md`
+- [ ] **Artifact Inventory Complete** — **Agent:** Analysis, **Depends On:** None, **Evidence:** `/docs/plans/AI-system/artifacts/inventory/ai-artifacts-inventory.json`
+- [ ] **Gap Analysis Complete** — **Agent:** Analysis, **Depends On:** 1A, **Evidence:** `/docs/plans/AI-system/artifacts/gaps/gap-analysis.md`
 
 ### Phase 2: Artifact Standardization
 
--   [ ] **Instructions Standardized** — **Agent:** Standardization, **Depends On:** 1B, **Evidence:** Validation log showing all pass
--   [ ] **Prompts Standardized** — **Agent:** Standardization, **Depends On:** 1B, **Evidence:** Validation log showing all pass
--   [ ] **Chatmodes Standardized** — **Agent:** Standardization, **Depends On:** 1B, **Evidence:** Validation log showing all pass
--   [ ] **Frontmatter Validation Passing** — **Agent:** Standardization, **Depends On:** 2A, 2B, 2C, **Evidence:** `just prompt-lint` output
+- [ ] **Instructions Standardized** — **Agent:** Standardization, **Depends On:** 1B, **Evidence:** Validation log showing all pass
+- [ ] **Prompts Standardized** — **Agent:** Standardization, **Depends On:** 1B, **Evidence:** Validation log showing all pass
+- [ ] **Chatmodes Standardized** — **Agent:** Standardization, **Depends On:** 1B, **Evidence:** Validation log showing all pass
+- [ ] **Frontmatter Validation Passing** — **Agent:** Standardization, **Depends On:** 2A, 2B, 2C, **Evidence:** `just prompt-lint` output
 
 ### Phase 3: Profile Infrastructure
 
--   [ ] **Profile Directory Created** — **Agent:** Profile, **Depends On:** 2A, 2B, 2C, **Evidence:** Directory structure listing
--   [ ] **Profile Manifest Valid** — **Agent:** Profile, **Depends On:** 3A, **Evidence:** `profile.jsonc` validated against schema
--   [ ] **Profile Composer Implemented** — **Agent:** Profile, **Depends On:** 3A, **Evidence:** Dry-run succeeds
--   [ ] **Token Budget Calculator Working** — **Agent:** Profile, **Depends On:** 3B, 3C, **Evidence:** Token report generated
+- [ ] **Profile Directory Created** — **Agent:** Profile, **Depends On:** 2A, 2B, 2C, **Evidence:** Directory structure listing
+- [ ] **Profile Manifest Valid** — **Agent:** Profile, **Depends On:** 3A, **Evidence:** `profile.jsonc` validated against schema
+- [ ] **Profile Composer Implemented** — **Agent:** Profile, **Depends On:** 3A, **Evidence:** Dry-run succeeds
+- [ ] **Token Budget Calculator Working** — **Agent:** Profile, **Depends On:** 3B, 3C, **Evidence:** Token report generated
 
 ### Phase 4: Integration & Validation
 
--   [ ] **CI Workflow Active** — **Agent:** CI, **Depends On:** 3B, 3C, 3D, **Evidence:** GitHub Actions passing
--   [ ] **Just Recipes Working** — **Agent:** CI, **Depends On:** 3D, **Evidence:** All `ai-profile-*` commands succeed
--   [ ] **Validation Suite Complete** — **Agent:** CI, **Depends On:** 4A, 4B, **Evidence:** All validations pass
+- [ ] **CI Workflow Active** — **Agent:** CI, **Depends On:** 3B, 3C, 3D, **Evidence:** GitHub Actions passing
+- [ ] **Just Recipes Working** — **Agent:** CI, **Depends On:** 3D, **Evidence:** All `ai-profile-*` commands succeed
+- [ ] **Validation Suite Complete** — **Agent:** CI, **Depends On:** 4A, 4B, **Evidence:** All validations pass
 
 ### Phase 5: Production Hardening
 
--   [ ] **Profile Signed** — **Agent:** Security, **Depends On:** 4C, **Evidence:** Valid GPG signature
--   [ ] **Audit Trail Active** — **Agent:** Security, **Depends On:** 4C, **Evidence:** Audit logs generated
--   [ ] **Documentation Updated** — **Agent:** Documentation, **Depends On:** 5A, 5B, **Evidence:** Docs published
--   [ ] **Team Trained** — **Agent:** Documentation, **Depends On:** 5C, **Evidence:** Training completion checklist
+- [ ] **Profile Signed** — **Agent:** Security, **Depends On:** 4C, **Evidence:** Valid GPG signature
+- [ ] **Audit Trail Active** — **Agent:** Security, **Depends On:** 4C, **Evidence:** Audit logs generated
+- [ ] **Documentation Updated** — **Agent:** Documentation, **Depends On:** 5A, 5B, **Evidence:** Docs published
+- [ ] **Team Trained** — **Agent:** Documentation, **Depends On:** 5C, **Evidence:** Training completion checklist
 
 ### Final Gate
 
--   [ ] **All Phases GREEN** — All cycles complete with evidence
--   [ ] **No Security Violations** — `autoApproveTools: false` enforced
--   [ ] **Backward Compatible** — Existing workflows still function
--   [ ] **Performance Acceptable** — Token budget within limits
--   [ ] **Production Ready** — Approved for main branch merge
+- [ ] **All Phases GREEN** — All cycles complete with evidence
+- [ ] **No Security Violations** — `autoApproveTools: false` enforced
+- [ ] **Backward Compatible** — Existing workflows still function
+- [ ] **Performance Acceptable** — Token budget within limits
+- [ ] **Production Ready** — Approved for main branch merge
 
 ---
 

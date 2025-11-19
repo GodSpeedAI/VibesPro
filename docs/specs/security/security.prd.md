@@ -4,10 +4,10 @@
 
 ## DEV-PRD-005 — Security posture by default
 
--   Description: As a developer, I want safe defaults and workspace trust enforcement so that I can run prompts confidently.
--   EARS: When opening the workspace, the system shall disable auto-approve and apply security instructions globally.
--   DX Metrics: 0 insecure defaults; security checks pass rate > 95% pre-merge.
--   Supported by: DEV-ADR-005
+- Description: As a developer, I want safe defaults and workspace trust enforcement so that I can run prompts confidently.
+- EARS: When opening the workspace, the system shall disable auto-approve and apply security instructions globally.
+- DX Metrics: 0 insecure defaults; security checks pass rate > 95% pre-merge.
+- Supported by: DEV-ADR-005
 
 ## DEV-PRD-013 — Secure, ephemeral secrets loading (Layer IV)
 
