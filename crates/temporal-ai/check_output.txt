@@ -1,0 +1,1370 @@
+    Checking temporal-ai v0.1.0 (/home/sprime01/projects/VibesPro/crates/temporal-ai)
+warning: unused import: `chrono::Utc`
+ --> src/pattern_extractor.rs:4:5
+  |
+4 | use chrono::Utc;
+  |     ^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `PathBuf`
+  --> src/pattern_extractor.rs:11:23
+   |
+11 | use std::path::{Path, PathBuf};
+   |                       ^^^^^^^
+
+warning: unused import: `TemporalAIError`
+ --> src/ranker.rs:6:21
+  |
+6 | use crate::{Result, TemporalAIError};
+  |                     ^^^^^^^^^^^^^^^
+
+warning: unused import: `TemporalAIError`
+ --> src/vector_store.rs:7:21
+  |
+7 | use crate::{Result, TemporalAIError};
+  |                     ^^^^^^^^^^^^^^^
+
+warning: unused import: `TableDefinition`
+ --> src/vector_store.rs:8:44
+  |
+8 | use redb::{Database, ReadableTable, Table, TableDefinition};
+  |                                            ^^^^^^^^^^^^^^^
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:25:43
+   |
+25 |         let db = Database::create(db_path)?;
+   |                  -------------------------^ the trait `From<DatabaseError>` is not implemented for `TemporalAIError`
+   |                  |
+   |                  this can't be annotated with `?` because it has type `Result<_, DatabaseError>`
+   |
+note: `TemporalAIError` needs to implement `From<DatabaseError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:28:41
+   |
+28 |         let write_txn = db.begin_write()?;
+   |                            -------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+   |                            |
+   |                            this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+   |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:30:53
+   |
+30 |             let _ = write_txn.open_table(EMBEDDINGS)?;
+   |                               ----------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                               |
+   |                               this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:31:51
+   |
+31 |             let _ = write_txn.open_table(METADATA)?;
+   |                               --------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                               |
+   |                               this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:32:50
+   |
+32 |             let _ = write_txn.open_table(METRICS)?;
+   |                               -------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                               |
+   |                               this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:33:58
+   |
+33 |             let _ = write_txn.open_table(FILE_PATH_INDEX)?;
+   |                               ---------------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                               |
+   |                               this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:34:52
+   |
+34 |             let _ = write_txn.open_table(TAG_INDEX)?;
+   |                               ---------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                               |
+   |                               this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:36:27
+   |
+36 |         write_txn.commit()?;
+   |                   --------^ the trait `From<CommitError>` is not implemented for `TemporalAIError`
+   |                   |
+   |                   this can't be annotated with `?` because it has type `Result<_, CommitError>`
+   |
+note: `TemporalAIError` needs to implement `From<CommitError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:45:46
+   |
+45 |         let write_txn = self.db.begin_write()?;
+   |                                 -------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+   |                                 |
+   |                                 this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+   |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:49:72
+   |
+49 |             let mut embeddings_table = write_txn.open_table(EMBEDDINGS)?;
+   |                                                  ----------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                                                  |
+   |                                                  this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:51:85
+   |
+51 |             embeddings_table.insert(pattern.id.as_str(), embedding_bytes.as_slice())?;
+   |                              -------------------------------------------------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+   |                              |
+   |                              this can't be annotated with `?` because it has type `Result<_, StorageError>`
+   |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:54:68
+   |
+54 |             let mut metadata_table = write_txn.open_table(METADATA)?;
+   |                                                --------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                                                |
+   |                                                this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:56:79
+   |
+56 |             metadata_table.insert(pattern.id.as_str(), metadata_json.as_str())?;
+   |                            ---------------------------------------------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+   |                            |
+   |                            this can't be annotated with `?` because it has type `Result<_, StorageError>`
+   |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:59:66
+   |
+59 |             let mut metrics_table = write_txn.open_table(METRICS)?;
+   |                                               -------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                                               |
+   |                                               this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:62:77
+   |
+62 |             metrics_table.insert(pattern.id.as_str(), metrics_json.as_str())?;
+   |                           --------------------------------------------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+   |                           |
+   |                           this can't be annotated with `?` because it has type `Result<_, StorageError>`
+   |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:65:76
+   |
+65 |             let mut file_path_index = write_txn.open_table(FILE_PATH_INDEX)?;
+   |                                                 ---------------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                                                 |
+   |                                                 this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:75:64
+   |
+75 |             let mut tag_index = write_txn.open_table(TAG_INDEX)?;
+   |                                           ---------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                                           |
+   |                                           this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:81:27
+   |
+81 |         write_txn.commit()?;
+   |                   --------^ the trait `From<CommitError>` is not implemented for `TemporalAIError`
+   |                   |
+   |                   this can't be annotated with `?` because it has type `Result<_, CommitError>`
+   |
+note: `TemporalAIError` needs to implement `From<CommitError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:88:44
+   |
+88 |         let read_txn = self.db.begin_read()?;
+   |                                ------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+   |                                |
+   |                                this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+   |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:89:52
+   |
+89 |         let table = read_txn.open_table(EMBEDDINGS)?;
+   |                              ----------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+   |                              |
+   |                              this can't be annotated with `?` because it has type `Result<_, TableError>`
+   |
+note: `TemporalAIError` needs to implement `From<TableError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+  --> src/vector_store.rs:91:51
+   |
+91 |         if let Some(bytes) = table.get(pattern_id)? {
+   |                                    ---------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+   |                                    |
+   |                                    this can't be annotated with `?` because it has type `Result<_, StorageError>`
+   |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+  --> src/lib.rs:62:1
+   |
+62 | pub enum TemporalAIError {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `TemporalAIError` implements `From<git2::Error>`
+             `TemporalAIError` implements `From<redb::Error>`
+             `TemporalAIError` implements `From<reqwest::Error>`
+             `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+             `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+             `TemporalAIError` implements `From<serde_json::Error>`
+             `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:101:44
+    |
+101 |         let read_txn = self.db.begin_read()?;
+    |                                ------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+    |                                |
+    |                                this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+    |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:102:50
+    |
+102 |         let table = read_txn.open_table(METADATA)?;
+    |                              --------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                              |
+    |                              this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:104:50
+    |
+104 |         if let Some(json) = table.get(pattern_id)? {
+    |                                   ---------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                                   |
+    |                                   this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:114:44
+    |
+114 |         let read_txn = self.db.begin_read()?;
+    |                                ------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+    |                                |
+    |                                this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+    |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:115:49
+    |
+115 |         let table = read_txn.open_table(METRICS)?;
+    |                              -------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                              |
+    |                              this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:117:50
+    |
+117 |         if let Some(json) = table.get(pattern_id)? {
+    |                                   ---------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                                   |
+    |                                   this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:129:44
+    |
+129 |         let read_txn = self.db.begin_read()?;
+    |                                ------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+    |                                |
+    |                                this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+    |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:130:57
+    |
+130 |         let embeddings = read_txn.open_table(EMBEDDINGS)?;
+    |                                   ----------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                                   |
+    |                                   this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:131:53
+    |
+131 |         let metadata = read_txn.open_table(METADATA)?;
+    |                                 --------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                                 |
+    |                                 this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:133:63
+    |
+133 |         let embedding_bytes = match embeddings.get(pattern_id)? {
+    |                                                ---------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                                                |
+    |                                                this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:138:58
+    |
+138 |         let pattern_json = match metadata.get(pattern_id)? {
+    |                                           ---------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                                           |
+    |                                           this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:151:44
+    |
+151 |         let read_txn = self.db.begin_read()?;
+    |                                ------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+    |                                |
+    |                                this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+    |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:152:50
+    |
+152 |         let table = read_txn.open_table(METADATA)?;
+    |                              --------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                              |
+    |                              this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:155:32
+    |
+155 |         let iter = table.iter()?;
+    |                          ------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                          |
+    |                          this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:158:32
+    |
+158 |             let (key, _) = item?;
+    |                            ----^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                            |
+    |                            this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:167:44
+    |
+167 |         let read_txn = self.db.begin_read()?;
+    |                                ------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+    |                                |
+    |                                this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+    |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:168:57
+    |
+168 |         let table = read_txn.open_table(FILE_PATH_INDEX)?;
+    |                              ---------------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                              |
+    |                              this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:170:49
+    |
+170 |         if let Some(json) = table.get(file_path)? {
+    |                                   --------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                                   |
+    |                                   this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:180:44
+    |
+180 |         let read_txn = self.db.begin_read()?;
+    |                                ------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+    |                                |
+    |                                this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+    |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:181:51
+    |
+181 |         let table = read_txn.open_table(TAG_INDEX)?;
+    |                              ---------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                              |
+    |                              this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:183:43
+    |
+183 |         if let Some(json) = table.get(tag)? {
+    |                                   --------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                                   |
+    |                                   this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:193:46
+    |
+193 |         let write_txn = self.db.begin_write()?;
+    |                                 -------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+    |                                 |
+    |                                 this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+    |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:196:58
+    |
+196 |             let mut table = write_txn.open_table(METRICS)?;
+    |                                       -------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                                       |
+    |                                       this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:198:52
+    |
+198 |             table.insert(pattern_id, json.as_str())?;
+    |                   ---------------------------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                   |
+    |                   this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:201:27
+    |
+201 |         write_txn.commit()?;
+    |                   --------^ the trait `From<CommitError>` is not implemented for `TemporalAIError`
+    |                   |
+    |                   this can't be annotated with `?` because it has type `Result<_, CommitError>`
+    |
+note: `TemporalAIError` needs to implement `From<CommitError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:211:38
+    |
+211 |         let existing = table.get(key)?;
+    |                              --------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                              |
+    |                              this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:223:48
+    |
+223 |             table.insert(key, updated.as_str())?;
+    |                   -----------------------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                   |
+    |                   this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:231:46
+    |
+231 |         let write_txn = self.db.begin_write()?;
+    |                                 -------------^ the trait `From<TransactionError>` is not implemented for `TemporalAIError`
+    |                                 |
+    |                                 this can't be annotated with `?` because it has type `Result<_, TransactionError>`
+    |
+note: `TemporalAIError` needs to implement `From<TransactionError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:234:72
+    |
+234 |             let mut embeddings_table = write_txn.open_table(EMBEDDINGS)?;
+    |                                                  ----------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                                                  |
+    |                                                  this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:235:68
+    |
+235 |             let mut metadata_table = write_txn.open_table(METADATA)?;
+    |                                                --------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                                                |
+    |                                                this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:236:66
+    |
+236 |             let mut metrics_table = write_txn.open_table(METRICS)?;
+    |                                               -------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                                               |
+    |                                               this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:237:76
+    |
+237 |             let mut file_path_index = write_txn.open_table(FILE_PATH_INDEX)?;
+    |                                                 ---------------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                                                 |
+    |                                                 this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:238:64
+    |
+238 |             let mut tag_index = write_txn.open_table(TAG_INDEX)?;
+    |                                           ---------------------^ the trait `From<TableError>` is not implemented for `TemporalAIError`
+    |                                           |
+    |                                           this can't be annotated with `?` because it has type `Result<_, TableError>`
+    |
+note: `TemporalAIError` needs to implement `From<TableError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:243:89
+    |
+243 |                 embeddings_table.insert(pattern.id.as_str(), embedding_bytes.as_slice())?;
+    |                                  -------------------------------------------------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                                  |
+    |                                  this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:246:83
+    |
+246 |                 metadata_table.insert(pattern.id.as_str(), metadata_json.as_str())?;
+    |                                ---------------------------------------------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                                |
+    |                                this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:250:81
+    |
+250 |                 metrics_table.insert(pattern.id.as_str(), metrics_json.as_str())?;
+    |                               --------------------------------------------------^ the trait `From<StorageError>` is not implemented for `TemporalAIError`
+    |                               |
+    |                               this can't be annotated with `?` because it has type `Result<_, StorageError>`
+    |
+note: `TemporalAIError` needs to implement `From<StorageError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+error[E0277]: `?` couldn't convert the error to `TemporalAIError`
+   --> src/vector_store.rs:267:27
+    |
+267 |         write_txn.commit()?;
+    |                   --------^ the trait `From<CommitError>` is not implemented for `TemporalAIError`
+    |                   |
+    |                   this can't be annotated with `?` because it has type `Result<_, CommitError>`
+    |
+note: `TemporalAIError` needs to implement `From<CommitError>`
+   --> src/lib.rs:62:1
+    |
+ 62 | pub enum TemporalAIError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = help: the following other types implement trait `From<T>`:
+              `TemporalAIError` implements `From<git2::Error>`
+              `TemporalAIError` implements `From<redb::Error>`
+              `TemporalAIError` implements `From<reqwest::Error>`
+              `TemporalAIError` implements `From<rmp_serde::decode::Error>`
+              `TemporalAIError` implements `From<rmp_serde::encode::Error>`
+              `TemporalAIError` implements `From<serde_json::Error>`
+              `TemporalAIError` implements `From<std::io::Error>`
+
+For more information about this error, try `rustc --explain E0277`.
+warning: `temporal-ai` (lib) generated 5 warnings
+error: could not compile `temporal-ai` (lib) due to 58 previous errors; 5 warnings emitted

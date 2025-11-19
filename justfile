@@ -947,3 +947,27 @@ temporal-ai-build:
 	@echo "🛠️  Building temporal-ai..."
 	@cd crates/temporal-ai && cargo build --release
 	@echo "✅ Temporal AI CLI built at: crates/temporal-ai/target/release/temporal-ai"
+
+# Start local OpenObserve for temporal-ai metrics
+temporal-ai-observe-start:
+    @echo "🚀 Starting local OpenObserve..."
+    @./scripts/run-with-secrets.sh bash -c 'cd ops/openobserve && docker compose up -d'
+    @echo "⏳ Waiting for OpenObserve to be ready..."
+    @sleep 5
+    @curl -f http://localhost:5080/healthz > /dev/null 2>&1 && echo "✅ OpenObserve ready at http://localhost:5080" || echo "⚠️  OpenObserve may still be starting..."
+
+# Stop local OpenObserve
+temporal-ai-observe-stop:
+    @echo "🛑 Stopping local OpenObserve..."
+    @cd ops/openobserve && docker compose down
+    @echo "✅ OpenObserve stopped"
+
+# Refresh temporal-ai metrics from OpenObserve
+temporal-ai-refresh-metrics DAYS="7":
+    @echo "📊 Refreshing temporal-ai metrics from OpenObserve (last {{DAYS}} days)..."
+    @if [ ! -x ./crates/temporal-ai/target/release/temporal-ai ]; then \
+        echo "❌ temporal-ai binary missing. Run 'just temporal-ai-build' first."; \
+        exit 1; \
+    fi
+    @./scripts/run-with-secrets.sh ./crates/temporal-ai/target/release/temporal-ai refresh-metrics --days {{DAYS}}
+    @echo "✅ Metrics refreshed successfully"

@@ -88,6 +88,18 @@ pub struct PerformanceMetrics {
     /// User feedback scores (-1, 0, 1)
     #[serde(default)]
     pub feedback_scores: Vec<i8>,
+
+    /// Success rate from OpenObserve (0.0-1.0)
+    #[serde(default)]
+    pub success_rate: Option<f32>,
+
+    /// Average recommendation latency in ms
+    #[serde(default)]
+    pub avg_latency_ms: Option<f32>,
+
+    /// Error rate (0.0-1.0)
+    #[serde(default)]
+    pub error_rate: Option<f32>,
 }
 
 impl PerformanceMetrics {
