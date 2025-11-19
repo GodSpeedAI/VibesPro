@@ -47,7 +47,7 @@ VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal a
 
 **Specifications**: DEV-PRD-018, DEV-SDS-018, DEV-ADR-017
 
-<<<<<<< HEAD
+ 
 
 - DEV-PRD-018: Structured Logging with Trace Correlation
 - # DEV-SDS-018: Logfire SDK Integration
@@ -675,9 +675,9 @@ const typeMapping = extractSection(spec, "Type Mapping Matrix");
 - ✅ All test files created with RED status (tests fail on TODO presence)
 - ✅ Tests cover: completeness, schema validity, AI simulation, type mappings
 - ✅ Run: `pnpm test:jest tests/generators/spec_*.test.ts` → failures expected
-=======
+ 
 **Implementation Effort**: Large (1-2 weeks)
->>>>>>> f48ea57 (refactor: Reorganize specifications into a domain-oriented structure, update spec tools, and introduce new agent definitions.)
+ 
 
 ---
 
