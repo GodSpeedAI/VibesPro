@@ -15,12 +15,12 @@ Establish the foundational patterns and testing infrastructure for idempotent Nx
 
 ### Success Criteria
 
--   [ ] Idempotency pattern library implemented and documented
--   [ ] Generator test utilities created with helper functions
--   [ ] Regression suite passes with 100% double-run tests
--   [ ] All existing generators retrofitted to use patterns
--   [ ] Documentation updated with usage examples
--   [ ] **Evidence**: `just test-generators` returns GREEN
+- [ ] Idempotency pattern library implemented and documented
+- [ ] Generator test utilities created with helper functions
+- [ ] Regression suite passes with 100% double-run tests
+- [ ] All existing generators retrofitted to use patterns
+- [ ] Documentation updated with usage examples
+- [ ] **Evidence**: `just test-generators` returns GREEN
 
 ### Traceability
 
@@ -267,7 +267,6 @@ pnpm nx test type-generator --testFile=idempotency.test.ts
 **Improve code quality:**
 
 1. **Extract seams:**
-
     - Separate file I/O from logic
     - Create pure functions for content merging
     - Extract AST manipulation into separate module
@@ -325,12 +324,12 @@ just ai-validate
 
 ### 📋 Cycle A Checklist
 
--   [ ] RED: Failing tests written — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] GREEN: Minimal implementation passes tests — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] REFACTOR: Code improved, edge cases covered — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] REGRESSION: All workspace tests pass — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Documentation: Usage examples in code comments — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] **Evidence Captured:** `logs/PHASE-001-CYCLE-A.log`
+- [ ] RED: Failing tests written — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] GREEN: Minimal implementation passes tests — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] REFACTOR: Code improved, edge cases covered — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] REGRESSION: All workspace tests pass — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Documentation: Usage examples in code comments — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] **Evidence Captured:** `logs/PHASE-001-CYCLE-A.log`
 
 ### Deliverables
 
@@ -497,11 +496,11 @@ just ai-validate
 
 ### 📋 Cycle B Checklist
 
--   [ ] RED: Test helper specs fail — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] GREEN: Helpers implemented, tests pass — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] REFACTOR: Advanced helpers added — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] REGRESSION: Meta-tests pass — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] **Evidence Captured:** `logs/PHASE-001-CYCLE-B.log`
+- [ ] RED: Test helper specs fail — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] GREEN: Helpers implemented, tests pass — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] REFACTOR: Advanced helpers added — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] REGRESSION: Meta-tests pass — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] **Evidence Captured:** `logs/PHASE-001-CYCLE-B.log`
 
 ### Deliverables
 
@@ -668,12 +667,12 @@ just spec-guard
 
 ### 📋 Cycle C Checklist
 
--   [ ] RED: Regression tests expose non-idempotent behavior — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] GREEN: All generators retrofitted, tests pass — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] REFACTOR: Wrapper utilities + CI integration — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] REGRESSION: Full workspace validation passes — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Documentation: Generator development guide created — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] **Evidence Captured:** `logs/PHASE-001-CYCLE-C.log`
+- [ ] RED: Regression tests expose non-idempotent behavior — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] GREEN: All generators retrofitted, tests pass — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] REFACTOR: Wrapper utilities + CI integration — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] REGRESSION: Full workspace validation passes — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Documentation: Generator development guide created — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] **Evidence Captured:** `logs/PHASE-001-CYCLE-C.log`
 
 ### Deliverables
 
@@ -738,10 +737,10 @@ git push origin dev
 
 Monitor GitHub Actions:
 
--   ✅ All workflows pass
--   ✅ No new lint violations
--   ✅ Type checks clean
--   ✅ Generator tests GREEN
+- ✅ All workflows pass
+- ✅ No new lint violations
+- ✅ Type checks clean
+- ✅ Generator tests GREEN
 
 ### 6. Retrospective
 
@@ -749,10 +748,10 @@ Create: `docs/plans/hexddd_integration/retrospectives/PHASE-001.md`
 
 Document:
 
--   What worked well
--   What was harder than expected
--   Patterns to reuse in future phases
--   Lessons learned
+- What worked well
+- What was harder than expected
+- Patterns to reuse in future phases
+- Lessons learned
 
 ---
 
@@ -762,38 +761,38 @@ Mark complete when ALL items verified:
 
 ### Implementation
 
--   [ ] Cycle A: Pattern library complete
--   [ ] Cycle B: Test utilities complete
--   [ ] Cycle C: Regression suite complete
--   [ ] All existing generators retrofitted
+- [ ] Cycle A: Pattern library complete
+- [ ] Cycle B: Test utilities complete
+- [ ] Cycle C: Regression suite complete
+- [ ] All existing generators retrofitted
 
 ### Testing
 
--   [ ] `just test-generators` returns GREEN
--   [ ] All ShellSpec tests pass
--   [ ] All Jest generator tests pass
--   [ ] No workspace test regressions
+- [ ] `just test-generators` returns GREEN
+- [ ] All ShellSpec tests pass
+- [ ] All Jest generator tests pass
+- [ ] No workspace test regressions
 
 ### Quality Gates
 
--   [ ] `pnpm nx run-many -t lint --all` passes
--   [ ] `pnpm tsc --noEmit` passes
--   [ ] `just ai-validate` GREEN
--   [ ] CI workflows pass
+- [ ] `pnpm nx run-many -t lint --all` passes
+- [ ] `pnpm tsc --noEmit` passes
+- [ ] `just ai-validate` GREEN
+- [ ] CI workflows pass
 
 ### Documentation
 
--   [ ] Generator development guide created
--   [ ] Inline TSDoc comments complete
--   [ ] README updated with test commands
--   [ ] Retrospective documented
+- [ ] Generator development guide created
+- [ ] Inline TSDoc comments complete
+- [ ] README updated with test commands
+- [ ] Retrospective documented
 
 ### Evidence
 
--   [ ] All cycle logs captured in `logs/`
--   [ ] Test reports in `reports/`
--   [ ] Memory updated with learnings
--   [ ] **PHASE-001 marked GREEN in Master Plan**
+- [ ] All cycle logs captured in `logs/`
+- [ ] Test reports in `reports/`
+- [ ] Memory updated with learnings
+- [ ] **PHASE-001 marked GREEN in Master Plan**
 
 ---
 

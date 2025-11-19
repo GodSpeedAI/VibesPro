@@ -12,14 +12,14 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 ## Success Criteria (Binary Pass/Fail)
 
--   [ ] **UoW Contracts Complete**: TypeScript and Python Unit of Work interfaces implemented with in-memory adapters, passing all transactional tests
--   [ ] **EventBus Abstractions Complete**: Cross-language Event Bus contracts with in-memory implementations, supporting pub/sub patterns
--   [ ] **Zero Boundary Violations**: `pnpm nx run-many -t lint` passes with Nx dependency tag enforcement (type:domain, type:application, type:infrastructure)
--   [ ] **Supabase Dev Stack Operational**: Docker Compose stack starts in <5 minutes, all services healthy (postgres, redis, gotrue, realtime, storage, studio)
--   [ ] **Integration Tests Pass**: Transactional boundary tests validate commit/rollback behavior across both languages
--   [ ] **Zero CI Failures**: All quality gates pass (tests, linters, builds)
--   [ ] **Zero Technical Debt**: Follows hexagonal architecture principles (DEV-ADR-024, DEV-SDS-025), MECE instruction stacking
--   [ ] **Production Ready**: Documentation complete, traceability matrix updated with spec IDs
+- [ ] **UoW Contracts Complete**: TypeScript and Python Unit of Work interfaces implemented with in-memory adapters, passing all transactional tests
+- [ ] **EventBus Abstractions Complete**: Cross-language Event Bus contracts with in-memory implementations, supporting pub/sub patterns
+- [ ] **Zero Boundary Violations**: `pnpm nx run-many -t lint` passes with Nx dependency tag enforcement (type:domain, type:application, type:infrastructure)
+- [ ] **Supabase Dev Stack Operational**: Docker Compose stack starts in <5 minutes, all services healthy (postgres, redis, gotrue, realtime, storage, studio)
+- [ ] **Integration Tests Pass**: Transactional boundary tests validate commit/rollback behavior across both languages
+- [ ] **Zero CI Failures**: All quality gates pass (tests, linters, builds)
+- [ ] **Zero Technical Debt**: Follows hexagonal architecture principles (DEV-ADR-024, DEV-SDS-025), MECE instruction stacking
+- [ ] **Production Ready**: Documentation complete, traceability matrix updated with spec IDs
 
 **Failure Mode**: If any criterion fails, continue iterating until all pass. Do not proceed to PHASE-003 with incomplete foundations.
 
@@ -31,17 +31,17 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 **Impact**:
 
--   **Template Users**: Cannot scaffold projects with proven transactional patterns—must build UoW/EventBus from scratch
--   **Domain Teams**: No enforcement of hexagonal boundaries—infrastructure can leak into domain layer
--   **Platform Team**: Cannot provide consistent dev stacks—each project configures Supabase differently
--   **Cost of Inaction**: Architectural drift, data corruption from improper transaction handling, coupling violations
+- **Template Users**: Cannot scaffold projects with proven transactional patterns—must build UoW/EventBus from scratch
+- **Domain Teams**: No enforcement of hexagonal boundaries—infrastructure can leak into domain layer
+- **Platform Team**: Cannot provide consistent dev stacks—each project configures Supabase differently
+- **Cost of Inaction**: Architectural drift, data corruption from improper transaction handling, coupling violations
 
 **Target State**:
 
--   All generated projects inherit battle-tested UoW and EventBus abstractions
--   Nx lint automatically catches layer boundary violations (domain cannot import infrastructure)
--   Supabase dev stack provisions in <5 minutes via single command
--   Integration tests demonstrate proper transactional behavior as reference implementations
+- All generated projects inherit battle-tested UoW and EventBus abstractions
+- Nx lint automatically catches layer boundary violations (domain cannot import infrastructure)
+- Supabase dev stack provisions in <5 minutes via single command
+- Integration tests demonstrate proper transactional behavior as reference implementations
 
 **Risk Level**: **HIGH** → **LOW** (after completion, all future domains build on verified foundations)
 
@@ -58,7 +58,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 **Implementation Steps**:
 
 1. **🔴 RED Phase - Create failing tests** in `libs/shared/domain/src/unit-of-work.test.ts`:
-
     - Test `begin()` → `commit()` transaction lifecycle
     - Test `rollback()` clears dirty/new/deleted entity tracking
     - Test `registerNew()`, `registerDirty()`, `registerDeleted()` entity tracking
@@ -85,7 +84,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
     ```
 
 3. **🔵 REFACTOR Phase - Improve design**:
-
     - Extract repository pattern interfaces
     - Add Supabase adapter skeleton (stub only, real impl in later phase)
     - Document transaction boundaries in JSDoc comments
@@ -99,11 +97,11 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 **Exit Criteria**:
 
--   [ ] UnitOfWork interface defined in `libs/shared/domain/src/unit-of-work.ts`
--   [ ] InMemoryUnitOfWork adapter passes all tests
--   [ ] Code coverage ≥ 90% for UoW module
--   [ ] Documentation includes transaction boundary examples
--   [ ] **Traceability**: Code references DEV-ADR-024, DEV-SDS-025
+- [ ] UnitOfWork interface defined in `libs/shared/domain/src/unit-of-work.ts`
+- [ ] InMemoryUnitOfWork adapter passes all tests
+- [ ] Code coverage ≥ 90% for UoW module
+- [ ] Documentation includes transaction boundary examples
+- [ ] **Traceability**: Code references DEV-ADR-024, DEV-SDS-025
 
 ---
 
@@ -116,7 +114,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 **Implementation Steps**:
 
 1. **🔴 RED Phase - Create failing tests** in `libs/shared/domain/tests/test_unit_of_work.py`:
-
     - Test async transaction lifecycle (`await begin()` → `await commit()`)
     - Test rollback clears entity tracking
     - Test entity registration methods
@@ -145,7 +142,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
     ```
 
 3. **🔵 REFACTOR Phase - Enhance with Python idioms**:
-
     - Add async context manager support (`async with uow:`)
     - Extract repository pattern interfaces
     - Add comprehensive type hints (mypy --strict compliance)
@@ -160,12 +156,12 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 **Exit Criteria**:
 
--   [ ] UnitOfWork protocol defined with full type hints
--   [ ] InMemoryUnitOfWork implementation passes all tests
--   [ ] mypy --strict passes with zero errors
--   [ ] Documentation includes async context manager usage examples
--   [ ] Feature parity with TypeScript implementation maintained
--   [ ] **Traceability**: Code references DEV-ADR-024, DEV-SDS-025
+- [ ] UnitOfWork protocol defined with full type hints
+- [ ] InMemoryUnitOfWork implementation passes all tests
+- [ ] mypy --strict passes with zero errors
+- [ ] Documentation includes async context manager usage examples
+- [ ] Feature parity with TypeScript implementation maintained
+- [ ] **Traceability**: Code references DEV-ADR-024, DEV-SDS-025
 
 ---
 
@@ -180,9 +176,7 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 **Implementation Steps**:
 
 1. **🔴 RED Phase - Create failing tests**:
-
     - TypeScript: `libs/shared/domain/src/event-bus.test.ts`
-
         - Test single subscriber receives event
         - Test multiple subscribers for same event type
         - Test unsubscribe removes handler
@@ -190,7 +184,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
         - Test error aggregation when handlers fail
 
     - Python: `libs/shared/domain/tests/test_event_bus.py`
-
         - Mirror all TypeScript test scenarios
         - Test async handler execution
 
@@ -225,7 +218,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
     ```
 
 3. **🔵 REFACTOR Phase - Add advanced features**:
-
     - Event filtering and wildcard subscriptions (`user.*` matches `user.created`, `user.updated`)
     - Event replay capabilities (store last N events)
     - Dead letter queue for failed events
@@ -239,12 +231,12 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 **Exit Criteria**:
 
--   [ ] EventBus interface defined in both languages
--   [ ] InMemoryEventBus implementations pass all tests
--   [ ] Cross-language parity maintained (same features in TS and Python)
--   [ ] Error handling documented (failed handlers, invalid event types)
--   [ ] Integration test demonstrates pub/sub between modules
--   [ ] **Traceability**: Code references DEV-ADR-024, DEV-SDS-025
+- [ ] EventBus interface defined in both languages
+- [ ] InMemoryEventBus implementations pass all tests
+- [ ] Cross-language parity maintained (same features in TS and Python)
+- [ ] Error handling documented (failed handlers, invalid event types)
+- [ ] Integration test demonstrates pub/sub between modules
+- [ ] **Traceability**: Code references DEV-ADR-024, DEV-SDS-025
 
 ---
 
@@ -305,7 +297,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
     ```
 
 3. **Tag existing libraries**:
-
     - Add `"tags": ["type:domain"]` to `libs/shared/domain/project.json`
     - Create sample application and infrastructure libs to test enforcement
     - Intentionally violate boundary (domain imports infrastructure) to verify lint catches it
@@ -317,11 +308,11 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 **Exit Criteria**:
 
--   [ ] Nx dependency tags configured in `nx.json`
--   [ ] `pnpm nx run-many -t lint` passes for valid dependencies
--   [ ] `pnpm nx run-many -t lint` FAILS when domain imports infrastructure (test violation, then remove)
--   [ ] Tag taxonomy documented in `docs/ARCHITECTURE.md`
--   [ ] **Traceability**: Configuration references DEV-ADR-025, DEV-SDS-024, DEV-PRD-025
+- [ ] Nx dependency tags configured in `nx.json`
+- [ ] `pnpm nx run-many -t lint` passes for valid dependencies
+- [ ] `pnpm nx run-many -t lint` FAILS when domain imports infrastructure (test violation, then remove)
+- [ ] Tag taxonomy documented in `docs/ARCHITECTURE.md`
+- [ ] **Traceability**: Configuration references DEV-ADR-025, DEV-SDS-024, DEV-PRD-025
 
 ---
 
@@ -334,7 +325,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 **Implementation Steps**:
 
 1. **Create Docker Compose file** at `docker/docker-compose.supabase.yml`:
-
     - Services: postgres, redis, gotrue (auth), realtime, storage, studio
     - All services depend on postgres with healthcheck
     - Environment variables loaded from `.env.local` (created from `.env.example`)
@@ -393,7 +383,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
     ```
 
 3. **Create seed SQL** at `docker/scripts/seed/01-seed.sql`:
-
     - Create sample tables for testing (users, posts, etc.)
     - Insert test data
     - Document in `docs/ENVIRONMENT.md` section "Local Supabase Stack"
@@ -429,13 +418,13 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 **Exit Criteria**:
 
--   [ ] Docker Compose file creates all services with proper dependencies
--   [ ] `pnpm nx supabase-devstack:start` brings up stack in <5 minutes
--   [ ] All services show "healthy" in `pnpm nx supabase-devstack:status`
--   [ ] Supabase Studio accessible at `http://localhost:54323`
--   [ ] Seed data loads successfully via `pnpm nx supabase-devstack:seed`
--   [ ] Documentation includes setup instructions and troubleshooting
--   [ ] **Traceability**: Configuration references DEV-ADR-026, DEV-SDS-026, DEV-PRD-027
+- [ ] Docker Compose file creates all services with proper dependencies
+- [ ] `pnpm nx supabase-devstack:start` brings up stack in <5 minutes
+- [ ] All services show "healthy" in `pnpm nx supabase-devstack:status`
+- [ ] Supabase Studio accessible at `http://localhost:54323`
+- [ ] Seed data loads successfully via `pnpm nx supabase-devstack:seed`
+- [ ] Documentation includes setup instructions and troubleshooting
+- [ ] **Traceability**: Configuration references DEV-ADR-026, DEV-SDS-026, DEV-PRD-027
 
 ---
 
@@ -486,7 +475,6 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
     ```
 
 2. **Create Python integration test** at `tests/integration/test_uow_supabase.py`:
-
     - Mirror TypeScript test scenarios
     - Use async Supabase client
     - Verify transaction isolation
@@ -498,11 +486,11 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 **Exit Criteria**:
 
--   [ ] Integration tests pass in local environment
--   [ ] Integration tests pass in CI
--   [ ] Tests demonstrate commit/rollback behavior with real database
--   [ ] Python and TypeScript integration tests both passing
--   [ ] **Traceability**: Tests reference DEV-PRD-026
+- [ ] Integration tests pass in local environment
+- [ ] Integration tests pass in CI
+- [ ] Tests demonstrate commit/rollback behavior with real database
+- [ ] Python and TypeScript integration tests both passing
+- [ ] **Traceability**: Tests reference DEV-PRD-026
 
 ---
 
@@ -518,11 +506,11 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 **Context Check**: After reading, you should understand:
 
--   Hexagonal architecture layer boundaries (domain → application → infrastructure)
--   Unit of Work pattern purpose (transactional consistency)
--   Event Bus pattern purpose (decoupled event-driven communication)
--   Nx dependency tags enforcement mechanism
--   Supabase dev stack services and their roles
+- Hexagonal architecture layer boundaries (domain → application → infrastructure)
+- Unit of Work pattern purpose (transactional consistency)
+- Event Bus pattern purpose (decoupled event-driven communication)
+- Nx dependency tags enforcement mechanism
+- Supabase dev stack services and their roles
 
 ---
 
@@ -532,19 +520,19 @@ Implement Unit of Work and Event Bus abstractions in TypeScript and Python, conf
 
 You are **authorized** to:
 
--   Choose test assertion libraries (prefer `node:assert` and `pytest` as specified)
--   Refactor internal implementations for clarity (extract helper functions, add types)
--   Add additional edge case tests beyond minimum requirements
--   Create utility functions to reduce test boilerplate
--   Add JSDoc/docstring comments for public APIs
+- Choose test assertion libraries (prefer `node:assert` and `pytest` as specified)
+- Refactor internal implementations for clarity (extract helper functions, add types)
+- Add additional edge case tests beyond minimum requirements
+- Create utility functions to reduce test boilerplate
+- Add JSDoc/docstring comments for public APIs
 
 You **must ask** before:
 
--   Adding npm packages or Python dependencies not in `package.json`/`pyproject.toml`
--   Changing public API signatures (UnitOfWork, EventBus interfaces)
--   Modifying CI/CD workflows (`.github/workflows/*`)
--   Changing Nx configuration beyond tag taxonomy
--   Modifying Docker Compose service versions or architecture
+- Adding npm packages or Python dependencies not in `package.json`/`pyproject.toml`
+- Changing public API signatures (UnitOfWork, EventBus interfaces)
+- Modifying CI/CD workflows (`.github/workflows/*`)
+- Changing Nx configuration beyond tag taxonomy
+- Modifying Docker Compose service versions or architecture
 
 ### Quality Gates
 
@@ -599,21 +587,21 @@ After completing each task, provide:
 
 ### Changes Made
 
--   Created: [list of new files with paths]
--   Modified: [list of changed files with paths]
--   Key implementation decisions: [bullet list]
+- Created: [list of new files with paths]
+- Modified: [list of changed files with paths]
+- Key implementation decisions: [bullet list]
 
 ### Verification Results
 
--   [ ] Tests pass: `pnpm test:jest --testPathPatterns=<pattern>` (X/X tests passing)
--   [ ] Lint passes: `pnpm nx run-many -t lint` (0 violations)
--   [ ] Build passes: `pnpm nx run-many -t build` (0 errors)
--   [ ] Documentation updated: [affected files]
+- [ ] Tests pass: `pnpm test:jest --testPathPatterns=<pattern>` (X/X tests passing)
+- [ ] Lint passes: `pnpm nx run-many -t lint` (0 violations)
+- [ ] Build passes: `pnpm nx run-many -t build` (0 errors)
+- [ ] Documentation updated: [affected files]
 
 ### Traceability
 
--   Spec IDs referenced: [DEV-ADR-XXX, DEV-SDS-XXX, DEV-PRD-XXX]
--   Commit message: [example conventional commit message with spec IDs]
+- Spec IDs referenced: [DEV-ADR-XXX, DEV-SDS-XXX, DEV-PRD-XXX]
+- Commit message: [example conventional commit message with spec IDs]
 
 ### Blockers (if any)
 
@@ -655,30 +643,30 @@ After completing each task, provide:
 
 **Essential Files**:
 
--   `docs/ARCHITECTURE.md` — Hexagonal layer definitions
--   `docs/dev_adr.md` — Architectural decisions (DEV-ADR-024, 025, 026)
--   `docs/dev_sds.md` — Design specifications (DEV-SDS-024, 025, 026)
--   `docs/dev_prd.md` — Product requirements (DEV-PRD-025, 026, 027)
--   `.github/instructions/testing.instructions.md` — TDD workflow and testing conventions
--   `.github/instructions/generators-first.instructions.md` — Generator-first development policy
--   `.github/copilot-instructions.md` — General development guidelines
+- `docs/ARCHITECTURE.md` — Hexagonal layer definitions
+- `docs/dev_adr.md` — Architectural decisions (DEV-ADR-024, 025, 026)
+- `docs/dev_sds.md` — Design specifications (DEV-SDS-024, 025, 026)
+- `docs/dev_prd.md` — Product requirements (DEV-PRD-025, 026, 027)
+- `.github/instructions/testing.instructions.md` — TDD workflow and testing conventions
+- `.github/instructions/generators-first.instructions.md` — Generator-first development policy
+- `.github/copilot-instructions.md` — General development guidelines
 
 **Reference Implementations**:
 
--   Look for existing repository patterns in `libs/` (if any) to maintain consistency
--   Study existing Nx configuration in `nx.json` for lint setup patterns
+- Look for existing repository patterns in `libs/` (if any) to maintain consistency
+- Study existing Nx configuration in `nx.json` for lint setup patterns
 
 **API/Library Documentation**:
 
--   Nx Dependency Boundaries: https://nx.dev/core-features/enforce-module-boundaries
--   Supabase Docker Setup: https://supabase.com/docs/guides/self-hosting/docker
--   Jest Testing: https://jestjs.io/docs/getting-started
--   Pytest: https://docs.pytest.org/en/stable/
+- Nx Dependency Boundaries: https://nx.dev/core-features/enforce-module-boundaries
+- Supabase Docker Setup: https://supabase.com/docs/guides/self-hosting/docker
+- Jest Testing: https://jestjs.io/docs/getting-started
+- Pytest: https://docs.pytest.org/en/stable/
 
 **Related Prior Work**:
 
--   PHASE-001 (dependency): Ensure PHASE-001 is marked complete before starting
--   Check git log for any existing UoW/EventBus implementations to avoid duplication
+- PHASE-001 (dependency): Ensure PHASE-001 is marked complete before starting
+- Check git log for any existing UoW/EventBus implementations to avoid duplication
 
 ---
 
@@ -686,28 +674,28 @@ After completing each task, provide:
 
 ### Performance
 
--   InMemoryEventBus must handle ≥100 subscribers without degradation
--   Event dispatch with Promise.allSettled to prevent single handler failure from blocking others
--   Consider event queue size limits to prevent memory leaks
+- InMemoryEventBus must handle ≥100 subscribers without degradation
+- Event dispatch with Promise.allSettled to prevent single handler failure from blocking others
+- Consider event queue size limits to prevent memory leaks
 
 ### Security
 
--   Never commit `.env.local` with real Supabase credentials
--   Use SOPS for production secrets per DEV-ADR-013
--   Ensure Docker Compose healthchecks prevent race conditions on startup
+- Never commit `.env.local` with real Supabase credentials
+- Use SOPS for production secrets per DEV-ADR-013
+- Ensure Docker Compose healthchecks prevent race conditions on startup
 
 ### Compatibility
 
--   TypeScript strict mode enabled (`strict: true` in `tsconfig.json`)
--   Python mypy strict mode required (`mypy --strict`)
--   Node.js LTS version per `.mise.toml`
--   Python 3.11+ required per `.mise.toml`
+- TypeScript strict mode enabled (`strict: true` in `tsconfig.json`)
+- Python mypy strict mode required (`mypy --strict`)
+- Node.js LTS version per `.mise.toml`
+- Python 3.11+ required per `.mise.toml`
 
 ### Observability
 
--   Add structured logging to UoW operations (begin/commit/rollback)
--   Add correlation IDs to events for distributed tracing
--   Log EventBus subscription/dispatch events for debugging
+- Add structured logging to UoW operations (begin/commit/rollback)
+- Add correlation IDs to events for distributed tracing
+- Log EventBus subscription/dispatch events for debugging
 
 ---
 
@@ -736,6 +724,6 @@ Report status after completing each task using the output format above.
 
 **Traceability Matrix Update Required**: After phase completion, add entries mapping:
 
--   DEV-ADR-024 → `libs/shared/domain/src/unit-of-work.ts`, `libs/shared/domain/event_bus.py`
--   DEV-SDS-025 → `libs/shared/domain/src/adapters/in-memory-uow.ts`, etc.
--   DEV-PRD-026 → `tests/integration/uow-supabase.test.ts`
+- DEV-ADR-024 → `libs/shared/domain/src/unit-of-work.ts`, `libs/shared/domain/event_bus.py`
+- DEV-SDS-025 → `libs/shared/domain/src/adapters/in-memory-uow.ts`, etc.
+- DEV-PRD-026 → `tests/integration/uow-supabase.test.ts`

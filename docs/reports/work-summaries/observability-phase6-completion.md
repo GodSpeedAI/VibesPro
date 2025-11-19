@@ -14,12 +14,12 @@ Successfully completed Phase 6 of the observability implementation by validating
 
 Created comprehensive test `tests/ops/test_observe_flag.sh` that validates:
 
--   `VIBEPRO_OBSERVE` environment variable is checked in code
--   Feature flag logic properly implemented in `lib.rs`
--   Conditional OTLP setup based on flag value
--   `#[cfg(feature = "otlp")]` feature gates present
--   Test coverage exists for flag behavior
--   Documentation references the feature flag
+- `VIBEPRO_OBSERVE` environment variable is checked in code
+- Feature flag logic properly implemented in `lib.rs`
+- Conditional OTLP setup based on flag value
+- `#[cfg(feature = "otlp")]` feature gates present
+- Test coverage exists for flag behavior
+- Documentation references the feature flag
 
 The test **passed immediately**, indicating the feature flag implementation was already complete from earlier phases.
 
@@ -72,7 +72,6 @@ Enhanced tooling and documentation:
     ```
 
 2. **Enhanced observability README** (`docs/observability/README.md`):
-
     - Added comprehensive Section 8: Feature Flags & Runtime Control
     - Documented `VIBEPRO_OBSERVE` flag behavior
     - Explained Cargo feature flags (`otlp`)
@@ -81,7 +80,6 @@ Enhanced tooling and documentation:
     - Included testing instructions
 
 3. **Updated SDS-017** (`docs/dev_sds.md`):
-
     - Added Phase 6 test artifact
     - Added Phase 6 completion documentation reference
     - Updated implementation status to "All 6 phases complete"
@@ -96,14 +94,14 @@ Enhanced tooling and documentation:
 
 ### New Files
 
--   `tests/ops/test_observe_flag.sh` - Phase 6 feature flag validation test (145 lines)
--   `docs/work-summaries/observability-phase6-completion.md` - This document
+- `tests/ops/test_observe_flag.sh` - Phase 6 feature flag validation test (145 lines)
+- `docs/work-summaries/observability-phase6-completion.md` - This document
 
 ### Modified Files
 
--   `justfile` - Added `observe-test-flag` target and updated `observe-test-all`
--   `docs/observability/README.md` - Added Section 8: Feature Flags & Runtime Control (~70 lines)
--   `docs/dev_sds.md` - Updated implementation status and added Phase 6 references
+- `justfile` - Added `observe-test-flag` target and updated `observe-test-all`
+- `docs/observability/README.md` - Added Section 8: Feature Flags & Runtime Control (~70 lines)
+- `docs/dev_sds.md` - Updated implementation status and added Phase 6 references
 
 ## Test Results
 
@@ -148,19 +146,16 @@ $ just observe-test-all
 The test validates multiple layers:
 
 1. **Code Implementation**:
-
     - ✅ `VIBEPRO_OBSERVE` environment variable checked
     - ✅ `observe_flag` variable used in conditionals
     - ✅ `#[cfg(feature = "otlp")]` gates present
 
 2. **Test Coverage**:
-
     - ✅ `tests/otlp_gates.rs` exists
     - ✅ Tests check `VIBEPRO_OBSERVE=1` behavior
     - ✅ Tests pass with and without `otlp` feature
 
 3. **Configuration**:
-
     - ✅ Vector OTLP sources configured
     - ✅ Proper endpoint handling
 
@@ -177,39 +172,39 @@ Comprehensive feature flag documentation including:
 
 #### 8.1 VIBEPRO_OBSERVE Flag
 
--   Table showing flag values and behavior
--   Clear enabled/disabled states
+- Table showing flag values and behavior
+- Clear enabled/disabled states
 
 #### 8.2 Cargo Feature Flags
 
--   Compile-time feature examples
--   Minimal vs full feature sets
+- Compile-time feature examples
+- Minimal vs full feature sets
 
 #### 8.3 Usage Patterns
 
--   Development (OTLP disabled)
--   Development (OTLP enabled)
--   Production deployment
+- Development (OTLP disabled)
+- Development (OTLP enabled)
+- Production deployment
 
 #### 8.4 Testing Feature Flag Behavior
 
--   Test commands
--   Validation criteria
+- Test commands
+- Validation criteria
 
 #### 8.5 Decision Tree
 
--   Visual guide for choosing configuration
--   Development vs CI/CD vs production paths
+- Visual guide for choosing configuration
+- Development vs CI/CD vs production paths
 
 ## Exit Criteria Met
 
 From `docs/tmp/dev_tdd_observability.md` Phase 6:
 
--   [x] **RED**: Test validates flag behavior (test created and passing)
--   [x] **GREEN**: Flag honored in `init_tracing()` and config (already implemented)
--   [x] **REFACTOR**: Documentation updated (README § 8 + SDS-017)
--   [x] Spans export only when flag = `1` (validated by tests)
--   [x] Documentation complete (comprehensive feature flag guide)
+- [x] **RED**: Test validates flag behavior (test created and passing)
+- [x] **GREEN**: Flag honored in `init_tracing()` and config (already implemented)
+- [x] **REFACTOR**: Documentation updated (README § 8 + SDS-017)
+- [x] Spans export only when flag = `1` (validated by tests)
+- [x] Documentation complete (comprehensive feature flag guide)
 
 ## All Phases Status (COMPLETE)
 
@@ -310,16 +305,15 @@ spec:
 
 With feature flag properly implemented:
 
--   **OTLP Disabled** (`VIBEPRO_OBSERVE=0`):
+- **OTLP Disabled** (`VIBEPRO_OBSERVE=0`):
+    - Zero network overhead
+    - Zero OTLP serialization cost
+    - Only JSON formatting overhead (~50ns per span)
 
-    -   Zero network overhead
-    -   Zero OTLP serialization cost
-    -   Only JSON formatting overhead (~50ns per span)
-
--   **OTLP Enabled** (`VIBEPRO_OBSERVE=1`):
-    -   <1µs per span emission
-    -   Async batching to Vector
-    -   Backpressure handled by OpenTelemetry SDK
+- **OTLP Enabled** (`VIBEPRO_OBSERVE=1`):
+    - <1µs per span emission
+    - Async batching to Vector
+    - Backpressure handled by OpenTelemetry SDK
 
 ## Commands Reference
 
@@ -341,34 +335,34 @@ cargo test --lib                              # Without OTLP
 
 ## Traceability
 
--   **Architectural Decision**: DEV-ADR-016
--   **Design Specification**: DEV-SDS-017
--   **TDD Plan**: `docs/tmp/dev_tdd_observability.md` Phase 6
--   **Implementation**: All 6 phases complete
--   **Testing**: 5 shell tests + Rust crate tests + feature flag validation
+- **Architectural Decision**: DEV-ADR-016
+- **Design Specification**: DEV-SDS-017
+- **TDD Plan**: `docs/tmp/dev_tdd_observability.md` Phase 6
+- **Implementation**: All 6 phases complete
+- **Testing**: 5 shell tests + Rust crate tests + feature flag validation
 
 ## Impact Assessment
 
 ### Developer Experience
 
--   ✅ Clear opt-in/opt-out mechanism
--   ✅ Zero overhead when disabled
--   ✅ Simple environment variable control
--   ✅ Comprehensive documentation
+- ✅ Clear opt-in/opt-out mechanism
+- ✅ Zero overhead when disabled
+- ✅ Simple environment variable control
+- ✅ Comprehensive documentation
 
 ### Operations
 
--   ✅ Runtime control without rebuilding
--   ✅ Easy to enable/disable in emergencies
--   ✅ Gradual rollout capabilities
--   ✅ Cost control via feature flag
+- ✅ Runtime control without rebuilding
+- ✅ Easy to enable/disable in emergencies
+- ✅ Gradual rollout capabilities
+- ✅ Cost control via feature flag
 
 ### Security
 
--   ✅ No data export unless explicitly enabled
--   ✅ PII redaction enforced in Vector
--   ✅ Token-based authentication
--   ✅ Opt-in telemetry model
+- ✅ No data export unless explicitly enabled
+- ✅ PII redaction enforced in Vector
+- ✅ Token-based authentication
+- ✅ Opt-in telemetry model
 
 ## Success Metrics
 
@@ -387,28 +381,28 @@ cargo test --lib                              # Without OTLP
 
 The system provides:
 
--   ✅ Rust-native tracing instrumentation
--   ✅ Vector-based data pipeline
--   ✅ OpenObserve storage and analytics
--   ✅ CI/CD validation automation
--   ✅ Runtime feature flag control
--   ✅ Comprehensive documentation
+- ✅ Rust-native tracing instrumentation
+- ✅ Vector-based data pipeline
+- ✅ OpenObserve storage and analytics
+- ✅ CI/CD validation automation
+- ✅ Runtime feature flag control
+- ✅ Comprehensive documentation
 
 ### Production Readiness Checklist
 
--   [x] Phase 1: Instrumentation Layer (Tracing)
--   [x] Phase 2: Data Pipeline Layer (Vector)
--   [x] Phase 3: Integration Test (Tracing → Vector)
--   [x] Phase 4: Storage & Analytics (OpenObserve)
--   [x] Phase 5: CI Validation
--   [x] Phase 6: Feature Flag & Documentation
--   [x] All tests passing
--   [x] Documentation complete
--   [x] Feature flags validated
--   [ ] Production secrets configured (deployment-specific)
--   [ ] OpenObserve instance provisioned (deployment-specific)
--   [ ] Vector deployed to staging/production (deployment-specific)
--   [ ] Dashboards configured (deployment-specific)
+- [x] Phase 1: Instrumentation Layer (Tracing)
+- [x] Phase 2: Data Pipeline Layer (Vector)
+- [x] Phase 3: Integration Test (Tracing → Vector)
+- [x] Phase 4: Storage & Analytics (OpenObserve)
+- [x] Phase 5: CI Validation
+- [x] Phase 6: Feature Flag & Documentation
+- [x] All tests passing
+- [x] Documentation complete
+- [x] Feature flags validated
+- [ ] Production secrets configured (deployment-specific)
+- [ ] OpenObserve instance provisioned (deployment-specific)
+- [ ] Vector deployed to staging/production (deployment-specific)
+- [ ] Dashboards configured (deployment-specific)
 
 The core observability pipeline is **production-ready**. Remaining items are deployment-specific configuration.
 

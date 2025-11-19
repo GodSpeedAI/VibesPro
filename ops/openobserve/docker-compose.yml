@@ -1,7 +1,7 @@
 services:
   openobserve:
     image: public.ecr.aws/zinclabs/openobserve:v0.10.0
-    container_name: openobserve
+    container_name: openobserve-temporal-ai
     restart: unless-stopped
     env_file:
       - .env.local
@@ -10,17 +10,40 @@ services:
       ZO_DATA_DIR: /app/data
       ZO_USAGE_COLLECTION: "false"
       CONSOLE_ENABLED: "true"
+      # Performance optimizations for local dev
+      ZO_COMPACT_ENABLED: "true"
+      ZO_COMPACT_INTERVAL: "3600" # Compact every hour
+      ZO_MEMORY_CACHE_ENABLED: "true"
+      ZO_MEMORY_CACHE_MAX_SIZE: "512" # 512MB cache
+      # Temporal AI specific settings
+      ZO_QUERY_TIMEOUT: "30" # 30s timeout for SQL queries
+      ZO_HTTP_WORKER_NUM: "2" # Optimize for local CPU usage
     ports:
       - "${OPENOBSERVE_HTTP_PORT:-5080}:5080"
       - "${OPENOBSERVE_GRPC_PORT:-5081}:5081"
     volumes:
       - openobserve-data:/app/data
       - ./config:/app/config:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     logging:
       driver: json-file
       options:
         max-size: "10m"
         max-file: "3"
+    # Resource limits for local dev
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
 
 volumes:
   openobserve-data:

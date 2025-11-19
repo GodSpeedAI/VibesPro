@@ -1,7 +1,7 @@
 #### Custom Instructions (Official Documentation)
 
--   Custom instructions let you guide Copilot Chat so responses match your coding practices, project requirements, and development standards .
--   They are generally presented as a way to get better AI results by setting persistent guidance for the assistant.
+- Custom instructions let you guide Copilot Chat so responses match your coding practices, project requirements, and development standards .
+- They are generally presented as a way to get better AI results by setting persistent guidance for the assistant.
 
 ```yaml
 capability_extraction:
@@ -25,7 +25,7 @@ capability_extraction:
 
 #### Implementation Examples (Blog, 2025-03-26)
 
--   The GA announcement emphasizes using custom instructions to get better results from Copilot in VS Code.
+- The GA announcement emphasizes using custom instructions to get better results from Copilot in VS Code.
 
 ```yaml
 capability_extraction:
@@ -45,10 +45,10 @@ capability_extraction:
 
 #### MCP Integration (Model Context Protocol)
 
--   MCP and tools let you connect external services and specialized tools, extending chat beyond code to interact with databases, APIs, and other development tools.
--   You can install MCP servers or tools from Marketplace extensions to enhance capabilities (for example, pull from a database or connect to external APIs) .
--   Chat agent mode can invoke built‑in tools, MCP tools, or tools from extensions during an autonomous coding session .
--   Security note: MCP servers can run arbitrary code; only add servers from trusted sources and review the publisher and server configuration before starting .
+- MCP and tools let you connect external services and specialized tools, extending chat beyond code to interact with databases, APIs, and other development tools.
+- You can install MCP servers or tools from Marketplace extensions to enhance capabilities (for example, pull from a database or connect to external APIs) .
+- Chat agent mode can invoke built‑in tools, MCP tools, or tools from extensions during an autonomous coding session .
+- Security note: MCP servers can run arbitrary code; only add servers from trusted sources and review the publisher and server configuration before starting .
 
 ```yaml
 capability_extraction:
@@ -72,9 +72,9 @@ capability_extraction:
 
 #### Prompt Engineering (Best Practices)
 
--   Custom instructions are highlighted as a strategy to get better AI results in VS Code.
--   They help ensure responses match your coding practices, project requirements, and development standards.
--   Different customization methods (e.g., instructions vs. tools) may fit different scenarios .
+- Custom instructions are highlighted as a strategy to get better AI results in VS Code.
+- They help ensure responses match your coding practices, project requirements, and development standards.
+- Different customization methods (e.g., instructions vs. tools) may fit different scenarios .
 
 ```yaml
 capability_extraction:

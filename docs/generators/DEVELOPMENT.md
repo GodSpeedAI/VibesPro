@@ -54,9 +54,9 @@ This message indicates that the `apps/my-generator/src/index.ts` file was change
 
 ### Common causes of non-idempotency
 
--   **Timestamp or version stamping:** Avoid `Date.now()` or commit hashes; inject fixed timestamps from context or strip them entirely.
--   **Random identifiers:** Seed randomness with a deterministic value (e.g., generator options) or remove it so the same inputs always produce the same outputs.
--   **Unsorted filesystem reads:** Always sort directory listings before writing aggregate files so order does not depend on the OS.
--   **Environment or CWD leakage:** Read required env vars once and default to explicit values; avoid using the caller’s working directory implicitly.
--   **Whitespace/formatting drift:** Normalize line endings and run `formatFiles` so formatting tools generate the same output every time.
--   **Async race conditions:** Await all asynchronous writes and avoid mutating shared state from parallel promises; serialize writes when order matters.
+- **Timestamp or version stamping:** Avoid `Date.now()` or commit hashes; inject fixed timestamps from context or strip them entirely.
+- **Random identifiers:** Seed randomness with a deterministic value (e.g., generator options) or remove it so the same inputs always produce the same outputs.
+- **Unsorted filesystem reads:** Always sort directory listings before writing aggregate files so order does not depend on the OS.
+- **Environment or CWD leakage:** Read required env vars once and default to explicit values; avoid using the caller’s working directory implicitly.
+- **Whitespace/formatting drift:** Normalize line endings and run `formatFiles` so formatting tools generate the same output every time.
+- **Async race conditions:** Await all asynchronous writes and avoid mutating shared state from parallel promises; serialize writes when order matters.

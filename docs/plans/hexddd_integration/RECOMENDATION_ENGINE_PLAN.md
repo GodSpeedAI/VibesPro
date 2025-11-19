@@ -44,56 +44,50 @@ Create comprehensive specifications for embedding-based AI guidance system.
 
 Content structure:
 
--   **Overview**: Pattern recommendations via semantic similarity search
--   **EARS Tables**: 3 scenarios (auth patterns, violation detection, observability correlation)
--   **User Stories**:
-    -   US-020-A: Semantic pattern recommendation (embedding similarity >0.85)
-    -   US-020-B: Architecture violation detection (<2s response)
-    -   US-020-C: Observability-enhanced ranking (includes performance data)
--   **DX Metrics**:
-    -   Pattern recommendation accuracy: >80% developer acceptance
-    -   Query latency: <100ms for semantic search (embedding + similarity)
-    -   Temporal DB growth: <50MB per 1000 commits
-    -   Embedding generation: <500ms per code snippet
--   **Dependencies**: DEV-ADR-016 ✅, DEV-ADR-017 ✅, redb infrastructure ✅
+- **Overview**: Pattern recommendations via semantic similarity search
+- **EARS Tables**: 3 scenarios (auth patterns, violation detection, observability correlation)
+- **User Stories**:
+    - US-020-A: Semantic pattern recommendation (embedding similarity >0.85)
+    - US-020-B: Architecture violation detection (<2s response)
+    - US-020-C: Observability-enhanced ranking (includes performance data)
+- **DX Metrics**:
+    - Pattern recommendation accuracy: >80% developer acceptance
+    - Query latency: <100ms for semantic search (embedding + similarity)
+    - Temporal DB growth: <50MB per 1000 commits
+    - Embedding generation: <500ms per code snippet
+- **Dependencies**: DEV-ADR-016 ✅, DEV-ADR-017 ✅, redb infrastructure ✅
 
 **2. `docs/dev_sds_ai_guidance.md` (DEV-SDS-020)**
 
 Content structure:
 
--   **Architecture Diagram**: (Mermaid above)
--   **Components**:
-
+- **Architecture Diagram**: (Mermaid above)
+- **Components**:
     1. **Embedding Generator** (`crates/temporal-ai/src/embedder.rs`)
-
         - Model: `embedding-gemma-300M` (GGUF quantized, 300M params)
         - Runtime: `rustformers/llm` (CPU-optimized, zero GPU)
         - Output: 768-dimensional vectors
         - Interface: `fn embed(text: &str) -> Vec<f32>`
 
     2. **Pattern Extractor** (`crates/temporal-ai/src/pattern_extractor.rs`)
-
         - Parses Git commits for code patterns
         - Extracts: function signatures, file structures, dependency choices
         - Generates semantic descriptions for embedding
         - Interface: `fn extract_from_commit(commit: &Commit) -> Vec<Pattern>`
 
     3. **Redb Vector Store** (`crates/temporal-ai/src/vector_store.rs`)
-
         - Schema: `TableDefinition<&str, (Vec<f32>, String)>` (pattern_id → (embedding, metadata))
         - Operations: insert, search (cosine similarity), delete
         - Persistence: `temporal_db/vectors.redb` (single-file, zero-copy)
         - Interface: `fn search(query_vec: &[f32], top_k: usize) -> Vec<SearchResult>`
 
     4. **Similarity Search** (`crates/temporal-ai/src/similarity.rs`)
-
         - Algorithm: Cosine similarity (dot product / magnitude)
         - Optimization: SIMD via `rayon` for parallel computation
         - Ranking: Combines similarity score + recency + success_rate
         - Interface: `fn cosine_similarity(a: &[f32], b: &[f32]) -> f32`
 
     5. **Recommendation Ranker** (`crates/temporal-ai/src/ranker.rs`)
-
         - Scoring: `score = similarity * 0.6 + recency * 0.2 + success_rate * 0.2`
         - Filters: Min similarity threshold (0.75), max age (6 months)
         - Returns: Top-K patterns with context (code, rationale, metrics)
@@ -103,7 +97,7 @@ Content structure:
         - Parses JSON response with recommendations
         - Caches frequent queries (TTL: 5 minutes)
 
--   **Data Model (Redb Schema)**:
+- **Data Model (Redb Schema)**:
 
     ```rust
     // PATTERNS_TABLE
@@ -138,23 +132,23 @@ Content structure:
 
 Changes:
 
--   DEV-ADR-018 section:
-    -   Status: `Proposed` → `Active`
-    -   Add "Rationale" subsection:
-        -   Embedding-gemma-300M chosen for: 300M params (fast CPU inference), 768-dim embeddings (balance quality/speed), quantized GGUF format (<200MB disk)
-        -   Semantic search over regex: Captures intent similarity, handles paraphrasing, 10x fewer false positives
-        -   Redb for vectors: Zero-copy reads, single-file portability, ACID transactions, <5ms query latency for 10k patterns
-    -   Dependencies: Mark DEV-ADR-016 ✅, DEV-ADR-017 ✅
-    -   Add "Performance Targets":
-        -   Embedding generation: <500ms per snippet
-        -   Similarity search: <100ms for top-10 from 10k patterns
-        -   DB growth: <50MB per 1000 commits
+- DEV-ADR-018 section:
+    - Status: `Proposed` → `Active`
+    - Add "Rationale" subsection:
+        - Embedding-gemma-300M chosen for: 300M params (fast CPU inference), 768-dim embeddings (balance quality/speed), quantized GGUF format (<200MB disk)
+        - Semantic search over regex: Captures intent similarity, handles paraphrasing, 10x fewer false positives
+        - Redb for vectors: Zero-copy reads, single-file portability, ACID transactions, <5ms query latency for 10k patterns
+    - Dependencies: Mark DEV-ADR-016 ✅, DEV-ADR-017 ✅
+    - Add "Performance Targets":
+        - Embedding generation: <500ms per snippet
+        - Similarity search: <100ms for top-10 from 10k patterns
+        - DB growth: <50MB per 1000 commits
 
 ### Acceptance Criteria
 
--   ✅ DEV-PRD-020 contains: Overview, 3 EARS rows, 3 user stories, DX metrics
--   ✅ DEV-SDS-020 contains: Architecture diagram (Mermaid), 6 components with interfaces, redb schema (3 tables)
--   ✅ DEV-ADR-018 updated: Status Active, rationale includes embedding model choice, performance targets
+- ✅ DEV-PRD-020 contains: Overview, 3 EARS rows, 3 user stories, DX metrics
+- ✅ DEV-SDS-020 contains: Architecture diagram (Mermaid), 6 components with interfaces, redb schema (3 tables)
+- ✅ DEV-ADR-018 updated: Status Active, rationale includes embedding model choice, performance targets
 
 ---
 
@@ -229,10 +223,10 @@ impl Embedder {
 
 Key features:
 
--   Lazy model loading (on first embed call)
--   Thread-safe via Arc<Mutex<Model>>
--   Batch embedding support (parallel via rayon)
--   Error handling for model load failures
+- Lazy model loading (on first embed call)
+- Thread-safe via Arc<Mutex<Model>>
+- Batch embedding support (parallel via rayon)
+- Error handling for model load failures
 
 **3. `crates/temporal-ai/src/vector_store.rs`**
 
@@ -287,10 +281,10 @@ pub struct SearchResult {
 
 Key features:
 
--   ACID transactions for consistency
--   Separate tables for embeddings and metadata (optimization)
--   Zero-copy reads via redb
--   Single-file database (portable)
+- ACID transactions for consistency
+- Separate tables for embeddings and metadata (optimization)
+- Zero-copy reads via redb
+- Single-file database (portable)
 
 **4. `crates/temporal-ai/src/similarity.rs`**
 
@@ -315,9 +309,9 @@ pub fn batch_similarity(query: &[f32], vectors: &[(String, Vec<f32>)]) -> Vec<(S
 
 Key features:
 
--   SIMD-friendly implementation (compiler auto-vectorizes)
--   Parallel batch computation via rayon
--   Top-K selection with partial sort (O(n log k))
+- SIMD-friendly implementation (compiler auto-vectorizes)
+- Parallel batch computation via rayon
+- Top-K selection with partial sort (O(n log k))
 
 **5. `crates/temporal-ai/src/pattern_extractor.rs`**
 
@@ -372,9 +366,9 @@ impl PatternExtractor {
 
 Key features:
 
--   Extracts semantic context from: commit message, file paths, code diff
--   Generates natural language descriptions for embedding
--   Filters noise (merge commits, formatting changes)
+- Extracts semantic context from: commit message, file paths, code diff
+- Generates natural language descriptions for embedding
+- Filters noise (merge commits, formatting changes)
 
 **6. Model Download Script**
 
@@ -430,11 +424,11 @@ Tests:
 
 ### Acceptance Criteria
 
--   ✅ `cargo test --manifest-path crates/temporal-ai/Cargo.toml` passes
--   ✅ Model downloads successfully (<200MB)
--   ✅ Embedding generation: <500ms per snippet
--   ✅ Vector store insert/search functional
--   ✅ Cosine similarity correctness validated
+- ✅ `cargo test --manifest-path crates/temporal-ai/Cargo.toml` passes
+- ✅ Model downloads successfully (<200MB)
+- ✅ Embedding generation: <500ms per snippet
+- ✅ Vector store insert/search functional
+- ✅ Cosine similarity correctness validated
 
 ---
 
@@ -645,10 +639,10 @@ Tests:
 
 ### Acceptance Criteria
 
--   ✅ End-to-end test passes (Git commit → recommendation)
--   ✅ CLI command `temporal-ai search "implement auth"` returns JSON
--   ✅ TypeScript client integrated with test passing
--   ✅ Query latency <100ms (excluding first model load)
+- ✅ End-to-end test passes (Git commit → recommendation)
+- ✅ CLI command `temporal-ai search "implement auth"` returns JSON
+- ✅ TypeScript client integrated with test passing
+- ✅ Query latency <100ms (excluding first model load)
 
 ---
 
@@ -752,10 +746,10 @@ Tests:
 
 ### Acceptance Criteria
 
--   ✅ Metrics fetched from OpenObserve SQL API
--   ✅ Success rate calculated from error_rate + latency
--   ✅ Metrics persisted in redb METRICS_TABLE
--   ✅ Just recipe works: `just temporal-ai-refresh-metrics`
+- ✅ Metrics fetched from OpenObserve SQL API
+- ✅ Success rate calculated from error_rate + latency
+- ✅ Metrics persisted in redb METRICS_TABLE
+- ✅ Just recipe works: `just temporal-ai-refresh-metrics`
 
 ---
 
@@ -785,9 +779,9 @@ graph TD
 
 **Blocking Relationships**:
 
--   Phase 3B requires: Model downloaded (one-time), redb initialized
--   Phase 3C requires: Phase 3B complete (embedder + store functional)
--   Phase 3D requires: Phase 3C complete (patterns indexed), OpenObserve running
+- Phase 3B requires: Model downloaded (one-time), redb initialized
+- Phase 3C requires: Phase 3B complete (embedder + store functional)
+- Phase 3D requires: Phase 3C complete (patterns indexed), OpenObserve running
 
 ---
 
@@ -872,16 +866,16 @@ cargo test --manifest-path crates/temporal-ai/Cargo.toml observability
 
 **Specifications**:
 
--   DEV-PRD-020: Temporal AI Guidance Fabric (new)
--   DEV-SDS-020: Embedding-Based Pattern Search Design (new)
--   DEV-ADR-018: Temporal AI Intelligence Fabric (Proposed → Active)
+- DEV-PRD-020: Temporal AI Guidance Fabric (new)
+- DEV-SDS-020: Embedding-Based Pattern Search Design (new)
+- DEV-ADR-018: Temporal AI Intelligence Fabric (Proposed → Active)
 
 **Dependencies**:
 
--   ✅ DEV-ADR-016: Observability (Rust tracing → Vector → OpenObserve)
--   ✅ DEV-ADR-017: Structured Logging (trace correlation)
--   ✅ Temporal DB infrastructure (redb)
+- ✅ DEV-ADR-016: Observability (Rust tracing → Vector → OpenObserve)
+- ✅ DEV-ADR-017: Structured Logging (trace correlation)
+- ✅ Temporal DB infrastructure (redb)
 
 **Work Summaries**:
 
--   To create: `docs/work-summaries/cycle3-phase3{a,b,c,d}-completion.md`
+- To create: `docs/work-summaries/cycle3-phase3{a,b,c,d}-completion.md`

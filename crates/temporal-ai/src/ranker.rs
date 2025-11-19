@@ -23,6 +23,7 @@ pub struct RecommendationRanker<'a> {
     recency_weight: f32,
     usage_weight: f32,
     similarity_weight: f32,
+    success_rate_weight: f32,
 }
 
 impl<'a> RecommendationRanker<'a> {
@@ -32,24 +33,38 @@ impl<'a> RecommendationRanker<'a> {
             store,
             recency_weight: 0.2,
             usage_weight: 0.3,
-            similarity_weight: 0.5,
+            similarity_weight: 0.35,
+            success_rate_weight: 0.15,
         }
     }
 
     /// Create ranker with custom weights
-    pub fn with_weights(store: &'a VectorStore, recency: f32, usage: f32, similarity: f32) -> Self {
+    pub fn with_weights(
+        store: &'a VectorStore,
+        recency: f32,
+        usage: f32,
+        similarity: f32,
+        success_rate: f32,
+    ) -> Self {
         // Normalize weights to sum to 1.0
-        let total = recency + usage + similarity;
-        let (recency_weight, usage_weight, similarity_weight) = if total.abs() <= f32::EPSILON {
-            (1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0)
-        } else {
-            (recency / total, usage / total, similarity / total)
-        };
+        let total = recency + usage + similarity + success_rate;
+        let (recency_weight, usage_weight, similarity_weight, success_rate_weight) =
+            if total.abs() <= f32::EPSILON {
+                (0.25, 0.25, 0.25, 0.25)
+            } else {
+                (
+                    recency / total,
+                    usage / total,
+                    similarity / total,
+                    success_rate / total,
+                )
+            };
         Self {
             store,
             recency_weight,
             usage_weight,
             similarity_weight,
+            success_rate_weight,
         }
     }
 
@@ -67,17 +82,22 @@ impl<'a> RecommendationRanker<'a> {
 
                 // Get usage metrics
                 let metrics = self.store.get_metrics(&result.pattern_id).ok().flatten();
-                let (usage_score, usage_count) = if let Some(m) = metrics {
+                let (usage_score, usage_count, success_rate_score) = if let Some(m) = metrics {
                     // Normalize usage count (cap at 100)
-                    ((m.usage_count as f32 / 100.0).min(1.0), m.usage_count)
+                    (
+                        (m.usage_count as f32 / 100.0).min(1.0),
+                        m.usage_count,
+                        m.success_rate.unwrap_or(0.5), // Default neutral success rate
+                    )
                 } else {
-                    (0.0, 0)
+                    (0.0, 0, 0.5)
                 };
 
                 // Calculate final score
                 let final_score = self.similarity_weight * result.score
                     + self.recency_weight * recency_score
-                    + self.usage_weight * usage_score;
+                    + self.usage_weight * usage_score
+                    + self.success_rate_weight * success_rate_score;
 
                 // Generate explanation
                 let explanation = self.generate_explanation(
@@ -85,6 +105,7 @@ impl<'a> RecommendationRanker<'a> {
                     result.score,
                     days_since.round() as i64,
                     usage_count,
+                    success_rate_score,
                 );
 
                 Recommendation {
@@ -115,6 +136,7 @@ impl<'a> RecommendationRanker<'a> {
         similarity: f32,
         days_ago: i64,
         usage_count: u64,
+        success_rate: f32,
     ) -> String {
         let commit_short: String = pattern.commit_sha.chars().take(7).collect();
         let commit_display = if commit_short.is_empty() {
@@ -126,14 +148,15 @@ impl<'a> RecommendationRanker<'a> {
         let day_label = if days_ago == 1 { "day" } else { "days" };
 
         format!(
-            "Pattern from {} ({}): {} - Similarity: {:.1}%, Recency: {} {} ago, Usage: {} times",
+            "Pattern from {} ({}): {} - Similarity: {:.1}%, Recency: {} {} ago, Usage: {} times, Success: {:.1}%",
             commit_display,
             tags,
             pattern.description,
             similarity * 100.0,
             days_ago,
             day_label,
-            usage_count
+            usage_count,
+            success_rate * 100.0
         )
     }
 }
@@ -213,11 +236,12 @@ mod tests {
         let store = VectorStore::open(&db_path)?;
 
         // Heavily weight similarity
-        let ranker = RecommendationRanker::with_weights(&store, 0.1, 0.1, 0.8);
+        let ranker = RecommendationRanker::with_weights(&store, 0.1, 0.1, 0.7, 0.1);
 
-        assert!((ranker.similarity_weight - 0.8).abs() < 0.001);
+        assert!((ranker.similarity_weight - 0.7).abs() < 0.001);
         assert!((ranker.recency_weight - 0.1).abs() < 0.001);
         assert!((ranker.usage_weight - 0.1).abs() < 0.001);
+        assert!((ranker.success_rate_weight - 0.1).abs() < 0.001);
 
         Ok(())
     }
@@ -230,7 +254,7 @@ mod tests {
         let ranker = RecommendationRanker::new(&store);
 
         let pattern = create_test_pattern("1", Utc::now().timestamp() - 86400);
-        let explanation = ranker.generate_explanation(&pattern, 0.85, 1, 42);
+        let explanation = ranker.generate_explanation(&pattern, 0.85, 1, 42, 0.95);
 
         assert!(explanation.contains("abcdef1"));
         assert!(explanation.contains("rust"));
@@ -238,6 +262,7 @@ mod tests {
         assert!(explanation.contains("85")); // Similarity percentage
         assert!(explanation.contains("1 day ago"));
         assert!(explanation.contains("42 times"));
+        assert!(explanation.contains("95.0%")); // Success rate
     }
 
     #[test]
@@ -247,10 +272,13 @@ mod tests {
         let store = VectorStore::open(&db_path).unwrap();
 
         // Unnormalized weights
-        let ranker = RecommendationRanker::with_weights(&store, 2.0, 3.0, 5.0);
+        let ranker = RecommendationRanker::with_weights(&store, 2.0, 3.0, 4.0, 1.0);
 
         // Should sum to 1.0
-        let total = ranker.recency_weight + ranker.usage_weight + ranker.similarity_weight;
+        let total = ranker.recency_weight
+            + ranker.usage_weight
+            + ranker.similarity_weight
+            + ranker.success_rate_weight;
         assert!((total - 1.0).abs() < 0.001);
     }
 }

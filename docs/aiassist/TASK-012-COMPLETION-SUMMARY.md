@@ -21,17 +21,14 @@ Validate that generated projects from the VibesPro template have properly config
 Created `tests/integration/generated-ci-regression.test.ts` with **7 comprehensive test scenarios**:
 
 1. **CI Workflow Alignment**
-
     - ✅ Execute spec-guard workflow steps in dry-run mode
     - ✅ Verify corepack and pnpm detection logic in workflows
 
 2. **Package Manager Configuration**
-
     - ✅ Detect pnpm via packageManager field
     - ✅ Verify lockfile presence for dependency freezing
 
 3. **Workflow Step Optimization**
-
     - ✅ Validate optimized step ordering (checkout first)
     - ✅ Confirm annotations linking failures to guardrail documentation
 
@@ -43,17 +40,14 @@ Created `tests/integration/generated-ci-regression.test.ts` with **7 comprehensi
 **Files Modified:**
 
 1. **`package.json.j2`** (Root Template)
-
     - Added `"packageManager": "pnpm@9.0.0"` field
     - Ensures corepack compatibility for generated projects
 
 2. **`templates/{{project_slug}}/.github/workflows/spec-guard.yml`**
-
     - Named checkout step explicitly: `- name: Checkout code`
     - Improves workflow step parsing and debugging
 
 3. **`templates/{{project_slug}}/package.json.j2`**
-
     - Added packageManager field for nested template consistency
 
 4. **Test Implementation Refinements**
@@ -63,10 +57,10 @@ Created `tests/integration/generated-ci-regression.test.ts` with **7 comprehensi
 
 ### REFACTOR Phase: Code Quality Enhancements
 
--   **Workflow Optimization:** Explicit step naming ensures proper execution order
--   **Test Robustness:** Handles generated project nuances (lockfile updates)
--   **Documentation:** Comprehensive inline comments and test descriptions
--   **Error Handling:** Graceful fallbacks for missing tools (just, pnpm)
+- **Workflow Optimization:** Explicit step naming ensures proper execution order
+- **Test Robustness:** Handles generated project nuances (lockfile updates)
+- **Documentation:** Comprehensive inline comments and test descriptions
+- **Error Handling:** Graceful fallbacks for missing tools (just, pnpm)
 
 ### REGRESSION Phase: System Integrity Validation
 
@@ -101,8 +95,8 @@ Tests:       7 passed, 7 total
 
 **Root Cause:** VibesPro has TWO `package.json.j2` files:
 
--   `/package.json.j2` (Root - used by Copier for generation)
--   `/templates/{{project_slug}}/package.json.j2` (Nested template)
+- `/package.json.j2` (Root - used by Copier for generation)
+- `/templates/{{project_slug}}/package.json.j2` (Nested template)
 
 **Solution:** Updated the root `package.json.j2` which Copier actually uses for project generation.
 
@@ -122,10 +116,10 @@ Tests:       7 passed, 7 total
 
 **Success:** Used Context7 Copier documentation to understand:
 
--   Template structure best practices
--   `_subdirectory` configuration options
--   File suffix handling (`.j2`, `.jinja`)
--   Dynamic templating patterns
+- Template structure best practices
+- `_subdirectory` configuration options
+- File suffix handling (`.j2`, `.jinja`)
+- Dynamic templating patterns
 
 **Impact:** Quickly resolved template structure confusion by referencing authoritative Copier docs.
 
@@ -135,24 +129,24 @@ Tests:       7 passed, 7 total
 
 ### Test Coverage
 
--   **Integration Tests:** 7/7 passing
--   **CI Validation:** Full workflow execution validated
--   **Package Manager:** Corepack compatibility confirmed
--   **Traceability:** Idempotent matrix regeneration verified
+- **Integration Tests:** 7/7 passing
+- **CI Validation:** Full workflow execution validated
+- **Package Manager:** Corepack compatibility confirmed
+- **Traceability:** Idempotent matrix regeneration verified
 
 ### Risk Mitigation
 
--   ✅ Generated projects have correct package manager configuration
--   ✅ CI workflows execute successfully end-to-end
--   ✅ Workflow step ordering optimized for efficiency
--   ✅ Documentation annotations guide developers during failures
+- ✅ Generated projects have correct package manager configuration
+- ✅ CI workflows execute successfully end-to-end
+- ✅ Workflow step ordering optimized for efficiency
+- ✅ Documentation annotations guide developers during failures
 
 ### Developer Experience
 
--   Clear error messages when CI fails
--   Proper package manager detection
--   Consistent workflow structure across generated projects
--   Self-documenting CI configuration
+- Clear error messages when CI fails
+- Proper package manager detection
+- Consistent workflow structure across generated projects
+- Self-documenting CI configuration
 
 ---
 

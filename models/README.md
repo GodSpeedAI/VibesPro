@@ -6,10 +6,10 @@ This directory stores large language model files used by the Temporal AI Guidanc
 
 **embedding-gemma-300M-Q4_K_M.gguf** (~180MB)
 
--   Source: https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF
--   Direct download: https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embedding-gemma-300M-Q4_K_M.gguf
--   Purpose: Generate 768-dimensional embeddings for semantic pattern search
--   Quantization: Q4_K_M (4-bit quantized, medium quality)
+- Source: https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF
+- Direct download: https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embedding-gemma-300M-Q4_K_M.gguf
+- Purpose: Generate 768-dimensional embeddings for semantic pattern search
+- Quantization: Q4_K_M (4-bit quantized, medium quality)
 
 ## Download Instructions
 
@@ -39,9 +39,9 @@ just download-embedding-model
 
 Each developer must download the model locally. The model is:
 
--   Not committed to the repository
--   Downloaded once per machine
--   Shared across all projects in this workspace
+- Not committed to the repository
+- Downloaded once per machine
+- Shared across all projects in this workspace
 
 ## Verification
 

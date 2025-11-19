@@ -6,10 +6,10 @@
 
 **🚨 IMPORTANT**: This document is marked as Draft and contains incomplete sections. Do not execute as an implementation plan until:
 
--   All sections are completed
--   "✅ Implemented" marks are removed
--   Validation procedures and rollback strategy are added
--   Cycle C is fully detailed
+- All sections are completed
+- "✅ Implemented" marks are removed
+- Validation procedures and rollback strategy are added
+- Cycle C is fully detailed
 
 ---
 
@@ -27,19 +27,19 @@ Junior AI coding agents (A, B, C) working in parallel within the VibesPro templa
 
 **Note**: These are validation requirements that must be satisfied before execution. Each item should be verified and documented as complete before proceeding.
 
--   [ ] Workspace trust enabled in VS Code — **Validation**: `just doctor` returns success
--   [ ] Environment setup complete: `just setup && just doctor` — **Validation**: All tool versions match requirements
--   [ ] All dependencies installed (Node, Python, Rust via mise/Devbox) — **Validation**: `node --version`, `python --version`, `rustc --version` return expected versions
--   [ ] Access to GitHub repository with write permissions — **Validation**: Test push to feature branch succeeds
--   [ ] MCP servers configured (GitHub, Context7, Exa, Ref, Vibe Check, Memory) — **Validation**: Each server responds to ping/query
+- [ ] Workspace trust enabled in VS Code — **Validation**: `just doctor` returns success
+- [ ] Environment setup complete: `just setup && just doctor` — **Validation**: All tool versions match requirements
+- [ ] All dependencies installed (Node, Python, Rust via mise/Devbox) — **Validation**: `node --version`, `python --version`, `rustc --version` return expected versions
+- [ ] Access to GitHub repository with write permissions — **Validation**: Test push to feature branch succeeds
+- [ ] MCP servers configured (GitHub, Context7, Exa, Ref, Vibe Check, Memory) — **Validation**: Each server responds to ping/query
 
 ### Branching & Coordination Rules
 
 **Branch Naming Convention:**
 
--   Cycle A: `feature/logfire-cycle2a-foundations-agent-a`
--   Cycle B: `feature/logfire-cycle2a-testing-agent-b`
--   Cycle C: `feature/logfire-cycle2a-docs-agent-c`
+- Cycle A: `feature/logfire-cycle2a-foundations-agent-a`
+- Cycle B: `feature/logfire-cycle2a-testing-agent-b`
+- Cycle C: `feature/logfire-cycle2a-docs-agent-c`
 
 **Coordination Matrix:**
 
@@ -63,17 +63,17 @@ Junior AI coding agents (A, B, C) working in parallel within the VibesPro templa
 
 **CI/CD Workflows:**
 
--   **Primary**: `.github/workflows/ai-validate.yml` (lint, typecheck, test)
--   **Secondary**: `.github/workflows/spec-guard.yml` (spec validation)
--   **Observability**: `.github/workflows/observability.yml` (logging tests)
+- **Primary**: `.github/workflows/ai-validate.yml` (lint, typecheck, test)
+- **Secondary**: `.github/workflows/spec-guard.yml` (spec validation)
+- **Observability**: `.github/workflows/observability.yml` (logging tests)
 
 **Success Criteria per Cycle:**
 
--   All tests passing (`just test`)
--   Lint clean (`just ai-validate`)
--   Spec traceability verified (`just spec-guard`)
--   Documentation updated and validated (`just docs-lint`)
--   PR approved and CI green
+- All tests passing (`just test`)
+- Lint clean (`just ai-validate`)
+- Spec traceability verified (`just spec-guard`)
+- Documentation updated and validated (`just docs-lint`)
+- PR approved and CI green
 
 ---
 
@@ -83,37 +83,37 @@ Junior AI coding agents (A, B, C) working in parallel within the VibesPro templa
 
 VibesPro is a **Copier template repository** that generates Nx monorepos. Key characteristics:
 
--   **Template Location**: `templates/{{project_slug}}/` contains Jinja2 templates
--   **This Repo**: Contains template source code and tooling
--   **Generated Projects**: Separate directories created by users via Copier
--   **Architecture**: Hexagonal (domain ← application ← infrastructure)
--   **Build System**: Nx workspace with pnpm
--   **Task Orchestration**: Just (804 lines of recipes in `justfile`)
--   **Environment**: Devbox + mise + SOPS + Just layered approach
+- **Template Location**: `templates/{{project_slug}}/` contains Jinja2 templates
+- **This Repo**: Contains template source code and tooling
+- **Generated Projects**: Separate directories created by users via Copier
+- **Architecture**: Hexagonal (domain ← application ← infrastructure)
+- **Build System**: Nx workspace with pnpm
+- **Task Orchestration**: Just (804 lines of recipes in `justfile`)
+- **Environment**: Devbox + mise + SOPS + Just layered approach
 
 ### 2.2 Current State of Logfire Implementation
 
 **What Exists (Cycle 1 - Complete):**
 
--   ✅ `libs/python/vibepro_logging.py` - Core Logfire helpers (131 lines)
-    -   `configure_logger()` - Working
-    -   `bootstrap_logfire(app)` - **Implemented but marked as Cycle 2A incomplete in docs**
-    -   `default_metadata()` - Working
-    -   `get_logger()` - Working
-    -   `instrument_integrations()` - Working
-    -   `LogCategory` class - Working
--   ✅ `tools/logging/test_logfire.py` - Basic smoke test (76 lines)
--   ✅ `tests/python/test_logfire_bootstrap.py` - FastAPI instrumentation tests
--   ✅ Environment variable documentation
--   ✅ CI integration via `.github/workflows/ai-validate.yml`
+- ✅ `libs/python/vibepro_logging.py` - Core Logfire helpers (131 lines)
+    - `configure_logger()` - Working
+    - `bootstrap_logfire(app)` - **Implemented but marked as Cycle 2A incomplete in docs**
+    - `default_metadata()` - Working
+    - `get_logger()` - Working
+    - `instrument_integrations()` - Working
+    - `LogCategory` class - Working
+- ✅ `tools/logging/test_logfire.py` - Basic smoke test (76 lines)
+- ✅ `tests/python/test_logfire_bootstrap.py` - FastAPI instrumentation tests
+- ✅ Environment variable documentation
+- ✅ CI integration via `.github/workflows/ai-validate.yml`
 
 **What's Missing (Cycle 2A - This Plan):**
 
--   ⚠️ TODO markers in template documentation
--   ⚠️ Incomplete references in main docs
--   ⚠️ Checklist items in `docs/dev_tdd.md` not marked complete
--   ⚠️ Enhanced smoke tests for edge cases
--   ⚠️ Complete validation suite integration
+- ⚠️ TODO markers in template documentation
+- ⚠️ Incomplete references in main docs
+- ⚠️ Checklist items in `docs/dev_tdd.md` not marked complete
+- ⚠️ Enhanced smoke tests for edge cases
+- ⚠️ Complete validation suite integration
 
 ### 2.3 Files to Modify or Create
 
@@ -153,46 +153,46 @@ VibesPro is a **Copier template repository** that generates Nx monorepos. Key ch
 
 **Internal Dependencies:**
 
--   `libs/python/vibepro_logging.py` ← FastAPI apps (via `bootstrap_logfire`)
--   Vector configuration (`ops/vector/`) ← Logfire OTLP output
--   OpenObserve sink ← Vector output
--   Just recipes (`justfile:709-750`) ← Test orchestration
+- `libs/python/vibepro_logging.py` ← FastAPI apps (via `bootstrap_logfire`)
+- Vector configuration (`ops/vector/`) ← Logfire OTLP output
+- OpenObserve sink ← Vector output
+- Just recipes (`justfile:709-750`) ← Test orchestration
 
 **External Dependencies:**
 
--   `logfire` Python package (already in `pyproject.toml`)
--   `fastapi` (for instrumentation)
--   `opentelemetry-sdk` (for test verification)
--   `pytest`, `pytest-asyncio` (for testing)
+- `logfire` Python package (already in `pyproject.toml`)
+- `fastapi` (for instrumentation)
+- `opentelemetry-sdk` (for test verification)
+- `pytest`, `pytest-asyncio` (for testing)
 
 **Affected Components:**
 
--   Generated projects using `bootstrap_logfire()` in `apps/*/src/main.py`
--   Template scaffolding in `hooks/post_gen.py:478` (creates FastAPI services)
--   Service generator tests in `tests/generators/service.logfire.test.ts`
+- Generated projects using `bootstrap_logfire()` in `apps/*/src/main.py`
+- Template scaffolding in `hooks/post_gen.py:478` (creates FastAPI services)
+- Service generator tests in `tests/generators/service.logfire.test.ts`
 
 ### 2.5 Key Guardrails
 
 **Build & Validation:**
 
--   `just ai-validate` - Lint, typecheck, optional tests
--   `just test` - All test suites (Node, Python, Shell, Integration)
--   `just spec-guard` - Full quality gate (specs, prompts, docs, tests)
--   `just test-logs` - Logging-specific validation suite
--   `just docs-lint` - Documentation validation and link checking
+- `just ai-validate` - Lint, typecheck, optional tests
+- `just test` - All test suites (Node, Python, Shell, Integration)
+- `just spec-guard` - Full quality gate (specs, prompts, docs, tests)
+- `just test-logs` - Logging-specific validation suite
+- `just docs-lint` - Documentation validation and link checking
 
 **CI Workflows:**
 
--   `.github/workflows/ai-validate.yml` - Primary CI (runs on PR)
--   `.github/workflows/spec-guard.yml` - Spec traceability enforcement
--   `.github/workflows/observability.yml` - Observability stack validation
+- `.github/workflows/ai-validate.yml` - Primary CI (runs on PR)
+- `.github/workflows/spec-guard.yml` - Spec traceability enforcement
+- `.github/workflows/observability.yml` - Observability stack validation
 
 **Specification Constraints:**
 
--   All changes must reference spec IDs in commits
--   Hexagonal architecture must be preserved
--   No breaking changes to public APIs
--   Security guidelines (precedence 10) override all others
+- All changes must reference spec IDs in commits
+- Hexagonal architecture must be preserved
+- No breaking changes to public APIs
+- Security guidelines (precedence 10) override all others
 
 ---
 
@@ -263,26 +263,26 @@ This work directly implements and completes the following existing specs:
 
 **DEV-PRD-018 & DEV-SDS-018 (Primary):**
 
--   ✅ `bootstrap_logfire(app)` instruments FastAPI with OTLP spans
--   ✅ `configure_logger(service)` returns properly configured Logfire instance
--   ✅ Metadata includes `service`, `environment`, `application_version`
--   ✅ Integration tests validate FastAPI, SQLAlchemy, httpx, requests
--   ✅ Documentation accurately reflects implementation (no TODO markers)
--   ✅ Generated projects use `bootstrap_logfire()` correctly
+- ✅ `bootstrap_logfire(app)` instruments FastAPI with OTLP spans
+- ✅ `configure_logger(service)` returns properly configured Logfire instance
+- ✅ Metadata includes `service`, `environment`, `application_version`
+- ✅ Integration tests validate FastAPI, SQLAlchemy, httpx, requests
+- ✅ Documentation accurately reflects implementation (no TODO markers)
+- ✅ Generated projects use `bootstrap_logfire()` correctly
 
 **DEV-PRD-021 (Documentation Sync):**
 
--   ✅ Template docs reflect complete Cycle 2A implementation
--   ✅ No references to "future work" or "Cycle 2A pending"
--   ✅ Examples and walkthroughs are accurate and tested
--   ✅ `just docs-lint` passes with no warnings
+- ✅ Template docs reflect complete Cycle 2A implementation
+- ✅ No references to "future work" or "Cycle 2A pending"
+- ✅ Examples and walkthroughs are accurate and tested
+- ✅ `just docs-lint` passes with no warnings
 
 **DEV-PRD-023 (Regression Testing):**
 
--   ✅ `just test-logs` executes full validation suite
--   ✅ Edge cases covered (missing env vars, invalid configs, no token)
--   ✅ CI workflows enforce logging tests on every PR
--   ✅ Vector pipeline validation (`test_vector_logfire.sh`) passes
+- ✅ `just test-logs` executes full validation suite
+- ✅ Edge cases covered (missing env vars, invalid configs, no token)
+- ✅ CI workflows enforce logging tests on every PR
+- ✅ Vector pipeline validation (`test_vector_logfire.sh`) passes
 
 ---
 
@@ -300,7 +300,7 @@ This work directly implements and completes the following existing specs:
 
 #### A.1 Preparation
 
--   [ ] **GitHub MCP**: Create and sync branch
+- [ ] **GitHub MCP**: Create and sync branch
 
     ```bash
     # Via MCP or manually:
@@ -309,7 +309,7 @@ This work directly implements and completes the following existing specs:
     git checkout -b feature/logfire-cycle2a-foundations-agent-a
     ```
 
--   [ ] **Memory MCP**: Record initial assumptions
+- [ ] **Memory MCP**: Record initial assumptions
 
     ```
     Session: logfire-cycle2a-foundations
@@ -319,7 +319,7 @@ This work directly implements and completes the following existing specs:
     - Documentation claims implementation incomplete, but code appears complete
     ```
 
--   [ ] **Baseline validation** (expect initial state)
+- [ ] **Baseline validation** (expect initial state)
 
     ```bash
     just test-logs-logfire
@@ -329,7 +329,7 @@ This work directly implements and completes the following existing specs:
     # Expected: No import errors
     ```
 
--   [ ] **Context7 MCP**: Fetch Logfire/OTLP best practices
+- [ ] **Context7 MCP**: Fetch Logfire/OTLP best practices
 
     ```
     Query: "Logfire Python FastAPI instrumentation best practices"
@@ -342,7 +342,7 @@ This work directly implements and completes the following existing specs:
 
 **Goal**: Add failing tests validating foundational edge cases and configuration scenarios.
 
--   [ ] **Test 1**: Missing `LOGFIRE_TOKEN` environment variable
+- [ ] **Test 1**: Missing `LOGFIRE_TOKEN` environment variable
 
     **File**: `tools/logging/test_logfire.py`
     **Why**: Verify graceful degradation when no token present
@@ -364,7 +364,7 @@ This work directly implements and completes the following existing specs:
 
     **Expected Result**: Test fails (function may not handle missing token gracefully)
 
--   [ ] **Test 2**: Invalid service name (empty string, None)
+- [ ] **Test 2**: Invalid service name (empty string, None)
 
     **File**: `tools/logging/test_logfire.py`
     **Why**: Validate input sanitization
@@ -383,7 +383,7 @@ This work directly implements and completes the following existing specs:
 
     **Expected Result**: Test fails (may not have explicit validation)
 
--   [ ] **Test 3**: Environment variable overrides
+- [ ] **Test 3**: Environment variable overrides
 
     **File**: `tools/logging/test_logfire.py`
     **Why**: Ensure env vars take precedence
@@ -404,7 +404,7 @@ This work directly implements and completes the following existing specs:
 
     **Expected Result**: Test fails or clarifies precedence behavior
 
--   [ ] **Test 4**: Metadata completeness
+- [ ] **Test 4**: Metadata completeness
 
     **File**: `tools/logging/test_logfire.py`
     **Why**: Validate all required OTEL fields present
@@ -422,7 +422,7 @@ This work directly implements and completes the following existing specs:
 
     **Expected Result**: Test passes (validates existing implementation)
 
--   [ ] **Run RED phase tests**
+- [ ] **Run RED phase tests**
 
     ```bash
     uv run python tools/logging/test_logfire.py
@@ -435,7 +435,7 @@ This work directly implements and completes the following existing specs:
 
 **Goal**: Implement minimal logic to make all RED tests pass.
 
--   [ ] **Fix 1**: Handle missing `LOGFIRE_TOKEN` gracefully
+- [ ] **Fix 1**: Handle missing `LOGFIRE_TOKEN` gracefully
 
     **File**: `libs/python/vibepro_logging.py`
     **Change**: Ensure `send_to_logfire='if-token-present'` is default
@@ -453,7 +453,7 @@ This work directly implements and completes the following existing specs:
     **Why**: Graceful degradation when no token present
     **Spec**: DEV-PRD-018
 
--   [ ] **Fix 2**: Validate and sanitize service names
+- [ ] **Fix 2**: Validate and sanitize service names
 
     **File**: `libs/python/vibepro_logging.py`
     **Change**: Add validation in `_resolve_service_name()`
@@ -469,7 +469,7 @@ This work directly implements and completes the following existing specs:
     **Why**: Prevent invalid service names
     **Spec**: DEV-PRD-020
 
--   [ ] **Fix 3**: Document precedence rules for env vars
+- [ ] **Fix 3**: Document precedence rules for env vars
 
     **File**: `libs/python/vibepro_logging.py` (docstring)
     **Change**: Clarify that function argument takes precedence over env var
@@ -493,12 +493,12 @@ This work directly implements and completes the following existing specs:
     **Why**: Clear API contract
     **Spec**: DEV-SDS-018
 
--   [ ] **Verify 4**: Metadata completeness (should already pass)
+- [ ] **Verify 4**: Metadata completeness (should already pass)
 
     **Action**: No changes needed if test passes
     **File**: `libs/python/vibepro_logging.py`
 
--   [ ] **Run GREEN phase tests**
+- [ ] **Run GREEN phase tests**
 
     ```bash
     uv run python tools/logging/test_logfire.py
@@ -508,7 +508,7 @@ This work directly implements and completes the following existing specs:
     # Expected: All existing FastAPI instrumentation tests still pass
     ```
 
--   [ ] **Enhanced smoke test script**
+- [ ] **Enhanced smoke test script**
 
     **File**: `tools/logging/test_logfire.py`
     **Add**: More comprehensive validation in `main()`
@@ -547,7 +547,7 @@ This work directly implements and completes the following existing specs:
 
 #### A.4 Refactor & Regression
 
--   [ ] **Code quality review**
+- [ ] **Code quality review**
 
     ```bash
     # Run formatters
@@ -559,7 +559,7 @@ This work directly implements and completes the following existing specs:
     uv run mypy libs/python/vibepro_logging.py --strict
     ```
 
--   [ ] **Regression validation**
+- [ ] **Regression validation**
 
     ```bash
     # Full logging test suite
@@ -575,7 +575,7 @@ This work directly implements and completes the following existing specs:
     # Expected: Lint, typecheck, tests all pass
     ```
 
--   [ ] **Vibe Check MCP**: Validate assumptions
+- [ ] **Vibe Check MCP**: Validate assumptions
 
     ```
     Goal: Complete Logfire Cycle 2A foundations
@@ -586,7 +586,7 @@ This work directly implements and completes the following existing specs:
       - Is the precedence of service name (arg > env > default) clear enough?
     ```
 
--   [ ] **Memory MCP**: Record decisions
+- [ ] **Memory MCP**: Record decisions
 
     ```
     Session: logfire-cycle2a-foundations
@@ -600,7 +600,7 @@ This work directly implements and completes the following existing specs:
       - No regressions in smoke tests or integration tests
     ```
 
--   [ ] **Commit changes**
+- [ ] **Commit changes**
 
     ```bash
     git add libs/python/vibepro_logging.py
@@ -616,7 +616,7 @@ This work directly implements and completes the following existing specs:
     Satisfies: DEV-PRD-018, DEV-SDS-018, DEV-PRD-020, DEV-SDS-022"
     ```
 
--   [ ] **GitHub MCP**: Push branch and open PR
+- [ ] **GitHub MCP**: Push branch and open PR
 
     ```
     Title: "feat(logging): Logfire Cycle 2A - Core Verification & Edge Cases"
@@ -656,19 +656,19 @@ This work directly implements and completes the following existing specs:
 
 **Deliverables:**
 
--   ✅ Enhanced `tools/logging/test_logfire.py` (76 → ~120 lines)
--   ✅ Validated `libs/python/vibepro_logging.py` (131 lines, edge cases confirmed)
--   ✅ Passing tests: all edge cases covered
--   ✅ Commit with spec IDs
--   ✅ PR opened with "A-GREEN" label
+- ✅ Enhanced `tools/logging/test_logfire.py` (76 → ~120 lines)
+- ✅ Validated `libs/python/vibepro_logging.py` (131 lines, edge cases confirmed)
+- ✅ Passing tests: all edge cases covered
+- ✅ Commit with spec IDs
+- ✅ PR opened with "A-GREEN" label
 
 **Evidence:**
 
--   CI passing (`.github/workflows/ai-validate.yml`)
--   `just test-logs` all green
--   No lint/typecheck errors
--   Memory MCP session saved
--   Vibe Check findings documented
+- CI passing (`.github/workflows/ai-validate.yml`)
+- `just test-logs` all green
+- No lint/typecheck errors
+- Memory MCP session saved
+- Vibe Check findings documented
 
 ---
 
@@ -678,21 +678,21 @@ This work directly implements and completes the following existing specs:
 
 **Conditions Met:**
 
--   All A.2 (RED) tests written
--   All A.3 (GREEN) tests passing
--   Regression suite clean
--   PR opened and CI green
+- All A.2 (RED) tests written
+- All A.3 (GREEN) tests passing
+- Regression suite clean
+- PR opened and CI green
 
 **Unblocks:**
 
--   ✅ **Cycle B** (Testing & Validation) - Agent B can now start
--   ✅ **Cycle C** (Documentation & Templates) - Agent C can now start
+- ✅ **Cycle B** (Testing & Validation) - Agent B can now start
+- ✅ **Cycle C** (Documentation & Templates) - Agent C can now start
 
 **Coordination:**
 
--   Agents B and C must sync from `dev` after A is merged
--   Agents B and C can work in parallel once A-GREEN is confirmed
--   Final integration happens after both B and C are complete
+- Agents B and C must sync from `dev` after A is merged
+- Agents B and C can work in parallel once A-GREEN is confirmed
+- Final integration happens after both B and C are complete
 
 ---
 
@@ -708,7 +708,7 @@ This work directly implements and completes the following existing specs:
 
 #### B.1 Preparation
 
--   [ ] **Wait for A-GREEN gate**
+- [ ] **Wait for A-GREEN gate**
 
     ```bash
     # Confirm Cycle A is merged to dev
@@ -717,13 +717,13 @@ This work directly implements and completes the following existing specs:
     # Expected: Contains Cycle A changes
     ```
 
--   [ ] **GitHub MCP**: Create B branch from latest dev
+- [ ] **GitHub MCP**: Create B branch from latest dev
 
     ```bash
     git checkout -b feature/logfire-cycle2a-testing-agent-b
     ```
 
--   [ ] **Memory MCP**: Review Cycle A findings
+- [ ] **Memory MCP**: Review Cycle A findings
 
     ```
     Session: logfire-cycle2a-testing
@@ -738,14 +738,14 @@ This work directly implements and completes the following existing specs:
     - Regression suite completeness
     ```
 
--   [ ] **Context7 MCP**: Retrieve integration testing patterns
+- [ ] **Context7 MCP**: Retrieve integration testing patterns
 
     ```
     Query: "Logfire SQLAlchemy httpx requests instrumentation testing Python"
     Focus: Best practices for testing instrumented integrations, mock strategies
     ```
 
--   [ ] **Exa MCP**: External best practices
+- [ ] **Exa MCP**: External best practices
 
     ```
     Query: "Python OpenTelemetry testing best practices SQLAlchemy httpx"
@@ -758,7 +758,7 @@ This work directly implements and completes the following existing specs:
 
 **Goal**: Add failing tests covering complex integrations and Vector pipeline validation.
 
--   [ ] **Test 1**: SQLAlchemy instrumentation
+- [ ] **Test 1**: SQLAlchemy instrumentation
 
     **File**: `tests/python/test_logfire_bootstrap.py`
     **Why**: Validate database query tracing
@@ -795,7 +795,7 @@ This work directly implements and completes the following existing specs:
 
     **Expected Result**: Test fails (SQLAlchemy instrumentation not explicitly tested yet)
 
--   [ ] **Test 2**: httpx client instrumentation
+- [ ] **Test 2**: httpx client instrumentation
 
     **File**: `tests/python/test_logfire_bootstrap.py`
     **Why**: Validate outbound HTTP request tracing
@@ -829,7 +829,7 @@ This work directly implements and completes the following existing specs:
 
     **Expected Result**: Test fails (httpx instrumentation not explicitly tested yet)
 
--   [ ] **Test 3**: requests library instrumentation
+- [ ] **Test 3**: requests library instrumentation
 
     **File**: `tests/python/test_logfire_bootstrap.py`
     **Why**: Validate legacy HTTP client tracing
@@ -861,7 +861,7 @@ This work directly implements and completes the following existing specs:
 
     **Expected Result**: Test fails (requests instrumentation not explicitly tested yet)
 
--   [ ] **Test 4**: Vector pipeline OTLP metadata capture
+- [ ] **Test 4**: Vector pipeline OTLP metadata capture
 
     **File**: `tests/ops/test_vector_logfire.sh` (verify existing)
     **Why**: Ensure Vector captures Logfire OTLP attributes
@@ -880,7 +880,7 @@ This work directly implements and completes the following existing specs:
 
     **Expected Result**: Verify test exists; may need enhancement
 
--   [ ] **Run RED phase tests**
+- [ ] **Run RED phase tests**
 
     ```bash
     pytest tests/python/test_logfire_bootstrap.py -v
@@ -896,7 +896,7 @@ This work directly implements and completes the following existing specs:
 
 **Goal**: Implement integration test setups to make all RED tests pass.
 
--   [ ] **Fix 1**: Add SQLAlchemy test setup
+- [ ] **Fix 1**: Add SQLAlchemy test setup
 
     **File**: `tests/python/test_logfire_bootstrap.py`
     **Change**: Ensure SQLAlchemy instrumentation test passes
@@ -910,7 +910,7 @@ This work directly implements and completes the following existing specs:
     **Why**: Prove SQLAlchemy integration works
     **Spec**: DEV-PRD-018
 
--   [ ] **Fix 2**: Add httpx test setup
+- [ ] **Fix 2**: Add httpx test setup
 
     **File**: `tests/python/test_logfire_bootstrap.py`
     **Change**: Ensure httpx instrumentation test passes
@@ -924,7 +924,7 @@ This work directly implements and completes the following existing specs:
     **Why**: Prove httpx integration works
     **Spec**: DEV-PRD-018
 
--   [ ] **Fix 3**: Add requests test setup
+- [ ] **Fix 3**: Add requests test setup
 
     **File**: `tests/python/test_logfire_bootstrap.py`
     **Change**: Ensure requests library instrumentation test passes
@@ -937,7 +937,7 @@ This work directly implements and completes the following existing specs:
     **Why**: Prove requests integration works
     **Spec**: DEV-PRD-018
 
--   [ ] **Fix 4**: Enhance Vector pipeline test (if needed)
+- [ ] **Fix 4**: Enhance Vector pipeline test (if needed)
 
     **File**: `tests/ops/test_vector_logfire.sh`
     **Change**: Add assertions for Logfire-specific OTLP fields
@@ -951,7 +951,7 @@ This work directly implements and completes the following existing specs:
     **Why**: Ensure Vector pipeline properly handles Logfire metadata
     **Spec**: DEV-SDS-005, DEV-PRD-018
 
--   [ ] **Run GREEN phase tests**
+- [ ] **Run GREEN phase tests**
 
     ```bash
     pytest tests/python/test_logfire_bootstrap.py -v
@@ -968,7 +968,7 @@ This work directly implements and completes the following existing specs:
 
 #### B.4 Refactor & Regression
 
--   [ ] **Code quality review**
+- [ ] **Code quality review**
 
     ```bash
     uv run ruff format tests/python/test_logfire_bootstrap.py
@@ -976,7 +976,7 @@ This work directly implements and completes the following existing specs:
     uv run mypy tests/python/test_logfire_bootstrap.py --strict
     ```
 
--   [ ] **Regression validation**
+- [ ] **Regression validation**
 
     ```bash
     # Full test suite
@@ -995,7 +995,7 @@ This work directly implements and completes the following existing specs:
     # Expected: Clean
     ```
 
--   [ ] **Exa MCP**: Validate against external best practices
+- [ ] **Exa MCP**: Validate against external best practices
 
     ```
     Query: "OpenTelemetry Python testing span validation best practices"
@@ -1003,7 +1003,7 @@ This work directly implements and completes the following existing specs:
     Citations: Add references to test docstrings
     ```
 
--   [ ] **Memory MCP**: Record test outcomes
+- [ ] **Memory MCP**: Record test outcomes
 
     ```
     Session: logfire-cycle2a-testing
@@ -1018,7 +1018,7 @@ This work directly implements and completes the following existing specs:
       - Span processors allow inspection without external services
     ```
 
--   [ ] **Commit changes**
+- [ ] **Commit changes**
 
     ```bash
     git add tests/python/test_logfire_bootstrap.py
@@ -1034,7 +1034,7 @@ This work directly implements and completes the following existing specs:
     Satisfies: DEV-PRD-018, DEV-SDS-018, DEV-PRD-023, DEV-SDS-005"
     ```
 
--   [ ] **GitHub MCP**: Push branch and open PR
+- [ ] **GitHub MCP**: Push branch and open PR
 
     ```
     Title: "test(logging): Logfire Cycle 2A - Comprehensive Integration Tests"
@@ -1074,19 +1074,19 @@ This work directly implements and completes the following existing specs:
 
 **Deliverables:**
 
--   ✅ Enhanced `tests/python/test_logfire_bootstrap.py` (+80 lines)
--   ✅ Validated `tests/ops/test_vector_logfire.sh` (±10 lines)
--   ✅ Comprehensive integration test coverage
--   ✅ External best practice citations
--   ✅ Commit with spec IDs
--   ✅ PR opened with "B-GREEN" label
+- ✅ Enhanced `tests/python/test_logfire_bootstrap.py` (+80 lines)
+- ✅ Validated `tests/ops/test_vector_logfire.sh` (±10 lines)
+- ✅ Comprehensive integration test coverage
+- ✅ External best practice citations
+- ✅ Commit with spec IDs
+- ✅ PR opened with "B-GREEN" label
 
 **Evidence:**
 
--   CI passing for all integration tests
--   `just test-logs` all green
--   External references documented
--   Memory MCP session saved
+- CI passing for all integration tests
+- `just test-logs` all green
+- External references documented
+- Memory MCP session saved
 
 ---
 
@@ -1096,15 +1096,15 @@ This work directly implements and completes the following existing specs:
 
 **Conditions Met:**
 
--   All B.2 (RED) integration tests written
--   All B.3 (GREEN) tests passing
--   Regression suite clean
--   PR opened and CI green
+- All B.2 (RED) integration tests written
+- All B.3 (GREEN) tests passing
+- Regression suite clean
+- PR opened and CI green
 
 **Coordinates With:**
 
--   ✅ **Cycle C** (Documentation) - Running in parallel
--   Waits for C-GREEN before final integration
+- ✅ **Cycle C** (Documentation) - Running in parallel
+- Waits for C-GREEN before final integration
 
 ---
 
@@ -1117,17 +1117,14 @@ _Pass 5 will detail MCP integration points_
 **Required Commands and Validation Steps**:
 
 1. `just test-logs` — **Expected Outcome**: All logging tests pass
-
     - **Timing**: Must complete successfully before any merge
     - **Failure Action**: Abort merge, investigate regression
 
 2. `uv run pytest tests/python/` — **Expected Outcome**: All Python tests pass with no failures
-
     - **Timing**: Required for every PR
     - **Failure Action**: High-priority issue, rollback to previous working state
 
 3. `just docs-lint` — **Expected Outcome**: Documentation validation passes, no broken links
-
     - **Timing**: Must complete before documentation merge
     - **Failure Action**: Fix documentation issues, re-run validation
 
@@ -1155,12 +1152,12 @@ _Pass 8 will define exit criteria_
 
 ## Next Steps for Plan Development
 
--   [ ] **Pass 2**: Complete repository analysis
--   [ ] **Pass 3**: Complete specification mapping
--   [ ] **Pass 4**: Detail Cycle A (Foundations)
--   [ ] **Pass 5**: Detail Cycle B (Testing)
--   [ ] **Pass 6**: Detail Cycle C (Documentation)
--   [ ] **Pass 7**: Complete MCP tooling strategy
--   [ ] **Pass 8**: Complete regression safeguards
--   [ ] **Pass 9**: Complete risk & rollback
--   [ ] **Pass 10**: Finalize deliverables & sign-off
+- [ ] **Pass 2**: Complete repository analysis
+- [ ] **Pass 3**: Complete specification mapping
+- [ ] **Pass 4**: Detail Cycle A (Foundations)
+- [ ] **Pass 5**: Detail Cycle B (Testing)
+- [ ] **Pass 6**: Detail Cycle C (Documentation)
+- [ ] **Pass 7**: Complete MCP tooling strategy
+- [ ] **Pass 8**: Complete regression safeguards
+- [ ] **Pass 9**: Complete risk & rollback
+- [ ] **Pass 10**: Finalize deliverables & sign-off

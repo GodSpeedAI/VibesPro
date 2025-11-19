@@ -24,8 +24,8 @@ sudo apt install -y age sops
 
 Other platforms can download prebuilt binaries from:
 
--   age – <https://github.com/FiloSottile/age/releases>
--   sops – <https://github.com/mozilla/sops/releases>
+- age – <https://github.com/FiloSottile/age/releases>
+- sops – <https://github.com/mozilla/sops/releases>
 
 ---
 
@@ -49,8 +49,8 @@ grep '^# public key:' ~/.config/sops/key.txt
 
 Important safety notes:
 
--   `key.txt` holds your private key—never commit or share the file.
--   Keep a secure backup (password manager, encrypted disk), because losing this key means you cannot decrypt any secrets that rely on it.
+- `key.txt` holds your private key—never commit or share the file.
+- Keep a secure backup (password manager, encrypted disk), because losing this key means you cannot decrypt any secrets that rely on it.
 
 ---
 
@@ -161,9 +161,9 @@ When rotating, it’s a good idea to leave both the old and new recipients in `.
 
 ## 8. Checklist before committing
 
--   [ ] `.sops.yaml` contains the correct recipient list.
--   [ ] `.secrets.env.sops` decrypts with your new key.
--   [ ] No private keys or plaintext `.env` files were added to Git history.
--   [ ] GitHub Actions secret `SOPS_AGE_KEY` is set to the current private key.
+- [ ] `.sops.yaml` contains the correct recipient list.
+- [ ] `.secrets.env.sops` decrypts with your new key.
+- [ ] No private keys or plaintext `.env` files were added to Git history.
+- [ ] GitHub Actions secret `SOPS_AGE_KEY` is set to the current private key.
 
 Keep this document handy whenever you onboard a new teammate or rotate keys; the steps are always the same. Following them ensures everyone can decrypt shared secrets while keeping the private portion of the key safe. If you prefer a cloud KMS approach instead of `age`, reach out—there are ready-made templates for AWS, GCP, and Azure as well.

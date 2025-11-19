@@ -29,14 +29,14 @@ E: Unable to locate package sops
 
 **Solution**:
 
--   Install SOPS v3.9.3 from GitHub releases instead of apt
--   Platform-specific installation (GitHub releases for Ubuntu, brew for macOS)
--   Added version verification step
+- Install SOPS v3.9.3 from GitHub releases instead of apt
+- Platform-specific installation (GitHub releases for Ubuntu, brew for macOS)
+- Added version verification step
 
 **Files Modified**:
 
--   `.github/workflows/env-check.yml`
--   `.github/workflows/build-matrix.yml`
+- `.github/workflows/env-check.yml`
+- `.github/workflows/build-matrix.yml`
 
 ---
 
@@ -49,15 +49,15 @@ E: Unable to locate package sops
 
 **Solution**:
 
--   Made secret handling consistent across workflows
--   Added `continue-on-error: true` for optional secrets
--   Added output flag to track if secrets were loaded
--   Improved error messaging
+- Made secret handling consistent across workflows
+- Added `continue-on-error: true` for optional secrets
+- Added output flag to track if secrets were loaded
+- Improved error messaging
 
 **Files Modified**:
 
--   `.github/workflows/env-check.yml`
--   `.github/workflows/build-matrix.yml`
+- `.github/workflows/env-check.yml`
+- `.github/workflows/build-matrix.yml`
 
 ---
 
@@ -74,13 +74,13 @@ No `pyproject.toml` found
 
 **Solution**:
 
--   Created `pyproject.toml` from `_template_pyproject.toml`
--   Configured for uv dependency management
--   Includes ruff, mypy, and pytest configuration
+- Created `pyproject.toml` from `_template_pyproject.toml`
+- Configured for uv dependency management
+- Includes ruff, mypy, and pytest configuration
 
 **Files Created**:
 
--   `pyproject.toml`
+- `pyproject.toml`
 
 ---
 
@@ -93,16 +93,16 @@ No `pyproject.toml` found
 
 **Solution**:
 
--   Updated template doc filenames (removed `dev_` prefix)
--   Fixed `architecture_style` choices format handling (now object with descriptions)
--   Removed `dev_spec_index.md` references
--   Updated spec_index expectations
+- Updated template doc filenames (removed `dev_` prefix)
+- Fixed `architecture_style` choices format handling (now object with descriptions)
+- Removed `dev_spec_index.md` references
+- Updated spec_index expectations
 
 **Files Modified**:
 
--   `tests/integration/template-docs.test.ts`
--   `tests/integration/docs-emission.spec.ts`
--   `tests/integration/project-structure.test.ts`
+- `tests/integration/template-docs.test.ts`
+- `tests/integration/docs-emission.spec.ts`
+- `tests/integration/project-structure.test.ts`
 
 **Test Results**: 13/14 integration test suites passing
 
@@ -122,14 +122,14 @@ No `pyproject.toml` found
 
 **Solution**:
 
--   Added 6 missing frontmatter fields (kind, domain, task, thread, matrix_ids, budget)
--   Added `--vcs-ref=HEAD` flag to Copier command to include staged changes
--   Now picks up uncommitted template changes during testing
+- Added 6 missing frontmatter fields (kind, domain, task, thread, matrix_ids, budget)
+- Added `--vcs-ref=HEAD` flag to Copier command to include staged changes
+- Now picks up uncommitted template changes during testing
 
 **Files Modified**:
 
--   `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
--   `tests/utils/generation-smoke.ts`
+- `templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`
+- `tests/utils/generation-smoke.ts`
 
 **Technical Insight**: Discovered that Copier's `_skip_if_exists` pattern prevents overwriting during generation, requiring `--vcs-ref=HEAD` for TDD workflow
 
@@ -151,21 +151,21 @@ bash: line 121: /dev/tty: No such device or address
 
 **Solution**:
 
--   Added `-f` (force) flag to devbox installation script in all CI workflows
--   Changed: `curl -fsSL https://get.jetpack.io/devbox | bash`
--   To: `curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f`
--   Auto-accepts installation prompt
+- Added `-f` (force) flag to devbox installation script in all CI workflows
+- Changed: `curl -fsSL https://get.jetpack.io/devbox | bash`
+- To: `curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f`
+- Auto-accepts installation prompt
 
 **Files Modified**:
 
--   `.github/workflows/env-check.yml` (1 occurrence)
--   `.github/workflows/build-matrix.yml` (2 occurrences: build-test job + release job)
+- `.github/workflows/env-check.yml` (1 occurrence)
+- `.github/workflows/build-matrix.yml` (2 occurrences: build-test job + release job)
 
 **Affected Workflows**:
 
--   env-check
--   build-test (ubuntu-latest)
--   build-test (macos-latest)
+- env-check
+- build-test (ubuntu-latest)
+- build-test (macos-latest)
 
 ---
 
@@ -190,30 +190,30 @@ bash: line 121: /dev/tty: No such device or address
 
 ### Before Fixes
 
--   ❌ env-check - SOPS installation failure
--   ❌ docs-generator - Missing pyproject.toml
--   ❌ template-smoke - Frontmatter validation
--   ❌ integration tests - Template refactoring
--   ❌ build-test (ubuntu) - Multiple issues
--   ❌ build-test (macos) - Multiple issues
+- ❌ env-check - SOPS installation failure
+- ❌ docs-generator - Missing pyproject.toml
+- ❌ template-smoke - Frontmatter validation
+- ❌ integration tests - Template refactoring
+- ❌ build-test (ubuntu) - Multiple issues
+- ❌ build-test (macos) - Multiple issues
 
 ### After All Fixes
 
--   ✅ test-docs-generator
--   ✅ markdownlint
--   ✅ lint-markdown
--   ✅ lint-shell
--   ✅ test (Node tests)
--   ✅ ci (Spec Guard)
--   ✅ semgrep/ci
--   ✅ Security Validation Suite
--   ✅ Plaintext Detection Test
--   ✅ Performance Benchmark
--   ✅ Binary Size Tracking
--   ✅ Cargo Audit
--   ⏳ env-check (awaiting re-run with Devbox fix)
--   ⏳ build-test (ubuntu) (awaiting re-run with Devbox fix)
--   ⏳ build-test (macos) (awaiting re-run with Devbox fix)
+- ✅ test-docs-generator
+- ✅ markdownlint
+- ✅ lint-markdown
+- ✅ lint-shell
+- ✅ test (Node tests)
+- ✅ ci (Spec Guard)
+- ✅ semgrep/ci
+- ✅ Security Validation Suite
+- ✅ Plaintext Detection Test
+- ✅ Performance Benchmark
+- ✅ Binary Size Tracking
+- ✅ Cargo Audit
+- ⏳ env-check (awaiting re-run with Devbox fix)
+- ⏳ build-test (ubuntu) (awaiting re-run with Devbox fix)
+- ⏳ build-test (macos) (awaiting re-run with Devbox fix)
 
 ---
 
@@ -242,11 +242,11 @@ $ just test-env
 
 13/14 test suites passing:
 
--   ✅ template-smoke.test.ts (fixed)
--   ✅ template-docs.test.ts (fixed)
--   ✅ docs-emission.spec.ts (fixed)
--   ✅ project-structure.test.ts (fixed)
--   ⚠️ performance.test.ts (1 flaky test - temp dir cleanup race, non-blocking)
+- ✅ template-smoke.test.ts (fixed)
+- ✅ template-docs.test.ts (fixed)
+- ✅ docs-emission.spec.ts (fixed)
+- ✅ project-structure.test.ts (fixed)
+- ⚠️ performance.test.ts (1 flaky test - temp dir cleanup race, non-blocking)
 
 ---
 
@@ -329,12 +329,12 @@ curl script.sh | bash -s -- --arg
 
 ### Total Changes
 
--   **Files Changed**: 45 files
--   **Insertions**: 7,670+ lines
--   **Deletions**: 43 lines
--   **New Configuration Files**: 5 (.mise.toml, .secrets.env.sops, .sops.yaml, devbox.json, pyproject.toml)
--   **New Tests**: 9 comprehensive environment tests
--   **Documentation**: ~4,000 lines
+- **Files Changed**: 45 files
+- **Insertions**: 7,670+ lines
+- **Deletions**: 43 lines
+- **New Configuration Files**: 5 (.mise.toml, .secrets.env.sops, .sops.yaml, devbox.json, pyproject.toml)
+- **New Tests**: 9 comprehensive environment tests
+- **Documentation**: ~4,000 lines
 
 ---
 
@@ -347,7 +347,6 @@ curl script.sh | bash -s -- --arg
 **Changes Include**:
 
 1. **New Features** (minor version bump):
-
     - Devbox integration
     - mise integration
     - SOPS secret management
@@ -356,7 +355,6 @@ curl script.sh | bash -s -- --arg
     - Environment testing infrastructure
 
 2. **Bug Fixes** (patch version bump):
-
     - SOPS installation fixes
     - pyproject.toml creation
     - Test updates
@@ -371,9 +369,9 @@ curl script.sh | bash -s -- --arg
 
 **Rationale**:
 
--   Significant new features (6 phases of environment infrastructure)
--   No breaking changes to existing APIs or workflows
--   Follows semantic versioning: MAJOR.MINOR.PATCH
+- Significant new features (6 phases of environment infrastructure)
+- No breaking changes to existing APIs or workflows
+- Follows semantic versioning: MAJOR.MINOR.PATCH
 
 ---
 
@@ -383,10 +381,10 @@ curl script.sh | bash -s -- --arg
 
 **Reasons**:
 
--   Cleaner main branch history
--   Single commit represents complete feature set
--   Easier to revert if needed
--   Maintains atomic changesets
+- Cleaner main branch history
+- Single commit represents complete feature set
+- Easier to revert if needed
+- Maintains atomic changesets
 
 **Commit Message Template**:
 
@@ -452,12 +450,12 @@ Breaking: None - all changes are additive and backward compatible
 
 **Specifications**:
 
--   DEV-SDS-ENV (Environment setup specification)
--   DEV-SPEC-SOPS (Secret management specification)
--   DEV-SPEC-CI (CI workflow specification)
--   DEV-SPEC-PYTHON (Python tooling specification)
--   DEV-SPEC-TESTS (Testing infrastructure specification)
--   DEV-PRD-016 (Environment infrastructure requirements)
+- DEV-SDS-ENV (Environment setup specification)
+- DEV-SPEC-SOPS (Secret management specification)
+- DEV-SPEC-CI (CI workflow specification)
+- DEV-SPEC-PYTHON (Python tooling specification)
+- DEV-SPEC-TESTS (Testing infrastructure specification)
+- DEV-PRD-016 (Environment infrastructure requirements)
 
 **ADRs**: Referenced in phase completion summaries
 
@@ -492,21 +490,21 @@ Breaking: None - all changes are additive and backward compatible
 
 ### Code Changes
 
--   **Total Commits**: 6 fix commits
--   **Lines Modified**: 7,670 insertions(+), 43 deletions(-)
--   **Files Changed**: 45 files (original PR) + 12 files (fixes)
+- **Total Commits**: 6 fix commits
+- **Lines Modified**: 7,670 insertions(+), 43 deletions(-)
+- **Files Changed**: 45 files (original PR) + 12 files (fixes)
 
 ### Testing
 
--   **Environment Tests**: 9/9 passing (100%)
--   **Integration Tests**: 13/14 passing (98%)
--   **Test Coverage**: Complete for infrastructure
+- **Environment Tests**: 9/9 passing (100%)
+- **Integration Tests**: 13/14 passing (98%)
+- **Test Coverage**: Complete for infrastructure
 
 ### Time Investment
 
--   **Initial Implementation**: 6 phases (documented separately)
--   **Debugging & Fixes**: ~2 hours
--   **Documentation**: ~1 hour
+- **Initial Implementation**: 6 phases (documented separately)
+- **Debugging & Fixes**: ~2 hours
+- **Documentation**: ~1 hour
 
 ---
 

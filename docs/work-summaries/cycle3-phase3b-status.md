@@ -19,20 +19,20 @@ Phase 3B (Embedding Infrastructure) is **complete** with a functional stub imple
 
 Complete command-line interface:
 
--   `temporal-ai init` - Initialize database
--   `temporal-ai refresh --commits N` - Index Git history
--   `temporal-ai query "text" --top N` - Search patterns
--   `temporal-ai stats` - Show database statistics
+- `temporal-ai init` - Initialize database
+- `temporal-ai refresh --commits N` - Index Git history
+- `temporal-ai query "text" --top N` - Search patterns
+- `temporal-ai stats` - Show database statistics
 
 ### Just Recipes
 
 Added to `justfile`:
 
--   `just temporal-ai-init`
--   `just temporal-ai-refresh [COMMITS]`
--   `just temporal-ai-query QUERY [TOP]`
--   `just temporal-ai-stats`
--   `just temporal-ai-build`
+- `just temporal-ai-init`
+- `just temporal-ai-refresh [COMMITS]`
+- `just temporal-ai-query QUERY [TOP]`
+- `just temporal-ai-stats`
+- `just temporal-ai-build`
 
 ## Test Results
 
@@ -60,11 +60,11 @@ $ ./crates/temporal-ai/target/release/temporal-ai query "Add FastAPI middleware"
 
 ### Unit Tests (Compilation Verified)
 
--   `schema.rs`: 3 tests (normalization, metrics)
--   `vector_store.rs`: 6 tests (CRUD, indexing, batch)
--   `similarity.rs`: 5 tests (cosine, search, filtering)
--   `ranker.rs`: 4 tests (scoring, weights)
--   `pattern_extractor.rs`: 3 tests (parsing, tags)
+- `schema.rs`: 3 tests (normalization, metrics)
+- `vector_store.rs`: 6 tests (CRUD, indexing, batch)
+- `similarity.rs`: 5 tests (cosine, search, filtering)
+- `ranker.rs`: 4 tests (scoring, weights)
+- `pattern_extractor.rs`: 3 tests (parsing, tags)
 
 Total: **21 unit tests** written (compilation verified, execution pending)
 
@@ -82,18 +82,18 @@ Total: **21 unit tests** written (compilation verified, execution pending)
 
 **Storage Efficiency**:
 
--   87 patterns = 305KB database (~3.5KB/pattern)
--   Scales to ~350MB for 100k patterns (estimate)
+- 87 patterns = 305KB database (~3.5KB/pattern)
+- Scales to ~350MB for 100k patterns (estimate)
 
 ### Pattern Extraction
 
 **Git Analysis**:
 
--   Conventional commits parser (`feat|fix|docs|refactor|test|chore`)
--   Automated language detection (Rust, Python, TypeScript, etc.)
--   Framework detection (React, FastAPI)
--   File path tracking
--   Merge commit filtering
+- Conventional commits parser (`feat|fix|docs|refactor|test|chore`)
+- Automated language detection (Rust, Python, TypeScript, etc.)
+- Framework detection (React, FastAPI)
+- File path tracking
+- Merge commit filtering
 
 **Sample Pattern**:
 
@@ -118,9 +118,9 @@ similarity_score = dot_product(query, pattern) / (norm_a × norm_b)
 
 **Optimizations**:
 
--   Precomputed L2 norms stored in database
--   SIMD dot product on x86_64 (AVX when available)
--   Top-k min-heap to avoid full sorting
+- Precomputed L2 norms stored in database
+- SIMD dot product on x86_64 (AVX when available)
+- Top-k min-heap to avoid full sorting
 
 ### Recommendation Ranking
 
@@ -163,46 +163,46 @@ Model downloaded: `models/embeddinggemma-300M-Q8_0.gguf` (314MB, Q8_0 quantizati
 
 **Core Library** (1,800 LOC):
 
--   `crates/temporal-ai/src/lib.rs`
--   `crates/temporal-ai/src/embedder.rs`
--   `crates/temporal-ai/src/pattern_extractor.rs`
--   `crates/temporal-ai/src/vector_store.rs`
--   `crates/temporal-ai/src/similarity.rs`
--   `crates/temporal-ai/src/ranker.rs`
--   `crates/temporal-ai/src/schema.rs`
+- `crates/temporal-ai/src/lib.rs`
+- `crates/temporal-ai/src/embedder.rs`
+- `crates/temporal-ai/src/pattern_extractor.rs`
+- `crates/temporal-ai/src/vector_store.rs`
+- `crates/temporal-ai/src/similarity.rs`
+- `crates/temporal-ai/src/ranker.rs`
+- `crates/temporal-ai/src/schema.rs`
 
 **Binaries & Examples** (200 LOC):
 
--   `crates/temporal-ai/src/bin/main.rs`
--   `crates/temporal-ai/examples/test_embedder.rs`
+- `crates/temporal-ai/src/bin/main.rs`
+- `crates/temporal-ai/examples/test_embedder.rs`
 
 **Configuration**:
 
--   `crates/temporal-ai/Cargo.toml`
--   `.gitignore` (updated for models)
--   `models/README.md`
+- `crates/temporal-ai/Cargo.toml`
+- `.gitignore` (updated for models)
+- `models/README.md`
 
 **Documentation**:
 
--   `docs/dev_prd_ai_guidance.md` (DEV-PRD-020)
--   `docs/dev_sds_ai_guidance.md` (DEV-SDS-020)
--   `docs/dev_adr.md` (DEV-ADR-018 updated)
--   `docs/work-summaries/cycle3-phase3b-completion.md` (this file)
+- `docs/dev_prd_ai_guidance.md` (DEV-PRD-020)
+- `docs/dev_sds_ai_guidance.md` (DEV-SDS-020)
+- `docs/dev_adr.md` (DEV-ADR-018 updated)
+- `docs/work-summaries/cycle3-phase3b-completion.md` (this file)
 
 ## Dependencies Resolved
 
 **Cargo Crates** (17 total):
 
--   ✅ `redb 2.6.3` - Embedded database
--   ✅ `git2 0.18` - Git repository access (with OpenSSL)
--   ✅ `serde, serde_json, rmp-serde` - Serialization
--   ✅ `anyhow, thiserror` - Error handling
--   ✅ `chrono, regex, glob` - Utilities
--   ⚠️ `llm` - Removed (wrong crate, will use llama-cpp-rs later)
+- ✅ `redb 2.6.3` - Embedded database
+- ✅ `git2 0.18` - Git repository access (with OpenSSL)
+- ✅ `serde, serde_json, rmp-serde` - Serialization
+- ✅ `anyhow, thiserror` - Error handling
+- ✅ `chrono, regex, glob` - Utilities
+- ⚠️ `llm` - Removed (wrong crate, will use llama-cpp-rs later)
 
 **System Dependencies**:
 
--   ✅ OpenSSL (`pkg-config`, `libssl-dev`) - For git2 HTTPS support
+- ✅ OpenSSL (`pkg-config`, `libssl-dev`) - For git2 HTTPS support
 
 ## Usage Examples
 
@@ -255,19 +255,16 @@ let recommendations = ranker.rank(results)?;
 ## Next Steps (Phase 3C)
 
 1. **Integrate Real GGUF Model**
-
     - Use `llama-cpp-rs` or `candle` for actual embedding generation
     - Verify 768-dim output from embedding-gemma-300M
     - Benchmark inference latency (<500ms target)
 
 2. **TypeScript FFI Bindings**
-
     - NAPI-RS bindings for Node.js
     - TypeScript client library
     - Nx tool integration
 
 3. **Integration Tests**
-
     - End-to-end test suite
     - Performance benchmarks
     - Semantic search accuracy validation
@@ -279,17 +276,17 @@ let recommendations = ranker.rank(results)?;
 
 ## Completion Criteria
 
--   [x] All core modules implemented
--   [x] CLI binary functional
--   [x] Database persistence verified
--   [x] Pattern extraction from Git history working
--   [x] Similarity search operational
--   [x] Multi-factor ranking implemented
--   [x] Just recipes added
--   [x] Documentation complete (PRD, SDS, ADR)
--   [x] Model downloaded and accessible
--   [ ] Real GGUF model integration (deferred to Phase 3C)
--   [ ] TypeScript bindings (deferred to Phase 3C)
--   [ ] Integration tests (deferred to Phase 3C)
+- [x] All core modules implemented
+- [x] CLI binary functional
+- [x] Database persistence verified
+- [x] Pattern extraction from Git history working
+- [x] Similarity search operational
+- [x] Multi-factor ranking implemented
+- [x] Just recipes added
+- [x] Documentation complete (PRD, SDS, ADR)
+- [x] Model downloaded and accessible
+- [ ] Real GGUF model integration (deferred to Phase 3C)
+- [ ] TypeScript bindings (deferred to Phase 3C)
+- [ ] Integration tests (deferred to Phase 3C)
 
 **Status**: Phase 3B COMPLETE with functional stub implementation. Ready for Phase 3C (Real model integration + TypeScript bindings).

@@ -9,12 +9,12 @@ This file will capture memory-based findings relevant to HexDDD integration: pas
 
 ## Current content (placeholders)
 
--   Memory queries to run (MCP memory tool):
-    -   "hexagonal architecture DDD patterns HexDDD VibesPro"
-    -   "Nx generator idempotency testing strategies"
-    -   "Unit of Work EventBus implementation patterns"
-    -   "Supabase type generation workflows"
-    -   "React framework universal generator patterns"
+- Memory queries to run (MCP memory tool):
+    - "hexagonal architecture DDD patterns HexDDD VibesPro"
+    - "Nx generator idempotency testing strategies"
+    - "Unit of Work EventBus implementation patterns"
+    - "Supabase type generation workflows"
+    - "React framework universal generator patterns"
 
 ## Next steps (run with MCP memory tool)
 
@@ -24,9 +24,9 @@ This file will capture memory-based findings relevant to HexDDD integration: pas
 
 ## Intended output
 
--   `key_takeaways` (top 5)
--   `references` (PR numbers, ADR ids, file paths)
--   `lessons_learned` short list for PHASE-001 planning
+- `key_takeaways` (top 5)
+- `references` (PR numbers, ADR ids, file paths)
+- `lessons_learned` short list for PHASE-001 planning
 
 ## Notes
 

@@ -21,7 +21,7 @@ Validate that planned tasks are Mutually Exclusive and Collectively Exhaustive (
 | PHASE-001-B | `tests/generators/utils/test-helpers.ts` | Idempotency lib       | None           | DEV-SDS-023            |
 | ...         | TODO                                     | TODO                  | TODO           | TODO                   |
 
--   ## Domain ownership rows (workspace discovery)
+- ## Domain ownership rows (workspace discovery)
 
 | Task                                 | Owns (File Globs)                       | Excludes (File Globs)                                                         | Conflicts With          | Completes Requirements |
 | ------------------------------------ | --------------------------------------- | ----------------------------------------------------------------------------- | ----------------------- | ---------------------- |
@@ -31,5 +31,5 @@ Validate that planned tasks are Mutually Exclusive and Collectively Exhaustive (
 
 ## Next steps
 
--   Run Nx analysis to fill `Conflicts With` and add any missing tasks.
--   Produce final pass for the MECE matrix and embed it here.
+- Run Nx analysis to fill `Conflicts With` and add any missing tasks.
+- Produce final pass for the MECE matrix and embed it here.

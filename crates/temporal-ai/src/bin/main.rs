@@ -2,6 +2,7 @@
 
 use anyhow::{Context, Result};
 use std::path::PathBuf;
+use temporal_ai::observability_aggregator::ObservabilityClient;
 use temporal_ai::{
     Embedder, PatternExtractor, RecommendationRanker, SimilaritySearch, VectorStore,
 };
@@ -9,10 +10,12 @@ use temporal_ai::{
 #[derive(Debug)]
 enum Command {
     Refresh { commits: usize },
+    RefreshMetrics { days: u32 },
     Query { text: String, top: usize },
     Init,
     Stats,
 }
+
 
 fn parse_args() -> Result<Command> {
     let args: Vec<String> = std::env::args().collect();
@@ -32,6 +35,14 @@ fn parse_args() -> Result<Command> {
                 1000
             };
             Ok(Command::Refresh { commits })
+        }
+        "refresh-metrics" => {
+            let days = if args.len() > 2 && args[2] == "--days" && args.len() > 3 {
+                args[3].parse().context("Invalid days count")?
+            } else {
+                7
+            };
+            Ok(Command::RefreshMetrics { days })
         }
         "query" => {
             if args.len() < 3 {
@@ -56,11 +67,13 @@ fn print_usage() {
     eprintln!("USAGE:");
     eprintln!("  temporal-ai init");
     eprintln!("  temporal-ai refresh [--commits N]");
+    eprintln!("  temporal-ai refresh-metrics [--days N]");
     eprintln!("  temporal-ai query <text> [--top N]");
     eprintln!("  temporal-ai stats\n");
     eprintln!("COMMANDS:");
     eprintln!("  init              Initialize empty database");
     eprintln!("  refresh           Index patterns from Git history");
+    eprintln!("  refresh-metrics   Fetch performance metrics from OpenObserve");
     eprintln!("  query             Find similar patterns");
     eprintln!("  stats             Show database statistics\n");
     eprintln!("EXAMPLES:");
@@ -80,7 +93,8 @@ fn get_repo_path() -> PathBuf {
     PathBuf::from(".")
 }
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     let command = parse_args()?;
 
     match command {
@@ -138,6 +152,34 @@ fn main() -> Result<()> {
 
             println!("\n✓ Processed {} patterns", total);
             println!("Database size: {} bytes", store.size()?);
+            Ok(())
+
+        }
+
+        Command::RefreshMetrics { days } => {
+            println!(
+                "Refreshing performance metrics from OpenObserve (last {} days)...",
+                days
+            );
+            let client = ObservabilityClient::from_env()?;
+            let metrics = client.query_pattern_metrics(days).await?;
+
+            println!("Found metrics for {} patterns", metrics.len());
+            let store = VectorStore::open(&get_db_path())?;
+
+            let mut updated = 0;
+            for metric in metrics {
+                let mut perf = store.get_metrics(&metric.pattern_id)?.unwrap_or_default();
+
+                perf.success_rate = Some(metric.success_rate);
+                perf.avg_latency_ms = Some(metric.avg_latency_ms);
+                perf.error_rate = Some(metric.error_rate);
+
+                store.update_metrics(&metric.pattern_id, perf)?;
+                updated += 1;
+            }
+
+            println!("✓ Updated metrics for {} patterns", updated);
             Ok(())
         }
 

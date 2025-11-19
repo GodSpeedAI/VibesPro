@@ -15,12 +15,12 @@ Establish the core hexagonal architecture abstractions (Unit of Work, Event Bus)
 
 ### Success Criteria
 
--   [ ] Unit of Work contracts implemented in TypeScript and Python
--   [ ] Event Bus abstractions implemented with in-memory defaults
--   [ ] Nx dependency tags configured and enforced via lint
--   [ ] Supabase dev stack operational with Docker Compose
--   [ ] Integration tests validate transactional boundaries
--   [ ] **Evidence**: `pnpm nx run-many -t lint` passes boundary checks
+- [ ] Unit of Work contracts implemented in TypeScript and Python
+- [ ] Event Bus abstractions implemented with in-memory defaults
+- [ ] Nx dependency tags configured and enforced via lint
+- [ ] Supabase dev stack operational with Docker Compose
+- [ ] Integration tests validate transactional boundaries
+- [ ] **Evidence**: `pnpm nx run-many -t lint` passes boundary checks
 
 ### Traceability
 
@@ -138,17 +138,17 @@ export class InMemoryUnitOfWork implements UnitOfWork {
 
 ### 🔵 REFACTOR Phase
 
--   Extract repository pattern interfaces
--   Add Supabase adapter skeleton
--   Document transaction boundaries
--   Add decorator for automatic UoW injection
+- Extract repository pattern interfaces
+- Add Supabase adapter skeleton
+- Document transaction boundaries
+- Add decorator for automatic UoW injection
 
 ### 📋 Cycle A Checklist
 
--   [ ] UoW interface defined
--   [ ] In-memory adapter implemented
--   [ ] Unit tests pass
--   [ ] Documentation complete
+- [ ] UoW interface defined
+- [ ] In-memory adapter implemented
+- [ ] Unit tests pass
+- [ ] Documentation complete
 
 ---
 
@@ -202,19 +202,19 @@ class InMemoryUnitOfWork:
 
 ### 🔵 REFACTOR Phase
 
--   Extract repository pattern interfaces
--   Add async context manager support
--   Document transaction boundaries
--   Add type hints for better IDE support
--   Add exception handling and rollback guarantees
+- Extract repository pattern interfaces
+- Add async context manager support
+- Document transaction boundaries
+- Add type hints for better IDE support
+- Add exception handling and rollback guarantees
 
 ### 📋 Cycle B Checklist
 
--   [ ] UnitOfWork protocol defined
--   [ ] InMemoryUnitOfWork implementation complete
--   [ ] Unit tests pass
--   [ ] Documentation complete
--   [ ] TypeScript parity maintained
+- [ ] UnitOfWork protocol defined
+- [ ] InMemoryUnitOfWork implementation complete
+- [ ] Unit tests pass
+- [ ] Documentation complete
+- [ ] TypeScript parity maintained
 
 ---
 
@@ -306,20 +306,20 @@ export class InMemoryEventBus implements EventBus {
 
 ### 🔵 REFACTOR Phase
 
--   Add event filtering and wildcards
--   Support synchronous and asynchronous handlers
--   Add event replay capabilities
--   Add dead letter queue for failed events
--   Add event metadata (timestamps, correlation IDs)
--   Implement typed event system
+- Add event filtering and wildcards
+- Support synchronous and asynchronous handlers
+- Add event replay capabilities
+- Add dead letter queue for failed events
+- Add event metadata (timestamps, correlation IDs)
+- Implement typed event system
 
 ### 📋 Cycle C Checklist
 
--   [ ] EventBus interface defined
--   [ ] InMemoryEventBus implementation complete
--   [ ] Unit tests pass
--   [ ] Documentation complete
--   [ ] Cross-language parity maintained
+- [ ] EventBus interface defined
+- [ ] InMemoryEventBus implementation complete
+- [ ] Unit tests pass
+- [ ] Documentation complete
+- [ ] Cross-language parity maintained
 
 ---
 
@@ -537,13 +537,13 @@ volumes:
 
 ## ✅ Phase Validation Checklist
 
--   [ ] UoW TypeScript: Interface + adapter + tests
--   [ ] UoW Python: Protocol + adapter + tests
--   [ ] EventBus: Contracts + in-memory implementations
--   [ ] Nx Tags: Enforced via lint, zero violations
--   [ ] Supabase Dev Stack: Starts successfully, accessible at localhost:54323
--   [ ] Integration tests: Transactional boundaries validated
--   [ ] **PHASE-002 marked GREEN in Master Plan**
+- [ ] UoW TypeScript: Interface + adapter + tests
+- [ ] UoW Python: Protocol + adapter + tests
+- [ ] EventBus: Contracts + in-memory implementations
+- [ ] Nx Tags: Enforced via lint, zero violations
+- [ ] Supabase Dev Stack: Starts successfully, accessible at localhost:54323
+- [ ] Integration tests: Transactional boundaries validated
+- [ ] **PHASE-002 marked GREEN in Master Plan**
 
 ---
 

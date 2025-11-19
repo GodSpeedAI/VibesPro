@@ -4,8 +4,8 @@ This guide explains how to create a new AI prompt for use with an AI assistant l
 
 ## Prerequisites
 
--   A clear idea of the task you want to automate with the prompt.
--   An understanding of how to write effective prompts for large language models.
+- A clear idea of the task you want to automate with the prompt.
+- An understanding of how to write effective prompts for large language models.
 
 ## Step 1: Create the Prompt File
 

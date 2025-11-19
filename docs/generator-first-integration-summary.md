@@ -10,9 +10,9 @@
 
 You discovered that while the project has:
 
--   ✅ Nx MCP server integration (`.github/instructions/nx.instructions.md`)
--   ✅ `ai-scaffold` just recipe (line 376-398 in `justfile`)
--   ✅ Multiple Nx generators installed (@nx/js, @nx/react, @nx/node, @nx/jest, @nx/workspace)
+- ✅ Nx MCP server integration (`.github/instructions/nx.instructions.md`)
+- ✅ `ai-scaffold` just recipe (line 376-398 in `justfile`)
+- ✅ Multiple Nx generators installed (@nx/js, @nx/react, @nx/node, @nx/jest, @nx/workspace)
 
 The AI workflow files (prompts, chatmodes, instructions) **did NOT reference or instruct use of generators**.
 
@@ -26,43 +26,38 @@ This meant AI assistants would write custom code directly instead of using the p
 
 **File:** `.github/instructions/generators-first.instructions.md`
 
--   **Precedence:** 15 (higher than general instructions at 50)
--   **Scope:** Applies to all files (`**`)
--   **Content:**
-    -   Core principle: Check Nx generators BEFORE writing code
-    -   Workflow for AI-assisted development (check → use generator → customize)
-    -   Integration with TDD (Red/Green/Refactor) and spec implementation
-    -   Common generators reference
-    -   When NOT to use generators
-    -   Error handling and troubleshooting
+- **Precedence:** 15 (higher than general instructions at 50)
+- **Scope:** Applies to all files (`**`)
+- **Content:**
+    - Core principle: Check Nx generators BEFORE writing code
+    - Workflow for AI-assisted development (check → use generator → customize)
+    - Integration with TDD (Red/Green/Refactor) and spec implementation
+    - Common generators reference
+    - When NOT to use generators
+    - Error handling and troubleshooting
 
 ### 2. Updated AI Workflow Instructions
 
 **Files Modified:**
 
 1. **`.github/copilot-instructions.md`**
-
     - Added: "**Generator-First Requirement**: Before writing any new code, ALWAYS check if an Nx generator exists"
     - Cross-references generators-first.instructions.md and nx.instructions.md
 
 2. **`.github/instructions/ai-workflows.instructions.md`** (precedence 20)
-
     - Added "Generator-First Policy" section at top
     - References generators-first.instructions.md and nx.instructions.md
 
 3. **`.github/instructions/src.instructions.md`** (precedence 32)
-
     - Added generator-first requirement before code creation
     - Cross-references both generator instruction files
 
 4. **`.github/prompts/spec.implement.prompt.md`**
-
     - Added **Step 0: Check for Nx Generators (REQUIRED FIRST STEP)**
     - Instructions to run `pnpm exec nx list` and `just ai-scaffold`
     - "Only proceed to manual implementation if no appropriate generator exists"
 
 5. **`.github/prompts/tdd.workflow.prompt.md`**
-
     - Updated **Red Phase** to check generators FIRST if creating new module/component
     - References generators-first.instructions.md
 
@@ -77,19 +72,19 @@ This meant AI assistants would write custom code directly instead of using the p
 
 **Content:**
 
--   Generator-first philosophy explanation
--   Complete list of installed generators:
-    -   @nx/js (TypeScript/JavaScript libraries)
-    -   @nx/react (React components, libraries, hooks)
-    -   @nx/node (Node.js applications)
-    -   @nx/jest (testing configuration)
-    -   @nx/workspace (workspace utilities)
--   Available (not installed) generators:
-    -   @nx/next, @nx/remix, @nx/nest, @nx/express, @nx/expo, @nxlv/python
--   Generator workflow integration with TDD and spec implementation
--   Quick reference table
--   Best practices and troubleshooting
--   Links to all related instruction files
+- Generator-first philosophy explanation
+- Complete list of installed generators:
+    - @nx/js (TypeScript/JavaScript libraries)
+    - @nx/react (React components, libraries, hooks)
+    - @nx/node (Node.js applications)
+    - @nx/jest (testing configuration)
+    - @nx/workspace (workspace utilities)
+- Available (not installed) generators:
+    - @nx/next, @nx/remix, @nx/nest, @nx/express, @nx/expo, @nxlv/python
+- Generator workflow integration with TDD and spec implementation
+- Quick reference table
+- Best practices and troubleshooting
+- Links to all related instruction files
 
 ---
 
@@ -112,11 +107,11 @@ This meant AI assistants would write custom code directly instead of using the p
 
 **Green Phase:**
 
--   Implement logic in generated structure
+- Implement logic in generated structure
 
 **Refactor Phase:**
 
--   Improve within generated boundaries
+- Improve within generated boundaries
 
 ### For Spec Implementation
 
@@ -183,12 +178,12 @@ nx-generators-guide.md (docs)
 
 **Not yet installed (add with `pnpm add -D`):**
 
--   @nx/next (Next.js apps)
--   @nx/remix (Remix apps)
--   @nx/nest (NestJS apps)
--   @nx/express (Express APIs)
--   @nx/expo (React Native mobile)
--   @nxlv/python (Python apps/libs with FastAPI, Flask)
+- @nx/next (Next.js apps)
+- @nx/remix (Remix apps)
+- @nx/nest (NestJS apps)
+- @nx/express (Express APIs)
+- @nx/expo (React Native mobile)
+- @nxlv/python (Python apps/libs with FastAPI, Flask)
 
 ---
 
@@ -234,18 +229,15 @@ To verify AI assistants now use generators:
 ## Next Steps (Optional Enhancements)
 
 1. **Add more chat modes:**
-
     - Update `tdd.green.chatmode.md` and `tdd.refactor.chatmode.md`
     - Update debug chatmodes (`debug.*.chatmode.md`)
 
 2. **Create custom generators:**
-
     - Domain entity generator (hexagonal architecture)
     - API adapter generator
     - Feature library generator with standard structure
 
 3. **Enhance ai-scaffold recipe:**
-
     - Interactive mode (prompt for generator selection)
     - Validation (ensure generator exists before running)
     - Logging (record which generators were used)
@@ -259,14 +251,14 @@ To verify AI assistants now use generators:
 
 ## Validation Checklist
 
--   [x] Generator-first policy documented and cross-referenced
--   [x] All AI workflow files updated (prompts, chatmodes, instructions)
--   [x] Comprehensive generator guide created
--   [x] Commit message follows commit-msg.instructions.md
--   [x] Changes tested (verified instruction cross-refs, listed generators)
--   [x] No secrets committed
--   [x] Files follow naming conventions
--   [x] Precedence values set correctly (15 for generators-first)
+- [x] Generator-first policy documented and cross-referenced
+- [x] All AI workflow files updated (prompts, chatmodes, instructions)
+- [x] Comprehensive generator guide created
+- [x] Commit message follows commit-msg.instructions.md
+- [x] Changes tested (verified instruction cross-refs, listed generators)
+- [x] No secrets committed
+- [x] Files follow naming conventions
+- [x] Precedence values set correctly (15 for generators-first)
 
 ---
 

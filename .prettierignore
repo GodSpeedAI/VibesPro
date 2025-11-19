@@ -1,0 +1,16 @@
+# Ignore files that cause formatting conflicts
+docs/dev_implementation_plan.md
+pre_commit_output.txt
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+.nx/
+dist/
+coverage/
+tmp/
+.tmp/
+test-output/
+htmlcov/
+.venv/
+.devbox/

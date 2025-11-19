@@ -67,25 +67,21 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 ### What Exists
 
 1. **Integration Tests** (Complete ✅)
-
     - Location: `crates/vibepro-observe/tests/otlp_integration.rs`
     - Validates: OTLP span export, span attributes, metadata
     - Status: ✅ PASSING with fake-opentelemetry-collector
 
 2. **Vector Integration Test** (Complete ✅)
-
     - Location: `crates/vibepro-observe/tests/tracing_vector.rs`
     - Validates: Span emission with redactable fields
     - Status: ✅ PASSING
 
 3. **Shell Test** (Smoke Test)
-
     - Location: `tests/ops/test_tracing_vector.sh`
     - Validates: Vector configuration file syntax and startup
     - Status: ✅ PASSING
 
 4. **Just Recipe**
-
     - `just observe-test`: Runs Rust integration tests with OTLP feature
     - Status: ✅ WORKING - All tests passing
 
@@ -95,10 +91,10 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 ### What Does NOT Exist
 
--   ✅ Working integration tests that verify OTLP export (COMPLETE)
--   ✅ Automated verification of span data correctness (COMPLETE)
--   ✅ Tests confirming Vector receives and processes spans (COMPLETE)
--   ✅ Redaction verification tests (COMPLETE)
+- ✅ Working integration tests that verify OTLP export (COMPLETE)
+- ✅ Automated verification of span data correctness (COMPLETE)
+- ✅ Tests confirming Vector receives and processes spans (COMPLETE)
+- ✅ Redaction verification tests (COMPLETE)
 
 ---
 
@@ -135,10 +131,10 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 **Trade-offs**:
 
--   ✅ Future-proof with latest OpenTelemetry APIs
--   ✅ Compatible with modern tooling
--   ⚠️ May introduce breaking changes in user code
--   ⚠️ Requires careful migration testing
+- ✅ Future-proof with latest OpenTelemetry APIs
+- ✅ Compatible with modern tooling
+- ⚠️ May introduce breaking changes in user code
+- ⚠️ Requires careful migration testing
 
 ### Option 2: Manual OTLP Collector for Tests
 
@@ -155,11 +151,11 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 **Trade-offs**:
 
--   ✅ Version-independent solution
--   ✅ Tests against real collector behavior
--   ⚠️ Requires Docker in CI
--   ⚠️ Slower test execution
--   ⚠️ More infrastructure complexity
+- ✅ Version-independent solution
+- ✅ Tests against real collector behavior
+- ⚠️ Requires Docker in CI
+- ⚠️ Slower test execution
+- ⚠️ More infrastructure complexity
 
 ### Option 3: Mock at HTTP Layer
 
@@ -175,10 +171,10 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 **Trade-offs**:
 
--   ✅ Fast, lightweight tests
--   ✅ No version conflicts
--   ⚠️ Doesn't test full OTLP serialization
--   ⚠️ Requires protobuf parsing logic
+- ✅ Fast, lightweight tests
+- ✅ No version conflicts
+- ⚠️ Doesn't test full OTLP serialization
+- ⚠️ Requires protobuf parsing logic
 
 ### Option 4: Defer to E2E Tests
 
@@ -195,10 +191,10 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 **Trade-offs**:
 
--   ✅ Unblocks immediate progress
--   ✅ Real-world validation
--   ⚠️ No CI safety net
--   ⚠️ Manual testing burden
+- ✅ Unblocks immediate progress
+- ✅ Real-world validation
+- ⚠️ No CI safety net
+- ⚠️ Manual testing burden
 
 ---
 
@@ -239,9 +235,9 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 **With Complete OTLP Integration Tests**:
 
--   ✅ **LOW RISK**: Verification that spans actually reach Vector (TESTED)
--   ✅ **LOW RISK**: Breaking changes to OTLP export will be detected (TESTED)
--   ✅ **LOW RISK**: Configuration and initialization well-tested
+- ✅ **LOW RISK**: Verification that spans actually reach Vector (TESTED)
+- ✅ **LOW RISK**: Breaking changes to OTLP export will be detected (TESTED)
+- ✅ **LOW RISK**: Configuration and initialization well-tested
 
 ---
 
@@ -249,24 +245,24 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 ### Added
 
--   `crates/vibepro-observe/tests/otlp_integration.rs` (✅ COMPLETE)
--   `tests/ops/test_tracing_vector.sh` (shell smoke test)
--   `docs/work-summaries/observability-phase3-completion.md` (this file)
--   `docs/work-summaries/opentelemetry-0.31-upgrade-complete.md` (upgrade details)
+- `crates/vibepro-observe/tests/otlp_integration.rs` (✅ COMPLETE)
+- `tests/ops/test_tracing_vector.sh` (shell smoke test)
+- `docs/work-summaries/observability-phase3-completion.md` (this file)
+- `docs/work-summaries/opentelemetry-0.31-upgrade-complete.md` (upgrade details)
 
 ### Modified
 
--   `crates/vibepro-observe/Cargo.toml` - Updated OpenTelemetry to 0.31+
--   `crates/vibepro-observe/src/lib.rs` - Updated API calls for 0.31+
--   `justfile` - Added `observe-test` recipe
--   `tests/tracing_vector.rs` - Updated for 0.31+ compatibility
+- `crates/vibepro-observe/Cargo.toml` - Updated OpenTelemetry to 0.31+
+- `crates/vibepro-observe/src/lib.rs` - Updated API calls for 0.31+
+- `justfile` - Added `observe-test` recipe
+- `tests/tracing_vector.rs` - Updated for 0.31+ compatibility
 
 ### Completed ✅
 
--   Integration tests (PASSING)
--   OTLP export verification (PASSING)
--   Vector integration test (PASSING)
--   OpenTelemetry 0.31+ upgrade (COMPLETE)
+- Integration tests (PASSING)
+- OTLP export verification (PASSING)
+- Vector integration test (PASSING)
+- OpenTelemetry 0.31+ upgrade (COMPLETE)
 
 ---
 
@@ -278,10 +274,10 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 **Resolution**: All Phase 3 deliverables are now complete:
 
--   ✅ Integration tests passing with fake-opentelemetry-collector
--   ✅ Verified span export to OTLP endpoint
--   ✅ Validated span attributes and metadata
--   ✅ Vector integration test working
+- ✅ Integration tests passing with fake-opentelemetry-collector
+- ✅ Verified span export to OTLP endpoint
+- ✅ Validated span attributes and metadata
+- ✅ Vector integration test working
 
 **Full implementation details**: See docs/work-summaries/opentelemetry-0.31-upgrade-complete.md
 
@@ -289,12 +285,12 @@ All approaches hit the same fundamental blocker: **incompatible trait definition
 
 ## References
 
--   **Fake Collector Docs**: https://github.com/davidB/tracing-opentelemetry-instrumentation-sdk/tree/main/fake-opentelemetry-collector
--   **OpenTelemetry Rust 0.25**: https://docs.rs/opentelemetry/0.25.0
--   **OpenTelemetry Rust 0.31**: https://docs.rs/opentelemetry/0.31.0
--   **Migration Guide**: (TODO: research if available)
--   **Phase 1 Summary**: `docs/work-summaries/observability-phase1-completion.md`
--   **Phase 2 Summary**: `docs/work-summaries/observability-phase2-completion.md`
+- **Fake Collector Docs**: https://github.com/davidB/tracing-opentelemetry-instrumentation-sdk/tree/main/fake-opentelemetry-collector
+- **OpenTelemetry Rust 0.25**: https://docs.rs/opentelemetry/0.25.0
+- **OpenTelemetry Rust 0.31**: https://docs.rs/opentelemetry/0.31.0
+- **Migration Guide**: (TODO: research if available)
+- **Phase 1 Summary**: `docs/work-summaries/observability-phase1-completion.md`
+- **Phase 2 Summary**: `docs/work-summaries/observability-phase2-completion.md`
 
 ---
 

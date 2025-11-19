@@ -13,31 +13,31 @@ Phase 4 validates and documents the existing CI/CD infrastructure for VibesPro, 
 
 ✅ **CI Workflow Validation**
 
--   Verified `env-check.yml` workflow exists and is properly configured
--   Confirmed workflow uses explicit SOPS decryption (no direnv dependency)
--   Validated mise installation and runtime management in CI
--   Ensured Devbox OS toolchain setup in CI
+- Verified `env-check.yml` workflow exists and is properly configured
+- Confirmed workflow uses explicit SOPS decryption (no direnv dependency)
+- Validated mise installation and runtime management in CI
+- Ensured Devbox OS toolchain setup in CI
 
 ✅ **Matrix Testing**
 
--   Verified `build-matrix.yml` tests on Ubuntu and macOS
--   Confirmed parallel execution with fail-fast: false
--   Validated platform-specific package managers (apt vs brew)
--   Ensured shared caching strategy for mise runtimes
+- Verified `build-matrix.yml` tests on Ubuntu and macOS
+- Confirmed parallel execution with fail-fast: false
+- Validated platform-specific package managers (apt vs brew)
+- Ensured shared caching strategy for mise runtimes
 
 ✅ **Test Coverage**
 
--   Created `tests/env/test_ci_minimal.sh` following TDD Red-Green-Refactor
--   Test validates CI workflow files exist and are properly configured
--   Ensures CI doesn't use direnv (explicit > implicit in automation)
--   Validates SOPS_AGE_KEY secret usage and cleanup
+- Created `tests/env/test_ci_minimal.sh` following TDD Red-Green-Refactor
+- Test validates CI workflow files exist and are properly configured
+- Ensures CI doesn't use direnv (explicit > implicit in automation)
+- Validates SOPS_AGE_KEY secret usage and cleanup
 
 ✅ **Documentation**
 
--   Updated `docs/ENVIRONMENT.md` with comprehensive CI section (~400 lines)
--   Covers workflow architecture, secret management, debugging, optimization
--   Documents CI vs local development differences
--   Provides troubleshooting guide and best practices
+- Updated `docs/ENVIRONMENT.md` with comprehensive CI section (~400 lines)
+- Covers workflow architecture, secret management, debugging, optimization
+- Documents CI vs local development differences
+- Provides troubleshooting guide and best practices
 
 ## TDD Workflow
 
@@ -47,14 +47,14 @@ Phase 4 validates and documents the existing CI/CD infrastructure for VibesPro, 
 
 Created test that validates:
 
--   `.github/workflows/env-check.yml` exists
--   Workflow does NOT use direnv (CI should be explicit)
--   Workflow uses explicit `sops -d .secrets.env.sops` decryption
--   Workflow installs mise and runtimes
--   Workflow uses Devbox for OS toolchain
--   Workflow runs tests (`just test` or `test-env`)
--   Workflow uses `SOPS_AGE_KEY` from GitHub secrets
--   Workflow cleans up decrypted secrets
+- `.github/workflows/env-check.yml` exists
+- Workflow does NOT use direnv (CI should be explicit)
+- Workflow uses explicit `sops -d .secrets.env.sops` decryption
+- Workflow installs mise and runtimes
+- Workflow uses Devbox for OS toolchain
+- Workflow runs tests (`just test` or `test-env`)
+- Workflow uses `SOPS_AGE_KEY` from GitHub secrets
+- Workflow cleans up decrypted secrets
 
 **Initial Status:** Test passed immediately (workflows already existed)
 
@@ -62,11 +62,11 @@ Created test that validates:
 
 **Existing Infrastructure Validated:**
 
--   ✅ `.github/workflows/env-check.yml` - Ubuntu environment validation
--   ✅ `.github/workflows/build-matrix.yml` - Cross-platform matrix testing
--   ✅ Both workflows properly configured per Phase 4 requirements
--   ✅ No direnv usage in CI (explicit SOPS decryption)
--   ✅ Secret cleanup with `if: always()`
+- ✅ `.github/workflows/env-check.yml` - Ubuntu environment validation
+- ✅ `.github/workflows/build-matrix.yml` - Cross-platform matrix testing
+- ✅ Both workflows properly configured per Phase 4 requirements
+- ✅ No direnv usage in CI (explicit SOPS decryption)
+- ✅ Secret cleanup with `if: always()`
 
 **Workflow Features Confirmed:**
 
@@ -129,33 +129,33 @@ Added comprehensive CI section to `docs/ENVIRONMENT.md` covering:
 
 **Test Structure Update:**
 
--   Added `test_ci_minimal.sh` to test harness documentation
+- Added `test_ci_minimal.sh` to test harness documentation
 
 **Roadmap Update:**
 
--   Marked Phase 4 complete in "Next Steps" section
+- Marked Phase 4 complete in "Next Steps" section
 
 ## Files Created/Modified
 
 ### Created
 
--   `tests/env/test_ci_minimal.sh` - CI workflow validation test (new)
+- `tests/env/test_ci_minimal.sh` - CI workflow validation test (new)
 
 ### Modified
 
--   `docs/ENVIRONMENT.md` - Added comprehensive CI section (~400 lines)
-    -   Complete workflow documentation
-    -   Debugging and troubleshooting guides
-    -   Best practices and optimization tips
-    -   CI vs local development comparison
--   Updated test structure to include `test_ci_minimal.sh`
--   Marked Phase 4 complete in roadmap
+- `docs/ENVIRONMENT.md` - Added comprehensive CI section (~400 lines)
+    - Complete workflow documentation
+    - Debugging and troubleshooting guides
+    - Best practices and optimization tips
+    - CI vs local development comparison
+- Updated test structure to include `test_ci_minimal.sh`
+- Marked Phase 4 complete in roadmap
 
 ### Verified (No Changes Needed)
 
--   `.github/workflows/env-check.yml` - Already properly configured
--   `.github/workflows/build-matrix.yml` - Already implements matrix testing
--   Other workflows: `node-tests.yml`, `integration-tests.yml`, etc.
+- `.github/workflows/env-check.yml` - Already properly configured
+- `.github/workflows/build-matrix.yml` - Already implements matrix testing
+- Other workflows: `node-tests.yml`, `integration-tests.yml`, etc.
 
 ## Test Results
 
@@ -183,8 +183,8 @@ CI workflow configuration test OK
 
 **Trigger:**
 
--   Push to main
--   Pull requests to main
+- Push to main
+- Pull requests to main
 
 **Steps:**
 
@@ -217,7 +217,6 @@ concurrency:
 **Jobs:**
 
 1. **Prepare** (Ubuntu)
-
     - Introspect `.mise.toml` for versions
     - Compute cache keys
     - Output versions for matrix
@@ -244,29 +243,29 @@ matrix:
 
 ### Phase 0 Integration
 
--   CI runs environment tests via `just test-env`
--   Uses test harness and helpers from Phase 0
--   Pre-commit hook validation runs locally before push
+- CI runs environment tests via `just test-env`
+- Uses test harness and helpers from Phase 0
+- Pre-commit hook validation runs locally before push
 
 ### Phase 1 Integration
 
--   CI installs and activates Devbox environment
--   OS-level tools (jq, make, PostgreSQL) available in CI
--   Devbox provides consistent toolchain across local and CI
+- CI installs and activates Devbox environment
+- OS-level tools (jq, make, PostgreSQL) available in CI
+- Devbox provides consistent toolchain across local and CI
 
 ### Phase 2 Integration
 
--   CI installs mise and all configured runtimes
--   `.mise.toml` is single source of truth for versions
--   `mise install` command identical in CI and local
--   Cache speeds up mise installation
+- CI installs mise and all configured runtimes
+- `.mise.toml` is single source of truth for versions
+- `mise install` command identical in CI and local
+- Cache speeds up mise installation
 
 ### Phase 3 Integration
 
--   CI uses explicit SOPS decryption (not direnv)
--   `SOPS_AGE_KEY` stored as GitHub secret
--   Secrets loaded into ephemeral environment
--   Always cleaned up with `if: always()`
+- CI uses explicit SOPS decryption (not direnv)
+- `SOPS_AGE_KEY` stored as GitHub secret
+- Secrets loaded into ephemeral environment
+- Always cleaned up with `if: always()`
 
 ## Key Differences: CI vs Local
 
@@ -282,11 +281,11 @@ matrix:
 
 **Why No direnv in CI?**
 
--   ✅ Explicit steps are easier to debug
--   ✅ No hidden dependencies on shell hooks
--   ✅ Clear secret lifecycle management
--   ✅ Logs show exactly what happens
--   ✅ No need for `direnv allow` step
+- ✅ Explicit steps are easier to debug
+- ✅ No hidden dependencies on shell hooks
+- ✅ Clear secret lifecycle management
+- ✅ Logs show exactly what happens
+- ✅ No need for `direnv allow` step
 
 ## Usage Examples
 
@@ -301,12 +300,12 @@ cat ~/.config/sops/age/keys.txt
 
 **2. Add to GitHub:**
 
--   Go to repository Settings
--   Navigate to Secrets and variables → Actions
--   Click "New repository secret"
--   Name: `SOPS_AGE_KEY`
--   Value: Paste private key
--   Click "Add secret"
+- Go to repository Settings
+- Navigate to Secrets and variables → Actions
+- Click "New repository secret"
+- Name: `SOPS_AGE_KEY`
+- Value: Paste private key
+- Click "Add secret"
 
 **3. Verify in workflow:**
 
@@ -344,9 +343,9 @@ just ai-validate
 
 **1. Check workflow logs:**
 
--   GitHub → Actions → Failed workflow
--   Expand failed step
--   Look for error messages
+- GitHub → Actions → Failed workflow
+- Expand failed step
+- Look for error messages
 
 **2. Reproduce locally:**
 
@@ -399,8 +398,8 @@ sops -d .secrets.env.sops  # Should show plaintext
 
 **Expected CI Times:**
 
--   env-check (Ubuntu): ~3-4 minutes (cold) / ~2 minutes (cached)
--   build-matrix (both OS): ~5-6 minutes (cold) / ~3-4 minutes (cached)
+- env-check (Ubuntu): ~3-4 minutes (cold) / ~2 minutes (cached)
+- build-matrix (both OS): ~5-6 minutes (cold) / ~3-4 minutes (cached)
 
 ### Concurrency Control
 
@@ -413,49 +412,49 @@ concurrency:
 
 **Benefits:**
 
--   ✅ Saves CI minutes
--   ✅ Faster feedback on latest code
--   ✅ Reduces queue times
+- ✅ Saves CI minutes
+- ✅ Faster feedback on latest code
+- ✅ Reduces queue times
 
 ## Security Posture
 
 ✅ **Secret Management**
 
--   Age private key stored as GitHub secret
--   Secrets decrypted to ephemeral /tmp file
--   Always cleaned up with `if: always()`
--   No secrets in logs (GitHub auto-masks)
+- Age private key stored as GitHub secret
+- Secrets decrypted to ephemeral /tmp file
+- Always cleaned up with `if: always()`
+- No secrets in logs (GitHub auto-masks)
 
 ✅ **Workflow Security**
 
--   Read-only permissions by default
--   Explicit permission grants only when needed
--   Dependabot updates for action versions
--   No `GITHUB_TOKEN` persistence
+- Read-only permissions by default
+- Explicit permission grants only when needed
+- Dependabot updates for action versions
+- No `GITHUB_TOKEN` persistence
 
 ✅ **Environment Isolation**
 
--   Each run gets fresh environment
--   No shared state between runs
--   Concurrency groups prevent conflicts
+- Each run gets fresh environment
+- No shared state between runs
+- Concurrency groups prevent conflicts
 
 ## Monitoring & Maintenance
 
 ### Key Metrics
 
--   ✅ Build time: Target < 5 minutes
--   ✅ Cache hit rate: > 80% (mise/pnpm)
--   ✅ Test pass rate: 100% on main
--   ✅ Secret decryption: Always succeeds
+- ✅ Build time: Target < 5 minutes
+- ✅ Cache hit rate: > 80% (mise/pnpm)
+- ✅ Test pass rate: 100% on main
+- ✅ Secret decryption: Always succeeds
 
 ### When to Update Workflows
 
 **Required updates when:**
 
--   Tool versions change (mise, devbox, sops)
--   New runtime added to `.mise.toml`
--   OS-level dependencies added to `devbox.json`
--   Security updates for GitHub Actions
+- Tool versions change (mise, devbox, sops)
+- New runtime added to `.mise.toml`
+- OS-level dependencies added to `devbox.json`
+- Security updates for GitHub Actions
 
 **How to update:**
 
@@ -482,26 +481,26 @@ act -j env-check
 
 **PRD-015: Minimal CI (Parity with Local)**
 
--   ✅ CI explicitly composes environment (no direnv)
--   ✅ Same layering: Devbox → mise → SOPS → tests
--   ✅ Validates on Ubuntu and macOS
--   ✅ Caching for performance parity
--   ✅ Environment tests run in CI
+- ✅ CI explicitly composes environment (no direnv)
+- ✅ Same layering: Devbox → mise → SOPS → tests
+- ✅ Validates on Ubuntu and macOS
+- ✅ Caching for performance parity
+- ✅ Environment tests run in CI
 
 **DEV-SPEC-004: CI Workflows** (Implicit)
 
--   ✅ Automated validation on every push/PR
--   ✅ Matrix testing for cross-platform
--   ✅ Secret management via GitHub secrets
--   ✅ Cache optimization for speed
--   ✅ Fail-fast: false for comprehensive testing
+- ✅ Automated validation on every push/PR
+- ✅ Matrix testing for cross-platform
+- ✅ Secret management via GitHub secrets
+- ✅ Cache optimization for speed
+- ✅ Fail-fast: false for comprehensive testing
 
 **DEV-ADR-XXX: CI Architecture** (Implicit)
 
--   ✅ GitHub Actions chosen for native integration
--   ✅ Explicit over implicit (no direnv in CI)
--   ✅ Layered approach mirrors local development
--   ✅ Caching strategy balances speed and freshness
+- ✅ GitHub Actions chosen for native integration
+- ✅ Explicit over implicit (no direnv in CI)
+- ✅ Layered approach mirrors local development
+- ✅ Caching strategy balances speed and freshness
 
 ## Next Steps
 
@@ -509,17 +508,17 @@ Phase 4 is **COMPLETE**. Ready to proceed to:
 
 **Phase 5: Volta Coexistence Checks**
 
--   Enhance `scripts/verify-node.sh` for better conflict detection
--   Add warnings when Volta and mise versions diverge
--   Document migration path from Volta to mise
--   Add `verify:node` step to all CI workflows
+- Enhance `scripts/verify-node.sh` for better conflict detection
+- Add warnings when Volta and mise versions diverge
+- Document migration path from Volta to mise
+- Add `verify:node` step to all CI workflows
 
 **Phase 6: Just Task Awareness**
 
--   Ensure all `just` recipes work with mise environment
--   Add environment checks to key tasks
--   Document environment requirements per task
--   Test task execution in both local and CI contexts
+- Ensure all `just` recipes work with mise environment
+- Add environment checks to key tasks
+- Document environment requirements per task
+- Test task execution in both local and CI contexts
 
 ## Test Coverage Summary
 
@@ -594,16 +593,16 @@ Phase 4 is **COMPLETE**. Ready to proceed to:
 
 ## Phase 4 Completion Checklist
 
--   [x] RED: Write CI workflow validation test (`test_ci_minimal.sh`)
--   [x] GREEN: Verify `env-check.yml` workflow configuration
--   [x] GREEN: Verify `build-matrix.yml` cross-platform testing
--   [x] GREEN: Confirm SOPS secret decryption in CI
--   [x] GREEN: Validate mise and Devbox installation in CI
--   [x] REFACTOR: Update documentation with comprehensive CI section
--   [x] REFACTOR: Add test to harness documentation
--   [x] REFACTOR: Update roadmap to mark Phase 4 complete
--   [x] Validate: Run `just test-env` (7/7 tests passing)
--   [x] Document: Create phase completion summary
+- [x] RED: Write CI workflow validation test (`test_ci_minimal.sh`)
+- [x] GREEN: Verify `env-check.yml` workflow configuration
+- [x] GREEN: Verify `build-matrix.yml` cross-platform testing
+- [x] GREEN: Confirm SOPS secret decryption in CI
+- [x] GREEN: Validate mise and Devbox installation in CI
+- [x] REFACTOR: Update documentation with comprehensive CI section
+- [x] REFACTOR: Add test to harness documentation
+- [x] REFACTOR: Update roadmap to mark Phase 4 complete
+- [x] Validate: Run `just test-env` (7/7 tests passing)
+- [x] Document: Create phase completion summary
 
 **Phase 4 Status: COMPLETE ✅**
 
@@ -613,11 +612,11 @@ Phase 4 is **COMPLETE**. Ready to proceed to:
 
 The VibesPro template now has production-ready CI/CD:
 
--   🤖 Automated environment validation on every push/PR
--   🌍 Cross-platform testing (Ubuntu + macOS)
--   🔒 Secure secret management via SOPS + GitHub secrets
--   ⚡ Optimized caching for fast builds (~2-4 minutes)
--   📚 Comprehensive documentation and troubleshooting
--   ✅ 7 environment tests validate entire infrastructure
+- 🤖 Automated environment validation on every push/PR
+- 🌍 Cross-platform testing (Ubuntu + macOS)
+- 🔒 Secure secret management via SOPS + GitHub secrets
+- ⚡ Optimized caching for fast builds (~2-4 minutes)
+- 📚 Comprehensive documentation and troubleshooting
+- ✅ 7 environment tests validate entire infrastructure
 
 **All CI/CD infrastructure from Phase 4 is validated and documented.**

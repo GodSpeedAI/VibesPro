@@ -13,14 +13,14 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
--   Development utilities and helper tools
--   Token measurement and metrics collection
--   Template validation and linting
--   Type generation and code analysis
--   AI context management tools
--   CLI utilities for developers
--   Performance monitoring tools
--   Documentation generation tools
+- Development utilities and helper tools
+- Token measurement and metrics collection
+- Template validation and linting
+- Type generation and code analysis
+- AI context management tools
+- CLI utilities for developers
+- Performance monitoring tools
+- Documentation generation tools
 
 **Architecture Layer**: N/A (Infrastructure/Tooling)
 
@@ -98,14 +98,14 @@ tools/
 
 ### Use This Context When:
 
--   [ ] Building developer utilities or tools
--   [ ] Creating validation scripts
--   [ ] Implementing metrics collection
--   [ ] Generating code or types
--   [ ] Working with AI context management
--   [ ] Building CLI interfaces
--   [ ] Creating test utilities or fixtures
--   [ ] Performance profiling or monitoring
+- [ ] Building developer utilities or tools
+- [ ] Creating validation scripts
+- [ ] Implementing metrics collection
+- [ ] Generating code or types
+- [ ] Working with AI context management
+- [ ] Building CLI interfaces
+- [ ] Creating test utilities or fixtures
+- [ ] Performance profiling or monitoring
 
 ### Refer to Other Contexts When:
 
@@ -123,19 +123,19 @@ tools/
 
 **Use TypeScript/JavaScript when:**
 
--   Integrating with Nx workspace
--   Working with Node.js ecosystem
--   Building CLI tools with inquirer, commander
--   Processing JSON or YAML files
--   Type generation from schemas
+- Integrating with Nx workspace
+- Working with Node.js ecosystem
+- Building CLI tools with inquirer, commander
+- Processing JSON or YAML files
+- Type generation from schemas
 
 **Use Python when:**
 
--   Text processing or parsing
--   Data analysis or metrics
--   Template validation (Jinja2)
--   Scientific computing or ML
--   File system batch operations
+- Text processing or parsing
+- Data analysis or metrics
+- Template validation (Jinja2)
+- Scientific computing or ML
+- File system batch operations
 
 ### Coding Standards
 
@@ -209,11 +209,11 @@ def process_files(
 
 **All tools must have tests:**
 
--   Unit tests in `tests/unit/tools/`
--   Use `node:assert` for simple Node tests
--   Use `pytest` for Python tests
--   Mock file system operations
--   Test error conditions
+- Unit tests in `tests/unit/tools/`
+- Use `node:assert` for simple Node tests
+- Use `pytest` for Python tests
+- Mock file system operations
+- Test error conditions
 
 **Example test structure:**
 
@@ -288,15 +288,15 @@ process.exit(3);
 
 **Modular instructions that apply here:**
 
--   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
--   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in tools
--   [.github/instructions/style.frontend.instructions.md](/.github/instructions/style.frontend.instructions.md) - TypeScript style
--   [.github/instructions/style.python.instructions.md](/.github/instructions/style.python.instructions.md) - Python style
--   [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance guidelines
+- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
+- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in tools
+- [.github/instructions/style.frontend.instructions.md](/.github/instructions/style.frontend.instructions.md) - TypeScript style
+- [.github/instructions/style.python.instructions.md](/.github/instructions/style.python.instructions.md) - Python style
+- [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance guidelines
 
 **Relevant prompts:**
 
--   [.github/prompts/tool.techstack.sync.prompt.md](/.github/prompts/tool.techstack.sync.prompt.md) - Techstack synchronization
+- [.github/prompts/tool.techstack.sync.prompt.md](/.github/prompts/tool.techstack.sync.prompt.md) - Techstack synchronization
 
 ## 💡 Examples
 
@@ -497,30 +497,30 @@ export class ContextManager {
 
 ### Before Creating a New Tool:
 
--   [ ] Check if similar tool already exists
--   [ ] Choose appropriate language (TS vs Python)
--   [ ] Define clear purpose and interface
--   [ ] Plan error handling strategy
--   [ ] Design for testability
--   [ ] Consider CLI usage patterns
+- [ ] Check if similar tool already exists
+- [ ] Choose appropriate language (TS vs Python)
+- [ ] Define clear purpose and interface
+- [ ] Plan error handling strategy
+- [ ] Design for testability
+- [ ] Consider CLI usage patterns
 
 ### While Developing:
 
--   [ ] Write type definitions (TypeScript) or type hints (Python)
--   [ ] Implement proper error handling
--   [ ] Add logging for debugging
--   [ ] Write unit tests
--   [ ] Add docstrings/JSDoc comments
--   [ ] Handle edge cases
+- [ ] Write type definitions (TypeScript) or type hints (Python)
+- [ ] Implement proper error handling
+- [ ] Add logging for debugging
+- [ ] Write unit tests
+- [ ] Add docstrings/JSDoc comments
+- [ ] Handle edge cases
 
 ### After Developing:
 
--   [ ] Run linters: `pnpm lint` or `ruff check`
--   [ ] Run type checker: `tsc --noEmit` or `mypy`
--   [ ] Run tests: `just test-unit`
--   [ ] Update this AGENT.md if new pattern emerges
--   [ ] Document usage in tool's README or docstring
--   [ ] Add to justfile if frequently used
+- [ ] Run linters: `pnpm lint` or `ruff check`
+- [ ] Run type checker: `tsc --noEmit` or `mypy`
+- [ ] Run tests: `just test-unit`
+- [ ] Update this AGENT.md if new pattern emerges
+- [ ] Document usage in tool's README or docstring
+- [ ] Add to justfile if frequently used
 
 ## 🔍 Quick Reference
 
@@ -552,43 +552,43 @@ mypy tools/
 
 #### AI & Context
 
--   `ai/context_manager.ts` - Bundle AI context
--   `ai/token_counter.ts` - Count tokens
--   `prompt/render_prompt.js` - Render prompts
+- `ai/context_manager.ts` - Bundle AI context
+- `ai/token_counter.ts` - Count tokens
+- `prompt/render_prompt.js` - Render prompts
 
 #### Validation
 
--   `prompt/validate_prompts.py` - Validate prompt files
--   `ci/validate_workflows.js` - Validate GitHub Actions
--   `check_templates.py` - Validate Jinja2 templates
+- `prompt/validate_prompts.py` - Validate prompt files
+- `ci/validate_workflows.js` - Validate GitHub Actions
+- `check_templates.py` - Validate Jinja2 templates
 
 #### Metrics
 
--   `metrics/token_metrics.py` - Track token usage
--   `metrics/build_metrics.js` - Build performance
--   `performance/profiler.js` - Performance profiling
+- `metrics/token_metrics.py` - Track token usage
+- `metrics/build_metrics.js` - Build performance
+- `performance/profiler.js` - Performance profiling
 
 #### Generation
 
--   `type-generator/generate_schema_types.ts` - Generate types
--   `docs/generate_api_docs.ts` - Generate API docs
--   `test/fixture_generator.py` - Generate test fixtures
+- `type-generator/generate_schema_types.ts` - Generate types
+- `docs/generate_api_docs.ts` - Generate API docs
+- `test/fixture_generator.py` - Generate test fixtures
 
 #### Documentation
 
--   `docs/link_check.js` - Check markdown links
--   `calm/generate_calm.py` - Generate CALM diagrams
+- `docs/link_check.js` - Check markdown links
+- `calm/generate_calm.py` - Generate CALM diagrams
 
 ## 🛡️ Security Considerations
 
 **CRITICAL** for tools:
 
--   ⚠️ **NEVER** hardcode secrets or API keys in tool code
--   ⚠️ **NEVER** execute arbitrary user input without validation
--   ⚠️ Validate all file paths (avoid path traversal)
--   ⚠️ Sanitize shell commands (avoid injection)
--   ⚠️ Use environment variables for sensitive configuration
--   ⚠️ Audit dependencies regularly: `just audit`
+- ⚠️ **NEVER** hardcode secrets or API keys in tool code
+- ⚠️ **NEVER** execute arbitrary user input without validation
+- ⚠️ Validate all file paths (avoid path traversal)
+- ⚠️ Sanitize shell commands (avoid injection)
+- ⚠️ Use environment variables for sensitive configuration
+- ⚠️ Audit dependencies regularly: `just audit`
 
 **Example secure file access:**
 
@@ -691,18 +691,18 @@ describe("validateConfig", () => {
 
 ### Regular Tasks
 
--   **Weekly**: Run tool tests to catch regressions
--   **Monthly**: Update tool dependencies
--   **Quarterly**: Audit tool usage and deprecate unused tools
--   **As needed**: Refactor based on usage patterns
+- **Weekly**: Run tool tests to catch regressions
+- **Monthly**: Update tool dependencies
+- **Quarterly**: Audit tool usage and deprecate unused tools
+- **As needed**: Refactor based on usage patterns
 
 ### When to Update This AGENT.md
 
--   New tool category added
--   Testing patterns change
--   CLI conventions evolve
--   Integration patterns emerge
--   Security best practices update
+- New tool category added
+- Testing patterns change
+- CLI conventions evolve
+- Integration patterns emerge
+- Security best practices update
 
 ---
 

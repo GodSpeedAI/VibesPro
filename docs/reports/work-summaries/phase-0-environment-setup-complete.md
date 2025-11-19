@@ -16,21 +16,21 @@ Created a lightweight, portable test framework for validating environment setup:
 
 **Files Created:**
 
--   `tests/env/README.md` – Documentation for the test harness
--   `tests/env/helpers.sh` – Reusable shell helpers (assertions, temp dirs)
--   `tests/env/run.sh` – Test discovery and execution runner
--   `tests/env/.gitkeep` – Ensures directory is tracked in git
--   `tests/env/test_sanity.sh` – Basic harness validation
--   `tests/env/test_doctor.sh` – Validates doctor script output
--   `tests/env/test_harness.sh` – Validates test discovery mechanism
+- `tests/env/README.md` – Documentation for the test harness
+- `tests/env/helpers.sh` – Reusable shell helpers (assertions, temp dirs)
+- `tests/env/run.sh` – Test discovery and execution runner
+- `tests/env/.gitkeep` – Ensures directory is tracked in git
+- `tests/env/test_sanity.sh` – Basic harness validation
+- `tests/env/test_doctor.sh` – Validates doctor script output
+- `tests/env/test_harness.sh` – Validates test discovery mechanism
 
 **Key Features:**
 
--   Automatic test discovery (finds `test_*.sh` files)
--   Portable shell helpers for common assertions
--   Fail-fast execution (stops on first error)
--   Cross-platform temp directory creation
--   No external dependencies (pure bash)
+- Automatic test discovery (finds `test_*.sh` files)
+- Portable shell helpers for common assertions
+- Fail-fast execution (stops on first error)
+- Cross-platform temp directory creation
+- No external dependencies (pure bash)
 
 ### 2. Environment Doctor Script
 
@@ -38,15 +38,15 @@ Created `scripts/doctor.sh` to provide quick environment health checks:
 
 **What It Reports:**
 
--   Current user and OS information
--   Shell and PATH configuration (first 6 entries)
--   Tool availability and versions (git, node, pnpm, python, rust, cargo, uv, etc.)
+- Current user and OS information
+- Shell and PATH configuration (first 6 entries)
+- Tool availability and versions (git, node, pnpm, python, rust, cargo, uv, etc.)
 
 **Security Features:**
 
--   Intentionally avoids printing environment variables
--   Never echoes secrets or sensitive configuration
--   Safe to run in any environment
+- Intentionally avoids printing environment variables
+- Never echoes secrets or sensitive configuration
+- Safe to run in any environment
 
 ### 3. Git Pre-commit Hook
 
@@ -54,14 +54,14 @@ Created `.githooks/pre-commit` to prevent secret leakage:
 
 **Protection Against:**
 
--   Committing plaintext `.env` or `.env.local` files
--   Committing content with common secret patterns (API keys, tokens, passwords)
+- Committing plaintext `.env` or `.env.local` files
+- Committing content with common secret patterns (API keys, tokens, passwords)
 
 **Allows:**
 
--   Encrypted secrets (`.secrets.env.sops`)
--   Environment variable references
--   Bypass with `git commit --no-verify` (with warning)
+- Encrypted secrets (`.secrets.env.sops`)
+- Environment variable references
+- Bypass with `git commit --no-verify` (with warning)
 
 ### 4. Just Task Integration
 
@@ -83,14 +83,14 @@ doctor:
 
 Created comprehensive `docs/ENVIRONMENT.md` covering:
 
--   Environment setup overview and quick start
--   Test harness structure and usage
--   Writing new environment tests
--   Doctor script functionality
--   Secret management with git hooks
--   Task orchestration with Just
--   Troubleshooting common issues
--   Roadmap for Phases 1-6
+- Environment setup overview and quick start
+- Test harness structure and usage
+- Writing new environment tests
+- Doctor script functionality
+- Secret management with git hooks
+- Task orchestration with Just
+- Troubleshooting common issues
+- Roadmap for Phases 1-6
 
 Updated `README.md` to reference the new environment documentation.
 
@@ -120,30 +120,30 @@ Sanity OK
 
 **Test Infrastructure:**
 
--   `tests/env/README.md`
--   `tests/env/helpers.sh`
--   `tests/env/run.sh`
--   `tests/env/.gitkeep`
--   `tests/env/test_sanity.sh`
--   `tests/env/test_doctor.sh`
--   `tests/env/test_harness.sh`
+- `tests/env/README.md`
+- `tests/env/helpers.sh`
+- `tests/env/run.sh`
+- `tests/env/.gitkeep`
+- `tests/env/test_sanity.sh`
+- `tests/env/test_doctor.sh`
+- `tests/env/test_harness.sh`
 
 **Scripts:**
 
--   `scripts/doctor.sh`
+- `scripts/doctor.sh`
 
 **Git Hooks:**
 
--   `.githooks/pre-commit`
+- `.githooks/pre-commit`
 
 **Documentation:**
 
--   `docs/ENVIRONMENT.md`
+- `docs/ENVIRONMENT.md`
 
 ### Modified Files (2 total)
 
--   `justfile` – Added `test-env` and `doctor` targets
--   `README.md` – Added environment documentation reference
+- `justfile` – Added `test-env` and `doctor` targets
+- `README.md` – Added environment documentation reference
 
 ## Usage Examples
 
@@ -193,15 +193,15 @@ echo "Feature test OK"
 
 This implementation fulfills Phase 0 requirements from `docs/tmp/devenv.md`:
 
--   ✅ **0.1** Added lightweight env test harness
--   ✅ **0.2** Added test runner tasks (`just test-env`, `just doctor`)
--   ✅ **0.3** Added pre-commit secret leak guard
+- ✅ **0.1** Added lightweight env test harness
+- ✅ **0.2** Added test runner tasks (`just test-env`, `just doctor`)
+- ✅ **0.3** Added pre-commit secret leak guard
 
 Maps to specifications:
 
--   **PRD-011..016** (Environment setup strategy)
--   **DEV-SPEC-006** (CI posture and security)
--   **DEV-SPEC-008** (Testing strategy)
+- **PRD-011..016** (Environment setup strategy)
+- **DEV-SPEC-006** (CI posture and security)
+- **DEV-SPEC-008** (Testing strategy)
 
 ## Next Steps (Phase 1+)
 
@@ -209,57 +209,57 @@ The foundation is complete. Next phases can now add:
 
 ### Phase 1 – Devbox Integration
 
--   Create `devbox.json`
--   Add `tests/env/test_devbox.sh`
--   Document devbox usage
+- Create `devbox.json`
+- Add `tests/env/test_devbox.sh`
+- Document devbox usage
 
 ### Phase 2 – mise Runtime Management
 
--   Create `.mise.toml`
--   Add `tests/env/test_mise_versions.sh`
--   Remove `.python-version` (mise becomes authoritative)
+- Create `.mise.toml`
+- Add `tests/env/test_mise_versions.sh`
+- Remove `.python-version` (mise becomes authoritative)
 
 ### Phase 3 – SOPS Secrets
 
--   Create `.sops.yaml` and `.secrets.env.sops`
--   Add `tests/env/test_sops_local.sh`
--   Document secret rotation
+- Create `.sops.yaml` and `.secrets.env.sops`
+- Add `tests/env/test_sops_local.sh`
+- Document secret rotation
 
 ### Phase 4 – Minimal CI
 
--   Add `.github/workflows/env-check.yml`
--   Add `tests/env/test_ci_minimal.sh`
+- Add `.github/workflows/env-check.yml`
+- Add `tests/env/test_ci_minimal.sh`
 
 ### Phase 5 – Volta Coexistence
 
--   Add `tests/env/test_volta_mise_guard.sh`
--   Document deprecation timeline
+- Add `tests/env/test_volta_mise_guard.sh`
+- Document deprecation timeline
 
 ### Phase 6 – Just Task Awareness
 
--   Add `tests/env/test_just_tasks.sh`
--   Ensure all tasks work in local + CI
+- Add `tests/env/test_just_tasks.sh`
+- Ensure all tasks work in local + CI
 
 ## Validation Checklist
 
--   [x] All env tests pass locally
--   [x] `just test-env` executes successfully
--   [x] `just doctor` reports environment health
--   [x] Pre-commit hook prevents secret leakage
--   [x] Documentation complete and accurate
--   [x] README.md updated with references
--   [x] No breaking changes to existing workflows
--   [x] Tests are portable (bash, no external deps)
--   [x] Security best practices followed
+- [x] All env tests pass locally
+- [x] `just test-env` executes successfully
+- [x] `just doctor` reports environment health
+- [x] Pre-commit hook prevents secret leakage
+- [x] Documentation complete and accurate
+- [x] README.md updated with references
+- [x] No breaking changes to existing workflows
+- [x] Tests are portable (bash, no external deps)
+- [x] Security best practices followed
 
 ## Metrics
 
--   **Lines of code added:** ~400
--   **Files created:** 10
--   **Files modified:** 2
--   **Test coverage:** 3 environment tests (sanity, doctor, harness)
--   **Time to run tests:** <1 second
--   **Time to implement:** ~30 minutes
+- **Lines of code added:** ~400
+- **Files created:** 10
+- **Files modified:** 2
+- **Test coverage:** 3 environment tests (sanity, doctor, harness)
+- **Time to run tests:** <1 second
+- **Time to implement:** ~30 minutes
 
 ## Conclusion
 
@@ -279,11 +279,11 @@ The test harness is production-ready and can be extended with additional tests a
 
 **Traceability:**
 
--   PRD-011: Devbox as OS boundary (ready for implementation)
--   PRD-012: mise as runtime manager (ready for implementation)
--   PRD-013: SOPS for secrets (infrastructure ready)
--   PRD-014: Just task awareness (infrastructure ready)
--   PRD-015: Minimal CI (infrastructure ready)
--   PRD-016: Volta coexistence (infrastructure ready)
--   DEV-SPEC-006: CI posture ✅
--   DEV-SPEC-008: Testing strategy ✅
+- PRD-011: Devbox as OS boundary (ready for implementation)
+- PRD-012: mise as runtime manager (ready for implementation)
+- PRD-013: SOPS for secrets (infrastructure ready)
+- PRD-014: Just task awareness (infrastructure ready)
+- PRD-015: Minimal CI (infrastructure ready)
+- PRD-016: Volta coexistence (infrastructure ready)
+- DEV-SPEC-006: CI posture ✅
+- DEV-SPEC-008: Testing strategy ✅

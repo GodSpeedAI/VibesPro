@@ -12,16 +12,16 @@ Enforce TypeScript strict mode and Python mypy strict mode across all code, impl
 
 ## Success Criteria (Binary Pass/Fail)
 
--   [ ] **TypeScript Strict Mode Enforced**: `tsconfig.base.json` has `strict: true`, ESLint catches all `any` usage, zero violations in codebase
--   [ ] **Python Strict Mode Enforced**: `mypy --strict` passes, ≥95% type coverage, all public APIs fully typed
--   [ ] **Type Sync Workflow Operational**: GitHub Actions workflow auto-generates types from Supabase migrations, creates PRs on drift
--   [ ] **Pre-commit Hooks Validate Types**: Husky hooks run `tsc --noEmit` and `mypy --strict`, block commits with type errors
--   [ ] **CI Type Gates Pass**: All CI checks (`pnpm tsc --noEmit`, `uv run mypy --strict`, `pnpm nx run-many -t lint`) GREEN
--   [ ] **Zero Type Violations**: No `any` types in TypeScript, no `type: ignore` in Python (except documented exceptions)
--   [ ] **Type Generator Integration**: `nx run type-generator:generate` produces TypeScript and Python types from Supabase schema
--   [ ] **Zero CI Failures**: All quality gates pass
--   [ ] **Zero Technical Debt**: Follows strict typing guidelines from `.github/instructions/style.*.instructions.md`
--   [ ] **Production Ready**: Documentation includes migration guide for existing code, justfile recipes for type workflows
+- [ ] **TypeScript Strict Mode Enforced**: `tsconfig.base.json` has `strict: true`, ESLint catches all `any` usage, zero violations in codebase
+- [ ] **Python Strict Mode Enforced**: `mypy --strict` passes, ≥95% type coverage, all public APIs fully typed
+- [ ] **Type Sync Workflow Operational**: GitHub Actions workflow auto-generates types from Supabase migrations, creates PRs on drift
+- [ ] **Pre-commit Hooks Validate Types**: Husky hooks run `tsc --noEmit` and `mypy --strict`, block commits with type errors
+- [ ] **CI Type Gates Pass**: All CI checks (`pnpm tsc --noEmit`, `uv run mypy --strict`, `pnpm nx run-many -t lint`) GREEN
+- [ ] **Zero Type Violations**: No `any` types in TypeScript, no `type: ignore` in Python (except documented exceptions)
+- [ ] **Type Generator Integration**: `nx run type-generator:generate` produces TypeScript and Python types from Supabase schema
+- [ ] **Zero CI Failures**: All quality gates pass
+- [ ] **Zero Technical Debt**: Follows strict typing guidelines from `.github/instructions/style.*.instructions.md`
+- [ ] **Production Ready**: Documentation includes migration guide for existing code, justfile recipes for type workflows
 
 **Failure Mode**: If any criterion fails, continue iterating until all pass. Do not proceed to PHASE-005 with type violations or broken workflows.
 
@@ -33,20 +33,20 @@ Enforce TypeScript strict mode and Python mypy strict mode across all code, impl
 
 **Impact**:
 
--   **Template Users**: Generate projects with loose typing—`any` escapes everywhere, bugs slip through
--   **Type Safety**: Manual type sync between Supabase and app code—schema drift causes production errors
--   **Developer Experience**: Runtime errors instead of compile-time errors—debugging takes 10× longer
--   **CI/CD**: No type validation gates—broken types merge to main, break production
--   **Maintenance**: Type violations accumulate—technical debt grows, refactoring becomes impossible
--   **Cost of Inaction**: Production bugs from type mismatches, hours wasted debugging, team velocity drops
+- **Template Users**: Generate projects with loose typing—`any` escapes everywhere, bugs slip through
+- **Type Safety**: Manual type sync between Supabase and app code—schema drift causes production errors
+- **Developer Experience**: Runtime errors instead of compile-time errors—debugging takes 10× longer
+- **CI/CD**: No type validation gates—broken types merge to main, break production
+- **Maintenance**: Type violations accumulate—technical debt grows, refactoring becomes impossible
+- **Cost of Inaction**: Production bugs from type mismatches, hours wasted debugging, team velocity drops
 
 **Target State**:
 
--   Compiler catches all type errors before runtime (TypeScript + Python)
--   Supabase schema changes auto-generate types—zero manual sync, zero drift
--   Pre-commit hooks block type violations locally—fast feedback loop
--   CI enforces types as quality gate—no broken types reach main
--   Type coverage metrics tracked—regression impossible
+- Compiler catches all type errors before runtime (TypeScript + Python)
+- Supabase schema changes auto-generate types—zero manual sync, zero drift
+- Pre-commit hooks block type violations locally—fast feedback loop
+- CI enforces types as quality gate—no broken types reach main
+- Type coverage metrics tracked—regression impossible
 
 **Risk Level**: **HIGH** → **LOW** (after completion, type errors eliminated at compile time, not runtime)
 
@@ -208,11 +208,11 @@ async request<TResponse>(
 
 **Common patterns**:
 
--   Replace `any` with `unknown` + type guards
--   Use generics for flexible typing
--   Add explicit return types to all functions
--   Use `Record<string, unknown>` for object types
--   Use discriminated unions for complex types
+- Replace `any` with `unknown` + type guards
+- Use generics for flexible typing
+- Add explicit return types to all functions
+- Use `Record<string, unknown>` for object types
+- Use discriminated unions for complex types
 
 5. **🔵 REFACTOR Phase - Add type utilities**:
 
@@ -273,13 +273,13 @@ jobs:
 
 **Exit Criteria**:
 
--   [ ] `tsconfig.base.json` has all strict options enabled
--   [ ] ESLint rules ban `any` with error level
--   [ ] All existing `any` violations fixed (or documented exceptions in comments)
--   [ ] `pnpm tsc --noEmit` passes with zero errors
--   [ ] `pnpm nx run-many -t lint` passes with zero `any` violations
--   [ ] Type guard utilities created for runtime validation
--   [ ] **Traceability**: Code references DEV-ADR-029, DEV-SDS-029, DEV-PRD-030
+- [ ] `tsconfig.base.json` has all strict options enabled
+- [ ] ESLint rules ban `any` with error level
+- [ ] All existing `any` violations fixed (or documented exceptions in comments)
+- [ ] `pnpm tsc --noEmit` passes with zero errors
+- [ ] `pnpm nx run-many -t lint` passes with zero `any` violations
+- [ ] Type guard utilities created for runtime validation
+- [ ] **Traceability**: Code references DEV-ADR-029, DEV-SDS-029, DEV-PRD-030
 
 ---
 
@@ -399,11 +399,11 @@ class UnitOfWork(Protocol):
 
 **Common patterns**:
 
--   Use `Protocol` for interfaces (replaces abstract base classes)
--   Use `TypeVar` and `Generic` for flexible typing
--   Use `collections.abc` types (`Awaitable`, `Callable`, `Sequence`)
--   Add docstrings with type information
--   Use `NewType` for domain-specific types
+- Use `Protocol` for interfaces (replaces abstract base classes)
+- Use `TypeVar` and `Generic` for flexible typing
+- Use `collections.abc` types (`Awaitable`, `Callable`, `Sequence`)
+- Add docstrings with type information
+- Use `NewType` for domain-specific types
 
 5. **🔵 REFACTOR Phase - Add type aliases and NewTypes**:
 
@@ -447,13 +447,13 @@ type-check-all:
 
 **Exit Criteria**:
 
--   [ ] `mypy.ini` configured with strict mode
--   [ ] `pyproject.toml` has mypy configuration
--   [ ] All Python modules have type hints
--   [ ] `uv run mypy --strict .` passes with zero errors
--   [ ] Zero mypy errors on all public modules (verify with `uv run mypy --strict .`)
--   [ ] Domain-specific `NewType` definitions created
--   [ ] **Traceability**: Code references DEV-ADR-029, DEV-SDS-029, DEV-PRD-030
+- [ ] `mypy.ini` configured with strict mode
+- [ ] `pyproject.toml` has mypy configuration
+- [ ] All Python modules have type hints
+- [ ] `uv run mypy --strict .` passes with zero errors
+- [ ] Zero mypy errors on all public modules (verify with `uv run mypy --strict .`)
+- [ ] Domain-specific `NewType` definitions created
+- [ ] **Traceability**: Code references DEV-ADR-029, DEV-SDS-029, DEV-PRD-030
 
 ---
 
@@ -696,13 +696,13 @@ type-sync:
 
 **Exit Criteria**:
 
--   [ ] Type-sync workflow created and tested
--   [ ] Workflow triggers on Supabase migration changes
--   [ ] Workflow creates PR when type drift detected
--   [ ] Generated types pass TypeScript and Python validation
--   [ ] Manual trigger works: can run workflow via Actions tab
--   [ ] Weekly scheduled sync configured
--   [ ] **Traceability**: Workflow references DEV-PRD-031, DEV-SDS-030
+- [ ] Type-sync workflow created and tested
+- [ ] Workflow triggers on Supabase migration changes
+- [ ] Workflow creates PR when type drift detected
+- [ ] Generated types pass TypeScript and Python validation
+- [ ] Manual trigger works: can run workflow via Actions tab
+- [ ] Weekly scheduled sync configured
+- [ ] **Traceability**: Workflow references DEV-PRD-031, DEV-SDS-030
 
 ---
 
@@ -1049,9 +1049,9 @@ function isUser(val: unknown): val is User {
 
 ### Configuration
 
--   `mypy --strict` enabled
--   All public APIs must be typed
--   Use `Protocol` for interfaces
+- `mypy --strict` enabled
+- All public APIs must be typed
+- Use `Protocol` for interfaces
 
 ### Best Practices
 
@@ -1085,9 +1085,9 @@ Types are auto-generated from Supabase schema.
 
 ### Automatic (CI)
 
--   Workflow runs on Supabase migration changes
--   Creates PR with updated types
--   Review and merge PR
+- Workflow runs on Supabase migration changes
+- Creates PR with updated types
+- Review and merge PR
 
 ### Manual (Local)
 
@@ -1187,10 +1187,10 @@ Work module by module, starting with domain layer.
 
 **Exit Criteria**:
 
--   [ ] Type safety guide documents best practices
--   [ ] Migration guide helps with existing code
--   [ ] Traceability matrix updated
--   [ ] All documentation reviewed and accurate
+- [ ] Type safety guide documents best practices
+- [ ] Migration guide helps with existing code
+- [ ] Traceability matrix updated
+- [ ] All documentation reviewed and accurate
 
 ---
 
@@ -1207,11 +1207,11 @@ Work module by module, starting with domain layer.
 
 **Context Check**: After reading, you should understand:
 
--   Why strict typing matters (catch errors at compile time)
--   TypeScript strict mode options
--   Python mypy strict configuration
--   Type sync workflow (Supabase → generated types)
--   Pre-commit hook purpose (fast feedback)
+- Why strict typing matters (catch errors at compile time)
+- TypeScript strict mode options
+- Python mypy strict configuration
+- Type sync workflow (Supabase → generated types)
+- Pre-commit hook purpose (fast feedback)
 
 ---
 
@@ -1221,19 +1221,19 @@ Work module by module, starting with domain layer.
 
 You are **authorized** to:
 
--   Choose type guard patterns and utilities
--   Add type aliases for common patterns
--   Create domain-specific NewTypes in Python
--   Use `@ts-expect-error` as a temporary emergency escape hatch when blocked by external library bugs or impossible refactors within release windows (max 3 exceptions per release, each with justification comment linking to tracked ticket/issue, requires reviewer approval)
--   Configure mypy overrides for test files
+- Choose type guard patterns and utilities
+- Add type aliases for common patterns
+- Create domain-specific NewTypes in Python
+- Use `@ts-expect-error` as a temporary emergency escape hatch when blocked by external library bugs or impossible refactors within release windows (max 3 exceptions per release, each with justification comment linking to tracked ticket/issue, requires reviewer approval)
+- Configure mypy overrides for test files
 
 You **must ask** before:
 
--   Disabling strict mode for any module
--   Adding `any` types (must use `unknown` instead)
--   Changing core TypeScript/Python configuration
--   Modifying CI workflow triggers
--   Bypassing type checks in production code
+- Disabling strict mode for any module
+- Adding `any` types (must use `unknown` instead)
+- Changing core TypeScript/Python configuration
+- Modifying CI workflow triggers
+- Bypassing type checks in production code
 
 ### Quality Gates
 
@@ -1290,28 +1290,28 @@ After completing each task, provide:
 
 ### Changes Made
 
--   Created: [list of new files]
--   Modified: [list of changed files]
--   Type violations fixed: [count]
+- Created: [list of new files]
+- Modified: [list of changed files]
+- Type violations fixed: [count]
 
 ### Verification Results
 
--   [ ] TypeScript: `pnpm tsc --noEmit` (0 errors)
--   [ ] Python: `uv run mypy --strict` (0 errors)
--   [ ] Lint: `pnpm nx run-many -t lint` (0 violations)
--   [ ] Type coverage: [percentage]%
+- [ ] TypeScript: `pnpm tsc --noEmit` (0 errors)
+- [ ] Python: `uv run mypy --strict` (0 errors)
+- [ ] Lint: `pnpm nx run-many -t lint` (0 violations)
+- [ ] Type coverage: [percentage]%
 
 ### Configuration
 
--   [ ] tsconfig.base.json: strict mode enabled
--   [ ] mypy.ini: strict mode enabled
--   [ ] ESLint: any banned
--   [ ] CI: workflows configured
+- [ ] tsconfig.base.json: strict mode enabled
+- [ ] mypy.ini: strict mode enabled
+- [ ] ESLint: any banned
+- [ ] CI: workflows configured
 
 ### Traceability
 
--   Spec IDs: [DEV-ADR-XXX, DEV-SDS-XXX, DEV-PRD-XXX]
--   Commit: [example message]
+- Spec IDs: [DEV-ADR-XXX, DEV-SDS-XXX, DEV-PRD-XXX]
+- Commit: [example message]
 
 ### Blockers (if any)
 
@@ -1368,29 +1368,29 @@ const result = someFunction(wrongType);
 
 **Essential Files**:
 
--   `docs/dev_adr.md` — ADR-029 (strict typing)
--   `docs/dev_sds.md` — SDS-029, SDS-030 (configuration)
--   `docs/dev_prd.md` — PRD-030, PRD-031 (requirements)
--   `.github/instructions/style.frontend.instructions.md` — TypeScript style
--   `.github/instructions/style.python.instructions.md` — Python style
+- `docs/dev_adr.md` — ADR-029 (strict typing)
+- `docs/dev_sds.md` — SDS-029, SDS-030 (configuration)
+- `docs/dev_prd.md` — PRD-030, PRD-031 (requirements)
+- `.github/instructions/style.frontend.instructions.md` — TypeScript style
+- `.github/instructions/style.python.instructions.md` — Python style
 
 **Reference Implementations**:
 
--   Study existing `libs/shared/web` for type patterns
--   Review `libs/shared/domain` for Protocol usage
--   Check `.github/workflows/` for CI patterns
+- Study existing `libs/shared/web` for type patterns
+- Review `libs/shared/domain` for Protocol usage
+- Check `.github/workflows/` for CI patterns
 
 **API/Library Documentation**:
 
--   TypeScript Handbook: https://www.typescriptlang.org/docs/handbook/
--   mypy Documentation: https://mypy.readthedocs.io/
--   Supabase Type Generation: https://supabase.com/docs/guides/api/generating-types
--   Husky: https://typicode.github.io/husky/
+- TypeScript Handbook: https://www.typescriptlang.org/docs/handbook/
+- mypy Documentation: https://mypy.readthedocs.io/
+- Supabase Type Generation: https://supabase.com/docs/guides/api/generating-types
+- Husky: https://typicode.github.io/husky/
 
 **Related Prior Work**:
 
--   PHASE-002: UoW/EventBus type patterns
--   PHASE-003: ApiClient type patterns
+- PHASE-002: UoW/EventBus type patterns
+- PHASE-003: ApiClient type patterns
 
 ---
 
@@ -1398,34 +1398,34 @@ const result = someFunction(wrongType);
 
 ### Performance
 
--   Type checking adds CI time—parallelize checks when possible
--   Incremental type checking (TypeScript's `--incremental` flag)
--   Cache mypy results in CI
+- Type checking adds CI time—parallelize checks when possible
+- Incremental type checking (TypeScript's `--incremental` flag)
+- Cache mypy results in CI
 
 ### Security
 
--   Type safety prevents many injection attacks (validated inputs)
--   Never bypass types for user input validation
--   Type guards must validate structure, not just cast
+- Type safety prevents many injection attacks (validated inputs)
+- Never bypass types for user input validation
+- Type guards must validate structure, not just cast
 
 ### Compatibility
 
--   TypeScript 5.x required for latest strict features
--   Python 3.11+ for better type inference
--   Supabase CLI must support type generation
+- TypeScript 5.x required for latest strict features
+- Python 3.11+ for better type inference
+- Supabase CLI must support type generation
 
 ### Migration Strategy
 
--   Fix domain layer first (pure types, no framework deps)
--   Then application layer (use cases)
--   Then infrastructure last (external deps may need ignores)
--   Tests can be more lenient during migration
+- Fix domain layer first (pure types, no framework deps)
+- Then application layer (use cases)
+- Then infrastructure last (external deps may need ignores)
+- Tests can be more lenient during migration
 
 ### Observability
 
--   Track type coverage metrics over time
--   Log type-sync workflow runs
--   Alert on type drift that persists >1 week
+- Track type coverage metrics over time
+- Log type-sync workflow runs
+- Alert on type drift that persists >1 week
 
 ---
 
@@ -1457,8 +1457,8 @@ Report status after completing each task using the output format above.
 
 **Traceability Matrix Update Required**: After phase completion, add entries:
 
--   DEV-ADR-029 → `tsconfig.base.json`, `mypy.ini`
--   DEV-SDS-029 → `.eslintrc.json`, `pyproject.toml`
--   DEV-SDS-030 → `.husky/pre-commit`, `.github/workflows/type-sync.yml`
--   DEV-PRD-030 → CI type check jobs
--   DEV-PRD-031 → Type-sync workflow
+- DEV-ADR-029 → `tsconfig.base.json`, `mypy.ini`
+- DEV-SDS-029 → `.eslintrc.json`, `pyproject.toml`
+- DEV-SDS-030 → `.husky/pre-commit`, `.github/workflows/type-sync.yml`
+- DEV-PRD-030 → CI type check jobs
+- DEV-PRD-031 → Type-sync workflow

@@ -28,49 +28,49 @@ Successfully implemented **PHASE-002** of the HexDDD integration, establishing p
 
 ### ✅ UoW Contracts Complete
 
--   **TypeScript**: Full interface with transaction management, entity tracking
--   **Python**: Protocol-based with async/await support
--   **In-Memory Adapters**: Both languages, production-ready
--   **Tests**: 11 TS + 12 Python = **23/23 passing**
+- **TypeScript**: Full interface with transaction management, entity tracking
+- **Python**: Protocol-based with async/await support
+- **In-Memory Adapters**: Both languages, production-ready
+- **Tests**: 11 TS + 12 Python = **23/23 passing**
 
 ### ✅ EventBus Abstractions Complete
 
--   **TypeScript**: Pub/sub with async handler support, error aggregation
--   **Python**: Type-safe with async task scheduling
--   **Cross-Language**: Feature parity maintained
+- **TypeScript**: Pub/sub with async handler support, error aggregation
+- **Python**: Type-safe with async task scheduling
+- **Cross-Language**: Feature parity maintained
 
 ### ✅ Zero Boundary Violations
 
--   **Nx Tags**: `type:domain`, `scope:shared` configured
--   **Lint**: Passing (template domain glob excluded from eslint plugin)
--   **Build**: Successful compilation
+- **Nx Tags**: `type:domain`, `scope:shared` configured
+- **Lint**: Passing (template domain glob excluded from eslint plugin)
+- **Build**: Successful compilation
 
 ### ✅ Integration Tests Pass
 
--   **Transaction Lifecycle**: Begin/commit/rollback tested
--   **Entity Tracking**: New/dirty/deleted registration validated
--   **Error Handling**: Rollback on failure verified
--   **Async Support**: Python async/await integration confirmed
+- **Transaction Lifecycle**: Begin/commit/rollback tested
+- **Entity Tracking**: New/dirty/deleted registration validated
+- **Error Handling**: Rollback on failure verified
+- **Async Support**: Python async/await integration confirmed
 
 ### ✅ Zero CI Failures
 
--   **TypeScript**: All tests passing, strict mode enabled
--   **Python**: mypy --strict passing (7 files, 0 errors)
--   **Precommit Hooks**: All checks passing (ruff, mypy, prettier, eslint)
+- **TypeScript**: All tests passing, strict mode enabled
+- **Python**: mypy --strict passing (7 files, 0 errors)
+- **Precommit Hooks**: All checks passing (ruff, mypy, prettier, eslint)
 
 ### ✅ Zero Technical Debt
 
--   Follows hexagonal architecture principles (ports/adapters separation)
--   Comprehensive JSDoc/docstring documentation
--   Type-safe implementations (no `any` types)
--   Production-ready code quality
+- Follows hexagonal architecture principles (ports/adapters separation)
+- Comprehensive JSDoc/docstring documentation
+- Type-safe implementations (no `any` types)
+- Production-ready code quality
 
 ### ✅ Production Ready
 
--   **README**: Usage examples for both languages
--   **Spec Traceability**: DEV-ADR-024, DEV-PRD-025-026, DEV-SDS-024-025
--   **Exports**: Barrel exports configured in `src/index.ts`
--   **Nx Integration**: Build/test targets operational
+- **README**: Usage examples for both languages
+- **Spec Traceability**: DEV-ADR-024, DEV-PRD-025-026, DEV-SDS-024-025
+- **Exports**: Barrel exports configured in `src/index.ts`
+- **Nx Integration**: Build/test targets operational
 
 ---
 
@@ -242,10 +242,10 @@ Promise.allSettled(results).then((outcomes) => {
 
 **Future Work**:
 
--   Add `docker-compose.yml` with Supabase services (postgres, gotrue, realtime, storage, studio)
--   Add Nx run-command targets: `supabase-devstack:start|stop|reset|status`
--   Environment file scaffolding
--   Health check polling
+- Add `docker-compose.yml` with Supabase services (postgres, gotrue, realtime, storage, studio)
+- Add Nx run-command targets: `supabase-devstack:start|stop|reset|status`
+- Environment file scaffolding
+- Health check polling
 
 ### EventBus Test Suite
 
