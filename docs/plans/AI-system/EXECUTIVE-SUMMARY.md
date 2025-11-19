@@ -241,13 +241,13 @@ Each phase must meet these criteria before proceeding:
 
 ### Related Specifications
 
-- [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) - **AI System Profile Architecture**
+- [DEV-SDS-AI-PROFILE-001](/docs/specs/ai-system-profile-architecture.md) - **AI System Profile Architecture**
 
 ### Current System Documentation
 
-- [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) - **Distributed agent routing**
-- [AGENT-MAP.md](../../AGENT-MAP.md) - **Navigation hub**
-- [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - **Master AI guidance**
+- [AGENT-SYSTEM.md](/AGENT-SYSTEM.md) - **Distributed agent routing**
+- [AGENT-MAP.md](/AGENT-MAP.md) - **Navigation hub**
+- [.github/copilot-instructions.md](/.github/copilot-instructions.md) - **Master AI guidance**
 
 ---
 
