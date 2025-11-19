@@ -47,15 +47,15 @@
 
 **Positive controls** ✅:
 
--   `tests/generators/schema-to-types.test.ts` validates schema→TypeScript parity (catches some errors)
--   Spec-guard bot ensures traceability (but doesn't validate schema syntax)
--   PR review process (human review can catch obvious errors)
+- `tests/generators/schema-to-types.test.ts` validates schema→TypeScript parity (catches some errors)
+- Spec-guard bot ensures traceability (but doesn't validate schema syntax)
+- PR review process (human review can catch obvious errors)
 
 **Gaps** ⚠️:
 
--   **No runtime JSON Schema validation** (AJV or equivalent)
--   **No meta-schema enforcement** (schema.json must conform to draft-07 spec)
--   **No CI gate** — invalid schemas can merge if tests pass
+- **No runtime JSON Schema validation** (AJV or equivalent)
+- **No meta-schema enforcement** (schema.json must conform to draft-07 spec)
+- **No CI gate** — invalid schemas can merge if tests pass
 
 ### Recommended Mitigation (Priority 1)
 
@@ -91,8 +91,8 @@ process.exit(hasErrors ? 1 : 0);
 
 **Integration points**:
 
--   Add to `just ai-validate`: `tsx tools/validate-generator-schemas.ts`
--   Add to `.github/workflows/ai-guidance.yml`:
+- Add to `just ai-validate`: `tsx tools/validate-generator-schemas.ts`
+- Add to `.github/workflows/ai-guidance.yml`:
     ```yaml
     - name: Validate generator schemas
       run: just ai-validate # Includes AJV check
@@ -122,15 +122,15 @@ process.exit(hasErrors ? 1 : 0);
 
 **Positive controls** ✅:
 
--   Nx `Tree` API encourages safe patterns (`tree.exists()`, `updateJson()`)
--   `tests/generators/idempotency.test.ts` **exists** (prototype harness)
--   PR #51 CI hardening (improved test orchestration)
+- Nx `Tree` API encourages safe patterns (`tree.exists()`, `updateJson()`)
+- `tests/generators/idempotency.test.ts` **exists** (prototype harness)
+- PR #51 CI hardening (improved test orchestration)
 
 **Gaps** ⚠️:
 
--   **Idempotency harness not wired into CI** (exists but not enforced)
--   **No coverage requirement** for custom generators (easy to skip tests)
--   **No documentation** on conflict resolution strategy
+- **Idempotency harness not wired into CI** (exists but not enforced)
+- **No coverage requirement** for custom generators (easy to skip tests)
+- **No documentation** on conflict resolution strategy
 
 ### Recommended Mitigation (Priority 1)
 
@@ -174,10 +174,10 @@ Add to `GENERATOR_SPEC.md` template:
 
 How does this generator handle re-runs when files already exist?
 
--   [ ] Skip (warn and do nothing)
--   [ ] Merge (use AST/JSON update)
--   [ ] Prompt user for conflict resolution
--   [ ] Fail with clear error message
+- [ ] Skip (warn and do nothing)
+- [ ] Merge (use AST/JSON update)
+- [ ] Prompt user for conflict resolution
+- [ ] Fail with clear error message
 
 Conflict resolution code (if applicable):
 \`\`\`typescript
@@ -214,15 +214,15 @@ return;
 
 **Positive controls** ✅:
 
--   Spec-guard validates traceability
--   `just test-generation` exists (manual smoke test)
--   PR review (human reviewers can catch obvious errors)
+- Spec-guard validates traceability
+- `just test-generation` exists (manual smoke test)
+- PR review (human reviewers can catch obvious errors)
 
 **Gaps** ⚠️:
 
--   **No CI job** that runs full generate → build → test cycle
--   **Template changes not tested** in real project context
--   **Copier generation errors** could be silent (fail but tests still pass)
+- **No CI job** that runs full generate → build → test cycle
+- **Template changes not tested** in real project context
+- **Copier generation errors** could be silent (fail but tests still pass)
 
 ### Recommended Mitigation (Priority 2)
 
@@ -307,7 +307,6 @@ jobs:
 **Tasks**:
 
 1. **AJV Schema Validation** (1 day)
-
     - Create `tools/validate-generator-schemas.ts`
     - Add to `just ai-validate`
     - Add to `.github/workflows/ai-guidance.yml`
@@ -320,9 +319,9 @@ jobs:
 
 **Success criteria**:
 
--   [ ] AJV validation fails CI on invalid schema
--   [ ] Idempotency test fails CI on non-idempotent generator
--   [ ] Both checks run in <2 minutes (fast feedback)
+- [ ] AJV validation fails CI on invalid schema
+- [ ] Idempotency test fails CI on non-idempotent generator
+- [ ] Both checks run in <2 minutes (fast feedback)
 
 ### Sprint 2 (Priority 2 - HIGH)
 
@@ -331,7 +330,6 @@ jobs:
 **Tasks**:
 
 1. **Golden Sample CI Job** (2 days)
-
     - Create `.github/workflows/generator-golden-samples.yml`
     - Test 3 project types: Next, Remix, Python
     - Run on PR changes to `templates/` or `generators/`
@@ -343,9 +341,9 @@ jobs:
 
 **Success criteria**:
 
--   [ ] Golden sample job runs on template changes
--   [ ] Job catches syntax errors before merge
--   [ ] Documentation helps contributors write safe generators
+- [ ] Golden sample job runs on template changes
+- [ ] Job catches syntax errors before merge
+- [ ] Documentation helps contributors write safe generators
 
 ### Sprint 3 (Priority 3 - MEDIUM)
 
@@ -354,7 +352,6 @@ jobs:
 **Tasks**:
 
 1. **Generator Metrics** (1 day)
-
     - Track generator usage (which generators run most often)
     - Track failure rates (how often generators crash)
     - Alert on anomalies (sudden spike in failures)
@@ -372,38 +369,35 @@ jobs:
 
 **Checklist**:
 
--   [x] Spec-guard bot validates traceability (already present)
--   [ ] AJV validates generator schemas in CI
--   [ ] Idempotency tests run in CI for sample generators
--   [ ] Golden sample CI job tests full generate → build → test cycle
--   [ ] Generator spec template documents conflict resolution
--   [ ] Contributor docs explain how to write safe generators
--   [ ] Metrics/alerting track generator health
+- [x] Spec-guard bot validates traceability (already present)
+- [ ] AJV validates generator schemas in CI
+- [ ] Idempotency tests run in CI for sample generators
+- [ ] Golden sample CI job tests full generate → build → test cycle
+- [ ] Generator spec template documents conflict resolution
+- [ ] Contributor docs explain how to write safe generators
+- [ ] Metrics/alerting track generator health
 
 **Risk reduction summary**:
 
--   AI hallucination: HIGH → LOW (AJV gate)
--   Non-idempotent generators: HIGH → LOW (CI tests)
--   Template regressions: MEDIUM → LOW (golden samples)
--   Overall risk: MEDIUM-HIGH → LOW (validated now that Sprint 1 **and** Sprint 2 gates are complete; settles at MEDIUM if only Sprint 1 lands)
+- AI hallucination: HIGH → LOW (AJV gate)
+- Non-idempotent generators: HIGH → LOW (CI tests)
+- Template regressions: MEDIUM → LOW (golden samples)
+- Overall risk: MEDIUM-HIGH → LOW (validated now that Sprint 1 **and** Sprint 2 gates are complete; settles at MEDIUM if only Sprint 1 lands)
 
 ---
 
 ## References
 
 1. **PR Evidence**:
-
     - PR #49: Generator spec template (spec-guard ✅, 156 matrix rows)
     - PR #50: JIT generators (spec-guard ✅, 156 matrix rows)
     - PR #51: CI hardening (spec-guard ✅, 162 matrix rows, uv/just/async tests)
 
 2. **Threat Models**:
-
     - STRIDE framework: https://en.wikipedia.org/wiki/STRIDE_(security)
     - OWASP Code Generation Risks: https://owasp.org/www-community/vulnerabilities/
 
 3. **Mitigations**:
-
     - AJV JSON Schema validator: https://ajv.js.org/
     - Nx generator testing: https://nx.dev/extending-nx/recipes/generator-tests
     - Idempotency harness: `tests/generators/idempotency.test.ts` (this repo)

@@ -6,8 +6,8 @@ Nx wrapper generators that compose official framework generators with VibesPro's
 
 This phase implements wrapper generators for:
 
--   **Frontend**: Next.js (App Router + Pages Router), Remix, Expo
--   **Backend**: FastAPI with Logfire + Hexagonal Architecture
+- **Frontend**: Next.js (App Router + Pages Router), Remix, Expo
+- **Backend**: FastAPI with Logfire + Hexagonal Architecture
 
 All generators follow the **composition pattern**: delegate to official Nx generators, then apply VibesPro-specific transformations.
 
@@ -116,13 +116,11 @@ FastAPI services receive:
     ```
 
 2. **Logfire Instrumentation** (default):
-
     - Automatic bootstrap in `main.py`
     - Configured logger with categories
     - Structured logging ready to use
 
 3. **Pydantic Type Sync**:
-
     - `schemas.py` with `BaseSchema`
     - Ready for auto-generation from Supabase (PHASE-004)
 
@@ -152,9 +150,9 @@ export const ENV = { API_URL: process.env.NX_API_URL ?? "/api" };
 
 All generators are **fully idempotent**:
 
--   Multiple runs produce identical output
--   Guards prevent duplicate injections
--   Existing files are checked before writing
+- Multiple runs produce identical output
+- Guards prevent duplicate injections
+- Existing files are checked before writing
 
 Run the same generator twice:
 
@@ -184,11 +182,11 @@ bash tests/integration/phase-003-generators.sh
 
 This validates:
 
--   All 4 frontend/backend generators work
--   Shared-web integration is correct
--   Hexagonal structure is complete
--   Logfire instrumentation is present
--   OpenAPI export is configured
+- All 4 frontend/backend generators work
+- Shared-web integration is correct
+- Hexagonal structure is complete
+- Logfire instrumentation is present
+- OpenAPI export is configured
 
 ## Architecture
 
@@ -211,9 +209,9 @@ export async function webAppGenerator(tree: Tree, options: Schema) {
 
 **Benefits**:
 
--   Nx updates flow through automatically
--   Minimal maintenance burden (~60% less code)
--   Official generator features work out of the box
+- Nx updates flow through automatically
+- Minimal maintenance burden (~60% less code)
+- Official generator features work out of the box
 
 ### Transformation Guards
 
@@ -231,15 +229,15 @@ This ensures **true idempotency**.
 
 **PHASE-004**: Type Safety & CI Integration
 
--   Strict TypeScript/Python type checking
--   Automated type sync from Supabase
--   CI/CD pipeline integration
+- Strict TypeScript/Python type checking
+- Automated type sync from Supabase
+- CI/CD pipeline integration
 
 **PHASE-005**: Integration & Documentation
 
--   End-to-end examples
--   Deployment guides
--   Performance benchmarks
+- End-to-end examples
+- Deployment guides
+- Performance benchmarks
 
 ## Traceability
 
@@ -254,6 +252,6 @@ This ensures **true idempotency**.
 
 ## References
 
--   **Plan**: `docs/plans/hexddd_integration/PHASE-003-UNIVERSAL_REACT_GENERATOR.md`
--   **Prompt**: `docs/plans/hexddd_integration/PHASE-003-PROMPT.md`
--   **Nx Composition**: https://nx.dev/extending-nx/recipes/composing-generators
+- **Plan**: `docs/plans/hexddd_integration/PHASE-003-UNIVERSAL_REACT_GENERATOR.md`
+- **Prompt**: `docs/plans/hexddd_integration/PHASE-003-PROMPT.md`
+- **Nx Composition**: https://nx.dev/extending-nx/recipes/composing-generators

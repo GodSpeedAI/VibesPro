@@ -11,11 +11,11 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
--   Modular instruction files (MECE principle)
--   Task-specific prompts for common workflows
--   Specialized AI personas via chat modes
--   CI/CD automation workflows
--   GitHub Actions and integration
+- Modular instruction files (MECE principle)
+- Task-specific prompts for common workflows
+- Specialized AI personas via chat modes
+- CI/CD automation workflows
+- GitHub Actions and integration
 
 **Architecture Layer**: N/A (Infrastructure/Tooling)
 
@@ -72,12 +72,12 @@ precedence: 10-50 # Lower = higher priority
 
 ### Use This Context When
 
--   [ ] Working with AI assistance features or AI workflows
--   [ ] Creating or modifying prompts
--   [ ] Developing chat mode personas
--   [ ] Writing instruction files
--   [ ] Configuring CI/CD workflows
--   [ ] Understanding modular instruction stacking
+- [ ] Working with AI assistance features or AI workflows
+- [ ] Creating or modifying prompts
+- [ ] Developing chat mode personas
+- [ ] Writing instruction files
+- [ ] Configuring CI/CD workflows
+- [ ] Understanding modular instruction stacking
 
 ### Refer to Other Contexts When
 
@@ -109,23 +109,23 @@ precedence: 10-50 # Lower = higher priority
 
 **Workflow Modes:**
 
--   `tdd.red` → `tdd.green` → `tdd.refactor` (Test-Driven Development cycle)
--   `debug.start` → `debug.repro` → `debug.isolate` → `debug.fix` → `debug.refactor` → `debug.regress`
--   `spec.lean` / `spec.wide` / `spec.nfr` (Specification generation)
+- `tdd.red` → `tdd.green` → `tdd.refactor` (Test-Driven Development cycle)
+- `debug.start` → `debug.repro` → `debug.isolate` → `debug.fix` → `debug.refactor` → `debug.regress`
+- `spec.lean` / `spec.wide` / `spec.nfr` (Specification generation)
 
 **Persona Modes:**
 
--   `persona.navigator` - Elite multi-language coding assistant with MCP
--   `persona.system-architect` - Architectural guidance
--   `persona.senior-backend` - Backend best practices
--   `persona.senior-frontend` - Frontend patterns
--   `persona.qa` - Testing strategies
+- `persona.navigator` - Elite multi-language coding assistant with MCP
+- `persona.system-architect` - Architectural guidance
+- `persona.senior-backend` - Backend best practices
+- `persona.senior-frontend` - Frontend patterns
+- `persona.qa` - Testing strategies
 
 **Product Modes:**
 
--   `product.manager` - Product planning
--   `product.elevator-pitch` - Value proposition
--   `product.features-list` - Feature breakdown
+- `product.manager` - Product planning
+- `product.elevator-pitch` - Value proposition
+- `product.features-list` - Feature breakdown
 
 ### Prompt Engineering Patterns
 
@@ -147,28 +147,28 @@ ${workspaceFolder} # Workspace root path
 
 ### Naming for AI Recipes
 
--   Use `ai-*` prefix for justfile recipes (e.g., `ai-validate`, `ai-context-bundle`)
--   Use `domain.task` pattern for chat modes (e.g., `tdd.red`, `debug.start`)
--   Prefix custom prompts with `vibecoder-` to avoid conflicts
+- Use `ai-*` prefix for justfile recipes (e.g., `ai-validate`, `ai-context-bundle`)
+- Use `domain.task` pattern for chat modes (e.g., `tdd.red`, `debug.start`)
+- Prefix custom prompts with `vibecoder-` to avoid conflicts
 
 ## 📚 Related Instructions
 
 **Core instruction files:**
 
--   [instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security guidelines (HIGHEST PRIORITY)
--   [instructions/ai-workflows.constitution.instructions.md](/.github/instructions/ai-workflows.constitution.instructions.md) - Workflow constitution
--   [instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - Workflow policies
--   [instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Generator-first approach
--   [instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
--   [instructions/general.instructions.md](/.github/instructions/general.instructions.md) - General conventions
--   [prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
+- [instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security guidelines (HIGHEST PRIORITY)
+- [instructions/ai-workflows.constitution.instructions.md](/.github/instructions/ai-workflows.constitution.instructions.md) - Workflow constitution
+- [instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - Workflow policies
+- [instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Generator-first approach
+- [instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
+- [instructions/general.instructions.md](/.github/instructions/general.instructions.md) - General conventions
+- [prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
 
 **Key prompts:**
 
--   [prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
--   [prompts/debug.workflow.prompt.md](/.github/prompts/debug.workflow.prompt.md) - Debug workflow
--   [prompts/sec.review.prompt.md](/.github/prompts/sec.review.prompt.md) - Security audit
--   [prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Implement from spec
+- [prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
+- [prompts/debug.workflow.prompt.md](/.github/prompts/debug.workflow.prompt.md) - Debug workflow
+- [prompts/sec.review.prompt.md](/.github/prompts/sec.review.prompt.md) - Security audit
+- [prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Implement from spec
 
 ## 💡 Examples
 
@@ -185,14 +185,14 @@ precedence: 40
 
 # Your Domain Instructions
 
--   Rule 1: Clear, actionable guideline
--   Rule 2: Another guideline
--   Rule 3: With examples where helpful
+- Rule 1: Clear, actionable guideline
+- Rule 2: Another guideline
+- Rule 3: With examples where helpful
 
 ## Integration with Other Guidelines
 
--   Defer to security.instructions.md for security concerns
--   Reference testing.instructions.md for test patterns
+- Defer to security.instructions.md for security concerns
+- Reference testing.instructions.md for test patterns
 ```
 
 ### Example 2: Creating a Chat Mode
@@ -262,21 +262,21 @@ just ai-context-bundle
 
 ### Before Creating New AI Guidance
 
--   [ ] Check if existing instruction/prompt/chat mode can be extended
--   [ ] Follow naming conventions (domain.task for chat modes)
--   [ ] Add frontmatter with appropriate metadata
--   [ ] Reference related modular instructions
--   [ ] Include concrete examples
--   [ ] Link to specifications or ADRs if applicable
--   [ ] Test with actual AI assistant
+- [ ] Check if existing instruction/prompt/chat mode can be extended
+- [ ] Follow naming conventions (domain.task for chat modes)
+- [ ] Add frontmatter with appropriate metadata
+- [ ] Reference related modular instructions
+- [ ] Include concrete examples
+- [ ] Link to specifications or ADRs if applicable
+- [ ] Test with actual AI assistant
 
 ### After Creating AI Guidance
 
--   [ ] Run `just prompt-lint` to validate
--   [ ] Update cross-references in related files
--   [ ] Add entry to this AGENT.md if it's a new pattern
--   [ ] Update [AGENT-MAP.md](/AGENT-MAP.md) if needed
--   [ ] Document in commit message with spec IDs
+- [ ] Run `just prompt-lint` to validate
+- [ ] Update cross-references in related files
+- [ ] Add entry to this AGENT.md if it's a new pattern
+- [ ] Update [AGENT-MAP.md](/AGENT-MAP.md) if needed
+- [ ] Document in commit message with spec IDs
 
 ## 🔍 Quick Reference
 
@@ -304,11 +304,11 @@ node scripts/normalize_chatmodes.mjs
 
 ### Key Concepts
 
--   **MECE Principle**: Mutually Exclusive, Collectively Exhaustive - each instruction file covers a distinct domain
--   **Precedence**: Security (10) always wins; lower numbers take priority
--   **Stacking**: Instructions compose per task in precedence order
--   **Routing**: Chat modes and prompts route AI to appropriate context
--   **Context Bundle**: Generated docs bundle for optimal AI context
+- **MECE Principle**: Mutually Exclusive, Collectively Exhaustive - each instruction file covers a distinct domain
+- **Precedence**: Security (10) always wins; lower numbers take priority
+- **Stacking**: Instructions compose per task in precedence order
+- **Routing**: Chat modes and prompts route AI to appropriate context
+- **Context Bundle**: Generated docs bundle for optimal AI context
 
 ### Validation Tools
 
@@ -323,12 +323,12 @@ node scripts/normalize_chatmodes.mjs
 
 **CRITICAL**: When working in this directory:
 
--   ⚠️ **NEVER** modify `.vscode/settings.json` or `.vscode/tasks.json` without explicit user confirmation
--   ⚠️ **NEVER** enable `chat.tools.autoApprove` in any configuration
--   ⚠️ **NEVER** hardcode secrets in prompt files or instruction files
--   ⚠️ Use environment variables for MCP tool auth tokens
--   ⚠️ Validate all user inputs in workflow files
--   ⚠️ Review GitHub Actions for command injection vulnerabilities
+- ⚠️ **NEVER** modify `.vscode/settings.json` or `.vscode/tasks.json` without explicit user confirmation
+- ⚠️ **NEVER** enable `chat.tools.autoApprove` in any configuration
+- ⚠️ **NEVER** hardcode secrets in prompt files or instruction files
+- ⚠️ Use environment variables for MCP tool auth tokens
+- ⚠️ Validate all user inputs in workflow files
+- ⚠️ Review GitHub Actions for command injection vulnerabilities
 
 **Reference**: [instructions/security.instructions.md](/.github/instructions/security.instructions.md)
 
@@ -347,9 +347,9 @@ When creating AI guidance, always:
 
 Before writing custom AI guidance:
 
--   Check if existing instruction files can be extended
--   Look for similar chat modes or prompts
--   Consult [instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md)
+- Check if existing instruction files can be extended
+- Look for similar chat modes or prompts
+- Consult [instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md)
 
 ## 📊 Metrics & Monitoring
 
@@ -377,18 +377,18 @@ just ai-context-bundle
 
 ### Regular Tasks
 
--   **Weekly**: Review new prompts and chat modes for consistency
--   **Monthly**: Update cross-references if structure changes
--   **Quarterly**: Audit instruction precedence and conflicts
--   **As needed**: Refine based on AI assistant feedback
+- **Weekly**: Review new prompts and chat modes for consistency
+- **Monthly**: Update cross-references if structure changes
+- **Quarterly**: Audit instruction precedence and conflicts
+- **As needed**: Refine based on AI assistant feedback
 
 ### When to Update This AGENT.md
 
--   New instruction file added to `instructions/`
--   New chat mode pattern emerges
--   Workflow processes change
--   Naming conventions evolve
--   Integration with new tools
+- New instruction file added to `instructions/`
+- New chat mode pattern emerges
+- Workflow processes change
+- Naming conventions evolve
+- Integration with new tools
 
 ---
 

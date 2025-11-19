@@ -11,5 +11,5 @@ Bundle CALM, tech stack, and key docs into `docs/ai_context_bundle/` for Copilot
 
 ## Troubleshooting
 
--   If `just` is missing, run: `bash scripts/bundle-context.sh docs/ai_context_bundle`
--   Ensure `architecture/calm/` and `techstack.yaml` exist; otherwise the bundle will be partial.
+- If `just` is missing, run: `bash scripts/bundle-context.sh docs/ai_context_bundle`
+- Ensure `architecture/calm/` and `techstack.yaml` exist; otherwise the bundle will be partial.

@@ -32,42 +32,42 @@ A comprehensive pre-commit configuration with the following hooks:
 
 #### General File Checks
 
--   **trailing-whitespace**: Remove trailing whitespace (excludes `.md` and `.j2` files)
--   **end-of-file-fixer**: Ensure files end with newline (excludes `.j2` and test fixtures)
--   **check-yaml**: Validate YAML syntax (with `--unsafe` for custom tags)
--   **check-json**: Validate JSON syntax (excludes `.j2` templates)
--   **check-toml**: Validate TOML syntax
--   **check-merge-conflict**: Detect merge conflict markers
--   **check-added-large-files**: Prevent committing files > 1MB
--   **check-case-conflict**: Detect case conflicts in filenames
--   **mixed-line-ending**: Ensure consistent LF line endings
--   **detect-private-key**: Prevent committing private keys
--   **check-executables-have-shebangs**: Validate executable scripts have shebangs
--   **check-shebang-scripts-are-executable**: Ensure scripts with shebangs are executable
+- **trailing-whitespace**: Remove trailing whitespace (excludes `.md` and `.j2` files)
+- **end-of-file-fixer**: Ensure files end with newline (excludes `.j2` and test fixtures)
+- **check-yaml**: Validate YAML syntax (with `--unsafe` for custom tags)
+- **check-json**: Validate JSON syntax (excludes `.j2` templates)
+- **check-toml**: Validate TOML syntax
+- **check-merge-conflict**: Detect merge conflict markers
+- **check-added-large-files**: Prevent committing files > 1MB
+- **check-case-conflict**: Detect case conflicts in filenames
+- **mixed-line-ending**: Ensure consistent LF line endings
+- **detect-private-key**: Prevent committing private keys
+- **check-executables-have-shebangs**: Validate executable scripts have shebangs
+- **check-shebang-scripts-are-executable**: Ensure scripts with shebangs are executable
 
 #### Python Checks
 
--   **ruff** (linter): Auto-fix Python code issues
--   **ruff-format**: Format Python code
--   **mypy**: Static type checking (strict mode, Python 3.12)
+- **ruff** (linter): Auto-fix Python code issues
+- **ruff-format**: Format Python code
+- **mypy**: Static type checking (strict mode, Python 3.12)
 
 #### Markdown Checks
 
--   **markdownlint**: Lint Markdown files with project config (`.markdownlint.json`)
+- **markdownlint**: Lint Markdown files with project config (`.markdownlint.json`)
 
 #### Shell Script Checks
 
--   **shellcheck**: Lint shell scripts with style checks
+- **shellcheck**: Lint shell scripts with style checks
 
 #### JavaScript/TypeScript Checks
 
--   **eslint**: Lint and auto-fix JS/TS files (uses local pnpm/npx)
+- **eslint**: Lint and auto-fix JS/TS files (uses local pnpm/npx)
 
 #### Custom Project Checks
 
--   **check-agent-links**: Validate links in `AGENTS.md` using `tools/docs/link_check.js`
--   **prompt-lint**: Validate prompt files in `.github/prompts/` using `tools/prompt/lint.js`
--   **spec-matrix**: Validate specification matrix using `tools/spec/matrix.js`
+- **check-agent-links**: Validate links in `AGENTS.md` using `tools/docs/link_check.js`
+- **prompt-lint**: Validate prompt files in `.github/prompts/` using `tools/prompt/lint.js`
+- **spec-matrix**: Validate specification matrix using `tools/spec/matrix.js`
 
 ### 2. Installed Pre-Commit
 
@@ -83,11 +83,11 @@ pre-commit install --hook-type pre-commit --hook-type commit-msg
 
 The configuration integrates with existing project tools:
 
--   Uses existing `tools/docs/link_check.js` for AGENTS.md validation
--   Uses existing `tools/prompt/lint.js` for prompt validation
--   Uses existing `tools/spec/matrix.js` for spec matrix validation
--   Leverages existing `.markdownlint.json` configuration
--   Uses existing `.eslintrc.json` configuration
+- Uses existing `tools/docs/link_check.js` for AGENTS.md validation
+- Uses existing `tools/prompt/lint.js` for prompt validation
+- Uses existing `tools/spec/matrix.js` for spec matrix validation
+- Leverages existing `.markdownlint.json` configuration
+- Uses existing `.eslintrc.json` configuration
 
 ## Configuration Details
 
@@ -95,21 +95,21 @@ The configuration integrates with existing project tools:
 
 The following patterns are excluded from various checks:
 
--   **`.j2` files**: Jinja2 templates (excluded from most checks)
--   **`tests/fixtures/`**: Test fixture files
--   **`node_modules/`, `.nx/`, `dist/`, `coverage/`**: Build artifacts
-    -- **`libs/prompt_optimizer/`, `libs/{{domain_name}}/`**: Generated code
+- **`.j2` files**: Jinja2 templates (excluded from most checks)
+- **`tests/fixtures/`**: Test fixture files
+- **`node_modules/`, `.nx/`, `dist/`, `coverage/`**: Build artifacts
+  -- **`libs/prompt_optimizer/`, `libs/{{domain_name}}/`**: Generated code
 
 ### Hook Stages
 
--   **pre-commit**: Runs before creating a commit
--   **commit-msg**: Validates commit message format (removed for now, can be re-enabled)
+- **pre-commit**: Runs before creating a commit
+- **commit-msg**: Validates commit message format (removed for now, can be re-enabled)
 
 ### Performance Considerations
 
--   `fail_fast: false` - Continues running all hooks even if one fails
--   Hooks run in parallel where possible (`require_serial: false`)
--   Pre-commit caches environments for fast subsequent runs
+- `fail_fast: false` - Continues running all hooks even if one fails
+- Hooks run in parallel where possible (`require_serial: false`)
+- Pre-commit caches environments for fast subsequent runs
 
 ## Testing
 
@@ -164,9 +164,9 @@ pre-commit install --hook-type pre-commit --hook-type commit-msg
 
 The pre-commit configuration aligns with:
 
--   **DEV-SPEC-003**: Build and lint tasks (Markdown + prompt lint)
--   **DEV-SPEC-006**: CI posture (workspace trust, safety checks)
--   **DEV-SPEC-008**: Testing strategy (validation before commit)
+- **DEV-SPEC-003**: Build and lint tasks (Markdown + prompt lint)
+- **DEV-SPEC-006**: CI posture (workspace trust, safety checks)
+- **DEV-SPEC-008**: Testing strategy (validation before commit)
 
 Consider adding to CI workflow (`.github/workflows/`):
 
@@ -179,27 +179,27 @@ Consider adding to CI workflow (`.github/workflows/`):
 
 ### Security (`security.instructions.md`)
 
--   ✅ Detects private keys before commit
--   ✅ Validates workspace trust boundaries
--   ✅ Prevents hardcoded secrets
+- ✅ Detects private keys before commit
+- ✅ Validates workspace trust boundaries
+- ✅ Prevents hardcoded secrets
 
 ### Testing (`testing.instructions.md`)
 
--   ✅ Validates shell scripts with ShellCheck
--   ✅ Runs linters before tests
--   ✅ Fast feedback loop
+- ✅ Validates shell scripts with ShellCheck
+- ✅ Runs linters before tests
+- ✅ Fast feedback loop
 
 ### Style Guidelines
 
--   ✅ Python: Ruff + mypy (strict mode)
--   ✅ TypeScript: ESLint
--   ✅ Markdown: markdownlint
--   ✅ Shell: ShellCheck
+- ✅ Python: Ruff + mypy (strict mode)
+- ✅ TypeScript: ESLint
+- ✅ Markdown: markdownlint
+- ✅ Shell: ShellCheck
 
 ### Generator-First (`generators-first.instructions.md`)
 
--   ✅ Excludes generated code patterns
--   ✅ Validates templates separately
+- ✅ Excludes generated code patterns
+- ✅ Validates templates separately
 
 ## Troubleshooting
 
@@ -268,16 +268,16 @@ export LANG=en_US.UTF-8
 
 ### Performance Optimizations
 
--   Consider splitting into multiple config files by concern
--   Add `language_version` specifications for faster environment setup
--   Use `files` patterns to reduce unnecessary hook runs
+- Consider splitting into multiple config files by concern
+- Add `language_version` specifications for faster environment setup
+- Use `files` patterns to reduce unnecessary hook runs
 
 ## References
 
--   Pre-commit documentation: https://pre-commit.com
--   Project instructions: `.github/instructions/`
--   Testing strategy: `docs/testing.instructions.md`
--   Security guidelines: `docs/security.instructions.md`
+- Pre-commit documentation: https://pre-commit.com
+- Project instructions: `.github/instructions/`
+- Testing strategy: `docs/testing.instructions.md`
+- Security guidelines: `docs/security.instructions.md`
 
 ## Conclusion
 

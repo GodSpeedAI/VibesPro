@@ -87,10 +87,10 @@ ai_features:
 
 **Update Mechanism**:
 
--   Conditional updates based on project type
--   Conflict resolution for modified files
--   Backup creation before updates
--   Rollback capabilities
+- Conditional updates based on project type
+- Conflict resolution for modified files
+- Backup creation before updates
+- Rollback capabilities
 
 ## SDS-MERGE-002: AI Context Management System
 
@@ -510,10 +510,10 @@ class HexagonalAIGenerator implements AICodeGenerator {
 
 **Performance Targets**:
 
--   Template generation: < 2 minutes for complex monorepos
--   AI context loading: < 500ms for standard contexts
--   Type generation: < 30 seconds for large schemas
--   Validation feedback: < 100ms for real-time checks
+- Template generation: < 2 minutes for complex monorepos
+- AI context loading: < 500ms for standard contexts
+- Type generation: < 30 seconds for large schemas
+- Validation feedback: < 100ms for real-time checks
 
 **Caching Strategy**:
 
@@ -544,44 +544,44 @@ class PerformanceOptimizer {
 
 **Scalability Considerations**:
 
--   Embedded databases for local performance
--   Incremental type generation
--   Parallel template processing
--   Smart caching at all levels
--   Resource usage monitoring and optimization
+- Embedded databases for local performance
+- Incremental type generation
+- Parallel template processing
+- Smart caching at all levels
+- Resource usage monitoring and optimization
 
 ## Implementation Priority
 
 ### Phase 1: Core Infrastructure
 
--   SDS-MERGE-001: Copier template system
--   SDS-MERGE-004: Hybrid build system
--   Basic validation pipeline
+- SDS-MERGE-001: Copier template system
+- SDS-MERGE-004: Hybrid build system
+- Basic validation pipeline
 
 ### Phase 2: AI Integration
 
--   SDS-MERGE-002: AI context management
--   SDS-MERGE-003: Temporal learning system
--   SDS-MERGE-005: Enhanced validation
+- SDS-MERGE-002: AI context management
+- SDS-MERGE-003: Temporal learning system
+- SDS-MERGE-005: Enhanced validation
 
 ### Phase 3: Advanced Features
 
--   SDS-MERGE-006: Type generation
--   SDS-MERGE-007: AI code generation
--   SDS-MERGE-008: Performance optimization
+- SDS-MERGE-006: Type generation
+- SDS-MERGE-007: AI code generation
+- SDS-MERGE-008: Performance optimization
 
 ## Quality Assurance
 
 **Testing Strategy**:
 
--   Unit tests for all core components
--   Integration tests for template generation
--   Performance benchmarks for AI systems
--   End-to-end validation of generated projects
+- Unit tests for all core components
+- Integration tests for template generation
+- Performance benchmarks for AI systems
+- End-to-end validation of generated projects
 
 **Monitoring**:
 
--   AI context performance metrics
--   Template generation success rates
--   User adoption and satisfaction metrics
--   System resource usage tracking
+- AI context performance metrics
+- Template generation success rates
+- User adoption and satisfaction metrics
+- System resource usage tracking

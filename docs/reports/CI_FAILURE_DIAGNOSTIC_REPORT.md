@@ -16,10 +16,10 @@ All CI jobs in PR #60 are failing with no clear error messages in the attached a
 
 **Root Cause Hypothesis**: Recent large-scale changes (Cargo edition downgrade, removal of files like `CLAUDE.md`, new Temporal AI crate, type-safety workflow addition, massive AGENTS.md refactor) likely introduced:
 
--   **Missing dependencies** in CI environment
--   **Path/import errors** from restructured files
--   **Type errors** from strict type-checking additions
--   **Test failures** from untested code paths
+- **Missing dependencies** in CI environment
+- **Path/import errors** from restructured files
+- **Type errors** from strict type-checking additions
+- **Test failures** from untested code paths
 
 ---
 
@@ -98,9 +98,9 @@ Python: 3.12.3
 
 Your local pre-commit hooks pass, which suggests:
 
--   **Dependencies installed**: All Node/Python/Rust tooling present
--   **No lint errors**: ESLint, markdownlint, mypy, ruff pass locally
--   **Tests pass**: Local test suite works
+- **Dependencies installed**: All Node/Python/Rust tooling present
+- **No lint errors**: ESLint, markdownlint, mypy, ruff pass locally
+- **Tests pass**: Local test suite works
 
 ### Key Deltas
 
@@ -121,14 +121,14 @@ Your local pre-commit hooks pass, which suggests:
 
 **Evidence**:
 
--   New workflow added in this PR
--   Runs `tsc --noEmit` and `mypy --strict`
--   Likely catching latent type errors in new code
+- New workflow added in this PR
+- Runs `tsc --noEmit` and `mypy --strict`
+- Likely catching latent type errors in new code
 
 **Hypothesis**:
 
--   New generator code (`temporal-ai-client.ts`, conftest.py, test files) has type errors
--   Strict tsconfig.json changes enforce `noUncheckedIndexedAccess`, `noUnusedLocals`
+- New generator code (`temporal-ai-client.ts`, conftest.py, test files) has type errors
+- Strict tsconfig.json changes enforce `noUncheckedIndexedAccess`, `noUnusedLocals`
 
 **Fix**:
 
@@ -141,9 +141,9 @@ uv run mypy --strict libs/python
 
 **Expected errors**:
 
--   `temporal-ai-client.ts`: Missing null checks, unused vars
--   `conftest.py`: Missing type annotations
--   Generator tests: Strict type violations
+- `temporal-ai-client.ts`: Missing null checks, unused vars
+- `conftest.py`: Missing type annotations
+- Generator tests: Strict type violations
 
 ### 2. **Missing Dependencies** (NEW CRATE)
 
@@ -153,15 +153,15 @@ uv run mypy --strict libs/python
 
 **Evidence**:
 
--   New Temporal AI crate added
--   Cargo edition downgraded from 2024 → 2021 (compatibility fix?)
--   `Cargo Audit` job failing
+- New Temporal AI crate added
+- Cargo edition downgraded from 2024 → 2021 (compatibility fix?)
+- `Cargo Audit` job failing
 
 **Hypothesis**:
 
--   New dependencies not cached in CI
--   Vulnerable dependencies flagged by `cargo audit`
--   Build failures from missing system libs (OpenSSL, etc.)
+- New dependencies not cached in CI
+- Vulnerable dependencies flagged by `cargo audit`
+- Build failures from missing system libs (OpenSSL, etc.)
 
 **Fix**:
 
@@ -173,9 +173,9 @@ cargo audit --manifest-path crates/temporal-ai/Cargo.toml
 
 **Expected errors**:
 
--   Dependency resolution failures
--   Vulnerability warnings (CVEs)
--   Missing system dependencies
+- Dependency resolution failures
+- Vulnerability warnings (CVEs)
+- Missing system dependencies
 
 ### 3. **Generator Idempotency Failures** (NEW TESTS)
 
@@ -185,15 +185,15 @@ cargo audit --manifest-path crates/temporal-ai/Cargo.toml
 
 **Evidence**:
 
--   New `web-app` and `api-service` generators added
--   Integration test script added
--   `test-generators` job failing
+- New `web-app` and `api-service` generators added
+- Integration test script added
+- `test-generators` job failing
 
 **Hypothesis**:
 
--   Generators produce non-idempotent output
--   Missing dependencies (Nx plugins)
--   File path mismatches
+- Generators produce non-idempotent output
+- Missing dependencies (Nx plugins)
+- File path mismatches
 
 **Fix**:
 
@@ -205,9 +205,9 @@ pnpm exec nx test hexddd-generators
 
 **Expected errors**:
 
--   Duplicate content injection
--   Missing `@shared/web` imports
--   Nx generator errors
+- Duplicate content injection
+- Missing `@shared/web` imports
+- Nx generator errors
 
 ### 4. **Markdown Lint Errors** (REFACTORED FILES)
 
@@ -217,16 +217,16 @@ pnpm exec nx test hexddd-generators
 
 **Evidence**:
 
--   Massive `AGENTS.md` refactor (783 lines removed)
--   `CLAUDE.md` deleted
--   `markdownlint` job failing
--   `check-agent-links` job failing
+- Massive `AGENTS.md` refactor (783 lines removed)
+- `CLAUDE.md` deleted
+- `markdownlint` job failing
+- `check-agent-links` job failing
 
 **Hypothesis**:
 
--   Broken internal links from removed sections
--   Markdown formatting violations
--   Missing headings or lists
+- Broken internal links from removed sections
+- Markdown formatting violations
+- Missing headings or lists
 
 **Fix**:
 
@@ -238,9 +238,9 @@ just prompt-lint
 
 **Expected errors**:
 
--   MD013: Line length violations
--   MD041: Missing first-level headings
--   Dead links to removed content
+- MD013: Line length violations
+- MD041: Missing first-level headings
+- Dead links to removed content
 
 ### 5. **Pre-commit Hook Bypass** (LOCAL vs CI)
 
@@ -248,14 +248,14 @@ just prompt-lint
 
 **Evidence**:
 
--   Local pre-commit passes
--   CI fails on same checks
+- Local pre-commit passes
+- CI fails on same checks
 
 **Hypothesis**:
 
--   Pre-commit hooks cached/skipped locally
--   CI runs fresh with `--all-files`
--   Different tool versions (mypy, eslint, markdownlint)
+- Pre-commit hooks cached/skipped locally
+- CI runs fresh with `--all-files`
+- Different tool versions (mypy, eslint, markdownlint)
 
 **Fix**:
 
@@ -267,8 +267,8 @@ pre-commit run --all-files --verbose
 
 **Expected errors**:
 
--   Same errors CI sees
--   Confirms local environment drift
+- Same errors CI sees
+- Confirms local environment drift
 
 ### 6. **Logfire Test Fixtures** (NEW TESTS)
 
@@ -278,14 +278,14 @@ pre-commit run --all-files --verbose
 
 **Evidence**:
 
--   New pytest fixtures for Logfire
--   Python type check failures
+- New pytest fixtures for Logfire
+- Python type check failures
 
 **Hypothesis**:
 
--   Missing type annotations
--   Unused imports
--   Fixture scope issues
+- Missing type annotations
+- Unused imports
+- Fixture scope issues
 
 **Fix**:
 
@@ -297,8 +297,8 @@ uv run mypy --strict tests/python/logging/
 
 **Expected errors**:
 
--   `conftest.py`: Untyped fixtures
--   `test_*.py`: Missing return types
+- `conftest.py`: Untyped fixtures
+- `test_*.py`: Missing return types
 
 ---
 
@@ -450,7 +450,6 @@ just ai-validate
 
 1. **Monitor PR checks**: All 31 jobs should turn green
 2. **Review specific job logs**:
-
     - Type Safety CI: No type errors
     - Node Tests: All tests pass
     - Generator Tests: Idempotency verified
@@ -517,25 +516,25 @@ just ai-validate
 
 ### Added Files
 
--   `crates/temporal-ai/` (full Rust crate)
--   `.github/workflows/type-safety.yml` (NEW WORKFLOW)
--   `tools/generators/api-service/` (NEW GENERATOR)
--   `tools/generators/web-app/` (NEW GENERATOR)
--   `tests/python/logging/conftest.py` (NEW TEST FIXTURES)
--   `tests/integration/phase-003-generators.sh` (NEW INTEGRATION TEST)
--   `libs/integrations/temporal-ai-client.ts` (NEW CLIENT)
+- `crates/temporal-ai/` (full Rust crate)
+- `.github/workflows/type-safety.yml` (NEW WORKFLOW)
+- `tools/generators/api-service/` (NEW GENERATOR)
+- `tools/generators/web-app/` (NEW GENERATOR)
+- `tests/python/logging/conftest.py` (NEW TEST FIXTURES)
+- `tests/integration/phase-003-generators.sh` (NEW INTEGRATION TEST)
+- `libs/integrations/temporal-ai-client.ts` (NEW CLIENT)
 
 ### Modified Files
 
--   `AGENTS.md` (1044 → 261 lines, -783)
--   `Cargo.toml` (edition: 2024 → 2021)
--   `tsconfig.json` (added strict type checks)
--   `.coderabbit.yml` (tone instructions updated)
+- `AGENTS.md` (1044 → 261 lines, -783)
+- `Cargo.toml` (edition: 2024 → 2021)
+- `tsconfig.json` (added strict type checks)
+- `.coderabbit.yml` (tone instructions updated)
 
 ### Deleted Files
 
--   `CLAUDE.md` (removed entirely)
--   `CRITICAL_SECURITY_REMEDIATION_SUMMARY.md` (removed)
+- `CLAUDE.md` (removed entirely)
+- `CRITICAL_SECURITY_REMEDIATION_SUMMARY.md` (removed)
 
 ---
 

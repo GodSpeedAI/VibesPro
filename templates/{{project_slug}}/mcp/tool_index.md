@@ -4,7 +4,7 @@ This directory contains Model Context Protocol (MCP) tool descriptors for integr
 
 ## Available Tools
 
--   [example-http.tool.md](./example-http.tool.md) — Example HTTP tool descriptor (replace with your actual tools)
+- [example-http.tool.md](./example-http.tool.md) — Example HTTP tool descriptor (replace with your actual tools)
 
 ## Quick Start
 
@@ -42,11 +42,11 @@ Restart VS Code or reload the window (`Cmd/Ctrl + Shift + P` → "Developer: Rel
 
 ## Security Best Practices
 
--   **Never hardcode secrets** in configuration files or code
--   Use environment variables (`${env:VAR_NAME}`) for all sensitive values
--   Add `.env` to `.gitignore` to prevent accidental commits
--   Document all required environment variables in your README
--   Use different credentials for development and production environments
+- **Never hardcode secrets** in configuration files or code
+- Use environment variables (`${env:VAR_NAME}`) for all sensitive values
+- Add `.env` to `.gitignore` to prevent accidental commits
+- Document all required environment variables in your README
+- Use different credentials for development and production environments
 
 ## Adding New Tools
 
@@ -60,21 +60,21 @@ Restart VS Code or reload the window (`Cmd/Ctrl + Shift + P` → "Developer: Rel
 
 Each tool descriptor should include:
 
--   Tool name and category
--   Overview/purpose
--   Configuration details
--   Required environment variables
--   Example usage
--   Security considerations
+- Tool name and category
+- Overview/purpose
+- Configuration details
+- Required environment variables
+- Example usage
+- Security considerations
 
 ## Resources
 
--   [Model Context Protocol Documentation](https://modelcontextprotocol.io/)
--   [GitHub Copilot MCP Integration](https://docs.github.com/en/copilot)
--   [VS Code MCP Configuration](https://code.visualstudio.com/docs/copilot/copilot-mcp)
+- [Model Context Protocol Documentation](https://modelcontextprotocol.io/)
+- [GitHub Copilot MCP Integration](https://docs.github.com/en/copilot)
+- [VS Code MCP Configuration](https://code.visualstudio.com/docs/copilot/copilot-mcp)
 
 ## Notes
 
--   This repository ships no custom MCP broker; Copilot reads `.vscode/mcp.json` directly
--   Keep tool descriptors (`*.tool.md`) in this folder to document capabilities and example requests
--   Follow the security guidelines above to prevent credential leaks
+- This repository ships no custom MCP broker; Copilot reads `.vscode/mcp.json` directly
+- Keep tool descriptors (`*.tool.md`) in this folder to document capabilities and example requests
+- Follow the security guidelines above to prevent credential leaks

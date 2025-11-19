@@ -48,9 +48,9 @@ This guide explains how to incorporate security hardening features into the Vibe
 
 **No technical debt created because:**
 
--   All documentation follows existing patterns (ADR, PRD, SDS, TS structure)
--   Feature is opt-in via `enable_security_hardening` flag in `copier.yml`
--   Specifications complete before any implementation begins (spec-driven)
+- All documentation follows existing patterns (ADR, PRD, SDS, TS structure)
+- Feature is opt-in via `enable_security_hardening` flag in `copier.yml`
+- Specifications complete before any implementation begins (spec-driven)
 
 ### Phase 2: Implementation (NEXT STEPS)
 
@@ -221,9 +221,9 @@ Unit Tests (100ms max)
 
 ### Test Coverage Targets
 
--   **Unit tests:** 100% coverage for `libs/security/src/`
--   **Integration tests:** 90% coverage for template generation paths
--   **E2E tests:** 100% coverage for both enabled/disabled scenarios
+- **Unit tests:** 100% coverage for `libs/security/src/`
+- **Integration tests:** 90% coverage for template generation paths
+- **E2E tests:** 100% coverage for both enabled/disabled scenarios
 
 ---
 
@@ -259,28 +259,28 @@ echo "⚠️ Security hardening features are archived pending fixes" >> docs/aia
 
 ### Documentation Quality (COMPLETE ✅)
 
--   [x] AI_SECURITY_HARDENING.md created with full specification
--   [x] AI_ADR-006 added to decision records
--   [x] PHASE-006 added to AI_TDD_PLAN with 3 tasks
--   [x] All code examples extracted and formalized
--   [x] Testing strategy defined with TDD approach
+- [x] AI_SECURITY_HARDENING.md created with full specification
+- [x] AI_ADR-006 added to decision records
+- [x] PHASE-006 added to AI_TDD_PLAN with 3 tasks
+- [x] All code examples extracted and formalized
+- [x] Testing strategy defined with TDD approach
 
 ### Implementation Quality (PENDING)
 
--   [ ] TASK-013: SecureDb library passes 5 unit tests
--   [ ] TASK-014: Template generation passes 4 integration tests
--   [ ] TASK-015: Security validation suite passes 5 tests
--   [ ] Generated projects build successfully on Ubuntu 22.04+
--   [ ] Benchmarks show < 5% encryption overhead
--   [ ] Binary size increase < 2MB
--   [ ] `cargo audit` passes with no HIGH/CRITICAL issues
+- [ ] TASK-013: SecureDb library passes 5 unit tests
+- [ ] TASK-014: Template generation passes 4 integration tests
+- [ ] TASK-015: Security validation suite passes 5 tests
+- [ ] Generated projects build successfully on Ubuntu 22.04+
+- [ ] Benchmarks show < 5% encryption overhead
+- [ ] Binary size increase < 2MB
+- [ ] `cargo audit` passes with no HIGH/CRITICAL issues
 
 ### User Experience (PENDING)
 
--   [ ] Feature can be enabled via single Copier prompt
--   [ ] Generated documentation explains key management
--   [ ] Docker deployment works without privileged mode
--   [ ] Key rotation documented and tested
+- [ ] Feature can be enabled via single Copier prompt
+- [ ] Generated documentation explains key management
+- [ ] Docker deployment works without privileged mode
+- [ ] Key rotation documented and tested
 
 ---
 

@@ -19,17 +19,17 @@ This generator provides a standardized way to create new components, ensuring th
 **When to use**  
 Use this generator when you need to create a new UI component, service, or other reusable module. The decision tree for using this generator is as follows:
 
--   Is the component reusable?
--   Does it require its own set of tests?
--   Will it be consumed by multiple other components or applications?
+- Is the component reusable?
+- Does it require its own set of tests?
+- Will it be consumed by multiple other components or applications?
 
 If the answer to these questions is "yes", then this generator is the appropriate tool.
 
 **Non-goals**
 
--   This generator does not create application-level features.
--   It does not configure routing or navigation.
--   It does not install new dependencies.
+- This generator does not create application-level features.
+- It does not configure routing or navigation.
+- It does not install new dependencies.
 
 ---
 
@@ -67,8 +67,8 @@ tools/vibepro/
 
 **Validation Rules**
 
--   `name` must be a valid TypeScript identifier.
--   `directory` must be a valid path.
+- `name` must be a valid TypeScript identifier.
+- `directory` must be a valid path.
 
 **Example `schema.json` (excerpt)**
 
@@ -138,22 +138,22 @@ export interface <Type>Schema {
 
 ## 4) Outputs / Artifacts
 
--   Generates a new directory with the component's name.
--   Creates `index.ts`, `component.tsx`, and `component.spec.tsx` files.
--   Updates the workspace configuration with the new component.
+- Generates a new directory with the component's name.
+- Creates `index.ts`, `component.tsx`, and `component.spec.tsx` files.
+- Updates the workspace configuration with the new component.
 
 ---
 
 ## 5) Targets & Cacheability
 
--   Defines `build`, `test`, and `lint` targets for the new component.
--   All targets are cacheable.
+- Defines `build`, `test`, and `lint` targets for the new component.
+- All targets are cacheable.
 
 ---
 
 ## 6) Conventions & Policy
 
--   Follows the existing conventions for folder naming, tags, testing, and linting.
+- Follows the existing conventions for folder naming, tags, testing, and linting.
 
 ---
 
@@ -178,10 +178,10 @@ export async function featureGenerator(tree: Tree, schema: any) {
 
 How does this generator handle re-runs when files already exist?
 
--   [ ] Skip (warn and do nothing)
--   [ ] Merge (use AST/JSON update)
--   [ ] Prompt user for conflict resolution
--   [ ] Fail with clear error message
+- [ ] Skip (warn and do nothing)
+- [ ] Merge (use AST/JSON update)
+- [ ] Prompt user for conflict resolution
+- [ ] Fail with clear error message
 
 Conflict resolution code (if applicable):
 
@@ -197,30 +197,30 @@ if (tree.exists(targetPath)) {
 
 ## 8) Implementation Hints (for future generator author)
 
--   Use `@nx/devkit` helpers such as `generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `names`.
--   The `generateFiles` helper can be used to create files from templates.
--   The `formatFiles` helper can be used to format the generated files.
--   The `addProjectConfiguration` and `updateProjectConfiguration` helpers can be used to update the workspace configuration.
--   The `names` helper can be used to generate different variations of a name (e.g., kebab-case, PascalCase).
--   Verify tags/project graph integrity with `createProjectGraphAsync` or `readProjectConfiguration`.
--   Keep the generator idempotent; validate dry-run output matches writes.
+- Use `@nx/devkit` helpers such as `generateFiles`, `formatFiles`, `addProjectConfiguration`, `updateProjectConfiguration`, `names`.
+- The `generateFiles` helper can be used to create files from templates.
+- The `formatFiles` helper can be used to format the generated files.
+- The `addProjectConfiguration` and `updateProjectConfiguration` helpers can be used to update the workspace configuration.
+- The `names` helper can be used to generate different variations of a name (e.g., kebab-case, PascalCase).
+- Verify tags/project graph integrity with `createProjectGraphAsync` or `readProjectConfiguration`.
+- Keep the generator idempotent; validate dry-run output matches writes.
 
 ---
 
 ## 8) Acceptance Tests (for generator once built)
 
--   Dry run prints expected plan.
--   Generated artifacts exist with correct content.
--   `pnpm nx test <affected>` (and other targets) succeed.
--   Re-running generator produces no diff.
--   Module-boundary lint and `pnpm nx graph --focus <project>` succeed.
+- Dry run prints expected plan.
+- Generated artifacts exist with correct content.
+- `pnpm nx test <affected>` (and other targets) succeed.
+- Re-running generator produces no diff.
+- Module-boundary lint and `pnpm nx graph --focus <project>` succeed.
 
 ---
 
 ## 9) Rollback & Safety
 
--   Emit change list for revert scenarios.
--   Avoid secrets or external side effects.
+- Emit change list for revert scenarios.
+- Avoid secrets or external side effects.
 
 ---
 
@@ -236,9 +236,9 @@ just ai-validate
 
 ## MCP Assistance
 
--   **context7:** Fetch ADRs and other relevant documentation.
--   **ref:** Check for duplication and suggest refactoring opportunities.
--   **exa:** Find relevant public examples.
+- **context7:** Fetch ADRs and other relevant documentation.
+- **ref:** Check for duplication and suggest refactoring opportunities.
+- **exa:** Find relevant public examples.
 
 ---
 
@@ -253,9 +253,9 @@ pnpm nx g @myorg/vibepro:<type> sample \
 
 ## 12) Review Checklist
 
--   [ ] `schema.json` / `schema.d.ts` alignment verified.
--   [ ] Tags include `scope:<scope>` and `type:<type>` (plus extras).
--   [ ] Targets cacheable; `namedInputs` alignment checked.
--   [ ] Generator re-run idempotent; dry run accurate.
--   [ ] Tests + lint + module boundaries pass.
--   [ ] Docs updated (usage + dry-run example).
+- [ ] `schema.json` / `schema.d.ts` alignment verified.
+- [ ] Tags include `scope:<scope>` and `type:<type>` (plus extras).
+- [ ] Targets cacheable; `namedInputs` alignment checked.
+- [ ] Generator re-run idempotent; dry run accurate.
+- [ ] Tests + lint + module boundaries pass.
+- [ ] Docs updated (usage + dry-run example).

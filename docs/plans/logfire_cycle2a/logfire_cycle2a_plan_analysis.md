@@ -2,11 +2,11 @@
 
 ## 1. Executive Summary
 
--   Plan establishes branching rules and cross-agent coordination but leaves several core deliverables undefined.
--   Current text overstates gaps already resolved in `docs/dev_tdd.md` and omits regression safeguards mandated by DEV-PRD-018/DEV-SDS-018.
--   Multiple proposed TDD "RED" tests would pass immediately, breaking the TDD cycle and masking missing coverage around instrumentation toggles and global state reset.
--   Cycle C plus regression, risk, and sign-off sections remain placeholders; executing as-is would proceed without documentation closure or rollback strategy.
--   Recommendation: Apply the critical and high-priority patches below before implementation; status = **Needs Major Revision**, confidence = **Medium** pending clarified deliverables and deterministic test design.
+- Plan establishes branching rules and cross-agent coordination but leaves several core deliverables undefined.
+- Current text overstates gaps already resolved in `docs/dev_tdd.md` and omits regression safeguards mandated by DEV-PRD-018/DEV-SDS-018.
+- Multiple proposed TDD "RED" tests would pass immediately, breaking the TDD cycle and masking missing coverage around instrumentation toggles and global state reset.
+- Cycle C plus regression, risk, and sign-off sections remain placeholders; executing as-is would proceed without documentation closure or rollback strategy.
+- Recommendation: Apply the critical and high-priority patches below before implementation; status = **Needs Major Revision**, confidence = **Medium** pending clarified deliverables and deterministic test design.
 
 ## 2. Context Analysis
 
@@ -21,17 +21,17 @@
 
 ### 2.2 Codebase Patterns
 
--   **Python helpers** (`libs/python/vibepro_logging.py`): exposes `configure_logger`, `bootstrap_logfire`, `instrument_integrations`; uses module-level `_LOGFIRE_INSTANCE` cache and `LogfireSettings` toggles.
--   **Testing approach**: pytest in `tests/python/`, shell smoke tests in `tests/ops/`, CLI smoke script `tools/logging/test_logfire.py` invoked via `just test-logs-logfire`.
--   **Global state reset**: No helper presently to reset `_LOGFIRE_INSTANCE`; tests must work around cached configuration.
--   **Documentation workflow**: Observability docs synchronize via `tools/docs/lint_check.py`, requiring specific Logfire sections (see `tools/docs/lint_config.json`).
--   **Environment toggles**: `libs/python/logging_settings.py` uses env vars `LOGFIRE_INSTRUMENT_REQUESTS`/`LOGFIRE_INSTRUMENT_PYDANTIC`; plan should validate both enabled and disabled paths.
+- **Python helpers** (`libs/python/vibepro_logging.py`): exposes `configure_logger`, `bootstrap_logfire`, `instrument_integrations`; uses module-level `_LOGFIRE_INSTANCE` cache and `LogfireSettings` toggles.
+- **Testing approach**: pytest in `tests/python/`, shell smoke tests in `tests/ops/`, CLI smoke script `tools/logging/test_logfire.py` invoked via `just test-logs-logfire`.
+- **Global state reset**: No helper presently to reset `_LOGFIRE_INSTANCE`; tests must work around cached configuration.
+- **Documentation workflow**: Observability docs synchronize via `tools/docs/lint_check.py`, requiring specific Logfire sections (see `tools/docs/lint_config.json`).
+- **Environment toggles**: `libs/python/logging_settings.py` uses env vars `LOGFIRE_INSTRUMENT_REQUESTS`/`LOGFIRE_INSTRUMENT_PYDANTIC`; plan should validate both enabled and disabled paths.
 
 ### 2.3 External Research
 
--   Logfire officially configures via `logfire.configure()` followed by per-framework `instrument_*` calls; FastAPI instrumentation can exclude URLs or add request attribute mappers (`/pydantic/logfire`, FastAPI integration).
--   Client instrumentation (httpx/requests/sqlalchemy) supports both global and instance-specific instrumentation; tests should prefer deterministic transports (MockTransport) over live HTTP (`/pydantic/logfire` httpx/sqlalchemy docs).
--   Reconfiguration guidance recommends single configure call per process; tests need to isolate global state, aligning with our proposal for reset helpers.
+- Logfire officially configures via `logfire.configure()` followed by per-framework `instrument_*` calls; FastAPI instrumentation can exclude URLs or add request attribute mappers (`/pydantic/logfire`, FastAPI integration).
+- Client instrumentation (httpx/requests/sqlalchemy) supports both global and instance-specific instrumentation; tests should prefer deterministic transports (MockTransport) over live HTTP (`/pydantic/logfire` httpx/sqlalchemy docs).
+- Reconfiguration guidance recommends single configure call per process; tests need to isolate global state, aligning with our proposal for reset helpers.
 
 ## 3. Gap Analysis
 
@@ -73,27 +73,24 @@
 
 ## 4. Improvement Opportunities
 
--   **Strategic**: Introduce `_reset_logfire_state()` utility for tests; expand coverage to SQLAlchemy multi-engine, httpx async client, and settings toggles; capture telemetry expectations (trace/log correlation) to satisfy DEV-PRD-023.
--   **Documentation architecture**: Provide single source of truth for Logfire documentation updates (docs + template + lint) with explicit command list; link spec IDs inline (e.g., `[DEV-PRD-018]`).
+- **Strategic**: Introduce `_reset_logfire_state()` utility for tests; expand coverage to SQLAlchemy multi-engine, httpx async client, and settings toggles; capture telemetry expectations (trace/log correlation) to satisfy DEV-PRD-023.
+- **Documentation architecture**: Provide single source of truth for Logfire documentation updates (docs + template + lint) with explicit command list; link spec IDs inline (e.g., `[DEV-PRD-018]`).
 
 #### 4.1 Regression Guard (Patch 6)
 
 **Required Commands and Timeline Steps**:
 
 1. **Command**: `just test-logs`
-
     - **Expected Outcome**: All logging tests pass
     - **Timing**: Must complete successfully before any merge
     - **Failure Action**: Abort merge, investigate regression
 
 2. **Command**: `uv run pytest tests/python/`
-
     - **Expected Outcome**: All Python tests pass with no failures
     - **Timing**: Required for every PR
     - **Failure Action**: High-priority issue, rollback to previous working state
 
 3. **Command**: `just docs-lint`
-
     - **Expected Outcome**: Documentation validation passes, no broken links
     - **Timing**: Must complete before documentation merge
     - **Failure Action**: Fix documentation issues, re-run validation
@@ -107,14 +104,13 @@
 **Approval Gates**: All four commands must pass before PR approval
 **Failure Escalation**: If any check fails, create high-priority issue with rollback plan
 
--   **Developer experience**: Supply pytest fixtures for env var patching and mock transports; add guidance for running tests offline; script MCP calls for external research to reduce manual steps.
+- **Developer experience**: Supply pytest fixtures for env var patching and mock transports; add guidance for running tests offline; script MCP calls for external research to reduce manual steps.
 
 ## 5. Comprehensive Patch
 
 ### 5.1 Critical Patches
 
 1. **Patch: Replace Cycle A RED tests with deterministic pytest module**
-
     - **Location**: Section “Cycle A — Foundations & Core Verification”, subsection A.2
     - **Reason**: Ensure RED phase introduces failing tests respecting TDD and repo conventions.
     - **Required Change**:
@@ -122,13 +118,12 @@
         ```markdown
         Replace the bullet list under **Test 1–4** with:
 
-        -   [ ] **RED:** Create `tests/python/test_logfire_config.py` containing pytest tests for (a) empty service name fallback, (b) LOGFIRE_TOKEN absence, (c) metadata field coverage, and (d) instrumentation toggles. Each test should begin by calling a new helper `_reset_logfire_state()` to clear the singleton before assertions.
+        - [ ] **RED:** Create `tests/python/test_logfire_config.py` containing pytest tests for (a) empty service name fallback, (b) LOGFIRE_TOKEN absence, (c) metadata field coverage, and (d) instrumentation toggles. Each test should begin by calling a new helper `_reset_logfire_state()` to clear the singleton before assertions.
         ```
 
     - **Validation**: `pytest tests/python/test_logfire_config.py` should fail prior to GREEN implementations.
 
 2. **Patch: Define `_reset_logfire_state()` helper and mandate use in tests**
-
     - **Location**: Section “Cycle A — Foundations & Core Verification”, subsection A.3
     - **Reason**: Prevent global state leakage across tests.
     - **Required Change**:
@@ -136,13 +131,12 @@
         ```markdown
         Add bullet:
 
-        -   [ ] **Fix:** Implement `_reset_logfire_state()` in `libs/python/vibepro_logging.py` (module-private) and expose a pytest fixture that ensures the singleton is cleared before each test in `tests/python/test_logfire_config.py` and `tests/python/test_logfire_bootstrap.py`.
+        - [ ] **Fix:** Implement `_reset_logfire_state()` in `libs/python/vibepro_logging.py` (module-private) and expose a pytest fixture that ensures the singleton is cleared before each test in `tests/python/test_logfire_config.py` and `tests/python/test_logfire_bootstrap.py`.
         ```
 
     - **Validation**: Confirm repeated pytest runs yield identical results without `--forked`.
 
 3. **Patch: Build Cycle C and regression/risk sections**
-
     - **Location**: Entirety of Section 6–8 placeholders
     - **Reason**: Plan cannot proceed without defined documentation, regression, and risk strategies.
     - **Required Change**:
@@ -150,15 +144,14 @@
         ```markdown
         Replace “_Pass X will …_” placeholders with full content covering:
 
-        -   Regression safeguards: enumerate `just test-logs`, `bash tests/ops/test_vector_logfire.sh`, `just docs-lint`, `just spec-guard`.
-        -   Risk & rollback: identify failure modes (Vector transform regression, Logfire downtime) and rollback steps (revert to Cycle 1 branch, disable toggles).
-        -   Deliverables & sign-off: specify doc updates (`docs/observability/README.md`, template files), traceability matrix entries, CI evidence required for completion.
+        - Regression safeguards: enumerate `just test-logs`, `bash tests/ops/test_vector_logfire.sh`, `just docs-lint`, `just spec-guard`.
+        - Risk & rollback: identify failure modes (Vector transform regression, Logfire downtime) and rollback steps (revert to Cycle 1 branch, disable toggles).
+        - Deliverables & sign-off: specify doc updates (`docs/observability/README.md`, template files), traceability matrix entries, CI evidence required for completion.
         ```
 
     - **Validation**: Ensure checklist includes spec IDs DEV-PRD-021/DEV-PRD-023 and aligns with logging instructions.
 
 4. **Patch: Add deterministic httpx/requests/sqlalchemy tests**
-
     - **Location**: Section “Cycle B — Testing & Validation”, subsections B.2/B.3
     - **Reason**: Replace flaky external calls with deterministic fixtures and expand coverage per DEV-SDS-018.
     - **Required Change**:
@@ -166,9 +159,9 @@
         ```markdown
         Update tests to:
 
-        -   Use `httpx.MockTransport` and `responses` (or built-in mocking) to avoid network dependency.
-        -   Instrument an in-memory SQLite engine via `logfire.instrument_sqlalchemy(engine=engine)` and assert span attributes (`db.system`, `db.statement`).
-        -   Validate `instrument_integrations` toggles by setting `LOGFIRE_INSTRUMENT_REQUESTS=1` and confirming instrumentation executed.
+        - Use `httpx.MockTransport` and `responses` (or built-in mocking) to avoid network dependency.
+        - Instrument an in-memory SQLite engine via `logfire.instrument_sqlalchemy(engine=engine)` and assert span attributes (`db.system`, `db.statement`).
+        - Validate `instrument_integrations` toggles by setting `LOGFIRE_INSTRUMENT_REQUESTS=1` and confirming instrumentation executed.
         ```
 
     - **Validation**: `pytest tests/python/test_logfire_bootstrap.py -k instrumentation` fails before GREEN changes and passes after.
@@ -209,10 +202,10 @@ The following scope items are identified but should be deferred to future cycles
 
 **Rationale for Backlog Classification:**
 
--   These items require additional research, testing infrastructure, or cross-team coordination
--   They exceed the current Cycle 2A scope while core DEV-PRD-018/DEV-SDS-018 requirements can be met without them
--   Many depend on completion of Critical Patches 1-4 before they can be safely implemented
--   They represent enhancements rather than core functionality gaps
+- These items require additional research, testing infrastructure, or cross-team coordination
+- They exceed the current Cycle 2A scope while core DEV-PRD-018/DEV-SDS-018 requirements can be met without them
+- Many depend on completion of Critical Patches 1-4 before they can be safely implemented
+- They represent enhancements rather than core functionality gaps
 
 ### 5.4 Optional Improvements
 
@@ -222,15 +215,15 @@ The following scope items are identified but should be deferred to future cycles
 
 ### 5.5 Phase-Specific Improvements
 
--   **GREEN**: Require addition of `_reset_logfire_state()` and deterministic fixtures before asserting PASS.
--   **RED**: Emphasize writing failing tests for toggles and singleton reset before code changes.
--   **REFACTOR**: Plan should include extracting shared pytest fixtures (`logfire_exporter`) and reusing across modules.
--   **REGRESSION**: Mandate consolidated checklist: `just test-logs`, `pytest tests/python`, `bash tests/ops/test_vector_logfire.sh`, `just ai-validate`, `just docs-lint`.
+- **GREEN**: Require addition of `_reset_logfire_state()` and deterministic fixtures before asserting PASS.
+- **RED**: Emphasize writing failing tests for toggles and singleton reset before code changes.
+- **REFACTOR**: Plan should include extracting shared pytest fixtures (`logfire_exporter`) and reusing across modules.
+- **REGRESSION**: Mandate consolidated checklist: `just test-logs`, `pytest tests/python`, `bash tests/ops/test_vector_logfire.sh`, `just ai-validate`, `just docs-lint`.
 
 ### 5.6 Revised Plan Structure
 
--   **Current Issues**: Incomplete sections, intermingled doc placeholders, and tests embedded in CLI scripts.
--   **Recommended Structure**:
+- **Current Issues**: Incomplete sections, intermingled doc placeholders, and tests embedded in CLI scripts.
+- **Recommended Structure**:
     1. Context & Spec Mapping (complete)
     2. Cycle A — Configuration validation (pytest module + reset helper)
     3. Cycle B — Integration tests (deterministic fixtures) + Vector validation
@@ -238,18 +231,18 @@ The following scope items are identified but should be deferred to future cycles
     5. Regression Safeguards (explicit command list)
     6. Risk & Rollback
     7. Deliverables & Sign-off (evidence checklist)
--   **Rationale**: Mirrors DEV-TDD phases, separates documentation work, and surfaces regression gates early.
+- **Rationale**: Mirrors DEV-TDD phases, separates documentation work, and surfaces regression gates early.
 
 ## 6. Validation Checklist
 
--   [ ] Spec tables reflect actual status and cite DEV-PRD-018/DEV-SDS-018 accurately.
--   [ ] `_reset_logfire_state()` helper implemented and used across tests.
--   [ ] New pytest module `tests/python/test_logfire_config.py` enforces metadata/toggle coverage.
--   [ ] Integration tests avoid network calls and validate span attributes deterministically.
--   [ ] Cycle C defines documentation updates with `just docs-lint` verification.
--   [ ] Regression suite enumerated and executed (`just test-logs`, `pytest tests/python`, `bash tests/ops/test_vector_logfire.sh`, `just ai-validate`).
--   [ ] Risk/rollback plan documented with clear triggers.
--   [ ] Traceability updates (`docs/traceability_matrix.md`, `docs/dev_spec_index.md`) included.
+- [ ] Spec tables reflect actual status and cite DEV-PRD-018/DEV-SDS-018 accurately.
+- [ ] `_reset_logfire_state()` helper implemented and used across tests.
+- [ ] New pytest module `tests/python/test_logfire_config.py` enforces metadata/toggle coverage.
+- [ ] Integration tests avoid network calls and validate span attributes deterministically.
+- [ ] Cycle C defines documentation updates with `just docs-lint` verification.
+- [ ] Regression suite enumerated and executed (`just test-logs`, `pytest tests/python`, `bash tests/ops/test_vector_logfire.sh`, `just ai-validate`).
+- [ ] Risk/rollback plan documented with clear triggers.
+- [ ] Traceability updates (`docs/traceability_matrix.md`, `docs/dev_spec_index.md`) included.
 
 ## 7. Implementation Roadmap
 
@@ -263,22 +256,22 @@ The following scope items are identified but should be deferred to future cycles
 
 ### 7.2 Effort Estimates
 
--   Critical patches: 1.5–2 days (test refactor + doc completion).
--   High-priority patches: 0.5 day (spec tables, doc-sync tasks).
--   Medium enhancements: 0.5–1 day.
--   Optional improvements: timeboxed as capacity allows.
+- Critical patches: 1.5–2 days (test refactor + doc completion).
+- High-priority patches: 0.5 day (spec tables, doc-sync tasks).
+- Medium enhancements: 0.5–1 day.
+- Optional improvements: timeboxed as capacity allows.
 
 ### 7.3 Dependencies
 
--   Critical Patch 1 depends on availability of `_reset_logfire_state()` (Patch 2).
--   Cycle C doc updates depend on Cycle B findings (span attribute documentation).
--   Regression checklist relies on updated tests to exist.
+- Critical Patch 1 depends on availability of `_reset_logfire_state()` (Patch 2).
+- Cycle C doc updates depend on Cycle B findings (span attribute documentation).
+- Regression checklist relies on updated tests to exist.
 
 ### 7.4 Risks
 
--   Network-free test refactor may require new fixtures; mitigate by using built-in MockTransport.
--   Updating documentation without rerunning `just docs-lint` risks CI failures; enforce in plan.
--   Singleton reset helper must avoid exposing API to generated projects; keep internal/private.
+- Network-free test refactor may require new fixtures; mitigate by using built-in MockTransport.
+- Updating documentation without rerunning `just docs-lint` risks CI failures; enforce in plan.
+- Singleton reset helper must avoid exposing API to generated projects; keep internal/private.
 
 ## 8. Recommended Next Steps
 
@@ -288,6 +281,6 @@ The following scope items are identified but should be deferred to future cycles
 
 Also incorporate:
 
--   make `_reset_logfire_state()` accessible for tests and exposed via dedicated testing utility module
--   use existing fixtures (pytest plugins) to leverage for httpx/requests mocking to avoid adding new dependencies
--   require instrumentation coverage for additional libraries (e.g., `instrument_pydantic_ai`) in Cycle 2A scope
+- make `_reset_logfire_state()` accessible for tests and exposed via dedicated testing utility module
+- use existing fixtures (pytest plugins) to leverage for httpx/requests mocking to avoid adding new dependencies
+- require instrumentation coverage for additional libraries (e.g., `instrument_pydantic_ai`) in Cycle 2A scope

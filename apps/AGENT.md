@@ -13,12 +13,12 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
--   User-facing applications (web, mobile, CLI, APIs)
--   Interface/Presentation layer of hexagonal architecture
--   Controllers and API endpoints
--   UI components and views
--   Application-specific configuration
--   Entry points and bootstrapping
+- User-facing applications (web, mobile, CLI, APIs)
+- Interface/Presentation layer of hexagonal architecture
+- Controllers and API endpoints
+- UI components and views
+- Application-specific configuration
+- Entry points and bootstrapping
 
 **Architecture Layer**: **Interface Layer** (Hexagonal Architecture - outermost layer)
 
@@ -87,13 +87,13 @@ apps/my-app/
 
 ### Use This Context When:
 
--   [ ] Building user-facing applications
--   [ ] Implementing HTTP controllers or API endpoints
--   [ ] Creating CLI commands or interfaces
--   [ ] Building UI components or views
--   [ ] Setting up application bootstrap/entry points
--   [ ] Configuring dependency injection for apps
--   [ ] Writing end-to-end tests
+- [ ] Building user-facing applications
+- [ ] Implementing HTTP controllers or API endpoints
+- [ ] Creating CLI commands or interfaces
+- [ ] Building UI components or views
+- [ ] Setting up application bootstrap/entry points
+- [ ] Configuring dependency injection for apps
+- [ ] Writing end-to-end tests
 
 ### Refer to Other Contexts When:
 
@@ -158,10 +158,10 @@ export class UserController {
 
 **DON'T in controllers:**
 
--   ❌ Business logic or domain rules
--   ❌ Direct database access
--   ❌ Complex calculations
--   ❌ External service calls (use use cases)
+- ❌ Business logic or domain rules
+- ❌ Direct database access
+- ❌ Complex calculations
+- ❌ External service calls (use use cases)
 
 ### Dependency Injection Pattern
 
@@ -383,19 +383,19 @@ export function UserProfileScreen({ route }) {
 
 **Modular instructions that apply here:**
 
--   [.github/instructions/style.frontend.instructions.md](/.github/instructions/style.frontend.instructions.md) - Frontend patterns
--   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in interfaces
--   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - E2E testing
--   [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Scaffold apps with Nx
+- [.github/instructions/style.frontend.instructions.md](/.github/instructions/style.frontend.instructions.md) - Frontend patterns
+- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in interfaces
+- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - E2E testing
+- [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Scaffold apps with Nx
 
 **Relevant prompts:**
 
--   [.github/prompts/ui.react.create-component.prompt.md](/.github/prompts/ui.react.create-component.prompt.md) - React components
+- [.github/prompts/ui.react.create-component.prompt.md](/.github/prompts/ui.react.create-component.prompt.md) - React components
 
 **Related chat modes:**
 
--   `persona.senior-frontend` - Frontend patterns
--   `persona.ux-ui-designer` - UI/UX guidance
+- `persona.senior-frontend` - Frontend patterns
+- `persona.ux-ui-designer` - UI/UX guidance
 
 ## 💡 Examples
 
@@ -565,32 +565,32 @@ export function registerUserCommands(program: Command) {
 
 ### Before Creating a New App:
 
--   [ ] Use generator: `just ai-scaffold name=@nx/next:app` (or appropriate generator)
--   [ ] Understand app type (web, API, CLI, mobile)
--   [ ] Plan dependency injection strategy
--   [ ] Identify required use cases from application layer
--   [ ] Design controller/presenter structure
--   [ ] Plan DTO validation strategy
+- [ ] Use generator: `just ai-scaffold name=@nx/next:app` (or appropriate generator)
+- [ ] Understand app type (web, API, CLI, mobile)
+- [ ] Plan dependency injection strategy
+- [ ] Identify required use cases from application layer
+- [ ] Design controller/presenter structure
+- [ ] Plan DTO validation strategy
 
 ### While Building App:
 
--   [ ] Follow hexagonal architecture principles
--   [ ] Keep controllers thin (delegate to use cases)
--   [ ] Use DTOs for input validation
--   [ ] Use presenters for output formatting
--   [ ] Set up dependency injection properly
--   [ ] Handle errors gracefully
--   [ ] Add traceability comments (spec IDs)
+- [ ] Follow hexagonal architecture principles
+- [ ] Keep controllers thin (delegate to use cases)
+- [ ] Use DTOs for input validation
+- [ ] Use presenters for output formatting
+- [ ] Set up dependency injection properly
+- [ ] Handle errors gracefully
+- [ ] Add traceability comments (spec IDs)
 
 ### After Building App:
 
--   [ ] Write e2e tests
--   [ ] Write integration tests for controllers
--   [ ] Document API endpoints (OpenAPI/Swagger)
--   [ ] Configure for deployment
--   [ ] Add health check endpoint
--   [ ] Set up monitoring/observability
--   [ ] Update README with setup instructions
+- [ ] Write e2e tests
+- [ ] Write integration tests for controllers
+- [ ] Document API endpoints (OpenAPI/Swagger)
+- [ ] Configure for deployment
+- [ ] Add health check endpoint
+- [ ] Set up monitoring/observability
+- [ ] Update README with setup instructions
 
 ## 🔍 Quick Reference
 
@@ -648,28 +648,28 @@ pnpm exec nx e2e my-app-e2e
 
 ### Key Concepts
 
--   **Interface Layer**: Outermost layer of hexagonal architecture
--   **Controller**: Handles HTTP/CLI input, delegates to use cases
--   **Presenter**: Formats domain objects for output
--   **DTO**: Data Transfer Object for input validation
--   **Dependency Injection**: Wire use cases and infrastructure
--   **Port**: Interface that app depends on (use cases)
--   **Adapter**: Implementation of port (controller is adapter)
+- **Interface Layer**: Outermost layer of hexagonal architecture
+- **Controller**: Handles HTTP/CLI input, delegates to use cases
+- **Presenter**: Formats domain objects for output
+- **DTO**: Data Transfer Object for input validation
+- **Dependency Injection**: Wire use cases and infrastructure
+- **Port**: Interface that app depends on (use cases)
+- **Adapter**: Implementation of port (controller is adapter)
 
 ## 🛡️ Security Considerations
 
 **CRITICAL for applications:**
 
--   ⚠️ **Validate ALL input**: Never trust user input
--   ⚠️ **Sanitize output**: Prevent XSS attacks
--   ⚠️ **Authentication/Authorization**: Verify user identity and permissions
--   ⚠️ **Rate limiting**: Prevent abuse and DoS
--   ⚠️ **CORS configuration**: Restrict allowed origins
--   ⚠️ **Secure headers**: CSP, HSTS, X-Frame-Options
--   ⚠️ **Error handling**: Don't leak sensitive info in errors
--   ⚠️ **Input size limits**: Prevent payload attacks
--   ⚠️ **SQL injection**: Use parameterized queries (in infrastructure)
--   ⚠️ **CSRF protection**: Use tokens for state-changing operations
+- ⚠️ **Validate ALL input**: Never trust user input
+- ⚠️ **Sanitize output**: Prevent XSS attacks
+- ⚠️ **Authentication/Authorization**: Verify user identity and permissions
+- ⚠️ **Rate limiting**: Prevent abuse and DoS
+- ⚠️ **CORS configuration**: Restrict allowed origins
+- ⚠️ **Secure headers**: CSP, HSTS, X-Frame-Options
+- ⚠️ **Error handling**: Don't leak sensitive info in errors
+- ⚠️ **Input size limits**: Prevent payload attacks
+- ⚠️ **SQL injection**: Use parameterized queries (in infrastructure)
+- ⚠️ **CSRF protection**: Use tokens for state-changing operations
 
 **Example secure controller:**
 
@@ -746,18 +746,18 @@ import { User } from "@my-app/users-domain"; // Domain entity
 
 ### Regular Tasks
 
--   **Weekly**: Review controller logic, extract to use cases if needed
--   **Monthly**: Audit dependency injection configuration
--   **Quarterly**: Review API design, plan versioning strategy
--   **Per release**: Update API documentation, test deployments
+- **Weekly**: Review controller logic, extract to use cases if needed
+- **Monthly**: Audit dependency injection configuration
+- **Quarterly**: Review API design, plan versioning strategy
+- **Per release**: Update API documentation, test deployments
 
 ### When to Update This AGENT.md
 
--   New application type added (e.g., gRPC, WebSocket)
--   Dependency injection patterns change
--   New security requirements emerge
--   Framework versions update significantly
--   Architectural patterns evolve
+- New application type added (e.g., gRPC, WebSocket)
+- Dependency injection patterns change
+- New security requirements emerge
+- Framework versions update significantly
+- Architectural patterns evolve
 
 ---
 

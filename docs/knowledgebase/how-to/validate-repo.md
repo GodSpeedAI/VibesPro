@@ -11,4 +11,4 @@ Run lint, typecheck, and tests (if available) using a single command.
 
 ## Notes
 
--   If scripts aren’t defined in package.json or Nx is absent, the task will skip gracefully.
+- If scripts aren’t defined in package.json or Nx is absent, the task will skip gracefully.

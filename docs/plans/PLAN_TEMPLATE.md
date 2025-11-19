@@ -11,15 +11,15 @@
 Define the scope, purpose, and intent of this AI-driven implementation cycle.
 Emphasize traceability, reproducibility, and auditability of each automated or agent-driven step.
 
--   Ensure compliance with <specs / standards>
--   Maintain transparent validation logs and audit trails
--   Achieve deterministic, isolated test and deployment behavior
+- Ensure compliance with <specs / standards>
+- Maintain transparent validation logs and audit trails
+- Achieve deterministic, isolated test and deployment behavior
 
 **Key considerations:**
 
--   <List specific auditability or traceability requirements>
--   <Add controls for deterministic outcomes>
--   <Reference relevant governance or validation standards>
+- <List specific auditability or traceability requirements>
+- <Add controls for deterministic outcomes>
+- <Reference relevant governance or validation standards>
 
 ---
 
@@ -68,11 +68,11 @@ Each phase includes **concise, auditable cycles** (A, B, C, A1, B2, C2, etc.). E
 
 #### ✅ Phase Checklist
 
--   [ ] Define objectives and dependencies — _Updated By:_ <Agent / Date>
--   [ ] Initialize all cycles — _Updated By:_ <Agent / Date>
--   [ ] Execute all cycles — _Updated By:_ <Agent / Date>
--   [ ] Validate and archive artifacts — _Updated By:_ <Agent / Date>
--   [ ] **Mark Phase as Complete** once all cycles are GREEN and evidence is verified.
+- [ ] Define objectives and dependencies — _Updated By:_ <Agent / Date>
+- [ ] Initialize all cycles — _Updated By:_ <Agent / Date>
+- [ ] Execute all cycles — _Updated By:_ <Agent / Date>
+- [ ] Validate and archive artifacts — _Updated By:_ <Agent / Date>
+- [ ] **Mark Phase as Complete** once all cycles are GREEN and evidence is verified.
 
 > Upon completion, the responsible AI agent must update this checklist to mark all finished items and log evidence paths in Section 9.
 
@@ -107,18 +107,18 @@ graph TD
 
 #### ✅ Cycle Checklist
 
--   [ ] RED Phase tests defined — _Updated By:_ <Agent / Date>
--   [ ] GREEN Phase implementation done — _Updated By:_ <Agent / Date>
--   [ ] Verification executed — _Updated By:_ <Agent / Date>
--   [ ] Evidence captured and stored — _Updated By:_ <Agent / Date>
--   [ ] **Mark Cycle as Complete** after validation passes and artifacts logged.
+- [ ] RED Phase tests defined — _Updated By:_ <Agent / Date>
+- [ ] GREEN Phase implementation done — _Updated By:_ <Agent / Date>
+- [ ] Verification executed — _Updated By:_ <Agent / Date>
+- [ ] Evidence captured and stored — _Updated By:_ <Agent / Date>
+- [ ] **Mark Cycle as Complete** after validation passes and artifacts logged.
 
 > Upon completion, the AI agent performing this cycle must update these checkboxes and include log and report paths in Section 9.
 
 #### RED Phase
 
--   <List expected failing tests or preconditions>
--   <Identify baseline audit checkpoints>
+- <List expected failing tests or preconditions>
+- <Identify baseline audit checkpoints>
 
 ```python
 from <module> import <reset_function>
@@ -127,8 +127,8 @@ from <module> import <reset_function>
 
 #### GREEN Phase
 
--   <Describe deterministic actions or updates>
--   <Implementation or fix summary>
+- <Describe deterministic actions or updates>
+- <Implementation or fix summary>
 
 #### Verification & Evidence Capture
 
@@ -139,9 +139,9 @@ just validate
 
 **Artifacts to Store:**
 
--   Logs (`/logs/<cycle_label>.txt`)
--   Validation outputs (`/reports/<cycle_label>_report.json`)
--   CI metadata or summary (`/ci/<cycle_label>_run.log`)
+- Logs (`/logs/<cycle_label>.txt`)
+- Validation outputs (`/reports/<cycle_label>_report.json`)
+- CI metadata or summary (`/ci/<cycle_label>_run.log`)
 
 Label → **<Cycle_Label>-GREEN**
 
@@ -182,9 +182,9 @@ Rollback: revert to last GREEN merge or isolate affected agent cycle. Store roll
 
 Each item must have auditable evidence before being marked complete.
 
--   [ ] <Feature> — **Agent:** <Name>, **Depends On:** <Cycle/Phase>, **Evidence:** <Link or File Path>
--   [ ] <Integration> — **Agent:** <Name>, **Depends On:** <Cycle/Phase>, **Evidence:** <Link or File Path>
--   [ ] <Docs> — **Agent:** <Name>, **Depends On:** <Cycle/Phase>, **Evidence:** <Link or File Path>
+- [ ] <Feature> — **Agent:** <Name>, **Depends On:** <Cycle/Phase>, **Evidence:** <Link or File Path>
+- [ ] <Integration> — **Agent:** <Name>, **Depends On:** <Cycle/Phase>, **Evidence:** <Link or File Path>
+- [ ] <Docs> — **Agent:** <Name>, **Depends On:** <Cycle/Phase>, **Evidence:** <Link or File Path>
 
 ---
 

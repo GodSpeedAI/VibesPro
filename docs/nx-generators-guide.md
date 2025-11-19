@@ -47,11 +47,11 @@ pnpm exec nx g @nx/js:library user-domain --directory=libs/domain/user
 
 **Common use cases**:
 
--   Domain entities and value objects
--   Business logic services
--   Shared utilities (date formatting, validation, etc.)
--   API clients
--   Type definitions
+- Domain entities and value objects
+- Business logic services
+- Shared utilities (date formatting, validation, etc.)
+- API clients
+- Type definitions
 
 ---
 
@@ -82,10 +82,10 @@ pnpm exec nx g @nx/react:redux auth --project=state-management
 
 **Common use cases**:
 
--   Design system components (Button, Input, Card, etc.)
--   Feature-specific UI (UserProfile, OrderList, etc.)
--   Custom hooks (useAuth, useFetch, useLocalStorage, etc.)
--   State management (Redux slices, context providers)
+- Design system components (Button, Input, Card, etc.)
+- Feature-specific UI (UserProfile, OrderList, etc.)
+- Custom hooks (useAuth, useFetch, useLocalStorage, etc.)
+- State management (Redux slices, context providers)
 
 ---
 
@@ -105,11 +105,11 @@ pnpm exec nx g @nx/node:application api --directory=apps
 
 **Common use cases**:
 
--   REST APIs
--   GraphQL servers
--   CLI applications
--   Background workers
--   Microservices
+- REST APIs
+- GraphQL servers
+- CLI applications
+- Background workers
+- Microservices
 
 ---
 
@@ -260,11 +260,11 @@ Check `generators/*/schema.json` for available options.
 
 **Green Phase**:
 
--   Implement logic in generated structure
+- Implement logic in generated structure
 
 **Refactor Phase**:
 
--   Improve within generated boundaries
+- Improve within generated boundaries
 
 ### With Spec Implementation
 
@@ -295,7 +295,6 @@ Check `generators/*/schema.json` for available options.
 ## Best Practices
 
 1. **Always use generators for new projects/libraries**
-
     - Ensures consistent structure
     - Configures build/test automatically
     - Sets up Nx project graph correctly
@@ -317,7 +316,6 @@ Check `generators/*/schema.json` for available options.
     ```
 
 4. **Customize after generation**
-
     - Generators create scaffolds, not complete solutions
     - Add your business logic, tests, documentation after
 
@@ -331,25 +329,25 @@ Check `generators/*/schema.json` for available options.
 
 ### "Cannot find generator"
 
--   Ensure plugin is installed: `pnpm add -D @nx/<plugin>`
--   Check spelling: `pnpm exec nx list`
+- Ensure plugin is installed: `pnpm add -D @nx/<plugin>`
+- Check spelling: `pnpm exec nx list`
 
 ### "Missing required parameter"
 
--   Check schema: `pnpm exec nx g @nx/js:library --help`
--   Or use interactive mode: `pnpm exec nx g @nx/js:library` (prompts for inputs)
+- Check schema: `pnpm exec nx g @nx/js:library --help`
+- Or use interactive mode: `pnpm exec nx g @nx/js:library` (prompts for inputs)
 
 ### "Project already exists"
 
--   Choose different name or remove existing project
--   Use `--dry-run` to preview first
+- Choose different name or remove existing project
+- Use `--dry-run` to preview first
 
 ---
 
 ## Additional Resources
 
--   [Nx Generators Documentation](https://nx.dev/concepts/more-concepts/generating-code)
--   [Custom Local Generators](https://nx.dev/extending-nx/recipes/local-generators)
--   `.github/instructions/generators-first.instructions.md` (workflow)
--   `.github/instructions/nx.instructions.md` (Nx MCP server integration)
--   `justfile` (see `ai-scaffold` recipe at line 376-398)
+- [Nx Generators Documentation](https://nx.dev/concepts/more-concepts/generating-code)
+- [Custom Local Generators](https://nx.dev/extending-nx/recipes/local-generators)
+- `.github/instructions/generators-first.instructions.md` (workflow)
+- `.github/instructions/nx.instructions.md` (Nx MCP server integration)
+- `justfile` (see `ai-scaffold` recipe at line 376-398)

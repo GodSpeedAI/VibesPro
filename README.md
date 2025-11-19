@@ -21,11 +21,11 @@ VibesPro is **AI-native meta-infrastructure** that combines architectural intell
 
 When you initialize with VibesPro, you're deploying:
 
--   🏗️ **Application Infrastructure** – Enterprise-grade Nx monorepo with hexagonal architecture
--   🤖 **AI Development Team** – 32+ specialized agents (architects, TDD coaches, debuggers, product managers)
--   🧠 **Institutional Memory** – Temporal learning system that captures every architectural decision
--   📊 **Production Telemetry** – OpenTelemetry + Vector observability stack
--   🔧 **Platform Engineering** – Reproducible environments via Devbox + Mise + SOPS
+- 🏗️ **Application Infrastructure** – Enterprise-grade Nx monorepo with hexagonal architecture
+- 🤖 **AI Development Team** – 32+ specialized agents (architects, TDD coaches, debuggers, product managers)
+- 🧠 **Institutional Memory** – Temporal learning system that captures every architectural decision
+- 📊 **Production Telemetry** – OpenTelemetry + Vector observability stack
+- 🔧 **Platform Engineering** – Reproducible environments via Devbox + Mise + SOPS
 
 **Each synthesized application IS a self-sustaining development platform.** VibesPro is the cognitive layer that creates it.
 
@@ -37,45 +37,45 @@ When you initialize with VibesPro, you're deploying:
 
 ### 1. **Application Synthesis Engine**
 
--   Architectural intelligence that synthesizes enterprise-grade codebases
--   Hexagonal architecture with enforced domain boundaries
--   Multi-language synthesis (TypeScript, Python, Rust)
--   Nx monorepo orchestration for scalable organization
+- Architectural intelligence that synthesizes enterprise-grade codebases
+- Hexagonal architecture with enforced domain boundaries
+- Multi-language synthesis (TypeScript, Python, Rust)
+- Nx monorepo orchestration for scalable organization
 
 ### 2. **AI Development Team**
 
--   **32+ Specialized Agents** – System architects, TDD coaches, debuggers, security analysts, product managers
--   **Modular Expertise** – 16 domain-specific knowledge systems (MECE organizational principle)
--   **26 Workflow Protocols** – Proven methodologies for specs, testing, security, performance
--   **Cognitive Context Management** – Intelligent information retrieval and synthesis
+- **32+ Specialized Agents** – System architects, TDD coaches, debuggers, security analysts, product managers
+- **Modular Expertise** – 16 domain-specific knowledge systems (MECE organizational principle)
+- **26 Workflow Protocols** – Proven methodologies for specs, testing, security, performance
+- **Cognitive Context Management** – Intelligent information retrieval and synthesis
 
 ### 3. **Institutional Memory System**
 
--   **Temporal Knowledge Store** – Rust-based redb persistence layer
--   **Decision Archaeology** – Complete history of PRD/SDS/ADR/TS with temporal context
--   **Pattern Intelligence** – Query organizational knowledge before architectural decisions
--   **Evolutionary Understanding** – Tracks how your architecture adapts over time
+- **Temporal Knowledge Store** – Rust-based redb persistence layer
+- **Decision Archaeology** – Complete history of PRD/SDS/ADR/TS with temporal context
+- **Pattern Intelligence** – Query organizational knowledge before architectural decisions
+- **Evolutionary Understanding** – Tracks how your architecture adapts over time
 
 ### 4. **Production Observability Infrastructure**
 
--   **OpenTelemetry Instrumentation** – Distributed tracing with <1µs overhead
--   **Vector Data Pipeline** – Transformation, PII redaction, routing
--   **OpenObserve Storage** – Long-term analytics and SQL querying
--   **Runtime Flags** – Enable/disable with `VIBEPRO_OBSERVE` environment variable
+- **OpenTelemetry Instrumentation** – Distributed tracing with <1µs overhead
+- **Vector Data Pipeline** – Transformation, PII redaction, routing
+- **OpenObserve Storage** – Long-term analytics and SQL querying
+- **Runtime Flags** – Enable/disable with `VIBEPRO_OBSERVE` environment variable
 
 ### 5. **Development Environment Platform**
 
--   **Devbox** – Reproducible OS-level toolchain
--   **Mise** – Node/Python/Rust version management
--   **SOPS** – Secret encryption and management
--   **Just** – Cross-platform task orchestration
+- **Devbox** – Reproducible OS-level toolchain
+- **Mise** – Node/Python/Rust version management
+- **SOPS** – Secret encryption and management
+- **Just** – Cross-platform task orchestration
 
 ### 6. **Quality & Compliance System**
 
--   **Specification-Driven Development** – Traceability matrix for all changes
--   **Generator-First Policy** – Enforced via Nx generators
--   **Type Safety** – TypeScript strict mode, Python mypy, Rust compile checks
--   **Security Guardrails** – Pre-commit hooks, PII redaction, input validation
+- **Specification-Driven Development** – Traceability matrix for all changes
+- **Generator-First Policy** – Enforced via Nx generators
+- **Type Safety** – TypeScript strict mode, Python mypy, Rust compile checks
+- **Security Guardrails** – Pre-commit hooks, PII redaction, input validation
 
 ---
 
@@ -102,18 +102,18 @@ copier copy gh:GodSpeedAI/VibesPro my-project-name
 
 **During deployment, you configure:**
 
--   Technical stack (TypeScript/Python/Rust)
--   Capability modules (Authentication, APIs, UI, Telemetry)
--   Domain boundaries (user-management, orders, inventory, payments)
--   AI agent specializations and workflows
+- Technical stack (TypeScript/Python/Rust)
+- Capability modules (Authentication, APIs, UI, Telemetry)
+- Domain boundaries (user-management, orders, inventory, payments)
+- AI agent specializations and workflows
 
 **VibesPro synthesizes your agency:**
 
--   Enterprise monorepo with hexagonal architecture (Nx orchestration)
--   AI development team (32+ specialized agents, 26 workflow protocols, 16 knowledge domains)
--   Institutional memory system (Rust-based temporal database)
--   Production observability infrastructure (OpenTelemetry + Vector + OpenObserve)
--   Platform engineering layer (Devbox + Mise + SOPS)
+- Enterprise monorepo with hexagonal architecture (Nx orchestration)
+- AI development team (32+ specialized agents, 26 workflow protocols, 16 knowledge domains)
+- Institutional memory system (Rust-based temporal database)
+- Production observability infrastructure (OpenTelemetry + Vector + OpenObserve)
+- Platform engineering layer (Devbox + Mise + SOPS)
 
 ### Phase 2: Agency Activation
 
@@ -125,12 +125,12 @@ just doctor         # Validates agency operational readiness
 
 **Agency activation sequence:**
 
--   🏗️ **Build Systems** – Nx 22+ with intelligent caching and dependency orchestration
--   🤖 **AI Agent Team** – 32+ specialists contextualized to YOUR domain and architecture
--   🧠 **Institutional Memory** – Temporal database begins recording organizational knowledge
--   📊 **Telemetry Infrastructure** – OpenTelemetry → Vector → OpenObserve pipeline operational
--   🔐 **Security Operations** – SOPS encryption, PII redaction, validation enforcement
--   📚 **Knowledge Management** – Specs (PRD/SDS/ADR/TS), traceability system, documentation automation
+- 🏗️ **Build Systems** – Nx 22+ with intelligent caching and dependency orchestration
+- 🤖 **AI Agent Team** – 32+ specialists contextualized to YOUR domain and architecture
+- 🧠 **Institutional Memory** – Temporal database begins recording organizational knowledge
+- 📊 **Telemetry Infrastructure** – OpenTelemetry → Vector → OpenObserve pipeline operational
+- 🔐 **Security Operations** – SOPS encryption, PII redaction, validation enforcement
+- 📚 **Knowledge Management** – Specs (PRD/SDS/ADR/TS), traceability system, documentation automation
 
 ### Phase 3: Operate with AI Development Team
 
@@ -153,10 +153,10 @@ pnpm dev
 
 **Your AI development team operates continuously:**
 
--   Consults institutional memory for proven architectural patterns
--   Enforces hexagonal architecture and domain boundaries
--   Maintains specification traceability across all changes
--   Evolves recommendations based on accumulated organizational wisdom
+- Consults institutional memory for proven architectural patterns
+- Enforces hexagonal architecture and domain boundaries
+- Maintains specification traceability across all changes
+- Evolves recommendations based on accumulated organizational wisdom
 
 **Outcome: You have a software development agency that scales infinitely, never forgets, and compounds expertise over time.**
 
@@ -170,10 +170,10 @@ pnpm dev
 
 Rust-based redb database (`temporal_db/`) stores:
 
--   📋 **Specifications** – PRD, SDS, ADR, TS with timestamps
--   🎯 **Proven Patterns** – What worked, what didn't, and why
--   📊 **Architectural Decisions** – Context, rationale, trade-offs
--   🔄 **Change History** – Time-series tracking of evolution
+- 📋 **Specifications** – PRD, SDS, ADR, TS with timestamps
+- 🎯 **Proven Patterns** – What worked, what didn't, and why
+- 📊 **Architectural Decisions** – Context, rationale, trade-offs
+- 🔄 **Change History** – Time-series tracking of evolution
 
 Query before major decisions: "What authentication architectures have we validated in production?"
 
@@ -193,25 +193,25 @@ Located in `.github/chatmodes/`:
 
 **Development Personas:**
 
--   `persona.navigator` – Elite multi-language coding (MCP integration)
--   `persona.system-architect` – Architectural guidance
--   `persona.senior-backend` / `senior-frontend` – Domain-specific patterns
+- `persona.navigator` – Elite multi-language coding (MCP integration)
+- `persona.system-architect` – Architectural guidance
+- `persona.senior-backend` / `senior-frontend` – Domain-specific patterns
 
 **Workflow Modes:**
 
--   **TDD**: `tdd.red`, `tdd.green`, `tdd.refactor`
--   **Debug**: `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`
--   **Specs**: `spec.lean`, `spec.wide`, `spec.nfr`
--   **Product**: `product.manager`, `product.features-list`
+- **TDD**: `tdd.red`, `tdd.green`, `tdd.refactor`
+- **Debug**: `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`
+- **Specs**: `spec.lean`, `spec.wide`, `spec.nfr`
+- **Product**: `product.manager`, `product.features-list`
 
 ### Workflow Protocol Library
 
 26 proven methodologies in `.github/prompts/`:
 
--   `spec.implement.prompt.md` – Specification-driven implementation
--   `tdd.workflow.prompt.md` – Test-driven development protocols
--   `sec.review.prompt.md` – Security compliance audits
--   `perf.analyze.prompt.md` – Performance engineering analysis
+- `spec.implement.prompt.md` – Specification-driven implementation
+- `tdd.workflow.prompt.md` – Test-driven development protocols
+- `sec.review.prompt.md` – Security compliance audits
+- `perf.analyze.prompt.md` – Performance engineering analysis
 
 ---
 
@@ -219,18 +219,18 @@ Located in `.github/chatmodes/`:
 
 ### Instead of Days, Think Minutes
 
--   **Before:** Week one: setup, configurations, folder structure, testing framework...
--   **After:** Hour one: writing actual business logic
+- **Before:** Week one: setup, configurations, folder structure, testing framework...
+- **After:** Hour one: writing actual business logic
 
 ### Instead of Chaos, Think Clarity
 
--   **Before:** Every project looks different; new dev needs a week to understand the layout
--   **After:** Consistent architecture across all projects; new dev productive on day one
+- **Before:** Every project looks different; new dev needs a week to understand the layout
+- **After:** Consistent architecture across all projects; new dev productive on day one
 
 ### Instead of Debt, Think Foundation
 
--   **Before:** Technical debt accumulates from day one (cutting corners to ship faster)
--   **After:** Best practices embedded from the start; you're building on solid ground
+- **Before:** Technical debt accumulates from day one (cutting corners to ship faster)
+- **After:** Best practices embedded from the start; you're building on solid ground
 
 ---
 
@@ -261,38 +261,38 @@ If you're contributing to VibesPro itself (editing this repository), create a lo
 
 ### Application Engineering Infrastructure
 
--   **Nx Orchestration** (v22+) – Enterprise build system with intelligent caching
--   **TypeScript Strict Mode** – Zero-tolerance type safety enforcement
--   **Python with mypy** – Comprehensive static type analysis
--   **Rust Toolchain** – High-performance systems (temporal database, telemetry)
--   **Testing Systems** – Jest, pytest, ShellSpec, cargo test
--   **Code Quality** – ESLint, Ruff, ShellCheck with automated enforcement
+- **Nx Orchestration** (v22+) – Enterprise build system with intelligent caching
+- **TypeScript Strict Mode** – Zero-tolerance type safety enforcement
+- **Python with mypy** – Comprehensive static type analysis
+- **Rust Toolchain** – High-performance systems (temporal database, telemetry)
+- **Testing Systems** – Jest, pytest, ShellSpec, cargo test
+- **Code Quality** – ESLint, Ruff, ShellCheck with automated enforcement
 
 ### AI Agent Team Deployment
 
--   **32+ Specialized Agents** – Architecture, TDD, debugging, security, product, DevOps
--   **Knowledge Architecture** – MECE principle with hierarchical authority model
--   **Workflow Protocol Library** – 26 proven methodologies for development tasks
--   **Institutional Memory** – Rust redb persistence for all organizational knowledge
--   **Context Intelligence** – Cognitive bundling and synthesis operations
--   **Quality Assurance** – Automated validation and compliance checking
+- **32+ Specialized Agents** – Architecture, TDD, debugging, security, product, DevOps
+- **Knowledge Architecture** – MECE principle with hierarchical authority model
+- **Workflow Protocol Library** – 26 proven methodologies for development tasks
+- **Institutional Memory** – Rust redb persistence for all organizational knowledge
+- **Context Intelligence** – Cognitive bundling and synthesis operations
+- **Quality Assurance** – Automated validation and compliance checking
 
 ### Production Observability (v0.3.0)
 
--   **OpenTelemetry** – Distributed tracing with <1µs overhead
--   **Vector Pipeline** – OTLP ingestion, VRL transforms, routing
--   **OpenObserve Storage** – Long-term trace analytics with SQL
--   **Structured Logging** – Node.js (Pino), Python (Logfire)
--   **PII Redaction** – Automatic sensitive data removal
--   **Feature Flags** – Runtime enable/disable via `VIBEPRO_OBSERVE`
+- **OpenTelemetry** – Distributed tracing with <1µs overhead
+- **Vector Pipeline** – OTLP ingestion, VRL transforms, routing
+- **OpenObserve Storage** – Long-term trace analytics with SQL
+- **Structured Logging** – Node.js (Pino), Python (Logfire)
+- **PII Redaction** – Automatic sensitive data removal
+- **Feature Flags** – Runtime enable/disable via `VIBEPRO_OBSERVE`
 
 ### Environment Management (v0.2.0)
 
--   **Devbox** – Reproducible OS-level toolchain
--   **Mise** – Node/Python/Rust version management
--   **SOPS** – Secret encryption (`.secrets.env.sops`)
--   **Just** – Portable task orchestration
--   **Validation Suite** – 11+ environment tests
+- **Devbox** – Reproducible OS-level toolchain
+- **Mise** – Node/Python/Rust version management
+- **SOPS** – Secret encryption (`.secrets.env.sops`)
+- **Just** – Portable task orchestration
+- **Validation Suite** – 11+ environment tests
 
 ---
 
@@ -353,11 +353,11 @@ We don't synthesize code—we synthesize **certified engineering capability**.
 
 **Every synthesized application undergoes:**
 
--   ✅ **Type safety verification** (TypeScript, Python, Rust—zero tolerance for type errors)
--   ✅ **Architecture compliance** (hexagonal patterns enforced at synthesis time)
--   ✅ **Security hardening** (vulnerabilities prevented, not patched)
--   ✅ **Performance validation** (fast boot, predictable runtime characteristics)
--   ✅ **Documentation synthesis** (human-readable explanations generated automatically)
+- ✅ **Type safety verification** (TypeScript, Python, Rust—zero tolerance for type errors)
+- ✅ **Architecture compliance** (hexagonal patterns enforced at synthesis time)
+- ✅ **Security hardening** (vulnerabilities prevented, not patched)
+- ✅ **Performance validation** (fast boot, predictable runtime characteristics)
+- ✅ **Documentation synthesis** (human-readable explanations generated automatically)
 
 **The contract:** If VibesPro synthesizes it, it's production-ready. Period.
 
@@ -400,25 +400,25 @@ pnpm dev             ✅ Development server starts instantly
 
 **No more:**
 
--   ❌ "Node version mismatch" errors between team members
--   ❌ Missing tools breaking CI builds
--   ❌ Hours debugging PATH and environment variables
--   ❌ Secrets accidentally committed to version control
+- ❌ "Node version mismatch" errors between team members
+- ❌ Missing tools breaking CI builds
+- ❌ Hours debugging PATH and environment variables
+- ❌ Secrets accidentally committed to version control
 
 **Just:**
 
--   ✅ Consistent environments across all machines
--   ✅ CI pipelines that actually pass
--   ✅ One-command setup and validation
--   ✅ Secure secret management out of the box
+- ✅ Consistent environments across all machines
+- ✅ CI pipelines that actually pass
+- ✅ One-command setup and validation
+- ✅ Secure secret management out of the box
 
 **Technical Details:**
 
--   Added `devbox.json`, `.mise.toml`, `.sops.yaml` configuration files
--   Created 11+ shell test suites for environment validation
--   Implemented `scripts/doctor.sh` and `scripts/devbox_boot.sh` helpers
--   Updated CI workflows with proper tool installation steps
--   Fixed version retrieval and linting commands in GitHub Actions
+- Added `devbox.json`, `.mise.toml`, `.sops.yaml` configuration files
+- Created 11+ shell test suites for environment validation
+- Implemented `scripts/doctor.sh` and `scripts/devbox_boot.sh` helpers
+- Updated CI workflows with proper tool installation steps
+- Fixed version retrieval and linting commands in GitHub Actions
 
 See: [CHANGELOG.md](CHANGELOG.md) and `docs/work-summaries/` for complete details.
 
@@ -463,10 +463,10 @@ just observe-test-all
 
 **Performance:**
 
--   🚀 **<1µs overhead** per trace span
--   📊 **<3% CPU usage** in Vector at 1k spans/s
--   ⚡ **Zero impact** when `VIBEPRO_OBSERVE=0`
--   🔄 **Async export** – non-blocking trace emission
+- 🚀 **<1µs overhead** per trace span
+- 📊 **<3% CPU usage** in Vector at 1k spans/s
+- ⚡ **Zero impact** when `VIBEPRO_OBSERVE=0`
+- 🔄 **Async export** – non-blocking trace emission
 
 **Architecture (3 Layers):**
 
@@ -476,10 +476,10 @@ just observe-test-all
 
 **Security & Privacy:**
 
--   🔒 PII redaction removes emails, tokens, and secrets automatically
--   🔐 SOPS-encrypted credentials in `.secrets.env.sops`
--   🎯 Opt-in telemetry (disabled by default)
--   🛡️ Token-based authentication with OpenObserve
+- 🔒 PII redaction removes emails, tokens, and secrets automatically
+- 🔐 SOPS-encrypted credentials in `.secrets.env.sops`
+- 🎯 Opt-in telemetry (disabled by default)
+- 🛡️ Token-based authentication with OpenObserve
 
 **Just Recipes:**
 
@@ -493,19 +493,19 @@ just observe-test-all     # Run all observability tests
 
 **New Components:**
 
--   `crates/vibepro-observe/` – Rust instrumentation library
--   `apps/observe-smoke/` – Smoke test application
--   `libs/node-logging/` – Node.js structured logging
--   `libs/python/vibepro_logging.py` – Python structured logging
--   `ops/vector/` – Vector configuration and documentation
--   `tests/ops/` – 8 comprehensive test suites
+- `crates/vibepro-observe/` – Rust instrumentation library
+- `apps/observe-smoke/` – Smoke test application
+- `libs/node-logging/` – Node.js structured logging
+- `libs/python/vibepro_logging.py` – Python structured logging
+- `ops/vector/` – Vector configuration and documentation
+- `tests/ops/` – 8 comprehensive test suites
 
 **Technical Specs:**
 
--   Implemented across 6 TDD phases (DEV-ADR-016, DEV-SDS-017, DEV-PRD-017)
--   OpenTelemetry 0.31.0+ with OTLP/gRPC and HTTP
--   Vector 0.43.0+ with VRL transforms
--   14 work summaries documenting implementation
+- Implemented across 6 TDD phases (DEV-ADR-016, DEV-SDS-017, DEV-PRD-017)
+- OpenTelemetry 0.31.0+ with OTLP/gRPC and HTTP
+- Vector 0.43.0+ with VRL transforms
+- 14 work summaries documenting implementation
 
 See: `docs/observability/README.md` for complete setup and operational guides.
 
@@ -544,25 +544,25 @@ npx nx show projects   ✅ Projects detected instantly
 
 **No more:**
 
--   ❌ "production is an invalid fileset" errors
--   ❌ Module resolution conflicts
--   ❌ Missing tslib dependency errors
--   ❌ Hours of manual configuration
--   ❌ Copy-pasting configs from other projects
+- ❌ "production is an invalid fileset" errors
+- ❌ Module resolution conflicts
+- ❌ Missing tslib dependency errors
+- ❌ Hours of manual configuration
+- ❌ Copy-pasting configs from other projects
 
 **Just:**
 
--   ✅ `pnpm install` and start building
--   ✅ Complete development workflow ready
--   ✅ Professional setup from second one
+- ✅ `pnpm install` and start building
+- ✅ Complete development workflow ready
+- ✅ Professional setup from second one
 
 **Technical Details:**
 
--   Upgraded Nx packages: 19.8.4 → 21.6.4
--   Added 10+ development dependencies
--   Created 13 configuration files in synthesis layer
--   Fixed TypeScript `moduleResolution` conflicts
--   Included proper error handling patterns for strict mode
+- Upgraded Nx packages: 19.8.4 → 21.6.4
+- Added 10+ development dependencies
+- Created 13 configuration files in synthesis layer
+- Fixed TypeScript `moduleResolution` conflicts
+- Included proper error handling patterns for strict mode
 
 See: `docs/workdocs/template-nx-fixes-complete.md` for implementation details.
 
@@ -574,12 +574,12 @@ See: `docs/workdocs/template-nx-fixes-complete.md` for implementation details.
 
 **Complete 3-layer observability stack:**
 
--   🦀 Rust instrumentation (`vibepro-observe` crate with OpenTelemetry)
--   📡 Vector data pipeline (OTLP ingestion, VRL transforms, routing)
--   🔍 OpenObserve storage (long-term trace analytics)
--   📝 Structured logging (Node.js Pino, Python Logfire)
--   🔒 PII redaction, SOPS secrets, runtime flags (`VIBEPRO_OBSERVE`)
--   🧪 8 test suites, 630+ lines documentation
+- 🦀 Rust instrumentation (`vibepro-observe` crate with OpenTelemetry)
+- 📡 Vector data pipeline (OTLP ingestion, VRL transforms, routing)
+- 🔍 OpenObserve storage (long-term trace analytics)
+- 📝 Structured logging (Node.js Pino, Python Logfire)
+- 🔒 PII redaction, SOPS secrets, runtime flags (`VIBEPRO_OBSERVE`)
+- 🧪 8 test suites, 630+ lines documentation
 
 **Performance:** <1µs span overhead, <3% CPU at 1k spans/s, zero impact when disabled
 
@@ -587,40 +587,40 @@ See: `docs/workdocs/template-nx-fixes-complete.md` for implementation details.
 
 **Reproducible development environments:**
 
--   🛠️ Devbox integration (OS-level toolchain)
--   🔄 Mise tool management (Node/Python/Rust versions)
--   🔐 SOPS secret encryption
--   ✅ Environment test suite (11+ tests in `tests/env/`)
--   📚 Complete `docs/ENVIRONMENT.md`
--   🎯 Just task environment awareness
--   🚦 Volta/Mise coexistence guards
+- 🛠️ Devbox integration (OS-level toolchain)
+- 🔄 Mise tool management (Node/Python/Rust versions)
+- 🔐 SOPS secret encryption
+- ✅ Environment test suite (11+ tests in `tests/env/`)
+- 📚 Complete `docs/ENVIRONMENT.md`
+- 🎯 Just task environment awareness
+- 🚦 Volta/Mise coexistence guards
 
 ### ✅ **v0.1.0 – Foundation** (October 2025)
 
 **Core platform:**
 
--   ✨ Hexagonal architecture generation
--   🤖 Temporal knowledge base (Rust redb)
--   💻 TypeScript/Python/Rust support
--   🎯 Complete Nx 22+ configuration
--   🛠️ Zero-config dev setup (ESLint, Jest, mypy)
--   📦 All dependencies pre-configured
+- ✨ Hexagonal architecture generation
+- 🤖 Temporal knowledge base (Rust redb)
+- 💻 TypeScript/Python/Rust support
+- 🎯 Complete Nx 22+ configuration
+- 🛠️ Zero-config dev setup (ESLint, Jest, mypy)
+- 📦 All dependencies pre-configured
 
 ### 🔜 **v0.4.0 – AI Platform Evolution** (Q4 2025)
 
 Planned:
 
--   🧠 Enhanced pattern recognition from temporal database
--   📊 Automated architecture validation and suggestions
--   🎯 Context-aware AI recommendations
--   ⚡ Performance profiling and optimization toolkit
+- 🧠 Enhanced pattern recognition from temporal database
+- 📊 Automated architecture validation and suggestions
+- 🎯 Context-aware AI recommendations
+- ⚡ Performance profiling and optimization toolkit
 
 ### 🏗️ **Future** (2026+)
 
--   🏪 Community knowledge marketplace for organizational patterns
--   🎨 Additional domain synthesizers (auth, e-commerce, analytics)
--   🔌 Extension system for custom agent capabilities
--   🌐 Multi-cloud infrastructure patterns (AWS, Azure, GCP)
+- 🏪 Community knowledge marketplace for organizational patterns
+- 🎨 Additional domain synthesizers (auth, e-commerce, analytics)
+- 🔌 Extension system for custom agent capabilities
+- 🌐 Multi-cloud infrastructure patterns (AWS, Azure, GCP)
 
 ---
 
@@ -643,32 +643,32 @@ Building VibesPro is a team effort. Whether you're an engineer, architect, or AI
 
 **Synthesized Application Quality:**
 
--   ✅ **100% architecture compliance** – Hexagonal boundaries enforced at synthesis time
--   🎯 **Zero manual configuration** – All tooling pre-configured (Nx, ESLint, Jest, mypy)
--   ⚡ **<30 second synthesis** – Complete application infrastructure deployed
--   🚀 **<2 minute operational readiness** – From synthesis to passing tests
--   🛠️ **Environment determinism** – Devbox + Mise = guaranteed reproducibility
+- ✅ **100% architecture compliance** – Hexagonal boundaries enforced at synthesis time
+- 🎯 **Zero manual configuration** – All tooling pre-configured (Nx, ESLint, Jest, mypy)
+- ⚡ **<30 second synthesis** – Complete application infrastructure deployed
+- 🚀 **<2 minute operational readiness** – From synthesis to passing tests
+- 🛠️ **Environment determinism** – Devbox + Mise = guaranteed reproducibility
 
 **AI Development System:**
 
--   🤖 **32+ specialized chat modes** – TDD, debugging, specs, product planning
--   📋 **16 modular instructions** – MECE principle with precedence stacking
--   🧠 **Temporal learning** – Query past architectural decisions
--   🎯 **Generator-first enforcement** – Prevents inconsistent code structure
+- 🤖 **32+ specialized chat modes** – TDD, debugging, specs, product planning
+- 📋 **16 modular instructions** – MECE principle with precedence stacking
+- 🧠 **Temporal learning** – Query past architectural decisions
+- 🎯 **Generator-first enforcement** – Prevents inconsistent code structure
 
 **Observability (v0.3.0):**
 
--   � **<1µs span overhead** – Minimal performance impact
--   🔍 **Full distributed tracing** – End-to-end request tracking
--   � **Vector pipeline** – <3% CPU at 1k spans/s
--   ⚡ **Runtime flags** – Zero overhead when `VIBEPRO_OBSERVE=0`
+- � **<1µs span overhead** – Minimal performance impact
+- 🔍 **Full distributed tracing** – End-to-end request tracking
+- � **Vector pipeline** – <3% CPU at 1k spans/s
+- ⚡ **Runtime flags** – Zero overhead when `VIBEPRO_OBSERVE=0`
 
 **Developer Experience:**
 
--   ⏱️ **95% faster setup** – Minutes vs weeks
--   🔧 **1-2 hours saved per project** – No dependency debugging
--   � **CI reliability** – Environment validation catches issues early
--   📚 **Living documentation** – Specs, ADRs, traceability maintained
+- ⏱️ **95% faster setup** – Minutes vs weeks
+- 🔧 **1-2 hours saved per project** – No dependency debugging
+- � **CI reliability** – Environment validation catches issues early
+- 📚 **Living documentation** – Specs, ADRs, traceability maintained
 
 ---
 
@@ -676,36 +676,36 @@ Building VibesPro is a team effort. Whether you're an engineer, architect, or AI
 
 ### Getting Started
 
--   **📖 [Quick Start](docs/QUICKSTART.md)** – 5-minute setup guide
--   **🛠️ [Environment Setup](docs/ENVIRONMENT.md)** – Devbox, Mise, SOPS configuration
--   **🤖 [AI Agent Guide](.github/copilot-instructions.md)** – Essential workflows for AI coding
+- **📖 [Quick Start](docs/QUICKSTART.md)** – 5-minute setup guide
+- **🛠️ [Environment Setup](docs/ENVIRONMENT.md)** – Devbox, Mise, SOPS configuration
+- **🤖 [AI Agent Guide](.github/copilot-instructions.md)** – Essential workflows for AI coding
 
 ### Architecture & Specs
 
--   **🏛️ [Software Design](docs/dev_sds.md)** – System architecture (DEV-SDS specs)
--   **📋 [Product Requirements](docs/dev_prd.md)** – Feature requirements (DEV-PRD specs)
--   **🎯 [Architecture Decisions](docs/dev_adr.md)** – ADRs with rationale
--   **🔬 [Technical Specifications](docs/dev_technical-specifications.md)** – Implementation details
--   **🗺️ [Traceability Matrix](docs/traceability_matrix.md)** – Spec-to-code mapping
+- **🏛️ [Software Design](docs/dev_sds.md)** – System architecture (DEV-SDS specs)
+- **📋 [Product Requirements](docs/dev_prd.md)** – Feature requirements (DEV-PRD specs)
+- **🎯 [Architecture Decisions](docs/dev_adr.md)** – ADRs with rationale
+- **🔬 [Technical Specifications](docs/dev_technical-specifications.md)** – Implementation details
+- **🗺️ [Traceability Matrix](docs/traceability_matrix.md)** – Spec-to-code mapping
 
 ### AI Workflows
 
--   **🤖 [Chat Modes](.github/chatmodes/)** – 32+ specialized personas
--   **📝 [Prompts](.github/prompts/)** – 26 reusable templates
--   **📋 [Instructions](.github/instructions/)** – 16 modular guidance files
--   **🧠 [Temporal Database](temporal_db/README.md)** – Learning system usage
+- **🤖 [Chat Modes](.github/chatmodes/)** – 32+ specialized personas
+- **📝 [Prompts](.github/prompts/)** – 26 reusable templates
+- **📋 [Instructions](.github/instructions/)** – 16 modular guidance files
+- **🧠 [Temporal Database](temporal_db/README.md)** – Learning system usage
 
 ### Observability (v0.3.0)
 
--   **� [Observability Guide](docs/observability/README.md)** – 630+ line operational guide
--   **🔍 OpenTelemetry + Vector + OpenObserve setup**
--   **📡 VRL transforms, PII redaction, sampling**
+- **� [Observability Guide](docs/observability/README.md)** – 630+ line operational guide
+- **🔍 OpenTelemetry + Vector + OpenObserve setup**
+- **📡 VRL transforms, PII redaction, sampling**
 
 ### Development
 
--   **� [Nx Generators](docs/nx-generators-guide.md)** – Generator-first workflow
--   **🧪 [Testing Strategy](docs/testing/)** – TDD, unit, integration, shell tests
--   **� [Security Guidelines](.github/instructions/security.instructions.md)** – Security-first practices
+- **� [Nx Generators](docs/nx-generators-guide.md)** – Generator-first workflow
+- **🧪 [Testing Strategy](docs/testing/)** – TDD, unit, integration, shell tests
+- **� [Security Guidelines](.github/instructions/security.instructions.md)** – Security-first practices
 
 ---
 
@@ -727,16 +727,16 @@ We follow what we call **"The Photoshop Rule"** — a simple way to understand h
 
 It's the same with VibesPro:
 
--   ✅ **Use VibesPro freely inside your organization** — deploy agencies, build applications, support your development operations
--   ✅ **Use it to create outputs** (applications, services, codebases) and use or sell those outputs however you like
--   ✅ **Modify and customize** synthesis patterns and agent workflows for your team's needs
--   ❌ **Don't resell VibesPro itself** — you can't package it up and offer it as a hosted platform or SaaS to third parties without a commercial license
--   ❌ **Don't strip out VibesPro's core** to make a competing cognitive infrastructure service
+- ✅ **Use VibesPro freely inside your organization** — deploy agencies, build applications, support your development operations
+- ✅ **Use it to create outputs** (applications, services, codebases) and use or sell those outputs however you like
+- ✅ **Modify and customize** synthesis patterns and agent workflows for your team's needs
+- ❌ **Don't resell VibesPro itself** — you can't package it up and offer it as a hosted platform or SaaS to third parties without a commercial license
+- ❌ **Don't strip out VibesPro's core** to make a competing cognitive infrastructure service
 
 **Dual License Structure:**
 
--   🧩 **MPL-2.0 (Open Source)** — for personal, educational, and internal company use
--   💼 **Commercial License** — required if you want to embed, resell, or offer VibesPro as a hosted service
+- 🧩 **MPL-2.0 (Open Source)** — for personal, educational, and internal company use
+- 💼 **Commercial License** — required if you want to embed, resell, or offer VibesPro as a hosted service
 
 **In short:** Build amazing things with VibesPro. Sell what you build. Just don't sell VibesPro itself.
 
@@ -774,10 +774,10 @@ just test-generation
 
 We welcome contributions! Whether you're:
 
--   🐛 Reporting bugs or suggesting features
--   📝 Improving documentation
--   🔧 Fixing issues or adding functionality
--   🎨 Creating new chat modes or prompts
+- 🐛 Reporting bugs or suggesting features
+- 📝 Improving documentation
+- 🔧 Fixing issues or adding functionality
+- 🎨 Creating new chat modes or prompts
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 

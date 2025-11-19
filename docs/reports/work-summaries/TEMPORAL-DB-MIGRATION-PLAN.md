@@ -24,17 +24,17 @@ Migrate the temporal database (`temporal_db/`) from sled to redb to maintain con
 
 ### In Scope
 
--   `temporal_db/repository.rs` - Core temporal repository using sled
--   `temporal_db/Cargo.toml` - Dependency management
--   Python adapters in `libs/prompt_optimizer/infrastructure/temporal_db.py`
--   Template references in `templates/tools/prompt_optimizer/`
--   Documentation updates
+- `temporal_db/repository.rs` - Core temporal repository using sled
+- `temporal_db/Cargo.toml` - Dependency management
+- Python adapters in `libs/prompt_optimizer/infrastructure/temporal_db.py`
+- Template references in `templates/tools/prompt_optimizer/`
+- Documentation updates
 
 ### Out of Scope
 
--   SecureDb library (already migrated ✅)
--   Generated project templates (will be handled separately)
--   Python sled bindings (fallback to JSON/SQLite remains)
+- SecureDb library (already migrated ✅)
+- Generated project templates (will be handled separately)
+- Python sled bindings (fallback to JSON/SQLite remains)
 
 ---
 
@@ -50,30 +50,28 @@ Migrate the temporal database (`temporal_db/`) from sled to redb to maintain con
 
 **Deliverables:**
 
--   [x] TEMPORAL-DB-MIGRATION-PLAN.md (this document)
--   [x] Updated PHASE-006-CHECKLIST.md
--   [x] Migration decision record
+- [x] TEMPORAL-DB-MIGRATION-PLAN.md (this document)
+- [x] Updated PHASE-006-CHECKLIST.md
+- [x] Migration decision record
 
 **Architecture Analysis:**
 
--   temporal_db is a module in root Cargo.toml (not a separate workspace crate)
--   Current structure:
+- temporal_db is a module in root Cargo.toml (not a separate workspace crate)
+- Current structure:
+    - `temporal_db/lib.rs` - Module exports and high-level API
+    - `temporal_db/repository.rs` - Core TemporalRepository using sled
+    - `temporal_db/schema.rs` - Data structures
+    - `temporal_db/python/` - Python bindings (uses SledTemporalDatabaseAdapter)
 
-    -   `temporal_db/lib.rs` - Module exports and high-level API
-    -   `temporal_db/repository.rs` - Core TemporalRepository using sled
-    -   `temporal_db/schema.rs` - Data structures
-    -   `temporal_db/python/` - Python bindings (uses SledTemporalDatabaseAdapter)
+- Key sled usage patterns identified:
+    - Implicit transactions: `db.insert()`, `db.scan_prefix()`
+    - Key prefixes for namespace separation: `spec:`, `pattern:`, `change:`
+    - Time-series keys: `{prefix}:{id}:{timestamp_nanos}`
+    - JSON serialization for all values
 
--   Key sled usage patterns identified:
-
-    -   Implicit transactions: `db.insert()`, `db.scan_prefix()`
-    -   Key prefixes for namespace separation: `spec:`, `pattern:`, `change:`
-    -   Time-series keys: `{prefix}:{id}:{timestamp_nanos}`
-    -   JSON serialization for all values
-
--   Dependencies (root Cargo.toml):
-    -   sled = "0.34" → will replace with redb = "2.2"
-    -   serde, serde_json, uuid, chrono (keep as-is)
+- Dependencies (root Cargo.toml):
+    - sled = "0.34" → will replace with redb = "2.2"
+    - serde, serde_json, uuid, chrono (keep as-is)
 
 ### Phase 2: Cargo.toml Updates (10 min)
 
@@ -84,7 +82,7 @@ Migrate the temporal database (`temporal_db/`) from sled to redb to maintain con
 
 **Files:**
 
--   [ ] `temporal_db/Cargo.toml`
+- [ ] `temporal_db/Cargo.toml`
 
 ### Phase 3: Repository Implementation (2-3 hours)
 
@@ -117,8 +115,8 @@ write_txn.commit()?;
 
 **Files:**
 
--   [ ] `temporal_db/repository.rs`
--   [ ] `temporal_db/lib.rs` (if needed)
+- [ ] `temporal_db/repository.rs`
+- [ ] `temporal_db/lib.rs` (if needed)
 
 ### Phase 4: Python Adapter Updates (1 hour)
 
@@ -130,8 +128,8 @@ write_txn.commit()?;
 
 **Files:**
 
--   [ ] `libs/prompt_optimizer/infrastructure/temporal_db.py`
--   [ ] `temporal_db/python/repository.py`
+- [ ] `libs/prompt_optimizer/infrastructure/temporal_db.py`
+- [ ] `temporal_db/python/repository.py`
 
 ### Phase 5: Template Updates (1 hour)
 
@@ -143,10 +141,10 @@ write_txn.commit()?;
 
 **Files:**
 
--   [ ] `templates/tools/prompt_optimizer/README.md.j2`
--   [ ] `templates/tools/prompt_optimizer/requirements.txt.j2`
--   [ ] `templates/tools/prompt_optimizer/copier.yml`
--   [ ] `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`
+- [ ] `templates/tools/prompt_optimizer/README.md.j2`
+- [ ] `templates/tools/prompt_optimizer/requirements.txt.j2`
+- [ ] `templates/tools/prompt_optimizer/copier.yml`
+- [ ] `templates/tools/prompt_optimizer/libs/prompt_optimizer/__init__.py.j2`
 
 ### Phase 6: Testing (1-2 hours)
 
@@ -159,11 +157,11 @@ write_txn.commit()?;
 
 **Test Coverage:**
 
--   [ ] Temporal repository CRUD operations
--   [ ] Time-series queries
--   [ ] Pattern matching
--   [ ] Python adapter interop
--   [ ] Template generation with temporal DB
+- [ ] Temporal repository CRUD operations
+- [ ] Time-series queries
+- [ ] Pattern matching
+- [ ] Python adapter interop
+- [ ] Template generation with temporal DB
 
 ### Phase 7: Documentation (1 hour)
 
@@ -176,10 +174,10 @@ write_txn.commit()?;
 
 **Files:**
 
--   [ ] `README.md`
--   [ ] `AGENTS.md`
--   [ ] `temporal_db/README.md`
--   [ ] `docs/DATABASE-MIGRATION-SUMMARY.md` (update)
+- [ ] `README.md`
+- [ ] `AGENTS.md`
+- [ ] `temporal_db/README.md`
+- [ ] `docs/DATABASE-MIGRATION-SUMMARY.md` (update)
 
 ---
 
@@ -215,15 +213,15 @@ const DECISIONS_TABLE: TableDefinition<&str, &[u8]> =
 
 **Option 1: Clean Migration (Recommended)**
 
--   New installations use redb from the start
--   Existing users migrate data manually (provide script)
--   Simplest implementation
+- New installations use redb from the start
+- Existing users migrate data manually (provide script)
+- Simplest implementation
 
 **Option 2: Automatic Migration**
 
--   Detect sled database on startup
--   Migrate data to redb automatically
--   More complex, better UX
+- Detect sled database on startup
+- Migrate data to redb automatically
+- More complex, better UX
 
 **Decision: Option 1** - Clean migration with data export/import scripts
 
@@ -254,13 +252,13 @@ cargo build
 
 ## Success Criteria
 
--   [ ] All temporal database operations work with redb
--   [ ] Python adapter maintains backward compatibility
--   [ ] Templates generate correctly with redb references
--   [ ] Performance comparable or better than sled
--   [ ] All tests passing
--   [ ] Documentation complete and accurate
--   [ ] Data migration script provided for existing users
+- [ ] All temporal database operations work with redb
+- [ ] Python adapter maintains backward compatibility
+- [ ] Templates generate correctly with redb references
+- [ ] Performance comparable or better than sled
+- [ ] All tests passing
+- [ ] Documentation complete and accurate
+- [ ] Data migration script provided for existing users
 
 ---
 
@@ -283,37 +281,37 @@ cargo build
 
 ### Pre-Migration
 
--   [x] Create migration branch
--   [ ] Review temporal database usage patterns
--   [ ] Identify all sled dependencies
--   [ ] Create comprehensive test suite
+- [x] Create migration branch
+- [ ] Review temporal database usage patterns
+- [ ] Identify all sled dependencies
+- [ ] Create comprehensive test suite
 
 ### During Migration
 
--   [ ] Update dependencies
--   [ ] Migrate repository implementation
--   [ ] Update Python adapters
--   [ ] Update templates
--   [ ] Run all tests
+- [ ] Update dependencies
+- [ ] Migrate repository implementation
+- [ ] Update Python adapters
+- [ ] Update templates
+- [ ] Run all tests
 
 ### Post-Migration
 
--   [ ] Performance benchmarks
--   [ ] Integration testing
--   [ ] Documentation review
--   [ ] Create PR with detailed description
--   [ ] Code review
--   [ ] Merge to dev
--   [ ] Merge to main after validation
+- [ ] Performance benchmarks
+- [ ] Integration testing
+- [ ] Documentation review
+- [ ] Create PR with detailed description
+- [ ] Code review
+- [ ] Merge to dev
+- [ ] Merge to main after validation
 
 ---
 
 ## References
 
--   **SecureDb Migration**: `/docs/DATABASE-MIGRATION-SUMMARY.md`
--   **redb Documentation**: https://docs.rs/redb/
--   **sled Documentation**: https://docs.rs/sled/ (for comparison)
--   **PHASE-006**: `/docs/aiassist/PHASE-006-CHECKLIST.md`
+- **SecureDb Migration**: `/docs/DATABASE-MIGRATION-SUMMARY.md`
+- **redb Documentation**: https://docs.rs/redb/
+- **sled Documentation**: https://docs.rs/sled/ (for comparison)
+- **PHASE-006**: `/docs/aiassist/PHASE-006-CHECKLIST.md`
 
 ---
 

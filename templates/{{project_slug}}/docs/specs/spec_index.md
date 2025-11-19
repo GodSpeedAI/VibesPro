@@ -89,8 +89,8 @@ Summary: Zero-downtime migrations using shadow tables, dual-write pattern, and a
 
 ## Maintenance
 
--   **When to update**: After creating or modifying any specification
--   **Validation**: Run `just spec-matrix` to check traceability
--   **Summary length**: Keep ≤140 characters for scanability
--   **Source paths**: Use relative paths from repository root
--   **Spec IDs**: Must match IDs in source documents
+- **When to update**: After creating or modifying any specification
+- **Validation**: Run `just spec-matrix` to check traceability
+- **Summary length**: Keep ≤140 characters for scanability
+- **Source paths**: Use relative paths from repository root
+- **Spec IDs**: Must match IDs in source documents

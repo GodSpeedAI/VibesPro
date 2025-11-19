@@ -13,11 +13,11 @@
 
 ### Issues
 
--   ❌ Single combined step - unclear which manager failed
--   ❌ `|| true` masks Python dependency failures
--   ❌ Shell-based conditionals less idiomatic
--   ❌ No visibility into which deps are optional
--   ❌ Continues on error, wasting CI time
+- ❌ Single combined step - unclear which manager failed
+- ❌ `|| true` masks Python dependency failures
+- ❌ Shell-based conditionals less idiomatic
+- ❌ No visibility into which deps are optional
+- ❌ Continues on error, wasting CI time
 
 ---
 
@@ -42,11 +42,11 @@
 
 ### Improvements
 
--   ✅ Three explicit steps - clear failure identification
--   ✅ No `|| true` - failures stop the build (fail-fast)
--   ✅ GitHub Actions `if:` conditions - idiomatic and reliable
--   ✅ Clear visibility - "skipped" status when not applicable
--   ✅ Fails fast - saves CI time and resources
+- ✅ Three explicit steps - clear failure identification
+- ✅ No `|| true` - failures stop the build (fail-fast)
+- ✅ GitHub Actions `if:` conditions - idiomatic and reliable
+- ✅ Clear visibility - "skipped" status when not applicable
+- ✅ Fails fast - saves CI time and resources
 
 ---
 
@@ -110,15 +110,15 @@ Installing dependencies...
 
 ### CI Time Saved Per Failed Build
 
--   **Before**: Full workflow runs despite broken deps (~10-15 min)
--   **After**: Fails in dependency phase (~2-3 min)
--   **Savings**: 7-12 minutes per failed build
+- **Before**: Full workflow runs despite broken deps (~10-15 min)
+- **After**: Fails in dependency phase (~2-3 min)
+- **Savings**: 7-12 minutes per failed build
 
 ### Developer Time Saved
 
--   **Before**: Debug mysterious runtime failures in deployed code
--   **After**: Clear dependency error message, fix before merge
--   **Savings**: Hours of debugging time
+- **Before**: Debug mysterious runtime failures in deployed code
+- **After**: Clear dependency error message, fix before merge
+- **Savings**: Hours of debugging time
 
 ---
 
