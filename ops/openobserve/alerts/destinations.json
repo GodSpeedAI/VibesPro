@@ -1,0 +1,12 @@
+{
+  "name": "temporal-ai-email",
+  "type": "email",
+  "template": {
+    "name": "temporal-ai-alert-template"
+  },
+  "emails": ["${ALERT_EMAIL}"],
+  "headers": {
+    "subject": "[{{severity}}] Temporal AI Alert: {{alert_name}}"
+  },
+  "body": "🚨 Temporal AI Performance Alert\n\nAlert: {{alert_name}}\nSeverity: {{severity}}\nTime: {{timestamp}}\n\n{{alert_description}}\n\nAffected Patterns:\n{{#each results}}\n- Pattern ID: {{pattern_id}}\n  Success Rate: {{success_pct}}%\n  Error Rate: {{error_pct}}%\n  Recommendations: {{recommendation_count}}\n{{/each}}\n\nAction Required:\n1. Review pattern implementation\n2. Check for recent code changes\n3. Investigate error logs in OpenObserve\n\nDashboard: http://localhost:5080/dashboards/temporal-ai-patterns\n\n---\nThis is an automated alert from Temporal AI Observability.\n"
+}

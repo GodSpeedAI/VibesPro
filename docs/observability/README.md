@@ -1100,7 +1100,231 @@ This phase integrates `logfire` into the observability pipeline, providing a uni
 -   **`vector.toml` Updates:** The Vector configuration has been updated to process `logfire`'s OTLP output, including normalization of trace and span IDs, and PII redaction.
 -   **Testing:** The `tests/python/test_logfire_bootstrap.py` and `tests/python/test_logfire_integrations.py` files provide a suite of tests to validate the `logfire` integration.
 
-## 14. References
+## 14. Temporal AI Pattern Analytics
+
+### 14.1 Overview
+
+The **Temporal AI recommendation engine** integrates with OpenObserve to track pattern performance metrics in real-time. This enables data-driven insights into which development patterns are most successful and helps identify problematic patterns early.
+
+**Key Metrics**:
+
+-   **Success Rate**: Percentage of successful pattern recommendations (1.0 - error_rate)
+-   **Error Rate**: Percentage of failed recommendations
+-   **Latency**: Average recommendation response time (milliseconds)
+-   **Usage**: Number of times each pattern is recommended
+
+### 14.2 Dashboard
+
+Access the Temporal AI analytics dashboard:
+
+**Local**: `http://localhost:5080/dashboards/temporal-ai-patterns`  
+**Production**: `${OPENOBSERVE_URL}/dashboards/temporal-ai-patterns`
+
+**Dashboard Panels**:
+
+1. **Pattern Success Rate Overview** - Time series showing success rate trends
+2. **Success Rate Distribution** - Histogram of patterns by success rate
+3. **Recommendation Volume** - Total recommendations over time
+4. **Low Success Rate Patterns** - Table of problematic patterns
+5. **Performance by Latency** - Scatter plot correlating latency and success
+6. **Error Rate Trends** - Time series with threshold alerts
+
+**Dashboard Variables**:
+
+-   `time_range` - Select time window (1h, 6h, 24h, 7d, 30d)
+-   `min_success_rate` - Filter patterns below threshold (default: 0.5)
+
+### 14.3 Alerts
+
+Three alert rules monitor pattern performance and send email notifications:
+
+#### Alert 1: Low Success Rate (Warning)
+
+-   **Trigger**: Success rate < 50% with >10 recommendations
+-   **Frequency**: Every 5 minutes
+-   **Severity**: Warning
+-   **Action**: Review pattern implementation
+
+#### Alert 2: Critical Success Drop (Critical)
+
+-   **Trigger**: Success rate < 30% with >5 recommendations
+-   **Frequency**: Every 1 minute (real-time)
+-   **Severity**: Critical
+-   **Action**: Immediate investigation required
+
+#### Alert 3: High Error Rate Spike (Warning)
+
+-   **Trigger**: Error rate > 40%
+-   **Frequency**: Every 2 minutes
+-   **Severity**: Warning
+-   **Action**: Check for recent code changes
+
+**Configure Email Notifications**:
+
+Edit `ops/openobserve/alerts/destinations.json` and set `ALERT_EMAIL` environment variable:
+
+```bash
+export ALERT_EMAIL=team@example.com
+```
+
+### 14.4 Metrics Refresh Workflow
+
+Pattern metrics are **not auto-refreshed**. Update metrics manually or via cron:
+
+**Manual Refresh**:
+
+```bash
+# Refresh metrics from last 7 days
+just temporal-ai-refresh-metrics DAYS=7
+```
+
+**Automated Refresh** (optional):
+
+```bash
+# Add to crontab for daily refresh at 2 AM
+0 2 * * * cd /path/to/VibesPro && just temporal-ai-refresh-metrics DAYS=7
+```
+
+**How It Works**:
+
+1. Vector sends recommendation telemetry to OpenObserve
+2. OpenObserve stores events in `temporal_ai_recommendations` stream
+3. `temporal-ai refresh-metrics` queries OpenObserve SQL API
+4. Metrics are calculated and stored in local `redb` database
+5. Recommendations include success rate in scoring (15% weight)
+
+### 14.5 Setup Instructions
+
+**1. Start Local OpenObserve**:
+
+```bash
+just temporal-ai-observe-start
+```
+
+**2. Import Dashboard**:
+
+```bash
+# Via API
+curl -X POST http://localhost:5080/api/default/dashboards \
+  -H "Authorization: Basic $(echo -n root@example.com:password | base64)" \
+  -d @ops/openobserve/dashboards/temporal-ai-patterns.json
+
+# Or via UI: Settings → Dashboards → Import → Upload JSON
+```
+
+**3. Configure Alerts**:
+
+```bash
+# Import all alerts
+for alert in ops/openobserve/alerts/temporal-ai-*.json; do
+  curl -X POST http://localhost:5080/api/default/alerts \
+    -H "Authorization: Basic $(echo -n root@example.com:password | base64)" \
+    -d @"$alert"
+done
+
+# Configure email destination
+curl -X POST http://localhost:5080/api/default/destinations \
+  -H "Authorization: Basic $(echo -n root@example.com:password | base64)" \
+  -d @ops/openobserve/alerts/destinations.json
+```
+
+**4. Verify Setup**:
+
+```bash
+# Refresh metrics
+just temporal-ai-refresh-metrics DAYS=7
+
+# Query patterns (should show success rates)
+just temporal-ai-query "test pattern" TOP=5
+
+# Check dashboard
+open http://localhost:5080/dashboards/temporal-ai-patterns
+```
+
+### 14.6 Troubleshooting
+
+**No metrics appearing in dashboard**:
+
+1. Verify OpenObserve is running: `curl http://localhost:5080/healthz`
+2. Check Vector is sending data: `tail -f tmp/vector-traces.log`
+3. Verify stream exists: `curl http://localhost:5080/api/default/streams`
+4. Check credentials: `sops -d .secrets.env.sops | grep OPENOBSERVE`
+
+**Stale metrics in recommendations**:
+
+-   Metrics are refreshed manually via `just temporal-ai-refresh-metrics`
+-   Set up cron job for automatic refresh (see 14.4)
+-   Check last refresh time in database: `just temporal-ai-stats`
+
+**Alerts not triggering**:
+
+1. Verify alert is enabled in OpenObserve UI
+2. Check email destination is configured
+3. Test SMTP settings in OpenObserve
+4. Review alert logs: `curl http://localhost:5080/api/default/alerts/logs`
+
+**Dashboard queries failing**:
+
+-   Ensure `temporal_ai_recommendations` stream exists
+-   Verify data is being ingested: check Vector logs
+-   Test SQL query manually in OpenObserve UI
+-   Check time range filter matches data availability
+
+### 14.7 SQL Query Examples
+
+**Find low-performing patterns**:
+
+```sql
+SELECT pattern_id, success_rate, error_rate, recommendation_count
+FROM temporal_ai_recommendations
+WHERE success_rate < 0.6
+ORDER BY success_rate ASC
+LIMIT 10;
+```
+
+**Success rate trend over time**:
+
+```sql
+SELECT
+  time_bucket('1h', timestamp) as hour,
+  AVG(success_rate) as avg_success_rate
+FROM temporal_ai_recommendations
+WHERE timestamp >= now() - interval '7 days'
+GROUP BY hour
+ORDER BY hour;
+```
+
+**Patterns with high latency**:
+
+```sql
+SELECT pattern_id, avg_latency_ms, success_rate
+FROM temporal_ai_recommendations
+WHERE avg_latency_ms > 100
+ORDER BY avg_latency_ms DESC;
+```
+
+### 14.8 References
+
+**Configuration Files**:
+
+-   Dashboard: `ops/openobserve/dashboards/temporal-ai-patterns.json`
+-   Alerts: `ops/openobserve/alerts/temporal-ai-*.json`
+-   Email Destination: `ops/openobserve/alerts/destinations.json`
+
+**Documentation**:
+
+-   Temporal AI README: `crates/temporal-ai/README.md`
+-   Implementation Plan: `.gemini/antigravity/brain/.../implementation_plan.md`
+
+**Specifications**:
+
+-   DEV-PRD-032: AI Workflow PRD
+-   DEV-SDS-020: AI Guidance SDS
+-   DEV-ADR-018: AI Workflow ADR
+
+---
+
+## 15. References
 
 -   [DEV-ADR-016](../dev_adr.md) — Architecture Decision
 -   [DEV-SDS-017](../dev_sds.md) — System Design Specification
