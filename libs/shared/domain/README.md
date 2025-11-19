@@ -6,8 +6,8 @@ Core hexagonal architecture abstractions for VibesPro generated projects.
 
 This library provides production-ready implementations of:
 
--   **Unit of Work (UoW)**: Transaction boundary management
--   **Event Bus**: Domain event pub/sub mechanism
+- **Unit of Work (UoW)**: Transaction boundary management
+- **Event Bus**: Domain event pub/sub mechanism
 
 Both patterns are available in TypeScript and Python with feature parity.
 
@@ -55,8 +55,8 @@ event_bus.publish(UserCreatedEvent(user_id="123"))
 
 Follows hexagonal architecture principles:
 
--   **Ports**: Interfaces/Protocols defining contracts
--   **Adapters**: Implementations (in-memory, database, message broker, etc.)
+- **Ports**: Interfaces/Protocols defining contracts
+- **Adapters**: Implementations (in-memory, database, message broker, etc.)
 
 ## Testing
 
@@ -74,8 +74,8 @@ uv run pytest libs/shared/domain/python/tests/ -v
 
 ## Specifications
 
--   DEV-ADR-024: Unit of Work and Event Bus as First-Class Abstractions
--   DEV-PRD-025: Unit of Work Abstraction
--   DEV-PRD-026: Event-Driven Architecture with EventBus
--   DEV-SDS-024: Unit of Work Design
--   DEV-SDS-025: Event Bus Contract Design
+- DEV-ADR-024: Unit of Work and Event Bus as First-Class Abstractions
+- DEV-PRD-025: Unit of Work Abstraction
+- DEV-PRD-026: Event-Driven Architecture with EventBus
+- DEV-SDS-024: Unit of Work Design
+- DEV-SDS-025: Event Bus Contract Design

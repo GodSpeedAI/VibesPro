@@ -99,15 +99,15 @@ export SMITHERY_API_KEY="cc369a4a-eaf7-47a4-b6ba-61fae9e9e628"
 
 ### 3. Server Names
 
--   Use simple, lowercase names (e.g., `context7`, `ref`, `memory`)
--   Avoid spaces and special characters
--   Names should match the table headers: `[mcp_servers.NAME]`
+- Use simple, lowercase names (e.g., `context7`, `ref`, `memory`)
+- Avoid spaces and special characters
+- Names should match the table headers: `[mcp_servers.NAME]`
 
 ### 4. Optional Configurations
 
--   `startup_timeout_sec`: Default is 10s, increased to 20s for reliability
--   `tool_timeout_sec`: Default is 60s (can be adjusted per server)
--   `enabled`: Set to `false` to disable a server without removing it
+- `startup_timeout_sec`: Default is 10s, increased to 20s for reliability
+- `tool_timeout_sec`: Default is 60s (can be adjusted per server)
+- `enabled`: Set to `false` to disable a server without removing it
 
 ## Environment Setup
 
@@ -170,6 +170,6 @@ The corrected configuration:
 
 ## References
 
--   [Codex Config Documentation](https://github.com/openai/codex/blob/main/docs/config.md)
--   [MCP Specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#streamable-http)
--   Spec ID: External (no internal spec reference)
+- [Codex Config Documentation](https://github.com/openai/codex/blob/main/docs/config.md)
+- [MCP Specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#streamable-http)
+- Spec ID: External (no internal spec reference)

@@ -13,12 +13,12 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
--   Business logic libraries organized by bounded context
--   Hexagonal architecture implementation (Domain, Application, Infrastructure layers)
--   Domain-Driven Design (DDD) patterns
--   Ports (interfaces) and Adapters (implementations)
--   Shared libraries and utilities
--   Cross-cutting concerns
+- Business logic libraries organized by bounded context
+- Hexagonal architecture implementation (Domain, Application, Infrastructure layers)
+- Domain-Driven Design (DDD) patterns
+- Ports (interfaces) and Adapters (implementations)
+- Shared libraries and utilities
+- Cross-cutting concerns
 
 **Architecture Layer**: **Domain, Application, Infrastructure** (Core hexagonal architecture layers)
 
@@ -83,12 +83,12 @@ Nothing (Pure business logic)
 
 **Rules:**
 
--   ✅ Domain depends on NOTHING (pure TypeScript/Python)
--   ✅ Application depends ONLY on Domain
--   ✅ Infrastructure depends on Application + Domain
--   ✅ Apps depend on Application + Infrastructure (wires them together)
--   ❌ Domain NEVER depends on Application or Infrastructure
--   ❌ Application NEVER depends on Infrastructure
+- ✅ Domain depends on NOTHING (pure TypeScript/Python)
+- ✅ Application depends ONLY on Domain
+- ✅ Infrastructure depends on Application + Domain
+- ✅ Apps depend on Application + Infrastructure (wires them together)
+- ❌ Domain NEVER depends on Application or Infrastructure
+- ❌ Application NEVER depends on Infrastructure
 
 ### File Naming Conventions
 
@@ -108,12 +108,12 @@ Nothing (Pure business logic)
 
 ### Use This Context When:
 
--   [ ] Implementing business logic or domain models
--   [ ] Creating use cases (application services)
--   [ ] Defining ports (interfaces) for external dependencies
--   [ ] Implementing adapters (repositories, external services)
--   [ ] Organizing code by bounded contexts (DDD)
--   [ ] Following hexagonal architecture patterns
+- [ ] Implementing business logic or domain models
+- [ ] Creating use cases (application services)
+- [ ] Defining ports (interfaces) for external dependencies
+- [ ] Implementing adapters (repositories, external services)
+- [ ] Organizing code by bounded contexts (DDD)
+- [ ] Following hexagonal architecture patterns
 
 ### Refer to Other Contexts When:
 
@@ -133,11 +133,11 @@ Nothing (Pure business logic)
 
 **Characteristics:**
 
--   ✅ No external dependencies (no frameworks, no infrastructure)
--   ✅ Pure TypeScript/Python
--   ✅ 100% test coverage
--   ✅ Rich domain models with behavior
--   ✅ Immutable where possible
+- ✅ No external dependencies (no frameworks, no infrastructure)
+- ✅ Pure TypeScript/Python
+- ✅ 100% test coverage
+- ✅ Rich domain models with behavior
+- ✅ Immutable where possible
 
 #### Domain Entity Example
 
@@ -249,11 +249,11 @@ export class Email {
 
 **Characteristics:**
 
--   ✅ Depends ONLY on domain layer
--   ✅ Contains use cases (application services)
--   ✅ Defines ports (interfaces) for repositories, external services
--   ✅ No implementation details (no database, no HTTP)
--   ✅ Transaction boundaries
+- ✅ Depends ONLY on domain layer
+- ✅ Contains use cases (application services)
+- ✅ Defines ports (interfaces) for repositories, external services
+- ✅ No implementation details (no database, no HTTP)
+- ✅ Transaction boundaries
 
 #### Port (Interface) Example
 
@@ -357,10 +357,10 @@ export class CreateOrderUseCase {
 
 **Characteristics:**
 
--   ✅ Implements ports defined in application layer
--   ✅ Contains specific technology choices (Postgres, MongoDB, etc.)
--   ✅ Adapters for external services (email, payment, etc.)
--   ✅ Configuration and setup code
+- ✅ Implements ports defined in application layer
+- ✅ Contains specific technology choices (Postgres, MongoDB, etc.)
+- ✅ Adapters for external services (email, payment, etc.)
+- ✅ Configuration and setup code
 
 #### Repository Adapter Example
 
@@ -490,32 +490,32 @@ export abstract class Id {
 
 **Modular instructions that apply here:**
 
--   [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Scaffold with Nx generators
--   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategy per layer
--   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in domain logic
--   [.github/instructions/style.frontend.instructions.md](/.github/instructions/style.frontend.instructions.md) - TypeScript style
--   [.github/instructions/style.python.instructions.md](/.github/instructions/style.python.instructions.md) - Python style
+- [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - Scaffold with Nx generators
+- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategy per layer
+- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in domain logic
+- [.github/instructions/style.frontend.instructions.md](/.github/instructions/style.frontend.instructions.md) - TypeScript style
+- [.github/instructions/style.python.instructions.md](/.github/instructions/style.python.instructions.md) - Python style
 
 **Relevant prompts:**
 
--   [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Implement from specs
+- [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Implement from specs
 
 **Related chat modes:**
 
--   `persona.system-architect` - Architectural guidance
--   `persona.senior-backend` - Backend patterns
--   `tdd.red`, `tdd.green`, `tdd.refactor` - TDD workflow
+- `persona.system-architect` - Architectural guidance
+- `persona.senior-backend` - Backend patterns
+- `tdd.red`, `tdd.green`, `tdd.refactor` - TDD workflow
 
 ## 💡 Examples
 
 See inline examples above for:
 
--   Domain Entity (Order)
--   Value Object (Email)
--   Port Interface (OrderRepository)
--   Use Case (CreateOrderUseCase)
--   Repository Adapter (PostgresOrderRepository)
--   External Service Adapter (SendGridEmailAdapter)
+- Domain Entity (Order)
+- Value Object (Email)
+- Port Interface (OrderRepository)
+- Use Case (CreateOrderUseCase)
+- Repository Adapter (PostgresOrderRepository)
+- External Service Adapter (SendGridEmailAdapter)
 
 ### Example: Bounded Context Structure
 
@@ -562,31 +562,31 @@ libs/orders/
 
 ### Before Creating a New Library:
 
--   [ ] Use generator: `just ai-scaffold name=@nx/js:lib`
--   [ ] Identify bounded context (domain name)
--   [ ] Determine layer (domain, application, infrastructure)
--   [ ] Plan dependencies (follow hexagonal rules)
--   [ ] Design domain model (entities, value objects)
--   [ ] Define ports (interfaces) in application layer
+- [ ] Use generator: `just ai-scaffold name=@nx/js:lib`
+- [ ] Identify bounded context (domain name)
+- [ ] Determine layer (domain, application, infrastructure)
+- [ ] Plan dependencies (follow hexagonal rules)
+- [ ] Design domain model (entities, value objects)
+- [ ] Define ports (interfaces) in application layer
 
 ### While Building Libraries:
 
--   [ ] Follow hexagonal architecture dependency rules
--   [ ] Keep domain layer pure (no external deps)
--   [ ] Define ports before implementations
--   [ ] Use value objects for primitive obsession
--   [ ] Encapsulate business rules in entities
--   [ ] Write tests for each layer separately
--   [ ] Add traceability comments (spec IDs)
+- [ ] Follow hexagonal architecture dependency rules
+- [ ] Keep domain layer pure (no external deps)
+- [ ] Define ports before implementations
+- [ ] Use value objects for primitive obsession
+- [ ] Encapsulate business rules in entities
+- [ ] Write tests for each layer separately
+- [ ] Add traceability comments (spec IDs)
 
 ### After Building Libraries:
 
--   [ ] Verify dependency graph: `pnpm exec nx graph`
--   [ ] Run tests: `just test-unit`
--   [ ] Check coverage for domain layer (100%)
--   [ ] Document public API in README
--   [ ] Export only necessary symbols from index.ts
--   [ ] Update Nx project tags for proper boundaries
+- [ ] Verify dependency graph: `pnpm exec nx graph`
+- [ ] Run tests: `just test-unit`
+- [ ] Check coverage for domain layer (100%)
+- [ ] Document public API in README
+- [ ] Export only necessary symbols from index.ts
+- [ ] Update Nx project tags for proper boundaries
 
 ## 🔍 Quick Reference
 
@@ -651,27 +651,27 @@ pnpm exec nx affected:test
 
 ### Key Concepts
 
--   **Hexagonal Architecture**: Ports & Adapters pattern
--   **Domain Layer**: Pure business logic, no dependencies
--   **Application Layer**: Use cases, ports (interfaces)
--   **Infrastructure Layer**: Adapters, implementations
--   **Port**: Interface defined in application layer
--   **Adapter**: Implementation of port in infrastructure
--   **Bounded Context**: Domain-specific boundary (DDD)
--   **Aggregate**: Cluster of entities with root
--   **Value Object**: Immutable domain concept
--   **Domain Event**: Something that happened in domain
+- **Hexagonal Architecture**: Ports & Adapters pattern
+- **Domain Layer**: Pure business logic, no dependencies
+- **Application Layer**: Use cases, ports (interfaces)
+- **Infrastructure Layer**: Adapters, implementations
+- **Port**: Interface defined in application layer
+- **Adapter**: Implementation of port in infrastructure
+- **Bounded Context**: Domain-specific boundary (DDD)
+- **Aggregate**: Cluster of entities with root
+- **Value Object**: Immutable domain concept
+- **Domain Event**: Something that happened in domain
 
 ## 🛡️ Security Considerations
 
 **Security in domain logic:**
 
--   ⚠️ **Validate invariants**: Domain entities enforce business rules
--   ⚠️ **Encapsulate state**: No public setters, use methods
--   ⚠️ **Immutability**: Value objects should be immutable
--   ⚠️ **Input validation**: Validate in domain, not just at boundaries
--   ⚠️ **Authorization**: Check permissions in use cases
--   ⚠️ **Sensitive data**: Mark PII, encrypt at infrastructure layer
+- ⚠️ **Validate invariants**: Domain entities enforce business rules
+- ⚠️ **Encapsulate state**: No public setters, use methods
+- ⚠️ **Immutability**: Value objects should be immutable
+- ⚠️ **Input validation**: Validate in domain, not just at boundaries
+- ⚠️ **Authorization**: Check permissions in use cases
+- ⚠️ **Sensitive data**: Mark PII, encrypt at infrastructure layer
 
 **Example:**
 
@@ -700,10 +700,10 @@ export class User {
 
 ### Domain Layer
 
--   **Pure unit tests** - No mocks
--   **100% coverage** - No exceptions
--   **Test business rules** - Invariants, state transitions
--   **Test value object equality**
+- **Pure unit tests** - No mocks
+- **100% coverage** - No exceptions
+- **Test business rules** - Invariants, state transitions
+- **Test value object equality**
 
 ```typescript
 describe("Order (Domain)", () => {
@@ -718,10 +718,10 @@ describe("Order (Domain)", () => {
 
 ### Application Layer
 
--   **Unit tests with mocks** - Mock ports
--   **90%+ coverage**
--   **Test use case orchestration**
--   **Test error handling**
+- **Unit tests with mocks** - Mock ports
+- **90%+ coverage**
+- **Test use case orchestration**
+- **Test error handling**
 
 ```typescript
 describe('CreateOrderUseCase', () => {
@@ -738,10 +738,10 @@ describe('CreateOrderUseCase', () => {
 
 ### Infrastructure Layer
 
--   **Integration tests** - Use real dependencies when safe
--   **80%+ coverage**
--   **Test adapter implementations**
--   **Test database queries**
+- **Integration tests** - Use real dependencies when safe
+- **80%+ coverage**
+- **Test adapter implementations**
+- **Test database queries**
 
 ```typescript
 describe("PostgresOrderRepository", () => {
@@ -761,36 +761,36 @@ describe("PostgresOrderRepository", () => {
 
 ### Regular Tasks
 
--   **Weekly**: Review domain model, refactor toward ubiquitous language
--   **Monthly**: Audit dependencies, ensure hexagonal rules followed
--   **Quarterly**: Review bounded contexts, consider splitting/merging
--   **Per feature**: Update domain model first, then use cases
+- **Weekly**: Review domain model, refactor toward ubiquitous language
+- **Monthly**: Audit dependencies, ensure hexagonal rules followed
+- **Quarterly**: Review bounded contexts, consider splitting/merging
+- **Per feature**: Update domain model first, then use cases
 
 ### When to Update This AGENT.md
 
--   New layer patterns emerge
--   Bounded context strategies change
--   DDD patterns evolve
--   Testing strategies per layer update
--   Architecture decisions change
+- New layer patterns emerge
+- Bounded context strategies change
+- DDD patterns evolve
+- Testing strategies per layer update
+- Architecture decisions change
 
 ### Managing Technical Debt
 
 **Signs of architectural debt:**
 
--   Domain logic leaking into infrastructure
--   Circular dependencies between layers
--   Anemic domain models (just getters/setters)
--   Fat use cases (too much logic)
--   Ports with too many methods
+- Domain logic leaking into infrastructure
+- Circular dependencies between layers
+- Anemic domain models (just getters/setters)
+- Fat use cases (too much logic)
+- Ports with too many methods
 
 **Remediation:**
 
--   Extract business logic to domain layer
--   Break circular deps, respect hierarchy
--   Add behavior to entities
--   Split use cases by responsibility
--   Apply Interface Segregation Principle to ports
+- Extract business logic to domain layer
+- Break circular deps, respect hierarchy
+- Add behavior to entities
+- Split use cases by responsibility
+- Apply Interface Segregation Principle to ports
 
 ---
 

@@ -19,9 +19,9 @@ This prompt provides debugging guidance for Vibecoder-related issues.
 
 ## Inputs
 
--   Issue description: {{ '{{ISSUE}}' }}
--   Error messages: {{ '{{ERROR}}' }}
--   Environment details: {{ '{{ENV}}' }}
+- Issue description: {{ '{{ISSUE}}' }}
+- Error messages: {{ '{{ERROR}}' }}
+- Environment details: {{ '{{ENV}}' }}
 
 ## Workflow
 

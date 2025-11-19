@@ -55,7 +55,6 @@ graph TD
 **AI automatically reads and analyzes:**
 
 1. **`.copier-answers.yml`** or `copier.yml`
-
     - Project name: `{{ project_name }}`
     - Project description
     - Chosen architecture: `{{ architecture_style }}`
@@ -63,7 +62,6 @@ graph TD
     - Initial tech stack choices
 
 2. **`package.json`** (Node.js projects)
-
     - Framework detection:
         - `next` → Next.js + version
         - `@remix-run/react` → Remix
@@ -75,18 +73,15 @@ graph TD
     - Auth: `next-auth`, `passport`
 
 3. **`pyproject.toml`** (Python projects)
-
     - Framework: `fastapi`, `django`, `flask`
     - Dependencies: `sqlalchemy`, `pydantic`, `pytest`
 
 4. **`nx.json`**
-
     - Workspace structure
     - Number of apps, libs
     - Configured generators
 
 5. **Directory Scan**
-
     - `apps/` → List application types
     - `libs/` → Understand domain organization
     - `tests/` → Testing setup (unit, integration, e2e)
@@ -167,14 +162,12 @@ AI: ✅ **Customization Summary:**
 ### Files Modified
 
 1. **`templates/{{project_slug}}/.github/prompts/customize.copilot-instructions.prompt.md`**
-
     - Added "Phase 1: Automatic Project Audit" section
     - Detailed audit checklist (what files to read, what to extract)
     - Audit summary template
     - Reordered workflow: Audit → Targeted Questions → Update
 
 2. **`templates/{{project_slug}}/.github/chatmodes/meta.customize-instructions.chatmode.md`**
-
     - Added "Phase 1: Silent Audit" instructions
     - "Phase 2: Present Audit Results" template
     - "Phase 3: Targeted Questions" (only for gaps)
@@ -182,7 +175,6 @@ AI: ✅ **Customization Summary:**
     - Added edge case: "Nothing to ask (all auto-detected)"
 
 3. **`docs/workdocs/copilot-instructions-template-enhancement.md`**
-
     - Updated "Flipped Interaction Prompt" section with audit details
     - Updated "Interactive Chat Mode" section with audit flow
     - Enhanced "Flipped Interaction Pattern" comparison
@@ -212,14 +204,14 @@ AI: ✅ **Customization Summary:**
 
 Based on my analysis, I've detected:
 
--   Project Name: {from copier answers}
--   Project Type: {inferred from apps/}
--   Tech Stack: {from package.json/pyproject.toml}
--   Architecture: {from copier answers or structure}
--   Language: {TypeScript/JavaScript/Python/etc.}
--   Framework: {Next.js/FastAPI/etc.}
--   Testing: {Jest/Vitest/pytest/etc. from package.json}
--   Deployment: {from copier answers if available}
+- Project Name: {from copier answers}
+- Project Type: {inferred from apps/}
+- Tech Stack: {from package.json/pyproject.toml}
+- Architecture: {from copier answers or structure}
+- Language: {TypeScript/JavaScript/Python/etc.}
+- Framework: {Next.js/FastAPI/etc.}
+- Testing: {Jest/Vitest/pytest/etc. from package.json}
+- Deployment: {from copier answers if available}
 
 I still need to know:
 
@@ -268,16 +260,16 @@ I still need to know:
 
 **Before (Original Flipped Interaction)**:
 
--   AI asks ~10 questions
--   User answers all 10 (even obvious ones)
--   Estimated time: 5-10 minutes
+- AI asks ~10 questions
+- User answers all 10 (even obvious ones)
+- Estimated time: 5-10 minutes
 
 **After (Audit-First)**:
 
--   AI audits automatically (silent, 5-10 seconds)
--   AI asks ~2-5 targeted questions
--   User answers only gaps
--   Estimated time: 2-3 minutes
+- AI audits automatically (silent, 5-10 seconds)
+- AI asks ~2-5 targeted questions
+- User answers only gaps
+- Estimated time: 2-3 minutes
 
 **Time saved: 60-70% reduction in user effort**
 
@@ -306,12 +298,12 @@ I still need to know:
 
 **Audit Detects**:
 
--   Project: "ShopFast" - Online marketplace
--   Stack: Next.js 15 + TypeScript + Prisma + PostgreSQL
--   Architecture: Hexagonal (from copier)
--   Testing: Jest + Playwright
--   Deployment: Vercel (from scripts)
--   Nx: 2 apps (web, admin), 5 libs
+- Project: "ShopFast" - Online marketplace
+- Stack: Next.js 15 + TypeScript + Prisma + PostgreSQL
+- Architecture: Hexagonal (from copier)
+- Testing: Jest + Playwright
+- Deployment: Vercel (from scripts)
+- Nx: 2 apps (web, admin), 5 libs
 
 **AI Only Asks**:
 
@@ -325,12 +317,12 @@ I still need to know:
 
 **Audit Detects**:
 
--   Project: "UserService" - Authentication microservice
--   Stack: FastAPI + Python 3.12 + SQLAlchemy + PostgreSQL
--   Architecture: Hexagonal (from copier)
--   Testing: pytest + pytest-asyncio
--   Deployment: Docker (from Dockerfile)
--   Nx: 1 app, 3 libs (domain, application, infrastructure)
+- Project: "UserService" - Authentication microservice
+- Stack: FastAPI + Python 3.12 + SQLAlchemy + PostgreSQL
+- Architecture: Hexagonal (from copier)
+- Testing: pytest + pytest-asyncio
+- Deployment: Docker (from Dockerfile)
+- Nx: 1 app, 3 libs (domain, application, infrastructure)
 
 **AI Only Asks**:
 
@@ -344,12 +336,12 @@ I still need to know:
 
 **Audit Detects**:
 
--   Project: "FitTracker" - Fitness tracking app
--   Stack: React Native + TypeScript + Expo
--   Architecture: Layered (from copier)
--   Testing: Jest + Detox (E2E)
--   Deployment: Expo EAS (from app.json)
--   Nx: 1 app, 4 libs (screens, components, services, utils)
+- Project: "FitTracker" - Fitness tracking app
+- Stack: React Native + TypeScript + Expo
+- Architecture: Layered (from copier)
+- Testing: Jest + Detox (E2E)
+- Deployment: Expo EAS (from app.json)
+- Nx: 1 app, 4 libs (screens, components, services, utils)
 
 **AI Only Asks**:
 
@@ -363,17 +355,17 @@ I still need to know:
 
 **Audit Detects**:
 
--   Project: "BlogCMS" - Simple blog CMS (well-described in copier)
--   Stack: Next.js + TypeScript
--   Domain: "Content management for blogs" (in copier)
--   Architecture: Layered
--   Testing: Jest (test-after mentioned in copier)
--   Deployment: Vercel
--   Compliance: None (public content)
+- Project: "BlogCMS" - Simple blog CMS (well-described in copier)
+- Stack: Next.js + TypeScript
+- Domain: "Content management for blogs" (in copier)
+- Architecture: Layered
+- Testing: Jest (test-after mentioned in copier)
+- Deployment: Vercel
+- Compliance: None (public content)
 
 **AI Only Asks**:
 
--   "I've detected everything! Here's the summary... Apply updates? (yes/no)"
+- "I've detected everything! Here's the summary... Apply updates? (yes/no)"
 
 **Questions reduced**: 10 → 0 (100% reduction - just confirmation)
 
@@ -461,12 +453,10 @@ AI: 🔍 Project Audit Complete
 ### Phase 2: Enhanced Detection
 
 1. **Git History Analysis**
-
     - Detect actual testing patterns from commit history
     - Infer domain from file/class names
 
 2. **AI-Powered Inference**
-
     - Use LLM to infer domain from code
     - Detect architectural patterns from imports
 
@@ -477,12 +467,10 @@ AI: 🔍 Project Audit Complete
 ### Phase 3: Smart Suggestions
 
 1. **Based on Stack**
-
     - "I see Next.js + Prisma → suggest adding DB best practices?"
     - "FastAPI detected → add async/await guidelines?"
 
 2. **Based on Scale**
-
     - "3 apps, 10 libs → suggest monorepo best practices?"
     - "Solo developer → suggest simpler workflow?"
 
@@ -496,23 +484,23 @@ AI: 🔍 Project Audit Complete
 
 ### Test Cases
 
--   [ ] **Node.js project**: Detects framework, language, testing from package.json
--   [ ] **Python project**: Detects framework, deps from pyproject.toml
--   [ ] **Copier answers present**: Reads project name, arch, features
--   [ ] **Copier answers missing**: Falls back to questions gracefully
--   [ ] **Nx workspace**: Detects apps, libs, generators
--   [ ] **Non-Nx project**: Works without nx.json
--   [ ] **Fully detectable**: Skips questions, asks for confirmation only
--   [ ] **Partially detectable**: Asks only for gaps
--   [ ] **Nothing detectable**: Falls back to original 10 questions
--   [ ] **Detection conflicts**: Asks user to clarify
+- [ ] **Node.js project**: Detects framework, language, testing from package.json
+- [ ] **Python project**: Detects framework, deps from pyproject.toml
+- [ ] **Copier answers present**: Reads project name, arch, features
+- [ ] **Copier answers missing**: Falls back to questions gracefully
+- [ ] **Nx workspace**: Detects apps, libs, generators
+- [ ] **Non-Nx project**: Works without nx.json
+- [ ] **Fully detectable**: Skips questions, asks for confirmation only
+- [ ] **Partially detectable**: Asks only for gaps
+- [ ] **Nothing detectable**: Falls back to original 10 questions
+- [ ] **Detection conflicts**: Asks user to clarify
 
 ### Success Metrics
 
--   **Questions reduced**: Target 60-70% reduction (10 → 3-4 average)
--   **Time saved**: Target 50%+ reduction in customization time
--   **User satisfaction**: "AI seems smart" feedback
--   **Accuracy**: 95%+ correct detection from files
+- **Questions reduced**: Target 60-70% reduction (10 → 3-4 average)
+- **Time saved**: Target 50%+ reduction in customization time
+- **User satisfaction**: "AI seems smart" feedback
+- **Accuracy**: 95%+ correct detection from files
 
 ---
 
@@ -536,9 +524,9 @@ This makes the flipped interaction truly intelligent - the AI does the heavy lif
 
 **Aligns with**:
 
--   DEV-PRD: AI-enhanced development workflows
--   DEV-SDS: Intelligent template customization
--   UX Best Practices: Reduce cognitive load, respect user time
--   Security: Read-only audit (no modifications during detection phase)
+- DEV-PRD: AI-enhanced development workflows
+- DEV-SDS: Intelligent template customization
+- UX Best Practices: Reduce cognitive load, respect user time
+- Security: Read-only audit (no modifications during detection phase)
 
 **No conflicts identified** - enhancement is purely additive and improves existing functionality.

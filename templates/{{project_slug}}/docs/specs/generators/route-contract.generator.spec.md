@@ -17,11 +17,11 @@ Create a **tests-first HTTP route contract** that standardizes request/response 
 
 **When to use**
 
--   Defining a new HTTP endpoint or refactoring an existing route to the unified contract style.
+- Defining a new HTTP endpoint or refactoring an existing route to the unified contract style.
 
 **Non-goals**
 
--   Implementing business logic, persistence, or infrastructure concerns (auth, rate limiting, etc.).
+- Implementing business logic, persistence, or infrastructure concerns (auth, rate limiting, etc.).
 
 ---
 
@@ -58,27 +58,27 @@ tools/vibepro/
 
 **Required**
 
--   `name: string` — route identifier (kebab-case).
--   `method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'`.
--   `path: string` — HTTP path (must start with `/`).
+- `name: string` — route identifier (kebab-case).
+- `method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'`.
+- `path: string` — HTTP path (must start with `/`).
 
 **Recommended**
 
--   `scope: 'api' | 'shared'` (default: `api`).
--   `directory?: string` — subfolder under `apps/api` or `libs/shared`.
--   `validator: 'zod' | 'valibot' | 'none'` (default: `zod`).
--   `statusCodes?: string` — comma-separated list (e.g. `200,201,400,404,422,500`).
--   `withE2E?: boolean` (default: `false`).
--   `client?: 'typescript' | 'none'` (default: `typescript`).
--   `unitTestRunner?: 'vitest' | 'jest'` (default: `vitest`).
--   `tags?: string` — extra tags appended to Nx config.
+- `scope: 'api' | 'shared'` (default: `api`).
+- `directory?: string` — subfolder under `apps/api` or `libs/shared`.
+- `validator: 'zod' | 'valibot' | 'none'` (default: `zod`).
+- `statusCodes?: string` — comma-separated list (e.g. `200,201,400,404,422,500`).
+- `withE2E?: boolean` (default: `false`).
+- `client?: 'typescript' | 'none'` (default: `typescript`).
+- `unitTestRunner?: 'vitest' | 'jest'` (default: `vitest`).
+- `tags?: string` — extra tags appended to Nx config.
 
 **Validation Rules**
 
--   `name` must be kebab-case.
--   `path` must start with `/` and may include `:param` segments.
--   `statusCodes`, when provided, must be CSV integers.
--   `client='typescript'` requires emitting shared client library artifacts.
+- `name` must be kebab-case.
+- `path` must start with `/` and may include `:param` segments.
+- `statusCodes`, when provided, must be CSV integers.
+- `client='typescript'` requires emitting shared client library artifacts.
 
 **Example `schema.json` (excerpt)**
 
@@ -152,56 +152,56 @@ apps/api/src/contracts/<name>.contract.ts
 
 **Optional artifacts**
 
--   `withE2E: true` → `apps/api-e2e/src/<name>.e2e.spec.ts`.
--   `client: 'typescript'` → `libs/shared/http-client/<name>.ts` and `__tests__/`.
+- `withE2E: true` → `apps/api-e2e/src/<name>.e2e.spec.ts`.
+- `client: 'typescript'` → `libs/shared/http-client/<name>.ts` and `__tests__/`.
 
 **Workspace configuration**
 
--   Update or create `project.json` entries ensuring tags include `scope:<scope>` and `type:route-contract`.
--   Ensure `nx.json` reflects tags for module-boundary rules and cacheability.
+- Update or create `project.json` entries ensuring tags include `scope:<scope>` and `type:route-contract`.
+- Ensure `nx.json` reflects tags for module-boundary rules and cacheability.
 
 ---
 
 ## 5) Targets & Cacheability
 
--   Ensure affected projects expose `test`, `lint`, `type-check` targets configured for Nx caching.
--   Align new targets with workspace `namedInputs` and task defaults.
+- Ensure affected projects expose `test`, `lint`, `type-check` targets configured for Nx caching.
+- Align new targets with workspace `namedInputs` and task defaults.
 
 ---
 
 ## 6) Conventions & Policy
 
--   Handler stubs remain pure; validation and typing live in `contracts`.
--   Tests are RED-first and define the contract shape and error taxonomy.
--   No real network I/O or side effects in generated code.
+- Handler stubs remain pure; validation and typing live in `contracts`.
+- Tests are RED-first and define the contract shape and error taxonomy.
+- No real network I/O or side effects in generated code.
 
 ---
 
 ## 7) Implementation Hints (for future generator author)
 
--   Use `@nx/devkit` helpers (`generateFiles`, `formatFiles`, `names`, `addProjectConfiguration`, `updateProjectConfiguration`) as documented in `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` and `devkit-core.md`.
--   Derive tags via existing Nx config accessors (`readProjectConfiguration`, `createProjectGraphAsync`) to keep module-boundary lint accurate.
--   Guard against reruns by checking for existing routes/contracts and updating idempotently without destructive overwrites.
--   When emitting typed clients, reuse shared HTTP utilities to maintain consistency across contracts.
+- Use `@nx/devkit` helpers (`generateFiles`, `formatFiles`, `names`, `addProjectConfiguration`, `updateProjectConfiguration`) as documented in `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` and `devkit-core.md`.
+- Derive tags via existing Nx config accessors (`readProjectConfiguration`, `createProjectGraphAsync`) to keep module-boundary lint accurate.
+- Guard against reruns by checking for existing routes/contracts and updating idempotently without destructive overwrites.
+- When emitting typed clients, reuse shared HTTP utilities to maintain consistency across contracts.
 
 ---
 
 ## 8) Acceptance Tests (for generator once built)
 
--   Dry run prints the expected file plan with all options.
--   Generated files exist with correct paths, tags, and validator wiring.
--   `pnpm nx test <affected>` passes with chosen runner; include e2e when `withE2E`.
--   Re-running the generator with identical inputs produces no diffs.
--   Module-boundary lint passes after scaffolding (tags enforced).
--   Workspace graph (`pnpm nx graph --focus <project>`) resolves without missing dependencies.
+- Dry run prints the expected file plan with all options.
+- Generated files exist with correct paths, tags, and validator wiring.
+- `pnpm nx test <affected>` passes with chosen runner; include e2e when `withE2E`.
+- Re-running the generator with identical inputs produces no diffs.
+- Module-boundary lint passes after scaffolding (tags enforced).
+- Workspace graph (`pnpm nx graph --focus <project>`) resolves without missing dependencies.
 
 ---
 
 ## 9) Rollback & Safety
 
--   Emit a change list so users can revert quickly.
--   Keep handlers and clients side-effect free; no secrets or live endpoints.
--   Prefer minimal stubs, blocking generation if target files would be overwritten without `--force`.
+- Emit a change list so users can revert quickly.
+- Keep handlers and clients side-effect free; no secrets or live endpoints.
+- Prefer minimal stubs, blocking generation if target files would be overwritten without `--force`.
 
 ---
 
@@ -217,9 +217,9 @@ just ai-validate
 
 ## MCP Assistance
 
--   **context7:** Pull ADR-011, ADR-014, relevant PRD/SDS excerpts, similar route specs, and docs from `.github/instructions/`.
--   **ref:** Compare with existing routes/contracts to spot duplication, check module-boundary seams, and validate project graph dependencies.
--   **exa:** Review 3–5 external HTTP contract examples (e.g., FastAPI, NestJS swagger schemas, Stripe API patterns, GitHub REST spec, RFC 7807) and capture insights for reviewers.
+- **context7:** Pull ADR-011, ADR-014, relevant PRD/SDS excerpts, similar route specs, and docs from `.github/instructions/`.
+- **ref:** Compare with existing routes/contracts to spot duplication, check module-boundary seams, and validate project graph dependencies.
+- **exa:** Review 3–5 external HTTP contract examples (e.g., FastAPI, NestJS swagger schemas, Stripe API patterns, GitHub REST spec, RFC 7807) and capture insights for reviewers.
 
 ---
 
@@ -237,9 +237,9 @@ pnpm nx g @myorg/vibepro:route-contract profiles-get \
 
 ## 12) Review Checklist
 
--   [ ] `schema.json` and `schema.d.ts` match option names/types.
--   [ ] Tags include `scope:<scope>` and `type:route-contract`.
--   [ ] Targets are cacheable and align with `namedInputs`.
--   [ ] Generator re-run is idempotent; dry run reflects actual outputs.
--   [ ] Tests (unit/e2e) and lint/module-boundary checks pass.
--   [ ] Docs and dry-run examples updated; typed client optionality respected.
+- [ ] `schema.json` and `schema.d.ts` match option names/types.
+- [ ] Tags include `scope:<scope>` and `type:route-contract`.
+- [ ] Targets are cacheable and align with `namedInputs`.
+- [ ] Generator re-run is idempotent; dry run reflects actual outputs.
+- [ ] Tests (unit/e2e) and lint/module-boundary checks pass.
+- [ ] Docs and dry-run examples updated; typed client optionality respected.

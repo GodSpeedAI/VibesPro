@@ -15,32 +15,32 @@ Phase 6 validates and documents the Just task orchestration infrastructure for V
 
 ✅ **Task Environment Validation**
 
--   Created comprehensive test suite validating task environment awareness
--   Verified all critical tasks exist and are properly defined
--   Confirmed tasks check for tool availability before execution
--   Validated graceful degradation when tools unavailable
+- Created comprehensive test suite validating task environment awareness
+- Verified all critical tasks exist and are properly defined
+- Confirmed tasks check for tool availability before execution
+- Validated graceful degradation when tools unavailable
 
 ✅ **Test Coverage**
 
--   Created `tests/env/test_just_env_awareness.sh` following TDD methodology
--   Test validates 15 different aspects of task environment integration
--   Tests task existence, tool availability checks, safety practices
--   All tests passing on first run (GREEN phase immediate)
+- Created `tests/env/test_just_env_awareness.sh` following TDD methodology
+- Test validates 15 different aspects of task environment integration
+- Tests task existence, tool availability checks, safety practices
+- All tests passing on first run (GREEN phase immediate)
 
 ✅ **Documentation**
 
--   Added comprehensive "Just Task Environment Requirements" section to `docs/ENVIRONMENT.md`
--   Documented all task categories with runtime requirements
--   Provided graceful degradation examples
--   Included troubleshooting guide and best practices
--   Added complete task reference tables
+- Added comprehensive "Just Task Environment Requirements" section to `docs/ENVIRONMENT.md`
+- Documented all task categories with runtime requirements
+- Provided graceful degradation examples
+- Included troubleshooting guide and best practices
+- Added complete task reference tables
 
 ✅ **Environment Validation**
 
--   All 9 environment tests passing
--   Just task integration validated
--   CI integration confirmed
--   Local development workflow verified
+- All 9 environment tests passing
+- Just task integration validated
+- CI integration confirmed
+- Local development workflow verified
 
 ## TDD Workflow
 
@@ -50,24 +50,24 @@ Phase 6 validates and documents the Just task orchestration infrastructure for V
 
 Created test that validates:
 
--   justfile exists and is well-formed
--   just command is available
--   All critical tasks are defined
--   Node tasks check for pnpm availability
--   Python tasks check for uv availability
--   Cargo tasks check for cargo availability
--   Tasks gracefully degrade when tools unavailable
--   Environment setup tasks properly ordered
--   verify-node integration works
--   Shell safety best practices followed
+- justfile exists and is well-formed
+- just command is available
+- All critical tasks are defined
+- Node tasks check for pnpm availability
+- Python tasks check for uv availability
+- Cargo tasks check for cargo availability
+- Tasks gracefully degrade when tools unavailable
+- Environment setup tasks properly ordered
+- verify-node integration works
+- Shell safety best practices followed
 
 **Test approach:**
 
--   Validates task existence using `just --summary`
--   Checks task definitions for tool availability checks
--   Verifies graceful degradation patterns
--   Tests actual task execution (smoke tests)
--   Validates integration with Phase 5 (verify-node)
+- Validates task existence using `just --summary`
+- Checks task definitions for tool availability checks
+- Verifies graceful degradation patterns
+- Tests actual task execution (smoke tests)
+- Validates integration with Phase 5 (verify-node)
 
 **Initial Status:** Test passed immediately ✅ (GREEN phase started immediately)
 
@@ -157,14 +157,14 @@ Added comprehensive Just task documentation to `docs/ENVIRONMENT.md` (~400 lines
 
 **Task Reference Tables Added:**
 
--   Setup Tasks (5 tasks)
--   Development Tasks (2 tasks)
--   Build Tasks (3 tasks)
--   Test Tasks (5 tasks)
--   Lint & Format Tasks (5 tasks)
--   AI Workflow Tasks (3 tasks)
--   Security Tasks (2 tasks)
--   Documentation Tasks (2 tasks)
+- Setup Tasks (5 tasks)
+- Development Tasks (2 tasks)
+- Build Tasks (3 tasks)
+- Test Tasks (5 tasks)
+- Lint & Format Tasks (5 tasks)
+- AI Workflow Tasks (3 tasks)
+- Security Tasks (2 tasks)
+- Documentation Tasks (2 tasks)
 
 **Total: 27 documented tasks** with runtime requirements and environment checks
 
@@ -172,9 +172,9 @@ Added comprehensive Just task documentation to `docs/ENVIRONMENT.md` (~400 lines
 
 Added `test_just_env_awareness.sh` to test harness:
 
--   Updated test count from 8 to 9 tests
--   Documented test validation criteria
--   Included test execution example
+- Updated test count from 8 to 9 tests
+- Documented test validation criteria
+- Included test execution example
 
 **Roadmap Update:**
 
@@ -190,28 +190,28 @@ Marked Phase 6 complete with celebration:
 
 ### Created
 
--   `tests/env/test_just_env_awareness.sh` - Just task environment awareness test (new)
--   `docs/work-summaries/phase-6-just-tasks-complete.md` - This summary
+- `tests/env/test_just_env_awareness.sh` - Just task environment awareness test (new)
+- `docs/work-summaries/phase-6-just-tasks-complete.md` - This summary
 
 ### Modified
 
--   `docs/ENVIRONMENT.md` - Added comprehensive Just task documentation section (~400 lines)
-    -   Task categories & runtime requirements
-    -   Graceful degradation examples
-    -   Common patterns
-    -   Environment validation
-    -   Best practices
-    -   CI integration
-    -   Troubleshooting guide
-    -   Test coverage update (8→9 tests)
-    -   Marked Phase 6 complete
+- `docs/ENVIRONMENT.md` - Added comprehensive Just task documentation section (~400 lines)
+    - Task categories & runtime requirements
+    - Graceful degradation examples
+    - Common patterns
+    - Environment validation
+    - Best practices
+    - CI integration
+    - Troubleshooting guide
+    - Test coverage update (8→9 tests)
+    - Marked Phase 6 complete
 
 ### Verified (No Changes Needed)
 
--   `justfile` - Already properly implemented with environment awareness
--   All tasks check for tool availability
--   All tasks degrade gracefully
--   All tasks provide helpful error messages
+- `justfile` - Already properly implemented with environment awareness
+- All tasks check for tool availability
+- All tasks degrade gracefully
+- All tasks provide helpful error messages
 
 ## Test Results
 
@@ -266,20 +266,20 @@ $ just setup
 
 **setup-node:**
 
--   Uses corepack enable (from mise Node)
--   Runs pnpm install
--   No environment check needed (assumes mise active)
+- Uses corepack enable (from mise Node)
+- Runs pnpm install
+- No environment check needed (assumes mise active)
 
 **setup-python:**
 
--   Uses uv sync --dev
--   No environment check needed (assumes mise active)
+- Uses uv sync --dev
+- No environment check needed (assumes mise active)
 
 **setup-tools:**
 
--   Checks if copier installed
--   Installs via uv tool install if missing
--   Provides clear installation status
+- Checks if copier installed
+- Installs via uv tool install if missing
+- Provides clear installation status
 
 ### Development Tasks ✅
 
@@ -406,9 +406,9 @@ fi
 
 **Benefits:**
 
--   Clear error messages
--   Installation instructions provided
--   Non-blocking for optional features
+- Clear error messages
+- Installation instructions provided
+- Non-blocking for optional features
 
 ### Pattern 2: Feature Detection
 
@@ -424,9 +424,9 @@ fi
 
 **Benefits:**
 
--   Adapts to project structure
--   No hard requirements
--   Flexible workflow support
+- Adapts to project structure
+- No hard requirements
+- Flexible workflow support
 
 ### Pattern 3: Conditional Execution
 
@@ -446,49 +446,49 @@ fi
 
 **Benefits:**
 
--   Multiple fallback levels
--   Informative warnings
--   Continues with partial execution
+- Multiple fallback levels
+- Informative warnings
+- Continues with partial execution
 
 ## Environment Integration Validation
 
 ### Phase 0 Integration ✅
 
--   test_just_env_awareness.sh uses test harness from Phase 0
--   Test discovery mechanism includes new test automatically
--   Helper functions work correctly
+- test_just_env_awareness.sh uses test harness from Phase 0
+- Test discovery mechanism includes new test automatically
+- Helper functions work correctly
 
 ### Phase 1 Integration ✅
 
--   Devbox can provide just command
--   env-enter task checks for devbox availability
--   Seamless integration with Devbox workflow
+- Devbox can provide just command
+- env-enter task checks for devbox availability
+- Seamless integration with Devbox workflow
 
 ### Phase 2 Integration ✅
 
--   All tasks use mise-managed runtimes
--   setup-node uses pnpm from mise Node
--   setup-python uses uv from mise Python
--   security tasks use cargo from mise Rust
+- All tasks use mise-managed runtimes
+- setup-node uses pnpm from mise Node
+- setup-python uses uv from mise Python
+- security tasks use cargo from mise Rust
 
 ### Phase 3 Integration ✅
 
--   No direct integration (Just tasks don't handle secrets)
--   SOPS decryption handled separately in CI
+- No direct integration (Just tasks don't handle secrets)
+- SOPS decryption handled separately in CI
 
 ### Phase 4 Integration ✅
 
--   CI workflows use Just tasks
--   `just verify-node` in env-check.yml
--   `just build` and `just test` available for CI
--   Tasks work identically in local and CI environments
+- CI workflows use Just tasks
+- `just verify-node` in env-check.yml
+- `just build` and `just test` available for CI
+- Tasks work identically in local and CI environments
 
 ### Phase 5 Integration ✅
 
--   verify-node task validated
--   Just target exists and works
--   Integration test in test_just_env_awareness.sh
--   CI workflows use `just verify-node` correctly
+- verify-node task validated
+- Just target exists and works
+- Integration test in test_just_env_awareness.sh
+- CI workflows use `just verify-node` correctly
 
 ## Task Reference Documentation
 
@@ -497,31 +497,24 @@ fi
 **27 tasks documented** across 8 categories:
 
 1. **Setup Tasks (5):**
-
     - setup, setup-node, setup-python, setup-tools, verify-node
 
 2. **Development Tasks (2):**
-
     - dev, env-enter
 
 3. **Build Tasks (3):**
-
     - build, build-nx, build-direct
 
 4. **Test Tasks (5):**
-
     - test, test-node, test-python, test-env, test-integration
 
 5. **Lint & Format Tasks (5):**
-
     - lint, lint-node, lint-python, format-node, format-python
 
 6. **AI Workflow Tasks (3):**
-
     - ai-validate, ai-scaffold, ai-context-bundle
 
 7. **Security Tasks (2):**
-
     - security-audit, security-benchmark
 
 8. **Documentation Tasks (2):**
@@ -529,11 +522,11 @@ fi
 
 **Each task documented with:**
 
--   Runtime requirements
--   Purpose
--   Environment checks (if any)
--   Usage examples
--   Error handling behavior
+- Runtime requirements
+- Purpose
+- Environment checks (if any)
+- Usage examples
+- Error handling behavior
 
 ## Best Practices Established
 
@@ -580,7 +573,6 @@ fi
     ```
 
 3. **Let tasks handle missing tools**
-
     - Don't pre-check for tools manually
     - Tasks provide clear error messages
     - Follow installation instructions in output
@@ -626,10 +618,10 @@ jobs:
 
 **Key points:**
 
--   mise installed first
--   `just setup` installs all dependencies
--   Environment validated before build
--   Same commands work locally and in CI
+- mise installed first
+- `just setup` installs all dependencies
+- Environment validated before build
+- Same commands work locally and in CI
 
 ## Troubleshooting Scenarios Covered
 
@@ -730,18 +722,18 @@ just test-env  # Should pass locally and CI
 
 ## Phase 6 Completion Checklist
 
--   [x] RED: Write Just task environment awareness test (`test_just_env_awareness.sh`)
--   [x] GREEN: Verify existing tasks follow best practices (all ✅)
--   [x] GREEN: Validate task execution in local environment
--   [x] GREEN: Confirm task execution works in CI
--   [x] REFACTOR: Add comprehensive task documentation to ENVIRONMENT.md
--   [x] REFACTOR: Document task categories and runtime requirements
--   [x] REFACTOR: Add graceful degradation examples
--   [x] REFACTOR: Include troubleshooting guide
--   [x] REFACTOR: Update test count to 9 tests
--   [x] REFACTOR: Mark Phase 6 complete in roadmap
--   [x] Validate: Run `just test-env` (9/9 tests passing)
--   [x] Document: Create phase completion summary
+- [x] RED: Write Just task environment awareness test (`test_just_env_awareness.sh`)
+- [x] GREEN: Verify existing tasks follow best practices (all ✅)
+- [x] GREEN: Validate task execution in local environment
+- [x] GREEN: Confirm task execution works in CI
+- [x] REFACTOR: Add comprehensive task documentation to ENVIRONMENT.md
+- [x] REFACTOR: Document task categories and runtime requirements
+- [x] REFACTOR: Add graceful degradation examples
+- [x] REFACTOR: Include troubleshooting guide
+- [x] REFACTOR: Update test count to 9 tests
+- [x] REFACTOR: Mark Phase 6 complete in roadmap
+- [x] Validate: Run `just test-env` (9/9 tests passing)
+- [x] Document: Create phase completion summary
 
 **Phase 6 Status: COMPLETE ✅**
 
@@ -751,23 +743,23 @@ just test-env  # Should pass locally and CI
 
 **All 6 phases of the VibesPro environment setup are now complete:**
 
--   ✅ **Phase 0:** Test harness and guardrails
--   ✅ **Phase 1:** Devbox integration
--   ✅ **Phase 2:** mise runtime management
--   ✅ **Phase 3:** SOPS secret encryption
--   ✅ **Phase 4:** Minimal CI workflows
--   ✅ **Phase 5:** Volta coexistence checks
--   ✅ **Phase 6:** Just task environment awareness
+- ✅ **Phase 0:** Test harness and guardrails
+- ✅ **Phase 1:** Devbox integration
+- ✅ **Phase 2:** mise runtime management
+- ✅ **Phase 3:** SOPS secret encryption
+- ✅ **Phase 4:** Minimal CI workflows
+- ✅ **Phase 5:** Volta coexistence checks
+- ✅ **Phase 6:** Just task environment awareness
 
 The VibesPro template now has production-ready environment infrastructure:
 
--   🧪 9 comprehensive environment tests (all passing)
--   🔧 27 documented Just tasks with runtime requirements
--   🐳 Devbox integration for reproducible environments
--   ⚙️ mise managing Node, Python, Rust runtimes
--   🔐 SOPS secret management
--   🚦 CI workflows validating environment on every push
--   ⚡ Volta coexistence with clear migration path
--   📚 400+ lines of task documentation and best practices
+- 🧪 9 comprehensive environment tests (all passing)
+- 🔧 27 documented Just tasks with runtime requirements
+- 🐳 Devbox integration for reproducible environments
+- ⚙️ mise managing Node, Python, Rust runtimes
+- 🔐 SOPS secret management
+- 🚦 CI workflows validating environment on every push
+- ⚡ Volta coexistence with clear migration path
+- 📚 400+ lines of task documentation and best practices
 
 **The environment setup is complete, tested, and documented!** 🚀

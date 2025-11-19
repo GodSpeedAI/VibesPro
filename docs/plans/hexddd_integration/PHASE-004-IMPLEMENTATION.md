@@ -12,12 +12,12 @@ PHASE-004 enforces strict type safety across TypeScript and Python, implements a
 
 ## Success Criteria - All Met ✅
 
--   ✅ **TypeScript Strict Mode Enforced**: `tsconfig.json` has comprehensive strict settings
--   ✅ **Python Mypy Strict Mode Enforced**: `pyproject.toml` configured with full strict mode
--   ✅ **ESLint Type Rules Active**: Bans `any` types, enforces explicit return types
--   ✅ **Pre-commit Hooks Active**: ESLint, mypy, and tsc run on every commit
--   ✅ **CI Type Gates**: GitHub Actions workflow validates types on all PRs
--   ✅ **Justfile Recipes**: Easy commands for type checking (`just type-check`)
+- ✅ **TypeScript Strict Mode Enforced**: `tsconfig.json` has comprehensive strict settings
+- ✅ **Python Mypy Strict Mode Enforced**: `pyproject.toml` configured with full strict mode
+- ✅ **ESLint Type Rules Active**: Bans `any` types, enforces explicit return types
+- ✅ **Pre-commit Hooks Active**: ESLint, mypy, and tsc run on every commit
+- ✅ **CI Type Gates**: GitHub Actions workflow validates types on all PRs
+- ✅ **Justfile Recipes**: Easy commands for type checking (`just type-check`)
 
 ---
 
@@ -48,10 +48,10 @@ PHASE-004 enforces strict type safety across TypeScript and Python, implements a
 
 **Benefits:**
 
--   Catches undefined access in arrays/objects
--   Prevents missing return statements
--   Detects unused variables
--   Enforces override keywords
+- Catches undefined access in arrays/objects
+- Prevents missing return statements
+- Detects unused variables
+- Enforces override keywords
 
 ### 2. ESLint Type-Safety Rules
 
@@ -100,10 +100,10 @@ disallow_any_generics = true
 
 Pre-commit runs on every commit:
 
--   ✅ **ESLint**: TypeScript linting with type rules
--   ✅ **mypy**: Python strict type checking
--   ✅ **Ruff**: Python formatting and linting
--   ✅ **Prettier**: Code formatting
+- ✅ **ESLint**: TypeScript linting with type rules
+- ✅ **mypy**: Python strict type checking
+- ✅ **Ruff**: Python formatting and linting
+- ✅ **Prettier**: Code formatting
 
 **Usage:**
 
@@ -252,10 +252,10 @@ git push
 
 Type-aware ESLint rules (requiring full TS compilation) are disabled initially:
 
--   `@typescript-eslint/no-unsafe-assignment`
--   `@typescript-eslint/no-unsafe-call`
--   `@typescript-eslint/no-unsafe-member-access`
--   `@typescript-eslint/no-floating-promises`
+- `@typescript-eslint/no-unsafe-assignment`
+- `@typescript-eslint/no-unsafe-call`
+- `@typescript-eslint/no-unsafe-member-access`
+- `@typescript-eslint/no-floating-promises`
 
 **Reason:** These require `parserOptions.project` which is expensive. We'll enable them file-by-file after establishing baseline type safety.
 
@@ -300,20 +300,20 @@ gh run list --workflow=type-safety.yml
 
 **TypeScript:**
 
--   Strict mode: ✅ Enabled
--   ESLint rules: ✅ All enforced
--   Zero `any` types: 🎯 Target (currently enforced via ESLint)
+- Strict mode: ✅ Enabled
+- ESLint rules: ✅ All enforced
+- Zero `any` types: 🎯 Target (currently enforced via ESLint)
 
 **Python:**
 
--   Mypy strict: ✅ Enabled
--   Coverage: ≥95% (measured via `--any-exprs-report`)
--   Zero type: ignore: 🎯 Target (enforced except documented exceptions)
+- Mypy strict: ✅ Enabled
+- Coverage: ≥95% (measured via `--any-exprs-report`)
+- Zero type: ignore: 🎯 Target (enforced except documented exceptions)
 
 ### CI Performance
 
--   Type-safety workflow: ~2-3 minutes
--   Pre-commit hooks: ~10-20 seconds
+- Type-safety workflow: ~2-3 minutes
+- Pre-commit hooks: ~10-20 seconds
 
 ---
 
@@ -347,9 +347,9 @@ gh run list --workflow=type-safety.yml
 
 All new code automatically:
 
--   ✅ Passes pre-commit type checks
--   ✅ Passes CI type validation
--   ✅ Follows strict type guidelines
+- ✅ Passes pre-commit type checks
+- ✅ Passes CI type validation
+- ✅ Follows strict type guidelines
 
 ---
 
@@ -398,10 +398,10 @@ After PHASE-004:
 
 ## References
 
--   **Plan:** `docs/plans/hexddd_integration/PHASE-004-TYPE_SAFETY_CI.md`
--   **Prompt:** `docs/plans/hexddd_integration/PHASE-004-PROMPT.md`
--   **TypeScript Strict Guide:** https://www.typescriptlang.org/tsconfig#strict
--   **Python Mypy Strict:** https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict
+- **Plan:** `docs/plans/hexddd_integration/PHASE-004-TYPE_SAFETY_CI.md`
+- **Prompt:** `docs/plans/hexddd_integration/PHASE-004-PROMPT.md`
+- **TypeScript Strict Guide:** https://www.typescriptlang.org/tsconfig#strict
+- **Python Mypy Strict:** https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict
 
 ---
 

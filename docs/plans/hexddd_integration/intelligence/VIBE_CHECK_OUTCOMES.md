@@ -8,19 +8,17 @@ This vibe-check captures assumptions, uncertainties, mitigations and next action
 
 ## Top assumptions
 
--   The generator templates added in PRs are the canonical source for generator behavior and will be used by AI-driven scaffolding.
--   CI runs relevant to PR activity are discoverable via `gh api repos/.../actions/runs` and are retained long enough to download logs.
--   ID generation, schema validation, and deterministic file writes are sufficient to avoid common generator hallucination failure modes.
+- The generator templates added in PRs are the canonical source for generator behavior and will be used by AI-driven scaffolding.
+- CI runs relevant to PR activity are discoverable via `gh api repos/.../actions/runs` and are retained long enough to download logs.
+- ID generation, schema validation, and deterministic file writes are sufficient to avoid common generator hallucination failure modes.
 
 ## Primary uncertainties (high-priority)
 
 1. CI evidence: which workflow runs and job logs correspond to the PR commits we inspected (we found many runs on `feature/integrateddb` but initial SHAs didn't match runs).
-
     - Impact: High — prevents us from seeing real test failures.
     - Mitigation: Use PR-level checks (`gh pr view --json headRefOid,mergeCommit` and `gh pr checks`) and search runs by branch.
 
 2. Generator completeness vs. AI prompts: whether the `GENERATOR_SPEC.md` template contains all fields required to avoid hallucinations when an AI agent creates a generator.
-
     - Impact: High — missing fields can cause invalid generated projects.
     - Mitigation: Add AJV validation, schema→TS parity tests, and golden-sample generator runs (automated).
 
@@ -30,13 +28,13 @@ This vibe-check captures assumptions, uncertainties, mitigations and next action
 
 ## Lower-priority uncertainties
 
--   Traceability completeness (ADR/PRD links exist but we must confirm all code changes reference spec IDs).
--   Long-term maintenance: who owns generator templates and how to version them for generated projects.
+- Traceability completeness (ADR/PRD links exist but we must confirm all code changes reference spec IDs).
+- Long-term maintenance: who owns generator templates and how to version them for generated projects.
 
 ## Confidence levels (quick)
 
--   Confidence in repo evidence collected: Medium — file diffs and commits are present, but CI logs linking to exact commits remain to be collected.
--   Confidence in recommended mitigations: High — AJV + idempotency + golden runs will materially reduce hallucination/flake risk.
+- Confidence in repo evidence collected: Medium — file diffs and commits are present, but CI logs linking to exact commits remain to be collected.
+- Confidence in recommended mitigations: High — AJV + idempotency + golden runs will materially reduce hallucination/flake risk.
 
 ## Concrete mitigations & short actions
 
@@ -47,16 +45,16 @@ This vibe-check captures assumptions, uncertainties, mitigations and next action
 
 ## Open questions to resolve (next meeting)
 
--   Which specific generators should be included in the golden-sample set?
--   Who will be the DRI (owner) for generator template maintenance?
--   Retention policy for Actions logs — do we need to adjust retention so we can always retrieve run artifacts for important PRs?
+- Which specific generators should be included in the golden-sample set?
+- Who will be the DRI (owner) for generator template maintenance?
+- Retention policy for Actions logs — do we need to adjust retention so we can always retrieve run artifacts for important PRs?
 
 ## Appendix: quick checklist to close vibe items
 
--   [ ] Fetch and archive CI logs for PRs 49/50/51.
--   [ ] Add AJV validation to `just ai-validate`.
--   [ ] Add idempotency harness runs into `ai-guidance.yml` (matrix).
--   [ ] Create golden-sample CI job(s) for generator verification.
+- [ ] Fetch and archive CI logs for PRs 49/50/51.
+- [ ] Add AJV validation to `just ai-validate`.
+- [ ] Add idempotency harness runs into `ai-guidance.yml` (matrix).
+- [ ] Create golden-sample CI job(s) for generator verification.
 
 # VIBE_CHECK_RECAP
 
@@ -69,27 +67,27 @@ Capture metacognitive checks: surfaced assumptions, edge cases, hidden complexit
 
 ## Assumptions to validate
 
--   Nx generators will be available for component/library scaffolding.
--   Workspace uses Nx >= 19.x (verify).
--   Type drift is resolvable with CI regeneration.
+- Nx generators will be available for component/library scaffolding.
+- Workspace uses Nx >= 19.x (verify).
+- Type drift is resolvable with CI regeneration.
 
 ## Edge cases
 
--   Conflicting tags causing circular dependencies
--   Supabase schema changes that require manual intervention
--   Incompatible UoW patterns across JS/Python runtimes
+- Conflicting tags causing circular dependencies
+- Supabase schema changes that require manual intervention
+- Incompatible UoW patterns across JS/Python runtimes
 
 ## Hidden complexity
 
--   AST-based idempotent changes are non-trivial across template formats
--   Testing idempotency across macOS/Linux/CI environments
+- AST-based idempotent changes are non-trivial across template formats
+- Testing idempotency across macOS/Linux/CI environments
 
 ## Invalidation scenarios
 
--   Upstream HexDDD repo changes major layout or generator APIs
--   Nx plugin versions diverge and remove required hooks
+- Upstream HexDDD repo changes major layout or generator APIs
+- Nx plugin versions diverge and remove required hooks
 
 ## Next steps
 
--   Run the `vibe-check` MCP tool (or equivalent reasoning step) and paste answers into each section.
--   Assign confidence levels (High/Medium/Low) per assumption.
+- Run the `vibe-check` MCP tool (or equivalent reasoning step) and paste answers into each section.
+- Assign confidence levels (High/Medium/Low) per assumption.

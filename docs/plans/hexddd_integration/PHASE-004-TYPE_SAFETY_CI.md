@@ -15,12 +15,12 @@ Enforce strict type safety across TypeScript and Python, implement automated typ
 
 ### Success Criteria
 
--   [ ] TypeScript strict mode enforced (zero `any` types)
--   [ ] Python mypy strict mode enforced (≥95% coverage)
--   [ ] Automated type sync CI workflow operational
--   [ ] Pre-commit hooks validate types locally
--   [ ] All type checks pass in CI
--   [ ] **Evidence**: `pnpm tsc --noEmit && uv run mypy --strict` both GREEN
+- [ ] TypeScript strict mode enforced (zero `any` types)
+- [ ] Python mypy strict mode enforced (≥95% coverage)
+- [ ] Automated type sync CI workflow operational
+- [ ] Pre-commit hooks validate types locally
+- [ ] All type checks pass in CI
+- [ ] **Evidence**: `pnpm tsc --noEmit && uv run mypy --strict` both GREEN
 
 ### Traceability
 
@@ -225,12 +225,12 @@ type-sync:
 
 ## ✅ Phase Validation Checklist
 
--   [ ] TypeScript: `strict: true`, zero `any` violations
--   [ ] Python: `mypy --strict` passes, ≥95% coverage
--   [ ] CI Workflow: Type sync runs on schema changes
--   [ ] Pre-commit Hooks: Local type validation
--   [ ] All tests: Pass with strict types
--   [ ] **PHASE-004 marked GREEN in Master Plan**
+- [ ] TypeScript: `strict: true`, zero `any` violations
+- [ ] Python: `mypy --strict` passes, ≥95% coverage
+- [ ] CI Workflow: Type sync runs on schema changes
+- [ ] Pre-commit Hooks: Local type validation
+- [ ] All tests: Pass with strict types
+- [ ] **PHASE-004 marked GREEN in Master Plan**
 
 ---
 

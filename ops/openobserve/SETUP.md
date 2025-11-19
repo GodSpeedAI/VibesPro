@@ -4,8 +4,8 @@ This guide walks through importing the dashboard and alerts into OpenObserve.
 
 ## Prerequisites
 
--   Local OpenObserve running: `just temporal-ai-observe-start`
--   OpenObserve credentials configured in `.secrets.env.sops`
+- Local OpenObserve running: `just temporal-ai-observe-start`
+- OpenObserve credentials configured in `.secrets.env.sops`
 
 ## 1. Import Dashboard
 
@@ -108,23 +108,23 @@ Manually trigger an alert by inserting low success rate data:
 
 **Dashboard not appearing**:
 
--   Check import was successful: look for success message
--   Verify dashboard exists: Settings → Dashboards
--   Check browser console for errors
+- Check import was successful: look for success message
+- Verify dashboard exists: Settings → Dashboards
+- Check browser console for errors
 
 **Alerts not triggering**:
 
--   Verify alerts are enabled in OpenObserve UI
--   Check email destination is configured correctly
--   Test SMTP settings
--   Review alert logs in OpenObserve
+- Verify alerts are enabled in OpenObserve UI
+- Check email destination is configured correctly
+- Test SMTP settings
+- Review alert logs in OpenObserve
 
 **No data in dashboard**:
 
--   Ensure Vector is running: `just observe-start`
--   Check Vector is sending to OpenObserve: `tail -f tmp/vector-traces.log`
--   Verify `temporal_ai_recommendations` stream exists
--   Run metrics refresh: `just temporal-ai-refresh-metrics DAYS=7`
+- Ensure Vector is running: `just observe-start`
+- Check Vector is sending to OpenObserve: `tail -f tmp/vector-traces.log`
+- Verify `temporal_ai_recommendations` stream exists
+- Run metrics refresh: `just temporal-ai-refresh-metrics DAYS=7`
 
 ## Next Steps
 

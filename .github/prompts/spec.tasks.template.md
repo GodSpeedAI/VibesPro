@@ -13,11 +13,11 @@ description: "Template for generating numbered task lists from implementation pl
 
 ## Inputs
 
--   Implementation plan ID: {{ '{{PLAN_ID}}' }}
--   Specification type: {{ '{{SPEC_TYPE}}' }} (PRD/ADR/SDS/TS)
--   Priority level: {{ '{{PRIORITY}}' }}
--   Team assignment: {{ '{{TEAM}}' }}
--   Timeline constraints: {{ '{{TIMELINE}}' }}
+- Implementation plan ID: {{ '{{PLAN_ID}}' }}
+- Specification type: {{ '{{SPEC_TYPE}}' }} (PRD/ADR/SDS/TS)
+- Priority level: {{ '{{PRIORITY}}' }}
+- Team assignment: {{ '{{TEAM}}' }}
+- Timeline constraints: {{ '{{TIMELINE}}' }}
 
 ## Template Structure
 
@@ -36,7 +36,6 @@ description: "Template for generating numbered task lists from implementation pl
 #### Research & Analysis Tasks
 
 1. **TASK-001:** Research [specific topic or technology]
-
     - **Description:** [Detailed description of research needed]
     - **Estimate:** [Time estimate]
     - **Dependencies:** [Related tasks]
@@ -59,7 +58,6 @@ description: "Template for generating numbered task lists from implementation pl
 #### Design & Architecture Tasks
 
 3. **TASK-003:** Design [component or system architecture]
-
     - **Description:** [Design approach and scope]
     - **Estimate:** [Time estimate]
     - **Dependencies:** [Related tasks]
@@ -83,7 +81,6 @@ description: "Template for generating numbered task lists from implementation pl
 #### Development Tasks
 
 5. **TASK-005:** Implement [specific feature or component]
-
     - **Description:** [Implementation details and scope]
     - **Estimate:** [Time estimate]
     - **Dependencies:** [Related tasks]
@@ -110,7 +107,6 @@ description: "Template for generating numbered task lists from implementation pl
 #### Testing & Quality Tasks
 
 7. **TASK-007:** Write [specific test type] tests
-
     - **Description:** [Testing scope and approach]
     - **Estimate:** [Time estimate]
     - **Dependencies:** [Related tasks]
@@ -135,7 +131,6 @@ description: "Template for generating numbered task lists from implementation pl
 #### Documentation Tasks
 
 9. **TASK-009:** Create [specific documentation]
-
     - **Description:** [Documentation scope and content]
     - **Estimate:** [Time estimate]
     - **Dependencies:** [Related tasks]
@@ -148,166 +143,166 @@ description: "Template for generating numbered task lists from implementation pl
 
 10. **TASK-010:** Update [existing documentation]
 
--   **Description:** [Documentation update scope]
--   **Estimate:** [Time estimate]
--   **Dependencies:** [Related tasks]
--   **Owner:** [Assigned team member]
--   **Status:** [Not Started | In Progress | Completed | Blocked]
--   **Acceptance Criteria:**
-    -   [ ] [Documentation updated]
-    -   [ ] [Changes reviewed]
-    -   [ ] [Documentation synchronized]
+- **Description:** [Documentation update scope]
+- **Estimate:** [Time estimate]
+- **Dependencies:** [Related tasks]
+- **Owner:** [Assigned team member]
+- **Status:** [Not Started | In Progress | Completed | Blocked]
+- **Acceptance Criteria:**
+    - [ ] [Documentation updated]
+    - [ ] [Changes reviewed]
+    - [ ] [Documentation synchronized]
 
 #### Deployment & Release Tasks
 
 11. **TASK-011:** Prepare [environment] for deployment
 
--   **Description:** [Environment preparation details]
--   **Estimate:** [Time estimate]
--   **Dependencies:** [Related tasks]
--   **Owner:** [Assigned team member]
--   **Status:** [Not Started | In Progress | Completed | Blocked]
--   **Acceptance Criteria:**
-    -   [ ] [Environment configured]
-    -   [ ] [Infrastructure validated]
-    -   [ ] [Deployment scripts ready]
+- **Description:** [Environment preparation details]
+- **Estimate:** [Time estimate]
+- **Dependencies:** [Related tasks]
+- **Owner:** [Assigned team member]
+- **Status:** [Not Started | In Progress | Completed | Blocked]
+- **Acceptance Criteria:**
+    - [ ] [Environment configured]
+    - [ ] [Infrastructure validated]
+    - [ ] [Deployment scripts ready]
 
 12. **TASK-012:** Deploy [specific component or feature]
 
--   **Description:** [Deployment scope and process]
--   **Estimate:** [Time estimate]
--   **Dependencies:** [Related tasks]
--   **Owner:** [Assigned team member]
--   **Status:** [Not Started | In Progress | Completed | Blocked]
--   **Acceptance Criteria:**
-    -   [ ] [Deployment completed]
-    -   [ ] [Health checks passing]
-    -   [ ] [Monitoring active]
-    -   [ ] [Rollback plan tested]
+- **Description:** [Deployment scope and process]
+- **Estimate:** [Time estimate]
+- **Dependencies:** [Related tasks]
+- **Owner:** [Assigned team member]
+- **Status:** [Not Started | In Progress | Completed | Blocked]
+- **Acceptance Criteria:**
+    - [ ] [Deployment completed]
+    - [ ] [Health checks passing]
+    - [ ] [Monitoring active]
+    - [ ] [Rollback plan tested]
 
 #### Review & Approval Tasks
 
 13. **TASK-013:** Conduct [specific review type]
 
--   **Description:** [Review scope and criteria]
--   **Estimate:** [Time estimate]
--   **Dependencies:** [Related tasks]
--   **Owner:** [Assigned team member]
--   **Status:** [Not Started | In Progress | Completed | Blocked]
--   **Acceptance Criteria:**
-    -   [ ] [Review completed]
-    -   [ ] [Feedback documented]
-    -   [ ] [Action items tracked]
+- **Description:** [Review scope and criteria]
+- **Estimate:** [Time estimate]
+- **Dependencies:** [Related tasks]
+- **Owner:** [Assigned team member]
+- **Status:** [Not Started | In Progress | Completed | Blocked]
+- **Acceptance Criteria:**
+    - [ ] [Review completed]
+    - [ ] [Feedback documented]
+    - [ ] [Action items tracked]
 
 14. **TASK-014:** Obtain [specific approval]
 
--   **Description:** [Approval requirements and process]
--   **Estimate:** [Time estimate]
--   **Dependencies:** [Related tasks]
--   **Owner:** [Assigned team member]
--   **Status:** [Not Started | In Progress | Completed | Blocked]
--   **Acceptance Criteria:**
-    -   [ ] [Approval obtained]
-    -   [ ] [Approval documented]
-    -   [ ] [Stakeholders notified]
+- **Description:** [Approval requirements and process]
+- **Estimate:** [Time estimate]
+- **Dependencies:** [Related tasks]
+- **Owner:** [Assigned team member]
+- **Status:** [Not Started | In Progress | Completed | Blocked]
+- **Acceptance Criteria:**
+    - [ ] [Approval obtained]
+    - [ ] [Approval documented]
+    - [ ] [Stakeholders notified]
 
 ### 3. Task Dependencies
 
 #### Dependency Graph
 
--   **TASK-001** → **TASK-003** → **TASK-005**
--   **TASK-002** → **TASK-004** → **TASK-006**
--   **TASK-005** → **TASK-007** → **TASK-009**
--   **TASK-006** → **TASK-008** → **TASK-010**
--   **TASK-007** → **TASK-011** → **TASK-012**
--   **TASK-009** → **TASK-013** → **TASK-014**
+- **TASK-001** → **TASK-003** → **TASK-005**
+- **TASK-002** → **TASK-004** → **TASK-006**
+- **TASK-005** → **TASK-007** → **TASK-009**
+- **TASK-006** → **TASK-008** → **TASK-010**
+- **TASK-007** → **TASK-011** → **TASK-012**
+- **TASK-009** → **TASK-013** → **TASK-014**
 
 #### Critical Path
 
--   **Critical Path Tasks:** [List of critical path tasks]
--   **Total Estimated Duration:** [Time estimate]
--   **Key Milestones:** [Milestone descriptions]
+- **Critical Path Tasks:** [List of critical path tasks]
+- **Total Estimated Duration:** [Time estimate]
+- **Key Milestones:** [Milestone descriptions]
 
 ### 4. Task Tracking
 
 #### Progress Metrics
 
--   **Total Tasks:** [Number]
--   **Completed Tasks:** [Number]
--   **In Progress Tasks:** [Number]
--   **Blocked Tasks:** [Number]
--   **Completion Percentage:** [Percentage]
+- **Total Tasks:** [Number]
+- **Completed Tasks:** [Number]
+- **In Progress Tasks:** [Number]
+- **Blocked Tasks:** [Number]
+- **Completion Percentage:** [Percentage]
 
 #### Burndown Chart
 
--   **Planned Effort:** [Hours]
--   **Actual Effort:** [Hours]
--   **Remaining Effort:** [Hours]
--   **Velocity:** [Hours per iteration]
+- **Planned Effort:** [Hours]
+- **Actual Effort:** [Hours]
+- **Remaining Effort:** [Hours]
+- **Velocity:** [Hours per iteration]
 
 ### 5. Risk Management
 
 #### Task Risks
 
--   **Risk 1:** [Risk description] - [Impact] - [Mitigation]
--   **Risk 2:** [Risk description] - [Impact] - [Mitigation]
--   **Risk 3:** [Risk description] - [Impact] - [Mitigation]
+- **Risk 1:** [Risk description] - [Impact] - [Mitigation]
+- **Risk 2:** [Risk description] - [Impact] - [Mitigation]
+- **Risk 3:** [Risk description] - [Impact] - [Mitigation]
 
 #### Risk Mitigation
 
--   **Prevention:** [Prevention strategies]
--   **Contingency:** [Contingency plans]
--   **Monitoring:** [Risk indicators]
+- **Prevention:** [Prevention strategies]
+- **Contingency:** [Contingency plans]
+- **Monitoring:** [Risk indicators]
 
 ### 6. Communication Plan
 
 #### Status Updates
 
--   **Frequency:** [Update frequency]
--   **Format:** [Update format]
--   **Recipients:** [Stakeholders]
--   **Escalation:** [Escalation path]
+- **Frequency:** [Update frequency]
+- **Format:** [Update format]
+- **Recipients:** [Stakeholders]
+- **Escalation:** [Escalation path]
 
 #### Meetings
 
--   **Daily Standup:** [Time and participants]
--   **Sprint Review:** [Time and participants]
--   **Retrospective:** [Time and participants]
+- **Daily Standup:** [Time and participants]
+- **Sprint Review:** [Time and participants]
+- **Retrospective:** [Time and participants]
 
 ### 7. Success Criteria
 
 #### Project Success
 
--   [ ] All tasks completed on time
--   [ ] Quality standards met
--   [ ] Stakeholder satisfaction achieved
--   [ ] Business objectives delivered
+- [ ] All tasks completed on time
+- [ ] Quality standards met
+- [ ] Stakeholder satisfaction achieved
+- [ ] Business objectives delivered
 
 #### Process Success
 
--   [ ] Team collaboration effective
--   [ ] Communication channels open
--   [ ] Risks managed appropriately
--   [ ] Lessons learned documented
+- [ ] Team collaboration effective
+- [ ] Communication channels open
+- [ ] Risks managed appropriately
+- [ ] Lessons learned documented
 
 ### 8. Appendices
 
 #### Task Templates
 
--   [ ] Task template for future use
--   [ ] Checklists for quality assurance
--   [ ] Communication templates
+- [ ] Task template for future use
+- [ ] Checklists for quality assurance
+- [ ] Communication templates
 
 #### References
 
--   [ ] Related specifications
--   [ ] Previous project documentation
--   [ ] Best practices and guidelines
+- [ ] Related specifications
+- [ ] Previous project documentation
+- [ ] Best practices and guidelines
 
 ## Output
 
--   Complete numbered task list
--   TASK-XXX IDs assigned
--   Dependencies and critical path identified
--   Progress tracking metrics established
--   Ready for project execution
+- Complete numbered task list
+- TASK-XXX IDs assigned
+- Dependencies and critical path identified
+- Progress tracking metrics established
+- Ready for project execution

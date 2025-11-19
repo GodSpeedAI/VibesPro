@@ -14,11 +14,11 @@ Successfully completed Phase 5 of the observability implementation by adding com
 
 Created failing test `tests/ops/test_ci_observability.sh` that verified:
 
--   Vector installation step exists in CI workflow
--   Vector validation step exists in CI workflow
--   Steps are in correct order: Install Vector → Install mise → Validate Vector config
--   Vector cache step exists for performance
--   Validation command references correct config path (`ops/vector/vector.toml`)
+- Vector installation step exists in CI workflow
+- Vector validation step exists in CI workflow
+- Steps are in correct order: Install Vector → Install mise → Validate Vector config
+- Vector cache step exists for performance
+- Validation command references correct config path (`ops/vector/vector.toml`)
 
 Initial test failed as expected with:
 
@@ -104,13 +104,13 @@ Enhanced development workflow:
 
 ### New Files
 
--   `tests/ops/test_ci_observability.sh` - Phase 5 CI validation test (95 lines)
+- `tests/ops/test_ci_observability.sh` - Phase 5 CI validation test (95 lines)
 
 ### Modified Files
 
--   `.github/workflows/env-check.yml` - Added Vector installation, caching, and validation
--   `justfile` - Added `observe-test-ci` target and updated `observe-test-all`
--   `docs/ENVIRONMENT.md` - Added Section 8: Observability & Monitoring (150+ lines)
+- `.github/workflows/env-check.yml` - Added Vector installation, caching, and validation
+- `justfile` - Added `observe-test-ci` target and updated `observe-test-all`
+- `docs/ENVIRONMENT.md` - Added Section 8: Observability & Monitoring (150+ lines)
 
 ## CI Workflow Order
 
@@ -172,9 +172,9 @@ $ just observe-test-all
 
 With Vector binary caching:
 
--   **First run**: ~30s to download and install Vector
--   **Cached runs**: ~2s to restore Vector from cache
--   **Cache key**: Invalidates when `ops/vector/vector.toml` changes
+- **First run**: ~30s to download and install Vector
+- **Cached runs**: ~2s to restore Vector from cache
+- **Cache key**: Invalidates when `ops/vector/vector.toml` changes
 
 ## Documentation Updates
 
@@ -183,32 +183,26 @@ With Vector binary caching:
 Comprehensive observability documentation including:
 
 1. **Architecture Overview**
-
     - 3-layer architecture explanation
     - Component roles and responsibilities
 
 2. **Quick Start Guide**
-
     - Installation commands
     - Basic usage examples
 
 3. **Configuration**
-
     - Environment variables reference
     - Vector configuration overview
 
 4. **Testing**
-
     - All phase test commands
     - Integration with existing test suite
 
 5. **CI Integration**
-
     - Workflow validation explanation
     - CI log output examples
 
 6. **Feature Flags**
-
     - Rust crate feature flag usage
     - Runtime control via environment variables
 
@@ -219,25 +213,25 @@ Comprehensive observability documentation including:
 
 ## Exit Criteria Met
 
--   [x] Vector installation added to CI workflow
--   [x] Vector validation runs after mise install
--   [x] Vector binary caching implemented
--   [x] CI logs show "✅ Vector config valid" message
--   [x] Phase 5 test created and passing
--   [x] Documentation linked to ENVIRONMENT.md § 8
--   [x] References to DEV-ADR-016 and SDS-017 maintained
+- [x] Vector installation added to CI workflow
+- [x] Vector validation runs after mise install
+- [x] Vector binary caching implemented
+- [x] CI logs show "✅ Vector config valid" message
+- [x] Phase 5 test created and passing
+- [x] Documentation linked to ENVIRONMENT.md § 8
+- [x] References to DEV-ADR-016 and SDS-017 maintained
 
 ## CI Validation Features
 
 The test validates:
 
--   ✅ Workflow file exists and is readable
--   ✅ Vector installation step present
--   ✅ Vector validation step present
--   ✅ Steps in correct execution order
--   ✅ Validation command uses correct syntax
--   ✅ Config path references `ops/vector/vector.toml`
--   ⚠️ Cache step present (warning only, not mandatory)
+- ✅ Workflow file exists and is readable
+- ✅ Vector installation step present
+- ✅ Vector validation step present
+- ✅ Steps in correct execution order
+- ✅ Validation command uses correct syntax
+- ✅ Config path references `ops/vector/vector.toml`
+- ⚠️ Cache step present (warning only, not mandatory)
 
 ## Next Steps
 
@@ -256,7 +250,6 @@ While basic documentation is complete, Phase 6 could include:
     ```
 
 2. **Enhanced Documentation**:
-
     - API reference for `vibepro-observe` crate
     - Vector VRL cookbook for custom transforms
     - OpenObserve dashboard templates
@@ -270,14 +263,14 @@ While basic documentation is complete, Phase 6 could include:
 
 ### Production Readiness Checklist
 
--   [x] Local development setup complete
--   [x] CI validation automated
--   [x] Documentation comprehensive
--   [ ] Production secrets management (SOPS encrypted)
--   [ ] OpenObserve instance deployed
--   [ ] Vector deployed to staging/production
--   [ ] Dashboards and alerts configured
--   [ ] Team training on observability tools
+- [x] Local development setup complete
+- [x] CI validation automated
+- [x] Documentation comprehensive
+- [ ] Production secrets management (SOPS encrypted)
+- [ ] OpenObserve instance deployed
+- [ ] Vector deployed to staging/production
+- [ ] Dashboards and alerts configured
+- [ ] Team training on observability tools
 
 ## Validation Commands
 
@@ -300,38 +293,38 @@ just observe-verify
 
 ## Traceability
 
--   **Spec IDs**: DEV-ADR-016 (Observability Architecture), SDS-017 (Storage Layer)
--   **TDD Plan**: `docs/tmp/dev_tdd_observability.md` - Phase 5
--   **Related Phases**:
-    -   Phase 1: Instrumentation Layer (Tracing)
-    -   Phase 2: Data Pipeline Layer (Vector)
-    -   Phase 3: Integration Test (Tracing → Vector)
-    -   Phase 4: Storage & Analytics (OpenObserve)
-    -   Phase 5: CI Validation ← **YOU ARE HERE**
-    -   Phase 6: Observability Feature Flag & Docs
+- **Spec IDs**: DEV-ADR-016 (Observability Architecture), SDS-017 (Storage Layer)
+- **TDD Plan**: `docs/tmp/dev_tdd_observability.md` - Phase 5
+- **Related Phases**:
+    - Phase 1: Instrumentation Layer (Tracing)
+    - Phase 2: Data Pipeline Layer (Vector)
+    - Phase 3: Integration Test (Tracing → Vector)
+    - Phase 4: Storage & Analytics (OpenObserve)
+    - Phase 5: CI Validation ← **YOU ARE HERE**
+    - Phase 6: Observability Feature Flag & Docs
 
 ## Impact Assessment
 
 ### Developer Experience
 
--   ✅ Automatic validation in CI prevents broken configs
--   ✅ Fast feedback on observability pipeline health
--   ✅ Clear error messages when validation fails
--   ✅ Comprehensive documentation for troubleshooting
+- ✅ Automatic validation in CI prevents broken configs
+- ✅ Fast feedback on observability pipeline health
+- ✅ Clear error messages when validation fails
+- ✅ Comprehensive documentation for troubleshooting
 
 ### CI/CD Performance
 
--   ✅ Vector binary cached (saves ~28s per run)
--   ✅ Configuration validated before runtime
--   ✅ Parallel test execution maintained
--   ✅ No impact on existing workflow steps
+- ✅ Vector binary cached (saves ~28s per run)
+- ✅ Configuration validated before runtime
+- ✅ Parallel test execution maintained
+- ✅ No impact on existing workflow steps
 
 ### Maintenance
 
--   ✅ Centralized validation logic
--   ✅ Automated dependency updates via cache key
--   ✅ Self-documenting workflow steps
--   ✅ Easy to extend for new observability components
+- ✅ Centralized validation logic
+- ✅ Automated dependency updates via cache key
+- ✅ Self-documenting workflow steps
+- ✅ Easy to extend for new observability components
 
 ---
 
@@ -343,8 +336,8 @@ just observe-verify
 
 The observability pipeline is:
 
--   ✅ Instrumented (Phase 1)
--   ✅ Configured (Phase 2)
--   ✅ Integrated (Phase 3)
--   ✅ Production-ready (Phase 4)
--   ✅ CI-validated (Phase 5)
+- ✅ Instrumented (Phase 1)
+- ✅ Configured (Phase 2)
+- ✅ Integrated (Phase 3)
+- ✅ Production-ready (Phase 4)
+- ✅ CI-validated (Phase 5)

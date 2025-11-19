@@ -44,36 +44,36 @@ Goal: **implement TDD plans via modern Trunk-Based Development** using short-liv
 
 Use the **GitHub MCP server** for all GitHub operations:
 
--   Ensure/lookup branches, create branches from refs
--   Open **Draft PRs**, set base/compare, assign reviewers, add labels
--   Enforce check lists & required status checks
--   Post comments with run logs, link issues, convert Draft → Ready when green
--   Merge strategy: **squash** for sub-branches into task branch; **squash or merge commit** for task → `dev` per repo policy
+- Ensure/lookup branches, create branches from refs
+- Open **Draft PRs**, set base/compare, assign reviewers, add labels
+- Enforce check lists & required status checks
+- Post comments with run logs, link issues, convert Draft → Ready when green
+- Merge strategy: **squash** for sub-branches into task branch; **squash or merge commit** for task → `dev` per repo policy
 
 > Also use other MCPs **for reasoning only**:
 >
-> -   **context7**: fetch ADR/PRD/SDS excerpts, prior specs
-> -   **ref**: detect seams/overlap; advise on MECE boundaries
-> -   **exa**: surface 3–5 external examples/refs
+> - **context7**: fetch ADR/PRD/SDS excerpts, prior specs
+> - **ref**: detect seams/overlap; advise on MECE boundaries
+> - **exa**: surface 3–5 external examples/refs
 
 ---
 
 ## Commit & PR Conventions
 
--   **Commits**: Conventional style scoped to Nx projects (e.g., `test(api): red tests for profiles route`, `feat(lib-users): minimal impl to pass green`)
--   **PR Titles**: `[TDD:<phase>] <task-key> <slug>` (e.g., `[TDD:RED] TASK-004 profiles route`)
--   **Labels**: `tdd:red` `tdd:green` `tdd:refactor` `tdd:regression`, `generator-spec`, `size/<XS|S|M>`
--   **Draft First**: All PRs open as **Draft**; auto-promote when checks pass
--   **Checks Required**: `just ai-validate`, Nx targets for changed projects, lint, typecheck, coverage
+- **Commits**: Conventional style scoped to Nx projects (e.g., `test(api): red tests for profiles route`, `feat(lib-users): minimal impl to pass green`)
+- **PR Titles**: `[TDD:<phase>] <task-key> <slug>` (e.g., `[TDD:RED] TASK-004 profiles route`)
+- **Labels**: `tdd:red` `tdd:green` `tdd:refactor` `tdd:regression`, `generator-spec`, `size/<XS|S|M>`
+- **Draft First**: All PRs open as **Draft**; auto-promote when checks pass
+- **Checks Required**: `just ai-validate`, Nx targets for changed projects, lint, typecheck, coverage
 
 ---
 
 ## Safety & Protections
 
--   Verify `main` is protected; disallow direct pushes.
--   If `dev` lacks protections, recommend enabling required status checks & branch rules.
--   Never push secrets; all external calls are mocked in tests.
--   Keep cycles isolated: no cross-task file edits.
+- Verify `main` is protected; disallow direct pushes.
+- If `dev` lacks protections, recommend enabling required status checks & branch rules.
+- Never push secrets; all external calls are mocked in tests.
+- Keep cycles isolated: no cross-task file edits.
 
 ---
 
@@ -101,7 +101,7 @@ Use the **GitHub MCP server** for all GitHub operations:
 
 ## Commands & Checks (VibePro)
 
--   Always start cycles with:
+- Always start cycles with:
     ```bash
     just ai-context-bundle
     ```

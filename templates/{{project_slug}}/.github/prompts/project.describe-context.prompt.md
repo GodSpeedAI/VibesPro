@@ -34,9 +34,9 @@ Please answer these questions to help me generate an accurate, concise descripti
 
 **What is the primary purpose of this application?**
 
--   What problem does it solve?
--   Who are the primary users?
--   What makes this project unique?
+- What problem does it solve?
+- Who are the primary users?
+- What makes this project unique?
 
 _Example: "A SaaS platform for managing customer support tickets with AI-powered response suggestions"_
 
@@ -44,8 +44,8 @@ _Example: "A SaaS platform for managing customer support tickets with AI-powered
 
 **What are the main bounded contexts/domains in your application?**
 
--   List the core business domains (e.g., user-management, billing, inventory)
--   Are there any complex domain interactions worth highlighting?
+- List the core business domains (e.g., user-management, billing, inventory)
+- Are there any complex domain interactions worth highlighting?
 
 _Current domains detected: {{ primary_domains }}_
 
@@ -53,11 +53,11 @@ _Current domains detected: {{ primary_domains }}_
 
 **Has your technology stack evolved beyond the initial setup?**
 
--   New databases or caching layers (Redis, Elasticsearch, etc.)?
--   Message queues or event streaming (RabbitMQ, Kafka)?
--   Third-party integrations (Stripe, SendGrid, Auth0)?
--   Workflow engines (Temporal, Airflow)?
--   Monitoring/observability tools?
+- New databases or caching layers (Redis, Elasticsearch, etc.)?
+- Message queues or event streaming (RabbitMQ, Kafka)?
+- Third-party integrations (Stripe, SendGrid, Auth0)?
+- Workflow engines (Temporal, Airflow)?
+- Monitoring/observability tools?
 
 _Current stack: {{ app_framework }}, {{ backend_framework }}, {{ database_type }}_
 
@@ -65,11 +65,11 @@ _Current stack: {{ app_framework }}, {{ backend_framework }}, {{ database_type }
 
 **Are there any architectural decisions or patterns worth highlighting?**
 
--   Event-driven architecture?
--   CQRS implementation?
--   Microservices decomposition?
--   Real-time features (WebSockets, Server-Sent Events)?
--   Background job processing?
+- Event-driven architecture?
+- CQRS implementation?
+- Microservices decomposition?
+- Real-time features (WebSockets, Server-Sent Events)?
+- Background job processing?
 
 ## Output
 

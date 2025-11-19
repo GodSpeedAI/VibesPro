@@ -16,11 +16,11 @@ Achieve zero TODO markers in generator specification template with comprehensive
 
 Upon Phase 2A (RED) investigation, **the generator spec was already complete** with:
 
--   ✅ **0 TODO/FIXME/TBD/PLACEHOLDER markers**
--   ✅ All 8 required sections present with content
--   ✅ 14+ code examples (TypeScript, JSON, bash)
--   ✅ Type mapping matrix complete
--   ✅ @nx/devkit utility references included
+- ✅ **0 TODO/FIXME/TBD/PLACEHOLDER markers**
+- ✅ All 8 required sections present with content
+- ✅ 14+ code examples (TypeScript, JSON, bash)
+- ✅ Type mapping matrix complete
+- ✅ @nx/devkit utility references included
 
 **File**: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md` (261 lines)
 
@@ -34,24 +34,24 @@ Even though the spec was complete, validation infrastructure was added to preven
 
 **File: `tests/generators/spec_completeness.test.ts`** (143 lines)
 
--   Tests: 6 comprehensive validation checks
--   Validates: TODO markers, required sections, code examples, type mappings
--   Framework: Jest with TypeScript
+- Tests: 6 comprehensive validation checks
+- Validates: TODO markers, required sections, code examples, type mappings
+- Framework: Jest with TypeScript
 
 **File: `tests/generators/spec_schema_examples.test.ts`** (144 lines)
 
--   Tests: 5 schema validation checks
--   Validates: JSON validity, JSON Schema compliance, TypeScript mappings
--   Framework: Jest + Ajv (JSON Schema validator)
+- Tests: 5 schema validation checks
+- Validates: JSON validity, JSON Schema compliance, TypeScript mappings
+- Framework: Jest + Ajv (JSON Schema validator)
 
 ### 2. Validation Utilities
 
 **File: `tests/generators/utils.ts`** (160 lines)
 
--   `validateGeneratorSpec()` - Complete spec validation
--   `extractCodeBlocks()` - Code block extraction helper
--   `checkSections()` - Section presence checker
--   `countPlaceholders()` - TODO marker counter
+- `validateGeneratorSpec()` - Complete spec validation
+- `extractCodeBlocks()` - Code block extraction helper
+- `checkSections()` - Section presence checker
+- `countPlaceholders()` - TODO marker counter
 
 ### 3. Just Recipe
 
@@ -96,11 +96,11 @@ validate-generator-specs:
 
 Total: **14 code blocks**
 
--   2x JSON Schema examples
--   2x TypeScript interface examples
--   5x TypeScript generator implementation examples
--   3x Bash command examples
--   2x Configuration examples
+- 2x JSON Schema examples
+- 2x TypeScript interface examples
+- 5x TypeScript generator implementation examples
+- 3x Bash command examples
+- 2x Configuration examples
 
 ---
 
@@ -109,31 +109,26 @@ Total: **14 code blocks**
 ### spec_completeness.test.ts
 
 1. **test: contains no TODO markers**
-
     - Scans for: TODO, FIXME, TBD, PLACEHOLDER, XXX, HACK
     - Uses regex to find markers
     - Fails with specific count and marker types
 
 2. **test: has all required sections**
-
     - Validates 8 required sections present
     - Lists missing sections if any
     - Ensures comprehensive coverage
 
 3. **test: has sufficient code examples**
-
     - Counts markdown code blocks (`...`)
     - Requires minimum 10 examples
     - Ensures adequate guidance
 
 4. **test: has type mapping table**
-
     - Checks for "Type Mapping Matrix" heading
     - Validates common JSON Schema types present
     - Ensures TypeScript mapping guidance
 
 5. **test: has idempotency strategy**
-
     - Confirms idempotency section exists
     - Checks for tree.exists pattern
     - Validates conflict resolution guidance
@@ -145,25 +140,21 @@ Total: **14 code blocks**
 ### spec_schema_examples.test.ts
 
 1. **test: schema examples are valid JSON**
-
     - Extracts JSON code blocks
     - Parses each to validate syntax
     - Reports block number if invalid
 
 2. **test: schema examples are valid JSON Schema**
-
     - Uses Ajv validator
     - Validates against JSON Schema draft-07
     - Reports specific validation errors
 
 3. **test: type mapping matrix covers essential types**
-
     - Checks for string, number, boolean, array, object
     - Validates markdown table format
     - Ensures comprehensive type coverage
 
 4. **test: schema examples include validation keywords**
-
     - Checks for: type, properties, required
     - Ensures schemas are meaningful
     - Validates best practices
@@ -220,18 +211,18 @@ pnpm exec jest tests/generators/spec_schema_examples.test.ts -v
 
 **Phase 2A (RED)**: Create spec validation tests
 
--   **Status**: ✅ Complete
--   **Deliverables**: 2 test files (11 tests), validation utilities
+- **Status**: ✅ Complete
+- **Deliverables**: 2 test files (11 tests), validation utilities
 
 **Phase 2B (GREEN)**: Replace TODO markers with content
 
--   **Status**: ✅ Already complete (no work needed)
--   **Finding**: Spec already had 0 TODO markers
+- **Status**: ✅ Already complete (no work needed)
+- **Finding**: Spec already had 0 TODO markers
 
 **Phase 2C (REFACTOR)**: Validation utilities & documentation
 
--   **Status**: ✅ Complete
--   **Deliverables**: utils.ts, Just recipe, this completion report
+- **Status**: ✅ Complete
+- **Deliverables**: utils.ts, Just recipe, this completion report
 
 ### Actual Execution
 
@@ -247,14 +238,14 @@ Since the spec was already complete:
 
 **Specifications Validated**:
 
--   ✅ DEV-PRD-019: Complete Generator Specification Template
--   ✅ DEV-SDS-019: Generator Spec Completion Design
--   ✅ DEV-ADR-019: Complete Generator Specification Template ADR
+- ✅ DEV-PRD-019: Complete Generator Specification Template
+- ✅ DEV-SDS-019: Generator Spec Completion Design
+- ✅ DEV-ADR-019: Complete Generator Specification Template ADR
 
 **Work Summaries**:
 
--   Cycle 1 Phase 1A-C: Python Logfire (complete)
--   Cycle 2: Generator Spec (this file)
+- Cycle 1 Phase 1A-C: Python Logfire (complete)
+- Cycle 2: Generator Spec (this file)
 
 **Main Plan**: `docs/project_state.md` (Cycle 2 section)
 
@@ -266,15 +257,15 @@ Since the spec was already complete:
 
 **Phase 3A (RED)**: Specification Authoring
 
--   Create `docs/dev_prd_ai_guidance.md` (DEV-PRD-020)
--   Create `docs/dev_sds_ai_guidance.md` (DEV-SDS-020)
--   Update `docs/dev_adr.md` (DEV-ADR-018: Proposed → Active)
+- Create `docs/dev_prd_ai_guidance.md` (DEV-PRD-020)
+- Create `docs/dev_sds_ai_guidance.md` (DEV-SDS-020)
+- Update `docs/dev_adr.md` (DEV-ADR-018: Proposed → Active)
 
 **Dependencies**:
 
--   ✅ DEV-ADR-016 Complete (Observability)
--   ✅ DEV-ADR-017 Complete (Structured Logging)
--   ✅ Temporal DB infrastructure exists (`temporal_db/`)
+- ✅ DEV-ADR-016 Complete (Observability)
+- ✅ DEV-ADR-017 Complete (Structured Logging)
+- ✅ Temporal DB infrastructure exists (`temporal_db/`)
 
 **Target**: AI pattern recommendation engine with Git history analysis
 
@@ -284,10 +275,10 @@ Since the spec was already complete:
 
 Cycle 2 (Generator Spec TODO Elimination) is **complete**. The generator specification template was found to already meet all exit criteria with 0 TODO markers. Comprehensive validation infrastructure was added to:
 
--   Prevent regression
--   Automate quality checks
--   Enable CI/CD validation
--   Provide reusable validation utilities
+- Prevent regression
+- Automate quality checks
+- Enable CI/CD validation
+- Provide reusable validation utilities
 
 **Generator spec quality**: Production-ready with complete examples, type mappings, and implementation guidance.
 

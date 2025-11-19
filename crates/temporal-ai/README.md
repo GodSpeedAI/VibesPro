@@ -6,11 +6,11 @@ Temporal AI analyzes your Git repository to extract development patterns and pro
 
 ## Features
 
--   🧠 **Semantic Search** - Uses `embedding-gemma-300M` for pattern similarity
--   📊 **Performance-Aware** - Integrates OpenObserve metrics for success rates
--   🗄️ **Zero Dependencies** - Embedded `redb` database, no external services required
--   🔍 **Multi-Factor Ranking** - Combines similarity, recency, usage, and success rate
--   🚀 **Fast** - Local inference with quantized GGUF models
+- 🧠 **Semantic Search** - Uses `embedding-gemma-300M` for pattern similarity
+- 📊 **Performance-Aware** - Integrates OpenObserve metrics for success rates
+- 🗄️ **Zero Dependencies** - Embedded `redb` database, no external services required
+- 🔍 **Multi-Factor Ranking** - Combines similarity, recency, usage, and success rate
+- 🚀 **Fast** - Local inference with quantized GGUF models
 
 ## Quick Start
 
@@ -102,12 +102,12 @@ just temporal-ai-query "Add authentication to FastAPI" TOP=5
 
 ### Components
 
--   **Pattern Extractor** - Extracts patterns from Git commit history
--   **Embedder** - Generates semantic embeddings using `embedding-gemma-300M`
--   **Vector Store** - Stores embeddings and metadata in `redb`
--   **Similarity Search** - Finds similar patterns using cosine similarity
--   **Ranker** - Ranks recommendations using multi-factor scoring
--   **Observability Aggregator** - Fetches performance metrics from OpenObserve
+- **Pattern Extractor** - Extracts patterns from Git commit history
+- **Embedder** - Generates semantic embeddings using `embedding-gemma-300M`
+- **Vector Store** - Stores embeddings and metadata in `redb`
+- **Similarity Search** - Finds similar patterns using cosine similarity
+- **Ranker** - Ranks recommendations using multi-factor scoring
+- **Observability Aggregator** - Fetches performance metrics from OpenObserve
 
 ## Observability Integration
 
@@ -219,7 +219,7 @@ temporal-ai refresh [--commits N]
 
 **Options**:
 
--   `--commits N` - Number of recent commits to process (default: 1000)
+- `--commits N` - Number of recent commits to process (default: 1000)
 
 ### `refresh-metrics`
 
@@ -231,7 +231,7 @@ temporal-ai refresh-metrics [--days N]
 
 **Options**:
 
--   `--days N` - Number of days to query (default: 7)
+- `--days N` - Number of days to query (default: 7)
 
 **Requires**: OpenObserve credentials in environment
 
@@ -245,7 +245,7 @@ temporal-ai query <text> [--top N]
 
 **Options**:
 
--   `--top N` - Number of recommendations to return (default: 5)
+- `--top N` - Number of recommendations to return (default: 5)
 
 ### `stats`
 
@@ -412,10 +412,10 @@ Tested on MacBook Pro M1 (8GB RAM):
 
 ### Code Style
 
--   Follow Rust conventions
--   Run `cargo fmt` before committing
--   Run `cargo clippy` and fix warnings
--   Add tests for new functionality
+- Follow Rust conventions
+- Run `cargo fmt` before committing
+- Run `cargo clippy` and fix warnings
+- Add tests for new functionality
 
 ## License
 
@@ -425,19 +425,19 @@ MIT
 
 **Specifications**:
 
--   DEV-PRD-032: AI Workflow PRD
--   DEV-SDS-020: AI Guidance SDS
--   DEV-ADR-018: AI Workflow ADR
+- DEV-PRD-032: AI Workflow PRD
+- DEV-SDS-020: AI Guidance SDS
+- DEV-ADR-018: AI Workflow ADR
 
 **Dependencies**:
 
--   [llama-cpp-2](https://github.com/edgenai/llama_cpp-rs) - Embedding inference
--   [redb](https://github.com/cberner/redb) - Embedded database
--   [git2](https://github.com/rust-lang/git2-rs) - Git integration
--   [reqwest](https://github.com/seanmonstar/reqwest) - HTTP client
+- [llama-cpp-2](https://github.com/edgenai/llama_cpp-rs) - Embedding inference
+- [redb](https://github.com/cberner/redb) - Embedded database
+- [git2](https://github.com/rust-lang/git2-rs) - Git integration
+- [reqwest](https://github.com/seanmonstar/reqwest) - HTTP client
 
 **Related Tools**:
 
--   [OpenObserve](https://openobserve.ai/) - Observability platform
--   [Vector](https://vector.dev/) - Telemetry pipeline
--   [embedding-gemma](https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF) - Embedding model
+- [OpenObserve](https://openobserve.ai/) - Observability platform
+- [Vector](https://vector.dev/) - Telemetry pipeline
+- [embedding-gemma](https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF) - Embedding model
