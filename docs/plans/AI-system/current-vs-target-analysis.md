@@ -447,5 +447,5 @@ Total Used:          1,821 tokens (1.4% of 128k)
 **Related Documents:**
 
 - [AI Profile Architecture Alignment Plan](./ai-profile-architecture-alignment.md)
-- [DEV-SDS-AI-PROFILE-001 Specification](/docs/specs/ai-system-profile-architecture.md)
-- [AGENT-SYSTEM.md](/AGENT-SYSTEM.md)
+- [DEV-SDS-AI-PROFILE-001 Specification](../../specs/ai-system-profile-architecture.md)
+- [AGENT-SYSTEM.md](../../../AGENT-SYSTEM.md)
