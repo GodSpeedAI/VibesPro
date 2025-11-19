@@ -47,8 +47,6 @@ VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal a
 
 **Specifications**: DEV-PRD-018, DEV-SDS-018, DEV-ADR-017
 
- 
-
 - DEV-PRD-018: Structured Logging with Trace Correlation
 - # DEV-SDS-018: Logfire SDK Integration
 
@@ -649,7 +647,7 @@ just docs-lint         # Verify markdown updates
 - SWORD Rubric sign-off
 - Battle-testing at scale
 
-<<<<<<< HEAD
+```javascript
 // Extract guidance from spec sections
 const schemaGuidance = extractSection(spec, "Inputs / Options Schema");
 const typeMapping = extractSection(spec, "Type Mapping Matrix");
@@ -675,9 +673,9 @@ const typeMapping = extractSection(spec, "Type Mapping Matrix");
 - ✅ All test files created with RED status (tests fail on TODO presence)
 - ✅ Tests cover: completeness, schema validity, AI simulation, type mappings
 - ✅ Run: `pnpm test:jest tests/generators/spec_*.test.ts` → failures expected
- 
+
 **Implementation Effort**: Large (1-2 weeks)
- 
+
 
 ---
 
@@ -762,11 +760,11 @@ Replace with:
             "type": "string",
             "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "description": "Valid email address"
-        },
-        "port": {
-            "type": "number",
-            "minimum": 1024,
             "maximum": 65535,
+        });
+
+    });
+
             "description": "Port number (1024-65535)"
         },
         "environment": {
