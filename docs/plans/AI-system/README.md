@@ -1,7 +1,7 @@
 # AI System Profile Architecture - Planning Documents
 
-**Status:** Draft  
-**Created:** 2025-11-11  
+**Status:** Draft
+**Created:** 2025-11-11
 **Specification:** DEV-SDS-AI-PROFILE-001
 
 ---
@@ -224,7 +224,7 @@ node scripts/audit-logger.js --query '{"event": "profile_composed"}'
 | 5B - Audit Trails             | 🔴 Not Started | -        | -              |
 | 5C - Documentation            | 🔴 Not Started | -        | -              |
 
-**Legend:**  
+**Legend:**
 🔴 Not Started | 🟡 In Progress | 🟢 Complete | ⚠️ Blocked
 
 ---
@@ -249,5 +249,5 @@ When executing cycles:
 
 ---
 
-**Last Updated:** 2025-11-11  
+**Last Updated:** 2025-11-11
 **Next Review:** Upon Phase 1 completion

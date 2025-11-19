@@ -1,7 +1,7 @@
 # Current vs. Target State Analysis
 
-**Date:** 2025-11-11  
-**Related Plan:** ai-profile-architecture-alignment.md  
+**Date:** 2025-11-11
+**Related Plan:** ai-profile-architecture-alignment.md
 **Specification:** DEV-SDS-AI-PROFILE-001
 
 ---
@@ -42,19 +42,19 @@ VibesPro/
 ```
 
 **Strengths:**
-✅ Modular, MECE-compliant instruction stacking  
-✅ Rich library of prompts and chatmodes  
-✅ Clear precedence hierarchy  
-✅ Distributed context via AGENT.md files  
+✅ Modular, MECE-compliant instruction stacking
+✅ Rich library of prompts and chatmodes
+✅ Clear precedence hierarchy
+✅ Distributed context via AGENT.md files
 ✅ Well-documented navigation (AGENT-MAP.md)
 
 **Gaps:**
-❌ No unified profile manifest  
-❌ Inconsistent frontmatter across artifacts  
-❌ No token budget management  
-❌ No formal tool access policies  
-❌ No automated validation pipeline  
-❌ No signature verification  
+❌ No unified profile manifest
+❌ Inconsistent frontmatter across artifacts
+❌ No token budget management
+❌ No formal tool access policies
+❌ No automated validation pipeline
+❌ No signature verification
 ❌ No audit trail logging
 
 ---
@@ -96,13 +96,13 @@ VibesPro/
 ```
 
 **Enhancements:**
-✅ Unified profile manifest with checksum  
-✅ Standardized frontmatter schemas  
-✅ Token budget calculation and pruning  
-✅ Tool access policies enforced  
-✅ Automated CI/CD validation  
-✅ GPG signature verification  
-✅ Comprehensive audit trails  
+✅ Unified profile manifest with checksum
+✅ Standardized frontmatter schemas
+✅ Token budget calculation and pruning
+✅ Tool access policies enforced
+✅ Automated CI/CD validation
+✅ GPG signature verification
+✅ Comprehensive audit trails
 ✅ Profile composer for orchestration
 
 ---
@@ -285,14 +285,14 @@ profileId: "com.vibespro.ai-profile"
 
 ### Current Security Posture
 
-✅ `security.instructions.md` with highest precedence  
-✅ SOPS for secret management  
-✅ No plaintext credentials in repo  
+✅ `security.instructions.md` with highest precedence
+✅ SOPS for secret management
+✅ No plaintext credentials in repo
 ✅ Explicit warnings against auto-approve
 
-❌ No formal tool approval policy  
-❌ No MCP trust boundaries  
-❌ No audit logging  
+❌ No formal tool approval policy
+❌ No MCP trust boundaries
+❌ No audit logging
 ❌ No signature verification
 
 ### Target Security Enhancements
@@ -402,10 +402,10 @@ Total Used:          1,821 tokens (1.4% of 128k)
 
 ### Phase Completion Gates
 
-**Phase 1:** ✅ Complete inventory JSON + gap analysis markdown  
-**Phase 2:** ✅ All frontmatter validation passes  
-**Phase 3:** ✅ Profile composer dry-run succeeds  
-**Phase 4:** ✅ CI workflow passing on all checks  
+**Phase 1:** ✅ Complete inventory JSON + gap analysis markdown
+**Phase 2:** ✅ All frontmatter validation passes
+**Phase 3:** ✅ Profile composer dry-run succeeds
+**Phase 4:** ✅ CI workflow passing on all checks
 **Phase 5:** ✅ Profile signed and audit logs generated
 
 ### Final Acceptance
