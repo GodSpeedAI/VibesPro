@@ -16,14 +16,14 @@ This document summarizes the resolution of PR #27, which adds comprehensive deve
 
 **Solution**:
 
--   Updated `.github/workflows/env-check.yml` and `.github/workflows/build-matrix.yml`
--   Install SOPS v3.9.3 from GitHub releases instead of apt
--   Keep brew installation for macOS builds
--   Added version verification step
+- Updated `.github/workflows/env-check.yml` and `.github/workflows/build-matrix.yml`
+- Install SOPS v3.9.3 from GitHub releases instead of apt
+- Keep brew installation for macOS builds
+- Added version verification step
 
 **Commits**:
 
--   `fa90592` - fix(ci): install SOPS from GitHub releases instead of apt
+- `fa90592` - fix(ci): install SOPS from GitHub releases instead of apt
 
 ### 2. SOPS Secret Handling Consistency ✅
 
@@ -31,14 +31,14 @@ This document summarizes the resolution of PR #27, which adds comprehensive deve
 
 **Solution**:
 
--   Made SOPS secret handling consistent across workflows
--   Added `continue-on-error: true` for optional secret
--   Added output flag to track if secrets were loaded
--   Improved error messaging for missing secrets
+- Made SOPS secret handling consistent across workflows
+- Added `continue-on-error: true` for optional secret
+- Added output flag to track if secrets were loaded
+- Improved error messaging for missing secrets
 
 **Commits**:
 
--   `f1814dd` - fix(ci): make SOPS secret handling consistent across workflows
+- `f1814dd` - fix(ci): make SOPS secret handling consistent across workflows
 
 ### 3. Missing pyproject.toml ✅
 
@@ -46,14 +46,14 @@ This document summarizes the resolution of PR #27, which adds comprehensive deve
 
 **Solution**:
 
--   Created `pyproject.toml` from `_template_pyproject.toml`
--   Includes project metadata and dependencies
--   Configures ruff, mypy, and pytest
--   Supports uv dependency management
+- Created `pyproject.toml` from `_template_pyproject.toml`
+- Includes project metadata and dependencies
+- Configures ruff, mypy, and pytest
+- Supports uv dependency management
 
 **Commits**:
 
--   `8f79be7` - feat(python): add pyproject.toml for uv dependency management
+- `8f79be7` - feat(python): add pyproject.toml for uv dependency management
 
 ### 4. Integration Test Failures ✅
 
@@ -61,39 +61,36 @@ This document summarizes the resolution of PR #27, which adds comprehensive deve
 
 **Solution**:
 
--   Updated template doc filenames in tests (removed `dev_` prefix)
--   Fixed `architecture_style` choices format handling (now object with descriptions)
--   Removed `dev_spec_index.md` references (file removed in refactoring)
--   Updated spec_index expectations to match current template
+- Updated template doc filenames in tests (removed `dev_` prefix)
+- Fixed `architecture_style` choices format handling (now object with descriptions)
+- Removed `dev_spec_index.md` references (file removed in refactoring)
+- Updated spec_index expectations to match current template
 
 **Files Updated**:
 
--   `tests/integration/template-docs.test.ts`
--   `tests/integration/docs-emission.spec.ts`
--   `tests/integration/project-structure.test.ts`
+- `tests/integration/template-docs.test.ts`
+- `tests/integration/docs-emission.spec.ts`
+- `tests/integration/project-structure.test.ts`
 
 **Commits**:
 
--   `ed5f7ae` - fix(tests): update integration tests for template refactoring
+- `ed5f7ae` - fix(tests): update integration tests for template refactoring
 
 ## PR Changes Summary
 
 ### Major Features Added
 
 1. **Devbox Integration** (Phase 1 & 2)
-
     - Devbox environment isolation with dependency management
     - mise version management integration
     - Comprehensive documentation
 
 2. **SOPS Secret Management** (Phase 3 & 5)
-
     - Encrypted secret management with SOPS and age
     - Comprehensive testing suite
     - Detailed documentation and usage guides
 
 3. **Just Task Environment Awareness** (Phase 6)
-
     - Enhanced Just tasks with environment detection
     - Validation for Devbox and mise environments
     - Comprehensive test coverage
@@ -105,35 +102,35 @@ This document summarizes the resolution of PR #27, which adds comprehensive deve
 
 ### Files Changed
 
--   **Total**: 45 files changed, 7,670 insertions(+), 43 deletions(-)
--   **New Files**: `.mise.toml`, `.secrets.env.sops`, `.sops.yaml`, `devbox.json`, `pyproject.toml`
--   **Documentation**: Extensive documentation in `docs/ENVIRONMENT.md` and work summaries
--   **Tests**: Comprehensive test suite in `tests/env/`
--   **Scripts**: `scripts/devbox_boot.sh`, `scripts/doctor.sh`, `scripts/verify-node.sh`
+- **Total**: 45 files changed, 7,670 insertions(+), 43 deletions(-)
+- **New Files**: `.mise.toml`, `.secrets.env.sops`, `.sops.yaml`, `devbox.json`, `pyproject.toml`
+- **Documentation**: Extensive documentation in `docs/ENVIRONMENT.md` and work summaries
+- **Tests**: Comprehensive test suite in `tests/env/`
+- **Scripts**: `scripts/devbox_boot.sh`, `scripts/doctor.sh`, `scripts/verify-node.sh`
 
 ## CI Status After Fixes
 
 ### Passing Workflows ✅
 
--   test-docs-generator
--   markdownlint
--   lint-markdown
--   lint-shell
--   test
--   ci
--   semgrep/ci
--   Security Validation Suite
--   Plaintext Detection Test
--   Performance Benchmark
--   Binary Size Tracking
+- test-docs-generator
+- markdownlint
+- lint-markdown
+- lint-shell
+- test
+- ci
+- semgrep/ci
+- Security Validation Suite
+- Plaintext Detection Test
+- Performance Benchmark
+- Binary Size Tracking
 
 ### Remaining Issues
 
 Some integration tests may still fail due to the `prompt:lint` smoke test. This appears to be related to the generated project structure and should be investigated separately, but is not a blocker for merging as:
 
--   Core functionality is validated
--   Critical security and linting checks pass
--   Documentation generation works correctly
+- Core functionality is validated
+- Critical security and linting checks pass
+- Documentation generation works correctly
 
 ## Semantic Versioning Recommendation
 
@@ -142,7 +139,6 @@ Some integration tests may still fail due to the `prompt:lint` smoke test. This 
 This PR includes:
 
 1. **New Features** (minor version bump):
-
     - Devbox integration (new capability)
     - mise integration (new capability)
     - SOPS secret management (new feature)
@@ -150,7 +146,6 @@ This PR includes:
     - CI workflow improvements (new tooling)
 
 2. **Bug Fixes** (patch version bump):
-
     - SOPS installation fixes
     - Test updates for template changes
 
@@ -167,9 +162,9 @@ This PR includes:
 
 **Rationale**:
 
--   Significant new features added (Devbox, mise, SOPS, enhanced CI)
--   No breaking changes to existing APIs or interfaces
--   Follows semantic versioning: MAJOR.MINOR.PATCH where MINOR = new features
+- Significant new features added (Devbox, mise, SOPS, enhanced CI)
+- No breaking changes to existing APIs or interfaces
+- Follows semantic versioning: MAJOR.MINOR.PATCH where MINOR = new features
 
 Alternative if more conservative: **0.1.1** (if treating as enhancements to existing 0.1.0)
 
@@ -183,19 +178,19 @@ Alternative if more conservative: **0.1.1** (if treating as enhancements to exis
 
 ## Traceability
 
--   **Specifications**: DEV-SDS-ENV, DEV-SPEC-SOPS, DEV-SPEC-PYTHON, DEV-SPEC-TESTS
--   **ADRs**: Referenced in phase completion summaries
--   **PRD/SDS**: Aligned with project's generator-first and spec-driven approach
+- **Specifications**: DEV-SDS-ENV, DEV-SPEC-SOPS, DEV-SPEC-PYTHON, DEV-SPEC-TESTS
+- **ADRs**: Referenced in phase completion summaries
+- **PRD/SDS**: Aligned with project's generator-first and spec-driven approach
 
 ## Sign-off
 
 **Changes Validated**:
 
--   ✅ All critical CI workflows passing
--   ✅ Security scans passing
--   ✅ Documentation complete
--   ✅ Tests updated and passing
--   ✅ No breaking changes introduced
+- ✅ All critical CI workflows passing
+- ✅ Security scans passing
+- ✅ Documentation complete
+- ✅ Tests updated and passing
+- ✅ No breaking changes introduced
 
 **Ready for Merge**: Yes, pending final CI confirmation
 

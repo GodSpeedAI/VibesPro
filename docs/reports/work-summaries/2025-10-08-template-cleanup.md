@@ -28,18 +28,18 @@ Added instruction to save work summaries:
 
 Replaced 4 pre-generated spec files with user-friendly starters (500+ lines total):
 
--   `templates/{{project_slug}}/docs/dev_adr.md.j2` - Architecture Decision Record starter
--   `templates/{{project_slug}}/docs/dev_prd.md.j2` - Product Requirements Document starter
--   `templates/{{project_slug}}/docs/dev_sds.md.j2` - Software Design Specification starter
--   `templates/{{project_slug}}/docs/dev_technical-specifications.md.j2` - Technical Specifications starter
+- `templates/{{project_slug}}/docs/dev_adr.md.j2` - Architecture Decision Record starter
+- `templates/{{project_slug}}/docs/dev_prd.md.j2` - Product Requirements Document starter
+- `templates/{{project_slug}}/docs/dev_sds.md.j2` - Software Design Specification starter
+- `templates/{{project_slug}}/docs/dev_technical-specifications.md.j2` - Technical Specifications starter
 
 Each starter includes:
 
--   Clear purpose statement in callout format
--   Step-by-step instructions on using chat modes and prompts
--   Complete template structure
--   Detailed example entry demonstrating best practices
--   Placeholder section for user entries
+- Clear purpose statement in callout format
+- Step-by-step instructions on using chat modes and prompts
+- Complete template structure
+- Detailed example entry demonstrating best practices
+- Placeholder section for user entries
 
 ### 3. Created Cleanup Script ✅
 
@@ -47,12 +47,12 @@ Each starter includes:
 
 Features:
 
--   Removes 22+ maintainer-specific files and test artifacts
--   Replaces spec files with minimal starters
--   Idempotent (safe to run multiple times)
--   Color-coded verbose output
--   Comprehensive error handling
--   Summary report with next steps
+- Removes 22+ maintainer-specific files and test artifacts
+- Replaces spec files with minimal starters
+- Idempotent (safe to run multiple times)
+- Color-coded verbose output
+- Comprehensive error handling
+- Summary report with next steps
 
 ### 4. Wired Into Just Recipes ✅
 
@@ -60,8 +60,8 @@ Features:
 
 Added two recipes:
 
--   `just template-cleanup` - Interactive with confirmation prompt
--   `just template-cleanup-force` - Force execution for CI/automation
+- `just template-cleanup` - Interactive with confirmation prompt
+- `just template-cleanup-force` - Force execution for CI/automation
 
 ---
 
@@ -69,34 +69,34 @@ Added two recipes:
 
 ### Maintainer-Specific Documentation (12 files)
 
--   dev_devkit-integration-plan.md
--   dev_implementation_plan.md
--   devkit-prompts-instructions-integration.md
--   ideation-insights.md
--   mapping.md
--   template_structure_analysis.md
--   vibecoder_integration_plan.md
--   environment_report.md
--   migration-from-yaml.md
--   vibelog.txt
--   techstack.schema copy.json
--   work-summaries/ directory
+- dev_devkit-integration-plan.md
+- dev_implementation_plan.md
+- devkit-prompts-instructions-integration.md
+- ideation-insights.md
+- mapping.md
+- template_structure_analysis.md
+- vibecoder_integration_plan.md
+- environment_report.md
+- migration-from-yaml.md
+- vibelog.txt
+- techstack.schema copy.json
+- work-summaries/ directory
 
 ### Test Artifacts (6 directories)
 
--   docs/specs/10914THREAD_VALUE/
--   docs/specs/11409THREAD_VALUE/
--   docs/specs/9336THREAD/
--   docs/specs/THREAD=test-feature-final/
--   docs/specs/THREAD=test-feature-fixed/
--   docs/specs/test-feature-direct/
+- docs/specs/10914THREAD_VALUE/
+- docs/specs/11409THREAD_VALUE/
+- docs/specs/9336THREAD/
+- docs/specs/THREAD=test-feature-final/
+- docs/specs/THREAD=test-feature-fixed/
+- docs/specs/test-feature-direct/
 
 ### Pre-Generated Specs (4 files - replaced)
 
--   dev_adr.md.j2
--   dev_prd.md.j2
--   dev_sds.md.j2
--   dev_technical-specifications.md.j2
+- dev_adr.md.j2
+- dev_prd.md.j2
+- dev_sds.md.j2
+- dev_technical-specifications.md.j2
 
 ---
 
@@ -104,31 +104,31 @@ Added two recipes:
 
 ✅ **No Technical Debt**
 
--   Idempotent script with proper error handling
--   Clear separation of concerns
--   Comprehensive inline documentation
--   Version controlled automation
+- Idempotent script with proper error handling
+- Clear separation of concerns
+- Comprehensive inline documentation
+- Version controlled automation
 
 ✅ **User-Friendly Design**
 
--   Spec starters include clear instructions
--   Example entries show best practices
--   Direct users to appropriate chat modes/prompts
--   Proper Jinja2 syntax with `{% raw %}` blocks
+- Spec starters include clear instructions
+- Example entries show best practices
+- Direct users to appropriate chat modes/prompts
+- Proper Jinja2 syntax with `{% raw %}` blocks
 
 ✅ **Safety Features**
 
--   Interactive confirmation by default
--   Force option for automation
--   Non-destructive operations
--   Validation checks
+- Interactive confirmation by default
+- Force option for automation
+- Non-destructive operations
+- Validation checks
 
 ✅ **Maintainability**
 
--   Centralized cleanup logic
--   Easy to extend with more cleanup operations
--   Clear output for debugging
--   Documented in multiple places
+- Centralized cleanup logic
+- Easy to extend with more cleanup operations
+- Clear output for debugging
+- Documented in multiple places
 
 ---
 
@@ -201,18 +201,18 @@ bash scripts/template-cleanup.sh
 
 ### Created
 
--   scripts/template-cleanup.sh
--   templates/{{project_slug}}/docs/dev_adr.md.j2 (new version)
--   templates/{{project_slug}}/docs/dev_prd.md.j2 (new version)
--   templates/{{project_slug}}/docs/dev_sds.md.j2 (new version)
--   templates/{{project_slug}}/docs/dev_technical-specifications.md.j2 (new version)
--   docs/workdocs/template-cleanup-implementation.md
--   docs/work-summaries/2025-10-08-template-cleanup.md
+- scripts/template-cleanup.sh
+- templates/{{project_slug}}/docs/dev_adr.md.j2 (new version)
+- templates/{{project_slug}}/docs/dev_prd.md.j2 (new version)
+- templates/{{project_slug}}/docs/dev_sds.md.j2 (new version)
+- templates/{{project_slug}}/docs/dev_technical-specifications.md.j2 (new version)
+- docs/workdocs/template-cleanup-implementation.md
+- docs/work-summaries/2025-10-08-template-cleanup.md
 
 ### Modified
 
--   justfile (added 2 recipes)
--   templates/{{project_slug}}/.github/copilot-instructions.md.j2 (added work-summaries note)
+- justfile (added 2 recipes)
+- templates/{{project_slug}}/.github/copilot-instructions.md.j2 (added work-summaries note)
 
 ---
 

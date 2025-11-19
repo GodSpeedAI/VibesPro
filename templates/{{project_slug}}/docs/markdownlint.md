@@ -4,7 +4,7 @@ This project uses `markdownlint` to enforce Markdown style and catch common issu
 
 Files:
 
--   `.markdownlint.json` — project rules and overrides.
+- `.markdownlint.json` — project rules and overrides.
 
 Local usage
 
@@ -24,5 +24,5 @@ GitHub Actions workflow `.github/workflows/markdownlint.yml` runs on pushes and 
 
 Best practices
 
--   Run `npm run lint:md` before opening a PR.
--   If a rule needs to be relaxed for a specific file, consider adding an inline ignore comment or updating `.markdownlint.json` with a justified exception.
+- Run `npm run lint:md` before opening a PR.
+- If a rule needs to be relaxed for a specific file, consider adding an inline ignore comment or updating `.markdownlint.json` with a justified exception.

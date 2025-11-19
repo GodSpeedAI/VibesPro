@@ -15,8 +15,8 @@ description: "Build or update the traceability matrix, find gaps, propose tests.
 
 ## Inputs
 
--   PRD items, ADR decisions, SDS components.
--   Current code structure (`src/**`) and tests.
+- PRD items, ADR decisions, SDS components.
+- Current code structure (`src/**`) and tests.
 
 ## Task
 
@@ -24,13 +24,13 @@ Create or update a matrix in `docs/traceability_matrix.md`:
 
 Columns:
 
--   Spec ID (PRD/ADR/SDS)
--   Artifact (file/class/API/test)
--   Status (Planned/In-Progress/Done)
--   Link to commit/PR
--   Notes
+- Spec ID (PRD/ADR/SDS)
+- Artifact (file/class/API/test)
+- Status (Planned/In-Progress/Done)
+- Link to commit/PR
+- Notes
 
 ## Rules
 
--   Scan for missing links or orphan artifacts; list them under "Gaps".
--   Propose tests for any spec without coverage.
+- Scan for missing links or orphan artifacts; list them under "Gaps".
+- Propose tests for any spec without coverage.

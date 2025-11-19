@@ -35,16 +35,16 @@ just template-cleanup-force
 
 ### Removes (22+ items)
 
--   12 maintainer-specific docs
--   6 test artifact directories
--   work-summaries/ folder
+- 12 maintainer-specific docs
+- 6 test artifact directories
+- work-summaries/ folder
 
 ### Replaces (4 files)
 
--   dev_adr.md.j2 → minimal starter with instructions
--   dev_prd.md.j2 → minimal starter with instructions
--   dev_sds.md.j2 → minimal starter with instructions
--   dev_technical-specifications.md.j2 → minimal starter with instructions
+- dev_adr.md.j2 → minimal starter with instructions
+- dev_prd.md.j2 → minimal starter with instructions
+- dev_sds.md.j2 → minimal starter with instructions
+- dev_technical-specifications.md.j2 → minimal starter with instructions
 
 ---
 
@@ -73,7 +73,6 @@ Clear, correct workflow
 ## 🎯 Next Steps
 
 1. **Review** implementation in these docs:
-
     - `docs/workdocs/template-cleanup-implementation.md` (detailed)
     - `docs/work-summaries/2025-10-08-template-cleanup.md` (summary)
 
@@ -97,10 +96,10 @@ Clear, correct workflow
 
 ## 📚 Documentation
 
--   **Analysis**: `docs/workdocs/template-docs-cleanup-analysis.md`
--   **Implementation**: `docs/workdocs/template-cleanup-implementation.md`
--   **Summary**: `docs/work-summaries/2025-10-08-template-cleanup.md`
--   **This Card**: Quick reference for execution
+- **Analysis**: `docs/workdocs/template-docs-cleanup-analysis.md`
+- **Implementation**: `docs/workdocs/template-cleanup-implementation.md`
+- **Summary**: `docs/work-summaries/2025-10-08-template-cleanup.md`
+- **This Card**: Quick reference for execution
 
 ---
 

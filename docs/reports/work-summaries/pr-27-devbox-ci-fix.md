@@ -95,9 +95,9 @@ Updated three Devbox installation steps across two workflow files:
 
 Added `-s -- -f` to the pipe command:
 
--   `-s` tells bash to read script from stdin (allows passing arguments)
--   `--` signals end of bash options
--   `-f` is the Devbox installer's force/non-interactive flag
+- `-s` tells bash to read script from stdin (allows passing arguments)
+- `--` signals end of bash options
+- `-f` is the Devbox installer's force/non-interactive flag
 
 ---
 
@@ -129,19 +129,19 @@ After this fix, all three failing workflows should:
 
 ## Traceability
 
--   **Specification**: DEV-SPEC-ENV (Environment setup specification)
--   **Related**: DEV-SPEC-CI (CI workflow specification)
--   **Previous Fixes**: Builds on commits fa90592, f1814dd, 8f79be7, ed5f7ae, 72c96db
--   **ADR**: Relates to Devbox integration decision (Phase 1 of environment roadmap)
+- **Specification**: DEV-SPEC-ENV (Environment setup specification)
+- **Related**: DEV-SPEC-CI (CI workflow specification)
+- **Previous Fixes**: Builds on commits fa90592, f1814dd, 8f79be7, ed5f7ae, 72c96db
+- **ADR**: Relates to Devbox integration decision (Phase 1 of environment roadmap)
 
 ---
 
 ## Risk Assessment
 
--   **Risk Level**: Low
--   **Justification**: The `-f` flag is an official Devbox installer feature designed specifically for CI/automation scripts
--   **Mitigation**: No breaking changes - only affects how Devbox is installed in CI
--   **Rollback**: Can revert commit if issues arise
+- **Risk Level**: Low
+- **Justification**: The `-f` flag is an official Devbox installer feature designed specifically for CI/automation scripts
+- **Mitigation**: No breaking changes - only affects how Devbox is installed in CI
+- **Rollback**: Can revert commit if issues arise
 
 ---
 
@@ -150,7 +150,6 @@ After this fix, all three failing workflows should:
 ### Manual Validation (Post-Push)
 
 1. **Monitor CI Workflows**
-
     - Wait for GitHub Actions to trigger on the new commit
     - Check env-check workflow completes successfully
     - Check build-test (ubuntu) workflow completes successfully
@@ -176,10 +175,10 @@ gh run watch --repo GodSpeedAI/VibesPro
 
 ## Related Documentation
 
--   **Devbox Documentation**: https://www.jetify.com/docs/devbox/
--   **Devbox Installation Docs**: https://www.jetify.com/docs/devbox/installing_devbox/
--   **Phase 1 Summary**: `docs/work-summaries/phase-1-devbox-complete.md`
--   **Environment Setup Guide**: `docs/ENVIRONMENT.md`
+- **Devbox Documentation**: https://www.jetify.com/docs/devbox/
+- **Devbox Installation Docs**: https://www.jetify.com/docs/devbox/installing_devbox/
+- **Phase 1 Summary**: `docs/work-summaries/phase-1-devbox-complete.md`
+- **Environment Setup Guide**: `docs/ENVIRONMENT.md`
 
 ---
 
@@ -195,9 +194,9 @@ gh run watch --repo GodSpeedAI/VibesPro
 
 ### Current State
 
--   **Local Tests**: All passing (9/9 environment tests, 13/14 integration tests)
--   **CI Status**: Waiting for re-run after Devbox fix
--   **PR Status**: Ready for merge once CI passes
+- **Local Tests**: All passing (9/9 environment tests, 13/14 integration tests)
+- **CI Status**: Waiting for re-run after Devbox fix
+- **PR Status**: Ready for merge once CI passes
 
 ---
 

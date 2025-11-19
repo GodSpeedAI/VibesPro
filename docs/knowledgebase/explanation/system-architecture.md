@@ -6,10 +6,10 @@ This document describes the architectural patterns for vibes-pro. For a deeper d
 
 This project follows **Hexagonal Architecture** (Ports and Adapters pattern). This approach is central to the project's design and is a core part of the [MergeKit Integration Blueprint](./mergekit/integration-blueprint.md).
 
--   **Separation of Concerns**: Clear boundaries between business logic and external concerns.
--   **Testability**: Easy to unit test business logic in isolation.
--   **Flexibility**: Easy to swap out external dependencies.
--   **Maintainability**: Changes to external systems don't affect business rules.
+- **Separation of Concerns**: Clear boundaries between business logic and external concerns.
+- **Testability**: Easy to unit test business logic in isolation.
+- **Flexibility**: Easy to swap out external dependencies.
+- **Maintainability**: Changes to external systems don't affect business rules.
 
 ### Architecture Diagram
 
@@ -31,24 +31,24 @@ The project is organized into several bounded contexts, each representing a dist
 
 #### Core Domain
 
--   **Entities**: Core business objects with identity
--   **Value Objects**: Immutable data structures
--   **Domain Services**: Complex business operations
--   **Repository Interfaces**: Data access abstractions
+- **Entities**: Core business objects with identity
+- **Value Objects**: Immutable data structures
+- **Domain Services**: Complex business operations
+- **Repository Interfaces**: Data access abstractions
 
 #### User Domain
 
--   **Entities**: Core business objects with identity
--   **Value Objects**: Immutable data structures
--   **Domain Services**: Complex business operations
--   **Repository Interfaces**: Data access abstractions
+- **Entities**: Core business objects with identity
+- **Value Objects**: Immutable data structures
+- **Domain Services**: Complex business operations
+- **Repository Interfaces**: Data access abstractions
 
 #### Billing Domain
 
--   **Entities**: Core business objects with identity
--   **Value Objects**: Immutable data structures
--   **Domain Services**: Complex business operations
--   **Repository Interfaces**: Data access abstractions
+- **Entities**: Core business objects with identity
+- **Value Objects**: Immutable data structures
+- **Domain Services**: Complex business operations
+- **Repository Interfaces**: Data access abstractions
 
 ## Layer Structure
 
@@ -63,7 +63,7 @@ The layer structure is enforced by the project generator. You can create new com
 
 The testing strategy is designed to ensure quality at every layer of the architecture.
 
--   **Unit Tests**: Test domain logic in isolation. Our primary workflow for this is outlined in the [Getting Started with TDD](../tutorials/getting-started-tdd.md) tutorial.
--   **Integration Tests**: Test with real databases and external services.
--   **Architecture Tests**: Verify layer dependencies are correct.
--   **Security Tests**: A comprehensive suite of security tests is also required. See [How to Run Security Tests](../how-to/security/run-security-tests.md) for details.
+- **Unit Tests**: Test domain logic in isolation. Our primary workflow for this is outlined in the [Getting Started with TDD](../tutorials/getting-started-tdd.md) tutorial.
+- **Integration Tests**: Test with real databases and external services.
+- **Architecture Tests**: Verify layer dependencies are correct.
+- **Security Tests**: A comprehensive suite of security tests is also required. See [How to Run Security Tests](../how-to/security/run-security-tests.md) for details.

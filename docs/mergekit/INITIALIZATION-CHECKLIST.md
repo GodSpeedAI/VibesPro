@@ -8,26 +8,26 @@
 
 ### Required Software Versions
 
--   [x] **Node.js**: v18+ (preferably v20+ for optimal pnpm support)
+- [x] **Node.js**: v18+ (preferably v20+ for optimal pnpm support)
 
     ```bash
     node --version  # Should show 18.x.x or higher
     ```
 
--   [x] **Python**: 3.12+ (required for uv and type system)
+- [x] **Python**: 3.12+ (required for uv and type system)
 
     ```bash
     python --version  # Should show 3.12.x or higher
     ```
 
--   [x] **uv**: Latest version (Python package manager)
+- [x] **uv**: Latest version (Python package manager)
 
     ```bash
     curl -LsSf https://astral.sh/uv/install.sh | sh
     uv --version
     ```
 
--   [x] **pnpm**: Via corepack (Node.js package manager)
+- [x] **pnpm**: Via corepack (Node.js package manager)
 
     ```bash
     corepack enable
@@ -35,7 +35,7 @@
     pnpm --version
     ```
 
--   [x] **just**: Task runner (cross-platform make alternative)
+- [x] **just**: Task runner (cross-platform make alternative)
 
     ```bash
     # macOS/Linux
@@ -48,7 +48,7 @@
     just --version
     ```
 
--   [x] **Copier**: Template engine (replaces Cookiecutter)
+- [x] **Copier**: Template engine (replaces Cookiecutter)
 
     ```bash
     uv tool install copier
@@ -57,13 +57,13 @@
     copier --version
     ```
 
--   [x] **Git**: For version control
+- [x] **Git**: For version control
 
     ```bash
     git --version  # Should be 2.x.x or higher
     ```
 
--   [x] **Rust**: For tsink database (optional for development, required for production)
+- [x] **Rust**: For tsink database (optional for development, required for production)
 
     ```bash
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -72,7 +72,7 @@
 
 ### Optional but Recommended
 
--   [x] **direnv**: Environment variable management
+- [x] **direnv**: Environment variable management
 
     ```bash
     # macOS: brew install direnv
@@ -82,7 +82,7 @@
     eval "$(direnv hook zsh)"  # or bash
     ```
 
--   [x] **Nx CLI**: Global installation for workspace management
+- [x] **Nx CLI**: Global installation for workspace management
 
     ```bash
     pnpm add -g nx
@@ -93,21 +93,21 @@
 
 ### Step 1: Create Project Structure
 
--   [x] **Create main project directory**
+- [x] **Create main project directory**
 
     ```bash
     mkdir hexddd-vibepdk-merger
     cd hexddd-vibepdk-merger
     ```
 
--   [x] **Initialize Git repository**
+- [x] **Initialize Git repository**
 
     ```bash
     git init
     git branch -m main
     ```
 
--   [x] **Create basic directory structure**
+- [x] **Create basic directory structure**
 
     ```bash
     mkdir -p {templates,hooks,tools,tests,docs,temporal_db}
@@ -117,7 +117,7 @@
 
 ### Step 2: Initialize Copier Template
 
--   [x] **Create copier.yml configuration**
+- [x] **Create copier.yml configuration**
 
     ```bash
     cat > copier.yml << 'EOF'
@@ -211,7 +211,7 @@
     EOF
     ```
 
--   [x] **Create basic template structure**
+- [x] **Create basic template structure**
 
     ```bash
     mkdir -p templates/{{project_slug}}
@@ -220,7 +220,7 @@
 
 ### Step 3: Initialize Node.js Environment
 
--   [x] **Create package.json**
+- [x] **Create package.json**
 
     ```bash
     cat > package.json << 'EOF'
@@ -261,7 +261,7 @@
     EOF
     ```
 
--   [x] **Create pnpm-workspace.yaml**
+- [x] **Create pnpm-workspace.yaml**
 
     ```bash
     cat > pnpm-workspace.yaml << 'EOF'
@@ -272,7 +272,7 @@
     EOF
     ```
 
--   [x] **Install Node.js dependencies**
+- [x] **Install Node.js dependencies**
 
     ```bash
     pnpm install
@@ -280,7 +280,7 @@
 
 ### Step 4: Initialize Python Environment
 
--   [x] **Create pyproject.toml**
+- [x] **Create pyproject.toml**
 
     ```bash
     cat > pyproject.toml << 'EOF'
@@ -346,7 +346,7 @@
     EOF
     ```
 
--   [x] **Initialize uv environment**
+- [x] **Initialize uv environment**
 
     ```bash
     uv sync --dev
@@ -354,7 +354,7 @@
 
 ### Step 5: Initialize Nx Workspace
 
--   [x] **Create nx.json**
+- [x] **Create nx.json**
 
     ```bash
     cat > nx.json << 'EOF'
@@ -415,7 +415,7 @@
 
 ### Step 6: Create Build System (justfile)
 
--   [x] **Create justfile for task automation**
+- [x] **Create justfile for task automation**
 
     ```bash
     cat > justfile << 'EOF'
@@ -576,7 +576,7 @@
 
 ### Step 7: Environment Configuration
 
--   [x] **Create .envrc for direnv (if using)**
+- [x] **Create .envrc for direnv (if using)**
 
     ```bash
     cat > .envrc << 'EOF'
@@ -605,7 +605,7 @@
     fi
     ```
 
--   [x] **Create .gitignore**
+- [x] **Create .gitignore**
 
     ```bash
     cat > .gitignore << 'EOF'
@@ -675,13 +675,13 @@
 
 ### Step 8: Copy VibePDK Assets
 
--   [x] **Copy VibePDK template structure**
+- [x] **Copy VibePDK template structure**
 
     Curate the reusable template assets from VibePDK and place them under `templates/{{project_slug}}/`, preserving hook scripts and documentation that align with the Copier workflow. Exclude any legacy scaffolding that depends on the previous generator format.
 
 ### Step 9: Copy HexDDD Assets
 
--   [x] **Copy HexDDD generator patterns**
+- [x] **Copy HexDDD generator patterns**
 
     ```bash
     # Copy Nx generators for reference and adaptation
@@ -696,7 +696,7 @@
     cp -r /home/sprime01/projects/HexDDD/tools/type-generator/* tools/type-generator/
     ```
 
--   [x] **Copy architectural patterns**
+- [x] **Copy architectural patterns**
 
     ```bash
     # Copy domain patterns for template adaptation
@@ -711,7 +711,7 @@
 
 ### Step 10: Create Initial Hooks
 
--   [x] **Create pre-generation hook**
+- [x] **Create pre-generation hook**
 
     ```bash
     cat > hooks/pre_gen.py << 'EOF'
@@ -771,7 +771,7 @@
     chmod +x hooks/pre_gen.py
     ```
 
--   [x] **Create post-generation hook**
+- [x] **Create post-generation hook**
 
     ```bash
     cat > hooks/post_gen.py << 'EOF'
@@ -833,7 +833,7 @@
 
 ### Step 11: Test Basic Setup
 
--   [x] **Run basic validation**
+- [x] **Run basic validation**
 
     ```bash
     # Test justfile
@@ -851,7 +851,7 @@
     copier --version
     ```
 
--   [x] **Test template generation (basic)**
+- [x] **Test template generation (basic)**
 
     ```bash
     # Create a test generation without requiring network installs
@@ -862,7 +862,7 @@
     ls -la test-output
     ```
 
--   [x] **Commit initial setup**
+- [x] **Commit initial setup**
 
     ```bash
     git add .
@@ -882,17 +882,17 @@
 
 ### After Initialization Complete
 
--   [x] **Review Implementation Plan**: Study `docs/mergekit/IMPLEMENTATION-PLAN.md`
--   [x] **Begin MERGE-PHASE-001**: Follow the detailed task breakdown
--   [x] **Set up autonomous agents**: Use the created `AGENTS.md` and `copilot-instructions.md`
--   [x] **Start with MERGE-TASK-001**: Project Structure Setup (detailed in implementation plan)
+- [x] **Review Implementation Plan**: Study `docs/mergekit/IMPLEMENTATION-PLAN.md`
+- [x] **Begin MERGE-PHASE-001**: Follow the detailed task breakdown
+- [x] **Set up autonomous agents**: Use the created `AGENTS.md` and `copilot-instructions.md`
+- [x] **Start with MERGE-TASK-001**: Project Structure Setup (detailed in implementation plan)
 
 ### Optional Enhancements
 
--   [x] **Set up CI/CD**: GitHub Actions for testing and validation
--   [x] **Configure IDE**: VS Code workspace settings for optimal development experience
--   [x] **Set up monitoring**: Performance tracking for template generation
--   [x] **Create development documentation**: README, CONTRIBUTING, CHANGELOG
+- [x] **Set up CI/CD**: GitHub Actions for testing and validation
+- [x] **Configure IDE**: VS Code workspace settings for optimal development experience
+- [x] **Set up monitoring**: Performance tracking for template generation
+- [x] **Create development documentation**: README, CONTRIBUTING, CHANGELOG
 
 ## Troubleshooting Common Issues
 

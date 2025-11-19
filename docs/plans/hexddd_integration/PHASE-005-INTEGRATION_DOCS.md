@@ -15,12 +15,12 @@ Validate the complete integration end-to-end, update all documentation, complete
 
 ### Success Criteria
 
--   [ ] End-to-end smoke tests pass across all domains
--   [ ] All documentation updated and validated
--   [ ] Traceability matrix complete (100% coverage)
--   [ ] Migration guide published for existing projects
--   [ ] Generator usage examples documented
--   [ ] **Evidence**: `just spec-guard` GREEN + all smoke tests pass
+- [ ] End-to-end smoke tests pass across all domains
+- [ ] All documentation updated and validated
+- [ ] Traceability matrix complete (100% coverage)
+- [ ] Migration guide published for existing projects
+- [ ] Generator usage examples documented
+- [ ] **Evidence**: `just spec-guard` GREEN + all smoke tests pass
 
 ### Traceability
 
@@ -395,12 +395,12 @@ End
 
 ### Documentation Checklist
 
--   [ ] **README.md**: Add HexDDD integration overview
--   [ ] **docs/ARCHITECTURE.md**: Update with UoW/EventBus patterns
--   [ ] **docs/ENVIRONMENT.md**: Add Supabase dev stack section
--   [ ] **docs/generators/**: Create usage guides for each generator
--   [ ] **.github/copilot-instructions.md**: Add hexagonal architecture guidance
--   [ ] **AGENTS.md**: Update with Nx tag enforcement rules
+- [ ] **README.md**: Add HexDDD integration overview
+- [ ] **docs/ARCHITECTURE.md**: Update with UoW/EventBus patterns
+- [ ] **docs/ENVIRONMENT.md**: Add Supabase dev stack section
+- [ ] **docs/generators/**: Create usage guides for each generator
+- [ ] **.github/copilot-instructions.md**: Add hexagonal architecture guidance
+- [ ] **AGENTS.md**: Update with Nx tag enforcement rules
 
 ### Key Documentation Sections
 
@@ -411,9 +411,9 @@ End
 
 This project uses hexagonal (ports & adapters) architecture:
 
--   **Domain Layer**: Pure business logic (`libs/*/domain`)
--   **Application Layer**: Use cases (`libs/*/application`)
--   **Infrastructure Layer**: Adapters (`libs/*/infrastructure`)
+- **Domain Layer**: Pure business logic (`libs/*/domain`)
+- **Application Layer**: Use cases (`libs/*/application`)
+- **Infrastructure Layer**: Adapters (`libs/*/infrastructure`)
 
 All generators enforce these boundaries automatically.
 

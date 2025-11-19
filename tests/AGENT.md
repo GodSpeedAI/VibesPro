@@ -13,13 +13,13 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
--   Unit tests (Node.js/TypeScript, Python)
--   Integration tests (full workflow testing)
--   Shell tests (ShellSpec for scripts)
--   Test fixtures and utilities
--   TDD workflow support
--   Test coverage and reporting
--   Performance benchmarks
+- Unit tests (Node.js/TypeScript, Python)
+- Integration tests (full workflow testing)
+- Shell tests (ShellSpec for scripts)
+- Test fixtures and utilities
+- TDD workflow support
+- Test coverage and reporting
+- Performance benchmarks
 
 **Architecture Layer**: N/A (Quality Assurance/Testing)
 
@@ -77,13 +77,13 @@ tests/
 
 ### Use This Context When:
 
--   [ ] Writing unit, integration, or shell tests
--   [ ] Following TDD workflow (Red-Green-Refactor)
--   [ ] Debugging test failures
--   [ ] Setting up test fixtures or utilities
--   [ ] Configuring test runners or coverage
--   [ ] Writing performance benchmarks
--   [ ] Creating test harnesses
+- [ ] Writing unit, integration, or shell tests
+- [ ] Following TDD workflow (Red-Green-Refactor)
+- [ ] Debugging test failures
+- [ ] Setting up test fixtures or utilities
+- [ ] Configuring test runners or coverage
+- [ ] Writing performance benchmarks
+- [ ] Creating test harnesses
 
 ### Refer to Other Contexts When:
 
@@ -372,10 +372,10 @@ jest.mock("node:http", () => ({
 
 **Coverage targets:**
 
--   **Domain logic**: 100% coverage (no exceptions)
--   **Application layer**: 90%+ coverage
--   **Infrastructure**: 80%+ coverage (mock external systems)
--   **Interface**: 70%+ coverage (integration tests)
+- **Domain logic**: 100% coverage (no exceptions)
+- **Application layer**: 90%+ coverage
+- **Infrastructure**: 80%+ coverage (mock external systems)
+- **Interface**: 70%+ coverage (integration tests)
 
 **Generate coverage reports:**
 
@@ -395,21 +395,21 @@ open htmlcov/index.html
 
 **Modular instructions that apply here:**
 
--   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
--   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security testing
--   [.github/instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - TDD workflows
+- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing strategies
+- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security testing
+- [.github/instructions/ai-workflows.instructions.md](/.github/instructions/ai-workflows.instructions.md) - TDD workflows
 
 **Relevant prompts:**
 
--   [.github/prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
--   [.github/prompts/test-hardening.prompt.md](/.github/prompts/test-hardening.prompt.md) - Test hardening
+- [.github/prompts/tdd.workflow.prompt.md](/.github/prompts/tdd.workflow.prompt.md) - TDD guidance
+- [.github/prompts/test-hardening.prompt.md](/.github/prompts/test-hardening.prompt.md) - Test hardening
 
 **Related chat modes:**
 
--   `tdd.red` - Write failing tests
--   `tdd.green` - Make tests pass
--   `tdd.refactor` - Improve code quality
--   `persona.qa` - Testing strategies
+- `tdd.red` - Write failing tests
+- `tdd.green` - Make tests pass
+- `tdd.refactor` - Improve code quality
+- `persona.qa` - Testing strategies
 
 ## 💡 Examples
 
@@ -619,51 +619,51 @@ def test_count_tokens_parametrized(token_counter, text, expected_min):
 
 ### Before Writing Tests:
 
--   [ ] Understand the specification (spec IDs)
--   [ ] Determine test type (unit, integration, shell)
--   [ ] Choose testing approach (TDD vs code-first)
--   [ ] Plan test cases (happy path + edge cases)
--   [ ] Set up fixtures and test data
--   [ ] Consider dependencies to mock
+- [ ] Understand the specification (spec IDs)
+- [ ] Determine test type (unit, integration, shell)
+- [ ] Choose testing approach (TDD vs code-first)
+- [ ] Plan test cases (happy path + edge cases)
+- [ ] Set up fixtures and test data
+- [ ] Consider dependencies to mock
 
 ### While Writing Tests:
 
--   [ ] Follow Arrange-Act-Assert pattern
--   [ ] Use descriptive test names (behavior, not implementation)
--   [ ] Test one behavior per test case
--   [ ] Include edge cases and error conditions
--   [ ] Mock external dependencies
--   [ ] Clean up resources in teardown
+- [ ] Follow Arrange-Act-Assert pattern
+- [ ] Use descriptive test names (behavior, not implementation)
+- [ ] Test one behavior per test case
+- [ ] Include edge cases and error conditions
+- [ ] Mock external dependencies
+- [ ] Clean up resources in teardown
 
 ### After Writing Tests:
 
--   [ ] Run tests: `just test` or `pnpm test`
--   [ ] Check coverage: `pnpm test:jest:coverage`
--   [ ] Verify all tests pass
--   [ ] Run linters: `just ai-validate`
--   [ ] Update traceability matrix with spec IDs
--   [ ] Document complex test scenarios
+- [ ] Run tests: `just test` or `pnpm test`
+- [ ] Check coverage: `pnpm test:jest:coverage`
+- [ ] Verify all tests pass
+- [ ] Run linters: `just ai-validate`
+- [ ] Update traceability matrix with spec IDs
+- [ ] Document complex test scenarios
 
 ### TDD Cycle Checklist:
 
 **Red Phase:**
 
--   [ ] Write failing test for next requirement
--   [ ] Run test to confirm it fails
--   [ ] Verify failure message is meaningful
+- [ ] Write failing test for next requirement
+- [ ] Run test to confirm it fails
+- [ ] Verify failure message is meaningful
 
 **Green Phase:**
 
--   [ ] Write minimal code to pass test
--   [ ] Run test to confirm it passes
--   [ ] Don't add extra functionality
+- [ ] Write minimal code to pass test
+- [ ] Run test to confirm it passes
+- [ ] Don't add extra functionality
 
 **Refactor Phase:**
 
--   [ ] Improve code quality
--   [ ] Remove duplication
--   [ ] Ensure tests still pass
--   [ ] Consider extracting patterns
+- [ ] Improve code quality
+- [ ] Remove duplication
+- [ ] Ensure tests still pass
+- [ ] Consider extracting patterns
 
 ## 🔍 Quick Reference
 
@@ -747,13 +747,13 @@ markers =
 
 ### Key Concepts
 
--   **TDD**: Test-Driven Development (Red-Green-Refactor)
--   **AAA**: Arrange-Act-Assert pattern
--   **Mocking**: Replace dependencies with test doubles
--   **Fixtures**: Reusable test data setup
--   **Coverage**: Percentage of code executed by tests
--   **Integration**: Test multiple components together
--   **Isolation**: Tests don't affect each other
+- **TDD**: Test-Driven Development (Red-Green-Refactor)
+- **AAA**: Arrange-Act-Assert pattern
+- **Mocking**: Replace dependencies with test doubles
+- **Fixtures**: Reusable test data setup
+- **Coverage**: Percentage of code executed by tests
+- **Integration**: Test multiple components together
+- **Isolation**: Tests don't affect each other
 
 ### Test Types by Scope
 
@@ -768,12 +768,12 @@ markers =
 
 **Security testing priorities:**
 
--   ⚠️ **Test input validation**: Verify all inputs are validated
--   ⚠️ **Test authentication/authorization**: Verify access controls work
--   ⚠️ **Test injection vulnerabilities**: SQL, command, XSS
--   ⚠️ **Test secret handling**: Verify secrets aren't leaked
--   ⚠️ **Test error messages**: Don't expose sensitive info
--   ⚠️ **Security regression tests**: Add test for each security fix
+- ⚠️ **Test input validation**: Verify all inputs are validated
+- ⚠️ **Test authentication/authorization**: Verify access controls work
+- ⚠️ **Test injection vulnerabilities**: SQL, command, XSS
+- ⚠️ **Test secret handling**: Verify secrets aren't leaked
+- ⚠️ **Test error messages**: Don't expose sensitive info
+- ⚠️ **Security regression tests**: Add test for each security fix
 
 **Example security test:**
 
@@ -869,67 +869,67 @@ Tests run automatically in CI:
 
 ### Domain Layer Testing
 
--   **Pure unit tests** - No mocks needed
--   **100% coverage** - No exceptions
--   **Focus**: Business rules, invariants, value objects
--   **No dependencies**: Test in isolation
+- **Pure unit tests** - No mocks needed
+- **100% coverage** - No exceptions
+- **Focus**: Business rules, invariants, value objects
+- **No dependencies**: Test in isolation
 
 ### Application Layer Testing
 
--   **Unit tests with mocks** - Mock repositories (ports)
--   **90%+ coverage**
--   **Focus**: Use case orchestration, validation
--   **Mock all ports**: Repository, external services
+- **Unit tests with mocks** - Mock repositories (ports)
+- **90%+ coverage**
+- **Focus**: Use case orchestration, validation
+- **Mock all ports**: Repository, external services
 
 ### Infrastructure Layer Testing
 
--   **Integration tests** - Use real dependencies when safe
--   **80%+ coverage**
--   **Focus**: Repository implementations, adapters
--   **Test databases**: Use test containers or in-memory
+- **Integration tests** - Use real dependencies when safe
+- **80%+ coverage**
+- **Focus**: Repository implementations, adapters
+- **Test databases**: Use test containers or in-memory
 
 ### Interface Layer Testing
 
--   **Integration tests** - Test full request/response
--   **70%+ coverage**
--   **Focus**: Controllers, CLI, API endpoints
--   **Use test clients**: Supertest, httptest
+- **Integration tests** - Test full request/response
+- **70%+ coverage**
+- **Focus**: Controllers, CLI, API endpoints
+- **Use test clients**: Supertest, httptest
 
 ## 🔄 Maintenance
 
 ### Regular Tasks
 
--   **Daily**: Run tests during development (watch mode)
--   **Weekly**: Review coverage reports, address gaps
--   **Monthly**: Refactor test code, reduce duplication
--   **Quarterly**: Audit test strategy, update patterns
--   **Per PR**: All tests must pass, coverage maintained
+- **Daily**: Run tests during development (watch mode)
+- **Weekly**: Review coverage reports, address gaps
+- **Monthly**: Refactor test code, reduce duplication
+- **Quarterly**: Audit test strategy, update patterns
+- **Per PR**: All tests must pass, coverage maintained
 
 ### When to Update This AGENT.md
 
--   New test types or patterns emerge
--   Testing tools or frameworks change
--   Coverage requirements adjusted
--   TDD workflow evolves
--   Integration with new systems
+- New test types or patterns emerge
+- Testing tools or frameworks change
+- Coverage requirements adjusted
+- TDD workflow evolves
+- Integration with new systems
 
 ### Managing Test Debt
 
 **Signs of test debt:**
 
--   Flaky tests (intermittent failures)
--   Slow test suite
--   Low coverage in critical areas
--   Brittle tests (break on refactor)
--   Duplicate test logic
+- Flaky tests (intermittent failures)
+- Slow test suite
+- Low coverage in critical areas
+- Brittle tests (break on refactor)
+- Duplicate test logic
 
 **Remediation:**
 
--   Stabilize flaky tests or remove
--   Parallelize slow tests
--   Add tests for uncovered critical paths
--   Refactor brittle tests to test behavior
--   Extract test utilities/fixtures
+- Stabilize flaky tests or remove
+- Parallelize slow tests
+- Add tests for uncovered critical paths
+- Refactor brittle tests to test behavior
+- Extract test utilities/fixtures
 
 ---
 

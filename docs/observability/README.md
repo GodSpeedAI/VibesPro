@@ -352,13 +352,13 @@ logs, and dashboards stay in lockstep with template output and Vector runtime be
 
 ### 8.1 Pipeline Additions
 
--   `transforms.logs_redact_pii` now imports the shared VRL program at `tools/vector/macros.vrl`
-    so traces and logs reuse the same redaction rules.
--   `transforms.logs_logfire_normalize` projects Logfire OTLP attributes (`logfire.trace_id`,
-    `logfire.span_id`, `logfire.observation_id`, etc.) into the canonical `trace_id`, `span_id`, and
-    `observation_id` fields consumed by sinks and dashboards.
--   Trace sanitization pulls the same macros via `tools/vector/traces_sanitize.vrl`, preventing
-    divergence between span and log scrubbing logic.
+- `transforms.logs_redact_pii` now imports the shared VRL program at `tools/vector/macros.vrl`
+  so traces and logs reuse the same redaction rules.
+- `transforms.logs_logfire_normalize` projects Logfire OTLP attributes (`logfire.trace_id`,
+  `logfire.span_id`, `logfire.observation_id`, etc.) into the canonical `trace_id`, `span_id`, and
+  `observation_id` fields consumed by sinks and dashboards.
+- Trace sanitization pulls the same macros via `tools/vector/traces_sanitize.vrl`, preventing
+  divergence between span and log scrubbing logic.
 
 ### 8.2 Shared VRL Macros
 
@@ -383,14 +383,14 @@ just docs-lint                             # Ensures docs + template snippets st
 
 ### 8.4 Documentation & Template Sync
 
--   `docs/observability/README.md` (this guide) captures the integration details and validation flow.
--   `docs/ENVIRONMENT.md` documents local/CI environment variables for Logfire.
--   `templates/{{project_slug}}/docs/observability/logging.md.j2` ensures generated projects inherit
-    the same workflow.
--   `docs/observability/dashboards/logfire.json` defines the OpenObserve panels for Logfire metrics.
--   `tools/observability/schema.json` documents the metrics taxonomy (`logfire.span.duration`, etc.).
--   `ops/openobserve/docker-compose.yml` + `just observe-openobserve-up` spin up a local OpenObserve
-    instance when you need a real OTLP target.
+- `docs/observability/README.md` (this guide) captures the integration details and validation flow.
+- `docs/ENVIRONMENT.md` documents local/CI environment variables for Logfire.
+- `templates/{{project_slug}}/docs/observability/logging.md.j2` ensures generated projects inherit
+  the same workflow.
+- `docs/observability/dashboards/logfire.json` defines the OpenObserve panels for Logfire metrics.
+- `tools/observability/schema.json` documents the metrics taxonomy (`logfire.span.duration`, etc.).
+- `ops/openobserve/docker-compose.yml` + `just observe-openobserve-up` spin up a local OpenObserve
+  instance when you need a real OTLP target.
 
 Keep all three aligned when introducing new metadata, macros, or transforms.
 
@@ -437,10 +437,10 @@ def create_user(user: UserCreate):
 
 The `bootstrap_logfire()` function:
 
--   Configures Logfire with OTLP export to Vector (localhost:4318)
--   Instruments FastAPI to emit spans for every HTTP request
--   Binds metadata: `service`, `environment`, `application_version`
--   Returns the app for method chaining
+- Configures Logfire with OTLP export to Vector (localhost:4318)
+- Instruments FastAPI to emit spans for every HTTP request
+- Binds metadata: `service`, `environment`, `application_version`
+- Returns the app for method chaining
 
 #### Structured Logging with Trace Correlation
 
@@ -469,11 +469,11 @@ def create_user(user: UserCreate):
 
 **Automatic trace-log correlation**: Every log emitted within an active span automatically includes:
 
--   `trace_id` - Links log to request trace
--   `span_id` - Links log to specific operation
--   `service` - Service name (from SERVICE_NAME env var)
--   `environment` - Environment (from APP_ENV)
--   `application_version` - Version (from APP_VERSION)
+- `trace_id` - Links log to request trace
+- `span_id` - Links log to specific operation
+- `service` - Service name (from SERVICE_NAME env var)
+- `environment` - Environment (from APP_ENV)
+- `application_version` - Version (from APP_VERSION)
 
 #### Log Categories
 
@@ -536,10 +536,10 @@ export APP_VERSION=v1.2.3
 
 **Defaults** (when env vars not set):
 
--   `SERVICE_NAME` → `vibepro-py`
--   `APP_ENV` → `local`
--   `APP_VERSION` → `dev`
--   `OTEL_EXPORTER_OTLP_ENDPOINT` → `http://localhost:4318`
+- `SERVICE_NAME` → `vibepro-py`
+- `APP_ENV` → `local`
+- `APP_VERSION` → `dev`
+- `OTEL_EXPORTER_OTLP_ENDPOINT` → `http://localhost:4318`
 
 #### Integration with Vector
 
@@ -590,11 +590,11 @@ just observe-test-all
 
 See `apps/python-test-service/` for a complete FastAPI application demonstrating:
 
--   Bootstrap pattern
--   Structured logging
--   Trace-log correlation
--   Error tracking
--   Custom metadata binding
+- Bootstrap pattern
+- Structured logging
+- Trace-log correlation
+- Error tracking
+- Custom metadata binding
 
 #### Troubleshooting
 
@@ -607,8 +607,8 @@ See `apps/python-test-service/` for a complete FastAPI application demonstrating
 
 **Missing trace_id in logs**:
 
--   Ensure logging happens within an HTTP request handler (active span)
--   For background tasks, manually create spans:
+- Ensure logging happens within an HTTP request handler (active span)
+- For background tasks, manually create spans:
     ```python
     with logfire.span("background_task"):
         logger.info("Processing")  # Now has trace_id
@@ -616,28 +616,28 @@ See `apps/python-test-service/` for a complete FastAPI application demonstrating
 
 **PII leakage concerns**:
 
--   Vector automatically redacts PII via `transforms.logs_redact_pii`
--   Add custom patterns in `tools/vector/macros.vrl`
--   Test with: `bash tests/ops/test_vector_pii_redaction.sh`
+- Vector automatically redacts PII via `transforms.logs_redact_pii`
+- Add custom patterns in `tools/vector/macros.vrl`
+- Test with: `bash tests/ops/test_vector_pii_redaction.sh`
 
 #### References
 
 **Specifications**:
 
--   DEV-PRD-018: Structured Logging with Trace Correlation
--   DEV-SDS-018: Logfire SDK Integration
--   DEV-ADR-017: JSON-First Structured Logging
+- DEV-PRD-018: Structured Logging with Trace Correlation
+- DEV-SDS-018: Logfire SDK Integration
+- DEV-ADR-017: JSON-First Structured Logging
 
 **Implementation**:
 
--   `libs/python/vibepro_logging.py` - Logfire SDK wrapper
--   `tests/python/logging/` - Test suite (26 tests)
--   `tests/ops/test_vector_logfire.sh` - Integration test
+- `libs/python/vibepro_logging.py` - Logfire SDK wrapper
+- `tests/python/logging/` - Test suite (26 tests)
+- `tests/ops/test_vector_logfire.sh` - Integration test
 
 **Documentation**:
 
--   `templates/{{project_slug}}/docs/observability/logging.md.j2` - Generated project docs
--   `docs/work-summaries/cycle1-phase1b-green-completion.md` - Implementation report
+- `templates/{{project_slug}}/docs/observability/logging.md.j2` - Generated project docs
+- `docs/work-summaries/cycle1-phase1b-green-completion.md` - Implementation report
 
 ---
 
@@ -700,10 +700,10 @@ bash tests/ops/test_observe_flag.sh
 
 Verifies:
 
--   ✅ Flag logic present in `lib.rs`
--   ✅ Feature gates properly configured
--   ✅ Tests pass with and without `otlp` feature
--   ✅ Documentation references exist
+- ✅ Flag logic present in `lib.rs`
+- ✅ Feature gates properly configured
+- ✅ Tests pass with and without `otlp` feature
+- ✅ Documentation references exist
 
 ### 9.5 Decision Tree
 
@@ -758,10 +758,10 @@ Is OTLP needed?
 
 ## 13. Governance & Cost Controls
 
--   **Sampling:** Defined in `vector.toml` (reduce noise).
--   **Redaction:** Apply VRL transforms to mask PII.
--   **Retention:** Managed in OpenObserve (default 90 days).
--   **Access:** Tokens managed via SOPS; distribution controlled per-environment.
+- **Sampling:** Defined in `vector.toml` (reduce noise).
+- **Redaction:** Apply VRL transforms to mask PII.
+- **Retention:** Managed in OpenObserve (default 90 days).
+- **Access:** Tokens managed via SOPS; distribution controlled per-environment.
 
 ### Logging Retention Policy
 
@@ -769,19 +769,19 @@ Is OTLP needed?
 
 **Logs vs. Traces:**
 
--   **Logs:** 14–30 days retention (higher volume, lower retention cost)
--   **Traces:** 30–90 days retention (lower volume, higher analytical value)
+- **Logs:** 14–30 days retention (higher volume, lower retention cost)
+- **Traces:** 30–90 days retention (lower volume, higher analytical value)
 
 Configure separate OpenObserve streams/indices:
 
--   `vibepro-logs-prod` (30-day retention)
--   `vibepro-traces-prod` (90-day retention)
+- `vibepro-logs-prod` (30-day retention)
+- `vibepro-traces-prod` (90-day retention)
 
 **Cost optimization:**
 
--   Logs are more verbose → shorter retention
--   Traces enable deep debugging → longer retention
--   Use `category` field to route critical logs to longer retention if needed
+- Logs are more verbose → shorter retention
+- Traces enable deep debugging → longer retention
+- Use `category` field to route critical logs to longer retention if needed
 
 ---
 
@@ -795,37 +795,37 @@ VibePro implements **structured, trace-aware logging** across all languages (Rus
 
 **1. JSON-First Format:**
 
--   All logs MUST be emitted as JSON (machine-parseable)
--   No printf-style logs in production code
--   Consistent schema across Rust, Node.js, and Python
+- All logs MUST be emitted as JSON (machine-parseable)
+- No printf-style logs in production code
+- Consistent schema across Rust, Node.js, and Python
 
 **2. Trace Correlation:**
 
--   Every log line includes `trace_id` and `span_id`
--   Enables correlation between logs and distributed traces
--   Full request lifecycle visibility in OpenObserve
+- Every log line includes `trace_id` and `span_id`
+- Enables correlation between logs and distributed traces
+- Full request lifecycle visibility in OpenObserve
 
 **3. PII Protection:**
 
--   Never log raw PII (email, phone, IP addresses, auth tokens)
--   Use hashed identifiers: `user_id_hash`, `client_ip_hash`
--   Vector redacts accidental PII at the edge before storage
--   Redaction rules in `ops/vector/vector.toml` → `transforms.logs_redact_pii`
+- Never log raw PII (email, phone, IP addresses, auth tokens)
+- Use hashed identifiers: `user_id_hash`, `client_ip_hash`
+- Vector redacts accidental PII at the edge before storage
+- Redaction rules in `ops/vector/vector.toml` → `transforms.logs_redact_pii`
 
 **4. Log Levels:**
 
--   `error` – Actionable failures requiring immediate investigation
--   `warn` – Degraded behavior, potential issues
--   `info` – Normal operational events (default)
--   `debug` – Detailed diagnostic information (disabled in production by default)
--   ❌ **No `trace` level** – use tracing spans for fine-grained instrumentation
+- `error` – Actionable failures requiring immediate investigation
+- `warn` – Degraded behavior, potential issues
+- `info` – Normal operational events (default)
+- `debug` – Detailed diagnostic information (disabled in production by default)
+- ❌ **No `trace` level** – use tracing spans for fine-grained instrumentation
 
 **5. Log Categories:**
 
--   `app` – General application logs (default)
--   `audit` – User actions requiring compliance tracking
--   `security` – Auth failures, rate limiting, suspicious activity
--   Use the `category` field to distinguish types, not log levels
+- `app` – General application logs (default)
+- `audit` – User actions requiring compliance tracking
+- `security` – Auth failures, rate limiting, suspicious activity
+- Use the `category` field to distinguish types, not log levels
 
 ### Language-Specific Examples
 
@@ -910,24 +910,24 @@ with logfire.span('request', route='/users'):
 
 **Mandatory (every log line):**
 
--   `timestamp` (ISO 8601)
--   `level` (error|warn|info|debug)
--   `message` or `event`
--   `service` (e.g., "user-api", "billing-service")
--   `environment` (local|dev|staging|prod)
--   `application_version` (semver or git SHA)
--   `category` (app|audit|security)
+- `timestamp` (ISO 8601)
+- `level` (error|warn|info|debug)
+- `message` or `event`
+- `service` (e.g., "user-api", "billing-service")
+- `environment` (local|dev|staging|prod)
+- `application_version` (semver or git SHA)
+- `category` (app|audit|security)
 
 **Contextual (when available):**
 
--   `trace_id` – OpenTelemetry trace ID
--   `span_id` – Current span ID
--   `user_id_hash` – Hashed user identifier (never raw ID)
--   `client_ip_hash` – Hashed IP address (never raw IP)
--   `duration_ms` – Operation timing
--   `status` – HTTP status code
--   `error` – Error type or code
--   `action` – Specific action (e.g., "login", "rate_limit")
+- `trace_id` – OpenTelemetry trace ID
+- `span_id` – Current span ID
+- `user_id_hash` – Hashed user identifier (never raw ID)
+- `client_ip_hash` – Hashed IP address (never raw IP)
+- `duration_ms` – Operation timing
+- `status` – HTTP status code
+- `error` – Error type or code
+- `action` – Specific action (e.g., "login", "rate_limit")
 
 ### Vector Configuration for Logs
 
@@ -1011,17 +1011,14 @@ just test-logs  # Includes Logfire bootstrap smoke coverage
 ### OpenObserve Setup for Logs
 
 1. **Create separate streams:**
-
     - `vibepro-logs-{env}` for application logs
     - `vibepro-traces-{env}` for distributed traces
 
 2. **Configure retention:**
-
     - Logs: 14–30 days (higher volume)
     - Traces: 30–90 days (lower volume, higher value)
 
 3. **Set up alerts:**
-
     - `category="security"` AND `level="warn"`
     - `code=500` AND `environment="prod"`
     - `action="auth_failure"` rate threshold
@@ -1085,10 +1082,10 @@ LIMIT 100;
 
 **Performance impact:**
 
--   JSON logging overhead: ~2-5% vs printf
--   Use `debug` level sparingly in hot paths
--   Vector handles sampling/filtering at the edge
--   Consider async logging in high-throughput services
+- JSON logging overhead: ~2-5% vs printf
+- Use `debug` level sparingly in hot paths
+- Vector handles sampling/filtering at the edge
+- Consider async logging in high-throughput services
 
 ---
 
@@ -1096,19 +1093,243 @@ LIMIT 100;
 
 This phase integrates `logfire` into the observability pipeline, providing a unified solution for tracing and logging in Python applications.
 
--   **`vibepro_logging` Library:** A dedicated library (`libs/python/vibepro_logging.py`) provides helper functions to configure `logfire` and instrument common Python libraries.
--   **`vector.toml` Updates:** The Vector configuration has been updated to process `logfire`'s OTLP output, including normalization of trace and span IDs, and PII redaction.
--   **Testing:** The `tests/python/test_logfire_bootstrap.py` and `tests/python/test_logfire_integrations.py` files provide a suite of tests to validate the `logfire` integration.
+- **`vibepro_logging` Library:** A dedicated library (`libs/python/vibepro_logging.py`) provides helper functions to configure `logfire` and instrument common Python libraries.
+- **`vector.toml` Updates:** The Vector configuration has been updated to process `logfire`'s OTLP output, including normalization of trace and span IDs, and PII redaction.
+- **Testing:** The `tests/python/test_logfire_bootstrap.py` and `tests/python/test_logfire_integrations.py` files provide a suite of tests to validate the `logfire` integration.
 
-## 14. References
+## 14. Temporal AI Pattern Analytics
 
--   [DEV-ADR-016](../dev_adr.md) — Architecture Decision
--   [DEV-SDS-017](../dev_sds.md) — System Design Specification
--   [DEV-PRD-017](../dev_prd.md) — Product Requirement
--   [dev_tdd_observability.md](../dev_tdd_observability.md) — TDD Phase Plan
--   [Vector Documentation](https://vector.dev/docs)
--   [OpenObserve Docs](https://openobserve.ai/docs)
--   [Tokio Tracing Crate](https://github.com/tokio-rs/tracing)
+### 14.1 Overview
+
+The **Temporal AI recommendation engine** integrates with OpenObserve to track pattern performance metrics in real-time. This enables data-driven insights into which development patterns are most successful and helps identify problematic patterns early.
+
+**Key Metrics**:
+
+- **Success Rate**: Percentage of successful pattern recommendations (1.0 - error_rate)
+- **Error Rate**: Percentage of failed recommendations
+- **Latency**: Average recommendation response time (milliseconds)
+- **Usage**: Number of times each pattern is recommended
+
+### 14.2 Dashboard
+
+Access the Temporal AI analytics dashboard:
+
+**Local**: `http://localhost:5080/dashboards/temporal-ai-patterns`  
+**Production**: `${OPENOBSERVE_URL}/dashboards/temporal-ai-patterns`
+
+**Dashboard Panels**:
+
+1. **Pattern Success Rate Overview** - Time series showing success rate trends
+2. **Success Rate Distribution** - Histogram of patterns by success rate
+3. **Recommendation Volume** - Total recommendations over time
+4. **Low Success Rate Patterns** - Table of problematic patterns
+5. **Performance by Latency** - Scatter plot correlating latency and success
+6. **Error Rate Trends** - Time series with threshold alerts
+
+**Dashboard Variables**:
+
+- `time_range` - Select time window (1h, 6h, 24h, 7d, 30d)
+- `min_success_rate` - Filter patterns below threshold (default: 0.5)
+
+### 14.3 Alerts
+
+Three alert rules monitor pattern performance and send email notifications:
+
+#### Alert 1: Low Success Rate (Warning)
+
+- **Trigger**: Success rate < 50% with >10 recommendations
+- **Frequency**: Every 5 minutes
+- **Severity**: Warning
+- **Action**: Review pattern implementation
+
+#### Alert 2: Critical Success Drop (Critical)
+
+- **Trigger**: Success rate < 30% with >5 recommendations
+- **Frequency**: Every 1 minute (real-time)
+- **Severity**: Critical
+- **Action**: Immediate investigation required
+
+#### Alert 3: High Error Rate Spike (Warning)
+
+- **Trigger**: Error rate > 40%
+- **Frequency**: Every 2 minutes
+- **Severity**: Warning
+- **Action**: Check for recent code changes
+
+**Configure Email Notifications**:
+
+Edit `ops/openobserve/alerts/destinations.json` and set `ALERT_EMAIL` environment variable:
+
+```bash
+export ALERT_EMAIL=team@example.com
+```
+
+### 14.4 Metrics Refresh Workflow
+
+Pattern metrics are **not auto-refreshed**. Update metrics manually or via cron:
+
+**Manual Refresh**:
+
+```bash
+# Refresh metrics from last 7 days
+just temporal-ai-refresh-metrics DAYS=7
+```
+
+**Automated Refresh** (optional):
+
+```bash
+# Add to crontab for daily refresh at 2 AM
+0 2 * * * cd /path/to/VibesPro && just temporal-ai-refresh-metrics DAYS=7
+```
+
+**How It Works**:
+
+1. Vector sends recommendation telemetry to OpenObserve
+2. OpenObserve stores events in `temporal_ai_recommendations` stream
+3. `temporal-ai refresh-metrics` queries OpenObserve SQL API
+4. Metrics are calculated and stored in local `redb` database
+5. Recommendations include success rate in scoring (15% weight)
+
+### 14.5 Setup Instructions
+
+**1. Start Local OpenObserve**:
+
+```bash
+just temporal-ai-observe-start
+```
+
+**2. Import Dashboard**:
+
+```bash
+# Via API
+curl -X POST http://localhost:5080/api/default/dashboards \
+  -H "Authorization: Basic $(echo -n root@example.com:password | base64)" \
+  -d @ops/openobserve/dashboards/temporal-ai-patterns.json
+
+# Or via UI: Settings → Dashboards → Import → Upload JSON
+```
+
+**3. Configure Alerts**:
+
+```bash
+# Import all alerts
+for alert in ops/openobserve/alerts/temporal-ai-*.json; do
+  curl -X POST http://localhost:5080/api/default/alerts \
+    -H "Authorization: Basic $(echo -n root@example.com:password | base64)" \
+    -d @"$alert"
+done
+
+# Configure email destination
+curl -X POST http://localhost:5080/api/default/destinations \
+  -H "Authorization: Basic $(echo -n root@example.com:password | base64)" \
+  -d @ops/openobserve/alerts/destinations.json
+```
+
+**4. Verify Setup**:
+
+```bash
+# Refresh metrics
+just temporal-ai-refresh-metrics DAYS=7
+
+# Query patterns (should show success rates)
+just temporal-ai-query "test pattern" TOP=5
+
+# Check dashboard
+open http://localhost:5080/dashboards/temporal-ai-patterns
+```
+
+### 14.6 Troubleshooting
+
+**No metrics appearing in dashboard**:
+
+1. Verify OpenObserve is running: `curl http://localhost:5080/healthz`
+2. Check Vector is sending data: `tail -f tmp/vector-traces.log`
+3. Verify stream exists: `curl http://localhost:5080/api/default/streams`
+4. Check credentials: `sops -d .secrets.env.sops | grep OPENOBSERVE`
+
+**Stale metrics in recommendations**:
+
+- Metrics are refreshed manually via `just temporal-ai-refresh-metrics`
+- Set up cron job for automatic refresh (see 14.4)
+- Check last refresh time in database: `just temporal-ai-stats`
+
+**Alerts not triggering**:
+
+1. Verify alert is enabled in OpenObserve UI
+2. Check email destination is configured
+3. Test SMTP settings in OpenObserve
+4. Review alert logs: `curl http://localhost:5080/api/default/alerts/logs`
+
+**Dashboard queries failing**:
+
+- Ensure `temporal_ai_recommendations` stream exists
+- Verify data is being ingested: check Vector logs
+- Test SQL query manually in OpenObserve UI
+- Check time range filter matches data availability
+
+### 14.7 SQL Query Examples
+
+**Find low-performing patterns**:
+
+```sql
+SELECT pattern_id, success_rate, error_rate, recommendation_count
+FROM temporal_ai_recommendations
+WHERE success_rate < 0.6
+ORDER BY success_rate ASC
+LIMIT 10;
+```
+
+**Success rate trend over time**:
+
+```sql
+SELECT
+  time_bucket('1h', timestamp) as hour,
+  AVG(success_rate) as avg_success_rate
+FROM temporal_ai_recommendations
+WHERE timestamp >= now() - interval '7 days'
+GROUP BY hour
+ORDER BY hour;
+```
+
+**Patterns with high latency**:
+
+```sql
+SELECT pattern_id, avg_latency_ms, success_rate
+FROM temporal_ai_recommendations
+WHERE avg_latency_ms > 100
+ORDER BY avg_latency_ms DESC;
+```
+
+### 14.8 References
+
+**Configuration Files**:
+
+- Dashboard: `ops/openobserve/dashboards/temporal-ai-patterns.json`
+- Alerts: `ops/openobserve/alerts/temporal-ai-*.json`
+- Email Destination: `ops/openobserve/alerts/destinations.json`
+
+**Documentation**:
+
+- Temporal AI README: `crates/temporal-ai/README.md`
+- Implementation Plan: `.gemini/antigravity/brain/.../implementation_plan.md`
+
+**Specifications**:
+
+- DEV-PRD-032: AI Workflow PRD
+- DEV-SDS-020: AI Guidance SDS
+- DEV-ADR-018: AI Workflow ADR
+
+---
+
+## 15. References
+
+- [DEV-ADR-016](../dev_adr.md) — Architecture Decision
+- [DEV-SDS-017](../dev_sds.md) — System Design Specification
+- [DEV-PRD-017](../dev_prd.md) — Product Requirement
+- [dev_tdd_observability.md](../dev_tdd_observability.md) — TDD Phase Plan
+- [Vector Documentation](https://vector.dev/docs)
+- [OpenObserve Docs](https://openobserve.ai/docs)
+- [Tokio Tracing Crate](https://github.com/tokio-rs/tracing)
 
 ---
 

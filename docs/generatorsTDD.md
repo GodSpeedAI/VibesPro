@@ -13,10 +13,10 @@
 **Spec IDs**: DEV-PRD-TBD, DEV-SDS-TBD (to be assigned)
 **Related Files**:
 
--   Template: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`
--   Policy: `.github/instructions/generators-first.instructions.md`
--   Tests: `tests/generators/*.test.ts`
--   Examples: `generators/service/`, `tools/reference/hexddd-generators/`
+- Template: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`
+- Policy: `.github/instructions/generators-first.instructions.md`
+- Tests: `tests/generators/*.test.ts`
+- Examples: `generators/service/`, `tools/reference/hexddd-generators/`
 
 ---
 
@@ -133,11 +133,11 @@ describe("Generator Spec Template Completeness", () => {
 
 **Acceptance Criteria for RED Phase**:
 
--   [ ] All test suites written
--   [ ] Tests fail with meaningful error messages
--   [ ] Tests validate spec template completeness
--   [ ] Tests simulate AI agent workflow
--   [ ] Run: `pnpm test tests/generators/spec-*.test.ts` → ALL FAIL
+- [ ] All test suites written
+- [ ] Tests fail with meaningful error messages
+- [ ] Tests validate spec template completeness
+- [ ] Tests simulate AI agent workflow
+- [ ] Run: `pnpm test tests/generators/spec-*.test.ts` → ALL FAIL
 
 ---
 
@@ -161,35 +161,35 @@ describe("Generator Spec Template Completeness", () => {
 
 **name** (string)
 
--   Description: Primary identifier for the generated artifact
--   Validation: Must match pattern `^[a-z][a-z0-9-]*$` (kebab-case)
--   Example: `user-management`, `order-service`
+- Description: Primary identifier for the generated artifact
+- Validation: Must match pattern `^[a-z][a-z0-9-]*$` (kebab-case)
+- Example: `user-management`, `order-service`
 
 **type** (string, enum)
 
--   Description: Type of generator output (domain | service | component | adapter)
--   Validation: Must be one of allowed enum values
--   Example: `domain`, `service`
+- Description: Type of generator output (domain | service | component | adapter)
+- Validation: Must be one of allowed enum values
+- Example: `domain`, `service`
 
 ### Recommended Options
 
 **directory** (string, optional)
 
--   Description: Target directory relative to workspace root
--   Default: Derived from name and type
--   Example: `libs/user-management/domain`
+- Description: Target directory relative to workspace root
+- Default: Derived from name and type
+- Example: `libs/user-management/domain`
 
 **boundedContext** (string, optional)
 
--   Description: DDD bounded context for hexagonal architecture
--   Validation: Must match pattern `^[a-z][a-z0-9-]*$`
--   Example: `identity`, `commerce`
+- Description: DDD bounded context for hexagonal architecture
+- Validation: Must match pattern `^[a-z][a-z0-9-]*$`
+- Example: `identity`, `commerce`
 
 **skipTests** (boolean, optional)
 
--   Description: Skip generating test files
--   Default: false
--   Use case: Rapid prototyping only
+- Description: Skip generating test files
+- Default: false
+- Use case: Rapid prototyping only
 
 ### Validation Rules
 
@@ -291,21 +291,21 @@ export interface DomainEntitySchema {
 
 **@nx/js:library**
 
--   Properties: name, directory, tags, buildable, publishable
--   Validation: name pattern, directory existence
--   See: `node_modules/@nx/js/src/generators/library/schema.json`
+- Properties: name, directory, tags, buildable, publishable
+- Validation: name pattern, directory existence
+- See: `node_modules/@nx/js/src/generators/library/schema.json`
 
 **@nx/react:component**
 
--   Properties: name, project, style, export
--   Validation: project existence, style enum
--   See: `node_modules/@nx/react/src/generators/component/schema.json`
+- Properties: name, project, style, export
+- Validation: project existence, style enum
+- See: `node_modules/@nx/react/src/generators/component/schema.json`
 
 **@nxlv/python:lib**
 
--   Properties: name, directory, moduleName, buildable
--   Validation: Python naming conventions
--   See: `node_modules/@nxlv/python/src/generators/lib/schema.json`
+- Properties: name, directory, moduleName, buildable
+- Validation: Python naming conventions
+- See: `node_modules/@nxlv/python/src/generators/lib/schema.json`
 
 ### Common Patterns
 
@@ -335,9 +335,9 @@ export interface DomainEntitySchema {
 
 **Hexagonal Architecture Constraints**
 
--   Domain layer: No external dependencies
--   Application layer: Depends only on domain
--   Infrastructure layer: Implements application ports
+- Domain layer: No external dependencies
+- Application layer: Depends only on domain
+- Infrastructure layer: Implements application ports
 
 ````
 
@@ -462,12 +462,12 @@ pnpm nx run-many --target=lint --all
 
 ### Regression Checklist
 
--   [ ] All existing generators still pass tests
--   [ ] No breaking changes to generator API
--   [ ] Nx graph remains acyclic
--   [ ] Build targets cacheable
--   [ ] Generated code passes linting
--   [ ] Documentation updated
+- [ ] All existing generators still pass tests
+- [ ] No breaking changes to generator API
+- [ ] Nx graph remains acyclic
+- [ ] Build targets cacheable
+- [ ] Generated code passes linting
+- [ ] Documentation updated
 
 ````
 
@@ -865,16 +865,16 @@ graph TD
 
 **Use this generator pattern when:**
 
--   Creating domain entities with DDD patterns
--   Scaffolding hexagonal architecture layers
--   Generating services with standardized structure
--   Creating components with organizational conventions
+- Creating domain entities with DDD patterns
+- Scaffolding hexagonal architecture layers
+- Generating services with standardized structure
+- Creating components with organizational conventions
 
 **Do NOT use when:**
 
--   Adding simple utility function to existing module
--   Making one-off prototype
--   Modifying existing generated code
+- Adding simple utility function to existing module
+- Making one-off prototype
+- Modifying existing generated code
 
 ````
 
@@ -900,30 +900,30 @@ interface GeneratorRequirements {
 
 **Step 2: Generate schema.json**
 
--   Use JSON Schema draft-07 format
--   Include $schema, $id, type, properties, required
--   Add x-prompt for interactive properties
--   Validate with: `npx ajv validate -s schema.json -d test-data.json`
+- Use JSON Schema draft-07 format
+- Include $schema, $id, type, properties, required
+- Add x-prompt for interactive properties
+- Validate with: `npx ajv validate -s schema.json -d test-data.json`
 
 **Step 3: Generate schema.d.ts**
 
--   Must align EXACTLY with schema.json properties
--   Use TypeScript interfaces, not types
--   Export as named export matching generator name
+- Must align EXACTLY with schema.json properties
+- Use TypeScript interfaces, not types
+- Export as named export matching generator name
 
 **Step 4: Generate generator.ts**
 
--   Import from '@nx/devkit': Tree, generateFiles, formatFiles, names
--   Validate inputs first
--   Use generateFiles for templates
--   Call formatFiles before returning
--   Return installPackagesTask if dependencies added
+- Import from '@nx/devkit': Tree, generateFiles, formatFiles, names
+- Validate inputs first
+- Use generateFiles for templates
+- Call formatFiles before returning
+- Return installPackagesTask if dependencies added
 
 **Step 5: Generate Test Suite**
 
--   Use patterns from `tests/generators/*.test.ts`
--   Test: success, validation, content, idempotency, graph integrity
--   Use `createTreeWithEmptyWorkspace()` from '@nx/devkit/testing'
+- Use patterns from `tests/generators/*.test.ts`
+- Test: success, validation, content, idempotency, graph integrity
+- Use `createTreeWithEmptyWorkspace()` from '@nx/devkit/testing'
 
 **Step 6: Validate Generator**
 
@@ -1064,11 +1064,11 @@ grep -i "TODO" docs/specs/generators/GENERATOR_SPEC.md
 
 **Ensure consistency across**:
 
--   `.github/instructions/generators-first.instructions.md`
--   `.github/instructions/testing.instructions.md`
--   `docs/nx-generators-guide.md`
--   `AGENTS.md` (Nx configuration section)
--   `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`
+- `.github/instructions/generators-first.instructions.md`
+- `.github/instructions/testing.instructions.md`
+- `docs/nx-generators-guide.md`
+- `AGENTS.md` (Nx configuration section)
+- `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`
 
 **Validation**:
 
@@ -1158,13 +1158,13 @@ End
 
 **Acceptance Criteria for REGRESSION Phase**:
 
--   [ ] All existing generator tests pass
--   [ ] Template generation produces spec without TODOs
--   [ ] No conflicting documentation
--   [ ] AI agent simulation succeeds
--   [ ] Integration test passes
--   [ ] Run: `just spec-guard` → PASS
--   [ ] Run: `pnpm test` → ALL PASS
+- [ ] All existing generator tests pass
+- [ ] Template generation produces spec without TODOs
+- [ ] No conflicting documentation
+- [ ] AI agent simulation succeeds
+- [ ] Integration test passes
+- [ ] Run: `just spec-guard` → PASS
+- [ ] Run: `pnpm test` → ALL PASS
 
 ---
 
@@ -1172,33 +1172,31 @@ End
 
 ### Quantitative
 
--   [ ] 0 TODO placeholders in final spec
--   [ ] 100% test coverage for spec validation
--   [ ] All 15+ test cases pass
--   [ ] Generator creation time < 5 minutes (AI agent)
--   [ ] 0 regressions in existing generators
+- [ ] 0 TODO placeholders in final spec
+- [ ] 100% test coverage for spec validation
+- [ ] All 15+ test cases pass
+- [ ] Generator creation time < 5 minutes (AI agent)
+- [ ] 0 regressions in existing generators
 
 ### Qualitative
 
--   [ ] AI agent can create valid generator from spec alone
--   [ ] Spec is clear without external documentation
--   [ ] Examples are copy-paste ready
--   [ ] Spec follows generator-first principle
--   [ ] Consistent with project conventions
+- [ ] AI agent can create valid generator from spec alone
+- [ ] Spec is clear without external documentation
+- [ ] Examples are copy-paste ready
+- [ ] Spec follows generator-first principle
+- [ ] Consistent with project conventions
 
 ---
 
 ## Implementation Order
 
 1. **RED Phase** (Est: 2-3 hours)
-
     - Write spec-template.test.ts
     - Write ai-generator-creation.test.ts
     - Write spec-completeness.test.ts
     - Verify all fail
 
 2. **GREEN Phase** (Est: 4-6 hours)
-
     - Complete Section 3 (Schema)
     - Complete Section 8 (Acceptance Tests)
     - Complete Section 7 (Implementation Hints)
@@ -1206,7 +1204,6 @@ End
     - Verify all tests pass
 
 3. **REFACTOR Phase** (Est: 2-3 hours)
-
     - Consolidate redundancy
     - Add decision trees
     - Add AI agent instructions
@@ -1229,28 +1226,28 @@ End
 
 **Existing Generators**:
 
--   `generators/service/schema.json` - Service generator schema
--   `generators/service/generator.ts` - Service generator implementation
--   `tools/reference/hexddd-generators/` - Reference hexagonal DDD generators
+- `generators/service/schema.json` - Service generator schema
+- `generators/service/generator.ts` - Service generator implementation
+- `tools/reference/hexddd-generators/` - Reference hexagonal DDD generators
 
 **Tests**:
 
--   `tests/generators/service.logfire.test.ts` - Service generator tests
--   `tests/generators/domain.test.ts` - Domain generator tests
--   `tests/generators/utils.ts` - Test utilities
+- `tests/generators/service.logfire.test.ts` - Service generator tests
+- `tests/generators/domain.test.ts` - Domain generator tests
+- `tests/generators/utils.ts` - Test utilities
 
 **Documentation**:
 
--   `.github/instructions/generators-first.instructions.md` - Generator-first policy
--   `.github/instructions/testing.instructions.md` - Testing guidelines
--   `docs/nx-generators-guide.md` - Nx generators guide
--   `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` - Nx devkit docs
+- `.github/instructions/generators-first.instructions.md` - Generator-first policy
+- `.github/instructions/testing.instructions.md` - Testing guidelines
+- `docs/nx-generators-guide.md` - Nx generators guide
+- `.tessl/usage-specs/tessl/npm-nx/docs/generators-executors.md` - Nx devkit docs
 
 **External**:
 
--   Nx Devkit API: https://nx.dev/extending-nx/recipes/local-generators
--   JSON Schema Draft-07: http://json-schema.org/draft-07/schema
--   Context7 Nx docs: Cached from earlier query
+- Nx Devkit API: https://nx.dev/extending-nx/recipes/local-generators
+- JSON Schema Draft-07: http://json-schema.org/draft-07/schema
+- Context7 Nx docs: Cached from earlier query
 
 ---
 

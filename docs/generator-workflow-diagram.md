@@ -211,7 +211,7 @@ pnpm exec nx g @nx/react:component
 
 ## Legend
 
--   🟡 **Yellow/Gold**: Generator-related (generators-first, ai-scaffold)
--   🟢 **Green**: Generated artifacts, successful outcomes
--   🔵 **Blue**: Nx infrastructure (MCP server, nx.instructions.md)
--   🔴 **Red**: Anti-patterns, problems to avoid
+- 🟡 **Yellow/Gold**: Generator-related (generators-first, ai-scaffold)
+- 🟢 **Green**: Generated artifacts, successful outcomes
+- 🔵 **Blue**: Nx infrastructure (MCP server, nx.instructions.md)
+- 🔴 **Red**: Anti-patterns, problems to avoid

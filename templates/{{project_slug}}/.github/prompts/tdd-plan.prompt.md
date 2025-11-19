@@ -11,12 +11,10 @@ precedence: high
 When this prompt is invoked under the `tdd-plan` chatmode:
 
 1. **Read Inputs**
-
     - `docs/specs/adr.md`, `docs/specs/prd.md`, `docs/specs/sds.md`, `docs/specs/technical-specifications.md`, and `docs/specs/traceability-matrix.md`.
     - If any are missing, note them under _Phase 0 → Missing Inputs_.
 
 2. **Generate Output**
-
     - Produce a full **VibePro-aligned TDD Implementation Plan**.
     - Follow the section order and formatting below.
     - Replace “generator creation” steps with **Generator Specification Plans** that conform to `GENERATOR_SPEC.md`.
@@ -61,16 +59,16 @@ For each task include:
 **Generator Specification**: yes/no (if yes, reference `GENERATOR_SPEC.md`)
 **MCP Assistance**:
 
--   context7 → contextual grounding
--   ref → code structure & MECE validation
--   exa → external standards/examples
+- context7 → contextual grounding
+- ref → code structure & MECE validation
+- exa → external standards/examples
 
 **TDD Phases**
 
--   🔴 RED: tests that must fail first
--   🟢 GREEN: minimal implementation to pass
--   🔵 REFACTOR: cleanups while keeping green
--   🔄 REGRESSION: full Nx test suite + validation
+- 🔴 RED: tests that must fail first
+- 🟢 GREEN: minimal implementation to pass
+- 🔵 REFACTOR: cleanups while keeping green
+- 🔄 REGRESSION: full Nx test suite + validation
 
 **Commands**
 
@@ -94,7 +92,7 @@ just ai-validate
 
 ### Plan Footer
 
--   Always prefer **generator specifications** over ad-hoc coding.
--   Begin every phase with **context bundling**.
--   Apply MCP tools (`context7`, `ref`, `exa`) at appropriate steps.
--   End every phase with **`just ai-validate`** for CI parity.
+- Always prefer **generator specifications** over ad-hoc coding.
+- Begin every phase with **context bundling**.
+- Apply MCP tools (`context7`, `ref`, `exa`) at appropriate steps.
+- End every phase with **`just ai-validate`** for CI parity.

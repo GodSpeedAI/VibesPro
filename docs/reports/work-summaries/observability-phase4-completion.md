@@ -14,11 +14,11 @@ Successfully completed Phase 4 of the observability implementation by adding Ope
 
 Created failing test `tests/ops/test_openobserve_sink.sh` that verified:
 
--   OpenObserve sink configuration exists in Vector config
--   HTTP sink type is properly configured
--   Environment variables are referenced (OPENOBSERVE_URL, OPENOBSERVE_TOKEN)
--   Secrets file contains required variables
--   Optional endpoint reachability check
+- OpenObserve sink configuration exists in Vector config
+- HTTP sink type is properly configured
+- Environment variables are referenced (OPENOBSERVE_URL, OPENOBSERVE_TOKEN)
+- Secrets file contains required variables
+- Optional endpoint reachability check
 
 Initial test failed as expected with:
 
@@ -30,18 +30,18 @@ Initial test failed as expected with:
 
 Implemented OpenObserve HTTP sink in `ops/vector/vector.toml`:
 
--   Added `[sinks.openobserve]` section with HTTP sink type
--   Configured OTLP endpoint: `${OPENOBSERVE_URL}/api/${OPENOBSERVE_ORG}/v1/traces`
--   Set up Basic Auth using environment variables
--   Added request configuration (timeout: 30s, retries: 3)
--   Used default values to allow Vector validation without secrets
+- Added `[sinks.openobserve]` section with HTTP sink type
+- Configured OTLP endpoint: `${OPENOBSERVE_URL}/api/${OPENOBSERVE_ORG}/v1/traces`
+- Set up Basic Auth using environment variables
+- Added request configuration (timeout: 30s, retries: 3)
+- Used default values to allow Vector validation without secrets
 
 Updated `.secrets.env.sops` with comprehensive documentation:
 
--   `OPENOBSERVE_URL` - Base URL for OpenObserve instance
--   `OPENOBSERVE_TOKEN` - API token for authentication
--   `OPENOBSERVE_ORG` - Organization name (defaults to "default")
--   `OPENOBSERVE_USER` - User email for Basic Auth
+- `OPENOBSERVE_URL` - Base URL for OpenObserve instance
+- `OPENOBSERVE_TOKEN` - API token for authentication
+- `OPENOBSERVE_ORG` - Organization name (defaults to "default")
+- `OPENOBSERVE_USER` - User email for Basic Auth
 
 Test now passes:
 
@@ -53,9 +53,9 @@ Test now passes:
 
 Enhanced justfile with comprehensive verification:
 
--   Added `observe-test-openobserve` target for isolated Phase 4 testing
--   Updated `observe-test-all` to include OpenObserve sink test
--   Enhanced `observe-verify` target with step-by-step verification:
+- Added `observe-test-openobserve` target for isolated Phase 4 testing
+- Updated `observe-test-all` to include OpenObserve sink test
+- Enhanced `observe-verify` target with step-by-step verification:
     1. Validate Vector configuration
     2. Test OpenObserve sink configuration
     3. Start Vector in background
@@ -66,13 +66,13 @@ Enhanced justfile with comprehensive verification:
 
 ### New Files
 
--   `tests/ops/test_openobserve_sink.sh` - Phase 4 TDD test (127 lines)
+- `tests/ops/test_openobserve_sink.sh` - Phase 4 TDD test (127 lines)
 
 ### Modified Files
 
--   `ops/vector/vector.toml` - Added OpenObserve HTTP sink configuration
--   `.secrets.env.sops` - Documented OpenObserve environment variables
--   `justfile` - Added Phase 4 test targets and enhanced verification
+- `ops/vector/vector.toml` - Added OpenObserve HTTP sink configuration
+- `.secrets.env.sops` - Documented OpenObserve environment variables
+- `justfile` - Added Phase 4 test targets and enhanced verification
 
 ## Test Results
 
@@ -95,11 +95,11 @@ $ just observe-test-vector && just observe-test-openobserve
 
 The OpenObserve sink is configured as an HTTP sink that:
 
--   Accepts OTLP traces from the `traces_sanitize` transform
--   Sends JSON-encoded traces to OpenObserve's OTLP endpoint
--   Uses Basic authentication with configurable credentials
--   Includes retry logic (3 attempts, 30s timeout)
--   Gracefully degrades with default values when env vars not set
+- Accepts OTLP traces from the `traces_sanitize` transform
+- Sends JSON-encoded traces to OpenObserve's OTLP endpoint
+- Uses Basic authentication with configurable credentials
+- Includes retry logic (3 attempts, 30s timeout)
+- Gracefully degrades with default values when env vars not set
 
 Example Vector output:
 
@@ -118,12 +118,12 @@ password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
 
 ## Exit Criteria Met
 
--   [x] HTTP POST to OpenObserve endpoint configured
--   [x] Environment variables from `.secrets.env.sops` properly referenced
--   [x] `just observe-verify` target created and functional
--   [x] Documentation updated in `.secrets.env.sops`
--   [x] Tests pass locally
--   [x] Traceability: References DEV-ADR-016 in commits
+- [x] HTTP POST to OpenObserve endpoint configured
+- [x] Environment variables from `.secrets.env.sops` properly referenced
+- [x] `just observe-verify` target created and functional
+- [x] Documentation updated in `.secrets.env.sops`
+- [x] Tests pass locally
+- [x] Traceability: References DEV-ADR-016 in commits
 
 ## Next Steps
 
@@ -162,16 +162,16 @@ To complete the full observability pipeline:
 
 Phase 5 will focus on CI validation, ensuring:
 
--   Vector validation runs in CI pipeline
--   Configuration is validated post-mise install
--   Vector binary is cached for faster CI runs
--   CI logs contain "Vector config valid" confirmation
+- Vector validation runs in CI pipeline
+- Configuration is validated post-mise install
+- Vector binary is cached for faster CI runs
+- CI logs contain "Vector config valid" confirmation
 
 ## Traceability
 
--   **Spec IDs**: DEV-ADR-016 (Observability Architecture), SDS-017 (Storage Layer)
--   **TDD Plan**: `docs/tmp/dev_tdd_observability.md` - Phase 4
--   **Commit Message**: Should reference DEV-ADR-016 and SDS-017
+- **Spec IDs**: DEV-ADR-016 (Observability Architecture), SDS-017 (Storage Layer)
+- **TDD Plan**: `docs/tmp/dev_tdd_observability.md` - Phase 4
+- **Commit Message**: Should reference DEV-ADR-016 and SDS-017
 
 ## Validation Commands
 

@@ -10,12 +10,12 @@
 
 This master plan orchestrates the complete integration of hexagonal architecture patterns from [HexDDD](https://github.com/GodSpeedAI/HexDDD) into the VibesPro template repository. The implementation satisfies 7 ADRs, 8 PRDs, and 8 SDSs focused on:
 
--   ✅ **Generator Idempotency** (DEV-ADR-023, DEV-PRD-024, DEV-SDS-023)
--   ✅ **Hexagonal Boundaries** (DEV-ADR-024, DEV-ADR-025, DEV-PRD-025, DEV-PRD-026, DEV-SDS-024, DEV-SDS-025)
--   ✅ **Supabase Integration** (DEV-ADR-026, DEV-PRD-027, DEV-SDS-026)
--   ✅ **Nx Upgrade Strategy** (DEV-ADR-027, DEV-PRD-028, DEV-SDS-027)
--   ✅ **Universal React Generator** (DEV-ADR-028, DEV-PRD-029, DEV-SDS-028)
--   ✅ **Strict Typing** (DEV-ADR-029, DEV-PRD-030, DEV-PRD-031, DEV-SDS-029, DEV-SDS-030)
+- ✅ **Generator Idempotency** (DEV-ADR-023, DEV-PRD-024, DEV-SDS-023)
+- ✅ **Hexagonal Boundaries** (DEV-ADR-024, DEV-ADR-025, DEV-PRD-025, DEV-PRD-026, DEV-SDS-024, DEV-SDS-025)
+- ✅ **Supabase Integration** (DEV-ADR-026, DEV-PRD-027, DEV-SDS-026)
+- ✅ **Nx Upgrade Strategy** (DEV-ADR-027, DEV-PRD-028, DEV-SDS-027)
+- ✅ **Universal React Generator** (DEV-ADR-028, DEV-PRD-029, DEV-SDS-028)
+- ✅ **Strict Typing** (DEV-ADR-029, DEV-PRD-030, DEV-PRD-031, DEV-SDS-029, DEV-SDS-030)
 
 ---
 
@@ -196,53 +196,53 @@ Track overall progress across all phases:
 
 ### PHASE-000: Pre-Implementation Intelligence
 
--   [ ] Intelligence gathering complete (MCP tools, HexDDD analysis)
--   [ ] MECE validation passed (zero task overlap)
--   [ ] Risk assessment documented
--   [ ] Critical path identified
--   [ ] **Evidence**: `PRE_PLAN_INTELLIGENCE.md` marked complete
+- [ ] Intelligence gathering complete (MCP tools, HexDDD analysis)
+- [ ] MECE validation passed (zero task overlap)
+- [ ] Risk assessment documented
+- [ ] Critical path identified
+- [ ] **Evidence**: `PRE_PLAN_INTELLIGENCE.md` marked complete
 
 ### PHASE-001: Generator Idempotency & Testing
 
--   [ ] Idempotency pattern library implemented (Cycle A)
--   [ ] Test utilities created (Cycle B)
--   [ ] Regression suite passing (Cycle C)
--   [ ] All generators pass double-run tests
--   [ ] **Evidence**: `just test-generators` GREEN
+- [ ] Idempotency pattern library implemented (Cycle A)
+- [ ] Test utilities created (Cycle B)
+- [ ] Regression suite passing (Cycle C)
+- [ ] All generators pass double-run tests
+- [ ] **Evidence**: `just test-generators` GREEN
 
 ### PHASE-002: Hexagonal Foundations
 
--   [ ] UoW TypeScript implementation (Cycle A)
--   [ ] UoW Python implementation (Cycle B)
--   [ ] EventBus with contracts (Cycle C)
--   [ ] Nx dependency tags enforced (Cycle D)
--   [ ] Supabase devstack operational (Cycle D)
--   [ ] **Evidence**: `pnpm nx run-many -t lint` passes boundary checks
+- [ ] UoW TypeScript implementation (Cycle A)
+- [ ] UoW Python implementation (Cycle B)
+- [ ] EventBus with contracts (Cycle C)
+- [ ] Nx dependency tags enforced (Cycle D)
+- [ ] Supabase devstack operational (Cycle D)
+- [ ] **Evidence**: `pnpm nx run-many -t lint` passes boundary checks
 
 ### PHASE-003: Universal React Generator
 
--   [ ] Shared web assets library (Cycle A)
--   [ ] Next.js generator (Cycle B — App + Pages Router)
--   [ ] Remix generator (Cycle C)
--   [ ] Expo generator (Cycle D)
--   [ ] All surfaces idempotent (Cycle E)
--   [ ] **Evidence**: Next App Router, Next Pages Router, Remix, and Expo scaffolds build successfully
+- [ ] Shared web assets library (Cycle A)
+- [ ] Next.js generator (Cycle B — App + Pages Router)
+- [ ] Remix generator (Cycle C)
+- [ ] Expo generator (Cycle D)
+- [ ] All surfaces idempotent (Cycle E)
+- [ ] **Evidence**: Next App Router, Next Pages Router, Remix, and Expo scaffolds build successfully
 
 ### PHASE-004: Type Safety & CI Integration
 
--   [ ] TypeScript strict mode enforced (Cycle A)
--   [ ] Python mypy strict mode enforced (Cycle B)
--   [ ] Type sync workflow automated (Cycle C)
--   [ ] CI integration complete (Cycle D)
--   [ ] **Evidence**: `pnpm tsc --noEmit && uv run mypy --strict` both pass
+- [ ] TypeScript strict mode enforced (Cycle A)
+- [ ] Python mypy strict mode enforced (Cycle B)
+- [ ] Type sync workflow automated (Cycle C)
+- [ ] CI integration complete (Cycle D)
+- [ ] **Evidence**: `pnpm tsc --noEmit && uv run mypy --strict` both pass
 
 ### PHASE-005: Integration & Documentation
 
--   [ ] End-to-end smoke tests passing
--   [ ] All documentation updated
--   [ ] Traceability matrix complete
--   [ ] Migration guide published
--   [ ] **Evidence**: `just spec-guard` GREEN
+- [ ] End-to-end smoke tests passing
+- [ ] All documentation updated
+- [ ] Traceability matrix complete
+- [ ] Migration guide published
+- [ ] **Evidence**: `just spec-guard` GREEN
 
 ---
 
@@ -263,9 +263,9 @@ Track overall progress across all phases:
 
 All execution evidence stored in:
 
--   **Logs**: `docs/plans/hexddd_integration/logs/<phase>-<cycle>.log`
--   **Test Reports**: `docs/plans/hexddd_integration/reports/<phase>-<cycle>-report.json`
--   **CI Metadata**: `.github/workflows/` (workflow run logs via GitHub Actions)
+- **Logs**: `docs/plans/hexddd_integration/logs/<phase>-<cycle>.log`
+- **Test Reports**: `docs/plans/hexddd_integration/reports/<phase>-<cycle>-report.json`
+- **CI Metadata**: `.github/workflows/` (workflow run logs via GitHub Actions)
 
 Retention: 90 days for logs, 1 year for reports, indefinite for CI metadata.
 
@@ -339,9 +339,9 @@ Each phase document follows this structure:
 
 ### Communication Channels
 
--   **AI Agent Logs**: Real-time progress in cycle checklists
--   **GitHub PRs**: Code review and merge coordination
--   **Traceability Matrix**: Spec → implementation mapping
+- **AI Agent Logs**: Real-time progress in cycle checklists
+- **GitHub PRs**: Code review and merge coordination
+- **Traceability Matrix**: Spec → implementation mapping
 
 ---
 

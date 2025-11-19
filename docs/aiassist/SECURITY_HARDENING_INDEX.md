@@ -261,11 +261,11 @@ graph TD
 
 ### Cryptographic Stack
 
--   **AEAD Cipher:** XChaCha20-Poly1305 (192-bit nonce, nonce-misuse resistant)
--   **KDF:** HKDF-SHA256 (domain separation: `db-key`, `audit-key`, `transport-key`)
--   **Master Key:** 256-bit, TPM-sealed or file-based
--   **Nonce Scheme:** 64-bit counter + 128-bit DB UUID = 192-bit unique nonce
--   **Storage:** `[24-byte nonce || ciphertext || 16-byte auth tag]` per record
+- **AEAD Cipher:** XChaCha20-Poly1305 (192-bit nonce, nonce-misuse resistant)
+- **KDF:** HKDF-SHA256 (domain separation: `db-key`, `audit-key`, `transport-key`)
+- **Master Key:** 256-bit, TPM-sealed or file-based
+- **Nonce Scheme:** 64-bit counter + 128-bit DB UUID = 192-bit unique nonce
+- **Storage:** `[24-byte nonce || ciphertext || 16-byte auth tag]` per record
 
 ### Feature Flags
 
@@ -277,10 +277,10 @@ tpm_enabled: false # TPM sealing optional
 
 ### Performance Targets
 
--   **Encryption overhead:** < 5%
--   **Binary size increase:** < 2MB
--   **Memory overhead:** < 10MB
--   **Startup time:** < 100ms (TPM unseal + DB open)
+- **Encryption overhead:** < 5%
+- **Binary size increase:** < 2MB
+- **Memory overhead:** < 10MB
+- **Startup time:** < 100ms (TPM unseal + DB open)
 
 ### TDD Workflow
 

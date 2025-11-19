@@ -12,4 +12,4 @@ Create new libs/apps/components via Nx generators; Copilot can suggest the gener
 
 ## Notes
 
--   Safe if pnpm/Nx missing: the recipe prints guidance.
+- Safe if pnpm/Nx missing: the recipe prints guidance.

@@ -6,10 +6,10 @@ This document describes the architectural patterns for vibes-pro.
 
 This project follows **Hexagonal Architecture** (Ports and Adapters pattern):
 
--   **Separation of Concerns**: Clear boundaries between business logic and external concerns
--   **Testability**: Easy to unit test business logic in isolation
--   **Flexibility**: Easy to swap out external dependencies
--   **Maintainability**: Changes to external systems don't affect business rules
+- **Separation of Concerns**: Clear boundaries between business logic and external concerns
+- **Testability**: Easy to unit test business logic in isolation
+- **Flexibility**: Easy to swap out external dependencies
+- **Maintainability**: Changes to external systems don't affect business rules
 
 ### Architecture Diagram
 
@@ -29,24 +29,24 @@ graph TD
 
 #### Core Domain
 
--   **Entities**: Core business objects with identity
--   **Value Objects**: Immutable data structures
--   **Domain Services**: Complex business operations
--   **Repository Interfaces**: Data access abstractions
+- **Entities**: Core business objects with identity
+- **Value Objects**: Immutable data structures
+- **Domain Services**: Complex business operations
+- **Repository Interfaces**: Data access abstractions
 
 #### User Domain
 
--   **Entities**: Core business objects with identity
--   **Value Objects**: Immutable data structures
--   **Domain Services**: Complex business operations
--   **Repository Interfaces**: Data access abstractions
+- **Entities**: Core business objects with identity
+- **Value Objects**: Immutable data structures
+- **Domain Services**: Complex business operations
+- **Repository Interfaces**: Data access abstractions
 
 #### Billing Domain
 
--   **Entities**: Core business objects with identity
--   **Value Objects**: Immutable data structures
--   **Domain Services**: Complex business operations
--   **Repository Interfaces**: Data access abstractions
+- **Entities**: Core business objects with identity
+- **Value Objects**: Immutable data structures
+- **Domain Services**: Complex business operations
+- **Repository Interfaces**: Data access abstractions
 
 ## Layer Structure
 
@@ -57,6 +57,6 @@ graph TD
 
 ## Testing Strategy
 
--   **Unit Tests**: Test domain logic in isolation
--   **Integration Tests**: Test with real databases and external services
--   **Architecture Tests**: Verify layer dependencies are correct
+- **Unit Tests**: Test domain logic in isolation
+- **Integration Tests**: Test with real databases and external services
+- **Architecture Tests**: Verify layer dependencies are correct

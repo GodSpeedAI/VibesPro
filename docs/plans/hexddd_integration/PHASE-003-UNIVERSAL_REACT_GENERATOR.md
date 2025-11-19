@@ -13,20 +13,20 @@
 
 Create wrapper generators that **compose** official Nx generators and apply post-generation transformations to inject shared libraries, hexagonal architecture, and VibesPro conventions:
 
--   **Frontend**: `@nx/next`, `@nx/remix`, `@nx/expo` with shared-web integration
--   **Backend**: `@nxlv/python` with FastAPI + Logfire + Pydantic + Supabase type-sync
+- **Frontend**: `@nx/next`, `@nx/remix`, `@nx/expo` with shared-web integration
+- **Backend**: `@nxlv/python` with FastAPI + Logfire + Pydantic + Supabase type-sync
 
 ### Success Criteria
 
--   [ ] Shared web assets library created (`libs/shared/web`) ✅ **COMPLETE**
--   [ ] Next.js wrapper generator delegates to `@nx/next` and injects shared-web
--   [ ] Remix wrapper generator delegates to `@nx/remix` and injects shared-web
--   [ ] Expo wrapper generator delegates to `@nx/expo` and injects shared-web
--   [ ] FastAPI wrapper generator delegates to `@nxlv/python` and injects Logfire + hexagonal patterns
--   [ ] All wrappers apply idempotent transformations
--   [ ] Generated apps build successfully with official Nx generators + our enhancements
--   [ ] Backend services auto-instrument with Logfire and export OpenAPI schemas
--   [ ] **Evidence**: `nx g @vibes-pro/generators:web-app` and `nx g @vibes-pro/generators:api-service` work; apps build and integrate correctly
+- [ ] Shared web assets library created (`libs/shared/web`) ✅ **COMPLETE**
+- [ ] Next.js wrapper generator delegates to `@nx/next` and injects shared-web
+- [ ] Remix wrapper generator delegates to `@nx/remix` and injects shared-web
+- [ ] Expo wrapper generator delegates to `@nx/expo` and injects shared-web
+- [ ] FastAPI wrapper generator delegates to `@nxlv/python` and injects Logfire + hexagonal patterns
+- [ ] All wrappers apply idempotent transformations
+- [ ] Generated apps build successfully with official Nx generators + our enhancements
+- [ ] Backend services auto-instrument with Logfire and export OpenAPI schemas
+- [ ] **Evidence**: `nx g @vibes-pro/generators:web-app` and `nx g @vibes-pro/generators:api-service` work; apps build and integrate correctly
 
 ### Traceability
 
@@ -58,10 +58,10 @@ Create wrapper generators that **compose** official Nx generators and apply post
 
 **Deliverables**:
 
--   Type-safe API client
--   Zod validation schemas
--   Environment configuration (Next.js, Remix, Expo compatible)
--   Error handling utilities
+- Type-safe API client
+- Zod validation schemas
+- Environment configuration (Next.js, Remix, Expo compatible)
+- Error handling utilities
 
 **See**: `PHASE-003-FINAL-SUMMARY.md` for details.
 
@@ -594,10 +594,10 @@ function injectSharedWebImports(tree: Tree, appPath: string) {
 **Target**: Nx 22.x (current)
 **Tested Against**:
 
--   `@nx/next@22.0.2`
--   `@nx/remix@22.0.2`
--   `@nx/expo@22.0.2`
--   `@nxlv/python@21.0.4` (uses `uv-project` generator)
+- `@nx/next@22.0.2`
+- `@nx/remix@22.0.2`
+- `@nx/expo@22.0.2`
+- `@nxlv/python@21.0.4` (uses `uv-project` generator)
 
 **Upgrade Path**: When Nx 23.x releases, test wrappers against new API; update only if breaking changes.
 
@@ -609,30 +609,30 @@ function injectSharedWebImports(tree: Tree, appPath: string) {
 
 ### Frontend Generators
 
--   [ ] Wrapper generators invoke official Nx generators successfully (`@nx/next`, `@nx/remix`, `@nx/expo`)
--   [ ] Generated apps compile and run (`nx build`, `nx serve`)
--   [ ] Shared-web imports present in all generated entry files
--   [ ] Double-run produces zero file changes (idempotent)
--   [ ] Official Nx features (e.g., React Server Components) work without modification
+- [ ] Wrapper generators invoke official Nx generators successfully (`@nx/next`, `@nx/remix`, `@nx/expo`)
+- [ ] Generated apps compile and run (`nx build`, `nx serve`)
+- [ ] Shared-web imports present in all generated entry files
+- [ ] Double-run produces zero file changes (idempotent)
+- [ ] Official Nx features (e.g., React Server Components) work without modification
 
 ### Backend Generator
 
--   [ ] Wrapper generator invokes `@nxlv/python:uv-project` (v21.0.4+) successfully
--   [ ] FastAPI dependencies added to generated `pyproject.toml`
--   [ ] FastAPI app scaffolded with `main.py` and basic endpoints
--   [ ] Generated services include Logfire bootstrap from `libs/python/vibepro_logging.py`
--   [ ] Hexagonal structure (domain/application/infrastructure) scaffolded correctly
--   [ ] Pydantic schemas configured for Supabase type-sync
--   [ ] OpenAPI schema export endpoint (`/api/openapi.json`) responds correctly
--   [ ] FastAPI services compile and run (`uv run uvicorn main:app`)
--   [ ] Double-run produces zero file changes (idempotent)
--   [ ] Logfire OpenTelemetry instrumentation active (verified via tests)
+- [ ] Wrapper generator invokes `@nxlv/python:uv-project` (v21.0.4+) successfully
+- [ ] FastAPI dependencies added to generated `pyproject.toml`
+- [ ] FastAPI app scaffolded with `main.py` and basic endpoints
+- [ ] Generated services include Logfire bootstrap from `libs/python/vibepro_logging.py`
+- [ ] Hexagonal structure (domain/application/infrastructure) scaffolded correctly
+- [ ] Pydantic schemas configured for Supabase type-sync
+- [ ] OpenAPI schema export endpoint (`/api/openapi.json`) responds correctly
+- [ ] FastAPI services compile and run (`uv run uvicorn main:app`)
+- [ ] Double-run produces zero file changes (idempotent)
+- [ ] Logfire OpenTelemetry instrumentation active (verified via tests)
 
 ### Integration
 
--   [ ] Nx generator updates don't break wrappers (verify quarterly)
--   [ ] End-to-end smoke test: Frontend app calls backend API successfully
--   [ ] Type-sync workflow: Backend OpenAPI schema → Frontend types (planned PHASE-004)
+- [ ] Nx generator updates don't break wrappers (verify quarterly)
+- [ ] End-to-end smoke test: Frontend app calls backend API successfully
+- [ ] Type-sync workflow: Backend OpenAPI schema → Frontend types (planned PHASE-004)
 
 # tests/generators/react_spec.sh
 

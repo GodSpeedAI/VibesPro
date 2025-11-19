@@ -6,10 +6,10 @@
 
 **VibesPro Repository Architecture:**
 
--   **THIS repo** = Jinja2 templates + synthesis tooling + AI workflow system
--   **Synthesized applications** = Complete Nx monorepos created by `copier copy`
--   **Your changes** propagate to all future synthesized projects
--   **Test locally** with `just test-generation` → `../test-output` before committing
+- **THIS repo** = Jinja2 templates + synthesis tooling + AI workflow system
+- **Synthesized applications** = Complete Nx monorepos created by `copier copy`
+- **Your changes** propagate to all future synthesized projects
+- **Test locally** with `just test-generation` → `../test-output` before committing
 
 ## Essential Workflows
 
@@ -78,9 +78,9 @@ class CreateUserUseCase {
 
 ### Type Safety (Strict)
 
--   TypeScript: `strict: true`, NO `any` (use `unknown` + type guards)
--   Python: `mypy --strict`, full type coverage required
--   All public APIs must be 100% typed
+- TypeScript: `strict: true`, NO `any` (use `unknown` + type guards)
+- Python: `mypy --strict`, full type coverage required
+- All public APIs must be 100% typed
 
 ## Key Just Recipes (Primary Interface)
 
@@ -102,10 +102,10 @@ just prompt-lint        # Validate .github/prompts/*.prompt.md
 
 **Every change traces to formal specs:**
 
--   **DEV-PRD-\***: Product requirements (`docs/dev_prd.md`)
--   **DEV-SDS-\***: Software design (`docs/dev_sds.md`)
--   **DEV-ADR-\***: Architecture decisions (`docs/dev_adr.md`)
--   **DEV-TS-\***: Technical specs (`docs/dev_technical-specifications.md`)
+- **DEV-PRD-\***: Product requirements (`docs/dev_prd.md`)
+- **DEV-SDS-\***: Software design (`docs/dev_sds.md`)
+- **DEV-ADR-\***: Architecture decisions (`docs/dev_adr.md`)
+- **DEV-TS-\***: Technical specs (`docs/dev_technical-specifications.md`)
 
 **Commit format:** `type(scope): message [SPEC-ID]`
 
@@ -120,33 +120,33 @@ git commit -m "feat(synthesis): add Logfire integration [DEV-PRD-018]"
 
 ### Template System
 
--   `copier.yml` - Questions and variables for generation
--   `templates/{{project_slug}}/` - Jinja2 templates (what gets synthesized)
--   `hooks/post_gen.py` - Post-generation processing
--   `tests/fixtures/test-data.yml` - Default test answers
+- `copier.yml` - Questions and variables for generation
+- `templates/{{project_slug}}/` - Jinja2 templates (what gets synthesized)
+- `hooks/post_gen.py` - Post-generation processing
+- `tests/fixtures/test-data.yml` - Default test answers
 
 ### AI Workflow System
 
--   `.github/instructions/*.instructions.md` - Modular guidance (MECE principle)
--   `.github/prompts/*.prompt.md` - Reusable prompt templates
--   `.github/chatmodes/*.chatmode.md` - Specialized personas stored per file
--   `tools/prompt/` - Prompt linting and planning tools
--   `tools/ai/` - Context bundling and scaffolding
+- `.github/instructions/*.instructions.md` - Modular guidance (MECE principle)
+- `.github/prompts/*.prompt.md` - Reusable prompt templates
+- `.github/chatmodes/*.chatmode.md` - Specialized personas stored per file
+- `tools/prompt/` - Prompt linting and planning tools
+- `tools/ai/` - Context bundling and scaffolding
 
 ### Testing
 
--   `tests/unit/` - Node.js unit tests (Jest)
--   `tests/integration/` - Template generation tests
--   `tests/shell/` - ShellSpec tests for scripts
--   `tests/template/` - Copier template validation
--   `tests/fixtures/` - Test data and mocks
+- `tests/unit/` - Node.js unit tests (Jest)
+- `tests/integration/` - Template generation tests
+- `tests/shell/` - ShellSpec tests for scripts
+- `tests/template/` - Copier template validation
+- `tests/fixtures/` - Test data and mocks
 
 ### Temporal Learning
 
--   `temporal_db/` - Rust redb database
--   Stores: specifications, patterns, architectural decisions
--   Keys: `spec:{id}:{timestamp_nanos}`, `pattern:{id}:{timestamp_nanos}`
--   See `temporal_db/README.md` for query patterns
+- `temporal_db/` - Rust redb database
+- Stores: specifications, patterns, architectural decisions
+- Keys: `spec:{id}:{timestamp_nanos}`, `pattern:{id}:{timestamp_nanos}`
+- See `temporal_db/README.md` for query patterns
 
 ## Environment Stack (Layered Isolation)
 
@@ -178,9 +178,9 @@ git commit -m "feat(synthesis): add Logfire integration [DEV-PRD-018]"
 
 **Match approach to complexity:**
 
--   **TDD (test-first)**: Complex business logic, security-sensitive code
--   **Code-first + tests**: Simple CRUD, straightforward transformations
--   **Benchmarks**: Performance-critical paths (after implementation)
+- **TDD (test-first)**: Complex business logic, security-sensitive code
+- **Code-first + tests**: Simple CRUD, straightforward transformations
+- **Benchmarks**: Performance-critical paths (after implementation)
 
 ### Running Tests
 
@@ -193,10 +193,10 @@ just test-generation   # Full template → application synthesis flow
 
 **Test locations:**
 
--   `tests/unit/` - Node.js (Jest), Python (pytest)
--   `tests/integration/` - Template synthesis smoke tests
--   `tests/shell/` - ShellSpec for scripts
--   `temporal_db/tests/` - Rust (cargo test)
+- `tests/unit/` - Node.js (Jest), Python (pytest)
+- `tests/integration/` - Template synthesis smoke tests
+- `tests/shell/` - ShellSpec for scripts
+- `temporal_db/tests/` - Rust (cargo test)
 
 ## AI Workflow System
 
@@ -214,17 +214,17 @@ Instructions in `.github/instructions/` stack by precedence:
 
 ### Chat Modes & Prompts
 
--   **Personas** live in `.github/chatmodes/` (e.g., `tdd.red`, `debug.start`, `persona.navigator`)
--   **Prompts** in `.github/prompts/` (e.g., `spec.implement.prompt.md`, `tdd.workflow.prompt.md`)
--   **Validate prompts:** `just prompt-lint`
--   **Context bundling:** `just ai-context-bundle` → `docs/ai_context_bundle/`
+- **Personas** live in `.github/chatmodes/` (e.g., `tdd.red`, `debug.start`, `persona.navigator`)
+- **Prompts** in `.github/prompts/` (e.g., `spec.implement.prompt.md`, `tdd.workflow.prompt.md`)
+- **Validate prompts:** `just prompt-lint`
+- **Context bundling:** `just ai-context-bundle` → `docs/ai_context_bundle/`
 
 ### Temporal Learning Database
 
--   **Location:** `temporal_db/` (Rust redb)
--   **Stores:** Specs, patterns, architectural decisions
--   **Key format:** `spec:{id}:{timestamp_nanos}`, `pattern:{id}:{timestamp_nanos}`
--   **Use:** Query before major architectural decisions (see `temporal_db/README.md`)
+- **Location:** `temporal_db/` (Rust redb)
+- **Stores:** Specs, patterns, architectural decisions
+- **Key format:** `spec:{id}:{timestamp_nanos}`, `pattern:{id}:{timestamp_nanos}`
+- **Use:** Query before major architectural decisions (see `temporal_db/README.md`)
 
 ## Quick Reference
 
@@ -243,19 +243,19 @@ Instructions in `.github/instructions/` stack by precedence:
 
 ### Red Flags (STOP)
 
--   ❌ Creating libs/apps without Nx generators
--   ❌ TypeScript `any` (use `unknown` + type guards)
--   ❌ Domain layer importing infrastructure
--   ❌ Modifying `.vscode/*.json` without approval
--   ❌ Missing spec ID in commit
+- ❌ Creating libs/apps without Nx generators
+- ❌ TypeScript `any` (use `unknown` + type guards)
+- ❌ Domain layer importing infrastructure
+- ❌ Modifying `.vscode/*.json` without approval
+- ❌ Missing spec ID in commit
 
 ## Key Resources
 
--   **Detailed instructions:** `.github/instructions/*.instructions.md`
--   **Specs:** `docs/dev_prd.md`, `dev_sds.md`, `dev_adr.md`, `dev_technical-specifications.md`
--   **Environment:** `docs/ENVIRONMENT.md` (Devbox + mise + SOPS + Just)
--   **Traceability:** `docs/traceability_matrix.md`
--   **Nx rules:** `AGENTS.md`
--   **Temporal DB:** `temporal_db/README.md`
+- **Detailed instructions:** `.github/instructions/*.instructions.md`
+- **Specs:** `docs/dev_prd.md`, `dev_sds.md`, `dev_adr.md`, `dev_technical-specifications.md`
+- **Environment:** `docs/ENVIRONMENT.md` (Devbox + mise + SOPS + Just)
+- **Traceability:** `docs/traceability_matrix.md`
+- **Nx rules:** `AGENTS.md`
+- **Temporal DB:** `temporal_db/README.md`
 
 **This file provides the 20% of knowledge needed for 80% of tasks. For edge cases, consult the modular instructions and specs.**

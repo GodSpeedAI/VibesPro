@@ -36,11 +36,11 @@ the normalization can be controlled by the `embd_normalize` parameter.
 The default value is `2` which means that the embeddings are normalized using
 the Euclidean norm (L2). Other options are:
 
--   -1 No normalization
--   0 Max absolute
--   1 Taxicab
--   2 Euclidean/L2
--   \>2 P-Norm
+- -1 No normalization
+- 0 Max absolute
+- 1 Taxicab
+- 2 Euclidean/L2
+- \>2 P-Norm
 
 This can be passed in the request body to `llama-server`, for example:
 

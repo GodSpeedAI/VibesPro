@@ -13,11 +13,11 @@ This document specifies the software design for the Temporal AI Guidance Fabric,
 
 ### 1.1 Design Goals
 
--   **Zero External Dependencies**: All inference runs locally using CPU-only GGUF quantized models
--   **Sub-Second Latency**: Embedding generation <500ms, similarity search <100ms for 10k patterns
--   **Embedded Storage**: Single-file redb database with zero-copy reads
--   **Type Safety**: Rust core with TypeScript bindings
--   **Observable**: Full integration with existing OpenObserve/Logfire stack
+- **Zero External Dependencies**: All inference runs locally using CPU-only GGUF quantized models
+- **Sub-Second Latency**: Embedding generation <500ms, similarity search <100ms for 10k patterns
+- **Embedded Storage**: Single-file redb database with zero-copy reads
+- **Type Safety**: Rust core with TypeScript bindings
+- **Observable**: Full integration with existing OpenObserve/Logfire stack
 
 ### 1.2 System Architecture
 
@@ -62,8 +62,8 @@ graph TB
 
 **Dependencies**:
 
--   `llm` (rustformers): GGUF model loading and inference
--   `anyhow`: Error handling
+- `llm` (rustformers): GGUF model loading and inference
+- `anyhow`: Error handling
 
 **Interface**:
 
@@ -87,23 +87,23 @@ impl Embedder {
 
 **Implementation Details**:
 
--   Model file: `models/embedding-gemma-300M-Q4_K_M.gguf` (~180MB)
--   Context window: 512 tokens
--   Normalization: L2 norm applied to all output vectors
--   Thread pool: CPU cores - 1 for parallel inference
--   Memory mapping: Use mmap for zero-copy model loading
+- Model file: `models/embedding-gemma-300M-Q4_K_M.gguf` (~180MB)
+- Context window: 512 tokens
+- Normalization: L2 norm applied to all output vectors
+- Thread pool: CPU cores - 1 for parallel inference
+- Memory mapping: Use mmap for zero-copy model loading
 
 **Performance Targets**:
 
--   Single embedding: <500ms (P95)
--   Batch of 10: <2s (P95)
--   Memory footprint: <1GB resident
+- Single embedding: <500ms (P95)
+- Batch of 10: <2s (P95)
+- Memory footprint: <1GB resident
 
 **Error Handling**:
 
--   `ModelLoadError`: Invalid GGUF file or unsupported architecture
--   `InferenceError`: Tokenization or forward pass failure
--   `DimensionMismatch`: Output != 768 dimensions
+- `ModelLoadError`: Invalid GGUF file or unsupported architecture
+- `InferenceError`: Tokenization or forward pass failure
+- `DimensionMismatch`: Output != 768 dimensions
 
 ---
 
@@ -113,8 +113,8 @@ impl Embedder {
 
 **Dependencies**:
 
--   `git2`: Repository traversal
--   `regex`: Commit message parsing
+- `git2`: Repository traversal
+- `regex`: Commit message parsing
 
 **Interface**:
 
@@ -157,20 +157,20 @@ Diff summary: <added_lines> added, <removed_lines> removed
 
 **Commit Type Classification**:
 
--   `feat`: New feature
--   `fix`: Bug fix
--   `refactor`: Code restructuring
--   `test`: Test additions
--   `docs`: Documentation
--   `chore`: Maintenance
+- `feat`: New feature
+- `fix`: Bug fix
+- `refactor`: Code restructuring
+- `test`: Test additions
+- `docs`: Documentation
+- `chore`: Maintenance
 
 **Implementation Details**:
 
--   Parse conventional commits format
--   Extract file extensions → language tags
--   Detect framework usage from imports (React, FastAPI, etc.)
--   Ignore merge commits and automated commits
--   Max description length: 512 characters
+- Parse conventional commits format
+- Extract file extensions → language tags
+- Detect framework usage from imports (React, FastAPI, etc.)
+- Ignore merge commits and automated commits
+- Max description length: 512 characters
 
 ---
 
@@ -180,8 +180,8 @@ Diff summary: <added_lines> added, <removed_lines> removed
 
 **Dependencies**:
 
--   `redb`: Embedded database
--   `serde`: Serialization
+- `redb`: Embedded database
+- `serde`: Serialization
 
 **Schema**:
 
@@ -257,9 +257,9 @@ impl VectorStore {
 
 **Performance Targets**:
 
--   Insert: <10ms (single), <500ms (batch of 100)
--   Read: <1ms (zero-copy)
--   Database size: ~500MB for 10k patterns (768 dims × 4 bytes × 10k + metadata)
+- Insert: <10ms (single), <500ms (batch of 100)
+- Read: <1ms (zero-copy)
+- Database size: ~500MB for 10k patterns (768 dims × 4 bytes × 10k + metadata)
 
 ---
 
@@ -327,9 +327,9 @@ fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
 
 **Performance Targets**:
 
--   Search 10k patterns: <100ms (P95)
--   Search 100k patterns: <500ms (P95)
--   Memory: O(k) for results heap
+- Search 10k patterns: <100ms (P95)
+- Search 100k patterns: <500ms (P95)
+- Memory: O(k) for results heap
 
 ---
 
@@ -339,7 +339,7 @@ fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
 
 **Dependencies**:
 
--   `chrono`: Timestamp handling
+- `chrono`: Timestamp handling
 
 **Interface**:
 
@@ -414,8 +414,8 @@ fn generate_explanation(rec: &Recommendation) -> String {
 
 **Dependencies**:
 
--   `@napi-rs/cli`: Rust ↔ Node.js FFI
--   `zod`: Runtime validation
+- `@napi-rs/cli`: Rust ↔ Node.js FFI
+- `zod`: Runtime validation
 
 **Interface**:
 
@@ -648,29 +648,29 @@ pub struct PerformanceMetrics {
 
 **FILE_PATH_INDEX**:
 
--   Key: `"src/api/auth.rs"`
--   Value: JSON array of pattern IDs: `["abc123...", "def456..."]`
+- Key: `"src/api/auth.rs"`
+- Value: JSON array of pattern IDs: `["abc123...", "def456..."]`
 
 **TAG_INDEX**:
 
--   Key: `"fastapi"`
--   Value: JSON array of pattern IDs: `["abc123...", "def456..."]`
+- Key: `"fastapi"`
+- Value: JSON array of pattern IDs: `["abc123...", "def456..."]`
 
 **Total Database Size Estimate** (10k patterns):
 
--   Embeddings: 10k × 3,085 = 30.85 MB
--   Metadata: 10k × 500 = 5 MB
--   Metrics: 10k × 100 = 1 MB
--   Indexes: ~2 MB
--   **Total: ~39 MB** (redb overhead ~20%, final ≈ 47 MB)
+- Embeddings: 10k × 3,085 = 30.85 MB
+- Metadata: 10k × 500 = 5 MB
+- Metrics: 10k × 100 = 1 MB
+- Indexes: ~2 MB
+- **Total: ~39 MB** (redb overhead ~20%, final ≈ 47 MB)
 
 ## 5. Implementation Phases
 
 ### Phase 3A: Specification Authoring ✅
 
--   [x] DEV-PRD-020 created
--   [x] DEV-SDS-020 created (this document)
--   [ ] DEV-ADR-018 status update (Proposed → Active)
+- [x] DEV-PRD-020 created
+- [x] DEV-SDS-020 created (this document)
+- [ ] DEV-ADR-018 status update (Proposed → Active)
 
 ### Phase 3B: Embedding Infrastructure
 
@@ -686,25 +686,25 @@ pub struct PerformanceMetrics {
 
 **Files**:
 
--   `crates/temporal-ai/Cargo.toml`
--   `crates/temporal-ai/src/lib.rs`
--   `crates/temporal-ai/src/embedder.rs`
--   `crates/temporal-ai/src/vector_store.rs`
--   `crates/temporal-ai/src/similarity.rs`
--   `crates/temporal-ai/src/pattern_extractor.rs`
--   `crates/temporal-ai/src/schema.rs`
--   `crates/temporal-ai/tests/embedder_tests.rs`
--   `crates/temporal-ai/tests/vector_store_tests.rs`
--   `crates/temporal-ai/tests/similarity_tests.rs`
--   `scripts/download_embedding_model.sh`
+- `crates/temporal-ai/Cargo.toml`
+- `crates/temporal-ai/src/lib.rs`
+- `crates/temporal-ai/src/embedder.rs`
+- `crates/temporal-ai/src/vector_store.rs`
+- `crates/temporal-ai/src/similarity.rs`
+- `crates/temporal-ai/src/pattern_extractor.rs`
+- `crates/temporal-ai/src/schema.rs`
+- `crates/temporal-ai/tests/embedder_tests.rs`
+- `crates/temporal-ai/tests/vector_store_tests.rs`
+- `crates/temporal-ai/tests/similarity_tests.rs`
+- `scripts/download_embedding_model.sh`
 
 **Exit Criteria**:
 
--   Model loads successfully (<5s cold start)
--   Embedding generation: <500ms P95
--   Vector store: insert/read operations functional
--   Similarity search: <100ms for 1k patterns
--   All tests passing
+- Model loads successfully (<5s cold start)
+- Embedding generation: <500ms P95
+- Vector store: insert/read operations functional
+- Similarity search: <100ms for 1k patterns
+- All tests passing
 
 ### Phase 3C: Pattern Recommendation Engine
 
@@ -719,13 +719,13 @@ pub struct PerformanceMetrics {
 
 **Files**:
 
--   `crates/temporal-ai/src/ranker.rs`
--   `crates/temporal-ai/src/bin/main.rs`
--   `crates/temporal-ai/src/ffi.rs`
--   `tools/ai/temporal-ai-client.ts`
--   `tools/ai/package.json`
--   `crates/temporal-ai/tests/integration_tests.rs`
--   `tools/ai/temporal-ai.test.ts`
+- `crates/temporal-ai/src/ranker.rs`
+- `crates/temporal-ai/src/bin/main.rs`
+- `crates/temporal-ai/src/ffi.rs`
+- `tools/ai/temporal-ai-client.ts`
+- `tools/ai/package.json`
+- `crates/temporal-ai/tests/integration_tests.rs`
+- `tools/ai/temporal-ai.test.ts`
 
 **Just Recipes**:
 
@@ -745,10 +745,10 @@ test-temporal-ai:
 
 **Exit Criteria**:
 
--   CLI returns recommendations
--   TypeScript client functional
--   Recommendations include similarity + recency + usage scores
--   Integration tests passing
+- CLI returns recommendations
+- TypeScript client functional
+- Recommendations include similarity + recency + usage scores
+- Integration tests passing
 
 ### Phase 3D: Observability Integration
 
@@ -762,8 +762,8 @@ test-temporal-ai:
 
 **Files**:
 
--   `crates/temporal-ai/src/observability_aggregator.rs`
--   `crates/temporal-ai/tests/observability_tests.rs`
+- `crates/temporal-ai/src/observability_aggregator.rs`
+- `crates/temporal-ai/tests/observability_tests.rs`
 
 **Observability Queries**:
 
@@ -783,17 +783,17 @@ LIMIT 100;
 
 **Tracing Spans**:
 
--   `temporal_ai.embed`: Embedding generation
--   `temporal_ai.search`: Similarity search
--   `temporal_ai.rank`: Recommendation ranking
--   `temporal_ai.refresh`: Pattern database refresh
+- `temporal_ai.embed`: Embedding generation
+- `temporal_ai.search`: Similarity search
+- `temporal_ai.rank`: Recommendation ranking
+- `temporal_ai.refresh`: Pattern database refresh
 
 **Exit Criteria**:
 
--   Metrics aggregation functional
--   Performance data influences ranking
--   All operations traced
--   Dashboard queries return valid data
+- Metrics aggregation functional
+- Performance data influences ranking
+- All operations traced
+- Dashboard queries return valid data
 
 ## 6. Error Handling Strategy
 
@@ -831,21 +831,21 @@ pub type Result<T> = std::result::Result<T, TemporalAIError>;
 
 **Model Loading Failure**:
 
--   Retry with exponential backoff (3 attempts)
--   If persistent, log error and disable embedding features
--   Fall back to keyword-based search
+- Retry with exponential backoff (3 attempts)
+- If persistent, log error and disable embedding features
+- Fall back to keyword-based search
 
 **Database Corruption**:
 
--   Detect via redb integrity checks on startup
--   Attempt recovery using redb repair utilities
--   If unrecoverable, create new database and trigger full refresh
+- Detect via redb integrity checks on startup
+- Attempt recovery using redb repair utilities
+- If unrecoverable, create new database and trigger full refresh
 
 **Git Repository Unavailable**:
 
--   Cache last successful pattern extraction
--   Continue serving recommendations from existing database
--   Log warning and notify user
+- Cache last successful pattern extraction
+- Continue serving recommendations from existing database
+- Log warning and notify user
 
 ## 7. Performance Benchmarks
 
@@ -868,10 +868,10 @@ pub type Result<T> = std::result::Result<T, TemporalAIError>;
 
 **Tests**:
 
--   `bench_embedder.rs`: Embedding generation performance
--   `bench_vector_store.rs`: Database operations
--   `bench_similarity.rs`: Search algorithms with varying dataset sizes
--   `bench_end_to_end.rs`: Full recommendation pipeline
+- `bench_embedder.rs`: Embedding generation performance
+- `bench_vector_store.rs`: Database operations
+- `bench_similarity.rs`: Search algorithms with varying dataset sizes
+- `bench_end_to_end.rs`: Full recommendation pipeline
 
 **Run Command**:
 
@@ -901,15 +901,15 @@ cargo bench --package temporal-ai
 
 **Local-Only Processing**:
 
--   All embeddings generated locally (no external API calls)
--   No telemetry or usage data sent to external services
--   Pattern database stays on user's machine
+- All embeddings generated locally (no external API calls)
+- No telemetry or usage data sent to external services
+- Pattern database stays on user's machine
 
 **Sensitive Data Handling**:
 
--   Sanitize commit messages (remove API keys, secrets)
--   Skip files matching `.gitignore` patterns
--   Redact file paths containing sensitive directories
+- Sanitize commit messages (remove API keys, secrets)
+- Skip files matching `.gitignore` patterns
+- Redact file paths containing sensitive directories
 
 ## 9. Testing Strategy
 
@@ -919,11 +919,11 @@ cargo bench --package temporal-ai
 
 **Key Test Cases**:
 
--   `embedder.rs`: Model loading, inference correctness, batch processing
--   `vector_store.rs`: CRUD operations, transaction rollback, concurrency
--   `similarity.rs`: Cosine similarity calculation, top-k selection, filtering
--   `pattern_extractor.rs`: Commit parsing, conventional commits, edge cases
--   `ranker.rs`: Scoring formula, weight normalization, explanation generation
+- `embedder.rs`: Model loading, inference correctness, batch processing
+- `vector_store.rs`: CRUD operations, transaction rollback, concurrency
+- `similarity.rs`: Cosine similarity calculation, top-k selection, filtering
+- `pattern_extractor.rs`: Commit parsing, conventional commits, edge cases
+- `ranker.rs`: Scoring formula, weight normalization, explanation generation
 
 ### 9.2 Integration Tests
 
@@ -938,9 +938,9 @@ cargo bench --package temporal-ai
 
 **Regression Detection**:
 
--   Run benchmarks on every commit to `main`
--   Alert if P95 latency increases >20%
--   Track historical performance in CI artifacts
+- Run benchmarks on every commit to `main`
+- Alert if P95 latency increases >20%
+- Track historical performance in CI artifacts
 
 ## 10. Deployment
 
@@ -977,9 +977,9 @@ echo "Model downloaded successfully: $MODEL_DIR/$MODEL_FILE"
 
 **Auto-Download on First Use**:
 
--   TypeScript client checks for model existence
--   If missing, prompts user and downloads automatically
--   Stores in XDG_DATA_HOME or project-local `models/`
+- TypeScript client checks for model existence
+- If missing, prompts user and downloads automatically
+- Stores in XDG_DATA_HOME or project-local `models/`
 
 ### 10.2 Database Initialization
 
@@ -995,9 +995,9 @@ temporal-ai refresh --commits 1000
 
 **Automatic Refresh**:
 
--   Git hook: `post-commit` → trigger background refresh
--   Cron job: Daily refresh of last 100 commits
--   Just recipe: `just temporal-ai-refresh`
+- Git hook: `post-commit` → trigger background refresh
+- Cron job: Daily refresh of last 100 commits
+- Just recipe: `just temporal-ai-refresh`
 
 ## 11. Future Enhancements
 
@@ -1011,11 +1011,11 @@ temporal-ai refresh --commits 1000
 
 ## 12. References
 
--   **Embedding Model**: https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF
--   **Rustformers LLM**: https://github.com/rustformers/llm
--   **Redb**: https://docs.rs/redb/latest/redb/
--   **NAPI-RS**: https://napi.rs/
--   **Conventional Commits**: https://www.conventionalcommits.org/
+- **Embedding Model**: https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF
+- **Rustformers LLM**: https://github.com/rustformers/llm
+- **Redb**: https://docs.rs/redb/latest/redb/
+- **NAPI-RS**: https://napi.rs/
+- **Conventional Commits**: https://www.conventionalcommits.org/
 
 ---
 

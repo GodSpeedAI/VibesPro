@@ -10,17 +10,17 @@
 
 Cycle 2A finalizes Logfire’s Python instrumentation across the VibesPro template repository, ensuring:
 
--   Full compliance with specs DEV-PRD-018 / DEV-SDS-018 / DEV-PRD-023 / DEV-PRD-021
--   Deterministic, isolated, network-free testing
--   Clean documentation closure and traceability
--   Complete regression and rollback strategy
+- Full compliance with specs DEV-PRD-018 / DEV-SDS-018 / DEV-PRD-023 / DEV-PRD-021
+- Deterministic, isolated, network-free testing
+- Clean documentation closure and traceability
+- Complete regression and rollback strategy
 
 Key adjustments:
 
--   Replaced CLI-embedded tests with proper pytest modules
--   Added `_reset_logfire_state()` utility to manage singleton cache
--   Defined Cycle C, regression, risk, and sign-off sections
--   Replaced external network tests with mocked deterministic fixtures
+- Replaced CLI-embedded tests with proper pytest modules
+- Added `_reset_logfire_state()` utility to manage singleton cache
+- Defined Cycle C, regression, risk, and sign-off sections
+- Replaced external network tests with mocked deterministic fixtures
 
 ---
 
@@ -75,16 +75,16 @@ _reset_logfire_state()
 
 Implement fixes in `libs/python/vibepro_logging.py`:
 
--   `_reset_logfire_state()` clears cached instance
--   Sanitize service names, enforce precedence (arg > env > default)
--   Ensure graceful `send_to_logfire="if-token-present"`
--   Validate toggles for requests/pydantic instrumentation
+- `_reset_logfire_state()` clears cached instance
+- Sanitize service names, enforce precedence (arg > env > default)
+- Ensure graceful `send_to_logfire="if-token-present"`
+- Validate toggles for requests/pydantic instrumentation
 
 #### A.3 Verification & Regression
 
--   Run full suite (`pytest`, `just ai-validate`)
--   Commit message includes spec IDs DEV-PRD-018 / DEV-SDS-018 / DEV-PRD-020 / DEV-SDS-022
--   Label → A-GREEN
+- Run full suite (`pytest`, `just ai-validate`)
+- Commit message includes spec IDs DEV-PRD-018 / DEV-SDS-018 / DEV-PRD-020 / DEV-SDS-022
+- Label → A-GREEN
 
 ---
 
@@ -96,10 +96,10 @@ Implement fixes in `libs/python/vibepro_logging.py`:
 
 Add deterministic tests (no external calls) in `tests/python/test_logfire_bootstrap.py`:
 
--   SQLAlchemy (in-memory engine)
--   httpx (MockTransport)
--   requests (mocked adapter)
--   pydantic_ai instrumentation toggle tests
+- SQLAlchemy (in-memory engine)
+- httpx (MockTransport)
+- requests (mocked adapter)
+- pydantic_ai instrumentation toggle tests
 
 #### B.2 GREEN Phase
 
@@ -172,13 +172,13 @@ Rollback: revert to last A/B/C-GREEN merge and disable instrumentation temporari
 
 **Note**: These items represent pending deliverables. Each item will be marked complete upon successful implementation and verification.
 
--   [ ] `_reset_logfire_state()` implemented — **Owner**: Agent A, **Success Criteria**: Function clears cached instance and tests pass with isolation
--   [x] Deterministic pytest modules replace CLI tests — **Owner**: Agent A, **Success Criteria**: All tests run without external network calls
--   [ ] Integration tests cover all frameworks — **Owner**: Agent B, **Success Criteria**: SQLAlchemy, httpx, requests tests use MockTransport/mocks
--   [x] Docs sync + lint tasks defined — **Owner**: Agent C, **Success Criteria**: `just docs-lint` passes with no warnings
--   [x] Regression suite enumerated — **Owner**: Agent B, **Success Criteria**: All validation commands documented and tested
--   [x] Risk + rollback documented — **Owner**: Agent C, **Success Criteria**: Complete rollback procedure with triggers defined
--   [x] Traceability matrix complete — **Owner**: Quality Lead, **Success Criteria**: All spec IDs mapped to implementation artifacts
+- [ ] `_reset_logfire_state()` implemented — **Owner**: Agent A, **Success Criteria**: Function clears cached instance and tests pass with isolation
+- [x] Deterministic pytest modules replace CLI tests — **Owner**: Agent A, **Success Criteria**: All tests run without external network calls
+- [ ] Integration tests cover all frameworks — **Owner**: Agent B, **Success Criteria**: SQLAlchemy, httpx, requests tests use MockTransport/mocks
+- [x] Docs sync + lint tasks defined — **Owner**: Agent C, **Success Criteria**: `just docs-lint` passes with no warnings
+- [x] Regression suite enumerated — **Owner**: Agent B, **Success Criteria**: All validation commands documented and tested
+- [x] Risk + rollback documented — **Owner**: Agent C, **Success Criteria**: Complete rollback procedure with triggers defined
+- [x] Traceability matrix complete — **Owner**: Quality Lead, **Success Criteria**: All spec IDs mapped to implementation artifacts
 
 ---
 

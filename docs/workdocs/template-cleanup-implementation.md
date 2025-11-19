@@ -24,18 +24,18 @@ This matches the maintainer's copilot-instructions.md which already has this lin
 
 Replaced pre-generated spec files with user-friendly starters that include:
 
--   **Clear purpose statements** explaining what each spec type is for
--   **Instructions on how to generate** content using chat modes and prompts
--   **Complete template structures** showing the expected format
--   **Example entries** demonstrating best practices
--   **Inline documentation** guiding users through the workflow
+- **Clear purpose statements** explaining what each spec type is for
+- **Instructions on how to generate** content using chat modes and prompts
+- **Complete template structures** showing the expected format
+- **Example entries** demonstrating best practices
+- **Inline documentation** guiding users through the workflow
 
 **Files Created**:
 
--   `templates/{{project_slug}}/docs/dev_adr.md.j2.new` (69 lines)
--   `templates/{{project_slug}}/docs/dev_prd.md.j2.new` (106 lines)
--   `templates/{{project_slug}}/docs/dev_sds.md.j2.new` (147 lines)
--   `templates/{{project_slug}}/docs/dev_technical-specifications.md.j2.new` (178 lines)
+- `templates/{{project_slug}}/docs/dev_adr.md.j2.new` (69 lines)
+- `templates/{{project_slug}}/docs/dev_prd.md.j2.new` (106 lines)
+- `templates/{{project_slug}}/docs/dev_sds.md.j2.new` (147 lines)
+- `templates/{{project_slug}}/docs/dev_technical-specifications.md.j2.new` (178 lines)
 
 Each file follows this structure:
 
@@ -52,17 +52,16 @@ Each file follows this structure:
 
 **Features**:
 
--   ✅ **Safe**: Idempotent - can be run multiple times safely
--   ✅ **Verbose**: Color-coded output with clear progress indicators
--   ✅ **Comprehensive**: Removes 18+ maintainer-specific files/directories
--   ✅ **Smart**: Replaces spec files with minimal starters
--   ✅ **Clean**: Removes temporary .new files after processing
--   ✅ **Informative**: Provides summary and next steps
+- ✅ **Safe**: Idempotent - can be run multiple times safely
+- ✅ **Verbose**: Color-coded output with clear progress indicators
+- ✅ **Comprehensive**: Removes 18+ maintainer-specific files/directories
+- ✅ **Smart**: Replaces spec files with minimal starters
+- ✅ **Clean**: Removes temporary .new files after processing
+- ✅ **Informative**: Provides summary and next steps
 
 **What It Removes**:
 
 1. **Maintainer-specific docs** (12 files):
-
     - dev_devkit-integration-plan.md
     - dev_implementation_plan.md
     - devkit-prompts-instructions-integration.md
@@ -77,7 +76,6 @@ Each file follows this structure:
     - work-summaries/
 
 2. **Test artifacts** (6 directories in docs/specs/):
-
     - 10914THREAD_VALUE/
     - 11409THREAD_VALUE/
     - 9336THREAD/
@@ -188,19 +186,19 @@ templates/{{project_slug}}/docs/
 
 **What's Gone**:
 
--   ❌ dev_devkit-integration-plan.md
--   ❌ dev_implementation_plan.md
--   ❌ devkit-prompts-instructions-integration.md
--   ❌ ideation-insights.md
--   ❌ mapping.md
--   ❌ template_structure_analysis.md
--   ❌ vibecoder_integration_plan.md
--   ❌ environment_report.md
--   ❌ migration-from-yaml.md
--   ❌ vibelog.txt
--   ❌ techstack.schema copy.json
--   ❌ work-summaries/
--   ❌ All THREAD test directories in specs/
+- ❌ dev_devkit-integration-plan.md
+- ❌ dev_implementation_plan.md
+- ❌ devkit-prompts-instructions-integration.md
+- ❌ ideation-insights.md
+- ❌ mapping.md
+- ❌ template_structure_analysis.md
+- ❌ vibecoder_integration_plan.md
+- ❌ environment_report.md
+- ❌ migration-from-yaml.md
+- ❌ vibelog.txt
+- ❌ techstack.schema copy.json
+- ❌ work-summaries/
+- ❌ All THREAD test directories in specs/
 
 ---
 
@@ -379,28 +377,28 @@ Testing: Run 'just template-cleanup' then 'pnpm generate'
 
 ### ✅ Implementation Complete
 
--   [x] Created minimal spec starter files
--   [x] Created cleanup script with proper error handling
--   [x] Made script executable
--   [x] Added just recipes (interactive + force)
--   [x] Updated copilot-instructions.md.j2
--   [x] Documented implementation in this file
+- [x] Created minimal spec starter files
+- [x] Created cleanup script with proper error handling
+- [x] Made script executable
+- [x] Added just recipes (interactive + force)
+- [x] Updated copilot-instructions.md.j2
+- [x] Documented implementation in this file
 
 ### ⏳ Ready to Execute
 
--   [ ] Review this implementation summary
--   [ ] Run `just template-cleanup`
--   [ ] Verify spec starter files are correct
--   [ ] Test template generation
--   [ ] Commit changes
+- [ ] Review this implementation summary
+- [ ] Run `just template-cleanup`
+- [ ] Verify spec starter files are correct
+- [ ] Test template generation
+- [ ] Commit changes
 
 ### ⏳ Validation
 
--   [ ] Generated project has minimal spec starters
--   [ ] No maintainer-specific files in template
--   [ ] Spec starters have clear instructions
--   [ ] Users can successfully generate specs
--   [ ] Documentation is accurate
+- [ ] Generated project has minimal spec starters
+- [ ] No maintainer-specific files in template
+- [ ] Spec starters have clear instructions
+- [ ] Users can successfully generate specs
+- [ ] Documentation is accurate
 
 ---
 
@@ -410,10 +408,10 @@ Testing: Run 'just template-cleanup' then 'pnpm generate'
 
 **A**: Users need guidance on how to create specs. Empty files would be confusing. The minimal starters provide:
 
--   Clear purpose statements
--   Instructions on using chat modes/prompts
--   Template structures to follow
--   Examples showing best practices
+- Clear purpose statements
+- Instructions on using chat modes/prompts
+- Template structures to follow
+- Examples showing best practices
 
 ### Q: Can this be automated in CI?
 

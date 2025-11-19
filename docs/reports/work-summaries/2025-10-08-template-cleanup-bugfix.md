@@ -30,10 +30,10 @@ REMOVED_COUNT=0
 
 When `REMOVED_COUNT` is 0:
 
--   `((REMOVED_COUNT++))` increments the variable to 1
--   But RETURNS the old value (0)
--   With `set -e`, a return value of 0 causes immediate exit
--   Script terminates with exit code 1
+- `((REMOVED_COUNT++))` increments the variable to 1
+- But RETURNS the old value (0)
+- With `set -e`, a return value of 0 causes immediate exit
+- Script terminates with exit code 1
 
 ## The Fix
 
@@ -51,14 +51,14 @@ REMOVED_COUNT=$((REMOVED_COUNT + 1))
 
 This form:
 
--   Increments the counter
--   Returns the NEW value (1, 2, 3, etc.)
--   Never returns 0, so `set -e` doesn't trigger
--   Script completes successfully
+- Increments the counter
+- Returns the NEW value (1, 2, 3, etc.)
+- Never returns 0, so `set -e` doesn't trigger
+- Script completes successfully
 
 ## Files Modified
 
--   `scripts/template-cleanup.sh` - Fixed 3 occurrences of `((REMOVED_COUNT++))`
+- `scripts/template-cleanup.sh` - Fixed 3 occurrences of `((REMOVED_COUNT++))`
 
 ## Testing
 

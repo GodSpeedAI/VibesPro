@@ -9,32 +9,32 @@
 
 ### ✅ Fully Complete (5 tasks - 40/40 tests passing)
 
--   **TASK-004:** Maintainer Doc Alignment (5/5 tests ✅)
--   **TASK-007:** Shell Script Import (8/8 tests ✅)
--   **TASK-009:** MCP Descriptor Import (13/13 tests ✅)
--   **TASK-010:** Stack-Aware Generator Integration (3/3 tests ✅)
--   **TASK-011:** Template CI Pipeline Update (11/11 tests ✅)
+- **TASK-004:** Maintainer Doc Alignment (5/5 tests ✅)
+- **TASK-007:** Shell Script Import (8/8 tests ✅)
+- **TASK-009:** MCP Descriptor Import (13/13 tests ✅)
+- **TASK-010:** Stack-Aware Generator Integration (3/3 tests ✅)
+- **TASK-011:** Template CI Pipeline Update (11/11 tests ✅)
 
 ### ✅ Implementation Complete, Tests Blocked (4 tasks - copier.yml issue)
 
--   **TASK-001:** .github Instructions & Prompts (all assets copied)
--   **TASK-002:** Workflows (all workflows present)
--   **TASK-003:** Smoke Test Harness (test file created)
--   **TASK-005:** Template Doc Emission (all docs copied)
+- **TASK-001:** .github Instructions & Prompts (all assets copied)
+- **TASK-002:** Workflows (all workflows present)
+- **TASK-003:** Smoke Test Harness (test file created)
+- **TASK-005:** Template Doc Emission (all docs copied)
 
 **Blocker:** Missing copier.yml variables: `primary_domains`, `project_purpose`, `tech_stack_summary`
 
 ### 🔄 Partial Implementation (2 tasks)
 
--   **TASK-006:** Justfile Recipes (1/12 tests passing)
-    -   Missing 11 recipes: clean, setup, test-generation, ai-_, tdd-_, prompt-lint, spec-guard
--   **TASK-008:** Package Scripts (14/16 tests passing)
-    -   Missing `test:node` script
-    -   Jinja2 variable syntax issue (1 test)
+- **TASK-006:** Justfile Recipes (1/12 tests passing)
+    - Missing 11 recipes: clean, setup, test-generation, ai-_, tdd-_, prompt-lint, spec-guard
+- **TASK-008:** Package Scripts (14/16 tests passing)
+    - Missing `test:node` script
+    - Jinja2 variable syntax issue (1 test)
 
 ### ⬜ Not Started (1 task)
 
--   **TASK-012:** Generated Project CI Validation
+- **TASK-012:** Generated Project CI Validation
 
 ## Critical Findings
 
@@ -43,7 +43,7 @@
 **Impact:** Blocks 5 test suites (10 tests) from executing
 **Files Affected:**
 
--   `templates/{{project_slug}}/.github/copilot-instructions.md.j2` (line 9)
+- `templates/{{project_slug}}/.github/copilot-instructions.md.j2` (line 9)
 
 **Required Variables:**
 
@@ -68,17 +68,17 @@ tech_stack_summary:
 
 ### ✅ All Expected Files Present
 
--   `.github/instructions/` (15+ files)
--   `.github/prompts/` (10+ files)
--   `.github/chatmodes/` (10+ files)
--   `.github/workflows/` (3 files: markdownlint.yml, node-tests.yml, spec-guard.yml)
--   `.github/models.yaml`
--   `templates/{{project_slug}}/docs/` (5+ files)
--   `templates/{{project_slug}}/mcp/` (2 files)
--   `templates/{{project_slug}}/scripts/bundle-context.sh`
--   `generators/_utils/stack.ts`
--   `generators/_utils/stack_defaults.ts`
--   `generators/service/generator.ts`
+- `.github/instructions/` (15+ files)
+- `.github/prompts/` (10+ files)
+- `.github/chatmodes/` (10+ files)
+- `.github/workflows/` (3 files: markdownlint.yml, node-tests.yml, spec-guard.yml)
+- `.github/models.yaml`
+- `templates/{{project_slug}}/docs/` (5+ files)
+- `templates/{{project_slug}}/mcp/` (2 files)
+- `templates/{{project_slug}}/scripts/bundle-context.sh`
+- `generators/_utils/stack.ts`
+- `generators/_utils/stack_defaults.ts`
+- `generators/service/generator.ts`
 
 ## Recommendations
 

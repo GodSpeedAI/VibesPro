@@ -8,13 +8,13 @@
 
 **Current Performance Crisis:**
 
--   **Sled + Encryption:** ~800-950% overhead (8-10x slower than plain)
--   **Real Impact:** 1,000 ops = 90ms (vs 9ms plain) | 100,000 ops = 9s (vs 0.9s plain)
--   **Bottleneck Breakdown:**
-    -   60-70%: Encryption/decryption operations
-    -   10-15%: Nonce counter persistence
-    -   15-20%: Memory allocations
-    -   5-10%: Sled database overhead
+- **Sled + Encryption:** ~800-950% overhead (8-10x slower than plain)
+- **Real Impact:** 1,000 ops = 90ms (vs 9ms plain) | 100,000 ops = 9s (vs 0.9s plain)
+- **Bottleneck Breakdown:**
+    - 60-70%: Encryption/decryption operations
+    - 10-15%: Nonce counter persistence
+    - 15-20%: Memory allocations
+    - 5-10%: Sled database overhead
 
 **Recommendation:** Switch to **redb** with encryption wrapper (same pattern as current SecureDb)
 
@@ -75,9 +75,9 @@ pub struct SecureDb {
 
 **Expected Improvement:**
 
--   **Database overhead:** ~20-30% reduction (B-tree vs LSM)
--   **Overall:** ~750-850% overhead → ~550-650% (still encrypted)
--   **Without encryption:** Should match or beat sled baseline
+- **Database overhead:** ~20-30% reduction (B-tree vs LSM)
+- **Overall:** ~750-850% overhead → ~550-650% (still encrypted)
+- **Without encryption:** Should match or beat sled baseline
 
 **Implementation Effort:** 2-4 hours (API is similar)
 
@@ -100,16 +100,16 @@ pub struct SecureDb {
 
 **When to Choose:**
 
--   Need to scale beyond 100GB
--   Require advanced features (column families, merge operators)
--   Already have C++ build infrastructure
--   Write-heavy workloads
+- Need to scale beyond 100GB
+- Require advanced features (column families, merge operators)
+- Already have C++ build infrastructure
+- Write-heavy workloads
 
 **Expected Performance:**
 
--   Similar to redb for your use case
--   Better for very large datasets (100GB+)
--   Slightly higher overhead due to FFI
+- Similar to redb for your use case
+- Better for very large datasets (100GB+)
+- Slightly higher overhead due to FFI
 
 ---
 
@@ -123,9 +123,9 @@ pub struct SecureDb {
 
 **Current State:**
 
--   8.7k stars but development stalled
--   Last significant update: 2023
--   Community maintains forks but fragmented
+- 8.7k stars but development stalled
+- Last significant update: 2023
+- Community maintains forks but fragmented
 
 ---
 
@@ -143,9 +143,9 @@ pub struct SecureDb {
 
 **When to Consider:**
 
--   Want pure Rust
--   Write-heavy workloads
--   Can tolerate newer library
+- Want pure Rust
+- Write-heavy workloads
+- Can tolerate newer library
 
 ---
 
@@ -158,9 +158,9 @@ pub struct SecureDb {
 
 **Only Use If:**
 
--   Very small dataset (<1M keys)
--   Read-heavy workload
--   Need proven C library
+- Very small dataset (<1M keys)
+- Read-heavy workload
+- Need proven C library
 
 ---
 
@@ -219,9 +219,9 @@ The ~800% overhead is NOT primarily from sled. It's from:
 
 **This means:**
 
--   Switching databases will only reduce ~5-10% of the overhead
--   Expected improvement: 800% → 720-750% (switching DB alone)
--   **To get under 100% overhead, you need to eliminate encryption**
+- Switching databases will only reduce ~5-10% of the overhead
+- Expected improvement: 800% → 720-750% (switching DB alone)
+- **To get under 100% overhead, you need to eliminate encryption**
 
 ---
 
@@ -257,9 +257,9 @@ The ~800% overhead is NOT primarily from sled. It's from:
 
 **Use When:**
 
--   Can accept client-server architecture
--   Need <50% encryption overhead
--   Have ops team to manage database
+- Can accept client-server architecture
+- Need <50% encryption overhead
+- Have ops team to manage database
 
 ---
 
@@ -277,9 +277,9 @@ The ~800% overhead is NOT primarily from sled. It's from:
 
 **Use When:**
 
--   Control deployment environment
--   Can use OS-level encryption
--   Want minimal performance impact
+- Control deployment environment
+- Can use OS-level encryption
+- Want minimal performance impact
 
 ---
 
@@ -327,7 +327,6 @@ impl HybridSecureDb {
     ```
 
 2. Update SecureDb implementation:
-
     - Replace `sled::Db` with `redb::Database`
     - Adapt API calls (very similar)
     - Keep encryption logic unchanged
@@ -353,16 +352,16 @@ impl HybridSecureDb {
 
 **If staying with embedded + full encryption:**
 
--   Optimize in-place encryption (est. 20-30% improvement)
--   Implement buffer pooling (est. 10-15% improvement)
--   Add batch operations API (est. 30-40% improvement)
--   **Best case:** ~350-450% overhead (still 4-5x slower)
+- Optimize in-place encryption (est. 20-30% improvement)
+- Implement buffer pooling (est. 10-15% improvement)
+- Add batch operations API (est. 30-40% improvement)
+- **Best case:** ~350-450% overhead (still 4-5x slower)
 
 **If switching architectures:**
 
--   PostgreSQL/MySQL with TDE: ~20% overhead
--   Filesystem encryption: ~10% overhead
--   Hybrid approach: ~200-400% overhead
+- PostgreSQL/MySQL with TDE: ~20% overhead
+- Filesystem encryption: ~10% overhead
+- Hybrid approach: ~200-400% overhead
 
 ---
 
@@ -374,15 +373,15 @@ impl HybridSecureDb {
 
 **sled-vs-rocksdb Benchmark:**
 
--   RocksDB: Generally faster for large datasets
--   Sled: Competitive for small-medium workloads
--   redb: Not in old benchmarks (too new) but reports show ~20% faster than sled
+- RocksDB: Generally faster for large datasets
+- Sled: Competitive for small-medium workloads
+- redb: Not in old benchmarks (too new) but reports show ~20% faster than sled
 
 **RocksDB 10.2 Benchmarks (2025-05):**
 
--   Significant improvements in recent versions
--   Hyperclock cache better than LRU for CPU-bound
--   Production-proven at TB+ scale
+- Significant improvements in recent versions
+- Hyperclock cache better than LRU for CPU-bound
+- Production-proven at TB+ scale
 
 ---
 
@@ -460,11 +459,11 @@ impl SecureDb {
 
 **Score:**
 
--   redb: 6/7 (Only misses <100% overhead)
--   RocksDB: 5/7
--   PostgreSQL: 4/7
--   Filesystem: 5/7
--   Current (Sled): 3/7
+- redb: 6/7 (Only misses <100% overhead)
+- RocksDB: 5/7
+- PostgreSQL: 4/7
+- Filesystem: 5/7
+- Current (Sled): 3/7
 
 ---
 

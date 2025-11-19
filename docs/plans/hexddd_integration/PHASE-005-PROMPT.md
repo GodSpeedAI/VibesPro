@@ -10,12 +10,12 @@
 
 ## Success Criteria (Binary Pass/Fail)
 
--   [ ] **End-to-End Validation Complete**: All smoke tests pass (generators, hexagonal boundaries, type safety, UoW/EventBus, Supabase stack)
--   [ ] **Zero CI Failures**: `just test`, `just ai-validate`, `just spec-guard`, `pnpm nx run-many -t build --all`, `just test-generation` all GREEN
--   [ ] **Documentation 100% Current**: README, ARCHITECTURE, ENVIRONMENT, generator guides, AGENTS.md all reflect HexDDD integration
--   [ ] **Traceability Matrix Complete**: 23/23 specs mapped (100% coverage) with implementations and validation methods documented
--   [ ] **Migration Guide Published**: `docs/MIGRATION_HEXDDD.md` complete with step-by-step upgrade path for existing projects
--   [ ] **Production Ready**: All phase branches merged to `dev`, PR ready for `main`, changelog updated, v1.0.0-hexddd tag created
+- [ ] **End-to-End Validation Complete**: All smoke tests pass (generators, hexagonal boundaries, type safety, UoW/EventBus, Supabase stack)
+- [ ] **Zero CI Failures**: `just test`, `just ai-validate`, `just spec-guard`, `pnpm nx run-many -t build --all`, `just test-generation` all GREEN
+- [ ] **Documentation 100% Current**: README, ARCHITECTURE, ENVIRONMENT, generator guides, AGENTS.md all reflect HexDDD integration
+- [ ] **Traceability Matrix Complete**: 23/23 specs mapped (100% coverage) with implementations and validation methods documented
+- [ ] **Migration Guide Published**: `docs/MIGRATION_HEXDDD.md` complete with step-by-step upgrade path for existing projects
+- [ ] **Production Ready**: All phase branches merged to `dev`, PR ready for `main`, changelog updated, v1.0.0-hexddd tag created
 
 **Failure Mode**: If any criterion fails, continue iterating until all pass. Do not proceed to deployment until all gates are GREEN.
 
@@ -118,8 +118,8 @@ git diff --exit-code libs/shared/database-types || (
 echo "✅ All smoke tests passed!"
 ```
 
--   Make script executable: `chmod +x tests/e2e/hexddd-integration-smoke.sh`
--   Add to justfile: `just test-e2e` alias
+- Make script executable: `chmod +x tests/e2e/hexddd-integration-smoke.sh`
+- Add to justfile: `just test-e2e` alias
 
 2. **Create TypeScript/Jest integration test suite** at `tests/integration/hexddd-integration.test.ts`:
 
@@ -255,8 +255,8 @@ describe("HexDDD Integration", () => {
 });
 ```
 
--   Ensure test runs with `pnpm test:jest tests/integration/hexddd-integration.test.ts`
--   Add to CI workflow in `.github/workflows/ci.yml`
+- Ensure test runs with `pnpm test:jest tests/integration/hexddd-integration.test.ts`
+- Add to CI workflow in `.github/workflows/ci.yml`
 
 3. **Create ShellSpec CLI validation** at `tests/integration/hexddd-cli-integration.sh`:
 
@@ -323,11 +323,11 @@ End
 
 **Exit Criteria**:
 
--   [ ] `bash tests/e2e/hexddd-integration-smoke.sh` passes with zero failures
--   [ ] `pnpm test:jest tests/integration/hexddd-integration.test.ts` passes all assertions
--   [ ] `shellspec tests/integration/hexddd-cli-integration.sh` passes all examples
--   [ ] All generated apps build successfully (Next.js App/Pages, Remix, Expo)
--   [ ] Supabase stack starts, health checks pass, and stops cleanly
+- [ ] `bash tests/e2e/hexddd-integration-smoke.sh` passes with zero failures
+- [ ] `pnpm test:jest tests/integration/hexddd-integration.test.ts` passes all assertions
+- [ ] `shellspec tests/integration/hexddd-cli-integration.sh` passes all examples
+- [ ] All generated apps build successfully (Next.js App/Pages, Remix, Expo)
+- [ ] Supabase stack starts, health checks pass, and stops cleanly
 
 ---
 
@@ -339,10 +339,10 @@ End
 
 1. **Update README.md** with HexDDD integration overview:
 
--   Add "Hexagonal Architecture" section after project introduction
--   Include quick start commands for generators
--   Add badges for test coverage and build status
--   Content:
+- Add "Hexagonal Architecture" section after project introduction
+- Include quick start commands for generators
+- Add badges for test coverage and build status
+- Content:
 
     ```markdown
 
@@ -542,17 +542,17 @@ This directory contains detailed usage guides for all Nx generators.
 
 All generators support:
 
--   `--dry-run`: Preview changes without writing files
--   `--no-interactive`: Skip prompts (use defaults or CLI args)
--   `--help`: Show all available options
+- `--dry-run`: Preview changes without writing files
+- `--no-interactive`: Skip prompts (use defaults or CLI args)
+- `--help`: Show all available options
 
 ## Idempotency
 
 All generators are idempotent - safe to run multiple times. They:
 
--   Skip files that already exist unchanged
--   Preserve user modifications
--   Update only configuration files when schemas change
+- Skip files that already exist unchanged
+- Preserve user modifications
+- Update only configuration files when schemas change
 ```
 
 3. **Create docs/generators/hex-domain.md**:
@@ -618,9 +618,9 @@ nx g @ddd-plugin/ddd:hex-domain orders --directory=libs/commerce
 
 The generator automatically configures Nx tags to enforce dependency rules:
 
--   Domain cannot import application or infrastructure
--   Application can only import domain
--   Infrastructure implements application ports
+- Domain cannot import application or infrastructure
+- Application can only import domain
+- Infrastructure implements application ports
 
 Violations fail linting with clear error messages.
 
@@ -661,10 +661,10 @@ nx g @ddd-plugin/ddd:web-app admin --framework=next --routerStyle=app
 
 Generates:
 
--   `app/` directory with layouts/pages
--   API routes in `app/api/`
--   Shared `ApiClient` integration
--   TypeScript strict mode
+- `app/` directory with layouts/pages
+- API routes in `app/api/`
+- Shared `ApiClient` integration
+- TypeScript strict mode
 
 ### Next.js Pages Router
 
@@ -674,9 +674,9 @@ nx g @ddd-plugin/ddd:web-app marketing --framework=next --routerStyle=pages
 
 Generates:
 
--   `pages/` directory with routes
--   API routes in `pages/api/`
--   `getServerSideProps`/`getStaticProps` examples
+- `pages/` directory with routes
+- API routes in `pages/api/`
+- `getServerSideProps`/`getStaticProps` examples
 
 ### Remix
 
@@ -686,9 +686,9 @@ nx g @ddd-plugin/ddd:web-app dashboard --framework=remix
 
 Generates:
 
--   `app/routes/` with loaders/actions
--   Shared `ApiClient` integration
--   Server-side session handling
+- `app/routes/` with loaders/actions
+- Shared `ApiClient` integration
+- Server-side session handling
 
 ### Expo
 
@@ -698,19 +698,19 @@ nx g @ddd-plugin/ddd:web-app mobile --framework=expo
 
 Generates:
 
--   Expo Router structure
--   React hooks for API calls
--   Platform-specific code organization
+- Expo Router structure
+- React hooks for API calls
+- Platform-specific code organization
 
 ## Shared Features
 
 All generated apps include:
 
--   Shared `ApiClient` from `@shared/web`
--   TypeScript strict mode
--   ESLint + Prettier configuration
--   Jest test setup
--   Build/serve Nx targets
+- Shared `ApiClient` from `@shared/web`
+- TypeScript strict mode
+- ESLint + Prettier configuration
+- Jest test setup
+- Build/serve Nx targets
 
 ## Examples
 
@@ -733,11 +733,11 @@ nx g @ddd-plugin/ddd:web-app portal --directory=apps/customer-facing
 
 **Exit Criteria**:
 
--   [ ] `docs/generators/README.md` exists with generator index
--   [ ] `docs/generators/hex-domain.md` documents all options and examples
--   [ ] `docs/generators/web-app.md` documents all frameworks and router styles
--   [ ] All code examples validated (can copy-paste and run)
--   [ ] Internal links between guides functional
+- [ ] `docs/generators/README.md` exists with generator index
+- [ ] `docs/generators/hex-domain.md` documents all options and examples
+- [ ] `docs/generators/web-app.md` documents all frameworks and router styles
+- [ ] All code examples validated (can copy-paste and run)
+- [ ] Internal links between guides functional
 
 ---
 
@@ -749,8 +749,8 @@ nx g @ddd-plugin/ddd:web-app portal --directory=apps/customer-facing
 
 1. **Update AGENTS.md** with hexagonal architecture rules:
 
--   Add after existing Nx configuration
--   Content:
+- Add after existing Nx configuration
+- Content:
 
     ```markdown
 
@@ -819,8 +819,8 @@ A project tagged with "type:domain" cannot depend on projects tagged with "type:
 
 2. **Update .github/copilot-instructions.md**:
 
--   Add hexagonal architecture section before "Coding Standards"
--   Content:
+- Add hexagonal architecture section before "Coding Standards"
+- Content:
 
 ````markdown
 ### Hexagonal Architecture Enforcement
@@ -828,11 +828,10 @@ A project tagged with "type:domain" cannot depend on projects tagged with "type:
 **Before creating any new code in `libs/`, check the layer you're working in:**
 
 1.  **Domain Layer** (`libs/*/domain/`):
-
-    -   Pure TypeScript/Python with ZERO external dependencies
-    -   Define entities, value objects, domain events
-    -   Use dependency injection for repository interfaces
-    -   Example:
+    - Pure TypeScript/Python with ZERO external dependencies
+    - Define entities, value objects, domain events
+    - Use dependency injection for repository interfaces
+    - Example:
 
     ```typescript
     // ✅ CORRECT: Pure domain entity
@@ -875,7 +874,6 @@ A project tagged with "type:domain" cannot depend on projects tagged with "type:
             ```
 
     3. **Infrastructure Layer** (`libs/*/infrastructure/`):
-
         - Implement application ports
         - Use external libraries (Supabase, Prisma, etc.)
         - Handle technical concerns (HTTP, DB, file I/O)
@@ -897,11 +895,11 @@ A project tagged with "type:domain" cannot depend on projects tagged with "type:
 
 **Exit Criteria**:
 
--   [ ] AGENTS.md includes hexagonal architecture rules with examples
--   [ ] AGENTS.md documents Nx tag enforcement with violation examples
--   [ ] .github/copilot-instructions.md includes layer-specific guidance
--   [ ] All code examples are syntactically correct and follow project conventions
--   [ ] `pnpm nx run-many -t lint --all` passes after updates
+- [ ] AGENTS.md includes hexagonal architecture rules with examples
+- [ ] AGENTS.md documents Nx tag enforcement with violation examples
+- [ ] .github/copilot-instructions.md includes layer-specific guidance
+- [ ] All code examples are syntactically correct and follow project conventions
+- [ ] `pnpm nx run-many -t lint --all` passes after updates
 
 ---
 
@@ -962,9 +960,9 @@ A project tagged with "type:domain" cannot depend on projects tagged with "type:
 
 2. **Verify all spec IDs exist** in source docs:
 
--   Cross-reference against `docs/dev_adr.md`, `docs/dev_prd.md`, `docs/dev_sds.md`
--   Ensure no orphaned spec IDs in matrix
--   Ensure no missing spec IDs from source docs
+- Cross-reference against `docs/dev_adr.md`, `docs/dev_prd.md`, `docs/dev_sds.md`
+- Ensure no orphaned spec IDs in matrix
+- Ensure no missing spec IDs from source docs
 
 3. **Add validation automation** to justfile:
 
@@ -994,11 +992,11 @@ verify-traceability:
 
 **Exit Criteria**:
 
--   [ ] All 23 specs (DEV-ADR-023-029, DEV-PRD-024-031, DEV-SDS-023-030) present in matrix
--   [ ] Each spec mapped to implementation files and validation methods
--   [ ] All Status fields marked ✅ (GREEN)
--   [ ] `just verify-traceability` passes
--   [ ] Coverage shows 23/23 (100%)
+- [ ] All 23 specs (DEV-ADR-023-029, DEV-PRD-024-031, DEV-SDS-023-030) present in matrix
+- [ ] Each spec mapped to implementation files and validation methods
+- [ ] All Status fields marked ✅ (GREEN)
+- [ ] `just verify-traceability` passes
+- [ ] Coverage shows 23/23 (100%)
 
 ---
 
@@ -1019,9 +1017,9 @@ If you generated a project **before** the HexDDD integration, follow these steps
 
 ### Prerequisites
 
--   Existing VibesPro project (pre-HexDDD)
--   Git repository with clean working directory
--   Copier installed: `pipx install copier`
+- Existing VibesPro project (pre-HexDDD)
+- Git repository with clean working directory
+- Copier installed: `pipx install copier`
 
 ### Migration Steps
 
