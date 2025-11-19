@@ -10,7 +10,6 @@ Top technical, architectural, and process risks for HexDDD integration. For each
 ## Seeded risks (from PHASE-000)
 
 1. Generator Non-Idempotency
-
     - Likelihood: Medium
     - Impact: High
     - Detection: Double-run test failures
@@ -18,7 +17,6 @@ Top technical, architectural, and process risks for HexDDD integration. For each
     - Contingency: Manual scaffold + docs
 
 2. Nx Tag Circular Dependencies
-
     - Likelihood: Low
     - Impact: High
     - Detection: Lint/graph errors
@@ -34,5 +32,5 @@ Top technical, architectural, and process risks for HexDDD integration. For each
 
 ## Next steps
 
--   Run repository and CI history analysis to populate detection triggers and past incident examples.
--   Assign owners and SLAs for each mitigation item.
+- Run repository and CI history analysis to populate detection triggers and past incident examples.
+- Assign owners and SLAs for each mitigation item.

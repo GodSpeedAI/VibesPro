@@ -13,10 +13,10 @@ This document provides detailed technical specifications for implementing the He
 
 **Technology Stack**:
 
--   **Template Engine**: Copier 9.0+
--   **Templating Language**: Jinja2 with custom extensions
--   **Configuration**: YAML with JSON Schema validation
--   **Update Strategy**: Git-based with smart conflict resolution
+- **Template Engine**: Copier 9.0+
+- **Templating Language**: Jinja2 with custom extensions
+- **Configuration**: YAML with JSON Schema validation
+- **Update Strategy**: Git-based with smart conflict resolution
 
 **Template Structure**:
 
@@ -145,10 +145,10 @@ _tasks:
 
 **Technology Stack**:
 
--   **AI Integration**: GitHub Copilot API + Custom Context Injection
--   **Context Storage**: tsink (time-series database) + Redis (optional caching)
--   **Token Management**: tiktoken for accurate counting
--   **Pattern Recognition**: scikit-learn + custom models
+- **AI Integration**: GitHub Copilot API + Custom Context Injection
+- **Context Storage**: tsink (time-series database) + Redis (optional caching)
+- **Token Management**: tiktoken for accurate counting
+- **Pattern Recognition**: scikit-learn + custom models
 
 **Context Manager Implementation**:
 
@@ -317,10 +317,10 @@ class ArchitecturalPatternRecognizer:
 
 **Technology Stack**:
 
--   **Database**: tsink (Rust-based time-series database)
--   **Schema Management**: Rust-native migrations with serde
--   **Data Modeling**: Pydantic v2 for validation + Rust structs with serde
--   **Time Series**: Native tsink Gorilla compression and time-series optimizations
+- **Database**: tsink (Rust-based time-series database)
+- **Schema Management**: Rust-native migrations with serde
+- **Data Modeling**: Pydantic v2 for validation + Rust structs with serde
+- **Time Series**: Native tsink Gorilla compression and time-series optimizations
 
 **Database Schema Definition**:
 
@@ -576,10 +576,10 @@ class TemporalRepository:
 
 **Technology Stack**:
 
--   **Task Runner**: just (justfile)
--   **Build Orchestration**: Nx 21.5+ with custom executors
--   **Package Management**: pnpm (Node.js) + uv (Python)
--   **Tool Integration**: Custom executors for polyglot support
+- **Task Runner**: just (justfile)
+- **Build Orchestration**: Nx 21.5+ with custom executors
+- **Package Management**: pnpm (Node.js) + uv (Python)
+- **Tool Integration**: Custom executors for polyglot support
 
 **Justfile Architecture**:
 
@@ -823,10 +823,10 @@ async function getProjectFiles(projectRoot: string): Promise<string[]> {
 
 **Technology Stack**:
 
--   **ESLint Integration**: Custom rules for hexagonal architecture
--   **VS Code Extension**: Real-time feedback in editor
--   **Language Server**: TypeScript/Python language server integration
--   **CI Integration**: GitHub Actions with validation pipeline
+- **ESLint Integration**: Custom rules for hexagonal architecture
+- **VS Code Extension**: Real-time feedback in editor
+- **Language Server**: TypeScript/Python language server integration
+- **CI Integration**: GitHub Actions with validation pipeline
 
 **ESLint Plugin Implementation**:
 
@@ -994,10 +994,10 @@ function isRelevantFile(fileName: string): boolean {
 
 **Technology Stack**:
 
--   **Schema Introspection**: Supabase CLI + custom introspection
--   **Type Generation**: TypeScript Compiler API + Python AST
--   **Validation**: JSON Schema + Pydantic
--   **CI Integration**: GitHub Actions with automated PRs
+- **Schema Introspection**: Supabase CLI + custom introspection
+- **Type Generation**: TypeScript Compiler API + Python AST
+- **Validation**: JSON Schema + Pydantic
+- **CI Integration**: GitHub Actions with automated PRs
 
 **Type Generator Implementation**:
 
@@ -1212,10 +1212,10 @@ function mapPostgresToZod(pgType: string): string {
 
 **Technology Stack**:
 
--   **AI Integration**: OpenAI GPT-4 + GitHub Copilot
--   **Code Analysis**: TypeScript Compiler API + Python AST
--   **Template Engine**: Handlebars with custom helpers
--   **Validation**: ESLint + mypy integration
+- **AI Integration**: OpenAI GPT-4 + GitHub Copilot
+- **Code Analysis**: TypeScript Compiler API + Python AST
+- **Template Engine**: Handlebars with custom helpers
+- **Validation**: ESLint + mypy integration
 
 **AI Code Generator**:
 
@@ -1417,10 +1417,10 @@ Generated tests should achieve >90% code coverage.
 
 **Technology Stack**:
 
--   **Monitoring**: OpenTelemetry + Custom metrics
--   **Performance**: Node.js performance hooks + Python profiling
--   **Caching**: Redis + in-memory LRU caches
--   **Analytics**: tsink for temporal analytics and pattern recognition
+- **Monitoring**: OpenTelemetry + Custom metrics
+- **Performance**: Node.js performance hooks + Python profiling
+- **Caching**: Redis + in-memory LRU caches
+- **Analytics**: tsink for temporal analytics and pattern recognition
 
 **Performance Monitoring Implementation**:
 

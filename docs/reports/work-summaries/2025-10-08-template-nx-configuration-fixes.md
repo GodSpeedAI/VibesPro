@@ -14,47 +14,39 @@ Incorporating fixes from the SEA project generation to prevent Nx and TypeScript
 ### Critical Configuration Missing
 
 1. **nx.json.j2**: Missing `namedInputs` section
-
     - Causes: Nx daemon crashes with "invalid fileset" errors
     - Impact: Build, test, and lint commands fail completely
 
 2. **libs/core/project.json**: Missing entirely
-
     - Causes: Nx cannot detect the core library as a project
     - Impact: Project not recognized in Nx graph, no task execution
 
 3. **TypeScript Configurations**: Missing lib and spec configs
-
     - `libs/core/tsconfig.json` - missing
     - `libs/core/tsconfig.lib.json` - missing
     - `libs/core/tsconfig.spec.json` - missing
     - Causes: Module resolution conflicts, no test compilation setup
 
 4. **libs/core/index.ts**: Missing library entry point
-
     - Causes: Path mappings have no target file
     - Impact: Imports fail
 
 5. **pnpm-workspace.yaml**: Missing
-
     - Causes: pnpm warnings about workspace configuration
     - Impact: Suboptimal monorepo setup
 
 6. **ESLint Configuration**: Missing
-
     - Root `.eslintrc.json` - missing
     - `libs/core/.eslintrc.json` - missing
     - Packages: @nx/eslint, eslint, @typescript-eslint/\* - missing
 
 7. **Jest Configuration**: Missing
-
     - Root `jest.config.js` - missing
     - Root `jest.preset.js` - missing
     - `libs/core/jest.config.ts` - missing
     - Packages: @nx/jest, jest, ts-jest, @types/jest - missing
 
 8. **Dependencies**: Missing critical packages
-
     - `tslib` - required by `importHelpers: true`
     - ESLint packages
     - Jest packages
@@ -109,10 +101,10 @@ New file with Nx project configuration for the core library.
 
 ### 3. Create TypeScript Configuration Files
 
--   `libs/core/tsconfig.json.j2` - Base config
--   `libs/core/tsconfig.lib.json.j2` - Library compilation (with `moduleResolution: "node"`)
--   `libs/core/tsconfig.spec.json.j2` - Test compilation
--   `libs/core/index.ts` - Library entry point
+- `libs/core/tsconfig.json.j2` - Base config
+- `libs/core/tsconfig.lib.json.j2` - Library compilation (with `moduleResolution: "node"`)
+- `libs/core/tsconfig.spec.json.j2` - Test compilation
+- `libs/core/index.ts` - Library entry point
 
 ### 4. Create pnpm-workspace.yaml.j2
 
@@ -120,14 +112,14 @@ Simple workspace configuration for pnpm.
 
 ### 5. Create ESLint Configurations
 
--   `.eslintrc.json.j2` - Root ESLint config
--   `libs/core/.eslintrc.json.j2` - Project ESLint config
+- `.eslintrc.json.j2` - Root ESLint config
+- `libs/core/.eslintrc.json.j2` - Project ESLint config
 
 ### 6. Create Jest Configurations
 
--   `jest.config.js.j2` - Root Jest config
--   `jest.preset.js.j2` - Jest preset
--   `libs/core/jest.config.ts.j2` - Project Jest config
+- `jest.config.js.j2` - Root Jest config
+- `jest.preset.js.j2` - Jest preset
+- `libs/core/jest.config.ts.j2` - Project Jest config
 
 ### 7. Update package.json.j2 Dependencies
 
@@ -201,24 +193,24 @@ After implementing fixes:
 
 ✅ Generated projects will have:
 
--   Working Nx project detection
--   Functional build, lint, and test targets
--   Proper TypeScript compilation
--   ESLint code quality checks
--   Jest unit testing framework
--   No daemon crashes
--   No missing dependency errors
--   No module resolution conflicts
+- Working Nx project detection
+- Functional build, lint, and test targets
+- Proper TypeScript compilation
+- ESLint code quality checks
+- Jest unit testing framework
+- No daemon crashes
+- No missing dependency errors
+- No module resolution conflicts
 
 ## References
 
--   SEA Project Fix Summary: `/home/sprime01/projects/SEA/docs/work-summaries/2025-10-08-nx-configuration-fix.md`
--   Nx Documentation: https://nx.dev
--   Project Standards: `.github/instructions/`
+- SEA Project Fix Summary: `/home/sprime01/projects/SEA/docs/work-summaries/2025-10-08-nx-configuration-fix.md`
+- Nx Documentation: https://nx.dev
+- Project Standards: `.github/instructions/`
 
 ## Compliance
 
--   ✅ Follows generator-first policy (uses Nx structure)
--   ✅ Security: No secrets, no auto-approve
--   ✅ Testing: Includes Jest setup
--   ✅ Traceability: Documented in this summary
+- ✅ Follows generator-first policy (uses Nx structure)
+- ✅ Security: No secrets, no auto-approve
+- ✅ Testing: Includes Jest setup
+- ✅ Traceability: Documented in this summary

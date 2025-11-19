@@ -10,9 +10,13 @@
     "ripgrep",
     "fd",
     "uv",
-    "git@latest"
+    "git@latest",
+    "jdk"
   ],
   "shell": {
     "init_hook": ["bash scripts/devbox_boot.sh"]
+  },
+  "nix": {
+    "overlays": ["./.devbox/overlays/supabase.nix"]
   }
 }

@@ -42,6 +42,7 @@
 //! ```
 
 pub mod embedder;
+pub mod observability_aggregator;
 pub mod pattern_extractor;
 pub mod ranker;
 pub mod schema;
@@ -68,6 +69,21 @@ pub enum TemporalAIError {
     #[error("Database error: {0}")]
     DatabaseError(#[from] redb::Error),
 
+    #[error("Redb database error: {0}")]
+    RedbDatabaseError(#[from] redb::DatabaseError),
+
+    #[error("Redb transaction error: {0}")]
+    RedbTransactionError(#[from] redb::TransactionError),
+
+    #[error("Redb table error: {0}")]
+    RedbTableError(#[from] redb::TableError),
+
+    #[error("Redb storage error: {0}")]
+    RedbStorageError(#[from] redb::StorageError),
+
+    #[error("Redb commit error: {0}")]
+    RedbCommitError(#[from] redb::CommitError),
+
     #[error("Git repository error: {0}")]
     GitError(#[from] git2::Error),
 
@@ -82,6 +98,12 @@ pub enum TemporalAIError {
 
     #[error("I/O error: {0}")]
     IoError(#[from] std::io::Error),
+
+    #[error("Observability error: {0}")]
+    ObservabilityError(String),
+
+    #[error("HTTP client error: {0}")]
+    HttpError(#[from] reqwest::Error),
 }
 
 impl From<serde_json::Error> for TemporalAIError {

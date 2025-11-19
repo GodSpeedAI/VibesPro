@@ -194,8 +194,8 @@ tests/python/logging/test_logfire_metadata.py::test_default_metadata_function PA
 
 **Behavior**:
 
--   Explicit parameter > SERVICE_NAME env var > default "vibepro-py"
--   Ensures consistent service identification across all telemetry
+- Explicit parameter > SERVICE_NAME env var > default "vibepro-py"
+- Ensures consistent service identification across all telemetry
 
 **Usage**:
 
@@ -226,9 +226,9 @@ logger = configure_logger(service="custom-api")  # Uses "custom-api"
 
 **Environment Variables**:
 
--   `SERVICE_NAME` → metadata["service"]
--   `APP_ENV` → metadata["environment"] (default: "local")
--   `APP_VERSION` → metadata["application_version"] (default: "dev")
+- `SERVICE_NAME` → metadata["service"]
+- `APP_ENV` → metadata["environment"] (default: "local")
+- `APP_VERSION` → metadata["application_version"] (default: "dev")
 
 ---
 
@@ -238,11 +238,11 @@ logger = configure_logger(service="custom-api")  # Uses "custom-api"
 
 **Features**:
 
--   Auto-instruments FastAPI with `logfire.instrument_fastapi(app)`
--   Creates spans for every HTTP request
--   Captures http.method, http.route, http.status_code
--   Tracks exceptions with ERROR status
--   Returns app for method chaining
+- Auto-instruments FastAPI with `logfire.instrument_fastapi(app)`
+- Creates spans for every HTTP request
+- Captures http.method, http.route, http.status_code
+- Tracks exceptions with ERROR status
+- Returns app for method chaining
 
 **Usage**:
 
@@ -264,9 +264,9 @@ app = bootstrap_logfire(
 
 **Categories**:
 
--   `LogCategory.APP` - Application logs (default)
--   `LogCategory.AUDIT` - Audit trail logs
--   `LogCategory.SECURITY` - Security event logs
+- `LogCategory.APP` - Application logs (default)
+- `LogCategory.AUDIT` - Audit trail logs
+- `LogCategory.SECURITY` - Security event logs
 
 **Usage**:
 
@@ -372,14 +372,14 @@ python -m pytest tests/python/logging/test_logfire_metadata.py -v
 
 **Core**:
 
--   `logfire` - Pydantic Logfire SDK
--   `opentelemetry-exporter-otlp-proto-http` - OTLP HTTP exporter
--   `fastapi` - Web framework
+- `logfire` - Pydantic Logfire SDK
+- `opentelemetry-exporter-otlp-proto-http` - OTLP HTTP exporter
+- `fastapi` - Web framework
 
 **Testing**:
 
--   `pytest` - Test framework
--   `pytest-asyncio` - Async test support
+- `pytest` - Test framework
+- `pytest-asyncio` - Async test support
 
 **Installation**:
 
@@ -396,18 +396,15 @@ pip install logfire opentelemetry-exporter-otlp-proto-http fastapi pytest pytest
 **Tasks**:
 
 1. **Update Documentation** (`docs/observability/README.md`)
-
     - Add Python FastAPI integration section (after line 150)
     - Include code examples: basic setup, structured logging, environment config
     - Installation instructions
 
 2. **Remove TODO Markers** (`templates/{{project_slug}}/docs/observability/logging.md.j2`)
-
     - Replace line 5 TODO with completion notice
     - Add quick start Python example
 
 3. **Create Integration Test** (`tests/ops/test_vector_logfire.sh`)
-
     - Start Vector edge collector
     - Run Python FastAPI test app with VIBEPRO_OBSERVE=1
     - Send test request to /health endpoint
@@ -425,15 +422,15 @@ pip install logfire opentelemetry-exporter-otlp-proto-http fastapi pytest pytest
 
 **Specifications Implemented**:
 
--   **DEV-PRD-018**: Structured Logging with Trace Correlation ✅
--   **DEV-SDS-018**: Logfire SDK Integration ✅
--   **DEV-ADR-017**: JSON-First Structured Logging ✅
+- **DEV-PRD-018**: Structured Logging with Trace Correlation ✅
+- **DEV-SDS-018**: Logfire SDK Integration ✅
+- **DEV-ADR-017**: JSON-First Structured Logging ✅
 
 **Implementation Plan Reference**:
 
--   Cycle 1, Phase 1B (GREEN) - Logfire SDK Implementation
--   Section: "Python Logfire Implementation (CRITICAL PATH)"
--   File: `docs/project_state.md`, Lines: Cycle 1 Phase 1B
+- Cycle 1, Phase 1B (GREEN) - Logfire SDK Implementation
+- Section: "Python Logfire Implementation (CRITICAL PATH)"
+- File: `docs/project_state.md`, Lines: Cycle 1 Phase 1B
 
 ---
 

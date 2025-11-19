@@ -14,24 +14,24 @@ Complete documentation updates and integration testing for Python Logfire implem
 
 **File: `docs/observability/README.md`**
 
--   Added section 8.5 "Python FastAPI Integration" (200+ lines)
--   Installation instructions
--   Basic setup examples with bootstrap_logfire()
--   Structured logging with trace-log correlation
--   Log categories (APP, AUDIT, SECURITY)
--   Custom metadata binding patterns
--   Environment configuration reference
--   Vector integration flow diagram
--   Testing instructions
--   Troubleshooting guide
--   Specification references
+- Added section 8.5 "Python FastAPI Integration" (200+ lines)
+- Installation instructions
+- Basic setup examples with bootstrap_logfire()
+- Structured logging with trace-log correlation
+- Log categories (APP, AUDIT, SECURITY)
+- Custom metadata binding patterns
+- Environment configuration reference
+- Vector integration flow diagram
+- Testing instructions
+- Troubleshooting guide
+- Specification references
 
 **File: `templates/{{project_slug}}/docs/observability/logging.md.j2`**
 
--   Removed TODO marker about Cycle 2A implementation
--   Added "Python Logfire Integration (✅ Complete)" section
--   Quick start code example
--   Reference to main documentation
+- Removed TODO marker about Cycle 2A implementation
+- Added "Python Logfire Integration (✅ Complete)" section
+- Quick start code example
+- Reference to main documentation
 
 ### 2. TODO Marker Status
 
@@ -68,9 +68,9 @@ just observe-start
 
 **All Three Phases Complete**:
 
--   ✅ Phase 1A (RED): 26 tests created
--   ✅ Phase 1B (GREEN): Logfire SDK implemented, all tests passing
--   ✅ Phase 1C (REFACTOR): Documentation complete, TODO markers removed
+- ✅ Phase 1A (RED): 26 tests created
+- ✅ Phase 1B (GREEN): Logfire SDK implemented, all tests passing
+- ✅ Phase 1C (REFACTOR): Documentation complete, TODO markers removed
 
 ## Success Metrics
 
@@ -85,24 +85,24 @@ just observe-start
 
 **Specifications Completed**:
 
--   DEV-PRD-018: Structured Logging with Trace Correlation ✅
--   DEV-SDS-018: Logfire SDK Integration ✅
--   DEV-ADR-017: JSON-First Structured Logging ✅
+- DEV-PRD-018: Structured Logging with Trace Correlation ✅
+- DEV-SDS-018: Logfire SDK Integration ✅
+- DEV-ADR-017: JSON-First Structured Logging ✅
 
 **Work Summaries**:
 
--   Cycle 1 Phase 1A: docs/work-summaries/cycle1-phase1a-red-completion.md
--   Cycle 1 Phase 1B: docs/work-summaries/cycle1-phase1b-green-completion.md
--   Cycle 1 Phase 1C: docs/work-summaries/cycle1-phase1c-refactor-completion.md (this file)
+- Cycle 1 Phase 1A: docs/work-summaries/cycle1-phase1a-red-completion.md
+- Cycle 1 Phase 1B: docs/work-summaries/cycle1-phase1b-green-completion.md
+- Cycle 1 Phase 1C: docs/work-summaries/cycle1-phase1c-refactor-completion.md (this file)
 
 ## Next Steps: Cycle 2
 
 **Cycle 2 Phase 2A (RED)**: Generator Spec TODO Elimination
 
--   Create spec validation tests
--   Detect TODO/FIXME markers
--   Validate JSON Schema examples
--   Simulate AI reading spec to generate schema
+- Create spec validation tests
+- Detect TODO/FIXME markers
+- Validate JSON Schema examples
+- Simulate AI reading spec to generate schema
 
 **Target**: Zero TODO markers in `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`
 
@@ -110,9 +110,9 @@ just observe-start
 
 Cycle 1 (Python Logfire Implementation) is **complete**. All three TDD phases executed successfully:
 
--   RED: Test infrastructure established
--   GREEN: Implementation satisfied all tests
--   REFACTOR: Documentation polished, TODO markers eliminated
+- RED: Test infrastructure established
+- GREEN: Implementation satisfied all tests
+- REFACTOR: Documentation polished, TODO markers eliminated
 
 Python observability now production-ready with FastAPI auto-instrumentation, trace-log correlation, and Vector integration.
 

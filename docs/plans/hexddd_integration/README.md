@@ -86,45 +86,45 @@ hexddd_integration/
 
 ### PHASE-000: Pre-Implementation Intelligence (BLOCKING)
 
--   **MCP Tools**: All tools (memory, github, nx, context7, exa, ref, vibe-check)
--   **Outputs**: 8 intelligence artifacts
--   **Key Deliverable**: MECE validation + risk assessment + critical path
--   **Status**: 🔵 Not Started
+- **MCP Tools**: All tools (memory, github, nx, context7, exa, ref, vibe-check)
+- **Outputs**: 8 intelligence artifacts
+- **Key Deliverable**: MECE validation + risk assessment + critical path
+- **Status**: 🔵 Not Started
 
 ### PHASE-001: Generator Idempotency & Testing
 
--   **Cycles**: A (Pattern Library), B (Test Utils), C (Regression Suite)
--   **Key Deliverable**: All generators pass double-run tests
--   **Critical**: Idempotency library pattern affects all downstream generators
--   **Status**: 🔵 Not Started
+- **Cycles**: A (Pattern Library), B (Test Utils), C (Regression Suite)
+- **Key Deliverable**: All generators pass double-run tests
+- **Critical**: Idempotency library pattern affects all downstream generators
+- **Status**: 🔵 Not Started
 
 ### PHASE-002: Hexagonal Foundations
 
--   **Cycles**: A (UoW TS), B (UoW Python), C (EventBus), D (Nx Tags + Supabase)
--   **Key Deliverable**: UoW/EventBus contracts + enforced boundaries
--   **Critical**: Contracts needed for PHASE-003 generators
--   **Status**: 🔵 Not Started
+- **Cycles**: A (UoW TS), B (UoW Python), C (EventBus), D (Nx Tags + Supabase)
+- **Key Deliverable**: UoW/EventBus contracts + enforced boundaries
+- **Critical**: Contracts needed for PHASE-003 generators
+- **Status**: 🔵 Not Started
 
 ### PHASE-003: Universal React Generator
 
--   **Cycles**: A (Shared Assets), B (Next.js), C (Remix), D (Expo), E (Idempotency)
--   **Key Deliverable**: Single generator scaffolds 4 surfaces (Next App Router, Next Pages Router, Remix, Expo)
--   **Critical**: Largest implementation effort, high reuse value
--   **Status**: 🔵 Not Started
+- **Cycles**: A (Shared Assets), B (Next.js), C (Remix), D (Expo), E (Idempotency)
+- **Key Deliverable**: Single generator scaffolds 4 surfaces (Next App Router, Next Pages Router, Remix, Expo)
+- **Critical**: Largest implementation effort, high reuse value
+- **Status**: 🔵 Not Started
 
 ### PHASE-004: Type Safety & CI Integration
 
--   **Cycles**: A (TS Strict), B (Python Strict), C (Type Sync CI), D (Pre-commit Hooks)
--   **Key Deliverable**: 100% type coverage + automated sync
--   **Critical**: Prevents type drift in all generated projects
--   **Status**: 🔵 Not Started
+- **Cycles**: A (TS Strict), B (Python Strict), C (Type Sync CI), D (Pre-commit Hooks)
+- **Key Deliverable**: 100% type coverage + automated sync
+- **Critical**: Prevents type drift in all generated projects
+- **Status**: 🔵 Not Started
 
 ### PHASE-005: Integration & Documentation
 
--   **Cycles**: E2E tests, docs updates, traceability matrix, migration guide
--   **Key Deliverable**: End-to-end validation + complete documentation
--   **Critical**: Final validation gate before production use
--   **Status**: 🔵 Not Started
+- **Cycles**: E2E tests, docs updates, traceability matrix, migration guide
+- **Key Deliverable**: End-to-end validation + complete documentation
+- **Critical**: Final validation gate before production use
+- **Status**: 🔵 Not Started
 
 ## 🚦 Status Tracking
 
@@ -174,9 +174,9 @@ pnpm nx run-many -t test --json > reports/phase-<N>-cycle-<X>-report.json
 
 ### Communication Channels
 
--   **AI Progress**: Real-time updates in phase document checklists
--   **Code Review**: GitHub PRs with phase/cycle labels
--   **Traceability**: `docs/traceability_matrix.md` updates
+- **AI Progress**: Real-time updates in phase document checklists
+- **Code Review**: GitHub PRs with phase/cycle labels
+- **Traceability**: `docs/traceability_matrix.md` updates
 
 ## ✅ Definition of Done
 
@@ -194,10 +194,10 @@ just test-generation
 
 ## 📚 Additional Resources
 
--   **HexDDD Reference**: https://github.com/GodSpeedAI/HexDDD
--   **Master Specs**: `docs/dev_adr.md`, `docs/dev_prd.md`, `docs/dev_sds.md`
--   **Architecture Docs**: `architecture/calm/`
--   **Nx Documentation**: https://nx.dev/
+- **HexDDD Reference**: https://github.com/GodSpeedAI/HexDDD
+- **Master Specs**: `docs/dev_adr.md`, `docs/dev_prd.md`, `docs/dev_sds.md`
+- **Architecture Docs**: `architecture/calm/`
+- **Nx Documentation**: https://nx.dev/
 
 ---
 

@@ -10,7 +10,7 @@
 
 ## Summary
 
--   **ADR Coverage:** Each AI_ADR item supports at least one PRD, ensuring architectural decisions drive product requirements.
--   **SDS Alignment:** Every PRD has a corresponding SDS entry that translates requirements into system design elements.
--   **TS Detailing:** Technical specifications expand on implementation details, security, and performance for each SDS/PRD pairing.
--   **Maintenance Guidance:** Updates to ADRs must cascade through PRDs, SDS items, and TS entries, followed by a regeneration of this matrix using `pnpm spec:matrix` equivalent processes.
+- **ADR Coverage:** Each AI_ADR item supports at least one PRD, ensuring architectural decisions drive product requirements.
+- **SDS Alignment:** Every PRD has a corresponding SDS entry that translates requirements into system design elements.
+- **TS Detailing:** Technical specifications expand on implementation details, security, and performance for each SDS/PRD pairing.
+- **Maintenance Guidance:** Updates to ADRs must cascade through PRDs, SDS items, and TS entries, followed by a regeneration of this matrix using `pnpm spec:matrix` equivalent processes.

@@ -33,40 +33,40 @@ Create comprehensive pytest test infrastructure for Python Logfire implementatio
 
 ### Configuration Tests (7)
 
--   SERVICE_NAME env var binding
--   OTLP endpoint configuration (Vector localhost:4318)
--   Metadata binding (APP_ENV, APP_VERSION)
--   Graceful defaults when env vars missing
--   Custom service parameter override
--   send_to_logfire flag behavior
--   Global state reset for test isolation
+- SERVICE_NAME env var binding
+- OTLP endpoint configuration (Vector localhost:4318)
+- Metadata binding (APP_ENV, APP_VERSION)
+- Graceful defaults when env vars missing
+- Custom service parameter override
+- send_to_logfire flag behavior
+- Global state reset for test isolation
 
 ### FastAPI Instrumentation Tests (5)
 
--   Auto-instrumentation span creation
--   Span attributes (http.method, http.route, http.status_code)
--   Trace context propagation across services
--   Exception tracking with ERROR status
--   Bootstrap function returns instrumented app
+- Auto-instrumentation span creation
+- Span attributes (http.method, http.route, http.status_code)
+- Trace context propagation across services
+- Exception tracking with ERROR status
+- Bootstrap function returns instrumented app
 
 ### Trace-Log Correlation Tests (6)
 
--   trace_id in logs within active span
--   span_id in logs within active span
--   Graceful degradation without active span
--   Context propagation across function calls
--   Nested span correlation
--   Trace context extraction from log events
+- trace_id in logs within active span
+- span_id in logs within active span
+- Graceful degradation without active span
+- Context propagation across function calls
+- Nested span correlation
+- Trace context extraction from log events
 
 ### Metadata Binding Tests (8)
 
--   Environment metadata (APP_ENV)
--   Version metadata (APP_VERSION)
--   Service name metadata
--   Category metadata (app/audit/security)
--   Custom field binding via get_logger(\*\*kwargs)
--   Metadata persistence across log calls
--   Metadata isolation between logger instances
+- Environment metadata (APP_ENV)
+- Version metadata (APP_VERSION)
+- Service name metadata
+- Category metadata (app/audit/security)
+- Custom field binding via get_logger(\*\*kwargs)
+- Metadata persistence across log calls
+- Metadata isolation between logger instances
 
 ---
 
@@ -88,9 +88,9 @@ Create comprehensive pytest test infrastructure for Python Logfire implementatio
 
 **Key Functions to Implement**:
 
--   `configure_logger()` - Initialize Logfire with OTLP exporter
--   `bootstrap_logfire()` - Instrument FastAPI app
--   `get_logger()` - Return logger with metadata binding
--   `_reset_logfire_state()` - Clear global state for tests
+- `configure_logger()` - Initialize Logfire with OTLP exporter
+- `bootstrap_logfire()` - Instrument FastAPI app
+- `get_logger()` - Return logger with metadata binding
+- `_reset_logfire_state()` - Clear global state for tests
 
 **Traceability**: DEV-PRD-018, DEV-SDS-018, DEV-ADR-017

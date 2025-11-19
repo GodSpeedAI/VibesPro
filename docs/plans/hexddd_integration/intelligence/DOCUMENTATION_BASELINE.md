@@ -6,9 +6,9 @@ This file records the authoritative documentation sources we used while performi
 
 ## Key references collected
 
--   Context7 / Nx: generator schema, generateFiles, formatFiles, and plugin scaffolding examples (used to validate how templates and schema should be authored).
--   Exa search results: articles on idempotent code generation, deterministic file writes, and examples of generator test harnesses.
--   Local PR artifacts: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`, tests in `tests/generators/`, and `.github/workflows/ai-guidance.yml` updates found in PRs #49/#50/#51.
+- Context7 / Nx: generator schema, generateFiles, formatFiles, and plugin scaffolding examples (used to validate how templates and schema should be authored).
+- Exa search results: articles on idempotent code generation, deterministic file writes, and examples of generator test harnesses.
+- Local PR artifacts: `templates/{{project_slug}}/docs/specs/generators/GENERATOR_SPEC.md`, tests in `tests/generators/`, and `.github/workflows/ai-guidance.yml` updates found in PRs #49/#50/#51.
 
 ## What to fetch next (priority list)
 
@@ -18,9 +18,9 @@ This file records the authoritative documentation sources we used while performi
 
 ## Notes for implementers
 
--   When adding authoritative docs links to intelligence files, include the exact Context7 library ID or source URL for traceability.
--   Store downloaded CI logs under `docs/plans/hexddd_integration/intelligence/artifacts/` with a `run-<id>/` layout so the evidence is versioned alongside the intelligence.
--   Keep a short JSON index `ci-log-index.json` mapping PR→runIDs→paths so analysts can re-run extraction quickly.
+- When adding authoritative docs links to intelligence files, include the exact Context7 library ID or source URL for traceability.
+- Store downloaded CI logs under `docs/plans/hexddd_integration/intelligence/artifacts/` with a `run-<id>/` layout so the evidence is versioned alongside the intelligence.
+- Keep a short JSON index `ci-log-index.json` mapping PR→runIDs→paths so analysts can re-run extraction quickly.
 
 ## Status
 
@@ -33,13 +33,13 @@ Record authoritative documentation references and versions for frameworks and li
 
 ## Target list
 
--   Nx (current workspace version) — generator docs
--   Next.js (v14+) — App Router patterns
--   Remix (v2.15+) — data loaders and routing
--   Expo (~v54+) — asset handling in monorepos
--   FastAPI (latest) — async patterns and dependency injection
--   Supabase — type generation and CLI automation
--   Zod / Pydantic — runtime validation patterns
+- Nx (current workspace version) — generator docs
+- Next.js (v14+) — App Router patterns
+- Remix (v2.15+) — data loaders and routing
+- Expo (~v54+) — asset handling in monorepos
+- FastAPI (latest) — async patterns and dependency injection
+- Supabase — type generation and CLI automation
+- Zod / Pydantic — runtime validation patterns
 
 ## Next steps
 

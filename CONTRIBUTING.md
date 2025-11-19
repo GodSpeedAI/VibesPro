@@ -78,8 +78,8 @@ pre-commit run --all-files
 
 Notes:
 
--   We run Prettier, Ruff, ESLint (local), and shfmt (system) via pre-commit.
--   If you prefer not to install `shfmt` system-wide, we can switch to a pre-commit mirror that bundles shfmt; ask the maintainers to enable that.
+- We run Prettier, Ruff, ESLint (local), and shfmt (system) via pre-commit.
+- If you prefer not to install `shfmt` system-wide, we can switch to a pre-commit mirror that bundles shfmt; ask the maintainers to enable that.
 
 2. **Follow TDD**: RED → GREEN → REFACTOR → REGRESSION.
 3. **Lint & format**: `just lint` and `just format` before opening a PR.
@@ -88,16 +88,16 @@ Notes:
 
 ## Commit Guidelines
 
--   Use Conventional Commits and reference specification IDs. Example:
-    `feat(MERGE-TASK-003): add domain generator scaffolding`.
--   Keep commits focused; avoid mixed concerns.
--   Include context in commit body when touching specs or generators.
+- Use Conventional Commits and reference specification IDs. Example:
+  `feat(MERGE-TASK-003): add domain generator scaffolding`.
+- Keep commits focused; avoid mixed concerns.
+- Include context in commit body when touching specs or generators.
 
 ## Pull Request Checklist
 
--   [ ] Tests covering new behaviour have been added.
--   [ ] All existing tests pass locally.
--   [ ] Documentation/specs updated to maintain traceability.
--   [ ] Linked issues and specification IDs are referenced.
+- [ ] Tests covering new behaviour have been added.
+- [ ] All existing tests pass locally.
+- [ ] Documentation/specs updated to maintain traceability.
+- [ ] Linked issues and specification IDs are referenced.
 
 For detailed tasks, consult the implementation plan in `docs/mergekit/IMPLEMENTATION-PLAN.md`.

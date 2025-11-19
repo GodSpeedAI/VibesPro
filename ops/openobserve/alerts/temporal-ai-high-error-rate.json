@@ -1,0 +1,24 @@
+{
+  "name": "Temporal AI - High Error Rate Spike",
+  "description": "Alert when error rate spikes above 40% or 2x the rolling average",
+  "stream": "temporal_ai_recommendations",
+  "query_type": "sql",
+  "query": "SELECT pattern_id, ROUND(error_rate * 100, 1) as error_pct, ROUND(success_rate * 100, 1) as success_pct, recommendation_count FROM temporal_ai_recommendations WHERE error_rate > 0.4",
+  "condition": {
+    "column": "pattern_id",
+    "operator": "IsNotNull",
+    "value": null,
+    "ignore_case": false
+  },
+  "duration": 10,
+  "frequency": 2,
+  "time_between_alerts": 20,
+  "destination": "temporal-ai-email",
+  "is_real_time": false,
+  "context_attributes": {
+    "severity": "warning",
+    "category": "errors",
+    "component": "temporal-ai"
+  },
+  "enabled": true
+}

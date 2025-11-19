@@ -208,15 +208,17 @@ impl VectorStore {
         key: &str,
         pattern_id: &str,
     ) -> Result<()> {
-        let existing = table.get(key)?;
-        let mut ids: HashSet<String> = if let Some(value) = existing {
-            serde_json::from_str(value.value())?
-        } else {
-            HashSet::new()
+        let (mut ids, is_new) = {
+            let existing = table.get(key)?;
+            if let Some(value) = existing {
+                (serde_json::from_str::<HashSet<String>>(value.value())?, false)
+            } else {
+                (HashSet::new(), true)
+            }
         };
 
         let inserted = ids.insert(pattern_id.to_string());
-        if inserted || existing.is_none() {
+        if inserted || is_new {
             let mut sorted: Vec<_> = ids.into_iter().collect();
             sorted.sort();
             let updated = serde_json::to_string(&sorted)?;

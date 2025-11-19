@@ -18,21 +18,21 @@ The repository still carries Copilot "chat mode" personas and helper scripts tha
 
 ## Current State Summary
 
--   **Persona assets**
-    -   Templates still ship 32 legacy chatmodes under `templates/{{project_slug}}/.github/chatmodes/*.chatmode.md`, ensuring downstream projects inherit outdated Copilot configuration alongside new `.github/agents/*.agent.md` files.
-    -   `.github/agents/` mirrors those personas (debug suite, TDD stages, product personas, security, DevOps, platform, etc.) but lacks consolidation into purpose-built core agents.
-    -   Repository-wide guardrails live in `AGENT.md` files for `apps/`, `architecture/`, `docs/`, `generators/`, `hooks/`, `libs/`, `ops/`, `scripts/`, `temporal_db/`, `tests/`, `tools/`, `templates/`, and `.github/`, which the current flow expects chat modes to interpret manually.
--   **AI scripts + automation**
-    -   `scripts/normalize_chatmodes.{js,mjs}` keeps frontmatter normalized, `scripts/check_all_chatmodes.mjs` validates references, and `scripts/check_model_lint.mjs` lint-checks model declarations.
-    -   `scripts/bundle-context.sh` and `scripts/spec_feature.sh` power prompt/PDD workflows, while `scripts/run_prompt.sh` executes `.github/prompts/*.prompt.md` with the current instruction stack.
-    -   These utilities are wired into docs (`docs/devkit-prompts-instructions-integration.md`, `_template_AGENTS.md`) and CI gatekeepers (`just prompt-lint`, `tests/shell/scripts/*_spec.sh`).
--   **MCP usage**
-    -   `.mcp.json` and `.gemini/settings.json` register the local Nx MCP server (`"command": "npx", "args": ["nx", "mcp"]`).
-    -   Prompt and agent files (e.g., `.github/agents/tdd.vibepro.agent.md`, `.github/prompts/debug.ci.prompt.md`, `_template_AGENTS.md`) explicitly call out `Context7/*`, `Exa Search/*`, `Ref/*`, `Memory Tool/*`, `Vibe Check/*`, `github/*`, `microsoftdocs/mcp/*`, and `Nx Mcp Server/*` for discovery, grounding, and governance.
-    -   `_template_AGENTS.md` describes the orchestration pattern (Memory Tool → Context7/Ref → Exa → store learnings) but the legacy flow still binds that guidance to chatmode-era tooling.
--   **PDD/SDD pipeline**
-    -   `docs/dev_prd.md`, `docs/dev_sds.md`, `docs/dev_tdd.md`, `docs/dev_tdd_observability.md`, `docs/implementation-hybrid-context.md`, `docs/hybrid-context-workflow.md`, and `temporal_db/README.md` define the lifecycle from idea capture to persistence (temporal DB keys such as `spec:{id}:{timestamp_nanos}`).
-    -   Scripts and prompts enforce the lifecycle but rely on persona proliferation rather than a small set of role-specialized agents.
+- **Persona assets**
+    - Templates still ship 32 legacy chatmodes under `templates/{{project_slug}}/.github/chatmodes/*.chatmode.md`, ensuring downstream projects inherit outdated Copilot configuration alongside new `.github/agents/*.agent.md` files.
+    - `.github/agents/` mirrors those personas (debug suite, TDD stages, product personas, security, DevOps, platform, etc.) but lacks consolidation into purpose-built core agents.
+    - Repository-wide guardrails live in `AGENT.md` files for `apps/`, `architecture/`, `docs/`, `generators/`, `hooks/`, `libs/`, `ops/`, `scripts/`, `temporal_db/`, `tests/`, `tools/`, `templates/`, and `.github/`, which the current flow expects chat modes to interpret manually.
+- **AI scripts + automation**
+    - `scripts/normalize_chatmodes.{js,mjs}` keeps frontmatter normalized, `scripts/check_all_chatmodes.mjs` validates references, and `scripts/check_model_lint.mjs` lint-checks model declarations.
+    - `scripts/bundle-context.sh` and `scripts/spec_feature.sh` power prompt/PDD workflows, while `scripts/run_prompt.sh` executes `.github/prompts/*.prompt.md` with the current instruction stack.
+    - These utilities are wired into docs (`docs/devkit-prompts-instructions-integration.md`, `_template_AGENTS.md`) and CI gatekeepers (`just prompt-lint`, `tests/shell/scripts/*_spec.sh`).
+- **MCP usage**
+    - `.mcp.json` and `.gemini/settings.json` register the local Nx MCP server (`"command": "npx", "args": ["nx", "mcp"]`).
+    - Prompt and agent files (e.g., `.github/agents/tdd.vibepro.agent.md`, `.github/prompts/debug.ci.prompt.md`, `_template_AGENTS.md`) explicitly call out `Context7/*`, `Exa Search/*`, `Ref/*`, `Memory Tool/*`, `Vibe Check/*`, `github/*`, `microsoftdocs/mcp/*`, and `Nx Mcp Server/*` for discovery, grounding, and governance.
+    - `_template_AGENTS.md` describes the orchestration pattern (Memory Tool → Context7/Ref → Exa → store learnings) but the legacy flow still binds that guidance to chatmode-era tooling.
+- **PDD/SDD pipeline**
+    - `docs/dev_prd.md`, `docs/dev_sds.md`, `docs/dev_tdd.md`, `docs/dev_tdd_observability.md`, `docs/implementation-hybrid-context.md`, `docs/hybrid-context-workflow.md`, and `temporal_db/README.md` define the lifecycle from idea capture to persistence (temporal DB keys such as `spec:{id}:{timestamp_nanos}`).
+    - Scripts and prompts enforce the lifecycle but rely on persona proliferation rather than a small set of role-specialized agents.
 
 ## Decision
 
@@ -50,17 +50,17 @@ Adopt a consolidated custom-agent architecture rooted in VS Code / GitHub agents
 
 ## Target State Summary
 
--   **Minimal agent roster** lives under `.github/agents/` with cross-linking to instructions and AGENT.md guardrails; legacy persona agents remain only as thin adapters referencing the new cores until downstream templates can drop them.
--   **MCP ritual**
-    -   `context7` and `ref` deliver canonical API docs, `microsoft-docs` (per `.github/agents/tdd.vibepro.agent.md`) handles Microsoft Learn coverage, `exa` supplements real-time examples, `nx` surfaces workspace insights, `github` handles repo state, `memory` persists insights, and `vibe-check` enforces governance.
-    -   `.mcp.json` (and eventual per-workspace overrides) encode these servers so custom agents can reuse a single configuration surface.
--   **PDD/SDD architecture** binds idea capture to spec authoring, plan synthesis, implementation, review, test, and knowledge persistence:
-    -   Idea inputs come from `docs/ideation-insights.md`, `docs/implementation-hybrid-context.md`.
-    -   Spec authoring references `docs/dev_prd*.md`, `docs/dev_sds*.md`, `docs/dev_technical-specifications.md`.
-    -   Planning references `docs/generator_plan_review.md`, `docs/generator-workflow-diagram.md`.
-    -   Implementation leverages generator-first rules plus Nx MCP data (`AGENTS.md`, `.github/instructions/generators-first.instructions.md`, `.github/instructions/nx.instructions.md`).
-    -   Review/testing lean on `docs/dev_tdd*.md`, `tests/shell/scripts/*`, and `just` recipes (per docs) without restating commands here.
-    -   Knowledge persistence handled via `temporal_db/README.md` and `docs/ai_context_bundle/`.
+- **Minimal agent roster** lives under `.github/agents/` with cross-linking to instructions and AGENT.md guardrails; legacy persona agents remain only as thin adapters referencing the new cores until downstream templates can drop them.
+- **MCP ritual**
+    - `context7` and `ref` deliver canonical API docs, `microsoft-docs` (per `.github/agents/tdd.vibepro.agent.md`) handles Microsoft Learn coverage, `exa` supplements real-time examples, `nx` surfaces workspace insights, `github` handles repo state, `memory` persists insights, and `vibe-check` enforces governance.
+    - `.mcp.json` (and eventual per-workspace overrides) encode these servers so custom agents can reuse a single configuration surface.
+- **PDD/SDD architecture** binds idea capture to spec authoring, plan synthesis, implementation, review, test, and knowledge persistence:
+    - Idea inputs come from `docs/ideation-insights.md`, `docs/implementation-hybrid-context.md`.
+    - Spec authoring references `docs/dev_prd*.md`, `docs/dev_sds*.md`, `docs/dev_technical-specifications.md`.
+    - Planning references `docs/generator_plan_review.md`, `docs/generator-workflow-diagram.md`.
+    - Implementation leverages generator-first rules plus Nx MCP data (`AGENTS.md`, `.github/instructions/generators-first.instructions.md`, `.github/instructions/nx.instructions.md`).
+    - Review/testing lean on `docs/dev_tdd*.md`, `tests/shell/scripts/*`, and `just` recipes (per docs) without restating commands here.
+    - Knowledge persistence handled via `temporal_db/README.md` and `docs/ai_context_bundle/`.
 
 ## Migration Plan
 
@@ -84,16 +84,16 @@ Adopt a consolidated custom-agent architecture rooted in VS Code / GitHub agents
 
 ## Constraints
 
--   **Generator-first + Nx requirements** remain in force (`.github/instructions/generators-first.instructions.md`, `AGENTS.md`, `.github/instructions/nx.instructions.md`).
--   **Hexagonal architecture and security guardrails** from `.github/instructions/security.instructions.md`, `.github/instructions/ai-workflows.constitution.instructions.md`, and `.github/instructions/general.instructions.md` must remain authoritative; agents cannot bypass them.
--   **Microsoft Learn MCP availability** is mandatory because multiple prompts (`.github/agents/tdd.vibepro.agent.md`, `_template_AGENTS.md`) expect `microsoftdocs/mcp/*` to ground Azure/VS Code decisions.
--   **Prompt-as-code lifecycle** (DEV-ADR-007) continues to treat agent files like code: linted via existing scripts, validated via `just prompt-lint`, documented in `_template_AGENTS.md`.
+- **Generator-first + Nx requirements** remain in force (`.github/instructions/generators-first.instructions.md`, `AGENTS.md`, `.github/instructions/nx.instructions.md`).
+- **Hexagonal architecture and security guardrails** from `.github/instructions/security.instructions.md`, `.github/instructions/ai-workflows.constitution.instructions.md`, and `.github/instructions/general.instructions.md` must remain authoritative; agents cannot bypass them.
+- **Microsoft Learn MCP availability** is mandatory because multiple prompts (`.github/agents/tdd.vibepro.agent.md`, `_template_AGENTS.md`) expect `microsoftdocs/mcp/*` to ground Azure/VS Code decisions.
+- **Prompt-as-code lifecycle** (DEV-ADR-007) continues to treat agent files like code: linted via existing scripts, validated via `just prompt-lint`, documented in `_template_AGENTS.md`.
 
 ## Non-goals
 
--   Rewriting every persona immediately; thin compatibility layers may remain temporarily.
--   Changing the existing testing/validation commands or introducing parallel `just` recipes (this ADR defers to the specs listed above).
--   Altering temporal DB schemas or AI context bundle tooling beyond aligning them with the new agents.
+- Rewriting every persona immediately; thin compatibility layers may remain temporarily.
+- Changing the existing testing/validation commands or introducing parallel `just` recipes (this ADR defers to the specs listed above).
+- Altering temporal DB schemas or AI context bundle tooling beyond aligning them with the new agents.
 
 ## Follow-up Actions
 

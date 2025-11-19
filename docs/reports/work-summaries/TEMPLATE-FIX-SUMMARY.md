@@ -4,9 +4,9 @@
 
 When running `copier copy https://github.com/GodSpeedAI/VibesPro.git`, the generated project was missing critical configuration files:
 
--   `pyproject.toml`
--   `tsconfig.base.json`
--   `AGENTS.md`
+- `pyproject.toml`
+- `tsconfig.base.json`
+- `AGENTS.md`
 
 This caused the post-generation hook to fail with:
 
@@ -22,16 +22,16 @@ The template files existed in the repository root but NOT in `templates/{{projec
 
 **Solution**: Copied template files to correct location:
 
--   `pyproject.toml.j2` → `templates/{{project_slug}}/pyproject.toml.j2`
--   `tsconfig.base.json.j2` → `templates/{{project_slug}}/tsconfig.base.json.j2`
--   `AGENTS.md.j2` → `templates/{{project_slug}}/AGENTS.md.j2`
+- `pyproject.toml.j2` → `templates/{{project_slug}}/pyproject.toml.j2`
+- `tsconfig.base.json.j2` → `templates/{{project_slug}}/tsconfig.base.json.j2`
+- `AGENTS.md.j2` → `templates/{{project_slug}}/AGENTS.md.j2`
 
 ### 2. Duplicate Files in Repository Root
 
 The repository root contained both:
 
--   Non-template versions (e.g., `AGENTS.md`, `pyproject.toml`) - for VibesPro development
--   Template versions (e.g., `AGENTS.md.j2`, `pyproject.toml.j2`) - accidentally created in root
+- Non-template versions (e.g., `AGENTS.md`, `pyproject.toml`) - for VibesPro development
+- Template versions (e.g., `AGENTS.md.j2`, `pyproject.toml.j2`) - accidentally created in root
 
 According to Copier documentation:
 
@@ -41,10 +41,10 @@ However, having duplicates caused Copier to skip the templates in the subdirecto
 
 **Solution**:
 
--   Removed duplicate `.j2` files from root
--   Renamed root-level config files to avoid conflicts:
-    -   `AGENTS.md` → `_template_AGENTS.md`
-    -   `pyproject.toml` → `_template_pyproject.toml`
+- Removed duplicate `.j2` files from root
+- Renamed root-level config files to avoid conflicts:
+    - `AGENTS.md` → `_template_AGENTS.md`
+    - `pyproject.toml` → `_template_pyproject.toml`
 
 ### 3. Git Tag vs Latest Commits
 
@@ -83,12 +83,12 @@ copier copy https://github.com/GodSpeedAI/VibesPro.git <destination> --trust
 
 Now correctly generates all required files:
 
--   ✅ `pyproject.toml` (with valid TOML syntax)
--   ✅ `tsconfig.base.json`
--   ✅ `AGENTS.md`
--   ✅ `package.json`
--   ✅ `nx.json`
--   ✅ All other template files
+- ✅ `pyproject.toml` (with valid TOML syntax)
+- ✅ `tsconfig.base.json`
+- ✅ `AGENTS.md`
+- ✅ `package.json`
+- ✅ `nx.json`
+- ✅ All other template files
 
 ## Remaining Note
 

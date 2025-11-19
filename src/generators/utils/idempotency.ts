@@ -113,7 +113,7 @@ export function createIdempotentWrapper<T extends object>(
         await step();
       } catch (error) {
         const details =
-          error instanceof Error ? error.stack ?? error.message : JSON.stringify(error);
+          error instanceof Error ? (error.stack ?? error.message) : JSON.stringify(error);
         logger.error(`Idempotent generator ${stepName} step failed: ${details}`);
         throw error;
       }
@@ -143,7 +143,7 @@ export function createIdempotentWrapper<T extends object>(
         logger.info(`Idempotent generator finished successfully: ${options.message || 'OK'}`);
       } catch (error) {
         const details =
-          error instanceof Error ? error.stack ?? error.message : JSON.stringify(error);
+          error instanceof Error ? (error.stack ?? error.message) : JSON.stringify(error);
         logger.error(`Idempotent generator callback failed: ${details}`);
         throw error;
       }

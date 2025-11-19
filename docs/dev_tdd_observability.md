@@ -19,21 +19,21 @@ This document tracks the TDD-driven development of the observability features in
 
 ### Requirements
 
--   Environment-driven initialization
--   Tracing subscriber configuration
--   Conditional OTLP export based on feature flags
+- Environment-driven initialization
+- Tracing subscriber configuration
+- Conditional OTLP export based on feature flags
 
 ### Tests Implemented
 
--   ✅ `test_init_with_observe_disabled` - Verify graceful no-op when disabled
--   ✅ `test_init_with_observe_enabled_no_otlp` - Basic tracing without OTLP
--   ✅ `test_init_with_otlp_feature` - OTLP export when feature enabled
+- ✅ `test_init_with_observe_disabled` - Verify graceful no-op when disabled
+- ✅ `test_init_with_observe_enabled_no_otlp` - Basic tracing without OTLP
+- ✅ `test_init_with_otlp_feature` - OTLP export when feature enabled
 
 ### Coverage
 
--   100% of initialization paths covered
--   All environment variable combinations tested
--   Feature flag combinations validated
+- 100% of initialization paths covered
+- All environment variable combinations tested
+- Feature flag combinations validated
 
 ---
 
@@ -45,28 +45,28 @@ This document tracks the TDD-driven development of the observability features in
 
 ### Requirements
 
--   Generate Vector TOML configuration from environment
--   Support multiple sinks (file, console, null)
--   Implement span attribute redaction
--   Provide template-based config generation
+- Generate Vector TOML configuration from environment
+- Support multiple sinks (file, console, null)
+- Implement span attribute redaction
+- Provide template-based config generation
 
 ### Tests Implemented
 
--   ✅ `test_vector_config_generation_basic` - Basic config structure
--   ✅ `test_vector_config_file_sink` - File output configuration
--   ✅ `test_vector_config_redaction` - PII redaction rules
--   ✅ `test_vector_config_environment_override` - Env-driven customization
+- ✅ `test_vector_config_generation_basic` - Basic config structure
+- ✅ `test_vector_config_file_sink` - File output configuration
+- ✅ `test_vector_config_redaction` - PII redaction rules
+- ✅ `test_vector_config_environment_override` - Env-driven customization
 
 ### Shell Tests
 
--   ✅ `tests/ops/test_tracing_vector.sh` - Vector config validation smoke test
+- ✅ `tests/ops/test_tracing_vector.sh` - Vector config validation smoke test
 
 ### Coverage
 
--   100% of config generation paths covered
--   All sink types tested
--   Redaction rules validated
--   Template rendering verified
+- 100% of config generation paths covered
+- All sink types tested
+- Redaction rules validated
+- Template rendering verified
 
 ---
 
@@ -78,10 +78,10 @@ This document tracks the TDD-driven development of the observability features in
 
 ### Requirements
 
--   Verify spans are exported via OTLP
--   Confirm span attributes match expected values
--   Validate redaction requirements
--   Test Vector receives and processes spans
+- Verify spans are exported via OTLP
+- Confirm span attributes match expected values
+- Validate redaction requirements
+- Test Vector receives and processes spans
 
 ### Resolution
 
@@ -91,9 +91,9 @@ This document tracks the TDD-driven development of the observability features in
 
 ### Tests Implemented
 
--   ✅ `test_otlp_span_export_basic` - Verify OTLP span export to fake collector
--   ✅ `emits_span_with_redactable_fields` - Vector integration with span attributes
--   ✅ Shell test validates Vector configuration syntax
+- ✅ `test_otlp_span_export_basic` - Verify OTLP span export to fake collector
+- ✅ `emits_span_with_redactable_fields` - Vector integration with span attributes
+- ✅ Shell test validates Vector configuration syntax
 
 ### Breaking Changes Addressed
 
@@ -106,10 +106,10 @@ This document tracks the TDD-driven development of the observability features in
 
 ### Coverage
 
--   ✅ OTLP span export verified with fake collector
--   ✅ Span attributes and metadata validated
--   ✅ Vector configuration generation tested
--   ✅ Integration test harness operational
+- ✅ OTLP span export verified with fake collector
+- ✅ Span attributes and metadata validated
+- ✅ Vector configuration generation tested
+- ✅ Integration test harness operational
 
 ### Testing Status
 
@@ -127,30 +127,30 @@ This document tracks the TDD-driven development of the observability features in
 
 ### Unit Tests (Rust)
 
--   **Location**: `crates/vibepro-observe/tests/*.rs`
--   **Framework**: `#[tokio::test]` with `assert!` macros
--   **Coverage**: Initialization, configuration generation, OTLP integration
--   **Status**: ✅ Passing (All phases: 6/6 tests)
+- **Location**: `crates/vibepro-observe/tests/*.rs`
+- **Framework**: `#[tokio::test]` with `assert!` macros
+- **Coverage**: Initialization, configuration generation, OTLP integration
+- **Status**: ✅ Passing (All phases: 6/6 tests)
 
 ### Shell Tests (ShellSpec/Bash)
 
--   **Location**: `tests/ops/*.sh`
--   **Purpose**: Smoke tests for Vector configuration
--   **Coverage**: Config validation, syntax checking
--   **Status**: ✅ Passing
+- **Location**: `tests/ops/*.sh`
+- **Purpose**: Smoke tests for Vector configuration
+- **Coverage**: Config validation, syntax checking
+- **Status**: ✅ Passing
 
 ### Integration Tests
 
--   **Location**: `crates/vibepro-observe/tests/otlp_integration.rs`
--   **Framework**: `fake-opentelemetry-collector` 0.32
--   **Coverage**: OTLP export, span verification, redaction
--   **Status**: ✅ Passing (2 tests)
+- **Location**: `crates/vibepro-observe/tests/otlp_integration.rs`
+- **Framework**: `fake-opentelemetry-collector` 0.32
+- **Coverage**: OTLP export, span verification, redaction
+- **Status**: ✅ Passing (2 tests)
 
 ### E2E Tests (Future)
 
--   **Approach**: Manual or automated with real services
--   **Scope**: Full stack validation (app → OTLP → Vector → backend)
--   **Status**: ⏳ Planned (not required for current scope)
+- **Approach**: Manual or automated with real services
+- **Scope**: Full stack validation (app → OTLP → Vector → backend)
+- **Status**: ⏳ Planned (not required for current scope)
 
 ---
 
@@ -186,22 +186,18 @@ just observe-config-gen production
 ### Adding New Features
 
 1. **Write Spec**
-
     - Update DEV-PRD-OBS and DEV-SDS-OBS with requirements
     - Define success criteria
 
 2. **Write Failing Test (Red)**
-
     - Create test case in appropriate test file
     - Verify test fails for the right reason
 
 3. **Implement Feature (Green)**
-
     - Write minimal code to make test pass
     - Avoid gold-plating
 
 4. **Refactor (Refactor)**
-
     - Clean up implementation
     - Improve readability
     - Ensure all tests still pass
@@ -224,20 +220,20 @@ just observe-config-gen production
 
 ### Spec IDs
 
--   **DEV-PRD-OBS-001**: Observability initialization requirements
--   **DEV-PRD-OBS-002**: Vector configuration generation requirements
--   **DEV-PRD-OBS-003**: OTLP integration testing requirements (BLOCKED)
--   **DEV-SDS-OBS-001**: Initialization design spec
--   **DEV-SDS-OBS-002**: Vector config generation design spec
--   **DEV-SDS-OBS-003**: OTLP integration design spec (BLOCKED)
+- **DEV-PRD-OBS-001**: Observability initialization requirements
+- **DEV-PRD-OBS-002**: Vector configuration generation requirements
+- **DEV-PRD-OBS-003**: OTLP integration testing requirements (BLOCKED)
+- **DEV-SDS-OBS-001**: Initialization design spec
+- **DEV-SDS-OBS-002**: Vector config generation design spec
+- **DEV-SDS-OBS-003**: OTLP integration design spec (BLOCKED)
 
 ### Related Documents
 
--   `docs/work-summaries/observability-phase1-completion.md` - Phase 1 completion
--   `docs/work-summaries/observability-phase2-completion.md` - Phase 2 completion
--   `docs/work-summaries/observability-phase3-completion.md` - Phase 3 blocker analysis
--   `crates/vibepro-observe/README.md` - Library usage guide
--   `ops/vector/README.md` - Vector deployment guide
+- `docs/work-summaries/observability-phase1-completion.md` - Phase 1 completion
+- `docs/work-summaries/observability-phase2-completion.md` - Phase 2 completion
+- `docs/work-summaries/observability-phase3-completion.md` - Phase 3 blocker analysis
+- `crates/vibepro-observe/README.md` - Library usage guide
+- `ops/vector/README.md` - Vector deployment guide
 
 ---
 
@@ -249,8 +245,8 @@ just observe-config-gen production
 
 ### Workarounds
 
--   Manual testing with Jaeger/OpenObserve required for full production validation
--   Integration tests use fake-opentelemetry-collector for development
+- Manual testing with Jaeger/OpenObserve required for full production validation
+- Integration tests use fake-opentelemetry-collector for development
 
 ---
 
@@ -258,17 +254,17 @@ just observe-config-gen production
 
 ### Post Phase 3 Completion
 
--   [ ] Add sampling configuration tests
--   [ ] Test trace context propagation
--   [ ] Verify span linking across services
--   [ ] Add performance benchmarks for high-throughput scenarios
+- [ ] Add sampling configuration tests
+- [ ] Test trace context propagation
+- [ ] Verify span linking across services
+- [ ] Add performance benchmarks for high-throughput scenarios
 
 ### Observability Maturity
 
--   [ ] Add metrics export (Prometheus)
--   [ ] Add logging pipeline (structured logs)
--   [ ] Implement distributed tracing demo app
--   [ ] Create observability dashboard templates
+- [ ] Add metrics export (Prometheus)
+- [ ] Add logging pipeline (structured logs)
+- [ ] Implement distributed tracing demo app
+- [ ] Create observability dashboard templates
 
 ---
 
@@ -276,21 +272,21 @@ just observe-config-gen production
 
 ### OpenTelemetry Rust
 
--   Docs: https://docs.rs/opentelemetry/latest/opentelemetry/
--   Spec: https://opentelemetry.io/docs/specs/otel/
--   Rust SIG: https://github.com/open-telemetry/opentelemetry-rust
+- Docs: https://docs.rs/opentelemetry/latest/opentelemetry/
+- Spec: https://opentelemetry.io/docs/specs/otel/
+- Rust SIG: https://github.com/open-telemetry/opentelemetry-rust
 
 ### Vector
 
--   Docs: https://vector.dev/docs/
--   OTLP Source: https://vector.dev/docs/reference/configuration/sources/otlp/
--   Testing: https://vector.dev/docs/setup/installation/manual/from-source/
+- Docs: https://vector.dev/docs/
+- OTLP Source: https://vector.dev/docs/reference/configuration/sources/otlp/
+- Testing: https://vector.dev/docs/setup/installation/manual/from-source/
 
 ### Testing Tools
 
--   fake-opentelemetry-collector: https://github.com/davidB/tracing-opentelemetry-instrumentation-sdk
--   Tokio Test: https://docs.rs/tokio/latest/tokio/attr.test.html
--   ShellSpec: https://shellspec.info/
+- fake-opentelemetry-collector: https://github.com/davidB/tracing-opentelemetry-instrumentation-sdk
+- Tokio Test: https://docs.rs/tokio/latest/tokio/attr.test.html
+- ShellSpec: https://shellspec.info/
 
 ---
 

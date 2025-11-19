@@ -17,18 +17,18 @@ This specification defines a unified AI system profile architecture for VS Code 
 
 ### 1.1 Value Proposition
 
--   **Modularity**: Reusable, version-controlled AI behavior components
--   **Security**: Auditable tool approvals, MCP trust boundaries, signature verification
--   **Portability**: Team-wide profile distribution with consistent behavior
--   **Composability**: LoRA-like adapters for role-specific AI assistants
+- **Modularity**: Reusable, version-controlled AI behavior components
+- **Security**: Auditable tool approvals, MCP trust boundaries, signature verification
+- **Portability**: Team-wide profile distribution with consistent behavior
+- **Composability**: LoRA-like adapters for role-specific AI assistants
 
 ### 1.2 Scope
 
--   VS Code extension integration
--   Workspace and user-level configuration files
--   MCP server integration
--   CI/CD pipeline validation
--   Cross-team portability and auditing
+- VS Code extension integration
+- Workspace and user-level configuration files
+- MCP server integration
+- CI/CD pipeline validation
+- Cross-team portability and auditing
 
 ## 2. System Architecture
 
@@ -161,28 +161,28 @@ erDiagram
     "modelPreferences": {
         "default": "string (model ID)",
         "fallback": "string (model ID)",
-        "contextWindow": "number (token limit)"
+        "contextWindow": "number (token limit)",
     },
     "tokenPresets": {
         "baseInstructions": "number (reserved tokens)",
         "fileContextReserve": "number (reserved tokens)",
-        "recentHistoryCount": "number (message count)"
+        "recentHistoryCount": "number (message count)",
     },
     "toolPolicy": {
         "allowedToolSets": ["array of toolset IDs"],
         "requireMcpTrust": "boolean",
-        "autoApproveTools": "boolean (default: false)"
+        "autoApproveTools": "boolean (default: false)",
     },
     "security": {
         "requireSignature": "boolean",
         "signedBy": "string (identity)",
-        "allowedHosts": ["array of approved hosts"]
+        "allowedHosts": ["array of approved hosts"],
     },
     "audit": {
         "composerVersion": "string",
         "lastComposedAt": "ISO8601 timestamp",
-        "changelog": "array of change entries"
-    }
+        "changelog": "array of change entries",
+    },
 }
 ```
 
@@ -196,9 +196,9 @@ erDiagram
 
 **Attributes**:
 
--   `applyToGlob`: Controls automatic scope application
--   `kind`: `copilot-instructions` or `AGENTS.md`
--   `content`: Markdown text
+- `applyToGlob`: Controls automatic scope application
+- `kind`: `copilot-instructions` or `AGENTS.md`
+- `content`: Markdown text
 
 **Integration**: Profile Composer merges during preflight with precedence order
 
@@ -250,9 +250,9 @@ handoffs:
 
 **Component Props**:
 
--   `priority`: Number (higher = kept longer during pruning)
--   `flexGrow`: Token allocation weight
--   `flexReserve`: Minimum reserved tokens
+- `priority`: Number (higher = kept longer during pruning)
+- `flexGrow`: Token allocation weight
+- `flexReserve`: Minimum reserved tokens
 
 **Integration**: Composer assembles final LM payload with token budgeting
 
@@ -322,16 +322,16 @@ Role: Expert architecture companion; prefers idiomatic TypeScript/Rust/Python.
 
 Priorities:
 
--   Correctness and minimal breaking changes
--   Test coverage and reproducible builds
--   Security: never output secrets; suggest SOPS or env patterns
--   Observability: prefer OpenTelemetry-compatible instrumentation
+- Correctness and minimal breaking changes
+- Test coverage and reproducible builds
+- Security: never output secrets; suggest SOPS or env patterns
+- Observability: prefer OpenTelemetry-compatible instrumentation
 
 Constraints:
 
--   Do not include credentials or tokens in code examples
--   Flag PII and mark sensitive I/O for manual review
--   Prefer existing repo patterns (Vector, OpenObserve, SOPS)
+- Do not include credentials or tokens in code examples
+- Flag PII and mark sensitive I/O for manual review
+- Prefer existing repo patterns (Vector, OpenObserve, SOPS)
 ```
 
 #### 4.2.2 Prompt File Example
@@ -384,21 +384,21 @@ Persona: You are the {Project} Architect. Start by summarizing proposed architec
             "id": "reader",
             "type": "file_reader",
             "scope": ["repo"],
-            "requiresApproval": false
+            "requiresApproval": false,
         },
         {
             "id": "ci",
             "type": "workflow_trigger",
             "scope": ["actions"],
-            "requiresApproval": true
+            "requiresApproval": true,
         },
         {
             "id": "pr",
             "type": "pull_request_creator",
             "scope": ["github"],
-            "requiresApproval": true
-        }
-    ]
+            "requiresApproval": true,
+        },
+    ],
 }
 ```
 
@@ -424,17 +424,17 @@ export function FileContext(props: { files?: string[]; maxFiles?: number; priori
 
 #### 4.3.2 Tool Approval Policy
 
--   Tool invocations require user approval by default
--   `autoApproveTools: false` enforced in production profiles
--   CI runners with auto-approve must have strict audit logging
--   Preflight step requests workspace-level approvals
+- Tool invocations require user approval by default
+- `autoApproveTools: false` enforced in production profiles
+- CI runners with auto-approve must have strict audit logging
+- Preflight step requests workspace-level approvals
 
 #### 4.3.3 MCP Trust Model
 
--   MCP servers must be explicitly marked `trusted: true`
--   Profile manifest requires `requireMcpTrust: true`
--   Untrusted servers blocked during composition
--   Trust decisions logged for audit
+- MCP servers must be explicitly marked `trusted: true`
+- Profile manifest requires `requireMcpTrust: true`
+- Untrusted servers blocked during composition
+- Trust decisions logged for audit
 
 ## 5. CI/CD Integration
 
@@ -481,8 +481,8 @@ gpg --verify signatures/profile.sig.asc CHECKSUM.txt
     "tokenPresets": {
         "baseInstructions": 400, // Fixed persona/instructions
         "fileContextReserve": 2400, // Flexible file content
-        "recentHistoryCount": 3 // Message history
-    }
+        "recentHistoryCount": 3, // Message history
+    },
 }
 ```
 
@@ -510,59 +510,59 @@ function estimateTokens(text) {
 
 **Deliverables**:
 
--   Profile manifest schema definition
--   2 sample profiles (planner, reviewer)
--   Local Profile Composer (instruction merge, toolset resolution)
--   Token preview and pruning logs (no execution)
+- Profile manifest schema definition
+- 2 sample profiles (planner, reviewer)
+- Local Profile Composer (instruction merge, toolset resolution)
+- Token preview and pruning logs (no execution)
 
 **Success Criteria**:
 
--   Valid manifest validates against schema
--   Composer produces readable token budget report
--   Pruning simulation shows expected behavior
+- Valid manifest validates against schema
+- Composer produces readable token budget report
+- Pruning simulation shows expected behavior
 
 ### Phase 2: Integration (2-3 sprints)
 
 **Deliverables**:
 
--   VS Code extension integration
--   Profile picker UI
--   Preflight approval flow (tools/MCP)
--   Model selection and prompt execution
+- VS Code extension integration
+- Profile picker UI
+- Preflight approval flow (tools/MCP)
+- Model selection and prompt execution
 
 **Success Criteria**:
 
--   Extension loads profile from workspace
--   Tool approvals gate execution
--   Prompts render with token budgeting
--   Chat modes activate with handoffs
+- Extension loads profile from workspace
+- Tool approvals gate execution
+- Prompts render with token budgeting
+- Chat modes activate with handoffs
 
 ### Phase 3: Production Hardening (2 sprints)
 
 **Deliverables**:
 
--   CI signing pipeline
--   Policy enforcement (MCP trust, tool whitelist)
--   Audit trail logging
--   Profile registry and templates
+- CI signing pipeline
+- Policy enforcement (MCP trust, tool whitelist)
+- Audit trail logging
+- Profile registry and templates
 
 **Success Criteria**:
 
--   Signatures required and verified
--   Unauthorized tools/MCP blocked
--   Audit logs capture all tool invocations
--   Org-wide standard profiles available
+- Signatures required and verified
+- Unauthorized tools/MCP blocked
+- Audit logs capture all tool invocations
+- Org-wide standard profiles available
 
 ## 8. VibesPro-Specific Implementation
 
 ### 8.1 Project Context
 
--   **Repository**: GodSpeedAI/VibesPro
--   **Type**: Copier template for Nx monorepos
--   **Stack**: TypeScript, Rust, Python
--   **Observability**: OpenObserve, Vector, Logfire
--   **Secrets**: SOPS-encrypted
--   **Build**: Devbox, mise, Just
+- **Repository**: GodSpeedAI/VibesPro
+- **Type**: Copier template for Nx monorepos
+- **Stack**: TypeScript, Rust, Python
+- **Observability**: OpenObserve, Vector, Logfire
+- **Secrets**: SOPS-encrypted
+- **Build**: Devbox, mise, Just
 
 ### 8.2 Profile Layout
 
@@ -594,11 +594,11 @@ function estimateTokens(text) {
 
 **Existing VibesPro Assets**:
 
--   `.mcp.json` - MCP server configurations
--   `AGENTS.md` / `AGENT-SYSTEM.md` - Current persona definitions
--   `.github/instructions/*.instructions.md` - Modular guidance
--   `.github/prompts/*.prompt.md` - Reusable prompts
--   `docs/` - Specification documents
+- `.mcp.json` - MCP server configurations
+- `AGENTS.md` / `AGENT-SYSTEM.md` - Current persona definitions
+- `.github/instructions/*.instructions.md` - Modular guidance
+- `.github/prompts/*.prompt.md` - Reusable prompts
+- `docs/` - Specification documents
 
 **Integration Strategy**:
 
@@ -611,31 +611,31 @@ function estimateTokens(text) {
 
 **VibesPro Security Posture**:
 
--   SOPS for secret management (`.secrets.env.sops`)
--   No plaintext credentials committed
--   Environment variable injection via `sops exec-env`
--   Age encryption key in `~/.config/sops/age/keys.txt`
+- SOPS for secret management (`.secrets.env.sops`)
+- No plaintext credentials committed
+- Environment variable injection via `sops exec-env`
+- Age encryption key in `~/.config/sops/age/keys.txt`
 
 **Profile Security Requirements**:
 
--   Refuse to output secrets in generated code
--   Suggest SOPS/ENV patterns when credentials needed
--   Flag PII and sensitive I/O for review
--   Respect workspace trust boundaries
+- Refuse to output secrets in generated code
+- Suggest SOPS/ENV patterns when credentials needed
+- Flag PII and sensitive I/O for review
+- Respect workspace trust boundaries
 
 ## 9. Quality Gates
 
 ### 9.1 Acceptance Criteria
 
--   [ ] Profile manifest validates against schema
--   [ ] All frontmatter validates (prompts, chat modes)
--   [ ] Checksum matches computed value
--   [ ] Signature verifies with authorized key
--   [ ] No secrets detected in artifact scan
--   [ ] Token budget report generated successfully
--   [ ] Toolset references resolve correctly
--   [ ] MCP servers marked with trust status
--   [ ] Dry-run composition completes without errors
+- [ ] Profile manifest validates against schema
+- [ ] All frontmatter validates (prompts, chat modes)
+- [ ] Checksum matches computed value
+- [ ] Signature verifies with authorized key
+- [ ] No secrets detected in artifact scan
+- [ ] Token budget report generated successfully
+- [ ] Toolset references resolve correctly
+- [ ] MCP servers marked with trust status
+- [ ] Dry-run composition completes without errors
 
 ### 9.2 Continuous Validation
 
@@ -658,25 +658,25 @@ node scripts/compose-profile.js .vscode/profiles/vibespro-ai
 
 ### 10.1 VS Code Documentation
 
--   [Prompt Files](https://code.visualstudio.com/docs/copilot/prompt-files)
--   [Custom Chat Modes](https://code.visualstudio.com/docs/copilot/chat-modes)
--   [Chat Participants API](https://code.visualstudio.com/api/extension-guides/chat)
--   [MCP Integration](https://modelcontextprotocol.io/)
+- [Prompt Files](https://code.visualstudio.com/docs/copilot/prompt-files)
+- [Custom Chat Modes](https://code.visualstudio.com/docs/copilot/chat-modes)
+- [Chat Participants API](https://code.visualstudio.com/api/extension-guides/chat)
+- [MCP Integration](https://modelcontextprotocol.io/)
 
 ### 10.2 Related Specifications
 
--   `DEV-PRD-018`: Logfire Integration
--   `DEV-SDS-005`: Observability Architecture
--   `DEV-SPEC-003`: Build/Lint Tasks
--   `DEV-SPEC-006`: CI Security Posture
+- `DEV-PRD-018`: Logfire Integration
+- `DEV-SDS-005`: Observability Architecture
+- `DEV-SPEC-003`: Build/Lint Tasks
+- `DEV-SPEC-006`: CI Security Posture
 
 ### 10.3 Repository Documents
 
--   `.github/instructions/ai-workflows.constitution.instructions.md`
--   `.github/instructions/security.instructions.md`
--   `.github/copilot-instructions.md`
--   `docs/ENVIRONMENT.md`
--   `temporal_db/README.md`
+- `.github/instructions/ai-workflows.constitution.instructions.md`
+- `.github/instructions/security.instructions.md`
+- `.github/copilot-instructions.md`
+- `docs/ENVIRONMENT.md`
+- `temporal_db/README.md`
 
 ## Appendix A: Complete Profile Example
 

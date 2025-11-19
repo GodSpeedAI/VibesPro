@@ -11,10 +11,10 @@ The `SecureDb` wrapper provides transparent encryption using XChaCha20-Poly1305 
 
 ### Benchmark Results
 
--   **Test:** 1,000 inserts of 5-byte values
--   **Plain redb:** ~672ms
--   **SecureDb (encrypted redb):** ~729ms
--   **Overhead:** ~8.4% (1.08x slower)
+- **Test:** 1,000 inserts of 5-byte values
+- **Plain redb:** ~672ms
+- **SecureDb (encrypted redb):** ~729ms
+- **Overhead:** ~8.4% (1.08x slower)
 
 ### Performance Breakdown
 
@@ -55,17 +55,17 @@ The overhead comes from:
 
 **Impact:**
 
--   Reduced counter writes from 1000 to 100 (10x reduction)
--   Improved performance by ~10-14% (800% → 720-750% overhead)
--   Limited effectiveness due to sled's implicit transaction model
+- Reduced counter writes from 1000 to 100 (10x reduction)
+- Improved performance by ~10-14% (800% → 720-750% overhead)
+- Limited effectiveness due to sled's implicit transaction model
 
 ### redb Migration + In-Memory Counter (v0.2.0)
 
 **Problem:**
 
--   sled is unmaintained (perpetual beta since 2020)
--   Per-operation transaction overhead in redb worse than sled
--   Needed to eliminate counter persistence overhead entirely
+- sled is unmaintained (perpetual beta since 2020)
+- Per-operation transaction overhead in redb worse than sled
+- Needed to eliminate counter persistence overhead entirely
 
 **Solution:**
 
@@ -93,15 +93,15 @@ pub fn flush(&self) -> SecureDbResult<()> {
 
 **Impact:**
 
--   **Eliminated transaction overhead** from counter updates
--   **Overhead reduced from 720-750% to 8.4%** (99% improvement)
--   **Fair comparison:** Both encrypted and plain versions use redb with identical transaction patterns
+- **Eliminated transaction overhead** from counter updates
+- **Overhead reduced from 720-750% to 8.4%** (99% improvement)
+- **Fair comparison:** Both encrypted and plain versions use redb with identical transaction patterns
 
 **Trade-off:**
 
--   On crash, all nonces since last flush() may need to be skipped
--   **Mitigation:** Call `flush()` periodically and before shutdown
--   **Security:** Cryptographically safe - nonce uniqueness guaranteed by UUID+counter combination
+- On crash, all nonces since last flush() may need to be skipped
+- **Mitigation:** Call `flush()` periodically and before shutdown
+- **Security:** Cryptographically safe - nonce uniqueness guaranteed by UUID+counter combination
 
 ## Future Optimization Opportunities
 
@@ -144,8 +144,8 @@ thread_local! {
 
 The `chacha20poly1305` crate already uses hardware acceleration (AES-NI) when available. Further gains would require:
 
--   Platform-specific SIMD intrinsics
--   Custom cipher implementation (high risk, not recommended)
+- Platform-specific SIMD intrinsics
+- Custom cipher implementation (high risk, not recommended)
 
 ## Performance Guidelines
 
@@ -182,21 +182,21 @@ The `chacha20poly1305` crate already uses hardware acceleration (AES-NI) when av
 
 SecureDb v0.2.0 is appropriate for:
 
--   ✅ Configuration storage (low-medium throughput, high security)
--   ✅ API key management (small data, infrequent access)
--   ✅ User credential storage (security > performance)
--   ✅ Audit logs (append-mostly, durability critical)
--   ✅ Session data (medium throughput, moderate security)
--   ✅ < 10,000 operations per second
--   ✅ Acceptable to have ~60ms added latency per 1,000 operations
--   ✅ **Production-ready for most applications**
+- ✅ Configuration storage (low-medium throughput, high security)
+- ✅ API key management (small data, infrequent access)
+- ✅ User credential storage (security > performance)
+- ✅ Audit logs (append-mostly, durability critical)
+- ✅ Session data (medium throughput, moderate security)
+- ✅ < 10,000 operations per second
+- ✅ Acceptable to have ~60ms added latency per 1,000 operations
+- ✅ **Production-ready for most applications**
 
 SecureDb may NOT be appropriate for:
 
--   ❌ Ultra-high-throughput data pipelines (>100k ops/sec)
--   ❌ Hard real-time systems (sub-microsecond latency required)
--   ❌ Applications where ANY overhead is unacceptable
--   ⚠️ For extreme performance requirements, consider alternatives in `/docs/DATABASE-ALTERNATIVES-ANALYSIS.md`
+- ❌ Ultra-high-throughput data pipelines (>100k ops/sec)
+- ❌ Hard real-time systems (sub-microsecond latency required)
+- ❌ Applications where ANY overhead is unacceptable
+- ⚠️ For extreme performance requirements, consider alternatives in `/docs/DATABASE-ALTERNATIVES-ANALYSIS.md`
 
 **If SecureDb is NOT appropriate for your use case:**
 
@@ -242,12 +242,12 @@ println!("10k inserts: {:?}", start.elapsed());
 
 ## References
 
--   **Specification:** `docs/aiassist/AI_SECURITY_HARDENING.md`
--   **Architecture Decision:** `docs/aiassist/AI_ADR.md` (AI_ADR-006)
--   **Implementation Plan:** `docs/aiassist/AI_TDD_PLAN.md` (PHASE-006)
--   **Optimization Task:** `docs/aiassist/PHASE-006-CHECKLIST.md` (TASK-016)
--   **XChaCha20-Poly1305:** https://docs.rs/chacha20poly1305/
--   **redb Database:** https://docs.rs/redb/
+- **Specification:** `docs/aiassist/AI_SECURITY_HARDENING.md`
+- **Architecture Decision:** `docs/aiassist/AI_ADR.md` (AI_ADR-006)
+- **Implementation Plan:** `docs/aiassist/AI_TDD_PLAN.md` (PHASE-006)
+- **Optimization Task:** `docs/aiassist/PHASE-006-CHECKLIST.md` (TASK-016)
+- **XChaCha20-Poly1305:** https://docs.rs/chacha20poly1305/
+- **redb Database:** https://docs.rs/redb/
 
 ---
 

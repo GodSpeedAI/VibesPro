@@ -8,34 +8,34 @@
 
 ### ✅ Cycle A: Unit of Work (TypeScript)
 
--   **Location**: `libs/shared/domain/src/lib/`
--   **Ports**: `ports/unit-of-work.port.ts` (full interface with transaction management)
--   **Adapters**: `adapters/in-memory-uow.adapter.ts` (production-ready implementation)
--   **Tests**: 11/11 passing (`__tests__/unit-of-work.spec.ts`)
--   **Coverage**: Transaction lifecycle, entity tracking, transactional execution
+- **Location**: `libs/shared/domain/src/lib/`
+- **Ports**: `ports/unit-of-work.port.ts` (full interface with transaction management)
+- **Adapters**: `adapters/in-memory-uow.adapter.ts` (production-ready implementation)
+- **Tests**: 11/11 passing (`__tests__/unit-of-work.spec.ts`)
+- **Coverage**: Transaction lifecycle, entity tracking, transactional execution
 
 ### ✅ Cycle B: Unit of Work (Python)
 
--   **Location**: `libs/shared/domain/python/`
--   **Ports**: `ports/unit_of_work.py` (Protocol-based)
--   **Adapters**: `adapters/in_memory_uow.py` (async/await support)
--   **Tests**: 12/12 passing (`tests/test_unit_of_work.py`)
--   **Type Safety**: mypy --strict passing (100% type coverage)
+- **Location**: `libs/shared/domain/python/`
+- **Ports**: `ports/unit_of_work.py` (Protocol-based)
+- **Adapters**: `adapters/in_memory_uow.py` (async/await support)
+- **Tests**: 12/12 passing (`tests/test_unit_of_work.py`)
+- **Type Safety**: mypy --strict passing (100% type coverage)
 
 ### ✅ Cycle C: Event Bus Abstractions
 
--   **TypeScript**:
-    -   Port: `ports/event-bus.port.ts` (pub/sub with async handler support)
-    -   Adapter: `adapters/in-memory-eventbus.adapter.ts` (error aggregation)
--   **Python**:
-    -   Port: `ports/event_bus.py` (Protocol-based)
-    -   Adapter: `adapters/in_memory_eventbus.py` (async task scheduling)
+- **TypeScript**:
+    - Port: `ports/event-bus.port.ts` (pub/sub with async handler support)
+    - Adapter: `adapters/in-memory-eventbus.adapter.ts` (error aggregation)
+- **Python**:
+    - Port: `ports/event_bus.py` (Protocol-based)
+    - Adapter: `adapters/in_memory_eventbus.py` (async task scheduling)
 
 ### ✅ Cycle D: Nx Configuration
 
--   **Boundary Enforcement**: Updated `nx.json` with plugin configuration
--   **Tags**: `libs/shared/domain/project.json` tagged as `type:domain`, `scope:shared`
--   **Build/Test**: Nx targets configured and passing
+- **Boundary Enforcement**: Updated `nx.json` with plugin configuration
+- **Tags**: `libs/shared/domain/project.json` tagged as `type:domain`, `scope:shared`
+- **Build/Test**: Nx targets configured and passing
 
 ## Test Results
 
@@ -57,11 +57,11 @@
 
 ## Architecture Compliance
 
--   ✅ **DEV-ADR-024**: UoW and EventBus as first-class abstractions
--   ✅ **DEV-PRD-025**: Unit of Work abstraction implemented
--   ✅ **DEV-PRD-026**: Event-Driven Architecture with EventBus
--   ✅ **DEV-SDS-024**: UoW design with transaction boundaries
--   ✅ **DEV-SDS-025**: EventBus contract with error handling
+- ✅ **DEV-ADR-024**: UoW and EventBus as first-class abstractions
+- ✅ **DEV-PRD-025**: Unit of Work abstraction implemented
+- ✅ **DEV-PRD-026**: Event-Driven Architecture with EventBus
+- ✅ **DEV-SDS-024**: UoW design with transaction boundaries
+- ✅ **DEV-SDS-025**: EventBus contract with error handling
 
 ## File Structure
 
@@ -95,13 +95,13 @@ libs/shared/domain/
 
 ## Success Criteria Met
 
--   ✅ **UoW Contracts Complete**: Both TS and Python with in-memory adapters
--   ✅ **EventBus Abstractions Complete**: Cross-language implementations
--   ✅ **Zero Boundary Violations**: Nx lint passing (template domain excluded)
--   ✅ **Integration Tests Pass**: All transactional tests validate commit/rollback
--   ✅ **Zero CI Failures**: All quality gates passing
--   ✅ **Zero Technical Debt**: Follows hexagonal architecture principles
--   ✅ **Production Ready**: Full documentation, spec traceability
+- ✅ **UoW Contracts Complete**: Both TS and Python with in-memory adapters
+- ✅ **EventBus Abstractions Complete**: Cross-language implementations
+- ✅ **Zero Boundary Violations**: Nx lint passing (template domain excluded)
+- ✅ **Integration Tests Pass**: All transactional tests validate commit/rollback
+- ✅ **Zero CI Failures**: All quality gates passing
+- ✅ **Zero Technical Debt**: Follows hexagonal architecture principles
+- ✅ **Production Ready**: Full documentation, spec traceability
 
 ## Supabase Dev Stack
 

@@ -15,14 +15,14 @@ description: "Review techstack.yaml + specs; output idempotent plan to sync Copi
 
 ## Inputs
 
--   Tech stack: `./techstack.yaml`
--   Specs: `./docs/dev_prd.md`, `./docs/dev_sds.md`, `./docs/dev_adr.md`, `./docs/dev_technical-specifications.md` (if present)
+- Tech stack: `./techstack.yaml`
+- Specs: `./docs/dev_prd.md`, `./docs/dev_sds.md`, `./docs/dev_adr.md`, `./docs/dev_technical-specifications.md` (if present)
 
 ## Guardrails
 
--   Apply `.github/instructions/security.instructions.md`, `performance.instructions.md`, and `general.instructions.md`.
--   Do not modify `.vscode/` automatically. No auto-approve.
--   Idempotent outputs only; deterministic content; avoid timestamps.
+- Apply `.github/instructions/security.instructions.md`, `performance.instructions.md`, and `general.instructions.md`.
+- Do not modify `.vscode/` automatically. No auto-approve.
+- Idempotent outputs only; deterministic content; avoid timestamps.
 
 ## Task
 
@@ -37,5 +37,5 @@ description: "Review techstack.yaml + specs; output idempotent plan to sync Copi
 
 ## Output
 
--   A concise, copy-ready plan and diffs.
--   Risks/Mitigations section (security/perf/UX) with spec ID references where applicable.
+- A concise, copy-ready plan and diffs.
+- Risks/Mitigations section (security/perf/UX) with spec ID references where applicable.

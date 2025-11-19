@@ -4,10 +4,10 @@ Framework-agnostic utilities for React applications (Next.js, Remix, Expo).
 
 ## Features
 
--   **API Client**: Type-safe HTTP client with error handling
--   **Validation Schemas**: Zod schemas for data validation
--   **Environment Config**: Unified env variable access across frameworks
--   **Error Handling**: Centralized error handling utilities
+- **API Client**: Type-safe HTTP client with error handling
+- **Validation Schemas**: Zod schemas for data validation
+- **Environment Config**: Unified env variable access across frameworks
+- **Error Handling**: Centralized error handling utilities
 
 ## Usage
 
@@ -77,6 +77,6 @@ const result = safeParse.user(data); // Returns { success, data, error }
 
 ## Specifications
 
--   DEV-ADR-028: Universal React Generator
--   DEV-PRD-029: Framework-specific scaffolds
--   DEV-SDS-028: Shared assets strategy
+- DEV-ADR-028: Universal React Generator
+- DEV-PRD-029: Framework-specific scaffolds
+- DEV-SDS-028: Shared assets strategy
