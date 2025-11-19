@@ -80,8 +80,6 @@ VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal a
 
 **Delivered**:
 
-<<<<<<< HEAD
-
 - FastAPI request tracing
 - Python service observability
 - Unified log-trace correlation across all services
