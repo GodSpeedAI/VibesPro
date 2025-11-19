@@ -98,16 +98,16 @@ Artifacts: Justfile (verify:node), docs note “Volta Compatibility Mode”.
 
 ## DEV-SDS-026 — Supabase Dev Stack Targets & Tooling (addresses DEV-PRD-027)
 
--   Nx Targets: `tools/supabase/project.json` exports `supabase-devstack:start|stop|reset|status` run-commands invoking Docker Compose.
--   Compose Files: Maintain `docker/docker-compose.supabase.yml` mirroring HexDDD services (db, auth, storage, studio, etc.).
--   Environment: Provide `example.env` and generator-produced `.env.supabase.local` instructions; secrets stored in SOPS files.
--   Tests: ShellSpec scripts cover start/stop/reset flows; optional CI job ensures stack bootstraps within budgeted time.
--   Docs: Update `docs/ENVIRONMENT.md` and `docs/project_state.md` with quick-start and teardown guidance.
+- Nx Targets: `tools/supabase/project.json` exports `supabase-devstack:start|stop|reset|status` run-commands invoking Docker Compose.
+- Compose Files: Maintain `docker/docker-compose.supabase.yml` mirroring HexDDD services (db, auth, storage, studio, etc.).
+- Environment: Provide `example.env` and generator-produced `.env.supabase.local` instructions; secrets stored in SOPS files.
+- Tests: ShellSpec scripts cover start/stop/reset flows; optional CI job ensures stack bootstraps within budgeted time.
+- Docs: Update `docs/ENVIRONMENT.md` and `docs/project_state.md` with quick-start and teardown guidance.
 
 ## DEV-SDS-027 — Nx Upgrade Runbook (addresses DEV-PRD-028)
 
--   Workflow: Create `docs/runbooks/nx_upgrade.md` detailing branch creation, `pnpm dlx nx migrate latest`, reviewing `migrations.json`, and applying codemods.
--   Validation Suite: Run `pnpm install`, `pnpm lint`, `pnpm tsc --noEmit`, `nx run-many --target=test`, `just test-generation`, and `just spec-guard`.
--   Rollback: Document restoring prior lockfiles and re-running previous Nx version if regressions appear.
--   Communication: Capture release notes and migration highlights for generated project consumers.
--   Scheduling: Track upgrade cadence on the platform roadmap and coordinate with downstream template consumers.
+- Workflow: Create `docs/runbooks/nx_upgrade.md` detailing branch creation, `pnpm dlx nx migrate latest`, reviewing `migrations.json`, and applying codemods.
+- Validation Suite: Run `pnpm install`, `pnpm lint`, `pnpm tsc --noEmit`, `nx run-many --target=test`, `just test-generation`, and `just spec-guard`.
+- Rollback: Document restoring prior lockfiles and re-running previous Nx version if regressions appear.
+- Communication: Capture release notes and migration highlights for generated project consumers.
+- Scheduling: Track upgrade cadence on the platform roadmap and coordinate with downstream template consumers.

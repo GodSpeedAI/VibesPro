@@ -5,89 +5,89 @@ default: (_detect_build_system)
 
 # Build all projects
 build:
-    @echo "Building {{ project_name }}..."
-    {% if architecture_style == "hexagonal" %}
-    pnpm nx run-many --target=build --all --parallel=3
-    {% else %}
-    pnpm build
-    {% endif %}
+@echo "Building {{ project_name }}..."
+{% if architecture_style == "hexagonal" %}
+pnpm nx run-many --target=build --all --parallel=3
+{% else %}
+pnpm build
+{% endif %}
 
 # Test all projects
 test:
-    @echo "Testing {{ project_name }}..."
-    @if [ -f "nx.json" ]; then \
-        pnpm nx run-many --target=test --all --parallel=3; \
-    else \
-        pnpm test --if-present; \
-    fi
+@echo "Testing {{ project_name }}..."
+@if [ -f "nx.json" ]; then \
+pnpm nx run-many --target=test --all --parallel=3; \
+else \
+pnpm test --if-present; \
+fi
 
 # Lint all projects
 lint:
-    @echo "Linting {{ project_name }}..."
-    @if [ -f "nx.json" ]; then \
-        pnpm nx run-many --target=lint --all; \
-    else \
-        pnpm lint --if-present; \
-    fi
+@echo "Linting {{ project_name }}..."
+@if [ -f "nx.json" ]; then \
+pnpm nx run-many --target=lint --all; \
+else \
+pnpm lint --if-present; \
+fi
 
 # Development server
 dev:
-    @echo "Starting development server for {{ project_name }}..."
-    @if [ -f "nx.json" ]; then \
-        pnpm nx run-many --target=serve --all --parallel=5; \
-    else \
-        pnpm dev --if-present || pnpm start --if-present; \
-    fi
+@echo "Starting development server for {{ project_name }}..."
+@if [ -f "nx.json" ]; then \
+pnpm nx run-many --target=serve --all --parallel=5; \
+else \
+pnpm dev --if-present || pnpm start --if-present; \
+fi
 
 spec-matrix:
-    pnpm spec:matrix
+pnpm spec:matrix
 
 prompt-lint:
-    pnpm prompt:lint
+pnpm prompt:lint
 
 # Setup project
 setup:
-    @echo "Setting up {{ project_name }}..."
-    pnpm install
-    {% if include_ai_workflows == true %}
-    just setup-ai
-    {% endif %}
+@echo "Setting up {{ project_name }}..."
+pnpm install
+{% if include_ai_workflows == true %}
+just setup-ai
+{% endif %}
 
 {% if include_ai_workflows == true %}
 # Setup AI workflows
 setup-ai:
-    @echo "Setting up AI workflows..."
-    python3 tools/temporal-db/init.py
+@echo "Setting up AI workflows..."
+python3 tools/temporal-db/init.py
 
 # Initialize temporal database
 db-init:
-    python3 tools/temporal-db/init.py
+python3 tools/temporal-db/init.py
 
 # Backup temporal database
 db-backup:
-    python3 tools/temporal-db/backup.py
+python3 tools/temporal-db/backup.py
 
 # Customize copilot instructions interactively
 customize-instructions:
-    @echo "🤖 Interactive Copilot Instructions Customization"
-    @echo "=================================================="
-    @echo ""
-    @echo "This will guide you through customizing .github/copilot-instructions.md"
-    @echo "for your project. Answer questions about your:"
-    @echo "  - Project type and tech stack"
-    @echo "  - Architecture and domain"
-    @echo "  - Team size and development practices"
-    @echo "  - Testing, security, and deployment approaches"
-    @echo ""
-    @echo "You can also use the 'meta.customize-instructions' chat mode in VS Code."
-    @echo ""
-    @echo "Press Enter to continue when ready..."
-    @read
-    @echo ""
-    @echo "Opening .github/prompts/customize.copilot-instructions.prompt.md..."
-    @echo "Please use this prompt in your AI chat (GitHub Copilot or VS Code chat)."
-    @echo ""
-    @cat .github/prompts/customize.copilot-instructions.prompt.md
+@echo "🤖 Interactive Copilot Instructions Customization"
+@echo "=================================================="
+@echo ""
+@echo "This will guide you through customizing .github/copilot-instructions.md"
+@echo "for your project. Answer questions about your:"
+@echo " - Project type and tech stack"
+@echo " - Architecture and domain"
+@echo " - Team size and development practices"
+@echo " - Testing, security, and deployment approaches"
+@echo ""
+@echo "You can also use the 'meta.customize-instructions' chat mode in VS Code."
+@echo ""
+@echo "Press Enter to continue when ready..."
+@read
+@echo ""
+@echo "Opening .github/prompts/customize.copilot-instructions.prompt.md..."
+@echo "Please use this prompt in your AI chat (GitHub Copilot or VS Code chat)."
+@echo ""
+@cat .github/prompts/customize.copilot-instructions.prompt.md
 
 # --- AI Workflow Recipes ---
 # Traceability: AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-004
@@ -104,98 +104,166 @@ customize-instructions:
 # Collects specs, CALM architecture, and techstack into docs/ai_context_bundle
 # for reference by .github/chatmodes/*.chatmode.md files
 ai-context-bundle:
-	@echo "📦 Bundling AI context..."
-	@bash scripts/bundle-context.sh docs/ai_context_bundle
-	@echo "✅ Context bundle ready at docs/ai_context_bundle"
+@echo "📦 Bundling AI context..."
+@bash scripts/bundle-context.sh docs/ai_context_bundle
+@echo "✅ Context bundle ready at docs/ai_context_bundle"
+
+# --- Type Safety Pipeline (Bi-Directional) ---
+# Flow A: DB -> TS -> Python
+gen-types-ts:
+@echo "🏷️ Generating TypeScript types from Supabase schema..."
+@if command -v supabase >/dev/null 2>&1; then \
+mkdir -p libs/shared/types/src; \
+supabase gen types typescript --local --schema public > libs/shared/types/src/database.types.ts; \
+else \
+echo "❌ supabase CLI not found. Please run 'just setup' to install devbox packages"; exit 1; \
+fi
+
+gen-types-py:
+@echo "🐍 Generating Python Pydantic models from TypeScript types..."
+@if [ ! -f libs/shared/types/src/database.types.ts ]; then \
+echo "❌ TypeScript types not found. Run 'just gen-types-ts' first"; exit 1; \
+fi
+@mkdir -p libs/shared/types-py/src
+@python3 tools/scripts/gen_py_types.py libs/shared/types/src libs/shared/types-py/src
+
+gen-types:
+@echo "🔁 Running Flow A type generation..."
+just gen-types-ts
+just gen-types-py
+
+# Flow B: Python -> OpenAPI -> TypeScript
+gen-api-spec:
+@echo "📜 Generating OpenAPI spec from FastAPI..."
+@# Assumes the app name is '{{ app_name }}' - adjust if multiple apps
+@mkdir -p apps/{{ app_name }}
+@# We use a temporary script to dump the openapi.json
+@echo "import json; from apps.{{ app_name }}.main import app; print(json.dumps(app.openapi(), indent=2))" >
+tmp_gen_openapi.py
+@PYTHONPATH=. python3 tmp_gen_openapi.py > apps/{{ app_name }}/openapi.json
+@rm tmp_gen_openapi.py
+@echo "✅ Generated apps/{{ app_name }}/openapi.json"
+
+gen-api-client:
+@echo "🔌 Generating TypeScript client from OpenAPI spec..."
+@if [ ! -f apps/{{ app_name }}/openapi.json ]; then \
+echo "❌ OpenAPI spec not found. Run 'just gen-api-spec' first"; exit 1; \
+fi
+@mkdir -p libs/shared/web/src/lib/api-client
+@# Use openapi-generator-cli (requires java)
+@npx @openapitools/openapi-generator-cli generate \
+-i apps/{{ app_name }}/openapi.json \
+-g typescript-fetch \
+-o libs/shared/web/src/lib/api-client \
+--additional-properties=typescriptThreePlus=true,supportsES6=true
+@echo "✅ Generated API client in libs/shared/web/src/lib/api-client"
+
+check-types:
+@echo "🔍 Checking generated types are committed and up to date..."
+@# Check Flow A
+@just gen-types > /dev/null 2>&1 || true
+@if ! git diff --exit-code -- libs/shared/types/src/database.types.ts; then \
+echo "❌ TypeScript types (Flow A) are out of date."; exit 1; \
+fi
+@if ! git diff --exit-code -- libs/shared/types-py/src/models.py; then \
+echo "❌ Python types (Flow A) are out of date."; exit 1; \
+fi
+@# Check Flow B
+@just gen-api-spec > /dev/null 2>&1 || true
+@if ! git diff --exit-code -- apps/{{ app_name }}/openapi.json; then \
+echo "❌ OpenAPI spec (Flow B) is out of date."; exit 1; \
+fi
+@echo "✅ All types are up to date"
+
 
 # --- TDD Workflow (Red-Green-Refactor) ---
 # Usage: Open corresponding chat mode and follow the workflow
 # Context: Reference docs/ai_context_bundle for project context
 
 tdd-red:
-	@echo "🔴 Red Phase: Write failing tests from specs."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: tdd.red"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Write failing tests that define expected behavior"
-	@echo ""
+@echo "🔴 Red Phase: Write failing tests from specs."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: tdd.red"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Write failing tests that define expected behavior"
+@echo ""
 
 tdd-green:
-	@echo "🟢 Green Phase: Implement minimal code to pass tests."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: tdd.green"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Write minimal implementation to make tests pass"
-	@echo ""
+@echo "🟢 Green Phase: Implement minimal code to pass tests."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: tdd.green"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Write minimal implementation to make tests pass"
+@echo ""
 
 tdd-refactor:
-	@echo "♻️  Refactor Phase: Improve design while keeping tests green."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: tdd.refactor"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Optimize code without changing behavior"
-	@echo ""
+@echo "♻️ Refactor Phase: Improve design while keeping tests green."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: tdd.refactor"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Optimize code without changing behavior"
+@echo ""
 
 # --- Debug Workflow (Start-Repro-Isolate-Fix-Refactor-Regress) ---
 # Usage: Open corresponding chat mode and follow the workflow
 # Context: Reference docs/ai_context_bundle for project context
 
 debug-start:
-	@echo "🐛 Debug Start: Normalize bug report and plan reproduction."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: debug.start"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Document the bug and plan reproduction"
-	@echo ""
+@echo "🐛 Debug Start: Normalize bug report and plan reproduction."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: debug.start"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Document the bug and plan reproduction"
+@echo ""
 
 debug-repro:
-	@echo "🐛 Debug Repro: Write failing test to reproduce the issue."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: debug.repro"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Create minimal reproduction test"
-	@echo ""
+@echo "🐛 Debug Repro: Write failing test to reproduce the issue."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: debug.repro"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Create minimal reproduction test"
+@echo ""
 
 debug-isolate:
-	@echo "🐛 Debug Isolate: Narrow root cause using diffs/instrumentation."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: debug.isolate"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Add logging/instrumentation to find root cause"
-	@echo ""
+@echo "🐛 Debug Isolate: Narrow root cause using diffs/instrumentation."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: debug.isolate"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Add logging/instrumentation to find root cause"
+@echo ""
 
 debug-fix:
-	@echo "🐛 Debug Fix: Apply minimal change to make tests pass."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: debug.fix"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Implement minimal fix for the issue"
-	@echo ""
+@echo "🐛 Debug Fix: Apply minimal change to make tests pass."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: debug.fix"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Implement minimal fix for the issue"
+@echo ""
 
 debug-refactor:
-	@echo "♻️  Debug Refactor: Clean up the fix and remove instrumentation."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: debug.refactor"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Improve fix quality and remove debug code"
-	@echo ""
+@echo "♻️ Debug Refactor: Clean up the fix and remove instrumentation."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: debug.refactor"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Improve fix quality and remove debug code"
+@echo ""
 
 debug-regress:
-	@echo "🧪 Debug Regress: Run full regression to ensure stability."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Open chat mode: debug.regress"
-	@echo "  2. Reference docs/ai_context_bundle"
-	@echo "  3. Verify no regressions were introduced"
-	@echo ""
+@echo "🧪 Debug Regress: Run full regression to ensure stability."
+@echo ""
+@echo "Next steps:"
+@echo " 1. Open chat mode: debug.regress"
+@echo " 2. Reference docs/ai_context_bundle"
+@echo " 3. Verify no regressions were introduced"
+@echo ""
 
 # --- AI Validation & Scaffolding ---
 
@@ -203,119 +271,119 @@ debug-regress:
 # Safe to run: degrades gracefully if pnpm or Nx are not available
 # Runs: AGENT link checker, pre-commit, lint, typecheck, and tests (if configured)
 ai-validate:
-	@echo "🔍 Validating project..."
-	@echo "Running AGENT.md link checker..."
-	@python3 tools/check_agent_links.py || true
-	@echo "Running pre-commit hooks..."
-	@if command -v pre-commit > /dev/null 2>&1; then \
-		pre-commit run --all-files || true; \
-	else \
-		echo "⚠️  pre-commit not found. Skipping pre-commit hooks."; \
-	fi
-	@if command -v pnpm > /dev/null 2>&1; then \
-		if [ -f package.json ] && grep -q '"lint"' package.json; then \
-			echo "Running lint..."; \
-			pnpm run lint || true; \
-		else \
-			echo "⚠️  No 'lint' script found in package.json. Skipping lint."; \
-		fi; \
-		if [ -f package.json ] && grep -q '"typecheck"' package.json; then \
-			echo "Running typecheck..."; \
-			pnpm run typecheck || true; \
-		else \
-			echo "⚠️  No 'typecheck' script found in package.json. Skipping typecheck."; \
-		fi; \
-		if pnpm exec nx --version > /dev/null 2>&1; then \
-			echo "Running tests..."; \
-			pnpm exec nx run-many --target=test --all || true; \
-		else \
-			echo "⚠️  Nx not available or no projects to test."; \
-		fi; \
-	else \
-		echo "⚠️  pnpm not found. Skipping validation."; \
-		echo "Run 'just setup' to install dependencies."; \
-	fi
-	@echo "✅ Validation complete"
+@echo "🔍 Validating project..."
+@echo "Running AGENT.md link checker..."
+@python3 tools/check_agent_links.py || true
+@echo "Running pre-commit hooks..."
+@if command -v pre-commit > /dev/null 2>&1; then \
+pre-commit run --all-files || true; \
+else \
+echo "⚠️ pre-commit not found. Skipping pre-commit hooks."; \
+fi
+@if command -v pnpm > /dev/null 2>&1; then \
+if [ -f package.json ] && grep -q '"lint"' package.json; then \
+echo "Running lint..."; \
+pnpm run lint || true; \
+else \
+echo "⚠️ No 'lint' script found in package.json. Skipping lint."; \
+fi; \
+if [ -f package.json ] && grep -q '"typecheck"' package.json; then \
+echo "Running typecheck..."; \
+pnpm run typecheck || true; \
+else \
+echo "⚠️ No 'typecheck' script found in package.json. Skipping typecheck."; \
+fi; \
+if pnpm exec nx --version > /dev/null 2>&1; then \
+echo "Running tests..."; \
+pnpm exec nx run-many --target=test --all || true; \
+else \
+echo "⚠️ Nx not available or no projects to test."; \
+fi; \
+else \
+echo "⚠️ pnpm not found. Skipping validation."; \
+echo "Run 'just setup' to install dependencies."; \
+fi
+@echo "✅ Validation complete"
 
 # Scaffold new code using Nx generators
 # Thin wrapper around 'nx generate' with helpful error messages
 # Usage: just ai-scaffold name=@nx/js:lib
 ai-scaffold name="":
-	@if [ -z "{{name}}" ]; then \
-		echo "Usage: just ai-scaffold name=<generator>"; \
-		echo ""; \
-		echo "Examples:"; \
-		echo "  just ai-scaffold name=@nx/js:lib"; \
-		echo "  just ai-scaffold name=@nx/react:component"; \
-		echo ""; \
-		exit 1; \
+@if [ -z "{{name}}" ]; then \
+echo "Usage: just ai-scaffold name=<generator>"; \
+	echo ""; \
+	echo "Examples:"; \
+	echo " just ai-scaffold name=@nx/js:lib"; \
+	echo " just ai-scaffold name=@nx/react:component"; \
+	echo ""; \
+	exit 1; \
 	else \
-		if command -v pnpm > /dev/null 2>&1; then \
-			echo "🏗️  Running: pnpm exec nx g {{name}}"; \
-			pnpm exec nx g {{name}}; \
-		else \
-			echo "❌ pnpm not found."; \
-			echo "Please run: just setup"; \
-			exit 1; \
-		fi; \
+	if command -v pnpm > /dev/null 2>&1; then \
+	echo "🏗️ Running: pnpm exec nx g {{name}}"; \
+	pnpm exec nx g {{name}}; \
+	else \
+	echo "❌ pnpm not found."; \
+	echo "Please run: just setup"; \
+	exit 1; \
+	fi; \
 	fi
 
-# --- Documentation Generation ---
-docs-generate PROJECT_NAME="{{ project_name }}":
+	# --- Documentation Generation ---
+	docs-generate PROJECT_NAME="{{ project_name }}":
 	@echo "📚 Generating comprehensive documentation..."
 	@if [ -f cli/docs.js ]; then \
-		node cli/docs.js generate \
-			--project-name "{{PROJECT_NAME}}" \
-			--description "Modern application with hexagonal architecture and domain-driven design" \
-			--domains core,user,billing \
-			--frameworks next,fastapi \
-			--output-dir docs/generated \
-			--include-ai; \
+	node cli/docs.js generate \
+	--project-name "{{PROJECT_NAME}}" \
+	--description "Modern application with hexagonal architecture and domain-driven design" \
+	--domains core,user,billing \
+	--frameworks next,fastapi \
+	--output-dir docs/generated \
+	--include-ai; \
 	else \
-		echo "⚠️  cli/docs.js not found. Skipping documentation generation."; \
+	echo "⚠️ cli/docs.js not found. Skipping documentation generation."; \
 	fi
 
-docs-templates PROJECT_NAME="{{ project_name }}" OUTPUT_DIR="docs":
+	docs-templates PROJECT_NAME="{{ project_name }}" OUTPUT_DIR="docs":
 	@echo "📝 Generating documentation templates..."
 	@if [ -f cli/docs.js ]; then \
-		node cli/docs.js templates \
-			--project-name "{{PROJECT_NAME}}" \
-			--domains core,user,billing \
-			--frameworks next,fastapi \
-			--output-dir "{{OUTPUT_DIR}}" \
-			--include-ai; \
+	node cli/docs.js templates \
+	--project-name "{{PROJECT_NAME}}" \
+	--domains core,user,billing \
+	--frameworks next,fastapi \
+	--output-dir "{{OUTPUT_DIR}}" \
+	--include-ai; \
 	else \
-		echo "⚠️  cli/docs.js not found. Skipping documentation templates."; \
+	echo "⚠️ cli/docs.js not found. Skipping documentation templates."; \
 	fi
 
-docs-validate:
+	docs-validate:
 	@echo "🧪 Validating documentation..."
 	@if [ -f cli/docs.js ]; then \
-		node cli/docs.js validate \
-			--output-dir docs/generated; \
+	node cli/docs.js validate \
+	--output-dir docs/generated; \
 	else \
-		echo "⚠️  cli/docs.js not found. Skipping documentation validation."; \
+	echo "⚠️ cli/docs.js not found. Skipping documentation validation."; \
 	fi
 
-docs-serve PORT="8000":
+	docs-serve PORT="8000":
 	@echo "📚 Serving documentation on port {{PORT}}..."
 	@if [ -d docs/generated ]; then \
-		python3 -m http.server {{PORT}} -d docs/generated; \
+	python3 -m http.server {{PORT}} -d docs/generated; \
 	else \
-		echo "⚠️  docs/generated directory not found. Run 'just docs-generate' first."; \
+	echo "⚠️ docs/generated directory not found. Run 'just docs-generate' first."; \
 	fi
 
-docs-clean:
+	docs-clean:
 	@echo "🧹 Cleaning generated documentation..."
 	rm -rf docs/generated docs/temp
 	@echo "✅ Documentation cleaned"
 
-{% endif %}
+	{% endif %}
 
-_detect_build_system:
-   #!/usr/bin/env bash
-   if [ -f "nx.json" ]; then
-      just build
-   else
-      pnpm build
-   fi
+	_detect_build_system:
+	#!/usr/bin/env bash
+	if [ -f "nx.json" ]; then
+	just build
+	else
+	pnpm build
+	fi

@@ -56,6 +56,16 @@ if [[ ":${PATH}:" != *":${HOME}/.local/bin:"* ]]; then
   # Persist for this shell session (devbox will pick it up automatically)
 fi
 
+# Ensure supabase CLI is present or try to install it — this is a safe fallback
+if ! command -v supabase >/dev/null 2>&1; then
+  if [[ -x "${PWD}/scripts/install_supabase.sh" ]]; then
+    echo "→ Supabase CLI not found. Attempting fallback installation..."
+    bash "${PWD}/scripts/install_supabase.sh" || true
+  else
+    echo "→ Supabase CLI not present and no install helper found (scripts/install_supabase.sh)"
+  fi
+fi
+
 # Idempotent install of `just` into ~/.local/bin if missing. This keeps the
 # Devbox experience reproducible for contributors who don't have `just` preinstalled.
 if ! command -v just >/dev/null 2>&1; then

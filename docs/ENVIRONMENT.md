@@ -51,7 +51,7 @@ These steps are safer than editing generated flake files directly and can be com
 
 - Update devbox (recommended)
 
-**Note:** This repository already includes a permanent overlay at `./.devbox/overlays/supabase.nix` which imports `supabase` from `nixpkgs-unstable`. Update the `builtins.fetchTarball` URL or replace `nixpkgs-unstable` with a specific commit SHA for reproducible behavior.
+**Note:** This repository already includes a permanent overlay at `./.devbox/overlays/supabase.nix` which imports `supabase` from a pinned `nixpkgs` tarball by default. For reproducible behavior, keep the overlay pinned to a specific tag or commit (e.g., `nixos-23.11` or a commit SHA) and avoid using the `nixpkgs-unstable` branch.
 
 # Migrate devbox.json format and refresh gen files
 
@@ -76,7 +76,16 @@ supabase --version
 ````
 
 - If you prefer using a nix package, try pinning `nixpkgs` to a newer commit which includes `supabase` or use `devbox` config with a more recent `nixpkgs` input (for example `nixpkgs-unstable`), then re-run `devbox update`.
-  If you're blocked by the pinned `nixpkgs` and cannot change the pin permanently, this repo includes a helper:
+  If you prefer using a nix package, pin `nixpkgs` to a specific commit or tag which includes `supabase` (e.g. a recent `nixos-23.11`); to update the repo overlays, run:
+
+```bash
+just devbox-overlay-pin COMMIT=nixos-23.11
+DEVBOX_DEBUG=1 devbox update
+devbox shell
+supabase --version
+```
+
+If you're blocked by the pinned `nixpkgs` and cannot change the pin permanently, this repo includes a helper:
 
 ```bash
 # Attempts to update the generated flake to point at nixpkgs-unstable and inject supabase
@@ -147,6 +156,16 @@ just check-types
 
 - Add `just check-types` to CI pipelines to ensure generated types have been committed and are fresh.
 - If you use a branch or PR pipeline, include `just check-types` as part of the verification stage.
+- Add a devbox runtime check to CI to ensure `supabase` is available for type generation and migrations:
+    - For example, add a step to run `just devbox-check` or `bash scripts/check_supabase_in_devbox.sh` after `devbox update` so CI fails when `supabase` is not resolvable.
+
+### Auto-bump overlay job
+
+- This repository runs a scheduled workflow (`.github/workflows/overlay-autobump.yml`) that attempts to bump the `./.devbox/overlays/supabase.nix` overlay to the latest commit on a configured nixpkgs branch (`nixos-23.11` by default).
+- The job validates the overlay by running `devbox update` and checking that `devbox run -- supabase --version` succeeds; when validation passes an automated PR is opened with the updated overlay.
+- If the job detects a validation failure, it will not create a PR and the existing overlay remains unchanged.
+
+If you want to change the target branch used by the auto-bump job, update `TARGET_NIXPKGS_BRANCH` in `scripts/devbox_overlay_autobump.sh` or submit a PR to tweak the schedule or validation mechanism.
 
 ## Notes
 

@@ -1,0 +1,9 @@
+{
+  "generators": {
+    "api-service": {
+      "factory": "./generator",
+      "schema": "./schema.json",
+      "description": "Create a FastAPI backend service with Hexagonal Architecture and Logfire."
+    }
+  }
+}

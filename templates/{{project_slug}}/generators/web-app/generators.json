@@ -1,0 +1,9 @@
+{
+  "generators": {
+    "web-app": {
+      "factory": "./generator",
+      "schema": "./schema.json",
+      "description": "Create a Web App (Next.js, Remix, or Expo) with shared library integration."
+    }
+  }
+}
