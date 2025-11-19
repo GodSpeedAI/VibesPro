@@ -676,7 +676,6 @@ const typeMapping = extractSection(spec, "Type Mapping Matrix");
 
 **Implementation Effort**: Large (1-2 weeks)
 
-
 ---
 
 ## Project Metrics
@@ -738,7 +737,7 @@ const typeMapping = extractSection(spec, "Type Mapping Matrix");
 - Library setup (use @nx/js:lib)
 - One-off custom code
 
-```
+````
 
 **Section 3: Inputs / Options Schema (lines 58-97)**
 
@@ -746,7 +745,7 @@ Current (line 72):
 
 ```markdown
 <!-- TODO: Add validation pattern examples (regex, enum, conditional) -->
-```
+````
 
 Replace with:
 
