@@ -10,21 +10,21 @@ This implementation plan provides a comprehensive, phased approach to merging He
 
 ## Key Principles
 
--   MECE (Mutually Exclusive, Collectively Exhaustive) task breakdown
--   TDD cycles (RED → GREEN → REFACTOR → REGRESSION) for all functional changes
--   Maximum code reuse from existing VibePDK and HexDDD implementations
--   Autonomous agent-ready tasks with explicit file references and acceptance criteria
--   Stability-first approach with validation checkpoints
+- MECE (Mutually Exclusive, Collectively Exhaustive) task breakdown
+- TDD cycles (RED → GREEN → REFACTOR → REGRESSION) for all functional changes
+- Maximum code reuse from existing VibePDK and HexDDD implementations
+- Autonomous agent-ready tasks with explicit file references and acceptance criteria
+- Stability-first approach with validation checkpoints
 
 ### Mini TOC
 
--   [Executive Summary](#executive-summary)
--   [Key Principles](#key-principles)
--   [Phase Implementation Plan](#phase-implementation-plan)
--   [Parallel Execution Strategy](#parallel-execution-strategy)
--   [Acceptance Criteria](#acceptance-criteria)
--   [Risk Mitigation](#risk-mitigation)
--   [Rollback Procedures](#rollback-procedures)
+- [Executive Summary](#executive-summary)
+- [Key Principles](#key-principles)
+- [Phase Implementation Plan](#phase-implementation-plan)
+- [Parallel Execution Strategy](#parallel-execution-strategy)
+- [Acceptance Criteria](#acceptance-criteria)
+- [Risk Mitigation](#risk-mitigation)
+- [Rollback Procedures](#rollback-procedures)
 
 ### Dependency Graph Overview
 
@@ -47,15 +47,15 @@ graph TD
 
 ### [x] MERGE-PHASE-001: Foundation Infrastructure
 
--   **Duration**: 2-3 days
--   **Dependencies**: None
--   **Parallel Agents**: 2 agents recommended
+- **Duration**: 2-3 days
+- **Dependencies**: None
+- **Parallel Agents**: 2 agents recommended
 
 #### [x] MERGE-TASK-001: Project Structure Setup
 
--   **Traceability**: ADR-MERGE-001, SDS-MERGE-001
--   **Agent Assignment**: Agent A
--   **Estimated Time**: 4 hours
+- **Traceability**: ADR-MERGE-001, SDS-MERGE-001
+- **Agent Assignment**: Agent A
+- **Estimated Time**: 4 hours
 
 **RED (Failing Test)**:
 
@@ -119,23 +119,23 @@ describe('Merged Project Structure', () => {
 
 **REFACTOR**:
 
--   Validate Copier template syntax
--   Add comprehensive field validation
--   Optimize directory structure
+- Validate Copier template syntax
+- Add comprehensive field validation
+- Optimize directory structure
 
 **REGRESSION**:
 
--   Run `copier copy . /tmp/test-generation`
--   Verify all template variables resolve correctly
--   Test hooks execute without errors
+- Run `copier copy . /tmp/test-generation`
+- Verify all template variables resolve correctly
+- Test hooks execute without errors
 
 ---
 
 #### [x] MERGE-TASK-002: Build System Foundation
 
--   **Traceability**: ADR-MERGE-007, TS-MERGE-004
--   **Agent Assignment**: Agent B (Parallel with MERGE-TASK-001)
--   **Estimated Time**: 4 hours
+- **Traceability**: ADR-MERGE-007, TS-MERGE-004
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-001)
+- **Estimated Time**: 4 hours
 
 **RED (Failing Test)**:
 
@@ -187,15 +187,15 @@ describe('Hybrid Build System', () => {
 
 **REFACTOR**:
 
--   Add intelligent build caching
--   Optimize polyglot coordination
--   Implement build performance monitoring
+- Add intelligent build caching
+- Optimize polyglot coordination
+- Implement build performance monitoring
 
 **REGRESSION**:
 
--   Test build system in generated projects
--   Verify Nx integration works correctly
--   Validate cross-platform compatibility
+- Test build system in generated projects
+- Verify Nx integration works correctly
+- Validate cross-platform compatibility
 
 ---
 
@@ -203,30 +203,30 @@ describe('Hybrid Build System', () => {
 
 **COMPLETED TASKS (✅)**:
 
--   **MERGE-TASK-001: Project Structure Setup** — Evidence: `copier.yml` at repo root; `hooks/pre_gen.py`, `hooks/post_gen.py`; populated `templates/{{project_slug}}/` directory.
--   **MERGE-TASK-002: Build System Foundation** — Evidence: `justfile`, `nx.json`, `package.json`, `pnpm-workspace.yaml` present at project root.
--   **MERGE-TASK-003: Domain Generator Template** — Evidence: domain generator scaffolding and files under `templates/{{project_slug}}/generators/` and `templates/{{project_slug}}/libs/{{domain_name}}/domain/`.
--   **MERGE-TASK-004: Application Generator Template** — Evidence: service generator at `templates/{{project_slug}}/generators/service/generator.ts` and language-specific templates under `generators/service/files/`.
--   **MERGE-TASK-005: Type System Integration** — Evidence: `tools/type-generator/` with generator source and fixtures (`tools/type-generator/src/generators/types/*`, `tools/type-generator/test-fixtures/`).
--   **MERGE-TASK-012: Performance Validation** — Evidence: `tools/performance/monitor.ts` and `tools/performance/reporter.py` created, and benchmark suite initialized in `tests/performance/`.
+- **MERGE-TASK-001: Project Structure Setup** — Evidence: `copier.yml` at repo root; `hooks/pre_gen.py`, `hooks/post_gen.py`; populated `templates/{{project_slug}}/` directory.
+- **MERGE-TASK-002: Build System Foundation** — Evidence: `justfile`, `nx.json`, `package.json`, `pnpm-workspace.yaml` present at project root.
+- **MERGE-TASK-003: Domain Generator Template** — Evidence: domain generator scaffolding and files under `templates/{{project_slug}}/generators/` and `templates/{{project_slug}}/libs/{{domain_name}}/domain/`.
+- **MERGE-TASK-004: Application Generator Template** — Evidence: service generator at `templates/{{project_slug}}/generators/service/generator.ts` and language-specific templates under `generators/service/files/`.
+- **MERGE-TASK-005: Type System Integration** — Evidence: `tools/type-generator/` with generator source and fixtures (`tools/type-generator/src/generators/types/*`, `tools/type-generator/test-fixtures/`).
+- **MERGE-TASK-012: Performance Validation** — Evidence: `tools/performance/monitor.ts` and `tools/performance/reporter.py` created, and benchmark suite initialized in `tests/performance/`.
 
 **MISSING TASKS (❌)**:
 
--   **MERGE-TASK-006: Temporal Database Integration** — Missing: No `tools/temporal-db/` implementation, Rust code is placeholder.
--   **MERGE-TASK-007: AI Context Management** — Missing: No `tools/ai/` directory or AIContextManager implementation.
--   **MERGE-TASK-010: Integration Testing Suite** — Missing: `tests/e2e/` is empty, no comprehensive integration tests.
--   **MERGE-TASK-011: Documentation Generation** — Missing: No automated documentation generation tools.
+- **MERGE-TASK-006: Temporal Database Integration** — Missing: No `tools/temporal-db/` implementation, Rust code is placeholder.
+- **MERGE-TASK-007: AI Context Management** — Missing: No `tools/ai/` directory or AIContextManager implementation.
+- **MERGE-TASK-010: Integration Testing Suite** — Missing: `tests/e2e/` is empty, no comprehensive integration tests.
+- **MERGE-TASK-011: Documentation Generation** — Missing: No automated documentation generation tools.
 
 ### [x] MERGE-PHASE-002: Core Generator Development
 
--   **Duration**: 4-5 days
--   **Dependencies**: MERGE-PHASE-001
--   **Parallel Agents**: 3 agents recommended
+- **Duration**: 4-5 days
+- **Dependencies**: MERGE-PHASE-001
+- **Parallel Agents**: 3 agents recommended
 
 #### [x] MERGE-TASK-004: Application Generator Template
 
--   **Agent Assignment**: Agent B (Parallel with MERGE-TASK-003)
--   **Estimated Time**: 6 hours
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-003)
+- **Estimated Time**: 6 hours
 
 **RED (Failing Test)**:
 
@@ -278,23 +278,23 @@ describe("Application Generator", () => {
 
 **REFACTOR**:
 
--   Optimize template conditionals
--   Add framework-specific optimizations
--   Implement shared component library
+- Optimize template conditionals
+- Add framework-specific optimizations
+- Implement shared component library
 
 **REGRESSION**:
 
--   Test all framework variations
--   Verify API client integration
--   Validate routing and navigation
+- Test all framework variations
+- Verify API client integration
+- Validate routing and navigation
 
 ---
 
 #### [x] MERGE-TASK-005: Type System Integration
 
--   **Traceability**: ADR-MERGE-006, TS-MERGE-005
--   **Agent Assignment**: Agent C (Parallel with MERGE-TASK-003, MERGE-TASK-004)
--   **Estimated Time**: 8 hours
+- **Traceability**: ADR-MERGE-006, TS-MERGE-005
+- **Agent Assignment**: Agent C (Parallel with MERGE-TASK-003, MERGE-TASK-004)
+- **Estimated Time**: 8 hours
 
 **RED (Failing Test)**:
 
@@ -341,29 +341,29 @@ describe("Type System Integration", () => {
 
 **REFACTOR**:
 
--   Optimize type generation performance
--   Add validation for type consistency
--   Implement incremental generation
+- Optimize type generation performance
+- Add validation for type consistency
+- Implement incremental generation
 
 **REGRESSION**:
 
--   Test type generation with various schemas
--   Verify cross-language compatibility
--   Validate import paths and dependencies
+- Test type generation with various schemas
+- Verify cross-language compatibility
+- Validate import paths and dependencies
 
 ---
 
 ### [x] MERGE-PHASE-003: AI-Enhanced Development Integration
 
--   **Duration**: 3-4 days
--   **Dependencies**: MERGE-PHASE-002
--   **Parallel Agents**: 2 agents recommended
+- **Duration**: 3-4 days
+- **Dependencies**: MERGE-PHASE-002
+- **Parallel Agents**: 2 agents recommended
 
 #### [x] MERGE-TASK-006: Temporal Database Integration
 
--   **Traceability**: ADR-MERGE-005, TS-MERGE-003
--   **Agent Assignment**: Agent A
--   **Estimated Time**: 8 hours
+- **Traceability**: ADR-MERGE-005, TS-MERGE-003
+- **Agent Assignment**: Agent A
+- **Estimated Time**: 8 hours
 
 **RED (Failing Test)**:
 
@@ -423,23 +423,23 @@ def test_tsink_integration():
 
 **REFACTOR**:
 
--   Add database migration support
--   Implement backup/restore functionality
--   Optimize query performance
+- Add database migration support
+- Implement backup/restore functionality
+- Optimize query performance
 
 **REGRESSION**:
 
--   Test database initialization in new projects
--   Verify time-series data integrity
--   Validate compression effectiveness
+- Test database initialization in new projects
+- Verify time-series data integrity
+- Validate compression effectiveness
 
 ---
 
 #### [x] MERGE-TASK-007: AI Context Management
 
--   **Traceability**: PRD-MERGE-004, TS-MERGE-007
--   **Agent Assignment**: Agent B (Parallel with MERGE-TASK-006)
--   **Estimated Time**: 6 hours
+- **Traceability**: PRD-MERGE-004, TS-MERGE-007
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-006)
+- **Estimated Time**: 6 hours
 
 **RED (Failing Test)**:
 
@@ -488,29 +488,29 @@ describe("AI Context Manager", () => {
 
 **REFACTOR**:
 
--   Optimize context selection algorithms
--   Add pattern recognition
--   Implement learning from usage
+- Optimize context selection algorithms
+- Add pattern recognition
+- Implement learning from usage
 
 **REGRESSION**:
 
--   Test context generation with various project types
--   Verify token budget management
--   Validate AI integration effectiveness
+- Test context generation with various project types
+- Verify token budget management
+- Validate AI integration effectiveness
 
 ---
 
 ### [x] MERGE-PHASE-004: Validation and Documentation
 
--   **Duration**: 2-3 days
--   **Dependencies**: MERGE-PHASE-003, MERGE-PHASE-004
--   **Parallel Agents**: 3 agents recommended
+- **Duration**: 2-3 days
+- **Dependencies**: MERGE-PHASE-003, MERGE-PHASE-004
+- **Parallel Agents**: 3 agents recommended
 
 #### [x] MERGE-TASK-010: Integration Testing Suite
 
--   **Traceability**: PRD-MERGE-010, SDS-MERGE-006
--   **Agent Assignment**: Agent A
--   **Estimated Time**: 8 hours
+- **Traceability**: PRD-MERGE-010, SDS-MERGE-006
+- **Agent Assignment**: Agent A
+- **Estimated Time**: 8 hours
 
 **RED (Failing Test)**:
 
@@ -556,23 +556,23 @@ describe("End-to-End Integration", () => {
 
 **REFACTOR**:
 
--   Optimize test execution time
--   Add parallel test execution
--   Implement test result caching
+- Optimize test execution time
+- Add parallel test execution
+- Implement test result caching
 
 **REGRESSION**:
 
--   Run full integration test suite
--   Verify all test scenarios pass
--   Validate performance benchmarks
+- Run full integration test suite
+- Verify all test scenarios pass
+- Validate performance benchmarks
 
 ---
 
 #### [x] MERGE-TASK-011: Documentation Generation
 
--   **Traceability**: PRD-MERGE-006, ADR-MERGE-008
--   **Agent Assignment**: Agent B (Parallel with MERGE-TASK-010)
--   **Estimated Time**: 6 hours
+- **Traceability**: PRD-MERGE-006, ADR-MERGE-008
+- **Agent Assignment**: Agent B (Parallel with MERGE-TASK-010)
+- **Estimated Time**: 6 hours
 
 **RED (Failing Test)**:
 
@@ -619,23 +619,23 @@ describe('Documentation Generation', () => {
 
 **REFACTOR**:
 
--   Add interactive documentation features
--   Implement documentation validation
--   Optimize generation performance
+- Add interactive documentation features
+- Implement documentation validation
+- Optimize generation performance
 
 **REGRESSION**:
 
--   Verify documentation completeness
--   Test documentation accuracy
--   Validate links and references
+- Verify documentation completeness
+- Test documentation accuracy
+- Validate links and references
 
 ---
 
 #### [x] MERGE-TASK-012: Performance Validation
 
--   **Traceability**: TS-MERGE-008, SDS-MERGE-006
--   **Agent Assignment**: Agent C (Parallel with MERGE-TASK-010, MERGE-TASK-011)
--   **Estimated Time**: 4 hours
+- **Traceability**: TS-MERGE-008, SDS-MERGE-006
+- **Agent Assignment**: Agent C (Parallel with MERGE-TASK-010, MERGE-TASK-011)
+- **Estimated Time**: 4 hours
 
 **RED (Failing Test)**:
 
@@ -684,15 +684,15 @@ describe("Performance Benchmarks", () => {
 
 **REFACTOR**:
 
--   Optimize critical performance paths
--   Add performance profiling
--   Implement caching strategies
+- Optimize critical performance paths
+- Add performance profiling
+- Implement caching strategies
 
 **REGRESSION**:
 
--   Run complete performance suite
--   Verify all benchmarks pass
--   Validate performance improvements
+- Run complete performance suite
+- Verify all benchmarks pass
+- Validate performance improvements
 
 ---
 
@@ -700,15 +700,15 @@ describe("Performance Benchmarks", () => {
 
 ### Agent A Tasks (Critical Path)
 
--   **Sequential Dependencies**: MERGE-TASK-001 → MERGE-TASK-003 → MERGE-TASK-006 → MERGE-TASK-008 → MERGE-TASK-010
+- **Sequential Dependencies**: MERGE-TASK-001 → MERGE-TASK-003 → MERGE-TASK-006 → MERGE-TASK-008 → MERGE-TASK-010
 
 ### Agent B Tasks (Parallel Track)
 
--   **Parallel with Agent A**: MERGE-TASK-002 → MERGE-TASK-004 → MERGE-TASK-007 → MERGE-TASK-009 → MERGE-TASK-011
+- **Parallel with Agent A**: MERGE-TASK-002 → MERGE-TASK-004 → MERGE-TASK-007 → MERGE-TASK-009 → MERGE-TASK-011
 
 ### Agent C Tasks (Support Track)
 
--   **Parallel Support**: MERGE-TASK-005 (supports MERGE-TASK-003, MERGE-TASK-004) → MERGE-TASK-012
+- **Parallel Support**: MERGE-TASK-005 (supports MERGE-TASK-003, MERGE-TASK-004) → MERGE-TASK-012
 
 ### Synchronization Points
 
@@ -720,10 +720,10 @@ describe("Performance Benchmarks", () => {
 
 ### Phase Completion Criteria
 
--   **MERGE-PHASE-001**: Copier template generates valid project structure
--   **MERGE-PHASE-002**: All core generators produce functional code
--   **MERGE-PHASE-003**: AI workflows enhance development experience
--   **MERGE-PHASE-004**: Complete test suite passes with performance targets met
+- **MERGE-PHASE-001**: Copier template generates valid project structure
+- **MERGE-PHASE-002**: All core generators produce functional code
+- **MERGE-PHASE-003**: AI workflows enhance development experience
+- **MERGE-PHASE-004**: Complete test suite passes with performance targets met
 
 ### Final Success Criteria
 
@@ -758,6 +758,6 @@ Each task includes rollback steps:
 
 ---
 
--   **Plan Version**: 1.0
--   **Last Updated**: 2025-09-19
--   **Next Review**: Upon completion of MERGE-PHASE-001
+- **Plan Version**: 1.0
+- **Last Updated**: 2025-09-19
+- **Next Review**: Upon completion of MERGE-PHASE-001

@@ -48,33 +48,33 @@ Total: ~365 lines of production code + tests
 
 #### 1. Universal API Client
 
--   ✅ Type-safe HTTP methods (GET, POST, PUT, PATCH, DELETE)
--   ✅ Error handling with ApiError class
--   ✅ Auth token management (setAuthToken/clearAuthToken)
--   ✅ Timeout support with AbortController
--   ✅ Framework-agnostic (works in Next.js, Remix, Expo)
+- ✅ Type-safe HTTP methods (GET, POST, PUT, PATCH, DELETE)
+- ✅ Error handling with ApiError class
+- ✅ Auth token management (setAuthToken/clearAuthToken)
+- ✅ Timeout support with AbortController
+- ✅ Framework-agnostic (works in Next.js, Remix, Expo)
 
 #### 2. Validation Schemas (Zod)
 
--   ✅ Base schemas (UUID, Email, Timestamp, URL)
--   ✅ Domain schemas (User, Pagination)
--   ✅ API response wrappers
--   ✅ Error response schema
--   ✅ Validation helpers (validate, safeParse)
+- ✅ Base schemas (UUID, Email, Timestamp, URL)
+- ✅ Domain schemas (User, Pagination)
+- ✅ API response wrappers
+- ✅ Error response schema
+- ✅ Validation helpers (validate, safeParse)
 
 #### 3. Environment Configuration
 
--   ✅ Supports Next.js (process.env.NEXT*PUBLIC*\*)
--   ✅ Supports Remix (import.meta.env)
--   ✅ Supports Expo (process.env)
--   ✅ Type-safe env variable access
--   ✅ Fallback values
+- ✅ Supports Next.js (process.env.NEXT*PUBLIC*\*)
+- ✅ Supports Remix (import.meta.env)
+- ✅ Supports Expo (process.env)
+- ✅ Type-safe env variable access
+- ✅ Fallback values
 
 #### 4. Error Handling
 
--   ✅ AppError class for structured errors
--   ✅ API error conversion (handleApiError)
--   ✅ Error logging (development vs production)
+- ✅ AppError class for structured errors
+- ✅ API error conversion (handleApiError)
+- ✅ Error logging (development vs production)
 
 ### Test Results
 
@@ -109,27 +109,27 @@ Build: ✅ Successfully compiled
 
 #### Cycle B: Next.js Generator (App + Pages Router)
 
--   **Planned**: Generator scaffolding Next.js apps with both router styles
--   **Dependencies**: Cycle A (complete)
--   **Estimated**: 3 hours
+- **Planned**: Generator scaffolding Next.js apps with both router styles
+- **Dependencies**: Cycle A (complete)
+- **Estimated**: 3 hours
 
 #### Cycle C: Remix Generator
 
--   **Planned**: Generator for Remix v2.15+ apps
--   **Dependencies**: Cycle A (complete)
--   **Estimated**: 3 hours
+- **Planned**: Generator for Remix v2.15+ apps
+- **Dependencies**: Cycle A (complete)
+- **Estimated**: 3 hours
 
 #### Cycle D: Expo Generator
 
--   **Planned**: Generator for React Native (Expo) apps
--   **Dependencies**: Cycle A (complete)
--   **Estimated**: 3 hours
+- **Planned**: Generator for React Native (Expo) apps
+- **Dependencies**: Cycle A (complete)
+- **Estimated**: 3 hours
 
 #### Cycle E: Idempotency Validation
 
--   **Planned**: Double-run tests for all generators
--   **Dependencies**: Cycles B, C, D
--   **Estimated**: 2 hours
+- **Planned**: Double-run tests for all generators
+- **Dependencies**: Cycles B, C, D
+- **Estimated**: 2 hours
 
 ---
 

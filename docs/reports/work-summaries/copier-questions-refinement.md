@@ -8,23 +8,23 @@ This document describes the improvements made to `copier.yml` to make it accessi
 
 ### 1. Technical Jargon
 
--   **Before:** "Project slug (kebab-case, used for directories)"
--   **Issue:** Non-developers don't know what "kebab-case" or "slug" means
+- **Before:** "Project slug (kebab-case, used for directories)"
+- **Issue:** Non-developers don't know what "kebab-case" or "slug" means
 
 ### 2. No Context or Examples
 
--   **Before:** "Primary domain contexts (comma-separated)"
--   **Issue:** Users don't know what to enter or why it matters
+- **Before:** "Primary domain contexts (comma-separated)"
+- **Issue:** Users don't know what to enter or why it matters
 
 ### 3. Unclear Consequences
 
--   **Before:** "Include AI-enhanced development workflows"
--   **Issue:** Users don't understand what they'll get or lose
+- **Before:** "Include AI-enhanced development workflows"
+- **Issue:** Users don't understand what they'll get or lose
 
 ### 4. Missing Guidance for Defaults
 
--   **Before:** Questions with defaults but no explanation of when to change them
--   **Issue:** Users don't know if they should accept or customize
+- **Before:** Questions with defaults but no explanation of when to change them
+- **Issue:** Users don't know if they should accept or customize
 
 ## Improvements Made
 
@@ -74,10 +74,10 @@ project_slug:
 
 Every question now includes:
 
--   **What it is** (plain English explanation)
--   **Why it matters** (what it's used for)
--   **Examples** (good and bad examples where applicable)
--   **When to change it** (guidance on defaults)
+- **What it is** (plain English explanation)
+- **Why it matters** (what it's used for)
+- **Examples** (good and bad examples where applicable)
+- **When to change it** (guidance on defaults)
 
 **Example:**
 
@@ -163,143 +163,140 @@ validator: "{% if not project_slug.replace('-', '').isalnum() %}Project slug mus
 
 Questions are ordered from simple to advanced:
 
--   Basic information comes first
--   Technical details are marked "(Advanced)"
--   Optional features are clearly labeled
--   Advanced options explain when to skip them
+- Basic information comes first
+- Technical details are marked "(Advanced)"
+- Optional features are clearly labeled
+- Advanced options explain when to skip them
 
 ## Specific Improvements by Section
 
 ### Basic Project Information
 
--   ✅ Plain language explanations
--   ✅ Concrete examples for project naming
--   ✅ Email validation with friendly error
--   ✅ Automatic slug generation explained
+- ✅ Plain language explanations
+- ✅ Concrete examples for project naming
+- ✅ Email validation with friendly error
+- ✅ Automatic slug generation explained
 
 ### Project Purpose
 
--   ✅ "Explain to a friend" framing
--   ✅ Three diverse, concrete examples
--   ✅ Clear placeholder text
+- ✅ "Explain to a friend" framing
+- ✅ Three diverse, concrete examples
+- ✅ Clear placeholder text
 
 ### Domain Configuration
 
--   ✅ Explained "business area" instead of "domain"
--   ✅ Guidance on when to use multiple domains
--   ✅ Permission to skip if unsure
+- ✅ Explained "business area" instead of "domain"
+- ✅ Guidance on when to use multiple domains
+- ✅ Permission to skip if unsure
 
 ### Technology Choices
 
--   ✅ Each framework explained in user terms
--   ✅ Clear use cases for each option
--   ✅ Explicit recommendations
--   ✅ "If you're building X, choose Y" guidance
+- ✅ Each framework explained in user terms
+- ✅ Clear use cases for each option
+- ✅ Explicit recommendations
+- ✅ "If you're building X, choose Y" guidance
 
 ### AI Features
 
--   ✅ Explained benefits in concrete terms
--   ✅ "Like having an assistant" analogy
--   ✅ Clear recommendation (YES) with reasoning
--   ✅ When to choose NO
+- ✅ Explained benefits in concrete terms
+- ✅ "Like having an assistant" analogy
+- ✅ Clear recommendation (YES) with reasoning
+- ✅ When to choose NO
 
 ### Advanced Code Structure
 
--   ✅ Labeled as "Advanced"
--   ✅ Explained what each option does
--   ✅ Safe defaults provided
--   ✅ Guidance on when to change
+- ✅ Labeled as "Advanced"
+- ✅ Explained what each option does
+- ✅ Safe defaults provided
+- ✅ Guidance on when to change
 
 ### Security Features
 
--   ✅ Clearly marked optional
--   ✅ Specific use cases listed
--   ✅ "Most projects can skip this" reassurance
--   ✅ Compliance context provided
+- ✅ Clearly marked optional
+- ✅ Specific use cases listed
+- ✅ "Most projects can skip this" reassurance
+- ✅ Compliance context provided
 
 ## Best Practices Applied
 
 ### 1. Conversational Tone
 
--   Uses "we" and "you" pronouns
--   Asks questions naturally
--   Sounds like a helpful guide, not a form
+- Uses "we" and "you" pronouns
+- Asks questions naturally
+- Sounds like a helpful guide, not a form
 
 ### 2. No Assumptions
 
--   Defines all technical terms
--   Provides context for every choice
--   Explains consequences clearly
+- Defines all technical terms
+- Provides context for every choice
+- Explains consequences clearly
 
 ### 3. Confidence Building
 
--   "Don't worry" reassurances where appropriate
--   "If unsure" guidance provided
--   Clear defaults with explanations
+- "Don't worry" reassurances where appropriate
+- "If unsure" guidance provided
+- Clear defaults with explanations
 
 ### 4. Safety Rails
 
--   Bad examples shown alongside good ones
--   Validator errors are helpful, not cryptic
--   Advanced options clearly marked
+- Bad examples shown alongside good ones
+- Validator errors are helpful, not cryptic
+- Advanced options clearly marked
 
 ### 5. Learning Path
 
--   Simple questions first
--   Complexity increases gradually
--   Advanced sections can be skipped
--   References to documentation where needed
+- Simple questions first
+- Complexity increases gradually
+- Advanced sections can be skipped
+- References to documentation where needed
 
 ## Technical Debt Prevention
 
 ### No Functionality Removed
 
--   ✅ All original questions preserved
--   ✅ All validators intact
--   ✅ All conditional logic maintained
--   ✅ All defaults preserved
+- ✅ All original questions preserved
+- ✅ All validators intact
+- ✅ All conditional logic maintained
+- ✅ All defaults preserved
 
 ### Maintained Compatibility
 
--   ✅ Same variable names
--   ✅ Same types
--   ✅ Same validation rules
--   ✅ Same conditional dependencies
+- ✅ Same variable names
+- ✅ Same types
+- ✅ Same validation rules
+- ✅ Same conditional dependencies
 
 ### No New Dependencies
 
--   ✅ Pure YAML improvements
--   ✅ No new libraries required
--   ✅ No changes to hooks
--   ✅ No changes to templates
+- ✅ Pure YAML improvements
+- ✅ No new libraries required
+- ✅ No changes to hooks
+- ✅ No changes to templates
 
 ### Testability Preserved
 
--   ✅ Can still use data files
--   ✅ Validator logic unchanged
--   ✅ Default values still work
--   ✅ Automation still possible
+- ✅ Can still use data files
+- ✅ Validator logic unchanged
+- ✅ Default values still work
+- ✅ Automation still possible
 
 ## Testing the Improvements
 
 ### Test Cases
 
 1. **Complete Beginner**
-
     - Can understand every question
     - Knows what to enter
     - Confident using defaults
     - Successful generation
 
 2. **Non-Technical User**
-
     - Skips advanced options confidently
     - Makes informed technology choices
     - Understands what they're building
     - Happy with results
 
 3. **Technical User**
-
     - Still gets all advanced options
     - Can customize everything
     - Appreciates clear organization
@@ -347,17 +344,17 @@ just test-generation
 
 **No changes needed!**
 
--   Existing data files still work
--   Automation scripts unchanged
--   Same variables, better questions
+- Existing data files still work
+- Automation scripts unchanged
+- Same variables, better questions
 
 ### For Documentation
 
 Update the following docs to reference improved questions:
 
--   `docs/wiki/v2/1.md` - Copier chapter
--   `docs/knowledgebase/how-to/` - Any Copier guides
--   `README.md` - Quick start section
+- `docs/wiki/v2/1.md` - Copier chapter
+- `docs/knowledgebase/how-to/` - Any Copier guides
+- `README.md` - Quick start section
 
 ## Examples of Common User Journeys
 
@@ -433,20 +430,20 @@ Based on user feedback, we can add:
 
 **Before:**
 
--   Technical jargon throughout
--   No examples
--   Unclear consequences
--   Intimidating for beginners
+- Technical jargon throughout
+- No examples
+- Unclear consequences
+- Intimidating for beginners
 
 **After:**
 
--   ✅ Plain English everywhere
--   ✅ Concrete examples for every question
--   ✅ Clear recommendations
--   ✅ Confidence-building guidance
--   ✅ Organized by user mental model
--   ✅ Advanced options clearly marked
--   ✅ No functionality lost
--   ✅ No technical debt added
+- ✅ Plain English everywhere
+- ✅ Concrete examples for every question
+- ✅ Clear recommendations
+- ✅ Confidence-building guidance
+- ✅ Organized by user mental model
+- ✅ Advanced options clearly marked
+- ✅ No functionality lost
+- ✅ No technical debt added
 
 **Result:** A configuration that's accessible to everyone while maintaining professional power for experts.

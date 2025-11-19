@@ -13,12 +13,12 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
--   Pre-generation validation (pre_gen.py)
--   Post-generation automation (post_gen.py)
--   Input validation and sanitization
--   Dependency installation automation
--   Git initialization
--   Project setup orchestration
+- Pre-generation validation (pre_gen.py)
+- Post-generation automation (post_gen.py)
+- Input validation and sanitization
+- Dependency installation automation
+- Git initialization
+- Project setup orchestration
 
 **Related Context**: See [templates/AGENT.md](/templates/AGENT.md) for Copier template system overview.
 
@@ -65,12 +65,12 @@ Complete ✅
 
 ### Use This Context When:
 
--   [ ] Implementing pre-generation validation
--   [ ] Adding post-generation automation
--   [ ] Validating user inputs before generation
--   [ ] Automating dependency installation
--   [ ] Setting up git repositories
--   [ ] Running post-generation formatters
+- [ ] Implementing pre-generation validation
+- [ ] Adding post-generation automation
+- [ ] Validating user inputs before generation
+- [ ] Automating dependency installation
+- [ ] Setting up git repositories
+- [ ] Running post-generation formatters
 
 ### Refer to Other Contexts When:
 
@@ -483,14 +483,14 @@ if __name__ == "__main__":
 
 **Modular instructions that apply here:**
 
--   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing hooks
--   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - **Security in hooks**
--   [.github/instructions/style.python.instructions.md](/.github/instructions/style.python.instructions.md) - Python style
+- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing hooks
+- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - **Security in hooks**
+- [.github/instructions/style.python.instructions.md](/.github/instructions/style.python.instructions.md) - Python style
 
 **Relevant documentation:**
 
--   [Copier hooks](https://copier.readthedocs.io/en/stable/creating/#the-tasks-key)
--   [Python subprocess](https://docs.python.org/3/library/subprocess.html)
+- [Copier hooks](https://copier.readthedocs.io/en/stable/creating/#the-tasks-key)
+- [Python subprocess](https://docs.python.org/3/library/subprocess.html)
 
 ## 💡 Examples
 
@@ -630,29 +630,29 @@ def confirm_production_settings() -> bool:
 
 ### Before Writing Hooks:
 
--   [ ] Review template variables in copier.yml
--   [ ] Identify validation requirements
--   [ ] Plan post-generation automation
--   [ ] Consider error handling
--   [ ] Test locally with sample data
+- [ ] Review template variables in copier.yml
+- [ ] Identify validation requirements
+- [ ] Plan post-generation automation
+- [ ] Consider error handling
+- [ ] Test locally with sample data
 
 ### While Writing Hooks:
 
--   [ ] Use type hints for function signatures
--   [ ] Add docstrings to all functions
--   [ ] Handle missing commands gracefully
--   [ ] Provide clear error messages
--   [ ] Log progress to user
--   [ ] Don't fail silently
+- [ ] Use type hints for function signatures
+- [ ] Add docstrings to all functions
+- [ ] Handle missing commands gracefully
+- [ ] Provide clear error messages
+- [ ] Log progress to user
+- [ ] Don't fail silently
 
 ### After Writing Hooks:
 
--   [ ] Test with valid inputs
--   [ ] Test with invalid inputs
--   [ ] Test with missing dependencies
--   [ ] Test overwrite scenario
--   [ ] Verify error messages are clear
--   [ ] Document expected behavior
+- [ ] Test with valid inputs
+- [ ] Test with invalid inputs
+- [ ] Test with missing dependencies
+- [ ] Test overwrite scenario
+- [ ] Verify error messages are clear
+- [ ] Document expected behavior
 
 ## 🔍 Quick Reference
 
@@ -706,12 +706,12 @@ r'^\d+\.\d+\.\d+$'
 
 **Security in hooks is critical - they execute arbitrary code:**
 
--   ⚠️ **Validate ALL inputs**: Never trust user input
--   ⚠️ **Sanitize paths**: Prevent path traversal attacks
--   ⚠️ **No shell=True**: Use subprocess with list arguments
--   ⚠️ **Validate commands**: Check commands before executing
--   ⚠️ **Limited permissions**: Don't require sudo/root
--   ⚠️ **Error messages**: Don't leak sensitive info
+- ⚠️ **Validate ALL inputs**: Never trust user input
+- ⚠️ **Sanitize paths**: Prevent path traversal attacks
+- ⚠️ **No shell=True**: Use subprocess with list arguments
+- ⚠️ **Validate commands**: Check commands before executing
+- ⚠️ **Limited permissions**: Don't require sudo/root
+- ⚠️ **Error messages**: Don't leak sensitive info
 
 **Example secure command execution:**
 
@@ -813,17 +813,17 @@ echo "✅ Hook tests passed"
 
 ### Regular Tasks
 
--   **Weekly**: Review hook execution logs
--   **Monthly**: Test with latest Copier version
--   **Quarterly**: Review validation rules
--   **Per feature**: Update hooks for new template variables
+- **Weekly**: Review hook execution logs
+- **Monthly**: Test with latest Copier version
+- **Quarterly**: Review validation rules
+- **Per feature**: Update hooks for new template variables
 
 ### When to Update This AGENT.md
 
--   Copier version updates
--   New validation requirements
--   Post-generation automation changes
--   Security best practices evolve
+- Copier version updates
+- New validation requirements
+- Post-generation automation changes
+- Security best practices evolve
 
 ### Debugging Hooks
 

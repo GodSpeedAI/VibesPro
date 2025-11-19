@@ -8,10 +8,10 @@ Embedded temporal database for storing architectural decisions, patterns, and AI
 
 The temporal database uses [redb](https://docs.rs/redb/) for storing time-series data related to:
 
--   **Specifications**: ADRs, PRDs, SDS documents
--   **Architectural Patterns**: Proven design patterns and their context
--   **Decision Points**: Historical choices and their rationale
--   **Changes**: Time-series change tracking
+- **Specifications**: ADRs, PRDs, SDS documents
+- **Architectural Patterns**: Proven design patterns and their context
+- **Decision Points**: Historical choices and their rationale
+- **Changes**: Time-series change tracking
 
 ## Structure
 
@@ -25,9 +25,9 @@ const CHANGES_TABLE: TableDefinition<&str, &[u8]> = TableDefinition::new("change
 
 ### Key Format
 
--   **Specifications**: `spec:{identifier}:{timestamp_nanos}`
--   **Patterns**: `pattern:{id}:{timestamp_nanos}`
--   **Changes**: `change:{spec_id}:{timestamp_nanos}`
+- **Specifications**: `spec:{identifier}:{timestamp_nanos}`
+- **Patterns**: `pattern:{id}:{timestamp_nanos}`
+- **Changes**: `change:{spec_id}:{timestamp_nanos}`
 
 All values are JSON-serialized structs stored as byte slices.
 
@@ -124,6 +124,6 @@ See `/docs/TEMPORAL-DB-MIGRATION-SUMMARY.md` for complete migration details.
 
 ## References
 
--   **redb Documentation**: https://docs.rs/redb/
--   **Migration Summary**: `/docs/TEMPORAL-DB-MIGRATION-SUMMARY.md`
--   **PHASE-006 Checklist**: `/docs/aiassist/PHASE-006-CHECKLIST.md` (TASK-017)
+- **redb Documentation**: https://docs.rs/redb/
+- **Migration Summary**: `/docs/TEMPORAL-DB-MIGRATION-SUMMARY.md`
+- **PHASE-006 Checklist**: `/docs/aiassist/PHASE-006-CHECKLIST.md` (TASK-017)

@@ -13,11 +13,11 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
--   Custom Nx generators for hexagonal architecture
--   Generator templates and schematics
--   Code scaffolding following project conventions
--   Generator-first workflow enforcement
--   Copier integration patterns
+- Custom Nx generators for hexagonal architecture
+- Generator templates and schematics
+- Code scaffolding following project conventions
+- Generator-first workflow enforcement
+- Copier integration patterns
 
 **Related Policy**: See [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) for the **generator-first development policy**.
 
@@ -92,11 +92,11 @@ generators/
 
 ### Use This Context When:
 
--   [ ] Scaffolding new libraries, apps, or components
--   [ ] Creating custom generators for project-specific patterns
--   [ ] Implementing generator-first workflow
--   [ ] Need to understand existing generator patterns
--   [ ] Modifying or extending generator templates
+- [ ] Scaffolding new libraries, apps, or components
+- [ ] Creating custom generators for project-specific patterns
+- [ ] Implementing generator-first workflow
+- [ ] Need to understand existing generator patterns
+- [ ] Modifying or extending generator templates
 
 ### Refer to Other Contexts When:
 
@@ -244,9 +244,9 @@ export default serviceGenerator;
 
 **Template file naming convention:**
 
--   Use `__templateFileName__.ts.template` pattern
--   Template variables: `<%= propertyName %>`
--   Naming helpers: `<%= className %>`, `<%= fileName %>`, `<%= constantName %>`
+- Use `__templateFileName__.ts.template` pattern
+- Template variables: `<%= propertyName %>`
+- Naming helpers: `<%= className %>`, `<%= fileName %>`, `<%= constantName %>`
 
 **Example domain entity template:**
 
@@ -302,19 +302,19 @@ export function getNames(name: string): Names {
 
 **Modular instructions that apply here:**
 
--   [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - **Generator-first policy (READ THIS FIRST)**
--   [.github/instructions/nx.instructions.md](/.github/instructions/nx.instructions.md) - Nx integration and MCP tools
--   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing generated code
--   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in generators
+- [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) - **Generator-first policy (READ THIS FIRST)**
+- [.github/instructions/nx.instructions.md](/.github/instructions/nx.instructions.md) - Nx integration and MCP tools
+- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Testing generated code
+- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in generators
 
 **Relevant prompts:**
 
--   [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Use generators first, then implement
+- [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Use generators first, then implement
 
 **Related chat modes:**
 
--   `persona.system-architect` - Generator design guidance
--   `tdd.red` - Generate test scaffolds
+- `persona.system-architect` - Generator design guidance
+- `tdd.red` - Generate test scaffolds
 
 ## 💡 Examples
 
@@ -412,31 +412,31 @@ pnpm exec nx g @nxlv/python:lib orders-domain \
 
 ### Before Creating a Generator:
 
--   [ ] Identify repeated code pattern
--   [ ] Check if existing Nx generator can be extended
--   [ ] Design schema.json with validation
--   [ ] Plan template structure
--   [ ] Consider language-specific variations
--   [ ] Document expected usage
+- [ ] Identify repeated code pattern
+- [ ] Check if existing Nx generator can be extended
+- [ ] Design schema.json with validation
+- [ ] Plan template structure
+- [ ] Consider language-specific variations
+- [ ] Document expected usage
 
 ### While Building a Generator:
 
--   [ ] Implement normalizeOptions function
--   [ ] Use generateFiles for templates
--   [ ] Add validation for required options
--   [ ] Format generated files
--   [ ] Update Nx workspace configuration
--   [ ] Add Nx tags for boundary rules
--   [ ] Handle error cases gracefully
+- [ ] Implement normalizeOptions function
+- [ ] Use generateFiles for templates
+- [ ] Add validation for required options
+- [ ] Format generated files
+- [ ] Update Nx workspace configuration
+- [ ] Add Nx tags for boundary rules
+- [ ] Handle error cases gracefully
 
 ### After Creating a Generator:
 
--   [ ] Test generator with various inputs
--   [ ] Document in generators/README.md
--   [ ] Add to generators.json collection
--   [ ] Create example usage in generator README
--   [ ] Add just recipe for convenience
--   [ ] Test with `just ai-scaffold`
+- [ ] Test generator with various inputs
+- [ ] Document in generators/README.md
+- [ ] Add to generators.json collection
+- [ ] Create example usage in generator README
+- [ ] Add just recipe for convenience
+- [ ] Test with `just ai-scaffold`
 
 ## 🔍 Quick Reference
 
@@ -507,11 +507,11 @@ names('user-profile') => {
 
 **Security in generators:**
 
--   ⚠️ **Input validation**: Sanitize all user inputs in schema
--   ⚠️ **Path traversal**: Validate directory paths
--   ⚠️ **Code injection**: Sanitize template variables
--   ⚠️ **Default values**: Use secure defaults
--   ⚠️ **File permissions**: Set appropriate permissions on generated files
+- ⚠️ **Input validation**: Sanitize all user inputs in schema
+- ⚠️ **Path traversal**: Validate directory paths
+- ⚠️ **Code injection**: Sanitize template variables
+- ⚠️ **Default values**: Use secure defaults
+- ⚠️ **File permissions**: Set appropriate permissions on generated files
 
 **Example validation:**
 
@@ -549,11 +549,11 @@ function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
 
 **Available Nx MCP Tools:**
 
--   `nx_workspace` - Get workspace structure and errors
--   `nx_generators` - List available generators
--   `nx_generator_schema` - Get generator options schema
--   `nx_open_generate_ui` - Open generator UI
--   `nx_read_generator_log` - Read generator execution log
+- `nx_workspace` - Get workspace structure and errors
+- `nx_generators` - List available generators
+- `nx_generator_schema` - Get generator options schema
+- `nx_open_generate_ui` - Open generator UI
+- `nx_read_generator_log` - Read generator execution log
 
 **Workflow with MCP:**
 
@@ -619,32 +619,32 @@ pnpm exec nx build test-service-domain
 
 ### Regular Tasks
 
--   **Weekly**: Review generator usage patterns
--   **Monthly**: Update generator templates with new conventions
--   **Quarterly**: Audit generated code quality
--   **Per feature**: Consider new generator needs
+- **Weekly**: Review generator usage patterns
+- **Monthly**: Update generator templates with new conventions
+- **Quarterly**: Audit generated code quality
+- **Per feature**: Consider new generator needs
 
 ### When to Update This AGENT.md
 
--   New generators added to collection
--   Generator patterns change
--   Template conventions evolve
--   Nx version updates with breaking changes
+- New generators added to collection
+- Generator patterns change
+- Template conventions evolve
+- Nx version updates with breaking changes
 
 ### When to Create a New Generator
 
 **Consider creating a generator when:**
 
--   You're repeating the same scaffolding 3+ times
--   Pattern has clear structure and conventions
--   Would benefit other team members
--   Enforces architectural boundaries
+- You're repeating the same scaffolding 3+ times
+- Pattern has clear structure and conventions
+- Would benefit other team members
+- Enforces architectural boundaries
 
 **Don't create a generator when:**
 
--   Pattern is still evolving rapidly
--   One-off or experimental code
--   Better handled by existing generators with options
+- Pattern is still evolving rapidly
+- One-off or experimental code
+- Better handled by existing generators with options
 
 ---
 

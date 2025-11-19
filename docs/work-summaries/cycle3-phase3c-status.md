@@ -12,20 +12,20 @@ Phase 3C focuses on integrating the real GGUF model and creating TypeScript bind
 
 Replaced stub implementation with actual llama.cpp bindings:
 
--   Uses `llama-cpp-2` crate (v0.1.124)
--   Loads GGUF models via `LlamaModel::load_from_file()`
--   Tokenizes input with `str_to_token()`
--   Generates embeddings via `ctx.embeddings_seq_ith(0)`
--   Supports 768-dimensional output (with dimension validation)
--   L2 normalization applied to all vectors
+- Uses `llama-cpp-2` crate (v0.1.124)
+- Loads GGUF models via `LlamaModel::load_from_file()`
+- Tokenizes input with `str_to_token()`
+- Generates embeddings via `ctx.embeddings_seq_ith(0)`
+- Supports 768-dimensional output (with dimension validation)
+- L2 normalization applied to all vectors
 
 **Key Features**:
 
--   Backend initialization with `LlamaBackend::init()`
--   Context creation with embedding mode enabled
--   Batch processing support for efficiency
--   Proper error handling for all llama.cpp operations
--   Warning system for dimension mismatches
+- Backend initialization with `LlamaBackend::init()`
+- Context creation with embedding mode enabled
+- Batch processing support for efficiency
+- Proper error handling for all llama.cpp operations
+- Warning system for dimension mismatches
 
 **Code Example**:
 
@@ -45,16 +45,16 @@ let embeddings = ctx.embeddings_seq_ith(0)?;
 
 **Files**:
 
--   `tools/ai/src/temporal-ai-client.ts`
--   `tools/ai/src/temporal-ai-client.spec.ts`
+- `tools/ai/src/temporal-ai-client.ts`
+- `tools/ai/src/temporal-ai-client.spec.ts`
 
 **Features**:
 
--   `TemporalAIClient` class for interacting with Rust CLI
--   Zod schemas for type-safe Pattern and Recommendation types
--   Methods: `init()`, `refreshPatterns()`, `recommend()`, `getStats()`
--   Helper function `getRecommendations()` for quick access
--   CLI output parser (temporary until JSON output added)
+- `TemporalAIClient` class for interacting with Rust CLI
+- Zod schemas for type-safe Pattern and Recommendation types
+- Methods: `init()`, `refreshPatterns()`, `recommend()`, `getStats()`
+- Helper function `getRecommendations()` for quick access
+- CLI output parser (temporary until JSON output added)
 
 **Usage Example**:
 
@@ -81,10 +81,10 @@ recs.forEach((rec) => {
 
 Test coverage:
 
--   ✅ Database statistics retrieval
--   ✅ Recommendation queries
--   ✅ Helper function usage
--   ✅ End-to-end: refresh → stats → query
+- ✅ Database statistics retrieval
+- ✅ Recommendation queries
+- ✅ Helper function usage
+- ✅ End-to-end: refresh → stats → query
 
 **Run Tests**:
 
@@ -122,19 +122,19 @@ Once compilation completes:
 
 Direct Rust ↔ Node.js bindings via NAPI-RS would provide:
 
--   Faster communication (no process spawn)
--   Shared memory for embeddings
--   Better error handling
--   Type-safe interfaces
+- Faster communication (no process spawn)
+- Shared memory for embeddings
+- Better error handling
+- Type-safe interfaces
 
 **Plan**: Implement after validating core functionality
 
 **Estimated Work**:
 
--   Add `napi` feature flag to Cargo.toml
--   Create FFI wrapper in `src/ffi.rs`
--   Build Node.js native module
--   Update TypeScript client to use native bindings
+- Add `napi` feature flag to Cargo.toml
+- Create FFI wrapper in `src/ffi.rs`
+- Build Node.js native module
+- Update TypeScript client to use native bindings
 
 ## Technical Details
 
@@ -142,15 +142,15 @@ Direct Rust ↔ Node.js bindings via NAPI-RS would provide:
 
 The embedder supports any GGUF embedding model that produces vector outputs. Key requirements:
 
--   Model must support embedding generation mode
--   Output dimension can be any size (will truncate/pad to 768)
--   Quantization: Q4_K_M, Q8_0, F16, etc.
+- Model must support embedding generation mode
+- Output dimension can be any size (will truncate/pad to 768)
+- Quantization: Q4_K_M, Q8_0, F16, etc.
 
 **Current Model**:
 
--   `embedding-gemma-300M-Q8_0.gguf` (314MB)
--   Expected output: 2048 dimensions → truncated to 768
--   Quantization: 8-bit (Q8_0)
+- `embedding-gemma-300M-Q8_0.gguf` (314MB)
+- Expected output: 2048 dimensions → truncated to 768
+- Quantization: 8-bit (Q8_0)
 
 ### Performance Targets
 
@@ -165,32 +165,31 @@ The embedder supports any GGUF embedding model that produces vector outputs. Key
 
 **Rust Errors**:
 
--   `ModelLoadError`: GGUF file not found or invalid
--   `InferenceError`: Tokenization or decoding failed
--   `DimensionMismatch`: Output size unexpected
+- `ModelLoadError`: GGUF file not found or invalid
+- `InferenceError`: Tokenization or decoding failed
+- `DimensionMismatch`: Output size unexpected
 
 **TypeScript Errors**:
 
--   CLI execution failures caught and wrapped
--   Parse errors for malformed output
--   Timeout handling for long operations
+- CLI execution failures caught and wrapped
+- Parse errors for malformed output
+- Timeout handling for long operations
 
 ## Files Modified/Created
 
 ### Modified
 
--   `crates/temporal-ai/src/embedder.rs` - Real GGUF integration
--   `crates/temporal-ai/Cargo.toml` - Added llama-cpp-2 dependency
+- `crates/temporal-ai/src/embedder.rs` - Real GGUF integration
+- `crates/temporal-ai/Cargo.toml` - Added llama-cpp-2 dependency
 
 ### Created
 
--   `tools/ai/src/temporal-ai-client.ts` - TypeScript client
--   `tools/ai/src/temporal-ai-client.spec.ts` - Integration tests
+- `tools/ai/src/temporal-ai-client.ts` - TypeScript client
+- `tools/ai/src/temporal-ai-client.spec.ts` - Integration tests
 
 ## Next Steps
 
 1. **Complete C++ Compilation** (in progress)
-
     - Wait for llama-cpp-sys-2 build to finish
     - ~5-10 minutes on typical hardware
 
@@ -210,7 +209,6 @@ The embedder supports any GGUF embedding model that produces vector outputs. Key
     ```
 
 4. **Measure Performance**
-
     - Latency benchmarks
     - Memory usage
     - Semantic similarity quality
@@ -224,19 +222,19 @@ The embedder supports any GGUF embedding model that produces vector outputs. Key
 
 **Rust**:
 
--   `llama-cpp-2 = "0.1"` - C++ bindings to llama.cpp
--   `llama-cpp-sys-2` - Low-level FFI (auto-included)
+- `llama-cpp-2 = "0.1"` - C++ bindings to llama.cpp
+- `llama-cpp-sys-2` - Low-level FFI (auto-included)
 
 **TypeScript**:
 
--   `zod` - Runtime type validation
--   `vitest` - Testing framework
+- `zod` - Runtime type validation
+- `vitest` - Testing framework
 
 **System**:
 
--   C++ compiler (gcc/clang)
--   CMake
--   OpenSSL development headers
+- C++ compiler (gcc/clang)
+- CMake
+- OpenSSL development headers
 
 ## Known Issues
 
@@ -261,12 +259,12 @@ The embedder supports any GGUF embedding model that produces vector outputs. Key
 
 ## Completion Criteria
 
--   [x] Real GGUF model integration implemented
--   [x] TypeScript client library created
--   [x] Integration tests written
--   [ ] C++ compilation completed
--   [ ] Real model tested with embedding-gemma
--   [ ] Performance benchmarks run
--   [ ] API documentation complete
+- [x] Real GGUF model integration implemented
+- [x] TypeScript client library created
+- [x] Integration tests written
+- [ ] C++ compilation completed
+- [ ] Real model tested with embedding-gemma
+- [ ] Performance benchmarks run
+- [ ] API documentation complete
 
 **Status**: Phase 3C ~80% complete. Awaiting C++ compilation to finish testing.

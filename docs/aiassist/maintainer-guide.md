@@ -17,12 +17,12 @@ prompts.
 
 Maintainers must review the full specification chain before performing updates. The documents live in `docs/aiassist/`:
 
--   **Architecture Decisions:** [`AI_ADR.md`](./AI_ADR.md)
--   **Product Requirements:** [`AI_PRD.md`](./AI_PRD.md)
--   **Software Design Specification:** [`AI_SDS.md`](./AI_SDS.md)
--   **Technical Specification:** [`AI_TS.md`](./AI_TS.md)
--   **Integration Blueprint:** [`vibepdk-ai-integration-plan.md`](./vibepdk-ai-integration-plan.md)
--   **Traceability Matrix:** [`AI_traceability.md`](./AI_traceability.md)
+- **Architecture Decisions:** [`AI_ADR.md`](./AI_ADR.md)
+- **Product Requirements:** [`AI_PRD.md`](./AI_PRD.md)
+- **Software Design Specification:** [`AI_SDS.md`](./AI_SDS.md)
+- **Technical Specification:** [`AI_TS.md`](./AI_TS.md)
+- **Integration Blueprint:** [`vibepdk-ai-integration-plan.md`](./vibepdk-ai-integration-plan.md)
+- **Traceability Matrix:** [`AI_traceability.md`](./AI_traceability.md)
 
 Every change must cite the relevant spec IDs in commits, docs, and tests to satisfy the traceability mandate captured in AI_ADR-003.
 
@@ -30,16 +30,16 @@ Every change must cite the relevant spec IDs in commits, docs, and tests to sati
 
 PHASE-001 copied the unified Copilot guardrails from VibePDK into the template. Generated projects now include:
 
--   [`.github/copilot-instructions.md`](../../templates/{{project_slug}}/.github/copilot-instructions.md) detailing how
-    contributors interact with Copilot, chat modes, and prompts.
--   Modular instruction files inside [`.github/instructions/`](../../templates/{{project_slug}}/.github/instructions/) that encode
-    general guidance, performance tips, security posture, style rules, testing strategy, and commit message policy.
--   Prompt catalog housed in [`.github/prompts/`](../../templates/{{project_slug}}/.github/prompts/) containing spec-driven workflows
-    (e.g., bootstrap, implement/change feature, traceability matrix updates, AI doc generation).
--   Chat modes under [`.github/chatmodes/`](../../templates/{{project_slug}}/.github/chatmodes/) including the spec-wide and spec-lean
-    personas layered on top of the existing role-based personas.
--   Model defaults defined in [`.github/models.yaml`](../../templates/{{project_slug}}/.github/models.yaml) aligning Copilot tooling with
-    our security and token budget policies.
+- [`.github/copilot-instructions.md`](../../templates/{{project_slug}}/.github/copilot-instructions.md) detailing how
+  contributors interact with Copilot, chat modes, and prompts.
+- Modular instruction files inside [`.github/instructions/`](../../templates/{{project_slug}}/.github/instructions/) that encode
+  general guidance, performance tips, security posture, style rules, testing strategy, and commit message policy.
+- Prompt catalog housed in [`.github/prompts/`](../../templates/{{project_slug}}/.github/prompts/) containing spec-driven workflows
+  (e.g., bootstrap, implement/change feature, traceability matrix updates, AI doc generation).
+- Chat modes under [`.github/chatmodes/`](../../templates/{{project_slug}}/.github/chatmodes/) including the spec-wide and spec-lean
+  personas layered on top of the existing role-based personas.
+- Model defaults defined in [`.github/models.yaml`](../../templates/{{project_slug}}/.github/models.yaml) aligning Copilot tooling with
+  our security and token budget policies.
 
 Do not edit `.vscode/settings.json` automatically. Document any desired changes in this guide and land them through a dedicated
 PR after security review, as required by AI_SDS-002 and AI_TS-005.
@@ -59,18 +59,18 @@ PR after security review, as required by AI_SDS-002 and AI_TS-005.
 
 ## Security & Compliance Reminders
 
--   Never enable `chat.tools.autoApprove`; uphold the guardrails defined in `.github/instructions/security.instructions.md`.
--   Treat all prompts and instructions as code: review token budgets, link to specs, and run prompt lint before merging.
--   When adding new instructions, include precedence metadata in the file header and cross-link the owning spec documents.
+- Never enable `chat.tools.autoApprove`; uphold the guardrails defined in `.github/instructions/security.instructions.md`.
+- Treat all prompts and instructions as code: review token budgets, link to specs, and run prompt lint before merging.
+- When adding new instructions, include precedence metadata in the file header and cross-link the owning spec documents.
 
 ## Review Checklist
 
 Use the following checklist (derived from AI_TS-005) before approving AI-workflow PRs:
 
--   [ ] Specs updated with traceable IDs (AI_ADR, AI_PRD, AI_SDS, AI_TS) and matrix regenerated.
--   [ ] Maintainer guide reflects any new or removed `.github` assets.
--   [ ] Prompt lint/plan, spec matrix, and docs lint commands pass locally and in CI.
--   [ ] Security posture validated: no unauthorized settings changes or dependency additions without ADR coverage.
--   [ ] Generated project smoke tests confirm assets appear under `.github/`.
+- [ ] Specs updated with traceable IDs (AI_ADR, AI_PRD, AI_SDS, AI_TS) and matrix regenerated.
+- [ ] Maintainer guide reflects any new or removed `.github` assets.
+- [ ] Prompt lint/plan, spec matrix, and docs lint commands pass locally and in CI.
+- [ ] Security posture validated: no unauthorized settings changes or dependency additions without ADR coverage.
+- [ ] Generated project smoke tests confirm assets appear under `.github/`.
 
 Document any exceptions in `AI_traceability.md` so we can revisit the deviation during the next governance review cycle.

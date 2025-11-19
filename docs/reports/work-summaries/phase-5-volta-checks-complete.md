@@ -13,33 +13,33 @@ Phase 5 validates and enhances the Volta coexistence infrastructure for VibesPro
 
 ✅ **Volta/mise Conflict Detection**
 
--   Validated existing `scripts/verify-node.sh` detects version mismatches
--   Script compares major versions between `.mise.toml` and `package.json` volta section
--   Provides clear error messages with resolution options
--   Handles mise-only, Volta-only, and aligned scenarios
+- Validated existing `scripts/verify-node.sh` detects version mismatches
+- Script compares major versions between `.mise.toml` and `package.json` volta section
+- Provides clear error messages with resolution options
+- Handles mise-only, Volta-only, and aligned scenarios
 
 ✅ **Test Coverage**
 
--   Created `tests/env/test_volta_mise_guard.sh` following TDD Red-Green-Refactor
--   Test validates script existence, executability, and conflict detection
--   Tests mismatch scenarios (different major versions)
--   Tests alignment scenarios (same major version)
--   Tests mise-only scenarios (no Volta section)
+- Created `tests/env/test_volta_mise_guard.sh` following TDD Red-Green-Refactor
+- Test validates script existence, executability, and conflict detection
+- Tests mismatch scenarios (different major versions)
+- Tests alignment scenarios (same major version)
+- Tests mise-only scenarios (no Volta section)
 
 ✅ **CI Integration**
 
--   Fixed `verify-node` references in workflows (changed from `verify:node` to `verify-node`)
--   Updated `.github/workflows/env-check.yml`
--   Updated `.github/workflows/build-matrix.yml`
--   CI now runs version check on every push/PR
+- Fixed `verify-node` references in workflows (changed from `verify:node` to `verify-node`)
+- Updated `.github/workflows/env-check.yml`
+- Updated `.github/workflows/build-matrix.yml`
+- CI now runs version check on every push/PR
 
 ✅ **Documentation**
 
--   Updated `docs/ENVIRONMENT.md` with comprehensive Volta coexistence section
--   Covers migration strategies (gradual vs clean)
--   Documents conflict detection and resolution
--   Provides deprecation timeline
--   Explains why mise is preferred over Volta
+- Updated `docs/ENVIRONMENT.md` with comprehensive Volta coexistence section
+- Covers migration strategies (gradual vs clean)
+- Documents conflict detection and resolution
+- Provides deprecation timeline
+- Explains why mise is preferred over Volta
 
 ## TDD Workflow
 
@@ -49,20 +49,20 @@ Phase 5 validates and enhances the Volta coexistence infrastructure for VibesPro
 
 Created test that validates:
 
--   `scripts/verify-node.sh` exists and is executable
--   `just verify-node` target exists in justfile
--   Script detects mise configuration in `.mise.toml`
--   Script correctly identifies version mismatches (major version conflicts)
--   Script allows same major version with different minor/patch
--   Script works with mise-only configuration (no Volta)
--   Script works with current project configuration
+- `scripts/verify-node.sh` exists and is executable
+- `just verify-node` target exists in justfile
+- Script detects mise configuration in `.mise.toml`
+- Script correctly identifies version mismatches (major version conflicts)
+- Script allows same major version with different minor/patch
+- Script works with mise-only configuration (no Volta)
+- Script works with current project configuration
 
 **Test approach:**
 
--   Creates temporary directories with test fixtures
--   Simulates mismatch: Node 20.x in mise vs 18.x in Volta
--   Simulates alignment: Node 20.x in both
--   Simulates mise-only: No Volta section in package.json
+- Creates temporary directories with test fixtures
+- Simulates mismatch: Node 20.x in mise vs 18.x in Volta
+- Simulates alignment: Node 20.x in both
+- Simulates mise-only: No Volta section in package.json
 
 **Initial Status:** Test passed immediately (verify-node.sh already existed and worked correctly)
 
@@ -70,17 +70,17 @@ Created test that validates:
 
 **Existing Infrastructure Validated:**
 
--   ✅ `scripts/verify-node.sh` - Already properly implemented
-    -   Detects mise version from `.mise.toml`
-    -   Detects Volta version from `package.json`
-    -   Compares major versions
-    -   Provides helpful error messages with resolution steps
-    -   Handles all three scenarios (mismatch, aligned, mise-only)
+- ✅ `scripts/verify-node.sh` - Already properly implemented
+    - Detects mise version from `.mise.toml`
+    - Detects Volta version from `package.json`
+    - Compares major versions
+    - Provides helpful error messages with resolution steps
+    - Handles all three scenarios (mismatch, aligned, mise-only)
 
 **Enhancements Made:**
 
--   ✅ Fixed CI workflow references from `verify:node` to `verify-node`
--   ✅ Validated justfile target uses correct hyphen naming
+- ✅ Fixed CI workflow references from `verify:node` to `verify-node`
+- ✅ Validated justfile target uses correct hyphen naming
 
 **verify-node.sh Logic Confirmed:**
 
@@ -113,46 +113,46 @@ Added comprehensive Volta section to `docs/ENVIRONMENT.md` (~150 lines):
 
 **Test Structure Update:**
 
--   Added `test_volta_mise_guard.sh` to test harness documentation
--   Updated test count from 7 to 8 tests
+- Added `test_volta_mise_guard.sh` to test harness documentation
+- Updated test count from 7 to 8 tests
 
 **CI Workflow Updates:**
 
--   Fixed command format in `env-check.yml` (line 84)
--   Fixed command format in `build-matrix.yml` (line 143)
--   Changed from `just verify:node` to `just verify-node` (matches justfile)
+- Fixed command format in `env-check.yml` (line 84)
+- Fixed command format in `build-matrix.yml` (line 143)
+- Changed from `just verify:node` to `just verify-node` (matches justfile)
 
 **Roadmap Update:**
 
--   Marked Phase 5 complete in "Next Steps" section
+- Marked Phase 5 complete in "Next Steps" section
 
 ## Files Created/Modified
 
 ### Created
 
--   `tests/env/test_volta_mise_guard.sh` - Volta/mise conflict detection test (new)
--   `docs/work-summaries/phase-5-volta-checks-complete.md` - This summary
+- `tests/env/test_volta_mise_guard.sh` - Volta/mise conflict detection test (new)
+- `docs/work-summaries/phase-5-volta-checks-complete.md` - This summary
 
 ### Modified
 
--   `.github/workflows/env-check.yml` - Fixed verify-node command format
--   `.github/workflows/build-matrix.yml` - Fixed verify-node command format
--   `docs/ENVIRONMENT.md` - Added comprehensive Volta coexistence section (~150 lines)
-    -   Migration strategies
-    -   Conflict detection guide
-    -   Why mise over Volta
-    -   Deprecation timeline
-    -   Troubleshooting guide
--   Updated test structure to include `test_volta_mise_guard.sh`
--   Updated test count to 8 tests
--   Marked Phase 5 complete in roadmap
+- `.github/workflows/env-check.yml` - Fixed verify-node command format
+- `.github/workflows/build-matrix.yml` - Fixed verify-node command format
+- `docs/ENVIRONMENT.md` - Added comprehensive Volta coexistence section (~150 lines)
+    - Migration strategies
+    - Conflict detection guide
+    - Why mise over Volta
+    - Deprecation timeline
+    - Troubleshooting guide
+- Updated test structure to include `test_volta_mise_guard.sh`
+- Updated test count to 8 tests
+- Marked Phase 5 complete in roadmap
 
 ### Verified (No Changes Needed)
 
--   `scripts/verify-node.sh` - Already properly implemented
--   `justfile` - Already has `verify-node` target (line 43-45)
--   `package.json` - No Volta section (clean mise-only configuration)
--   `.mise.toml` - Node 20.11.1 configured
+- `scripts/verify-node.sh` - Already properly implemented
+- `justfile` - Already has `verify-node` target (line 43-45)
+- `package.json` - No Volta section (clean mise-only configuration)
+- `.mise.toml` - Node 20.11.1 configured
 
 ## Test Results
 
@@ -256,9 +256,9 @@ $ just verify-node
 
 **Benefits:**
 
--   No disruption to workflow
--   Team members transition individually
--   CI enforces alignment
+- No disruption to workflow
+- Team members transition individually
+- CI enforces alignment
 
 **Configuration:**
 
@@ -293,9 +293,9 @@ node = "20.11.1"  # Must match major version
 
 **Benefits:**
 
--   Single source of truth
--   No synchronization overhead
--   Simpler configuration
+- Single source of truth
+- No synchronization overhead
+- Simpler configuration
 
 **Configuration:**
 
@@ -348,9 +348,9 @@ rust = "1.80.1"
 
 **Behavior:**
 
--   Runs on every push and pull request
--   Fails build if major version mismatch detected
--   Passes if versions aligned or Volta absent
+- Runs on every push and pull request
+- Fails build if major version mismatch detected
+- Passes if versions aligned or Volta absent
 
 ### build-matrix.yml Workflow
 
@@ -361,9 +361,9 @@ rust = "1.80.1"
 
 **Behavior:**
 
--   Runs on Ubuntu and macOS
--   Same validation as env-check.yml
--   Ensures cross-platform consistency
+- Runs on Ubuntu and macOS
+- Same validation as env-check.yml
+- Ensures cross-platform consistency
 
 ### Workflow Fixes
 
@@ -383,48 +383,46 @@ run: just verify-node # Matches justfile target naming
 
 ### Phase 0 Integration
 
--   Volta test uses test harness and helpers from Phase 0
--   Test runs via `tests/env/run.sh` discovery mechanism
+- Volta test uses test harness and helpers from Phase 0
+- Test runs via `tests/env/run.sh` discovery mechanism
 
 ### Phase 1 Integration
 
--   Devbox can optionally provide `jq` for parsing package.json in verify script
+- Devbox can optionally provide `jq` for parsing package.json in verify script
 
 ### Phase 2 Integration
 
--   mise is the authoritative runtime manager (Phase 2)
--   Volta section must align with `.mise.toml` versions
--   verify-node script validates this alignment
+- mise is the authoritative runtime manager (Phase 2)
+- Volta section must align with `.mise.toml` versions
+- verify-node script validates this alignment
 
 ### Phase 3 Integration
 
--   No direct integration (Volta unrelated to secrets)
+- No direct integration (Volta unrelated to secrets)
 
 ### Phase 4 Integration
 
--   CI workflows run `just verify-node` to enforce alignment
--   Build fails on version mismatch
--   Ensures local and CI environments use consistent Node version
+- CI workflows run `just verify-node` to enforce alignment
+- Build fails on version mismatch
+- Ensures local and CI environments use consistent Node version
 
 ## Deprecation Timeline
 
 **Current State (Phase 5 Complete):**
 
--   ✅ Volta optional, must align if present
--   ✅ mise is authoritative
--   ✅ CI enforces major version alignment
--   ✅ Clear migration paths documented
+- ✅ Volta optional, must align if present
+- ✅ mise is authoritative
+- ✅ CI enforces major version alignment
+- ✅ Clear migration paths documented
 
 **Planned Timeline:**
 
 1. **Next Minor Release (v0.2.0):**
-
     - Add deprecation warnings when Volta section detected
     - Update documentation with sunset date
     - Encourage teams to migrate
 
 2. **Two Releases Later (v0.4.0):**
-
     - Volta section ignored (no validation)
     - Remove deprecation warnings
     - Documentation updated (mise-only)
@@ -481,30 +479,30 @@ run: just verify-node # Matches justfile target naming
 
 **docs/ENVIRONMENT.md** - Added Volta coexistence section:
 
--   Overview of mise authority
--   Checking for conflicts (`just verify-node`)
--   Migration strategies (gradual vs clean)
--   Why mise over Volta (feature comparison)
--   CI enforcement details
--   Deprecation timeline
--   Troubleshooting guide
--   Testing validation
+- Overview of mise authority
+- Checking for conflicts (`just verify-node`)
+- Migration strategies (gradual vs clean)
+- Why mise over Volta (feature comparison)
+- CI enforcement details
+- Deprecation timeline
+- Troubleshooting guide
+- Testing validation
 
 **Lines added:** ~150 lines of comprehensive Volta documentation
 
 ## Phase 5 Completion Checklist
 
--   [x] RED: Write Volta/mise conflict test (`test_volta_mise_guard.sh`)
--   [x] GREEN: Verify existing `verify-node.sh` script works correctly
--   [x] GREEN: Fix CI workflow commands (verify:node → verify-node)
--   [x] GREEN: Validate justfile target exists and works
--   [x] REFACTOR: Update documentation with Volta migration section
--   [x] REFACTOR: Add test to harness documentation
--   [x] REFACTOR: Update test count to 8 tests
--   [x] REFACTOR: Update roadmap to mark Phase 5 complete
--   [x] Validate: Run `just verify-node` successfully
--   [x] Validate: Run `just test-env` (8/8 tests passing)
--   [x] Document: Create phase completion summary
+- [x] RED: Write Volta/mise conflict test (`test_volta_mise_guard.sh`)
+- [x] GREEN: Verify existing `verify-node.sh` script works correctly
+- [x] GREEN: Fix CI workflow commands (verify:node → verify-node)
+- [x] GREEN: Validate justfile target exists and works
+- [x] REFACTOR: Update documentation with Volta migration section
+- [x] REFACTOR: Add test to harness documentation
+- [x] REFACTOR: Update test count to 8 tests
+- [x] REFACTOR: Update roadmap to mark Phase 5 complete
+- [x] Validate: Run `just verify-node` successfully
+- [x] Validate: Run `just test-env` (8/8 tests passing)
+- [x] Document: Create phase completion summary
 
 **Phase 5 Status: COMPLETE ✅**
 
@@ -514,10 +512,10 @@ run: just verify-node # Matches justfile target naming
 
 The VibesPro template now has production-ready Volta coexistence:
 
--   🔍 Automatic version conflict detection
--   ⚠️ Clear error messages with resolution steps
--   🚦 CI enforcement on every build
--   📚 Comprehensive migration documentation
--   ✅ 8 environment tests validate entire infrastructure
+- 🔍 Automatic version conflict detection
+- ⚠️ Clear error messages with resolution steps
+- 🚦 CI enforcement on every build
+- 📚 Comprehensive migration documentation
+- ✅ 8 environment tests validate entire infrastructure
 
 **All Volta coexistence infrastructure from Phase 5 is validated and documented.**

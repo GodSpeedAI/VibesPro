@@ -22,7 +22,7 @@ libraries for business logic.
 
 Apps contain:
 
--   User interface code (UI components, pages, routes)
--   API controllers and endpoints
--   CLI commands
--   Application-specific configuration
+- User interface code (UI components, pages, routes)
+- API controllers and endpoints
+- CLI commands
+- Application-specific configuration

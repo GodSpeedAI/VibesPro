@@ -15,13 +15,11 @@ The complete observability pipeline for VibesPro has been successfully implement
 A **3-layer observability architecture**:
 
 1. **Instrumentation Layer**: `vibepro-observe` Rust crate
-
     - OpenTelemetry tracing integration
     - Runtime feature flag control (`VIBEPRO_OBSERVE`)
     - Minimal overhead (<1µs per span)
 
 2. **Data Pipeline Layer**: Vector
-
     - OTLP ingestion (gRPC port 4317, HTTP port 4318)
     - VRL-based PII redaction and sampling
     - Multiple sinks: console, file, OpenObserve
@@ -58,30 +56,30 @@ $ just observe-test-all
 
 ### Runtime Control
 
--   **Feature Flag**: `VIBEPRO_OBSERVE=1` enables/disables OTLP export
--   **Zero Overhead**: No performance impact when disabled
--   **Flexible Deployment**: Control via environment variables
+- **Feature Flag**: `VIBEPRO_OBSERVE=1` enables/disables OTLP export
+- **Zero Overhead**: No performance impact when disabled
+- **Flexible Deployment**: Control via environment variables
 
 ### Security & Privacy
 
--   **PII Redaction**: Automatic removal of emails, tokens in Vector
--   **Encrypted Secrets**: SOPS-encrypted `.secrets.env.sops`
--   **Token-Based Auth**: Basic auth with OpenObserve
--   **Opt-In Model**: Telemetry disabled by default
+- **PII Redaction**: Automatic removal of emails, tokens in Vector
+- **Encrypted Secrets**: SOPS-encrypted `.secrets.env.sops`
+- **Token-Based Auth**: Basic auth with OpenObserve
+- **Opt-In Model**: Telemetry disabled by default
 
 ### Performance
 
--   **Instrumentation**: <1µs overhead per span
--   **Vector CPU**: <3% at 1k spans/s
--   **Sampling**: Configurable via VRL transforms
--   **Async Export**: Non-blocking trace emission
+- **Instrumentation**: <1µs overhead per span
+- **Vector CPU**: <3% at 1k spans/s
+- **Sampling**: Configurable via VRL transforms
+- **Async Export**: Non-blocking trace emission
 
 ### Developer Experience
 
--   **Simple Setup**: `just observe-start` to begin
--   **Clear Documentation**: 500+ lines of guides and examples
--   **Testing Tools**: 5 automated test suites
--   **Troubleshooting**: Comprehensive error diagnosis guides
+- **Simple Setup**: `just observe-start` to begin
+- **Clear Documentation**: 500+ lines of guides and examples
+- **Testing Tools**: 5 automated test suites
+- **Troubleshooting**: Comprehensive error diagnosis guides
 
 ## File Manifest
 
@@ -89,34 +87,34 @@ $ just observe-test-all
 
 **Tests** (5 files):
 
--   `tests/ops/test_vector_config.sh` (Phase 2)
--   `tests/ops/test_tracing_vector.sh` (Phase 3)
--   `tests/ops/test_openobserve_sink.sh` (Phase 4)
--   `tests/ops/test_ci_observability.sh` (Phase 5)
--   `tests/ops/test_observe_flag.sh` (Phase 6)
+- `tests/ops/test_vector_config.sh` (Phase 2)
+- `tests/ops/test_tracing_vector.sh` (Phase 3)
+- `tests/ops/test_openobserve_sink.sh` (Phase 4)
+- `tests/ops/test_ci_observability.sh` (Phase 5)
+- `tests/ops/test_observe_flag.sh` (Phase 6)
 
 **Documentation** (6 files):
 
--   `docs/work-summaries/observability-phase1-completion.md`
--   `docs/work-summaries/observability-phase2-completion.md`
--   `docs/work-summaries/observability-phase3-completion.md`
--   `docs/work-summaries/observability-phase4-completion.md`
--   `docs/work-summaries/observability-phase5-completion.md`
--   `docs/work-summaries/observability-phase6-completion.md`
+- `docs/work-summaries/observability-phase1-completion.md`
+- `docs/work-summaries/observability-phase2-completion.md`
+- `docs/work-summaries/observability-phase3-completion.md`
+- `docs/work-summaries/observability-phase4-completion.md`
+- `docs/work-summaries/observability-phase5-completion.md`
+- `docs/work-summaries/observability-phase6-completion.md`
 
 **Implementation**:
 
--   `crates/vibepro-observe/` - Full Rust crate with OTLP support
--   `ops/vector/vector.toml` - Complete Vector configuration
+- `crates/vibepro-observe/` - Full Rust crate with OTLP support
+- `ops/vector/vector.toml` - Complete Vector configuration
 
 ### Modified Files
 
--   `.github/workflows/env-check.yml` - Added Vector installation and validation
--   `justfile` - Added 6 observability test targets
--   `docs/ENVIRONMENT.md` - Added Section 8: Observability (150+ lines)
--   `docs/observability/README.md` - Enhanced with feature flag docs (70+ lines)
--   `docs/dev_sds.md` - Updated with all phase artifacts
--   `.secrets.env.sops` - Added OpenObserve configuration
+- `.github/workflows/env-check.yml` - Added Vector installation and validation
+- `justfile` - Added 6 observability test targets
+- `docs/ENVIRONMENT.md` - Added Section 8: Observability (150+ lines)
+- `docs/observability/README.md` - Enhanced with feature flag docs (70+ lines)
+- `docs/dev_sds.md` - Updated with all phase artifacts
+- `.secrets.env.sops` - Added OpenObserve configuration
 
 ## Commands Reference
 
@@ -170,18 +168,18 @@ just observe-stop
 
 ### User Documentation
 
--   **`docs/ENVIRONMENT.md` § 8**: Setup and configuration guide
--   **`docs/observability/README.md`**: Comprehensive architecture and usage
+- **`docs/ENVIRONMENT.md` § 8**: Setup and configuration guide
+- **`docs/observability/README.md`**: Comprehensive architecture and usage
 
 ### Developer Documentation
 
--   **`docs/dev_adr.md`**: DEV-ADR-016 - Architecture decisions
--   **`docs/dev_sds.md`**: DEV-SDS-017 - System design specification
--   **`docs/tmp/dev_tdd_observability.md`**: TDD implementation plan
+- **`docs/dev_adr.md`**: DEV-ADR-016 - Architecture decisions
+- **`docs/dev_sds.md`**: DEV-SDS-017 - System design specification
+- **`docs/tmp/dev_tdd_observability.md`**: TDD implementation plan
 
 ### Implementation Notes
 
--   **`docs/work-summaries/observability-phase*.md`**: Detailed phase completion docs
+- **`docs/work-summaries/observability-phase*.md`**: Detailed phase completion docs
 
 ## Production Deployment
 
@@ -232,21 +230,21 @@ env:
 
 ## Security Posture
 
--   ✅ Encrypted secrets via SOPS
--   ✅ PII redaction enforced
--   ✅ Token-based authentication
--   ✅ Opt-in telemetry (disabled by default)
--   ✅ Network boundaries enforced
--   ✅ No secrets in code or logs
+- ✅ Encrypted secrets via SOPS
+- ✅ PII redaction enforced
+- ✅ Token-based authentication
+- ✅ Opt-in telemetry (disabled by default)
+- ✅ Network boundaries enforced
+- ✅ No secrets in code or logs
 
 ## CI/CD Integration
 
 ### Automated Validation
 
--   ✅ Vector configuration validated on every PR
--   ✅ Vector binary cached (saves ~28s per run)
--   ✅ Rust crate tests with/without OTLP feature
--   ✅ Feature flag behavior validated
+- ✅ Vector configuration validated on every PR
+- ✅ Vector binary cached (saves ~28s per run)
+- ✅ Rust crate tests with/without OTLP feature
+- ✅ Feature flag behavior validated
 
 ### CI Workflow
 
@@ -259,11 +257,11 @@ Validate Vector → Run crate tests → Validate feature flags
 
 Every implementation decision is traceable:
 
--   **Architecture**: DEV-ADR-016
--   **Design**: DEV-SDS-017
--   **Implementation**: 6 phase completion docs
--   **Testing**: 5 test suites + Rust crate tests
--   **Commits**: Reference spec IDs throughout
+- **Architecture**: DEV-ADR-016
+- **Design**: DEV-SDS-017
+- **Implementation**: 6 phase completion docs
+- **Testing**: 5 test suites + Rust crate tests
+- **Commits**: Reference spec IDs throughout
 
 ## Success Metrics
 
@@ -298,46 +296,46 @@ While the core system is complete, optional enhancements include:
 
 ### Core System (Complete)
 
--   [x] Phase 1: Instrumentation Layer
--   [x] Phase 2: Data Pipeline Layer
--   [x] Phase 3: Integration Testing
--   [x] Phase 4: Storage & Analytics
--   [x] Phase 5: CI Validation
--   [x] Phase 6: Feature Flags & Documentation
--   [x] All tests passing
--   [x] Documentation complete
--   [x] Security controls implemented
+- [x] Phase 1: Instrumentation Layer
+- [x] Phase 2: Data Pipeline Layer
+- [x] Phase 3: Integration Testing
+- [x] Phase 4: Storage & Analytics
+- [x] Phase 5: CI Validation
+- [x] Phase 6: Feature Flags & Documentation
+- [x] All tests passing
+- [x] Documentation complete
+- [x] Security controls implemented
 
 ### Deployment-Specific (Per Environment)
 
--   [ ] Production secrets encrypted and stored
--   [ ] OpenObserve instance provisioned
--   [ ] Vector deployed to Kubernetes/Docker
--   [ ] Network policies configured
--   [ ] Dashboards and alerts set up
--   [ ] Team training completed
--   [ ] Runbooks created
+- [ ] Production secrets encrypted and stored
+- [ ] OpenObserve instance provisioned
+- [ ] Vector deployed to Kubernetes/Docker
+- [ ] Network policies configured
+- [ ] Dashboards and alerts set up
+- [ ] Team training completed
+- [ ] Runbooks created
 
 ## Impact Summary
 
 ### Development Velocity
 
--   **~15% faster debugging (estimated)** with distributed traces
--   **~30% MTTR reduction (projected)** with observability
--   **Zero overhead** when disabled (no performance penalty)
+- **~15% faster debugging (estimated)** with distributed traces
+- **~30% MTTR reduction (projected)** with observability
+- **Zero overhead** when disabled (no performance penalty)
 
 ### Operational Excellence
 
--   **Full visibility** into application behavior
--   **Proactive monitoring** with alerting
--   **Cost control** via sampling and feature flags
--   **Compliance ready** with PII redaction
+- **Full visibility** into application behavior
+- **Proactive monitoring** with alerting
+- **Cost control** via sampling and feature flags
+- **Compliance ready** with PII redaction
 
 ### Technical Debt
 
--   **Minimal technical debt**: Implemented via TDD with documented limitations
--   **100% test coverage**: All exit criteria met
--   **Production-grade**: Security, performance, reliability
+- **Minimal technical debt**: Implemented via TDD with documented limitations
+- **100% test coverage**: All exit criteria met
+- **Production-grade**: Security, performance, reliability
 
 ---
 
@@ -347,20 +345,20 @@ The observability pipeline for VibesPro is **complete and production-ready**!
 
 **Total Implementation**:
 
--   6 phases completed
--   5 test suites created
--   500+ lines of documentation
--   100% TDD methodology
--   Full traceability to specs
+- 6 phases completed
+- 5 test suites created
+- 500+ lines of documentation
+- 100% TDD methodology
+- Full traceability to specs
 
 **Key Achievements**:
 
--   ✅ Rust-native, low-overhead instrumentation
--   ✅ Vector-based flexible data pipeline
--   ✅ OpenObserve storage and analytics
--   ✅ Runtime feature flag control
--   ✅ Comprehensive CI validation
--   ✅ Production-ready security
+- ✅ Rust-native, low-overhead instrumentation
+- ✅ Vector-based flexible data pipeline
+- ✅ OpenObserve storage and analytics
+- ✅ Runtime feature flag control
+- ✅ Comprehensive CI validation
+- ✅ Production-ready security
 
 The system is ready for immediate deployment and use!
 

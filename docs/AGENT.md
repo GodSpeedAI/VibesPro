@@ -13,13 +13,13 @@ See the repository guidance in `.github/copilot-instructions.md` (repo root) for
 
 **This directory handles:**
 
--   Architectural Decision Records (ADR)
--   Product Requirements Documents (PRD)
--   Software Design Specifications (SDS)
--   Technical Specifications (TS)
--   Traceability matrix linking specs to implementation
--   Developer-focused documentation (DEV-\* specs)
--   Knowledge base and how-to guides
+- Architectural Decision Records (ADR)
+- Product Requirements Documents (PRD)
+- Software Design Specifications (SDS)
+- Technical Specifications (TS)
+- Traceability matrix linking specs to implementation
+- Developer-focused documentation (DEV-\* specs)
+- Knowledge base and how-to guides
 
 **Architecture Layer**: N/A (Documentation/Specification)
 
@@ -81,23 +81,23 @@ DEV-<DOCTYPE>-###
 
 **Examples:**
 
--   `DEV-ADR-001` - First architectural decision
--   `DEV-PRD-042` - Product requirement #42
--   `DEV-SDS-015` - Software design spec #15
--   `DEV-TS-007` - Technical specification #7
+- `DEV-ADR-001` - First architectural decision
+- `DEV-PRD-042` - Product requirement #42
+- `DEV-SDS-015` - Software design spec #15
+- `DEV-TS-007` - Technical specification #7
 
 ## 🧭 Routing Rules
 
 ### Use This Context When:
 
--   [ ] Implementing a feature from specifications
--   [ ] Writing or updating technical documentation
--   [ ] Checking spec IDs for traceability
--   [ ] Creating Architectural Decision Records (ADRs)
--   [ ] Defining product requirements or design specs
--   [ ] Updating the traceability matrix
--   [ ] Resolving spec conflicts or gaps
--   [ ] Generating work summaries
+- [ ] Implementing a feature from specifications
+- [ ] Writing or updating technical documentation
+- [ ] Checking spec IDs for traceability
+- [ ] Creating Architectural Decision Records (ADRs)
+- [ ] Defining product requirements or design specs
+- [ ] Updating the traceability matrix
+- [ ] Resolving spec conflicts or gaps
+- [ ] Generating work summaries
 
 ### Refer to Other Contexts When:
 
@@ -128,10 +128,10 @@ ADR → SDS/Technical Specs → PRD → DEV-* specs
 
 **Every implementation must:**
 
--   Reference at least one spec ID in code comments
--   Link to spec IDs in commit messages
--   Update traceability matrix after changes
--   Document spec gaps when conflicts arise
+- Reference at least one spec ID in code comments
+- Link to spec IDs in commit messages
+- Update traceability matrix after changes
+- Document spec gaps when conflicts arise
 
 **Example traceability comment:**
 
@@ -155,11 +155,11 @@ When specifications conflict:
 
 ### Markdown Standards
 
--   **Linting**: Use markdownlint with `.markdownlint.json` config
--   **Link checking**: Automated via `node tools/docs/link_check.js`
--   **Formatting**: Consistent headings, lists, code blocks
--   **Cross-references**: Use relative links, maintain link integrity
--   **Frontmatter**: Include `matrix_ids` for traceability
+- **Linting**: Use markdownlint with `.markdownlint.json` config
+- **Link checking**: Automated via `node tools/docs/link_check.js`
+- **Formatting**: Consistent headings, lists, code blocks
+- **Cross-references**: Use relative links, maintain link integrity
+- **Frontmatter**: Include `matrix_ids` for traceability
 
 **Example frontmatter:**
 
@@ -178,25 +178,25 @@ status: draft|approved|implemented
 
 **Modular instructions that apply here:**
 
--   [.github/instructions/docs.instructions.md](/.github/instructions/docs.instructions.md) - Documentation guardrails
--   [.github/instructions/dev-docs.instructions.md](/.github/instructions/dev-docs.instructions.md) - Developer docs guardrails
--   [.github/instructions/commit-msg.instructions.md](/.github/instructions/commit-msg.instructions.md) - Commit messages with spec IDs
--   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in specs
+- [.github/instructions/docs.instructions.md](/.github/instructions/docs.instructions.md) - Documentation guardrails
+- [.github/instructions/dev-docs.instructions.md](/.github/instructions/dev-docs.instructions.md) - Developer docs guardrails
+- [.github/instructions/commit-msg.instructions.md](/.github/instructions/commit-msg.instructions.md) - Commit messages with spec IDs
+- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - Security in specs
 
 **Relevant prompts:**
 
--   [.github/prompts/spec.plan.adr.prompt.md](/.github/prompts/spec.plan.adr.prompt.md) - Generate ADR
--   [.github/prompts/spec.plan.prd.prompt.md](/.github/prompts/spec.plan.prd.prompt.md) - Generate PRD
--   [.github/prompts/spec.plan.sds.prompt.md](/.github/prompts/spec.plan.sds.prompt.md) - Generate SDS
--   [.github/prompts/spec.plan.ts.prompt.md](/.github/prompts/spec.plan.ts.prompt.md) - Generate TS
--   [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Implement from spec
--   [.github/prompts/spec.traceability.update.prompt.md](/.github/prompts/spec.traceability.update.prompt.md) - Update traceability
+- [.github/prompts/spec.plan.adr.prompt.md](/.github/prompts/spec.plan.adr.prompt.md) - Generate ADR
+- [.github/prompts/spec.plan.prd.prompt.md](/.github/prompts/spec.plan.prd.prompt.md) - Generate PRD
+- [.github/prompts/spec.plan.sds.prompt.md](/.github/prompts/spec.plan.sds.prompt.md) - Generate SDS
+- [.github/prompts/spec.plan.ts.prompt.md](/.github/prompts/spec.plan.ts.prompt.md) - Generate TS
+- [.github/prompts/spec.implement.prompt.md](/.github/prompts/spec.implement.prompt.md) - Implement from spec
+- [.github/prompts/spec.traceability.update.prompt.md](/.github/prompts/spec.traceability.update.prompt.md) - Update traceability
 
 **Related chat modes:**
 
--   `spec.lean` - Minimal specification generation
--   `spec.wide` - Comprehensive specification generation
--   `spec.nfr` - Non-functional requirements
+- `spec.lean` - Minimal specification generation
+- `spec.wide` - Comprehensive specification generation
+- `spec.nfr` - Non-functional requirements
 
 ## 💡 Examples
 
@@ -224,13 +224,13 @@ We will use Hexagonal Architecture (Ports & Adapters) because...
 
 **Positive:**
 
--   Clear separation of concerns
--   Easy to test in isolation
+- Clear separation of concerns
+- Easy to test in isolation
 
 **Negative:**
 
--   More initial boilerplate
--   Team learning curve
+- More initial boilerplate
+- Team learning curve
 
 ## Alternatives Considered
 
@@ -268,8 +268,8 @@ We will use Hexagonal Architecture (Ports & Adapters) because...
 
 **Conflict:**
 
--   DEV-PRD-042 requires JWT tokens
--   DEV-ADR-005 prefers stateful session auth
+- DEV-PRD-042 requires JWT tokens
+- DEV-ADR-005 prefers stateful session auth
 
 **Options:**
 
@@ -303,62 +303,62 @@ specs:
 
 ## What Was Done
 
--   Implemented OAuth2 authentication flow
--   Added unit tests for AuthService
--   Updated traceability matrix
+- Implemented OAuth2 authentication flow
+- Added unit tests for AuthService
+- Updated traceability matrix
 
 ## Decisions Made
 
--   Used Passport.js for OAuth2 (DEV-TS-007)
--   Stored tokens in Redis (DEV-ADR-003)
+- Used Passport.js for OAuth2 (DEV-TS-007)
+- Stored tokens in Redis (DEV-ADR-003)
 
 ## Next Steps
 
--   Add integration tests
--   Update API documentation
--   Deploy to staging
+- Add integration tests
+- Update API documentation
+- Deploy to staging
 
 ## References
 
--   [DEV-PRD-042](./dev_prd.md)
--   [Implementation PR #123](https://github.com/...)
+- [DEV-PRD-042](./dev_prd.md)
+- [Implementation PR #123](https://github.com/...)
 ```
 
 ## ✅ Checklist
 
 ### Before Implementing from Spec:
 
--   [ ] Read relevant spec documents (ADR, SDS, TS, PRD)
--   [ ] Identify spec IDs that apply
--   [ ] Check traceability matrix for related implementations
--   [ ] Review architectural constraints from ADRs
--   [ ] Check for spec conflicts or gaps
--   [ ] Confirm understanding with developer if uncertain
+- [ ] Read relevant spec documents (ADR, SDS, TS, PRD)
+- [ ] Identify spec IDs that apply
+- [ ] Check traceability matrix for related implementations
+- [ ] Review architectural constraints from ADRs
+- [ ] Check for spec conflicts or gaps
+- [ ] Confirm understanding with developer if uncertain
 
 ### While Implementing:
 
--   [ ] Add traceability comments with spec IDs
--   [ ] Follow patterns defined in SDS/TS
--   [ ] Respect architectural decisions from ADRs
--   [ ] Document any deviations or discoveries
+- [ ] Add traceability comments with spec IDs
+- [ ] Follow patterns defined in SDS/TS
+- [ ] Respect architectural decisions from ADRs
+- [ ] Document any deviations or discoveries
 
 ### After Implementing:
 
--   [ ] Update traceability matrix with new implementations
--   [ ] Reference spec IDs in commit message
--   [ ] Update specifications if implementation reveals gaps
--   [ ] Generate work summary in `docs/work-summaries/`
--   [ ] Verify documentation is current
+- [ ] Update traceability matrix with new implementations
+- [ ] Reference spec IDs in commit message
+- [ ] Update specifications if implementation reveals gaps
+- [ ] Generate work summary in `docs/work-summaries/`
+- [ ] Verify documentation is current
 
 ### When Writing Specs:
 
--   [ ] Assign unique spec ID (DEV-XXX-###)
--   [ ] Add frontmatter with `matrix_ids`
--   [ ] Follow spec hierarchy (ADR > SDS/TS > PRD)
--   [ ] Cross-reference related specs
--   [ ] Include examples and diagrams where helpful
--   [ ] Run markdown linting: `pnpm run lint:markdown`
--   [ ] Check links: `node tools/docs/link_check.js`
+- [ ] Assign unique spec ID (DEV-XXX-###)
+- [ ] Add frontmatter with `matrix_ids`
+- [ ] Follow spec hierarchy (ADR > SDS/TS > PRD)
+- [ ] Cross-reference related specs
+- [ ] Include examples and diagrams where helpful
+- [ ] Run markdown linting: `pnpm run lint:markdown`
+- [ ] Check links: `node tools/docs/link_check.js`
 
 ## 🔍 Quick Reference
 
@@ -386,11 +386,11 @@ pnpm run docs:generate
 
 ### Key Concepts
 
--   **Spec Hierarchy**: ADR → SDS/TS → PRD (architecture first)
--   **Spec ID**: Unique identifier for traceability (DEV-XXX-###)
--   **Traceability**: Link between specs and implementation
--   **Spec Gaps**: Documented conflicts requiring resolution
--   **Matrix IDs**: Frontmatter field for spec tracking
+- **Spec Hierarchy**: ADR → SDS/TS → PRD (architecture first)
+- **Spec ID**: Unique identifier for traceability (DEV-XXX-###)
+- **Traceability**: Link between specs and implementation
+- **Spec Gaps**: Documented conflicts requiring resolution
+- **Matrix IDs**: Frontmatter field for spec tracking
 
 ### Documentation Hierarchy
 
@@ -416,12 +416,12 @@ pnpm run docs:generate
 
 When documenting:
 
--   ⚠️ **NEVER** include secrets, API keys, or passwords in documentation
--   ⚠️ **NEVER** commit sensitive data to version control
--   ⚠️ Use placeholders like `<YOUR_API_KEY>` in examples
--   ⚠️ Document security requirements in specs (STRIDE model)
--   ⚠️ Map security features to PRD/SDS security requirements
--   ⚠️ Add threat notes in PRs for new attack surfaces
+- ⚠️ **NEVER** include secrets, API keys, or passwords in documentation
+- ⚠️ **NEVER** commit sensitive data to version control
+- ⚠️ Use placeholders like `<YOUR_API_KEY>` in examples
+- ⚠️ Document security requirements in specs (STRIDE model)
+- ⚠️ Map security features to PRD/SDS security requirements
+- ⚠️ Add threat notes in PRs for new attack surfaces
 
 **Reference**: [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md)
 
@@ -459,9 +459,9 @@ When doing TDD with specs:
 
 Track in traceability matrix:
 
--   Spec coverage: % of specs with implementations
--   Implementation coverage: % of code with spec IDs
--   Spec drift: Implementations without spec references
+- Spec coverage: % of specs with implementations
+- Implementation coverage: % of code with spec IDs
+- Spec drift: Implementations without spec references
 
 ### Documentation Health
 
@@ -480,32 +480,32 @@ just spec-guard
 
 ### Regular Tasks
 
--   **Daily**: Update traceability matrix with new implementations
--   **Weekly**: Review spec gaps and propose resolutions
--   **Monthly**: Audit spec ID usage in codebase
--   **Quarterly**: Review and update ADRs for relevance
+- **Daily**: Update traceability matrix with new implementations
+- **Weekly**: Review spec gaps and propose resolutions
+- **Monthly**: Audit spec ID usage in codebase
+- **Quarterly**: Review and update ADRs for relevance
 
 ### When to Update This AGENT.md
 
--   New spec document types added
--   Spec hierarchy or precedence changes
--   Traceability process evolves
--   Documentation structure reorganized
--   New spec-related tools or prompts added
+- New spec document types added
+- Spec hierarchy or precedence changes
+- Traceability process evolves
+- Documentation structure reorganized
+- New spec-related tools or prompts added
 
 ### Generated vs Manual Content
 
 **Generated (Read-Only):**
 
--   `ai_context_bundle/` - Generated by `just ai-context-bundle`
--   `reference/` - Auto-generated API docs
+- `ai_context_bundle/` - Generated by `just ai-context-bundle`
+- `reference/` - Auto-generated API docs
 
 **Manual (Versioned):**
 
--   Spec documents (`dev_*.md`, `specs/`)
--   Traceability matrix
--   How-to guides
--   Work summaries
+- Spec documents (`dev_*.md`, `specs/`)
+- Traceability matrix
+- How-to guides
+- Work summaries
 
 ---
 

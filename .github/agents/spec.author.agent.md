@@ -16,12 +16,12 @@ The `spec.author` agent creates and refines Product Requirement Documents (PRD),
 
 Responsibilities
 
--   Validate or create `spec:{id}` and ensure traceability to ADRs/PRDs.
--   Use `context7` / `microsoft-docs` to ground API and platform decisions.
--   Produce clear acceptance criteria and recommended generators.
--   Hand off actionable artifacts to `implementer.core` and request review from `reviewer.core`.
+- Validate or create `spec:{id}` and ensure traceability to ADRs/PRDs.
+- Use `context7` / `microsoft-docs` to ground API and platform decisions.
+- Produce clear acceptance criteria and recommended generators.
+- Hand off actionable artifacts to `implementer.core` and request review from `reviewer.core`.
 
 Usage
 
--   Invoked by `planner.core` hand-off or directly by humans creating specs.
--   Records outcomes to `temporal_db` via the `memory` mechanism.
+- Invoked by `planner.core` hand-off or directly by humans creating specs.
+- Records outcomes to `temporal_db` via the `memory` mechanism.

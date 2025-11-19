@@ -23,7 +23,7 @@ Purpose
 
 Responsibilities
 
--   Confirm applicable Nx generators and run scaffold steps (suggest commands for maintainers).
--   Author failing tests (RED), implement minimal code (GREEN), refactor (REFACTOR).
--   Commit changes with proper spec IDs in commit messages.
--   Hand off PRs to `reviewer.core` for traceability and merge validation.
+- Confirm applicable Nx generators and run scaffold steps (suggest commands for maintainers).
+- Author failing tests (RED), implement minimal code (GREEN), refactor (REFACTOR).
+- Commit changes with proper spec IDs in commit messages.
+- Hand off PRs to `reviewer.core` for traceability and merge validation.

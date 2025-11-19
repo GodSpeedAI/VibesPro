@@ -11,46 +11,43 @@ This specification defines the security hardening approach for VibesPro-generate
 
 **Key Objectives:**
 
--   Encrypt temporal learning data at rest using modern AEAD primitives
--   Support TPM-backed key sealing for hardware-bound security
--   Maintain sub-30s generation time and sub-2m build time
--   Zero-copy zeroization for in-memory key handling
--   Optional feature flag to avoid mandatory complexity
+- Encrypt temporal learning data at rest using modern AEAD primitives
+- Support TPM-backed key sealing for hardware-bound security
+- Maintain sub-30s generation time and sub-2m build time
+- Zero-copy zeroization for in-memory key handling
+- Optional feature flag to avoid mandatory complexity
 
 ## 2. Threat Model
 
 **Assumptions:**
 
--   Attacker has local file access but not TPM secrets
--   Device may be physically captured; prevent bulk data exfiltration
--   Network is untrusted; local secrets are primary target
--   Focus on defense against offline attacks and data-at-rest exposure
+- Attacker has local file access but not TPM secrets
+- Device may be physically captured; prevent bulk data exfiltration
+- Network is untrusted; local secrets are primary target
+- Focus on defense against offline attacks and data-at-rest exposure
 
 **Out of Scope:**
 
--   Protection against active runtime memory inspection by privileged attackers
--   Network protocol hardening (covered separately by mTLS/rustls)
--   Source code obfuscation
+- Protection against active runtime memory inspection by privileged attackers
+- Network protocol hardening (covered separately by mTLS/rustls)
+- Source code obfuscation
 
 ## 3. Hardening Priorities (Edge-Optimized)
 
 ### 3.1 Core Security Primitives (P0)
 
 1. **Key Storage: TPM-Backed Sealing**
-
     - Use device TPM 2.0 to seal master key
     - No network calls required
     - Key unseals only on same hardware (hardware-bound)
     - Fallback to secure enclave or file-based sealing where TPM unavailable
 
 2. **In-Memory Key Handling**
-
     - Derive ephemeral keys with HKDF-SHA256
     - Immediately zero secret buffers after use (via `zeroize` crate)
     - No keys persist in process heap after use
 
 3. **AEAD Cipher: XChaCha20-Poly1305**
-
     - Safer nonce handling (192-bit nonce space vs 96-bit for AES-GCM)
     - Fast on ARM and small CPUs without AES-NI
     - RustCrypto `chacha20poly1305` for minimal dependency surface
@@ -63,19 +60,16 @@ This specification defines the security hardening approach for VibesPro-generate
 ### 3.2 Deployment Hardening (P1)
 
 5. **Least-Privilege Process Model**
-
     - Run as non-root (UID 65532)
     - Drop all Linux capabilities
     - Use minimal systemd unit (preferred) or distroless container
 
 6. **Read-Only Code Image**
-
     - Deploy as single immutable binary
     - Writable data directory: `/var/lib/vibes` (or `/data` in container)
     - Code directory marked read-only
 
 7. **Secure Updates: Signed OTA**
-
     - Sign releases with Ed25519
     - Verify signature on-device before binary replacement
     - Atomic update with rollback on failure
@@ -88,19 +82,16 @@ This specification defines the security hardening approach for VibesPro-generate
 ### 3.3 Operational Security (P2)
 
 9. **Compact Audit Logging**
-
     - Write-only append log encrypted with master key-derived subkey
     - Automatic rotation by size (default: 10MB)
     - Structured JSON lines for parsing
 
 10. **Prompt Redaction at Ingest**
-
     - Regex-based secret masking before storage
     - Configurable patterns (API keys, tokens, PII)
     - Fast, lightweight, no ML dependency
 
 11. **Static Linking + musl**
-
     - Single static binary (x86_64-unknown-linux-musl)
     - Reduces runtime dependencies
     - Simplifies edge deployment
@@ -113,21 +104,19 @@ This specification defines the security hardening approach for VibesPro-generate
 ### 3.4 Supply Chain & Operations (P3)
 
 13. **CI: Reproducible Builds + SBOM**
-
-    -   Produce CycloneDX SBOM
-    -   Signed artifacts (GPG or sigstore)
-    -   Offline verification scripts
+    - Produce CycloneDX SBOM
+    - Signed artifacts (GPG or sigstore)
+    - Offline verification scripts
 
 14. **Encrypted Backups**
-
-    -   Encrypted sled dumps with per-backup IV
-    -   Signature verification
-    -   Short retention by default (30 days)
+    - Encrypted sled dumps with per-backup IV
+    - Signature verification
+    - Short retention by default (30 days)
 
 15. **Key Rotation Support**
-    -   Wrap new key with old key
-    -   Rewrap metadata atomically
-    -   Re-encrypt payloads lazily (on read-write) or via background job
+    - Wrap new key with old key
+    - Rewrap metadata atomically
+    - Re-encrypt payloads lazily (on read-write) or via background job
 
 ## 4. Implementation Constraints
 
@@ -143,17 +132,17 @@ This specification defines the security hardening approach for VibesPro-generate
 
 ### 4.2 Performance Targets
 
--   **Encryption overhead:** < 5% latency increase for sled operations
--   **Memory overhead:** < 10MB additional for crypto state
--   **Binary size increase:** < 2MB for full crypto stack
--   **Startup time:** < 100ms for TPM unseal + DB open
+- **Encryption overhead:** < 5% latency increase for sled operations
+- **Memory overhead:** < 10MB additional for crypto state
+- **Binary size increase:** < 2MB for full crypto stack
+- **Startup time:** < 100ms for TPM unseal + DB open
 
 ### 4.3 Failure Modes
 
--   **Nonce reuse risk:** Refuse writes and surface critical alert
--   **TPM unavailable:** Fall back to file-based sealing with warning
--   **Key rotation conflict:** Block writes during rotation window
--   **Corrupted ciphertext:** Return error, do not panic
+- **Nonce reuse risk:** Refuse writes and surface critical alert
+- **TPM unavailable:** Fall back to file-based sealing with warning
+- **Key rotation conflict:** Block writes during rotation window
+- **Corrupted ciphertext:** Return error, do not panic
 
 ## 5. Reference Implementation (Skeleton)
 
@@ -535,11 +524,11 @@ fn test_no_plaintext_on_disk() {
 
 Topics:
 
--   How to generate and store encryption keys
--   TPM setup instructions (if enabled)
--   Key rotation procedures
--   Backup and recovery
--   Performance characteristics
+- How to generate and store encryption keys
+- TPM setup instructions (if enabled)
+- Key rotation procedures
+- Backup and recovery
+- Performance characteristics
 
 ### 8.2 Developer Docs
 
@@ -547,25 +536,25 @@ Topics:
 
 Topics:
 
--   Cryptographic design decisions
--   Attack surface analysis
--   Threat mitigation mapping
--   Dependency audit process
--   Security testing guidelines
+- Cryptographic design decisions
+- Attack surface analysis
+- Threat mitigation mapping
+- Dependency audit process
+- Security testing guidelines
 
 ## 9. Rollback & Contingency
 
 **Feature Flag Strategy:**
 
--   Security hardening is opt-in via `enable_security_hardening`
--   Generated projects without flag enabled have zero security overhead
--   Existing projects unaffected
+- Security hardening is opt-in via `enable_security_hardening`
+- Generated projects without flag enabled have zero security overhead
+- Existing projects unaffected
 
 **Rollback Triggers:**
 
--   Performance regression > 10% on standard benchmarks
--   Compatibility issues with target platforms
--   Unresolved security vulnerabilities in dependencies
+- Performance regression > 10% on standard benchmarks
+- Compatibility issues with target platforms
+- Unresolved security vulnerabilities in dependencies
 
 **Rollback Procedure:**
 
@@ -577,31 +566,31 @@ Topics:
 
 **Security Metrics:**
 
--   [ ] Zero plaintext data discoverable in file system dumps
--   [ ] Nonce reuse probability < 2^-64 for expected workload
--   [ ] Key zeroization verified via valgrind/ASAN
--   [ ] All dependencies pass `cargo audit` with no HIGH/CRITICAL issues
+- [ ] Zero plaintext data discoverable in file system dumps
+- [ ] Nonce reuse probability < 2^-64 for expected workload
+- [ ] Key zeroization verified via valgrind/ASAN
+- [ ] All dependencies pass `cargo audit` with no HIGH/CRITICAL issues
 
 **Performance Metrics:**
 
--   [ ] Encryption overhead < 5% vs. unencrypted sled
--   [ ] Binary size increase < 2MB
--   [ ] Startup time increase < 100ms
--   [ ] Memory overhead < 10MB
+- [ ] Encryption overhead < 5% vs. unencrypted sled
+- [ ] Binary size increase < 2MB
+- [ ] Startup time increase < 100ms
+- [ ] Memory overhead < 10MB
 
 **Usability Metrics:**
 
--   [ ] Generated project builds without configuration on Ubuntu 22.04+
--   [ ] Docker container runs without privileged mode
--   [ ] Documentation enables key rotation in < 10 minutes
+- [ ] Generated project builds without configuration on Ubuntu 22.04+
+- [ ] Docker container runs without privileged mode
+- [ ] Documentation enables key rotation in < 10 minutes
 
 ## 11. References
 
--   [NIST SP 800-38D: GCM/GMAC](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf)
--   [RFC 7539: ChaCha20-Poly1305](https://datatracker.ietf.org/doc/html/rfc7539)
--   [RustCrypto: chacha20poly1305](https://github.com/RustCrypto/AEADs/tree/master/chacha20poly1305)
--   [TPM 2.0 Library Specification](https://trustedcomputinggroup.org/resource/tpm-library-specification/)
--   [Sled Documentation](https://docs.rs/sled/)
+- [NIST SP 800-38D: GCM/GMAC](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf)
+- [RFC 7539: ChaCha20-Poly1305](https://datatracker.ietf.org/doc/html/rfc7539)
+- [RustCrypto: chacha20poly1305](https://github.com/RustCrypto/AEADs/tree/master/chacha20poly1305)
+- [TPM 2.0 Library Specification](https://trustedcomputinggroup.org/resource/tpm-library-specification/)
+- [Sled Documentation](https://docs.rs/sled/)
 
 ## 12. Appendices
 

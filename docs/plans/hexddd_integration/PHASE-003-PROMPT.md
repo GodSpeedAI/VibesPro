@@ -8,8 +8,8 @@
 
 Build wrapper generators that delegate to official Nx framework generators and apply post-generation transformations to inject shared libraries, hexagonal architecture, and VibesPro conventions:
 
--   **Frontend**: `@nx/next`, `@nx/remix`, `@nx/expo` with shared-web integration
--   **Backend**: `@nxlv/python` with FastAPI + Logfire + Pydantic + Supabase type-sync
+- **Frontend**: `@nx/next`, `@nx/remix`, `@nx/expo` with shared-web integration
+- **Backend**: `@nxlv/python` with FastAPI + Logfire + Pydantic + Supabase type-sync
 
 **Key Principle**: Compose, don't replace. Let Nx generators handle framework scaffolding, we add VibesPro conventions.
 
@@ -17,16 +17,16 @@ Build wrapper generators that delegate to official Nx framework generators and a
 
 ## Success Criteria (Binary Pass/Fail)
 
--   [ ] **Shared Web Library Complete**: `libs/shared/web` provides ApiClient, Zod schemas, env config, error handling ✅ **DONE**
--   [ ] **Next.js Wrapper Generator**: Delegates to `@nx/next:application`, injects shared-web integration, supports both App Router and Pages Router
--   [ ] **Remix Wrapper Generator**: Delegates to `@nx/remix:application`, injects shared-web integration with loader/action patterns
--   [ ] **Expo Wrapper Generator**: Delegates to `@nx/expo:application`, injects shared-web integration for React Native
--   [ ] **FastAPI Wrapper Generator**: Delegates to `@nxlv/python:fastapi-application`, injects Logfire + hexagonal architecture + Pydantic type-sync
--   [ ] **Zero Duplication**: All frontends import from `@vibes-pro/shared-web`, all backends use hexagonal ports/adapters
--   [ ] **Idempotency Validated**: Double-run tests pass for all 4 wrapper generators (frontend + backend)
--   [ ] **Backend Services Auto-Instrument**: Generated FastAPI apps include Logfire bootstrap and export OpenAPI schemas
--   [ ] **Zero CI Failures**: `pnpm nx run-many -t build,test,lint` passes for all generated apps
--   [ ] **Production Ready**: Both `nx g @vibes-pro/generators:web-app` and `nx g @vibes-pro/generators:api-service` work
+- [ ] **Shared Web Library Complete**: `libs/shared/web` provides ApiClient, Zod schemas, env config, error handling ✅ **DONE**
+- [ ] **Next.js Wrapper Generator**: Delegates to `@nx/next:application`, injects shared-web integration, supports both App Router and Pages Router
+- [ ] **Remix Wrapper Generator**: Delegates to `@nx/remix:application`, injects shared-web integration with loader/action patterns
+- [ ] **Expo Wrapper Generator**: Delegates to `@nx/expo:application`, injects shared-web integration for React Native
+- [ ] **FastAPI Wrapper Generator**: Delegates to `@nxlv/python:fastapi-application`, injects Logfire + hexagonal architecture + Pydantic type-sync
+- [ ] **Zero Duplication**: All frontends import from `@vibes-pro/shared-web`, all backends use hexagonal ports/adapters
+- [ ] **Idempotency Validated**: Double-run tests pass for all 4 wrapper generators (frontend + backend)
+- [ ] **Backend Services Auto-Instrument**: Generated FastAPI apps include Logfire bootstrap and export OpenAPI schemas
+- [ ] **Zero CI Failures**: `pnpm nx run-many -t build,test,lint` passes for all generated apps
+- [ ] **Production Ready**: Both `nx g @vibes-pro/generators:web-app` and `nx g @vibes-pro/generators:api-service` work
 
 **Failure Mode**: If any criterion fails, continue iterating until all pass.
 
@@ -38,20 +38,20 @@ Build wrapper generators that delegate to official Nx framework generators and a
 
 **Impact**:
 
--   **Template Users**: Cannot quickly scaffold Next.js/Remix/Expo/FastAPI apps with VibesPro conventions
--   **Frontend Development**: Must manually wire up shared-web library in each new frontend app
--   **Backend Development**: Must manually configure Logfire, hexagonal architecture, and Pydantic schemas for each service
--   **Type Safety**: Manual schema integration—drift inevitable between Supabase, backend, and frontend
--   **Hexagonal Architecture**: No enforcement of ports/adapters patterns
--   **Observability**: No automatic Logfire instrumentation
+- **Template Users**: Cannot quickly scaffold Next.js/Remix/Expo/FastAPI apps with VibesPro conventions
+- **Frontend Development**: Must manually wire up shared-web library in each new frontend app
+- **Backend Development**: Must manually configure Logfire, hexagonal architecture, and Pydantic schemas for each service
+- **Type Safety**: Manual schema integration—drift inevitable between Supabase, backend, and frontend
+- **Hexagonal Architecture**: No enforcement of ports/adapters patterns
+- **Observability**: No automatic Logfire instrumentation
 
 **Target State**:
 
--   **Frontend**: `nx g @vibes-pro/generators:web-app my-app --framework=next` scaffolds with shared-web integration
--   **Backend**: `nx g @vibes-pro/generators:api-service my-api` scaffolds with Logfire + hexagonal architecture + Pydantic
--   All frameworks automatically configured with VibesPro conventions
--   Type-safe infrastructure ready to use out of the box
--   Consistent patterns across all surfaces (web + mobile + API)
+- **Frontend**: `nx g @vibes-pro/generators:web-app my-app --framework=next` scaffolds with shared-web integration
+- **Backend**: `nx g @vibes-pro/generators:api-service my-api` scaffolds with Logfire + hexagonal architecture + Pydantic
+- All frameworks automatically configured with VibesPro conventions
+- Type-safe infrastructure ready to use out of the box
+- Consistent patterns across all surfaces (web + mobile + API)
 
 **Risk Level**: **LOW** (composition pattern minimizes maintenance burden)
 
@@ -160,13 +160,13 @@ export async function webAppGenerator(tree: Tree, options: WebAppGeneratorSchema
 
 **Exit Criteria**:
 
--   [ ] Wrapper delegates to `@nx/next:application` correctly
--   [ ] App Router apps (`--routerStyle=app`) scaffold with RSC patterns
--   [ ] Pages Router apps (`--routerStyle=pages`) scaffold with SSR patterns
--   [ ] Both styles import from `@vibes-pro/shared-web`
--   [ ] Generated apps include example API client usage
--   [ ] `pnpm nx build <generated-app>` succeeds for both router styles
--   [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
+- [ ] Wrapper delegates to `@nx/next:application` correctly
+- [ ] App Router apps (`--routerStyle=app`) scaffold with RSC patterns
+- [ ] Pages Router apps (`--routerStyle=pages`) scaffold with SSR patterns
+- [ ] Both styles import from `@vibes-pro/shared-web`
+- [ ] Generated apps include example API client usage
+- [ ] `pnpm nx build <generated-app>` succeeds for both router styles
+- [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
 
 ---
 
@@ -256,11 +256,11 @@ export async function webAppGenerator(tree: Tree, options: WebAppGeneratorSchema
 
 **Exit Criteria**:
 
--   [ ] Wrapper delegates to `@nx/remix:application` correctly
--   [ ] Generated app includes loader pattern with ApiClient
--   [ ] Imports from `@vibes-pro/shared-web` work correctly
--   [ ] `pnpm nx build <remix-app>` succeeds
--   [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
+- [ ] Wrapper delegates to `@nx/remix:application` correctly
+- [ ] Generated app includes loader pattern with ApiClient
+- [ ] Imports from `@vibes-pro/shared-web` work correctly
+- [ ] `pnpm nx build <remix-app>` succeeds
+- [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
 
 ---
 
@@ -366,11 +366,11 @@ const styles = StyleSheet.create({
 
 **Exit Criteria**:
 
--   [ ] Wrapper delegates to `@nx/expo:application` correctly
--   [ ] Generated app uses ApiClient in React Native environment
--   [ ] Imports from `@vibes-pro/shared-web` work (platform-agnostic fetch)
--   [ ] `pnpm nx start <expo-app>` succeeds
--   [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
+- [ ] Wrapper delegates to `@nx/expo:application` correctly
+- [ ] Generated app uses ApiClient in React Native environment
+- [ ] Imports from `@vibes-pro/shared-web` work (platform-agnostic fetch)
+- [ ] `pnpm nx start <expo-app>` succeeds
+- [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029
 
 ---
 
@@ -677,15 +677,15 @@ describe("api-service generator", () => {
 
 **Exit Criteria**:
 
--   [ ] Wrapper delegates to `@nxlv/python:fastapi-application` correctly
--   [ ] Generated service includes Logfire instrumentation
--   [ ] Hexagonal architecture directories created (domain, application, infrastructure)
--   [ ] Repository port example included
--   [ ] Pydantic schemas.py file created with base schema
--   [ ] OpenAPI export endpoint added to main.py
--   [ ] Generated service structure follows PHASE-002 hexagonal patterns
--   [ ] `uv run pytest apps/<service-name>` passes
--   [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029, PHASE-002 hexagonal foundations
+- [ ] Wrapper delegates to `@nxlv/python:fastapi-application` correctly
+- [ ] Generated service includes Logfire instrumentation
+- [ ] Hexagonal architecture directories created (domain, application, infrastructure)
+- [ ] Repository port example included
+- [ ] Pydantic schemas.py file created with base schema
+- [ ] OpenAPI export endpoint added to main.py
+- [ ] Generated service structure follows PHASE-002 hexagonal patterns
+- [ ] `uv run pytest apps/<service-name>` passes
+- [ ] **Traceability**: DEV-ADR-028, DEV-PRD-029, PHASE-002 hexagonal foundations
 
 ---
 
@@ -833,13 +833,13 @@ jobs:
 
 **Exit Criteria**:
 
--   [ ] All unit tests pass for 4 wrapper generators (3 frontend + 1 backend)
--   [ ] Integration tests verify all apps build successfully
--   [ ] Backend hexagonal structure validated (domain, application, infrastructure)
--   [ ] Backend Logfire instrumentation verified
--   [ ] Idempotency tests pass (double-run produces identical output for all generators)
--   [ ] CI pipeline includes generator validation for frontend + backend
--   [ ] **Traceability**: Idempotency requirements validated
+- [ ] All unit tests pass for 4 wrapper generators (3 frontend + 1 backend)
+- [ ] Integration tests verify all apps build successfully
+- [ ] Backend hexagonal structure validated (domain, application, infrastructure)
+- [ ] Backend Logfire instrumentation verified
+- [ ] Idempotency tests pass (double-run produces identical output for all generators)
+- [ ] CI pipeline includes generator validation for frontend + backend
+- [ ] **Traceability**: Idempotency requirements validated
 
 ---
 
@@ -891,18 +891,18 @@ nx g @vibes-pro/generators:web-app my-app --framework=expo
 
 All generated apps import from `@vibes-pro/shared-web`:
 
--   `ApiClient` - Type-safe HTTP client with error handling
--   Zod schemas - Runtime validation
--   `ENV` - Framework-agnostic environment variables
--   Error types - Standardized error handling
+- `ApiClient` - Type-safe HTTP client with error handling
+- Zod schemas - Runtime validation
+- `ENV` - Framework-agnostic environment variables
+- Error types - Standardized error handling
 
 ## Architecture
 
 This generator follows the **Nx Composition Pattern**:
 
--   Official Nx generators handle framework scaffolding
--   Post-generation transformations inject VibesPro conventions
--   Minimal maintenance burden (Nx updates don't break our generators)
+- Official Nx generators handle framework scaffolding
+- Post-generation transformations inject VibesPro conventions
+- Minimal maintenance burden (Nx updates don't break our generators)
 
 See `PHASE-003-UNIVERSAL_REACT_GENERATOR.md` for full architecture details.
 

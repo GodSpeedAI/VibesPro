@@ -9,10 +9,10 @@
 
 **Status Legend:**
 
--   **Planned**: Phase is ready to begin execution
--   **In Progress**: Phase is currently being executed
--   **Complete**: Phase has finished successfully ✅
--   **Blocked**: Phase cannot proceed due to dependencies
+- **Planned**: Phase is ready to begin execution
+- **In Progress**: Phase is currently being executed
+- **Complete**: Phase has finished successfully ✅
+- **Blocked**: Phase cannot proceed due to dependencies
 
 > **Phase Status Note:** This document captures the intelligence blueprint. The ✅ **COMPLETED** badge reflects that the plan, evidence templates, and checklists are authored. Execution of individual queries still happens in the logs and checklists below; keep the Execution Log and task checklist updated as each investigation actually runs.
 
@@ -22,21 +22,21 @@
 
 All 8 intelligence artifacts produced and validated:
 
--   ✅ REPOSITORY_CONTEXT.md — Nx workspace snapshot, PR analysis (49/50/51)
--   ✅ PATTERN_RESEARCH_FINDINGS.md — PR diffs, Nx docs (Context7), Exa patterns, 4 actionable gates
--   ✅ RISK_ASSESSMENT_FINDINGS.md — STRIDE analysis, 3-sprint roadmap, risk reduction HIGH→LOW
--   ✅ MECE_VALIDATION.md — Completeness check, gap identification
--   ✅ VIBE_CHECK_OUTCOMES.md — Metacognitive run, assumptions/uncertainties/mitigations
--   ✅ DOCUMENTATION_BASELINE.md — Sources consulted, next fetch priorities
--   ✅ Critical path integrated into RISK_ASSESSMENT Sprint 1-3 roadmap
--   ✅ All files markdown-lint clean
+- ✅ REPOSITORY_CONTEXT.md — Nx workspace snapshot, PR analysis (49/50/51)
+- ✅ PATTERN_RESEARCH_FINDINGS.md — PR diffs, Nx docs (Context7), Exa patterns, 4 actionable gates
+- ✅ RISK_ASSESSMENT_FINDINGS.md — STRIDE analysis, 3-sprint roadmap, risk reduction HIGH→LOW
+- ✅ MECE_VALIDATION.md — Completeness check, gap identification
+- ✅ VIBE_CHECK_OUTCOMES.md — Metacognitive run, assumptions/uncertainties/mitigations
+- ✅ DOCUMENTATION_BASELINE.md — Sources consulted, next fetch priorities
+- ✅ Critical path integrated into RISK_ASSESSMENT Sprint 1-3 roadmap
+- ✅ All files markdown-lint clean
 
 **Key Findings**:
 
--   Generator infrastructure is **functionally complete** (spec templates, tests, CI integration)
--   All PRs passed spec-guard validation (156-162 matrix rows)
--   **Gaps identified**: No AJV schema validation, no idempotency tests in CI
--   **Risk level**: MEDIUM-HIGH → LOW after Sprint 1-2 mitigations
+- Generator infrastructure is **functionally complete** (spec templates, tests, CI integration)
+- All PRs passed spec-guard validation (156-162 matrix rows)
+- **Gaps identified**: No AJV schema validation, no idempotency tests in CI
+- **Risk level**: MEDIUM-HIGH → LOW after Sprint 1-2 mitigations
 
 **Next Phase**: PHASE-001 (implement Sprint 1 mitigations: AJV + idempotency CI gates)
 
@@ -48,12 +48,12 @@ Execute comprehensive intelligence gathering using MCP tools to establish the fo
 
 ### Success Criteria
 
--   [ ] All MCP tool queries executed and documented
--   [ ] HexDDD pattern analysis complete with citations
--   [ ] MECE validation confirms zero task overlap
--   [ ] Risk assessment identifies top 5 risks with mitigations
--   [ ] Critical path analysis complete
--   [ ] Evidence artifacts stored in `PRE_PLAN_INTELLIGENCE.md`
+- [ ] All MCP tool queries executed and documented
+- [ ] HexDDD pattern analysis complete with citations
+- [ ] MECE validation confirms zero task overlap
+- [ ] Risk assessment identifies top 5 risks with mitigations
+- [ ] Critical path analysis complete
+- [ ] Evidence artifacts stored in `PRE_PLAN_INTELLIGENCE.md`
 
 ---
 
@@ -75,10 +75,10 @@ Query 5: "React framework universal generator patterns"
 
 **Expected Outcomes:**
 
--   Past architectural decisions
--   Known failure modes from previous generator work
--   Successful UoW/EventBus patterns from other projects
--   Type sync workflow learnings
+- Past architectural decisions
+- Known failure modes from previous generator work
+- Successful UoW/EventBus patterns from other projects
+- Type sync workflow learnings
 
 **Recording:** Create `docs/plans/hexddd_integration/intelligence/MEMORY_RECALL.md`
 
@@ -116,10 +116,10 @@ nx_docs: Search for "generator" and "hexagonal architecture"
 
 **Expected Outcomes:**
 
--   Inventory of existing generators
--   Current Nx project structure and tags
--   Dependency graph baseline
--   Existing hexagonal patterns (if any)
+- Inventory of existing generators
+- Current Nx project structure and tags
+- Dependency graph baseline
+- Existing hexagonal patterns (if any)
 
 **Recording:** Create `docs/plans/hexddd_integration/intelligence/REPOSITORY_CONTEXT.md`
 
@@ -165,9 +165,9 @@ Focus Areas:
 
 **Expected Outcomes:**
 
--   Official documentation baseline for all major frameworks
--   HexDDD reference patterns with specific file locations
--   Validation that our specs align with upstream best practices
+- Official documentation baseline for all major frameworks
+- HexDDD reference patterns with specific file locations
+- Validation that our specs align with upstream best practices
 
 **Recording:** Create `docs/plans/hexddd_integration/intelligence/DOCUMENTATION_BASELINE.md`
 
@@ -213,9 +213,9 @@ Code Search Queries:
 
 **Expected Outcomes:**
 
--   15-20 reference implementations with URLs
--   Pattern synthesis: 3 recommended approaches per domain
--   Trade-off analysis for each pattern
+- 15-20 reference implementations with URLs
+- Pattern synthesis: 3 recommended approaches per domain
+- Trade-off analysis for each pattern
 
 **Recording:** Create `docs/plans/hexddd_integration/intelligence/PATTERN_RESEARCH.md`
 
@@ -251,9 +251,9 @@ Invalidation Scenarios:
 
 **Expected Outcomes:**
 
--   Identified gaps with mitigation strategies
--   Risk scenarios not covered in initial assessment
--   Confidence levels per implementation area
+- Identified gaps with mitigation strategies
+- Risk scenarios not covered in initial assessment
+- Confidence levels per implementation area
 
 **Recording:** Create `docs/plans/hexddd_integration/intelligence/VIBE_CHECK_OUTCOMES.md`
 
@@ -292,8 +292,8 @@ Store 5: "Type sync workflow requirements"
 
 **Expected Outcomes:**
 
--   All research captured for AI continuity across sessions
--   Reusable patterns documented for similar future work
+- All research captured for AI continuity across sessions
+- Reusable patterns documented for similar future work
 
 **Recording:** Memory tool confirms storage success
 
@@ -482,10 +482,10 @@ Total Critical Path: 33 hours
 
 **Parallelization Opportunities:**
 
--   PHASE-001: B can run parallel to A (saves 2h)
--   PHASE-002: A ∥ B (saves 3h)
--   PHASE-003: B ∥ C ∥ D (saves 6h)
--   PHASE-004: A ∥ B (saves 2h)
+- PHASE-001: B can run parallel to A (saves 2h)
+- PHASE-002: A ∥ B (saves 3h)
+- PHASE-003: B ∥ C ∥ D (saves 6h)
+- PHASE-004: A ∥ B (saves 2h)
 
 **Optimized Duration**: 33h - 13h = **20 hours** (best case)
 
@@ -499,54 +499,54 @@ Mark each item when complete, including **who updated it** and **when**:
 
 ### Intelligence Gathering
 
--   [ ] Memory recall executed — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Repository context analyzed — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Documentation baseline established — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Pattern research synthesized — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Vibe check outcomes documented — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Knowledge persisted in memory — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Memory recall executed — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Repository context analyzed — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Documentation baseline established — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Pattern research synthesized — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Vibe check outcomes documented — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Knowledge persisted in memory — _Updated By:_ `<Agent>` on `<Date>`
 
 ### Validation
 
--   [ ] MECE validation passed — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Risk assessment complete — _Updated By:_ `<Agent>` on `<Date>`
--   [ ] Critical path identified — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] MECE validation passed — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Risk assessment complete — _Updated By:_ `<Agent>` on `<Date>`
+- [ ] Critical path identified — _Updated By:_ `<Agent>` on `<Date>`
 
 ### Evidence Artifacts
 
--   [ ] `MEMORY_RECALL.md` created — _Path:_ `docs/plans/hexddd_integration/intelligence/`
--   [ ] `REPOSITORY_CONTEXT.md` created
--   [ ] `DOCUMENTATION_BASELINE.md` created
--   [ ] `PATTERN_RESEARCH.md` created
--   [ ] `VIBE_CHECK_OUTCOMES.md` created
--   [ ] `MECE_VALIDATION.md` created
--   [ ] `RISK_ASSESSMENT.md` created
--   [ ] `CRITICAL_PATH.md` created
+- [ ] `MEMORY_RECALL.md` created — _Path:_ `docs/plans/hexddd_integration/intelligence/`
+- [ ] `REPOSITORY_CONTEXT.md` created
+- [ ] `DOCUMENTATION_BASELINE.md` created
+- [ ] `PATTERN_RESEARCH.md` created
+- [ ] `VIBE_CHECK_OUTCOMES.md` created
+- [ ] `MECE_VALIDATION.md` created
+- [ ] `RISK_ASSESSMENT.md` created
+- [ ] `CRITICAL_PATH.md` created
 
 ### Phase Exit Gate
 
--   [ ] **All checklists above 100% complete**
--   [ ] **Evidence review passed** (human or senior AI agent validates artifacts)
--   [ ] **PHASE-000 marked GREEN** in Master Plan status table
+- [ ] **All checklists above 100% complete**
+- [ ] **Evidence review passed** (human or senior AI agent validates artifacts)
+- [ ] **PHASE-000 marked GREEN** in Master Plan status table
 
 ## Execution log (automation)
 
 Artifacts created: (drafts)
 
--   `docs/plans/hexddd_integration/intelligence/MEMORY_RECALL.md` — scaffold created (2025-11-05)
--   `docs/plans/hexddd_integration/intelligence/REPOSITORY_CONTEXT.md` — scaffold created (2025-11-05)
--   `docs/plans/hexddd_integration/intelligence/DOCUMENTATION_BASELINE.md` — scaffold created (2025-11-05)
--   `docs/plans/hexddd_integration/intelligence/PATTERN_RESEARCH.md` — scaffold created (2025-11-05)
--   `docs/plans/hexddd_integration/intelligence/VIBE_CHECK_OUTCOMES.md` — scaffold created (2025-11-05)
--   `docs/plans/hexddd_integration/intelligence/MECE_VALIDATION.md` — scaffold created (2025-11-05)
--   `docs/plans/hexddd_integration/intelligence/RISK_ASSESSMENT.md` — scaffold created (2025-11-05)
--   `docs/plans/hexddd_integration/intelligence/CRITICAL_PATH.md` — scaffold created (2025-11-05)
--   `docs/plans/hexddd_integration/intelligence/README.md` — overview and next-steps (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/MEMORY_RECALL.md` — scaffold created (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/REPOSITORY_CONTEXT.md` — scaffold created (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/DOCUMENTATION_BASELINE.md` — scaffold created (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/PATTERN_RESEARCH.md` — scaffold created (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/VIBE_CHECK_OUTCOMES.md` — scaffold created (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/MECE_VALIDATION.md` — scaffold created (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/RISK_ASSESSMENT.md` — scaffold created (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/CRITICAL_PATH.md` — scaffold created (2025-11-05)
+- `docs/plans/hexddd_integration/intelligence/README.md` — overview and next-steps (2025-11-05)
 
 Notes:
 
--   These files are drafts and require MCP/Nx/GitHub/Exa queries to populate with live data and links.
--   Next action: run the Nx/GitHub/Context7/Exa/Vibe-check queries listed in each file and paste outputs into the corresponding artifact.
+- These files are drafts and require MCP/Nx/GitHub/Exa queries to populate with live data and links.
+- Next action: run the Nx/GitHub/Context7/Exa/Vibe-check queries listed in each file and paste outputs into the corresponding artifact.
 
 ---
 

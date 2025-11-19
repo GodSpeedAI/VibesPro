@@ -37,12 +37,12 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
 
 **Acceptance Criteria**:
 
--   ✅ AI queries temporal DB when asked for implementation guidance (e.g., "implement caching", "add auth")
--   ✅ Query text embedded to 768-dim vector using embedding-gemma-300M (<500ms)
--   ✅ Cosine similarity search returns patterns with similarity >0.85 (strong match) or >0.75 (moderate match)
--   ✅ Suggestions include: pattern name, example code snippet, semantic description, when used (timestamp), why it worked (success rate from observability)
--   ✅ Recommendations ranked by combined score: `similarity * 0.6 + recency * 0.2 + success_rate * 0.2`
--   ✅ Top-5 results returned with rationale (e.g., "Used in identity domain 3 months ago, 98.5% success rate")
+- ✅ AI queries temporal DB when asked for implementation guidance (e.g., "implement caching", "add auth")
+- ✅ Query text embedded to 768-dim vector using embedding-gemma-300M (<500ms)
+- ✅ Cosine similarity search returns patterns with similarity >0.85 (strong match) or >0.75 (moderate match)
+- ✅ Suggestions include: pattern name, example code snippet, semantic description, when used (timestamp), why it worked (success rate from observability)
+- ✅ Recommendations ranked by combined score: `similarity * 0.6 + recency * 0.2 + success_rate * 0.2`
+- ✅ Top-5 results returned with rationale (e.g., "Used in identity domain 3 months ago, 98.5% success rate")
 
 **DX Impact**: Reduces research time from 15 minutes (manual grep) to <2 seconds (semantic query)
 
@@ -56,14 +56,14 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
 
 **Acceptance Criteria**:
 
--   ✅ AI-generated code embedded and compared against stored anti-pattern vectors
--   ✅ Violations detected via similarity threshold: anti-pattern similarity >0.80 → flag violation
--   ✅ Violations surfaced with:
-    -   Rule violated (e.g., "Infrastructure layer importing from domain layer")
-    -   Correction guidance (e.g., "Use dependency inversion: domain defines interface, infrastructure implements")
-    -   Historical example from compliant code (file path + snippet)
--   ✅ Feedback provided within 2 seconds of code generation
--   ✅ False positive rate <5% (validated via manual review of 100 samples)
+- ✅ AI-generated code embedded and compared against stored anti-pattern vectors
+- ✅ Violations detected via similarity threshold: anti-pattern similarity >0.80 → flag violation
+- ✅ Violations surfaced with:
+    - Rule violated (e.g., "Infrastructure layer importing from domain layer")
+    - Correction guidance (e.g., "Use dependency inversion: domain defines interface, infrastructure implements")
+    - Historical example from compliant code (file path + snippet)
+- ✅ Feedback provided within 2 seconds of code generation
+- ✅ False positive rate <5% (validated via manual review of 100 samples)
 
 **DX Impact**: Prevents architectural drift, reduces PR review cycles by catching violations pre-commit
 
@@ -77,15 +77,15 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
 
 **Acceptance Criteria**:
 
--   ✅ Temporal DB ingests span data from OpenObserve (SQL API query for pattern metrics)
--   ✅ Pattern recommendations include:
-    -   Average latency (e.g., "45ms avg response time")
-    -   Error rate (e.g., "0.5% error rate over 30 days")
-    -   Usage frequency (e.g., "Used in 127 requests/day")
-    -   P95 latency (e.g., "P95: 120ms")
--   ✅ Success rate calculated from observability: `success_rate = (1 - error_rate) * (1 - min(latency_ms / 1000, 0.5))`
--   ✅ Patterns with error_rate >5% or avg_latency >500ms ranked lower (penalty applied)
--   ✅ Metrics refreshed daily via `just temporal-ai-refresh-metrics`
+- ✅ Temporal DB ingests span data from OpenObserve (SQL API query for pattern metrics)
+- ✅ Pattern recommendations include:
+    - Average latency (e.g., "45ms avg response time")
+    - Error rate (e.g., "0.5% error rate over 30 days")
+    - Usage frequency (e.g., "Used in 127 requests/day")
+    - P95 latency (e.g., "P95: 120ms")
+- ✅ Success rate calculated from observability: `success_rate = (1 - error_rate) * (1 - min(latency_ms / 1000, 0.5))`
+- ✅ Patterns with error_rate >5% or avg_latency >500ms ranked lower (penalty applied)
+- ✅ Metrics refreshed daily via `just temporal-ai-refresh-metrics`
 
 **DX Impact**: AI agents avoid recommending slow or error-prone patterns, improving code quality by default
 
@@ -109,44 +109,44 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
 
 ### FR-020-1: Embedding Generation
 
--   **Input**: Text (code snippet, commit message, semantic description)
--   **Output**: 768-dimensional f32 vector
--   **Model**: embedding-gemma-300M (GGUF Q4_K_M quantized, ~180MB)
--   **Runtime**: rustformers/llm (CPU-optimized, zero GPU dependency)
--   **Performance**: <500ms per embedding on modern CPU (4-core, 3.5GHz)
+- **Input**: Text (code snippet, commit message, semantic description)
+- **Output**: 768-dimensional f32 vector
+- **Model**: embedding-gemma-300M (GGUF Q4_K_M quantized, ~180MB)
+- **Runtime**: rustformers/llm (CPU-optimized, zero GPU dependency)
+- **Performance**: <500ms per embedding on modern CPU (4-core, 3.5GHz)
 
 ### FR-020-2: Vector Storage
 
--   **Database**: redb (embedded transactional KV store)
--   **Schema**:
-    -   `EMBEDDINGS_TABLE`: `pattern_id` → `Vec<f32>` (768-dim vector)
-    -   `METADATA_TABLE`: `pattern_id` → JSON (name, code_snippet, semantic_desc, domain, framework, created_at, success_rate)
-    -   `METRICS_TABLE`: `pattern_id` → observability data (avg_latency_ms, error_rate, usage_count, p95_latency_ms)
--   **File**: `temporal_db/vectors.redb` (single-file, portable)
--   **Operations**: Insert, search (cosine similarity), delete, update metrics
+- **Database**: redb (embedded transactional KV store)
+- **Schema**:
+    - `EMBEDDINGS_TABLE`: `pattern_id` → `Vec<f32>` (768-dim vector)
+    - `METADATA_TABLE`: `pattern_id` → JSON (name, code_snippet, semantic_desc, domain, framework, created_at, success_rate)
+    - `METRICS_TABLE`: `pattern_id` → observability data (avg_latency_ms, error_rate, usage_count, p95_latency_ms)
+- **File**: `temporal_db/vectors.redb` (single-file, portable)
+- **Operations**: Insert, search (cosine similarity), delete, update metrics
 
 ### FR-020-3: Similarity Search
 
--   **Algorithm**: Cosine similarity (dot product / magnitude product)
--   **Optimization**: SIMD-friendly implementation + rayon parallel iteration
--   **Threshold**: Minimum similarity 0.75 (filter weak matches)
--   **Top-K**: Return 5-10 best matches (configurable)
--   **Performance**: <100ms for 10k patterns (full scan), <10ms with ANN index (future)
+- **Algorithm**: Cosine similarity (dot product / magnitude product)
+- **Optimization**: SIMD-friendly implementation + rayon parallel iteration
+- **Threshold**: Minimum similarity 0.75 (filter weak matches)
+- **Top-K**: Return 5-10 best matches (configurable)
+- **Performance**: <100ms for 10k patterns (full scan), <10ms with ANN index (future)
 
 ### FR-020-4: Pattern Extraction
 
--   **Source**: Git commit history (git2 library)
--   **Extraction**:
-    -   Commit message parsing (conventional commits preferred)
-    -   File path analysis (detect layers: domain, application, infrastructure)
-    -   Code diff summarization (function signatures, imports, exports)
--   **Semantic Description**: Natural language synthesis for embedding
-    -   Example: "Implements JWT authentication in FastAPI using jose library. Creates token_service.py in infrastructure/auth with encode/decode functions. Used in identity domain."
--   **Filters**: Skip merge commits, formatting-only changes (<10 lines diff)
+- **Source**: Git commit history (git2 library)
+- **Extraction**:
+    - Commit message parsing (conventional commits preferred)
+    - File path analysis (detect layers: domain, application, infrastructure)
+    - Code diff summarization (function signatures, imports, exports)
+- **Semantic Description**: Natural language synthesis for embedding
+    - Example: "Implements JWT authentication in FastAPI using jose library. Creates token_service.py in infrastructure/auth with encode/decode functions. Used in identity domain."
+- **Filters**: Skip merge commits, formatting-only changes (<10 lines diff)
 
 ### FR-020-5: Recommendation Ranking
 
--   **Scoring Formula**:
+- **Scoring Formula**:
 
     ```
     score = similarity * 0.6 + recency_score * 0.2 + success_rate * 0.2
@@ -156,20 +156,20 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
       success_rate = (1 - error_rate) * (1 - min(avg_latency_ms / 1000, 0.5))
     ```
 
--   **Filters**: Exclude patterns >6 months old unless similarity >0.90
--   **Output**: Top-5 ranked recommendations with metadata
+- **Filters**: Exclude patterns >6 months old unless similarity >0.90
+- **Output**: Top-5 ranked recommendations with metadata
 
 ### FR-020-6: Observability Integration
 
--   **Data Source**: OpenObserve SQL API
--   **Query**:
+- **Data Source**: OpenObserve SQL API
+- **Query**:
     ```sql
     SELECT AVG(latency_ms), SUM(errors)/COUNT(*), COUNT(*), PERCENTILE(latency_ms, 0.95)
     FROM traces
     WHERE pattern_id = ? AND timestamp > now() - INTERVAL '30 days'
     ```
--   **Refresh**: Daily cron job or manual `just temporal-ai-refresh-metrics`
--   **Fallback**: Default success_rate = 0.8 if no observability data
+- **Refresh**: Daily cron job or manual `just temporal-ai-refresh-metrics`
+- **Fallback**: Default success_rate = 0.8 if no observability data
 
 ---
 
@@ -177,34 +177,34 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
 
 ### NFR-020-1: Performance
 
--   Embedding generation: <500ms (P95)
--   Similarity search: <100ms for 10k patterns (P95)
--   Total query latency: <600ms (embed + search)
--   Model load time: <3s (cold start)
+- Embedding generation: <500ms (P95)
+- Similarity search: <100ms for 10k patterns (P95)
+- Total query latency: <600ms (embed + search)
+- Model load time: <3s (cold start)
 
 ### NFR-020-2: Scalability
 
--   Support 10k patterns initially (full scan acceptable)
--   Scale to 100k patterns with ANN index (future: annoy-rs or hnswlib-rs)
--   DB growth: Linear with commits (<50MB per 1000)
+- Support 10k patterns initially (full scan acceptable)
+- Scale to 100k patterns with ANN index (future: annoy-rs or hnswlib-rs)
+- DB growth: Linear with commits (<50MB per 1000)
 
 ### NFR-020-3: Reliability
 
--   ACID transactions for vector storage (redb guarantees)
--   Graceful degradation: Return cached results if embedder fails
--   Error handling: Retry logic for OpenObserve API (3 retries, exponential backoff)
+- ACID transactions for vector storage (redb guarantees)
+- Graceful degradation: Return cached results if embedder fails
+- Error handling: Retry logic for OpenObserve API (3 retries, exponential backoff)
 
 ### NFR-020-4: Portability
 
--   Single-file database (vectors.redb)
--   CPU-only inference (no GPU required)
--   Cross-platform: Linux, macOS, Windows (GGUF + redb support all)
+- Single-file database (vectors.redb)
+- CPU-only inference (no GPU required)
+- Cross-platform: Linux, macOS, Windows (GGUF + redb support all)
 
 ### NFR-020-5: Security
 
--   No PII in embeddings (code patterns only, no user data)
--   OpenObserve auth via environment variable (SOPS-encrypted)
--   Temporal DB file permissions: 600 (owner read/write only)
+- No PII in embeddings (code patterns only, no user data)
+- OpenObserve auth via environment variable (SOPS-encrypted)
+- Temporal DB file permissions: 600 (owner read/write only)
 
 ---
 
@@ -225,32 +225,32 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
 
 ### Phase 3A: Specification Authoring (Current)
 
--   Create DEV-PRD-020 ✅
--   Create DEV-SDS-020
--   Update DEV-ADR-018 (Proposed → Active)
+- Create DEV-PRD-020 ✅
+- Create DEV-SDS-020
+- Update DEV-ADR-018 (Proposed → Active)
 
 ### Phase 3B: Embedding Infrastructure
 
--   Download embedding-gemma-300M model
--   Implement embedder (crates/temporal-ai/src/embedder.rs)
--   Implement vector store (crates/temporal-ai/src/vector_store.rs)
--   Implement similarity search (crates/temporal-ai/src/similarity.rs)
--   Tests: embedder, vector_store, similarity
+- Download embedding-gemma-300M model
+- Implement embedder (crates/temporal-ai/src/embedder.rs)
+- Implement vector store (crates/temporal-ai/src/vector_store.rs)
+- Implement similarity search (crates/temporal-ai/src/similarity.rs)
+- Tests: embedder, vector_store, similarity
 
 ### Phase 3C: Pattern Recommendation Engine
 
--   Implement pattern extractor (crates/temporal-ai/src/pattern_extractor.rs)
--   Implement ranker (crates/temporal-ai/src/ranker.rs)
--   Create CLI tool (crates/temporal-ai/src/bin/main.rs)
--   Create TypeScript client (tools/ai/temporal-ai-client.ts)
--   Tests: integration tests (end-to-end)
+- Implement pattern extractor (crates/temporal-ai/src/pattern_extractor.rs)
+- Implement ranker (crates/temporal-ai/src/ranker.rs)
+- Create CLI tool (crates/temporal-ai/src/bin/main.rs)
+- Create TypeScript client (tools/ai/temporal-ai-client.ts)
+- Tests: integration tests (end-to-end)
 
 ### Phase 3D: Observability Integration
 
--   Implement observability aggregator (crates/temporal-ai/src/observability_aggregator.rs)
--   OpenObserve SQL API integration
--   Success rate calculation and storage
--   Just recipe: `temporal-ai-refresh-metrics`
+- Implement observability aggregator (crates/temporal-ai/src/observability_aggregator.rs)
+- OpenObserve SQL API integration
+- Success rate calculation and storage
+- Just recipe: `temporal-ai-refresh-metrics`
 
 ---
 
@@ -272,21 +272,21 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
 
 ### v2: Approximate Nearest Neighbors (ANN)
 
--   **Goal**: <10ms search for 100k+ patterns
--   **Library**: annoy-rs or hnswlib-rs
--   **Trigger**: When pattern count >10k (full scan >100ms)
+- **Goal**: <10ms search for 100k+ patterns
+- **Library**: annoy-rs or hnswlib-rs
+- **Trigger**: When pattern count >10k (full scan >100ms)
 
 ### v3: Multi-Modal Embeddings
 
--   **Code**: embedding-gemma for code structure
--   **Documentation**: separate embeddings for README, ADR, comments
--   **Hybrid Search**: Combine code similarity + doc relevance
+- **Code**: embedding-gemma for code structure
+- **Documentation**: separate embeddings for README, ADR, comments
+- **Hybrid Search**: Combine code similarity + doc relevance
 
 ### v4: Reinforcement Learning from Feedback
 
--   **Track**: Developer acceptance (thumbs up/down)
--   **Retrain**: Adjust ranking weights based on feedback
--   **Personalization**: Per-developer pattern preferences
+- **Track**: Developer acceptance (thumbs up/down)
+- **Retrain**: Adjust ranking weights based on feedback
+- **Personalization**: Per-developer pattern preferences
 
 ---
 
@@ -315,10 +315,10 @@ The Temporal AI Guidance Fabric uses **embedding-gemma-300M** (GGUF quantized, C
 
 **Why embedding-gemma over alternatives**:
 
--   **vs BERT**: 10x faster inference (300M vs 110M params, optimized for embedding)
--   **vs OpenAI API**: Zero external dependencies, no rate limits, no cost
--   **vs all-MiniLM**: Better code understanding (trained on code + text)
--   **vs larger models (2B)**: 5x faster with minimal accuracy loss for pattern matching
+- **vs BERT**: 10x faster inference (300M vs 110M params, optimized for embedding)
+- **vs OpenAI API**: Zero external dependencies, no rate limits, no cost
+- **vs all-MiniLM**: Better code understanding (trained on code + text)
+- **vs larger models (2B)**: 5x faster with minimal accuracy loss for pattern matching
 
 ---
 

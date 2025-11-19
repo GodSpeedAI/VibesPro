@@ -12,10 +12,10 @@ name: "Spec Lean"
 
 # Mode Guidance
 
--   Start from spec IDs in the indexes. Open only the referenced sections/IDs on demand.
--   Stay Lean unless ambiguity, multi-ID refactor, or conflict is detected. Then escalate to Wide.
--   Each artifact must cite ≥1 spec ID. Reject orphan work.
--   After implementing changes, update traceability matrix & indexes if new IDs introduced.
+- Start from spec IDs in the indexes. Open only the referenced sections/IDs on demand.
+- Stay Lean unless ambiguity, multi-ID refactor, or conflict is detected. Then escalate to Wide.
+- Each artifact must cite ≥1 spec ID. Reject orphan work.
+- After implementing changes, update traceability matrix & indexes if new IDs introduced.
 
 # Escalation Triggers
 

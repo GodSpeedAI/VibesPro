@@ -44,25 +44,25 @@ Based on analysis, the violations are:
 
 ### Files in Scope
 
--   `tools/**/*.ts` - CLI tools, generators, AI utilities, docs generators
--   `tests/**/*.ts` - Unit, integration, and CI tests
+- `tools/**/*.ts` - CLI tools, generators, AI utilities, docs generators
+- `tests/**/*.ts` - Unit, integration, and CI tests
 
 **Excludes** (per tsconfig.json):
 
--   `node_modules/`, `dist/`, `coverage/`, `tmp/`, `.nx/`
--   `templates/**` (Jinja2 templates)
--   `tools/reference/**/*` (legacy reference code)
+- `node_modules/`, `dist/`, `coverage/`, `tmp/`, `.nx/`
+- `templates/**` (Jinja2 templates)
+- `tools/reference/**/*` (legacy reference code)
 
 ## Environment & Tooling
 
 ### Tech Stack
 
--   **Runtime**: Node.js 20+ (managed by `mise`)
--   **Package Manager**: pnpm (via Corepack)
--   **Monorepo**: Nx 22.0.2
--   **TypeScript**: 5.5.4 with strict mode enabled
--   **ESLint**: 9.38.0 (flat config)
--   **Python**: 3.11 (for some tools, managed by `mise`)
+- **Runtime**: Node.js 20+ (managed by `mise`)
+- **Package Manager**: pnpm (via Corepack)
+- **Monorepo**: Nx 22.0.2
+- **TypeScript**: 5.5.4 with strict mode enabled
+- **ESLint**: 9.38.0 (flat config)
+- **Python**: 3.11 (for some tools, managed by `mise`)
 
 ### Environment Layers
 
@@ -91,9 +91,9 @@ git commit                   # Runs prettier, ruff, shellcheck, etc.
 
 ### Configuration Files
 
--   **ESLint**: `eslint.config.cjs` (flat config, uses TypeScript plugin)
--   **TypeScript**: `tsconfig.json` (strict mode enabled)
--   **Package Manager**: `package.json` (scripts defined)
+- **ESLint**: `eslint.config.cjs` (flat config, uses TypeScript plugin)
+- **TypeScript**: `tsconfig.json` (strict mode enabled)
+- **Package Manager**: `package.json` (scripts defined)
 
 ## ESLint Configuration (eslint.config.cjs)
 
@@ -182,8 +182,8 @@ const value = config.setting ?? "default";
 
 **b) Remove unused variables (9 violations)**
 
--   Delete truly unused ones
--   Prefix with `_` if required by function signature: `_unusedParam`
+- Delete truly unused ones
+- Prefix with `_` if required by function signature: `_unusedParam`
 
 **c) Fix require imports (11 violations)**
 
@@ -281,9 +281,9 @@ pnpm exec tsc --noEmit --project tsconfig.json
 
 **Common fixes**:
 
--   Update imports/exports to use ESM syntax
--   Ensure all referenced types are imported
--   Check for circular dependencies
+- Update imports/exports to use ESM syntax
+- Ensure all referenced types are imported
+- Check for circular dependencies
 
 ### Phase 3: Validation Loop (Continuous)
 
@@ -365,13 +365,13 @@ git checkout -- tools/ tests/
 
 ## Success Criteria
 
--   [ ] `pnpm exec eslint tools tests --ext .ts --max-warnings 0` exits with code 0
--   [ ] `pnpm exec tsc --noEmit` passes (no TypeScript errors)
--   [ ] `pnpm test` passes (all tests green)
--   [ ] `just ai-validate` passes
--   [ ] `.github/workflows/type-safety.yml` updated with strict ESLint check
--   [ ] Changes committed with descriptive message and spec ID if applicable
--   [ ] CI passes on push (verify GitHub Actions)
+- [ ] `pnpm exec eslint tools tests --ext .ts --max-warnings 0` exits with code 0
+- [ ] `pnpm exec tsc --noEmit` passes (no TypeScript errors)
+- [ ] `pnpm test` passes (all tests green)
+- [ ] `just ai-validate` passes
+- [ ] `.github/workflows/type-safety.yml` updated with strict ESLint check
+- [ ] Changes committed with descriptive message and spec ID if applicable
+- [ ] CI passes on push (verify GitHub Actions)
 
 ## Common Pitfalls & Solutions
 
@@ -434,9 +434,9 @@ infrastructure → application → domain
 
 **Rules**:
 
--   Domain layer: NO external dependencies (DB, HTTP, frameworks)
--   Application layer: Coordinates through ports (interfaces)
--   Infrastructure: Implements ports
+- Domain layer: NO external dependencies (DB, HTTP, frameworks)
+- Application layer: Coordinates through ports (interfaces)
+- Infrastructure: Implements ports
 
 Example:
 
@@ -465,19 +465,19 @@ class CreateUserUseCase {
 
 ## Additional Resources
 
--   **Repo instructions**: `.github/copilot-instructions.md` (full AI agent guidance)
--   **Environment setup**: `docs/ENVIRONMENT.md`
--   **Testing guide**: `.github/instructions/testing.instructions.md`
--   **ESLint docs**: https://eslint.org/docs/latest/
--   **TypeScript handbook**: https://www.typescriptlang.org/docs/handbook/
+- **Repo instructions**: `.github/copilot-instructions.md` (full AI agent guidance)
+- **Environment setup**: `docs/ENVIRONMENT.md`
+- **Testing guide**: `.github/instructions/testing.instructions.md`
+- **ESLint docs**: https://eslint.org/docs/latest/
+- **TypeScript handbook**: https://www.typescriptlang.org/docs/handbook/
 
 ## Estimated Time
 
--   **Setup & Analysis**: 5 minutes
--   **Low-hanging fruit**: 30 minutes
--   **Type annotations**: 45 minutes
--   **Parsing errors**: 1-2 hours
--   **Validation & CI update**: 15 minutes
+- **Setup & Analysis**: 5 minutes
+- **Low-hanging fruit**: 30 minutes
+- **Type annotations**: 45 minutes
+- **Parsing errors**: 1-2 hours
+- **Validation & CI update**: 15 minutes
 
 **Total**: ~2.5-3.5 hours (assuming focused, uninterrupted work)
 
@@ -495,9 +495,9 @@ class CreateUserUseCase {
 
 This task is **specification-driven** - refer to specs when needed:
 
--   `docs/dev_prd.md` - Product requirements
--   `docs/dev_sds.md` - Software design specs
--   `docs/dev_technical-specifications.md` - Technical details
+- `docs/dev_prd.md` - Product requirements
+- `docs/dev_sds.md` - Software design specs
+- `docs/dev_technical-specifications.md` - Technical details
 
 Use **generator-first approach**: Before writing new code, check for Nx generators:
 

@@ -16,28 +16,28 @@ domain and technical architecture.
 
 The codebase context section provides AI assistants with:
 
--   **Business purpose**: What problem your application solves
--   **Domain structure**: Your bounded contexts and business areas
--   **Technical stack**: Frameworks, databases, and key integrations
--   **Architectural patterns**: Notable design decisions and patterns
+- **Business purpose**: What problem your application solves
+- **Domain structure**: Your bounded contexts and business areas
+- **Technical stack**: Frameworks, databases, and key integrations
+- **Architectural patterns**: Notable design decisions and patterns
 
 This context helps Copilot:
 
--   Generate more relevant code suggestions
--   Understand your domain terminology
--   Respect your architectural constraints
--   Suggest appropriate patterns for your stack
+- Generate more relevant code suggestions
+- Understand your domain terminology
+- Respect your architectural constraints
+- Suggest appropriate patterns for your stack
 
 ## When to Update
 
 Update your project context when:
 
--   ✨ Adding new bounded contexts or domains
--   🔧 Introducing new technologies (databases, message queues, etc.)
--   🏗️ Making significant architectural changes
--   🔌 Integrating with new third-party services
--   📦 Decomposing into microservices
--   🎯 Pivoting business focus or features
+- ✨ Adding new bounded contexts or domains
+- 🔧 Introducing new technologies (databases, message queues, etc.)
+- 🏗️ Making significant architectural changes
+- 🔌 Integrating with new third-party services
+- 📦 Decomposing into microservices
+- 🎯 Pivoting business focus or features
 
 ## Method 1: Conversational Refinement (Recommended)
 
@@ -57,9 +57,9 @@ Use the built-in prompt for a guided conversation:
 
 **Then it will:**
 
--   Generate a concise 2-4 sentence description
--   Show you a diff of the changes
--   Update `.github/copilot-instructions.md` for you
+- Generate a concise 2-4 sentence description
+- Show you a diff of the changes
+- Update `.github/copilot-instructions.md` for you
 
 ### Example Flow
 
@@ -97,14 +97,14 @@ bounded contexts: [LIST_DOMAINS]. The technology stack includes [FRONTEND],
 
 Replace the bracketed sections:
 
--   **[BUSINESS PURPOSE]**: 1-2 sentences about what the app does
--   **[ARCHITECTURE_STYLE]**: hexagonal, microservices, event-driven, etc.
--   **[LIST_DOMAINS]**: Comma-separated bounded contexts
--   **[FRONTEND]**: Next.js, Remix, Expo, etc.
--   **[BACKEND]**: FastAPI, Express, Django, etc.
--   **[DATABASE]**: PostgreSQL, MySQL, MongoDB, etc.
--   **[KEY_INTEGRATIONS]**: Redis, Temporal, Stripe, SendGrid, etc.
--   **[NOTABLE_PATTERNS]**: CQRS, event sourcing, saga pattern, etc.
+- **[BUSINESS PURPOSE]**: 1-2 sentences about what the app does
+- **[ARCHITECTURE_STYLE]**: hexagonal, microservices, event-driven, etc.
+- **[LIST_DOMAINS]**: Comma-separated bounded contexts
+- **[FRONTEND]**: Next.js, Remix, Expo, etc.
+- **[BACKEND]**: FastAPI, Express, Django, etc.
+- **[DATABASE]**: PostgreSQL, MySQL, MongoDB, etc.
+- **[KEY_INTEGRATIONS]**: Redis, Temporal, Stripe, SendGrid, etc.
+- **[NOTABLE_PATTERNS]**: CQRS, event sourcing, saga pattern, etc.
 
 ### Example
 
@@ -125,38 +125,38 @@ changes and uses background workers for AI processing.
 
 ### Keep It Concise
 
--   2-4 sentences maximum
--   Focus on what makes your project unique
--   Avoid implementation details (those belong in code comments)
+- 2-4 sentences maximum
+- Focus on what makes your project unique
+- Avoid implementation details (those belong in code comments)
 
 ### Be Specific
 
--   ❌ "A web application for users"
--   ✅ "A customer support platform for SaaS companies"
+- ❌ "A web application for users"
+- ✅ "A customer support platform for SaaS companies"
 
 ### Mention Architecture Patterns
 
--   Event-driven architecture
--   CQRS/Event Sourcing
--   Saga pattern for distributed transactions
--   Background job processing
--   Real-time features (WebSockets, SSE)
+- Event-driven architecture
+- CQRS/Event Sourcing
+- Saga pattern for distributed transactions
+- Background job processing
+- Real-time features (WebSockets, SSE)
 
 ### Include Key Integrations
 
 AI assistants can better suggest code when they know your integrations:
 
--   Payment processing (Stripe, PayPal)
--   Authentication (Auth0, Supabase Auth)
--   Email/SMS (SendGrid, Twilio)
--   AI services (OpenAI, Anthropic)
--   Observability (Datadog, Sentry)
+- Payment processing (Stripe, PayPal)
+- Authentication (Auth0, Supabase Auth)
+- Email/SMS (SendGrid, Twilio)
+- AI services (OpenAI, Anthropic)
+- Observability (Datadog, Sentry)
 
 ### Update Regularly
 
--   Set a reminder to review quarterly
--   Update after major architectural changes
--   Review after adding new domains
+- Set a reminder to review quarterly
+- Update after major architectural changes
+- Review after adding new domains
 
 ## Validation
 
@@ -201,10 +201,10 @@ If Copilot's responses are more relevant and accurate, your context is good!
 
 ## Related Resources
 
--   [Architecture Decision Records](../docs/ADR/) - Detailed architectural decisions
--   [Domain Documentation](../docs/domains/) - Deep dives into each bounded context
--   [System Design Specification](../docs/SDS.md) - Complete system architecture
--   [Copilot Instructions](../copilot-instructions.md) - Full AI assistant configuration
+- [Architecture Decision Records](../docs/ADR/) - Detailed architectural decisions
+- [Domain Documentation](../docs/domains/) - Deep dives into each bounded context
+- [System Design Specification](../docs/SDS.md) - Complete system architecture
+- [Copilot Instructions](../copilot-instructions.md) - Full AI assistant configuration
 
 ---
 

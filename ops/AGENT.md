@@ -13,13 +13,13 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 **This directory handles:**
 
--   Infrastructure as Code (IaC)
--   Deployment automation and scripts
--   CI/CD pipeline configuration
--   Container orchestration (Docker, Kubernetes)
--   Monitoring and observability setup
--   Backup and disaster recovery
--   Environment configuration management
+- Infrastructure as Code (IaC)
+- Deployment automation and scripts
+- CI/CD pipeline configuration
+- Container orchestration (Docker, Kubernetes)
+- Monitoring and observability setup
+- Backup and disaster recovery
+- Environment configuration management
 
 **Philosophy**: Infrastructure as code, automated deployments, observable systems
 
@@ -83,12 +83,12 @@ ops/
 
 ### Use This Context When:
 
--   [ ] Setting up deployment pipelines
--   [ ] Configuring infrastructure
--   [ ] Writing Docker/Kubernetes configs
--   [ ] Creating monitoring dashboards
--   [ ] Automating operational tasks
--   [ ] Managing secrets and environment variables
+- [ ] Setting up deployment pipelines
+- [ ] Configuring infrastructure
+- [ ] Writing Docker/Kubernetes configs
+- [ ] Creating monitoring dashboards
+- [ ] Automating operational tasks
+- [ ] Managing secrets and environment variables
 
 ### Refer to Other Contexts When:
 
@@ -513,26 +513,26 @@ groups:
 
 **Modular instructions that apply here:**
 
--   [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - **Security in infrastructure (CRITICAL)**
--   [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Infrastructure testing
--   [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance monitoring
+- [.github/instructions/security.instructions.md](/.github/instructions/security.instructions.md) - **Security in infrastructure (CRITICAL)**
+- [.github/instructions/testing.instructions.md](/.github/instructions/testing.instructions.md) - Infrastructure testing
+- [.github/instructions/performance.instructions.md](/.github/instructions/performance.instructions.md) - Performance monitoring
 
 **Relevant documentation:**
 
--   [Docker best practices](https://docs.docker.com/develop/dev-best-practices/)
--   [Kubernetes patterns](https://kubernetes.io/docs/concepts/)
--   [Terraform documentation](https://www.terraform.io/docs)
+- [Docker best practices](https://docs.docker.com/develop/dev-best-practices/)
+- [Kubernetes patterns](https://kubernetes.io/docs/concepts/)
+- [Terraform documentation](https://www.terraform.io/docs)
 
 ## 💡 Examples
 
 See inline examples above for:
 
--   Multi-stage Dockerfile
--   docker-compose.yml for local development
--   Kubernetes deployment with health checks
--   Terraform infrastructure configuration
--   Prometheus monitoring setup
--   Alert rules for production
+- Multi-stage Dockerfile
+- docker-compose.yml for local development
+- Kubernetes deployment with health checks
+- Terraform infrastructure configuration
+- Prometheus monitoring setup
+- Alert rules for production
 
 ### Example: Deployment Script
 
@@ -588,28 +588,28 @@ echo "✅ Deployment complete!"
 
 ### Before Deploying:
 
--   [ ] Test in local environment (docker-compose)
--   [ ] Run security scans on Docker images
--   [ ] Update Kubernetes manifests with new versions
--   [ ] Review resource limits and requests
--   [ ] Verify environment variables and secrets
--   [ ] Check health check endpoints
+- [ ] Test in local environment (docker-compose)
+- [ ] Run security scans on Docker images
+- [ ] Update Kubernetes manifests with new versions
+- [ ] Review resource limits and requests
+- [ ] Verify environment variables and secrets
+- [ ] Check health check endpoints
 
 ### During Deployment:
 
--   [ ] Monitor logs in real-time
--   [ ] Watch for pod restarts
--   [ ] Verify health checks passing
--   [ ] Check metrics dashboards
--   [ ] Test critical user flows
+- [ ] Monitor logs in real-time
+- [ ] Watch for pod restarts
+- [ ] Verify health checks passing
+- [ ] Check metrics dashboards
+- [ ] Test critical user flows
 
 ### After Deployment:
 
--   [ ] Verify all services healthy
--   [ ] Run smoke tests
--   [ ] Monitor error rates
--   [ ] Check performance metrics
--   [ ] Update deployment log
+- [ ] Verify all services healthy
+- [ ] Run smoke tests
+- [ ] Monitor error rates
+- [ ] Check performance metrics
+- [ ] Update deployment log
 
 ## 🔍 Quick Reference
 
@@ -667,13 +667,13 @@ terraform destroy
 
 **Infrastructure security is paramount:**
 
--   ⚠️ **Secrets management**: Use Kubernetes secrets, AWS Secrets Manager, or HashiCorp Vault
--   ⚠️ **Network policies**: Restrict pod-to-pod communication
--   ⚠️ **Image scanning**: Scan Docker images for vulnerabilities (Trivy, Clair)
--   ⚠️ **Least privilege**: Run containers as non-root users
--   ⚠️ **Resource limits**: Set CPU/memory limits to prevent DoS
--   ⚠️ **TLS everywhere**: Encrypt all network traffic
--   ⚠️ **Access control**: Use RBAC for Kubernetes, IAM for cloud
+- ⚠️ **Secrets management**: Use Kubernetes secrets, AWS Secrets Manager, or HashiCorp Vault
+- ⚠️ **Network policies**: Restrict pod-to-pod communication
+- ⚠️ **Image scanning**: Scan Docker images for vulnerabilities (Trivy, Clair)
+- ⚠️ **Least privilege**: Run containers as non-root users
+- ⚠️ **Resource limits**: Set CPU/memory limits to prevent DoS
+- ⚠️ **TLS everywhere**: Encrypt all network traffic
+- ⚠️ **Access control**: Use RBAC for Kubernetes, IAM for cloud
 
 **Example security configurations:**
 
@@ -744,17 +744,17 @@ tflint
 
 ### Regular Tasks
 
--   **Daily**: Monitor alerts, check logs
--   **Weekly**: Review resource usage, optimize costs
--   **Monthly**: Update base images, review security scans
--   **Quarterly**: Disaster recovery drills, capacity planning
+- **Daily**: Monitor alerts, check logs
+- **Weekly**: Review resource usage, optimize costs
+- **Monthly**: Update base images, review security scans
+- **Quarterly**: Disaster recovery drills, capacity planning
 
 ### When to Update This AGENT.md
 
--   New deployment targets added
--   Infrastructure patterns change
--   Monitoring strategy evolves
--   Security practices update
+- New deployment targets added
+- Infrastructure patterns change
+- Monitoring strategy evolves
+- Security practices update
 
 ---
 

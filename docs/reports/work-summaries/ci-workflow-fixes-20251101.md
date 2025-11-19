@@ -35,8 +35,8 @@ fi
 
 **Fix**: Added `SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}` to both:
 
--   `build-test` job environment variables (line ~79)
--   `release` job environment variables (line ~302)
+- `build-test` job environment variables (line ~79)
+- `release` job environment variables (line ~302)
 
 This ensures that SOPS can properly decrypt `.secrets.env.sops` when the secret is configured.
 
@@ -46,8 +46,8 @@ This ensures that SOPS can properly decrypt `.secrets.env.sops` when the secret 
 
 **Fix**: Added `mise trust --yes .mise.toml` to:
 
--   "Install mise (for version introspection)" step in the `prepare` job (line ~35)
--   "Install mise" step in the `release` job (line ~332)
+- "Install mise (for version introspection)" step in the `prepare` job (line ~35)
+- "Install mise" step in the `release` job (line ~332)
 
 This allows mise to properly read and parse the `.mise.toml` file for version resolution.
 
@@ -61,13 +61,13 @@ just ai-validate
 
 Results:
 
--   ✅ Pre-commit hooks pass
--   ✅ Lint checks pass
--   ✅ Type checking passes
--   ✅ Unit tests pass
--   ✅ Node smoke tests pass
--   ✅ Logfire smoke validation passes
--   ✅ YAML validation passes
+- ✅ Pre-commit hooks pass
+- ✅ Lint checks pass
+- ✅ Type checking passes
+- ✅ Unit tests pass
+- ✅ Node smoke tests pass
+- ✅ Logfire smoke validation passes
+- ✅ YAML validation passes
 
 ## Impact
 
@@ -79,10 +79,10 @@ These fixes address the following workflow failures:
 
 The workflow should now:
 
--   Install just correctly on both Ubuntu and macOS
--   Properly decrypt secrets when SOPS_AGE_KEY is available
--   Correctly read mise configuration for version resolution
--   Continue gracefully when secrets are not available (e.g., in forks)
+- Install just correctly on both Ubuntu and macOS
+- Properly decrypt secrets when SOPS_AGE_KEY is available
+- Correctly read mise configuration for version resolution
+- Continue gracefully when secrets are not available (e.g., in forks)
 
 ## Commit
 
