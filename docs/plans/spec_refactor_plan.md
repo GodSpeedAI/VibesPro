@@ -50,36 +50,36 @@ I will create a migration script `scripts/migrate_specs_ddd.js` to:
 
 ### 3. Tooling Updates (`tools/spec/matrix.js`)
 
--   **Scope**: Change scan root from `docs/` to `docs/specs/`.
--   **Multi-Spec Support**: Ensure the tool correctly parses multiple specs within a single file (it already does this via regex, but we will verify).
--   **Uniqueness**: Enforce that a Spec ID (e.g., `DEV-PRD-001`) appears in only _one_ file.
+- **Scope**: Change scan root from `docs/` to `docs/specs/`.
+- **Multi-Spec Support**: Ensure the tool correctly parses multiple specs within a single file (it already does this via regex, but we will verify).
+- **Uniqueness**: Enforce that a Spec ID (e.g., `DEV-PRD-001`) appears in only _one_ file.
 
 ### 4. Reference Updates
 
 Update all references to `docs/dev_*.md` in:
 
--   `README.md`
--   `scripts/template-cleanup.sh`
--   `tools/ai/src/temporal-ai-client.ts`
--   `tools/AGENT.md`
--   `ESLINT_STRICT_MODE_TASK.md`
--   `justfile` (if applicable)
+- `README.md`
+- `scripts/template-cleanup.sh`
+- `tools/ai/src/temporal-ai-client.ts`
+- `tools/AGENT.md`
+- `ESLINT_STRICT_MODE_TASK.md`
+- `justfile` (if applicable)
 
 ## Verification Plan
 
 ### Automated Tests
 
 1.  **Migration Verification**:
-    -   Run `scripts/migrate_specs.js`.
-    -   Verify file count in `docs/specs/` matches extracted sections.
+    - Run `scripts/migrate_specs.js`.
+    - Verify file count in `docs/specs/` matches extracted sections.
 2.  **Matrix Generation**:
-    -   Run `just spec-matrix`.
-    -   Verify `docs/traceability_matrix.md` is generated and contains all IDs.
+    - Run `just spec-matrix`.
+    - Verify `docs/traceability_matrix.md` is generated and contains all IDs.
 3.  **Uniqueness Check**:
-    -   Create a temporary duplicate spec file.
-    -   Run `just spec-matrix` and assert it fails.
+    - Create a temporary duplicate spec file.
+    - Run `just spec-matrix` and assert it fails.
 4.  **Link Check**:
-    -   Run `just docs:links` (if available) or `grep` for old paths.
+    - Run `just docs:links` (if available) or `grep` for old paths.
 
 ### Manual Verification
 

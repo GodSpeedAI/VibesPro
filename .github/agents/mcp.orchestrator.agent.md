@@ -17,6 +17,6 @@ Purpose
 
 Responsibilities
 
--   Run simple health checks against servers declared in `.mcp.json` or `.gemini/settings.json`.
--   Provide canonical call sequences for multi-tool patterns (Memory → Context7/Ref → Exa).
--   Return standardized artifacts and status codes other agents can consume.
+- Run simple health checks against servers declared in `.mcp.json` or `.gemini/settings.json`.
+- Provide canonical call sequences for multi-tool patterns (Memory → Context7/Ref → Exa).
+- Return standardized artifacts and status codes other agents can consume.

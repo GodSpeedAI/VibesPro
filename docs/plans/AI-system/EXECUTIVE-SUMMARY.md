@@ -13,21 +13,18 @@ This planning session created a comprehensive, phased implementation plan to mig
 ### Deliverables
 
 1. **[ai-profile-architecture-alignment.md](./ai-profile-architecture-alignment.md)** (Main Plan)
-
     - 5 phases, 15 cycles with detailed implementation steps
     - RED/GREEN/Verification methodology
     - Complete checklists and dependency tracking
     - Audit trail references
 
 2. **[current-vs-target-analysis.md](./current-vs-target-analysis.md)** (Gap Analysis)
-
     - Side-by-side architecture comparison
     - Frontmatter standardization requirements
     - Component-by-component mapping
     - Security and token budget analysis
 
 3. **[README.md](./README.md)** (Quick Start Guide)
-
     - Phase overview and status tracking
     - Command reference
     - Success criteria
@@ -70,8 +67,8 @@ This planning session created a comprehensive, phased implementation plan to mig
 **Cycles:** 2 (1A: Inventory, 1B: Gap Analysis)  
 **Deliverables:**
 
--   `artifacts/inventory/ai-artifacts-inventory.json`
--   `artifacts/gaps/gap-analysis.md`
+- `artifacts/inventory/ai-artifacts-inventory.json`
+- `artifacts/gaps/gap-analysis.md`
 
 ### Phase 2: Artifact Standardization (1-2 weeks)
 
@@ -79,10 +76,10 @@ This planning session created a comprehensive, phased implementation plan to mig
 **Cycles:** 3 (2A: Instructions, 2B: Prompts, 2C: Chatmodes)  
 **Changes:**
 
--   Add `profileId: "com.vibespro.ai-profile"` to all files
--   Rename `applyTo` → `applyToGlob` in instructions
--   Add `variables`, `tools`, `model` to prompts
--   Add `handoffs`, `tools`, `model` to chatmodes
+- Add `profileId: "com.vibespro.ai-profile"` to all files
+- Rename `applyTo` → `applyToGlob` in instructions
+- Add `variables`, `tools`, `model` to prompts
+- Add `handoffs`, `tools`, `model` to chatmodes
 
 ### Phase 3: Profile Infrastructure (1-2 weeks)
 
@@ -90,10 +87,10 @@ This planning session created a comprehensive, phased implementation plan to mig
 **Cycles:** 4 (3A: Structure, 3B: Manifest, 3C: Composer, 3D: Token Budget)  
 **Deliverables:**
 
--   `.vscode/profiles/vibespro-ai/profile.jsonc`
--   `scripts/compose-profile.js`
--   `scripts/token-budget.js`
--   `toolsets/vibespro-tools.jsonc`
+- `.vscode/profiles/vibespro-ai/profile.jsonc`
+- `scripts/compose-profile.js`
+- `scripts/token-budget.js`
+- `toolsets/vibespro-tools.jsonc`
 
 ### Phase 4: Integration & Validation (1 week)
 
@@ -101,10 +98,10 @@ This planning session created a comprehensive, phased implementation plan to mig
 **Cycles:** 3 (4A: CI Workflow, 4B: Just Integration, 4C: Validation Suite)  
 **Deliverables:**
 
--   `.github/workflows/profile-validation.yml`
--   `just ai-profile-validate`, `ai-profile-check`, etc.
--   `scripts/validate-frontmatter.js`
--   `scripts/validate-profile.js`
+- `.github/workflows/profile-validation.yml`
+- `just ai-profile-validate`, `ai-profile-check`, etc.
+- `scripts/validate-frontmatter.js`
+- `scripts/validate-profile.js`
 
 ### Phase 5: Production Hardening (1 week)
 
@@ -112,10 +109,10 @@ This planning session created a comprehensive, phased implementation plan to mig
 **Cycles:** 3 (5A: Signing, 5B: Audit Trails, 5C: Documentation)  
 **Deliverables:**
 
--   GPG signature verification
--   `scripts/audit-logger.js`
--   Updated documentation
--   Team training materials
+- GPG signature verification
+- `scripts/audit-logger.js`
+- Updated documentation
+- Team training materials
 
 ---
 
@@ -123,11 +120,11 @@ This planning session created a comprehensive, phased implementation plan to mig
 
 ### Security Enforcements
 
--   `autoApproveTools: false` enforced in manifest
--   Tool access policies with whitelists
--   MCP server trust boundaries
--   GPG signature verification
--   Comprehensive audit logging
+- `autoApproveTools: false` enforced in manifest
+- Tool access policies with whitelists
+- MCP server trust boundaries
+- GPG signature verification
+- Comprehensive audit logging
 
 ### Token Budget Management
 
@@ -140,10 +137,10 @@ Total Context:    128,000 tokens (GPT-4 Turbo)
 
 ### Backward Compatibility
 
--   Existing workflows continue to function
--   AGENT.md files integrated into profile
--   Precedence hierarchy preserved
--   Gradual migration path
+- Existing workflows continue to function
+- AGENT.md files integrated into profile
+- Precedence hierarchy preserved
+- Gradual migration path
 
 ---
 
@@ -216,20 +213,20 @@ Each phase must meet these criteria before proceeding:
 
 ### Technical
 
--   [ ] 75 artifacts with valid frontmatter
--   [ ] Profile manifest validates against schema
--   [ ] Token budget within limits (<2% of context window)
--   [ ] CI pipeline passing (100% validation rate)
--   [ ] Profile signed and verified
--   [ ] Audit logs capturing all events
+- [ ] 75 artifacts with valid frontmatter
+- [ ] Profile manifest validates against schema
+- [ ] Token budget within limits (<2% of context window)
+- [ ] CI pipeline passing (100% validation rate)
+- [ ] Profile signed and verified
+- [ ] Audit logs capturing all events
 
 ### Organizational
 
--   [ ] Team trained on new system
--   [ ] Documentation complete and published
--   [ ] Backward compatibility maintained
--   [ ] Zero workflow disruptions
--   [ ] Positive team feedback
+- [ ] Team trained on new system
+- [ ] Documentation complete and published
+- [ ] Backward compatibility maintained
+- [ ] Zero workflow disruptions
+- [ ] Positive team feedback
 
 ---
 
@@ -244,13 +241,13 @@ Each phase must meet these criteria before proceeding:
 
 ### Related Specifications
 
--   [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) - **AI System Profile Architecture**
+- [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) - **AI System Profile Architecture**
 
 ### Current System Documentation
 
--   [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) - **Distributed agent routing**
--   [AGENT-MAP.md](../../AGENT-MAP.md) - **Navigation hub**
--   [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - **Master AI guidance**
+- [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) - **Distributed agent routing**
+- [AGENT-MAP.md](../../AGENT-MAP.md) - **Navigation hub**
+- [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - **Master AI guidance**
 
 ---
 
@@ -260,33 +257,33 @@ Each phase must meet these criteria before proceeding:
 
 #### 1. AGENT.md Files → Profile Context
 
--   **Current:** Distributed AGENT.md files provide local context
--   **Target:** Referenced by profile composer for enhanced context
--   **Synergy:** Profile manifest links to AGENT.md hierarchy for comprehensive context
+- **Current:** Distributed AGENT.md files provide local context
+- **Target:** Referenced by profile composer for enhanced context
+- **Synergy:** Profile manifest links to AGENT.md hierarchy for comprehensive context
 
 #### 2. Instructions → Instruction Aggregation
 
--   **Current:** 17 modular instruction files with precedence
--   **Target:** Profile composer merges by precedence into base context
--   **Synergy:** Precedence order preserved, enhanced with token budgeting
+- **Current:** 17 modular instruction files with precedence
+- **Target:** Profile composer merges by precedence into base context
+- **Synergy:** Precedence order preserved, enhanced with token budgeting
 
 #### 3. Prompts → Prompt Library
 
--   **Current:** 26 reusable prompts for workflows
--   **Target:** Indexed in profile manifest, executable on-demand
--   **Synergy:** Prompts compose with instructions via precedence rules
+- **Current:** 26 reusable prompts for workflows
+- **Target:** Indexed in profile manifest, executable on-demand
+- **Synergy:** Prompts compose with instructions via precedence rules
 
 #### 4. Chatmodes → Workflow Orchestration
 
--   **Current:** 32 specialized personas
--   **Target:** Enhanced with handoffs, tools, and model declarations
--   **Synergy:** Chatmodes orchestrate multi-step workflows with seamless transitions
+- **Current:** 32 specialized personas
+- **Target:** Enhanced with handoffs, tools, and model declarations
+- **Synergy:** Chatmodes orchestrate multi-step workflows with seamless transitions
 
 #### 5. AGENT-MAP → Navigation Hub
 
--   **Current:** Cross-reference network for efficient discovery
--   **Target:** Integrated into profile for context routing
--   **Synergy:** Navigation enhanced with formal participant routing
+- **Current:** Cross-reference network for efficient discovery
+- **Target:** Integrated into profile for context routing
+- **Synergy:** Navigation enhanced with formal participant routing
 
 ---
 
