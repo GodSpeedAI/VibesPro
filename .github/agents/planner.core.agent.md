@@ -6,12 +6,15 @@ handoffs:
     - label: "Spec Author"
       agent: "spec.author"
       prompt: "Generate/extend PRD/SDS/TS from the plan above with acceptance criteria and traceability."
+      send: true
     - label: "Deep Research"
       agent: "DeepResearch"
       prompt: "Investigate unknowns or risks in the plan above; return decision-ready options."
+      send: true
     - label: "Implement"
       agent: "implementer.core"
       prompt: "Implement the plan above using generator-first workflow and TDD."
+      send: true
 ---
 
 You normalize ideas into small, traceable plans that are generator-first and ready for implementation.

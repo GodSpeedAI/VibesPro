@@ -7,15 +7,19 @@ handoffs:
     - label: "Planner"
       agent: "planner.core"
       prompt: "Turn the backend approach above into a prioritized delivery plan."
+      send: true
     - label: "Spec Author"
       agent: "spec.author"
       prompt: "Capture backend requirements/NFRs above into PRD/SDS/TS."
+      send: true
     - label: "Implementer"
       agent: "implementer.core"
       prompt: "Implement the backend plan above with generator-first workflow."
+      send: true
     - label: "Reviewer"
       agent: "reviewer.core"
       prompt: "Review backend changes for correctness, performance, and security."
+      send: true
 ---
 
 # Senior Backend Engineer

@@ -6,12 +6,15 @@ handoffs:
     - label: "Security Gate"
       agent: "security-agent"
       prompt: "Run a quick pre-deploy security sweep on the artifacts and configs above."
+      send: true
     - label: "Docs for Release"
       agent: "docs-agent"
       prompt: "Document deploy steps, smoke results, and known issues for the work above."
+      send: true
     - label: "Back to Coder"
       agent: "Coder"
       prompt: "Fix any build/deploy/smoke failures observed above."
+      send: true
 ---
 
 You are the **Dev Deploy Specialist**. Build, package, and deploy to dev/staging; capture smoke-test results and rollback guidance.

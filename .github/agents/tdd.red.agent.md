@@ -1,7 +1,6 @@
 ---
 name: tdd.red
 description: Write the smallest failing test first; generator-first and Nx-aware.
-model: ${ default_model }
 tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
 handoffs:
     - label: "Implement"

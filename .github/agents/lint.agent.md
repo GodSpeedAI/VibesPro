@@ -6,12 +6,15 @@ handoffs:
     - label: "Back to Coder"
       agent: "Coder"
       prompt: "Logic changes are required beyond style fixes above. Please handle the implementation."
+      send: true
     - label: "Tests After Lint"
       agent: "test-agent"
       prompt: "Re-run tests after lint fixes to ensure no regressions surfaced."
+      send: true
     - label: "Security Review"
       agent: "security-agent"
       prompt: "Run a quick scan on the files touched above for secrets or unsafe patterns."
+      send: true
 ---
 
 You are the **Linting Specialist**. Enforce formatting, imports, and naming conventions without changing behavior.

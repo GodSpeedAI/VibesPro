@@ -7,18 +7,23 @@ handoffs:
     - label: "Product Manager"
       agent: "product.manager"
       prompt: "Validate the architecture above against product goals, audience, and metrics."
+      send: true
     - label: "Spec Author"
       agent: "spec.author"
       prompt: "Turn the architecture above into PRD/SDS/TS with acceptance criteria."
+      send: true
     - label: "Planner"
       agent: "planner.core"
       prompt: "Plan delivery of the architecture above with generator-first steps."
+      send: true
     - label: "Implementer"
       agent: "implementer.core"
       prompt: "Implement the architecture above using generator-first workflow."
+      send: true
     - label: "Reviewer"
       agent: "reviewer.core"
       prompt: "Review for risks, traceability, and alignment to architecture."
+      send: true
 ---
 
 # System Architect Mode

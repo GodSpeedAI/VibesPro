@@ -7,15 +7,19 @@ handoffs:
     - label: "Planner"
       agent: "planner.core"
       prompt: "Translate the test strategy above into a prioritized plan."
+      send: true
     - label: "Implementer"
       agent: "implementer.core"
       prompt: "Coordinate implementation steps needed for the tests above."
+      send: true
     - label: "Coder"
       agent: "Coder"
       prompt: "Implement the fixes required to satisfy the tests above."
+      send: true
     - label: "Reviewer"
       agent: "reviewer.core"
       prompt: "Review coverage and traceability for the tests above."
+      send: true
 ---
 
 # QA & Test Automation Engineer

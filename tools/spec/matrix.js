@@ -122,7 +122,12 @@ function addSpecIdToMatrix(rows, specId, filePath, rootDir, specsDir) {
 }
 
 function buildMatrix(rootDir) {
-  const specsDir = path.join(rootDir, 'docs/specs');
+  // Prefer `docs/specs` when present, but accept top-level `docs` as a fallback
+  let specsDir = path.join(rootDir, 'docs/specs');
+  if (!fs.existsSync(specsDir)) {
+    const alt = path.join(rootDir, 'docs');
+    if (fs.existsSync(alt)) specsDir = alt;
+  }
   const files = gatherMarkdownFiles(specsDir);
   const rows = new Map(); // id -> { artifacts: Set, status, notes }
   const idSourceMap = new Map(); // id -> filePath (for uniqueness check)

@@ -7,18 +7,23 @@ handoffs:
     - label: "Product Manager"
       agent: "product.manager"
       prompt: "Align the UX/UI considerations above with product goals, audience, and metrics."
+      send: true
     - label: "Spec Author"
       agent: "spec.author"
       prompt: "Embed the UX/UI considerations above into acceptance criteria and constraints."
+      send: true
     - label: "Planner"
       agent: "planner.core"
       prompt: "Translate the UX/UI considerations above into a delivery plan."
+      send: true
     - label: "Implementer"
       agent: "implementer.core"
       prompt: "Implement the UX/UI approach above using generator-first workflow."
+      send: true
     - label: "Reviewer"
       agent: "reviewer.core"
       prompt: "Review the UX/UI implementation for fidelity and accessibility."
+      send: true
 ---
 
 # UX/UI Considerations Mode

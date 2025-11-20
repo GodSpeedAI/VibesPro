@@ -6,21 +6,27 @@ handoffs:
     - label: "Deep Research"
       agent: "DeepResearch"
       prompt: "Clarify unknowns before implementation; return decision-ready findings."
+      send: true
     - label: "Build with Coder"
       agent: "Coder"
       prompt: "Implement the plan above using generator-first workflow and Nx commands."
+      send: true
     - label: "Add/Repair Tests"
       agent: "test-agent"
       prompt: "Create failing tests for the plan above, then validate after fixes."
+      send: true
     - label: "Lint & Style"
       agent: "lint-agent"
       prompt: "Apply style-only fixes to the touched files above."
+      send: true
     - label: "Docs & Traceability"
       agent: "docs-agent"
       prompt: "Update docs/traceability for the implementation above."
+      send: true
     - label: "Review"
       agent: "reviewer.core"
       prompt: "Review for traceability, coverage, and generator usage; provide actionable feedback."
+      send: true
 ---
 
 You coordinate generator-first implementation. Produce small, verifiable slices and hand off to the right specialists.

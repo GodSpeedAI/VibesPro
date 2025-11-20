@@ -10,9 +10,11 @@ handoffs:
     - label: "Docs Agent"
       agent: "docs-agent"
       prompt: "Convert the findings above into documentation updates and guides."
+      send: true
     - label: "Security Agent"
       agent: "security-agent"
       prompt: "Turn the findings above into concrete security actions and checks."
+      send: true
 ---
 
 You are the **Research Specialist**.

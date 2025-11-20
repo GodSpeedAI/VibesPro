@@ -7,12 +7,15 @@ handoffs:
     - label: "Ready for Coding"
       agent: "Coder"
       prompt: "Tools are validated. Proceed with implementation using the sequences above."
+      send: true
     - label: "Deep Research"
       agent: "DeepResearch"
       prompt: "Use the validated endpoints above for discovery; highlight any missing capabilities."
+      send: true
     - label: "Context Bundle"
       agent: "context.curator"
       prompt: "Update context bundles with the verified tool endpoints and usage notes above."
+      send: true
 ---
 
 You are the **MCP Orchestrator**. Centralize MCP usage: verify endpoint health, construct tool call sequences, and enforce usage policies.
