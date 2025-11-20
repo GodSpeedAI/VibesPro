@@ -102,15 +102,24 @@ jobs:
 			- name: Install SOPS
 				shell: bash
 				run: |
-					SOPS_VERSION="3.9.3"
+					set -euo pipefail
+					SOPS_VERSION="3.11.0"
+					SOPS_CHECKSUM="775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
+					SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
 					if [ "{% raw %}${{ matrix.os }}{% endraw %}" = "ubuntu-latest" ]; then
-						curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
-						sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+						curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+						echo "${SOPS_CHECKSUM}  sops" | sha256sum -c -
+						sudo mv sops /usr/local/bin/sops
 						sudo chmod +x /usr/local/bin/sops
 					else
 						brew install sops
 					fi
 					sops --version
+					if ! sops --version | grep -q "${SOPS_VERSION}"; then
+						echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
+						sops --version || true
+						exit 1
+					fi
 
 			- name: Install Devbox
 				shell: bash
@@ -260,9 +269,13 @@ jobs:
 
 			- name: Install SOPS
 				run: |
-					SOPS_VERSION="3.9.3"
-					curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64"
-					sudo mv "sops-v${SOPS_VERSION}.linux.amd64" /usr/local/bin/sops
+					set -euo pipefail
+					SOPS_VERSION="3.11.0"
+					SOPS_CHECKSUM="775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
+					SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+					curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+					echo "${SOPS_CHECKSUM}  sops" | sha256sum -c -
+					sudo mv sops /usr/local/bin/sops
 					sudo chmod +x /usr/local/bin/sops
 					sops --version
 
