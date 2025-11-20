@@ -173,6 +173,10 @@
         }
       }
     },
+    "jdk": {
+      "resolved": "github:NixOS/nixpkgs/f6b44b2401525650256b977063dbcf830f762369?narHash=sha256-Pr2jpryIaQr9Yx8p6QssS03wqB6UifnnLr3HJw9veDw%3D#jdk",
+      "source": "nixpkg"
+    },
     "jq": {
       "resolved": "github:NixOS/nixpkgs/cb82756ecc37fa623f8cf3e88854f9bf7f64af93?narHash=sha256-0JDOal5P7xzzAibvD0yTE3ptyvoVOAL0rcELmDdtSKg%3D#jq",
       "source": "nixpkg",
