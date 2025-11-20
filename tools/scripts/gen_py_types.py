@@ -52,7 +52,7 @@ def map_ts_type_to_python(ts_type: str) -> str:
     return py_type
 
 
-def parse_ts_file(path: Path) -> dict[str, dict[str, str]]:
+def parse_ts_file(path: Path) -> dict[str, dict[str, tuple[str, str]]]:
     """Parse exported interfaces and fields from a TypeScript definitions file."""
     text = path.read_text(encoding="utf-8")
     interfaces: dict[str, dict[str, str]] = {}
@@ -70,26 +70,29 @@ def parse_ts_file(path: Path) -> dict[str, dict[str, str]]:
             pos += 1
         block = text[start : pos - 1]
 
-        fields: dict[str, str] = {}
+        # Map: field_name -> (python_type_str, default_assignment)
+        fields: dict[str, tuple[str, str]] = {}
         for line in block.splitlines():
             field_match = FIELD_RE.match(line.strip())
             if not field_match:
                 continue
             raw_name, raw_type = field_match.groups()
 
-            # Check if field is optional (has trailing ?)
-            is_optional = raw_name.endswith("?")
+            # Check if field is optional (has trailing ?) or includes '| undefined'
+            is_optional = raw_name.endswith("?") or "| undefined" in raw_type
             name_clean = raw_name.rstrip("?")
 
             # Map the TypeScript type to Python
             py_type = map_ts_type_to_python(raw_type.strip())
 
-            # If the field was marked optional with ?, wrap in Optional
-            # (unless it's already Optional from | null or | undefined)
+            # If the field was marked optional (via ? or | undefined), ensure it's Optional
             if is_optional and not py_type.startswith("typing.Optional["):
                 py_type = f"typing.Optional[{py_type}]"
 
-            fields[name_clean] = py_type
+            # If optional via ? or | undefined, provide a default None to make the
+            # Pydantic model accept missing properties (omitted in JSON payloads).
+            default = " = None" if is_optional else ""
+            fields[name_clean] = (py_type, default)
         if fields:
             interfaces[name] = fields
 
@@ -105,9 +108,9 @@ def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
     for path in sorted(ts_dir.glob("*.ts")):
         parsed = parse_ts_file(path)
         for class_name, fields in parsed.items():
-            py_fields = [
-                f"    {fname}: {map_ts_type_to_python(ftype)}" for fname, ftype in fields.items()
-            ]
+            py_fields: list[str] = []
+            for fname, (py_type, default) in fields.items():
+                py_fields.append(f"    {fname}: {py_type}{default}")
             class_lines = [f"class {class_name}(BaseModel):"]
             if py_fields:
                 class_lines.extend(py_fields)
