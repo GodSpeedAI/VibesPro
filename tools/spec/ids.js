@@ -6,13 +6,22 @@ function extractIdsFromText(text, source) {
   const found = [];
   const lines = text.split('\n');
 
-  // Only extract IDs from markdown headers (## DEV-PRD-001 — Title format)
+  // Extract IDs from headers like `## PRD-001 — Title` *and* inline mentions `PRD-001`.
   const headerRegex = /^##\s+((?:DEV-)?(?:PRD|ADR|SDS|TS|TASK|SPEC)-\d{1,4})\s*[—:-]/;
+  const inlineRegex = /\b((?:DEV-)?(?:PRD|ADR|SDS|TS|TASK|SPEC)-\d{1,4})\b/g;
 
   for (const line of lines) {
-    const match = line.match(headerRegex);
-    if (match) {
-      const id = match[1];
+    const headerMatch = line.match(headerRegex);
+    if (headerMatch) {
+      const id = headerMatch[1];
+      const type = id.includes('DEV-') ? id.split('-')[1] : id.split('-')[0];
+      found.push({ id, type, source });
+    }
+
+    // Also find inline mentions, but don't duplicate header matches.
+    let m;
+    while ((m = inlineRegex.exec(line))) {
+      const id = m[1];
       const type = id.includes('DEV-') ? id.split('-')[1] : id.split('-')[0];
       found.push({ id, type, source });
     }
