@@ -9,7 +9,7 @@ const ts = require('typescript');
 
 let DbToTypeScript;
 try {
-  ({ DbToTypeScript } = require('./dist/src/generators/types/db-to-typescript'));
+  ({ DbToTypeScript } = require('./dist/generators/types/db-to-typescript'));
 } catch (error) {
   DbToTypeScript = class {
     constructor() {}
@@ -21,7 +21,7 @@ try {
 
 let verifyTypeParity;
 try {
-  ({ verifyTypeParity } = require('./dist/src/generators/verify'));
+  ({ verifyTypeParity } = require('./dist/generators/verify'));
 } catch (err) {
   // Inline fallback of verifyTypeParity (from compiled source) to avoid runtime
   // dependency on the dist build when running directly from source.

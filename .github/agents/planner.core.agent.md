@@ -1,4 +1,5 @@
 ---
+model: GPT-5 mini
 name: planner.core
 description: Converts ideas into prioritized, generator-first plans with clear handoffs and Nx-aware tasks.
 tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]

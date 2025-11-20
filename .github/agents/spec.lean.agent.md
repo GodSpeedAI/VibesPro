@@ -1,4 +1,5 @@
 ---
+model: GPT-5 mini
 name: spec.lean
 description: Lean entrypoint that routes to spec.author with narrow context.
 tools: ["runCommands", "runTasks", "search", "Memory Tool/*", "Vibe Check/*"]

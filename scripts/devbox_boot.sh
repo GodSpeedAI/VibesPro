@@ -15,11 +15,10 @@ cat << 'EOF'
 ╚════════════════════════════════════════════════════════════╝
 
 Available tools:
-  • git, curl, jq, make
-  • PostgreSQL 15
-  • ripgrep (rg), fd
-  • ffmpeg
-  • uv (Python package manager)
+  • just
+  • jq
+  • postgresql
+  • ripgrep
 
 Quick commands:
   just setup     - Install all dependencies

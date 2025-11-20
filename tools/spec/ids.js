@@ -15,15 +15,18 @@ function extractIdsFromText(text, source) {
     if (headerMatch) {
       const id = headerMatch[1];
       const type = id.includes('DEV-') ? id.split('-')[1] : id.split('-')[0];
-      found.push({ id, type, source });
+      found.push({ id, type, source, isDefinition: true });
     }
 
     // Also find inline mentions, but don't duplicate header matches.
     let m;
     while ((m = inlineRegex.exec(line))) {
       const id = m[1];
+      // If we just found this ID as a header in this line, skip it
+      if (headerMatch && headerMatch[1] === id) continue;
+
       const type = id.includes('DEV-') ? id.split('-')[1] : id.split('-')[0];
-      found.push({ id, type, source });
+      found.push({ id, type, source, isDefinition: false });
     }
   }
 

@@ -1,4 +1,5 @@
 ---
+model: GPT-5 mini
 name: spec.wide
 description: Wide entrypoint that routes to spec.author when full-context review is needed.
 tools: ["runCommands", "runTasks", "search", "Memory Tool/*", "Vibe Check/*"]

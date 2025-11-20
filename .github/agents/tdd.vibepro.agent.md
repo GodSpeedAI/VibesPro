@@ -1,4 +1,5 @@
 ---
+model: GPT-5 mini
 name: tdd.vibepro
 description: Full-cycle TDD orchestrator for VibesPro; drives Red → Green → Refactor with Nx-first verification and agency handoffs.
 tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]

@@ -79,7 +79,8 @@ def parse_ts_file(path: Path) -> dict[str, dict[str, tuple[str, str]]]:
             if not field_match:
                 continue
             raw_name, raw_type = field_match.groups()
-            # Check if field is optional (has trailing ?) or includes '| undefined'
+
+            # Track whether the field may be omitted entirely (`?` or `| undefined`)
             is_optional = raw_name.endswith("?") or "| undefined" in raw_type
             name_clean = raw_name.rstrip("?")
             py_type = map_ts_type_to_python(raw_type.strip())

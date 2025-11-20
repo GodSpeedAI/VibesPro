@@ -1,4 +1,5 @@
 ---
+model: GPT-5 mini
 name: spec.nfr
 description: NFR-focused entrypoint that routes to spec.author to embed measurable quality bars.
 tools: ["runCommands", "runTasks", "search", "Memory Tool/*", "Vibe Check/*"]
