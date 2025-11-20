@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 Describe 'scripts/devbox_overlay_autobump.sh'
   It 'exists and is executable'
     When call test -f scripts/devbox_overlay_autobump.sh
