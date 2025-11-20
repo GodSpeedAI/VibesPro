@@ -1,24 +1,12 @@
 ---
-kind: chatmode
-domain: spec
-task: mode
-phase: lean
-budget: M
-description: "Use indexes to locate exact spec items; load only referenced sections (Lean default)."
-tools: ["codebase", "editFiles", "search", "runTests", "problems"]
-model: ${ default_model }
-name: "Spec Lean"
+name: spec.lean
+description: Lean entrypoint that routes to spec.author with narrow context.
+model: GPT-5 mini
+tools: ["runCommands", "runTasks", "search", "Memory Tool/*", "Vibe Check/*"]
+handoffs:
+    - label: "Spec Author"
+      agent: "spec.author"
+      prompt: "Work in lean mode: use spec index IDs only, load minimal context, and draft the spec section requested above."
 ---
 
-# Mode Guidance
-
-- Start from spec IDs in the indexes. Open only the referenced sections/IDs on demand.
-- Stay Lean unless ambiguity, multi-ID refactor, or conflict is detected. Then escalate to Wide.
-- Each artifact must cite ≥1 spec ID. Reject orphan work.
-- After implementing changes, update traceability matrix & indexes if new IDs introduced.
-
-# Escalation Triggers
-
-1. Ambiguous or conflicting requirement.
-2. Cross-cutting refactor spanning multiple ADR/SDS items.
-3. Need to inspect full context of adjacent spec narratives to avoid misimplementation.
+Use this when you want a minimal spec slice. Keep context tight; escalate via Spec Author if ambiguity appears.

@@ -1,62 +1,27 @@
-````chatmode
 ---
-kind: chatmode
-domain: tdd
-task: red
-budget: S
+name: tdd.red
+description: Write the smallest failing test first; generator-first and Nx-aware.
 model: ${ default_model }
-name: "TDD Red Mode"
-description: "Write failing test - check generators first"
-tools: ["codebase", "search", "runTests"]
+tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
 handoffs:
- - label: implement
-  agent: implementer.core
-  prompt: "Implement failing test via generator-first flow"
+    - label: "Implement"
+      agent: "Coder"
+      prompt: "Implement the code to satisfy the failing test above using Nx-first commands."
+    - label: "Review Tests"
+      agent: "test-agent"
+      prompt: "Expand or refine the failing tests above if gaps remain."
+    - label: "Docs"
+      agent: "docs-agent"
+      prompt: "Document the requirement and test intent above."
 ---
 
-# TDD Red Mode
+## Phase: RED (write failing test)
 
-## Phase: Write Failing Test
-
-**FIRST**: If creating a new module/component, check for Nx generators:
-
-```bash
-# List available generators
-pnpm exec nx list
-
-# Use generator to scaffold
-just ai-scaffold name=<generator>
-````
-
-See `.github/instructions/generators-first.instructions.md` for complete workflow.
-
-**THEN**: Write the smallest failing test that proves the requirement:
-
-1. Locate relevant spec items (PRD/SDS/TS)
-2. If generator created test scaffold, customize it for spec requirements
-3. Write minimal assertion proving requirement
-4. Run test → should FAIL (no implementation yet)
-5. NO production code changes in this phase
-
-**Output**: Test file with failing assertion + spec ID comments
-
-```
-
-(---
-kind: chatmode
-domain: tdd
-task: red
-budget: S
-model: GPT-5 mini
-name: "TDD Red Mode"
-description: TDD red placeholder
-tools: ["codebase", "search", "runTests"]
-
----
-
-)
-
-```
+- Prefer generators/scaffolds: `pnpm exec nx list`, `nx generate`, or `just ai-scaffold` before hand-writing.
+- Find spec/ADR references; tag tests with spec IDs.
+- Write the minimal assertion proving the requirement; no production code changes.
+- Run `nx test <project>` (or framework equivalent) to confirm the test fails.
+- Avoid broad fixtures; keep focused on the behavior under change.
 
 ```
 
