@@ -105,14 +105,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install system dependencies
+      - name: Ensure Rust toolchain from rust-toolchain.toml
+        shell: bash
         run: |
-          uv tool install copier
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          source ~/.cargo/env
-          # Install and set pinned nightly for reproducible integration tests
-          rustup toolchain install nightly-2025-11-01 --no-self-update || true
-          rustup override set nightly-2025-11-01 || true
+          set -euo pipefail
+          if ! command -v rustup > /dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            source "$HOME/.cargo/env" || true
+          fi
+          # Install toolchain specified in rust-toolchain.toml (stable)
+          rustup show
 
       - name: Run end-to-end tests
         run: pnpm test:integration tests/integration/end-to-end.test.ts --passWithNoTests

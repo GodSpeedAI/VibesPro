@@ -153,9 +153,23 @@ jobs:
       - name: Install Devbox
         shell: bash
         run: |
-          curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          devbox version
+          if command -v devbox &>/dev/null; then
+            echo "Devbox already installed"
+            devbox version
+            exit 0
+          fi
+          # Retry logic for Devbox installation
+          for i in {1..3}; do
+            if curl -fsSL https://get.jetpack.io/devbox | bash; then
+              echo "$HOME/.local/bin" >> $GITHUB_PATH
+              devbox version
+              exit 0
+            fi
+            echo "Retry $i/3 failed, waiting..."
+            sleep $((i * 2))
+          done
+          echo "::error::Failed to install Devbox after 3 attempts"
+          exit 1
 
       # ---- mise runtimes ----
       - name: Install mise
@@ -178,7 +192,7 @@ jobs:
       - name: Install runtimes (Node/Python/Rust via mise)
         run: mise install
 
-      - name: Ensure pinned Rust toolchain
+      - name: Ensure Rust toolchain from rust-toolchain.toml
         shell: bash
         run: |
           set -euo pipefail
@@ -187,8 +201,8 @@ jobs:
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
             source "$HOME/.cargo/env" || true
           fi
-          rustup toolchain install nightly-2025-11-01 --no-self-update || true
-          rustup override set nightly-2025-11-01 || true
+          # Install toolchain specified in rust-toolchain.toml (stable)
+          rustup show
 
       # ---- Node package manager (optional; respects Corepack) ----
       - name: Enable corepack (optional)
@@ -361,10 +375,25 @@ jobs:
           fi
 
       - name: Install Devbox
+        shell: bash
         run: |
-          curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          devbox version
+          if command -v devbox &>/dev/null; then
+            echo "Devbox already installed"
+            devbox version
+            exit 0
+          fi
+          # Retry logic for Devbox installation
+          for i in {1..3}; do
+            if curl -fsSL https://get.jetpack.io/devbox | bash; then
+              echo "$HOME/.local/bin" >> $GITHUB_PATH
+              devbox version
+              exit 0
+            fi
+            echo "Retry $i/3 failed, waiting..."
+            sleep $((i * 2))
+          done
+          echo "::error::Failed to install Devbox after 3 attempts"
+          exit 1
 
       - name: Install mise
         run: |
