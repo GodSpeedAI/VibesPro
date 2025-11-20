@@ -86,3 +86,41 @@ jobs:
           else
             echo "✅ All type safety checks passed"
           fi
+  types-freshness-check:
+    name: Generated Types Freshness Check
+    runs-on: ubuntu-latest
+    needs: [typescript-check, python-type-check]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install Node deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Type Generator
+        run: pnpm exec tsc --project tools/type-generator/tsconfig.json
+        working-directory: tools/type-generator
+
+      - name: Generate Types to temp directory
+        run: |
+          TMPDIR=$(mktemp -d)
+          node tools/type-generator/cli.js generate tools/type-generator/test-fixtures/db_schema.json -o $TMPDIR
+          # Compare generated file to committed version
+          if ! diff -u libs/shared/types/src/database.types.ts $TMPDIR/user.ts; then
+            echo "❌ Generated TS types differ from committed file. Update by running 'just gen-types' and commit the changes.";
+            exit 1
+          fi
+
+      - name: Generate Python models and compare
+        run: |
+          TMPDIR=$(mktemp -d)
+          python3 tools/scripts/gen_py_types.py libs/shared/types/src $TMPDIR
+          if ! diff -u libs/shared/types-py/src/models.py $TMPDIR/models.py; then
+            echo "❌ Generated Python models differ from committed file. Run 'just gen-types' and commit the changes.";
+            exit 1
+          fi

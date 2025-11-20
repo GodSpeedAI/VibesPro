@@ -1,15 +1,22 @@
 # AI Agent Instructions for VibesPro
 
-> **🎯 Core Concept**: VibesPro is a **Copier template repository** that synthesizes production-ready Nx monorepos. You modify Jinja2 templates in `templates/{{project_slug}}/`, test with `just test-generation`, and changes affect all future synthesized applications.
+VibesPro is AI-native meta-infrastructure that combines architectural intelligence, temporal learning, and autonomous workflows to synthesize complete development platforms. Each synthesized application ships with its own AI development team of specialized agents that understand your domain, enforce your patterns, and evolve with your decisions.
 
-## Critical Mental Model
+Think: **Infrastructure-as-Code meets AI-Powered Software Agency.**
 
-**VibesPro Repository Architecture:**
+## 🎯 Cognitive Infrastructure Architecture
 
-- **THIS repo** = Jinja2 templates + synthesis tooling + AI workflow system
-- **Synthesized applications** = Complete Nx monorepos created by `copier copy`
-- **Your changes** propagate to all future synthesized projects
-- **Test locally** with `just test-generation` → `../test-output` before committing
+VibesPro operates as a self-contained software development agency.
+
+When you initialize with VibesPro, you're deploying:
+
+- 🏗️ **Application Infrastructure** – Enterprise-grade Nx monorepo with hexagonal architecture
+- 🤖 **AI Development Team** – specialized agents (architects, TDD coaches, debuggers, product managers)
+- 🧠 **Institutional Memory** – Temporal learning system that captures every architectural decision
+- 📊 **Production Telemetry** – OpenTelemetry + Vector observability stack
+- 🔧 **Platform Engineering** – Reproducible environments via Devbox + Mise + SOPS
+
+Each synthesized application **IS** a self-sustaining development platform. VibesPro is the cognitive layer that creates it.
 
 ## Essential Workflows
 
@@ -76,11 +83,14 @@ class CreateUserUseCase {
 
 **Key rule:** Domain layer has ZERO external dependencies (no DB, no HTTP, no frameworks).
 
-### Type Safety (Strict)
+### Type Safety (Strict & Bi-Directional)
 
-- TypeScript: `strict: true`, NO `any` (use `unknown` + type guards)
-- Python: `mypy --strict`, full type coverage required
-- All public APIs must be 100% typed
+- **TypeScript**: `strict: true`, NO `any` (use `unknown` + type guards)
+- **Python**: `mypy --strict`, full type coverage required
+- **Bi-Directional Sync**:
+    - **DB → TS → Python**: `just gen-types-ts` (Supabase) → `just gen-types-py` (Pydantic)
+    - **Python → OpenAPI → TS**: FastAPI DTOs → `openapi.json` → TypeScript Client
+- **CI Guardrail**: `just check-types` ensures committed types match the source of truth.
 
 ## Key Just Recipes (Primary Interface)
 
@@ -94,18 +104,23 @@ just ai-validate        # Quick: lint + typecheck
 just spec-guard         # Full gate: specs + prompts + docs validation
 just ai-scaffold        # Nx generator with error handling
 just prompt-lint        # Validate .github/prompts/*.prompt.md
+just gen-types-ts       # Generate TS types from Supabase
+just gen-types-py       # Generate Python Pydantic models from TS
+just check-types        # Verify types are up-to-date (CI)
 ```
 
 **See `justfile` for the complete recipe catalog.**
 
 ## Specification-Driven Development
 
-**Every change traces to formal specs:**
+**Every change traces to formal specs**
 
-- **DEV-PRD-\***: Product requirements (`docs/dev_prd.md`)
-- **DEV-SDS-\***: Software design (`docs/dev_sds.md`)
-- **DEV-ADR-\***: Architecture decisions (`docs/dev_adr.md`)
-- **DEV-TS-\***: Technical specs (`docs/dev_technical-specifications.md`)
+- **DEV-PRD-\***: Product requirements (`docs/specs/dev_prd.md`)
+- **DEV-SDS-\***: Software design (`docs/specs/dev_sds.md`)
+- **DEV-ADR-\***: Architecture decisions (`docs/specs/dev_adr.md`)
+- **DEV-TS-\***: Technical specs (`docs/specs/dev_technical-specifications.md`)
+
+**docs/specs/ contains all current specifications.**
 
 **Commit format:** `type(scope): message [SPEC-ID]`
 
@@ -150,7 +165,7 @@ git commit -m "feat(synthesis): add Logfire integration [DEV-PRD-018]"
 
 ## Environment Stack (Layered Isolation)
 
-**Layer 1: Devbox** - OS packages (git, curl, jq, postgresql)
+**Layer 1: Devbox** - OS packages (git, curl, jq, postgresql, supabase)
 **Layer 2: mise** - Runtime versions (Node, Python, Rust)
 **Layer 3: SOPS** - Secret encryption (.secrets.env.sops)
 **Layer 4: Just** - Task orchestration (portable commands)
@@ -233,6 +248,7 @@ Instructions in `.github/instructions/` stack by precedence:
 1. **Check for generator:** `pnpm exec nx list` → `just ai-scaffold name=<generator>`
 2. **Review specs:** Check `docs/dev_prd.md`, `dev_sds.md`, `dev_adr.md`
 3. **Verify architecture:** Ensure hexagonal dependency flow (`infrastructure → application → domain`)
+4. **Check Types:** Run `just check-types` to ensure local types match DB/API.
 
 ### After Changes
 
