@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 Describe 'scripts/devbox_fix_pin.sh'
   It 'exists and is executable'
     When call test -f scripts/devbox_fix_pin.sh

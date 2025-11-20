@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 Describe 'scripts/check_supabase_in_devbox.sh'
   It 'exists and is executable'
     When call test -f scripts/check_supabase_in_devbox.sh
