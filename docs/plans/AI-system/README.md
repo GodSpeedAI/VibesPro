@@ -190,13 +190,13 @@ node scripts/audit-logger.js --query '{"event": "profile_composed"}'
 
 ### Specifications
 
-- [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) - AI System Profile Architecture
+- [DEV-SDS-AI-PROFILE-001](../../specs/ai-system-profile-architecture.md) - AI System Profile Architecture
 
 ### Current System
 
-- [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) - Distributed agent routing
-- [AGENT-MAP.md](../../AGENT-MAP.md) - Navigation hub
-- [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - Master AI guidance
+- [AGENT-SYSTEM.md](../../../AGENT-SYSTEM.md) - Distributed agent routing
+- [AGENT-MAP.md](../../../AGENT-MAP.md) - Navigation hub
+- [.github/copilot-instructions.md](../../../.github/copilot-instructions.md) - Master AI guidance
 
 ### Templates
 
@@ -244,8 +244,8 @@ When executing cycles:
 ## ❓ Questions & Support
 
 - Review [current-vs-target-analysis.md](./current-vs-target-analysis.md) for detailed context
-- Check [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) for specification details
-- Consult [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) for current system architecture
+- Check [DEV-SDS-AI-PROFILE-001](../../specs/ai-system-profile-architecture.md) for specification details
+- Consult [AGENT-SYSTEM.md](../../../AGENT-SYSTEM.md) for current system architecture
 
 ---
 
