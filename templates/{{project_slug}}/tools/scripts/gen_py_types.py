@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
 """
-Generate Pydantic models from TypeScript interface files that define DB types.
-This uses a simple parser to extract exported TS interface names and their fields.
-The goal is to create straightforward Pydantic models that match the TS interfaces.
+Generate Pydantic models from TypeScript interface files that define database
+schemas. The goal is to mirror the generated Supabase TypeScript types in
+Python for downstream validation and runtime use.
 """
 
 from __future__ import annotations
@@ -11,130 +10,121 @@ import re
 import sys
 from pathlib import Path
 
-TS_FILE_GLOB = "libs/shared/types/src/*.ts"
-
-TS_TO_PY = {
+TS_TO_PY: dict[str, str] = {
     "string": "str",
     "number": "float",
     "boolean": "bool",
     "unknown": "typing.Any",
     "any": "typing.Any",
     "object": "dict",
+    "uuid": "str",
 }
 
 INTERFACE_RE = re.compile(r"export interface\s+([A-Za-z0-9_]+)\s*{")
-FIELD_RE = re.compile(r"^\s*([A-Za-z0-9_]+)\s*:\s*([^;]+);")
-OPTIONAL_RE = re.compile(r"\|\s*null|\|\s*undefined|\s*\?$")
+FIELD_RE = re.compile(r"^\s*([A-Za-z0-9_?]+)\s*:\s*([^;]+);")
 ARRAY_RE = re.compile(r"^(.+)\[\]$")
 
 
 def map_ts_type_to_python(ts_type: str) -> str:
+    """Translate a simple TypeScript type expression into a Python type hint."""
     ts_type = ts_type.strip()
 
-    # Optional types like "string | null"
     nullable = False
-    if "null" in ts_type or "undefined" in ts_type:
+    if "| null" in ts_type or "| undefined" in ts_type:
         nullable = True
         ts_type = ts_type.replace("| null", "").replace("| undefined", "").strip()
 
-    # Arrays like string[]
-    m = ARRAY_RE.match(ts_type)
-    if m:
-        inner = map_ts_type_to_python(m.group(1))
-        py = f"list[{inner}]"
+    array_match = ARRAY_RE.match(ts_type)
+    if array_match:
+        inner = map_ts_type_to_python(array_match.group(1))
+        py_type = f"list[{inner}]"
     elif ts_type.startswith("Array<") and ts_type.endswith(">"):
         inner = ts_type[len("Array<") : -1].strip()
-        inner_py = map_ts_type_to_python(inner)
-        py = f"list[{inner_py}]"
+        py_type = f"list[{map_ts_type_to_python(inner)}]"
+    elif ts_type.lower().startswith("record<"):
+        py_type = "dict[str, typing.Any]"
     else:
         base = ts_type.lower()
-        # Strip generics like Record<string, any>
-        if base.startswith("record<"):
-            py = "dict[str, typing.Any]"
-        elif base == "uuid":
-            py = "str"
-        elif base in TS_TO_PY:
-            py = TS_TO_PY[base]
-        else:
-            # fallback: treat as string
-            py = "typing.Any"
+        py_type = TS_TO_PY.get(base, "typing.Any")
 
     if nullable:
-        return f"typing.Optional[{py}]"
-    return py
+        return f"typing.Optional[{py_type}]"
+    return py_type
 
 
 def parse_ts_file(path: Path) -> dict[str, dict[str, str]]:
-    out: dict[str, dict[str, str]] = {}
+    """Parse exported interfaces and fields from a TypeScript definitions file."""
     text = path.read_text(encoding="utf-8")
+    interfaces: dict[str, dict[str, str]] = {}
 
-    # Find interfaces
     for match in INTERFACE_RE.finditer(text):
         name = match.group(1)
-        # Extract block content
         start = match.end()
         brace_count = 1
         pos = start
         while pos < len(text) and brace_count > 0:
-            ch = text[pos]
-            if ch == "{":
+            if text[pos] == "{":
                 brace_count += 1
-            elif ch == "}":
+            elif text[pos] == "}":
                 brace_count -= 1
             pos += 1
         block = text[start : pos - 1]
-        if not block:
-            continue
+
         fields: dict[str, str] = {}
         for line in block.splitlines():
-            fmatch = FIELD_RE.match(line.strip())
-            if fmatch:
-                fname = fmatch.group(1)
-                ftype = fmatch.group(2).strip()
-                fields[fname] = ftype
-        out[name] = fields
-    return out
+            field_match = FIELD_RE.match(line.strip())
+            if not field_match:
+                continue
+            raw_name, raw_type = field_match.groups()
+            name_clean = raw_name.rstrip("?")
+            fields[name_clean] = raw_type.strip()
+        if fields:
+            interfaces[name] = fields
+
+    return interfaces
 
 
-def generate_python_models(ts_dir: Path, out_dir: Path):
+def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
+    """Generate a consolidated models.py file from TS interface definitions."""
     out_dir.mkdir(parents=True, exist_ok=True)
+    imports = {"from pydantic import BaseModel", "import typing"}
     models: list[str] = []
-    imports = set(["from pydantic import BaseModel", "import typing"])
 
     for path in sorted(ts_dir.glob("*.ts")):
         parsed = parse_ts_file(path)
         for class_name, fields in parsed.items():
-            py_fields: list[str] = []
-            for fname, ftype in fields.items():
-                py_type = map_ts_type_to_python(ftype)
-                py_fields.append(f"    {fname}: {py_type}")
-            class_def = [f"class {class_name}(BaseModel):"]
-            if not py_fields:
-                class_def.append("    pass")
+            py_fields = [
+                f"    {fname}: {map_ts_type_to_python(ftype)}" for fname, ftype in fields.items()
+            ]
+            class_lines = [f"class {class_name}(BaseModel):"]
+            if py_fields:
+                class_lines.extend(py_fields)
             else:
-                class_def.extend(py_fields)
-            models.append("\n".join(class_def))
+                class_lines.append("    pass")
+            models.append("\n".join(class_lines))
 
-    # Write to a single models.py
-    out_path = out_dir / "models.py"
-    content_lines = ["# Auto-generated by gen_py_types.py", *sorted(imports), "", ""]
-    content_lines.extend(models)
-
-    out_path.write_text("\n".join(content_lines), encoding="utf-8")
-    print(f"Generated {out_path}")
+    output_path = out_dir / "models.py"
+    content = ["# Auto-generated by gen_py_types.py", *sorted(imports), "", "", *models]
+    output_path.write_text("\n".join(content) + "\n", encoding="utf-8")
+    return output_path
 
 
-def main(argv: list[str]):
+def main(argv: list[str]) -> int:
     if len(argv) != 3:
         print("Usage: gen_py_types.py <ts_dir> <py_out_dir>")
-        sys.exit(2)
+        return 2
+
     ts_dir = Path(argv[1])
     out_dir = Path(argv[2])
+
     if not ts_dir.exists():
-        print("TS directory does not exist:", ts_dir)
-        sys.exit(2)
-    generate_python_models(ts_dir, out_dir)
+        print(f"TS directory does not exist: {ts_dir}")
+        return 2
+
+    output_path = generate_python_models(ts_dir, out_dir)
+    print(f"Generated {output_path}")
+    return 0
 
 
 if __name__ == "__main__":
-    main(sys.argv[0:])
+    sys.exit(main(sys.argv))

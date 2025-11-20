@@ -118,9 +118,9 @@ VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal a
 
 ## Current Gaps & Priorities
 
-### Gap 1: End-to-End Type Safety Pipeline (Design Complete, Implementation Pending)
+### Gap 1: End-to-End Type Safety Pipeline (Generation Implemented, Supabase Integration Pending)
 
-**Status**: ⚠️ Design specifications exist, implementation not started
+**Status**: ⚠️ Type generation pipeline implemented; Supabase integration and migrations still pending
 
 **Specifications**:
 
@@ -137,18 +137,21 @@ VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal a
 
 **What's Missing**:
 
-- `just gen-types-ts` command (Supabase TypeScript generation)
-- `just gen-types-py` command (Python Pydantic model generation)
-- `just db-migrate` command (Supabase migration runner)
-- `libs/shared/types/src/database.types.ts` (generated TypeScript types)
-- `libs/shared/types-py/src/models.py` (generated Python models)
-- CI validation for type freshness
+- Supabase schema source of truth and automated migration runner (`just db-migrate`)
+- Environment-validated Supabase CLI availability in CI and dev shells
+- CI validation wired to fail when generated types drift from schema changes
+
+**Recent Progress**:
+
+- `gen-types-ts` and `gen-types-py` commands generate and commit shared types
+- `libs/shared/types/src/database.types.ts` and `libs/shared/types-py/src/models.py` now tracked for freshness
+- `check-types` guard compares generated outputs against Git state
 
 **Implementation Effort**: Medium (2-3 days)
 
-- Supabase CLI integration
-- Type generation scripts
-- CI/CD pipeline updates
+- Wire Supabase CLI into devbox/mise overlay
+- Connect migration runner to schema source and `check-types`
+- Extend CI workflow to execute `just db-migrate && just check-types`
 
 ### Gap 2: Temporal AI Phase 3D - Observability Integration (Not Started)
 

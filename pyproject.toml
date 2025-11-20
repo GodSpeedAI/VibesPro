@@ -25,6 +25,7 @@ dev = [
     "httpx>=0.28.1",
     "sqlalchemy>=2.0.0",
     "datamodel-code-generator>=0.14.0",
+    "pydantic>=2.0.0",
 ]
 
 [tool.ruff]
@@ -102,6 +103,8 @@ exclude = [
     "^.*\\{\\{.*\\}\\}.*$",
     "target/.*",
     "scripts/",
+    # Auto-generated Python type models from TypeScript
+    "libs/shared/types-py/.*",
 ]
 [[tool.mypy.overrides]]
 module = ["prompt_optimizer.*", "my_test_domain.*"]
@@ -136,4 +139,5 @@ dev = [
     "fastapi>=0.120.1",
     "httpx>=0.28.1",
     "sqlalchemy>=2.0.0",
+    "pydantic>=2.0.0",
 ]

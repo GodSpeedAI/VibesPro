@@ -47,7 +47,7 @@ repos:
     rev: v1.14.0
     hooks:
       - id: mypy
-        additional_dependencies: [types-PyYAML, types-requests]
+        additional_dependencies: [types-PyYAML, types-requests, pydantic]
         # Exclude generated/template directories so pre-commit mypy doesn't flag
         # artifacts that are intentionally unnormalized or templated. Keep checks
         # strict for committed files (including libs/prompt_optimizer).
