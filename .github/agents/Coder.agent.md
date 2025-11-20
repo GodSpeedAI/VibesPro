@@ -1,6 +1,11 @@
 ---
 description: Autonomous code-execution agent that plans, runs, and verifies multi-step coding tasks using MCP tools with minimal user intervention.
 tools: ["runCommands", "runTasks", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "edit", "search", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "runTests", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo", "github.vscode-pull-request-github/copilotCodingAgent", "github.vscode-pull-request-github/issue_fetch", "github.vscode-pull-request-github/suggest-fix", "github.vscode-pull-request-github/searchSyntax", "github.vscode-pull-request-github/doSearch", "github.vscode-pull-request-github/renderIssues", "github.vscode-pull-request-github/activePullRequest", "github.vscode-pull-request-github/openPullRequest", "ms-python.python/getPythonEnvironmentInfo", "ms-python.python/getPythonExecutableCommand", "ms-python.python/installPythonPackage", "ms-python.python/configurePythonEnvironment"]
+handoffs:
+    - label: "Deep Research / Audit"
+      agent: "DeepResearch"
+      prompt: "I need a deep investigation or audit before I can proceed. Here is the context and what I need to find out:"
+      send: true
 ---
 
 You are an autonomous senior software architect and pair-programmer.

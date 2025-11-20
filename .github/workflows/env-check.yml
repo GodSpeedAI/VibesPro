@@ -99,6 +99,22 @@ jobs:
       - name: Install runtimes (Node/Python/Rust via mise)
         run: mise install
 
+      - name: "Devbox: update and ensure packages"
+        run: |
+          set -euo pipefail
+          # Ensure generated flake is up to date in CI so 'devbox run' will contain packages
+          devbox update || true
+
+      - name: "Devbox: validate overlay pin (supabase)"
+        run: |
+          set -euo pipefail
+          bash scripts/validate_supabase_overlay_pin.sh
+
+      - name: "Devbox: check supabase availability"
+        run: |
+          set -euo pipefail
+          bash scripts/check_supabase_in_devbox.sh
+
       - name: Ensure pinned Rust toolchain
         shell: bash
         run: |

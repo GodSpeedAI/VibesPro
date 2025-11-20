@@ -43,7 +43,7 @@ setup-python:
 	# repo-local packages from shadowing stdlib modules during installation.
 	PYTHONPATH= .venv/bin/python -m pip install --upgrade pip setuptools wheel || exit 1
 	# Add psutil because some performance tests rely on it
-	PYTHONPATH= .venv/bin/python -m pip install --upgrade pre-commit mypy ruff uv psutil || exit 1
+	PYTHONPATH= .venv/bin/python -m pip install --upgrade pre-commit mypy ruff uv psutil datamodel-code-generator || exit 1
 
 setup-tools:
 	@echo "🔧 Setting up development tools..."
@@ -52,6 +52,12 @@ setup-tools:
 	else \
 		echo "📦 Installing Copier..."; \
 		uv tool install copier; \
+	fi
+	@echo "Checking for supabase CLI..."
+	@if command -v supabase >/dev/null 2>&1; then \
+		echo "✅ supabase CLI found: $(command -v supabase)"; \
+	else \
+		echo "⚠️ supabase CLI not found. If you're using devbox: 'devbox shell' will ensure supabase is available"; \
 	fi
 
 install-hooks:
@@ -210,6 +216,11 @@ test-integration:
 test-generators:
 	@echo "🧪 Running generator tests..."
 	pnpm exec jest tests/generators
+	just test-type-generator
+
+test-type-generator:
+	@echo "🧪 Running type-generator tests..."
+	cd tools/type-generator && pnpm exec jest
 
 test-generation:
 	@echo "🧪 Testing template generation..."
@@ -289,13 +300,67 @@ db-backup:
 	python tools/temporal-db/backup.py
 
 # --- Type Generation ---
-types-generate:
-	@echo "🏷️  Generating types..."
-	python tools/type-generator/generate.py
+types-generate SCHEMA="tools/type-generator/test-fixtures/db_schema.json":
+	@echo "🏷️  Generating types from schema: {{SCHEMA}}"
+	python tools/type-generator/generate.py {{SCHEMA}} -o libs/shared/types/src
 
 types-validate:
 	@echo "🔍 Validating type consistency..."
 	python tools/type-generator/validate.py
+
+# --- Supabase & Type Generation Wrappers ---
+gen-types-ts:
+	@echo "🏷️ Generating TypeScript types from Supabase schema..."
+	# Supabase CLI will generate to STDOUT; redirect into the shared types file
+	if command -v supabase >/dev/null 2>&1; then \
+		supabase gen types typescript --local --schema public > libs/shared/types/src/database.types.ts; \
+	else \
+		echo "❌ supabase CLI not found. Please run 'just setup' to install devbox packages or install supabase on PATH"; exit 1; \
+	fi
+
+gen-types-py:
+	@echo "🐍 Generating Python Pydantic models from TypeScript types..."
+	# Use Python script to generate Pydantic models from the TypeScript types output
+	if [ ! -f libs/shared/types/src/database.types.ts ]; then \
+		echo "❌ TypeScript types not found. Run 'just gen-types-ts' first"; exit 1; \
+	fi
+	if [ ! -d libs/shared/types-py/src ]; then \
+		mkdir -p libs/shared/types-py/src; \
+	fi
+	. .venv/bin/activate >/dev/null 2>&1 || true; \
+	python tools/scripts/gen_py_types.py libs/shared/types/src libs/shared/types-py/src
+
+gen-types:
+	@echo "🔁 Running all type generation tasks..."
+	just gen-types-ts
+	just gen-types-py
+
+db-migrate:
+	@echo "🗄️ Running Supabase migrations (deploy)..."
+	if command -v supabase >/dev/null 2>&1; then \
+		supabase migration deploy; \
+	else \
+		echo "❌ supabase CLI not found. Please install supabase via devbox or on PATH"; exit 1; \
+	fi
+
+check-types:
+	@echo "🔍 Checking generated types are committed and up to date..."
+	TMP_DIR=$(mktemp -d); \
+	echo "Generating into temp dir: $TMP_DIR"; \
+	just gen-types > /dev/null 2>&1 || true; \
+	# Compare committed TS file
+	if ! git diff --exit-code -- libs/shared/types/src/database.types.ts; then \
+		echo "❌ TypeScript types are out of date."; \
+		git --no-pager diff -- libs/shared/types/src/database.types.ts || true; \
+		exit 1; \
+	fi
+	if ! git diff --exit-code -- libs/shared/types-py/src/models.py; then \
+		echo "❌ Python types are out of date."; \
+		git --no-pager diff -- libs/shared/types-py/src/models.py || true; \
+		exit 1; \
+	fi
+	echo "✅ Types are up to date"
+
 
 # --- Maintenance ---
 clean:
@@ -312,6 +377,34 @@ clean-all: clean
 	rm -rf .venv
 	rm -rf pnpm-lock.yaml
 	rm -rf uv.lock
+
+devbox-fix:
+	@echo "🔧 Fix devbox pin for supabase and re-run update"
+	bash scripts/devbox_fix_pin.sh
+
+devbox-check:
+	@echo "🔎 CI-friendly devbox supabase availability check"
+	# Update the generated flake so 'devbox run' gets latest inputs
+	if command -v devbox >/dev/null 2>&1; then \
+		devbox update || true; \
+	fi
+	bash scripts/check_supabase_in_devbox.sh
+
+devbox-overlay-pin COMMIT="":
+	@echo "📌 Pin devbox supabase overlay to a specific nixpkgs commit or tag"
+	@if [ -z "{{COMMIT}}" ]; then \
+		echo "Usage: just devbox-overlay-pin COMMIT=sha-or-tag"; exit 2; \
+	fi
+	@echo "Pinning overlay to: {{COMMIT}}"
+	@python - <<PY
+	import io,sys,re
+	path='.devbox/overlays/supabase.nix'
+	commit='{{COMMIT}}'
+	data=open(path).read()
+	data=re.sub(r"https://github.com/NixOS/nixpkgs/archive/[^\n']+",f"https://github.com/NixOS/nixpkgs/archive/{commit}.tar.gz",data)
+	open(path,'w').write(data)
+	print('OK: updated overlay')
+	PY
 
 
 # --- SOPS utilities ---

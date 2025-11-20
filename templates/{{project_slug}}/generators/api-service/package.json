@@ -1,0 +1,6 @@
+{
+  "name": "@vibespro/api-service-generator",
+  "version": "0.0.1",
+  "main": "generator.ts",
+  "generators": "./generators.json"
+}

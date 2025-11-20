@@ -31,7 +31,8 @@
   },
   "workspaces": [
     "templates/*",
-    "tools/*"
+    "tools/*",
+    "generators/*"
   ],
   "devDependencies": {
     "@eslint/eslintrc": "^2.0.0",
@@ -39,9 +40,13 @@
     "@nx/expo": "^22.0.2",
     "@nx/jest": "^22.0.2",
     "@nx/js": "22.0.2",
+    "@nx/next": "^22.0.4",
     "@nx/node": "22.0.2",
     "@nx/react": "^22.0.2",
+    "@nx/remix": "^22.0.4",
     "@nx/workspace": "22.0.2",
+    "@nxlv/python": "^21.2.0",
+    "@openapitools/openapi-generator-cli": "^2.25.1",
     "@phenomnomnominal/tsquery": "^6.1.3",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",

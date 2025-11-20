@@ -1,0 +1,21 @@
+{
+  "tables": {
+    "users": {
+      "columns": {
+        "id": {
+          "type": "uuid"
+        },
+        "email": {
+          "type": "text",
+          "nullable": false
+        },
+        "created_at": {
+          "type": "timestamptz"
+        },
+        "is_active": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
