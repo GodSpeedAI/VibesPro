@@ -44,7 +44,6 @@ jobs:
           done
           echo "::error::Failed to install Devbox after 3 attempts"
           exit 1
-          devbox version
 
       - name: Install mise
         run: |
