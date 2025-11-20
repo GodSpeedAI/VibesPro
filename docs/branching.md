@@ -111,6 +111,22 @@ git merge --no-ff main
 git push origin dev
 ```
 
+### Automated Releases
+
+VibesPro includes a CI workflow that automatically creates a GitHub Release when a tag starting with `v` is pushed.
+
+1.  **Tag the release**:
+    ```zsh
+    git tag -a v0.4.1 -m "Release v0.4.1"
+    git push origin v0.4.1
+    ```
+2.  **CI Action**: The `release` job in `.github/workflows/build-matrix.yml` will detect the tag and:
+    - Build the project.
+    - Create a GitHub Release draft (or published release) with the tag name.
+    - (Optional) Upload artifacts if configured.
+
+Note: Ensure `GITHUB_TOKEN` has permission to create releases (default in most repos).
+
 ### Stage environment scenarios
 
 There are two common patterns for `stage` (staging):
