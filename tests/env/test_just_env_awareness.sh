@@ -67,7 +67,7 @@ TEST_DIR=$(mktemp -d)
 trap 'rm -rf "$TEST_DIR"' EXIT
 
 # Test that verify-node script exists (critical for Phase 5)
-assert_file_exists "scripts/verify-node.sh"
+assert_file_exists "scripts/dev/verify-node.sh"
 
 # Test 9: Verify environment setup tasks are properly ordered
 echo "  ✓ Verifying setup task dependencies..."

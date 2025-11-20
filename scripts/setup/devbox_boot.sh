@@ -57,11 +57,11 @@ fi
 
 # Ensure supabase CLI is present or try to install it — this is a safe fallback
 if ! command -v supabase >/dev/null 2>&1; then
-  if [[ -x "${PWD}/scripts/install_supabase.sh" ]]; then
+  if [[ -x "${PWD}/scripts/setup/install_supabase.sh" ]]; then
     echo "→ Supabase CLI not found. Attempting fallback installation..."
-    bash "${PWD}/scripts/install_supabase.sh" || true
+    bash "${PWD}/scripts/setup/install_supabase.sh" || true
   else
-    echo "→ Supabase CLI not present and no install helper found (scripts/install_supabase.sh)"
+    echo "→ Supabase CLI not present and no install helper found (scripts/setup/install_supabase.sh)"
   fi
 fi
 
