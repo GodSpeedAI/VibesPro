@@ -8,8 +8,11 @@ precedence: 34
 
 # Performance Guidelines
 
-- Favor algorithmic efficiency and reduce unnecessary computations. When generating code, choose appropriate data structures and avoid nested loops where possible.
-- Minimize large language model token usage by asking concise questions and summarizing outputs. Split complex tasks into smaller steps to stay within context window limits.
-- Use caching and memoization patterns where appropriate. Avoid recomputing values that can be stored.
-- When designing prompts, reference only necessary context rather than entire files to reduce tokens. Use variables like `${fileBasename}` and `${selection}` in prompt files to scope the context.
-- For performance testing, use the `performance-analysis.prompt.md` and associated tasks defined in `.vscode/tasks.json` to measure run times and token usage.
+Use this when you see perf regressions, `// TODO: optimize`, slow tests/pipelines, or token budget pressure.
+
+- **Algorithmic first:** Choose the right data structures; avoid needless N+1s and nested loops. Push I/O to boundaries and batch where possible.
+- **Measure before/after:** Add a small benchmark or timing log around hot paths; strip noisy logs before merge.
+- **Control allocations:** Reuse buffers/objects in tight loops; avoid gratuitous JSON parsing/stringify.
+- **Token efficiency:** Keep prompts minimal; inject only relevant snippets (`${selection}`, `${fileBasename}`) and summarize long context.
+- **Caching:** Memoize pure computations and cache integration responses safely (respect invalidation); document cache keys.
+- **Routes:** Use `performance-analysis.prompt.md` for structured profiling; coordinate with `debugging.instructions.md` for repros and `testing.instructions.md` for guard tests.

@@ -8,6 +8,7 @@ precedence: 10
 
 # Security Guidelines (Canonical)
 
+- Use this file whenever touching auth, secrets, external I/O, task automation, or workspace settings.
 - Always sanitize and validate all user inputs when generating code or scripts. Never interpolate untrusted data into shell commands or SQL queries.
 - Never modify `.vscode/settings.json` or `.vscode/tasks.json` from within a prompt or generated code. Malicious changes to these files can enable auto‑approval of tool calls (YOLO mode) and allow remote code execution.
 - Do not enable `chat.tools.autoApprove` in any workspace configuration. Keep auto‑approval disabled to ensure that human review is required before running tools or scripts.
@@ -21,5 +22,6 @@ precedence: 10
 - Map features and code paths to PRD/SDS security requirements when applicable.
 - Add brief STRIDE-style threat notes in PRs where new attack surfaces appear (S/T/R/I/D/E).
 - Secrets policy: expect `.env` or a secret store; never commit keys.
+- Use SOPS for secrets; avoid plaintext in history. Keep boundary validation (Zod/io-ts) at all ingress points.
 
 Note: This file is canonical in this repo. If you import security guidance from other sources, merge non-overlapping items here and avoid divergence.

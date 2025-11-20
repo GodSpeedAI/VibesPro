@@ -36,14 +36,18 @@ This directory contains planning documents for aligning VibesPro's distributed A
 
 ### For Project Leads
 
+1. Review [current-vs-target-analysis.md](./current-vs-target-analysis.md) for executive summary
+2. Review [ai-profile-architecture-alignment.md](./ai-profile-architecture-alignment.md) phases
+3. Approve plan and allocate resources
 4. Monitor phase completion via checklists
 
 ### For Implementation Agents
 
 1. Start with **Phase 1: Inventory & Analysis**
-2. Mark checklist items as complete with evidence
-3. Store artifacts in `artifacts/` subdirectories
-4. Validate before moving to next phase
+2. Execute cycles in dependency order (see cycle tables)
+3. Mark checklist items as complete with evidence
+4. Store artifacts in `artifacts/` subdirectories
+5. Validate before moving to next phase
 
 ### For Reviewers
 
@@ -64,21 +68,26 @@ This directory contains planning documents for aligning VibesPro's distributed A
 | **4** | Integration & Validation | ⚪ Pending     | 1 week    | Phase 3      |
 | **5** | Production Hardening     | ⚪ Pending     | 1 week    | Phase 4      |
 
-## **Total Estimated Duration:** 4-5 weeks
+**Total Estimated Duration:** 4-5 weeks
+
+---
 
 ## 🔄 Workflow
 
-P1 --> P2[Phase 2: Standardization]
-P3 --> P4[Phase 4: Integration]
-P4 --> P5[Phase 5: Production]
-P5 --> Done[Production Ready]
-Consult [AGENT-SYSTEM.md](../../../AGENT-SYSTEM.md) for current system architecture
-P1 -.-> Evidence1[Inventory JSON + Gap Analysis]
-P2 -.-> Evidence2[Valid Frontmatter]
-P3 -.-> Evidence3[Profile Manifest + Composer]
-P4 -.-> Evidence4[CI Pipeline Passing]
-P5 -.-> Evidence5[Signed + Audited]
+```mermaid
+graph TD
+  Start[Review Plans] --> P1[Phase 1: Inventory]
+  P1 --> P2[Phase 2: Standardization]
+  P2 --> P3[Phase 3: Infrastructure]
+  P3 --> P4[Phase 4: Integration]
+  P4 --> P5[Phase 5: Production]
+  P5 --> Done[Production Ready]
 
+  P1 -.-> Evidence1[Inventory JSON + Gap Analysis]
+  P2 -.-> Evidence2[Valid Frontmatter]
+  P3 -.-> Evidence3[Profile Manifest + Composer]
+  P4 -.-> Evidence4[CI Pipeline Passing]
+  P5 -.-> Evidence5[Signed + Audited]
 ```
 
 ---
@@ -121,24 +130,22 @@ P5 -.-> Evidence5[Signed + Audited]
 ## 📂 Artifact Storage
 
 ```
-
 docs/plans/AI-system/
-├── README.md # This file
+├── README.md                            # This file
 ├── ai-profile-architecture-alignment.md # Primary plan
-├── current-vs-target-analysis.md # Gap analysis
-└── artifacts/ # Generated during execution
-├── inventory/
-│ ├── ai-artifacts-inventory.json # Phase 1A output
-│ └── inventory-summary.md # Phase 1A summary
-├── gaps/
-│ ├── gap-analysis.md # Phase 1B output
-│ └── migration-strategy.md # Phase 1B strategy
-└── validation/
-├── frontmatter-validation.log # Phase 2 validation
-├── profile-validation.log # Phase 3 validation
-└── token-budget-report.txt # Phase 3D output
-
-````
+├── current-vs-target-analysis.md       # Gap analysis
+└── artifacts/                          # Generated during execution
+    ├── inventory/
+    │   ├── ai-artifacts-inventory.json  # Phase 1A output
+    │   └── inventory-summary.md         # Phase 1A summary
+    ├── gaps/
+    │   ├── gap-analysis.md              # Phase 1B output
+    │   └── migration-strategy.md        # Phase 1B strategy
+    └── validation/
+        ├── frontmatter-validation.log   # Phase 2 validation
+        ├── profile-validation.log       # Phase 3 validation
+        └── token-budget-report.txt      # Phase 3D output
+```
 
 ---
 
@@ -162,7 +169,7 @@ node scripts/compose-profile.js --dry-run
 
 # Full profile validation (after Phase 4)
 just ai-profile-check
-````
+```
 
 ### Signing & Security (Phase 5)
 
@@ -181,16 +188,14 @@ node scripts/audit-logger.js --query '{"event": "profile_composed"}'
 
 ## 📚 Related Documents
 
-### Current System
-
 ### Specifications
 
-- [DEV-SDS-AI-PROFILE-001](../../specs/ai-system-profile-architecture.md) - AI System Profile Architecture
+- [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) - AI System Profile Architecture
 
 ### Current System
 
-- [AGENT-SYSTEM.md](../../../AGENT-SYSTEM.md) - Distributed agent routing
-- [AGENT-MAP.md](../../../AGENT-MAP.md) - Navigation hub
+- [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) - Distributed agent routing
+- [AGENT-MAP.md](../../AGENT-MAP.md) - Navigation hub
 - [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - Master AI guidance
 
 ### Templates
@@ -240,7 +245,7 @@ When executing cycles:
 
 - Review [current-vs-target-analysis.md](./current-vs-target-analysis.md) for detailed context
 - Check [DEV-SDS-AI-PROFILE-001](../specs/ai-system-profile-architecture.md) for specification details
-- Consult [AGENT-SYSTEM.md](../../../AGENT-SYSTEM.md) for current system architecture
+- Consult [AGENT-SYSTEM.md](../../AGENT-SYSTEM.md) for current system architecture
 
 ---
 

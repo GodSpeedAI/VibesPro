@@ -10,6 +10,12 @@ precedence: 35
 
 These guidelines define how to write, organize, and run tests in this repo. They extend the repo-wide instructions and align with DEV-PRD, DEV-SDS, and DEV-SPEC docs.
 
+## When to consult
+
+- Touching code paths with existing tests (`**/*.test.*`, `tests/**`, ShellSpec) or adding new behavior.
+- Fixing bugs: reproduce with a failing test first (per ai-workflows constitution).
+- Working on templates: validate with `just test-generation` after changes.
+
 ## Goals
 
 - Fast feedback and high signal-to-noise.
@@ -98,6 +104,8 @@ End
 
 ## Running Tests Locally
 
+- **Quick sweep:** `just ai-validate` (lint + typecheck) for fast signal.
+- **Full:** `just test` for Node + Python + Shell; `just test-generation` for template synthesis.
 - Node tests
     - Use a simple runner script under `tools/test/run_node_tests.js` (future work) or execute directly with `node`.
 - ShellSpec
@@ -130,3 +138,4 @@ End
 - Make tests deterministic: control time via small wrappers where needed.
 - Keep outputs small; when asserting on multi-line output, normalize whitespace.
 - Prefer dependency-free approaches first.
+- When debugging: preserve minimal repros as new tests; coordinate with `debugging.instructions.md`.
