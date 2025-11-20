@@ -1,4 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Prefer the real Copier CLI when available, even though this wrapper sits first on PATH.
+# This keeps integration tests aligned with the actual template output.
+ALT_PATH="$(
+  printf "%s" "${PATH:-}" | tr ':' '\n' | awk -v skip="${SCRIPT_DIR}" '$0 != skip' | paste -sd: -
+)"
+if [[ -z "${COPIER_FORCE_NODE:-}" && -n "${ALT_PATH}" ]]; then
+  REAL_COPIER="$(PATH="${ALT_PATH}" command -v copier || true)"
+  if [[ -n "${REAL_COPIER}" && "${REAL_COPIER}" != "${0}" ]]; then
+    exec "${REAL_COPIER}" "$@"
+  fi
+fi
+
 exec node "${SCRIPT_DIR}/copier.mjs" "$@"

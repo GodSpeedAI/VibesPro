@@ -10,6 +10,7 @@
 # - docs/steering/*.md (or top-level docs/product.md, tech.md, structure.md)
 # - architecture/calm/**
 # - techstack.yaml
+# - .github/agents/*.agent.md (if present)
 #
 # Usage:
 #   bash scripts/dev/bundle-context.sh [OUTPUT_DIR]

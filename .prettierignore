@@ -15,4 +15,3 @@ htmlcov/
 .venv/
 .devbox/
 docs/specs/traceability_matrix.md
-pnpm-lock.yaml

@@ -585,7 +585,7 @@ fi
 # Bundle AI context
 ai-context-bundle:
     @echo "📦 Bundling AI context..."
-    bash scripts/bundle-context.sh docs/ai_context_bundle
+    bash scripts/dev/bundle-context.sh docs/ai_context_bundle
 
 # Measure tokens in prompt
 token-measure file:

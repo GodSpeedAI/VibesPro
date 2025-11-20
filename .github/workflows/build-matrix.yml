@@ -92,9 +92,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Load versions
-        run: cat .github/config/versions.env >> $GITHUB_ENV
-
       # ---- Base tools (age/jq) for both OSes ----
       - name: Install base packages
         shell: bash
@@ -132,18 +129,56 @@ jobs:
           just --version || true
 
       # ---- Install SOPS ----
-      - name: Setup SOPS
-        uses: ./.github/actions/setup-sops
+      - name: Install SOPS
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+            # Fetch via curl and write to a temp file avoiding pipes to sudo.
+            curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+            sudo mv sops /usr/local/bin/sops
+            sudo chmod +x /usr/local/bin/sops
+          else
+            brew install sops
+          fi
+          sops --version
+          if ! sops --version | grep -q "${SOPS_VERSION}"; then
+            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
+            sops --version || true
+            exit 1
+          fi
 
       # ---- Devbox (OS toolchain) — skip on mac if you prefer native ----
-      - name: Setup Devbox
-        uses: ./.github/actions/setup-devbox
+      - name: Install Devbox
+        shell: bash
+        run: |
+          curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          devbox version
 
       # ---- mise runtimes ----
-      - name: Setup mise
-        uses: ./.github/actions/setup-mise
+      - name: Install mise
+        run: |
+          curl https://mise.run | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          mise --version
+      - name: Trust mise config
+        run: mise trust --yes .mise.toml
+      - name: Cache mise runtimes
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: ${{ needs.prepare.outputs.mise_cache_key }}
+          restore-keys: |
+            mise-${{ runner.os }}-
 
-      - name: Ensure Rust toolchain from rust-toolchain.toml
+      - name: Install runtimes (Node/Python/Rust via mise)
+        run: mise install
+
+      - name: Ensure pinned Rust toolchain
         shell: bash
         run: |
           set -euo pipefail
@@ -152,26 +187,8 @@ jobs:
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
             source "$HOME/.cargo/env" || true
           fi
-          # Install toolchain specified in rust-toolchain.toml (stable)
-          rustup show
-
-      - name: Cache Cargo registry
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            ~/.cargo/git/db
-          key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
-
-      - name: Cache uv
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/uv
-          key: uv-${{ runner.os }}-${{ hashFiles('**/uv.lock', '**/pyproject.toml') }}
-          restore-keys: uv-${{ runner.os }}-
+          rustup toolchain install nightly-2025-11-01 --no-self-update || true
+          rustup override set nightly-2025-11-01 || true
 
       # ---- Node package manager (optional; respects Corepack) ----
       - name: Enable corepack (optional)
@@ -200,7 +217,7 @@ jobs:
             echo "SOPS_AGE_KEY appears set; attempting decryption..."
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
             # Delegate parsing and safe GITHUB_ENV writes to a helper script
-            bash ./scripts/ci/decrypt-ci-env.sh /tmp/ci.env
+            bash ./scripts/decrypt-ci-env.sh /tmp/ci.env
             echo "loaded=true" >> $GITHUB_OUTPUT
           else
             echo "SOPS_AGE_KEY not set or .secrets.env.sops missing; skipping decryption."
@@ -323,22 +340,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Load versions
-        run: cat .github/config/versions.env >> $GITHUB_ENV
-
       - name: Install base packages
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends age jq make
 
-      - name: Setup SOPS
-        uses: ./.github/actions/setup-sops
+      - name: Install SOPS
+        run: |
+          set -euo pipefail
+          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+          curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+          echo "${SOPS_CHECKSUM}  sops" | sha256sum -c -
+          sudo mv sops /usr/local/bin/sops
+          sudo chmod +x /usr/local/bin/sops
+          sops --version
+          if ! sops --version | grep -q "${SOPS_VERSION}"; then
+            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
+            sops --version || true
+            exit 1
+          fi
 
-      - name: Setup Devbox
-        uses: ./.github/actions/setup-devbox
+      - name: Install Devbox
+        run: |
+          curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          devbox version
 
-      - name: Setup mise
-        uses: ./.github/actions/setup-mise
+      - name: Install mise
+        run: |
+          curl https://mise.run | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          mise --version
+          mise trust --yes .mise.toml
+
+      - name: Setup runtimes
+        run: mise install
 
       - name: Decrypt release secrets (if provided)
         run: |
@@ -346,19 +382,13 @@ jobs:
             echo "SOPS_AGE_KEY present; decrypting release secrets"
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
             # Use shared decrypt script to parse and write secrets into GITHUB_ENV
-            bash ./scripts/ci/decrypt-ci-env.sh /tmp/ci.env
+            bash ./scripts/decrypt-ci-env.sh /tmp/ci.env
           else
             echo "No SOPS_AGE_KEY provided or .secrets.env.sops missing; skipping release secret decryption"
           fi
 
       - name: Build (release)
         run: just build
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Example: npm publish / docker push (uncomment & tailor)
       # - name: Publish package

@@ -207,6 +207,31 @@ const generateBaseProject = async (target, context) => {
     'pnpm-workspace.yaml',
     'packages:\n  - apps/*\n  - libs/*\n  - tools/*\n',
   );
+
+  const nxJson = {
+    version: 2,
+    npmScope: context.projectSlug,
+    namedInputs: {
+      default: ['{projectRoot}/**/*', 'sharedGlobals'],
+      production: [
+        'default',
+        '!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)',
+        '!{projectRoot}/tsconfig.spec.json',
+        '!{projectRoot}/jest.config.[jt]s',
+        '!{projectRoot}/.eslintrc.json',
+      ],
+      sharedGlobals: ['{workspaceRoot}/babel.config.json'],
+    },
+    affected: { defaultBase: 'origin/main' },
+    cli: { packageManager: 'pnpm' },
+    generators: { '@nx/js:lib': { buildable: true } },
+    targetDefaults: {
+      build: { dependsOn: ['^build'], inputs: ['production', '^production'] },
+      test: { inputs: ['default', '^production', '{workspaceRoot}/jest.preset.js'] },
+      lint: { inputs: ['default', '^production', '{workspaceRoot}/.eslintrc.json'] },
+    },
+  };
+  await writeFile(target, 'nx.json', `${JSON.stringify(nxJson, null, 2)}\n`);
   await writeFile(
     target,
     'justfile',
@@ -275,7 +300,7 @@ const generateBaseProject = async (target, context) => {
 
   await writeFile(
     target,
-    'scripts/bundle-context.sh',
+    'scripts/dev/bundle-context.sh',
     '#!/usr/bin/env bash\nset -euo pipefail\necho "Bundling AI context"\n',
     { mode: 0o755 },
   );

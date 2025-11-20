@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Validate the supabase overlay URL is pinned to a specific commit rather than
 # 'nixpkgs-unstable.tar.gz'. This helps ensure reproducibility.
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OVERLAY_FILE="${ROOT_DIR}/.devbox/overlays/supabase.nix"
 
 if [[ ! -f "${OVERLAY_FILE}" ]]; then

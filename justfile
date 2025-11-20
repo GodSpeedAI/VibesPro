@@ -535,7 +535,7 @@ docs-clean:
 # for reference by .github/chatmodes/*.chatmode.md files
 ai-context-bundle:
 	@echo "📦 Bundling AI context..."
-	@bash scripts/bundle-context.sh docs/ai_context_bundle
+	@bash scripts/dev/bundle-context.sh docs/ai_context_bundle
 	@echo "✅ Context bundle ready at docs/ai_context_bundle"
 
 # --- TDD Workflow (Red-Green-Refactor) ---

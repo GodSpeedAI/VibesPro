@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Check that the supabase overlay is present and referenced by devbox.json
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OVERLAY_PATH="${ROOT_DIR}/.devbox/overlays/supabase.nix"
 DEVBOX_JSON="${ROOT_DIR}/devbox.json"
 
