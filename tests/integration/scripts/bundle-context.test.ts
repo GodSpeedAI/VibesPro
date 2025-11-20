@@ -30,7 +30,7 @@ describe('bundle-context.sh script', () => {
     await fs.mkdir(join(testWorkspace, 'architecture', 'calm'), {
       recursive: true,
     });
-    await fs.mkdir(join(testWorkspace, 'scripts'), { recursive: true });
+    await fs.mkdir(join(testWorkspace, 'scripts', 'dev'), { recursive: true });
 
     // Create test files
     await fs.writeFile(
@@ -161,7 +161,7 @@ describe('bundle-context.sh script', () => {
   it('should handle missing directories gracefully', async () => {
     // Create minimal workspace without some directories
     const minimalWorkspace = await fs.mkdtemp(join(tmpdir(), 'minimal-test-'));
-    await fs.mkdir(join(minimalWorkspace, 'scripts'), { recursive: true });
+    await fs.mkdir(join(minimalWorkspace, 'scripts', 'dev'), { recursive: true });
 
     const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
     const scriptContent = await fs.readFile(scriptPath, 'utf-8');

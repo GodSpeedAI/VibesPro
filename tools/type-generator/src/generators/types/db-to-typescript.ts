@@ -10,10 +10,12 @@ import {
 import { dirname, isAbsolute, join, normalize, parse, relative, resolve } from 'path';
 
 // Import pathSecurity utilities from the JavaScript file directly (outside dist output)
-
-const pathSecurity = require(resolve(process.cwd(), 'tools/type-generator/utils/pathSecurity.js'));
-const { assertFilenameSafe, isPathSafe, resolvePathWithinWorkspace, sanitizePathInput } =
-  pathSecurity;
+import {
+  assertFilenameSafe,
+  isPathSafe,
+  resolvePathWithinWorkspace,
+  sanitizePathInput,
+} from '../../../utils/pathSecurity.js';
 
 interface ColumnDef {
   type: string;
