@@ -155,6 +155,24 @@ jobs:
           # Install toolchain specified in rust-toolchain.toml (stable)
           rustup show
 
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+          key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+          key: uv-${{ runner.os }}-${{ hashFiles('**/uv.lock', '**/pyproject.toml') }}
+          restore-keys: uv-${{ runner.os }}-
+
       # ---- Node package manager (optional; respects Corepack) ----
       - name: Enable corepack (optional)
         run: corepack enable
