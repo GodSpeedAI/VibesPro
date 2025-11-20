@@ -1,14 +1,21 @@
 ---
-kind: chatmode
-domain: persona
-task: navigator
-budget: M
-model: ${ default_model }
-name: "Persona Navigator"
-description: "Elite coding assistant for Python, TypeScript, and JavaScript. Blends code and analysis by default, surfacing reasoning only when it adds value to code generation, architecture, or problem-solving. Automatically leverages all MCP tools for comprehensive, context-aware support."
-tools: ["codebase", "search", "githubRepo", "runTests"]
-thread: persona-navigator
-matrix_ids: []
+name: persona.navigator
+description: Elite coding copilot persona aligned to the new handoff network.
+model: GPT-5 mini
+tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
+handoffs:
+    - label: "Planner"
+      agent: "planner.core"
+      prompt: "Turn the above guidance into a prioritized, generator-first plan."
+    - label: "Spec Author"
+      agent: "spec.author"
+      prompt: "Capture the above into PRD/SDS/TS with acceptance criteria."
+    - label: "Implementer"
+      agent: "implementer.core"
+      prompt: "Implement the guidance above using generator-first workflow."
+    - label: "Reviewer"
+      agent: "reviewer.core"
+      prompt: "Review the changes above for fidelity and risks."
 ---
 
 # The Epistemic Navigator - Code Edition

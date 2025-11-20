@@ -1,17 +1,29 @@
 ---
-kind: chatmode
-domain: persona
-task: ux-ui
-budget: M
-description: Explore user experience and user interface considerations for your product.
-tools: ["search", "githubRepo"]
-model: ${ default_model }
-name: "Persona Ux Ui"
+name: persona.ux-ui
+description: UX/UI considerations entrypoint aligned to the product/spec/plan network.
+model: GPT-5 mini
+tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]
+handoffs:
+    - label: "Product Manager"
+      agent: "product.manager"
+      prompt: "Align the UX/UI considerations above with product goals, audience, and metrics."
+    - label: "Spec Author"
+      agent: "spec.author"
+      prompt: "Embed the UX/UI considerations above into acceptance criteria and constraints."
+    - label: "Planner"
+      agent: "planner.core"
+      prompt: "Translate the UX/UI considerations above into a delivery plan."
+    - label: "Implementer"
+      agent: "implementer.core"
+      prompt: "Implement the UX/UI approach above using generator-first workflow."
+    - label: "Reviewer"
+      agent: "reviewer.core"
+      prompt: "Review the UX/UI implementation for fidelity and accessibility."
 ---
 
 # UX/UI Considerations Mode
 
-Use this mode to think through how users will interact with your product. It focuses on the look and feel of your solution as well as the flow between screens. The aim is to capture insights that inform both design and implementation.
+Use this mode to think through how users will interact with your solution. It focuses on the look and feel of your solution as well as the flow between screens. The aim is to capture insights that inform both design and implementation.
 
 Instructions:
 

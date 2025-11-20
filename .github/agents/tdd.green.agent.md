@@ -1,16 +1,23 @@
-```chatmode
 ---
-kind: chatmode
-domain: tdd
-task: green
-budget: S
+name: tdd.green
+description: Make the failing test pass with the smallest change; keep Nx-first verification.
 model: ${ default_model }
-name: "TDD Green Mode"
-description: TDD green placeholder
-tools: ["codebase", "search", "runTests"]
+tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
+handoffs:
+    - label: "Lint Style"
+      agent: "lint-agent"
+      prompt: "Apply style-only fixes to the implementation above."
+    - label: "Review/Refactor"
+      agent: "tdd.refactor"
+      prompt: "Refactor the code/tests above while keeping tests green."
+    - label: "Review"
+      agent: "reviewer.core"
+      prompt: "Review the passing change above for traceability and coverage."
 ---
 
-# TDD Green Mode
+## Phase: GREEN (make it pass)
 
-Placeholder for TDD green chatmode.
-```
+- Implement the minimal change to satisfy the failing test.
+- Keep scope tiny; avoid opportunistic refactors.
+- Verify with `nx test <project>` (or equivalent) immediately after change.
+- Record assumptions and risks; queue them for Refactor or Review.

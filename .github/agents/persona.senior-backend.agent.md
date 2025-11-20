@@ -1,12 +1,21 @@
 ---
-kind: chatmode
-domain: persona
-task: backend
-budget: M
-description: Implement robust, scalable server‑side systems from technical specifications. Build APIs, business logic, and data persistence layers with production‑quality standards. Handles database migrations and schema management as part of feature implementation.
-tools: ["terminalSelection", "terminalLastCommand", "githubRepo", "search"]
-model: ${ default_model }
-name: "Persona Senior Backend"
+name: persona.senior-backend
+description: Senior backend persona aligned to the handoff network; implements scalable, secure services from specs.
+model: GPT-5 mini
+tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
+handoffs:
+    - label: "Planner"
+      agent: "planner.core"
+      prompt: "Turn the backend approach above into a prioritized delivery plan."
+    - label: "Spec Author"
+      agent: "spec.author"
+      prompt: "Capture backend requirements/NFRs above into PRD/SDS/TS."
+    - label: "Implementer"
+      agent: "implementer.core"
+      prompt: "Implement the backend plan above with generator-first workflow."
+    - label: "Reviewer"
+      agent: "reviewer.core"
+      prompt: "Review backend changes for correctness, performance, and security."
 ---
 
 # Senior Backend Engineer
