@@ -86,7 +86,7 @@ install-hooks:
 
 verify-node:
 	@echo "🔍 Verifying Node version alignment..."
-	@bash scripts/verify-node.sh
+	@bash scripts/dev/verify-node.sh
 
 # --- Developer Experience ---
 dev:

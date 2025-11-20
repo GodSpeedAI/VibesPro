@@ -5,12 +5,12 @@ set -euo pipefail
 echo "Testing Volta/mise version conflict detection..."
 
 # Test 1: verify-node script exists
-echo "  ✓ Checking for scripts/verify-node.sh..."
-assert_file_exists "scripts/verify-node.sh"
+echo "  ✓ Checking for scripts/dev/verify-node.sh..."
+assert_file_exists "scripts/dev/verify-node.sh"
 
 # Test 2: verify-node is executable or can be run with bash
 echo "  ✓ Verifying script is runnable..."
-if ! bash scripts/verify-node.sh >/dev/null 2>&1; then
+if ! bash scripts/dev/verify-node.sh >/dev/null 2>&1; then
   # Script may exit with error codes, that's OK for this test
   # We're just checking it runs
   :
@@ -27,7 +27,7 @@ fi
 echo "  ✓ Checking mise detection..."
 if [ -f ".mise.toml" ]; then
   # Run script and check it mentions mise
-  output=$(bash scripts/verify-node.sh 2>&1 || true)
+  output=$(bash scripts/dev/verify-node.sh 2>&1 || true)
   if ! echo "$output" | grep -qi "mise"; then
     echo "    ⚠️  Script should detect mise configuration"
   fi
@@ -56,7 +56,7 @@ EOF
 
 # Run verify script in temp dir (should fail due to mismatch)
 cd "$tmpdir"
-if bash "$OLDPWD/scripts/verify-node.sh" >/dev/null 2>&1; then
+if bash "$OLDPWD/scripts/dev/verify-node.sh" >/dev/null 2>&1; then
   echo "    ❌ Script should detect version mismatch (20.x vs 18.x)"
   exit 1
 else
@@ -86,7 +86,7 @@ EOF
 
 # Run verify script in temp dir (should pass - same major version)
 cd "$tmpdir2"
-if ! bash "$OLDPWD/scripts/verify-node.sh" >/dev/null 2>&1; then
+if ! bash "$OLDPWD/scripts/dev/verify-node.sh" >/dev/null 2>&1; then
   echo "    ⚠️  Script should allow same major version (20.x)"
 fi
 
@@ -111,7 +111,7 @@ EOF
 
 # Should pass - no Volta section
 cd "$tmpdir3"
-if ! bash "$OLDPWD/scripts/verify-node.sh" >/dev/null 2>&1; then
+if ! bash "$OLDPWD/scripts/dev/verify-node.sh" >/dev/null 2>&1; then
   echo "    ❌ Script should pass when only mise is configured"
   exit 1
 fi
@@ -122,7 +122,7 @@ cd "$OLDPWD"
 echo "  ✓ Verifying current project configuration..."
 if [ -f ".mise.toml" ] && [ -f "package.json" ]; then
   # Run on actual project
-  if bash scripts/verify-node.sh >/dev/null 2>&1; then
+  if bash scripts/dev/verify-node.sh >/dev/null 2>&1; then
     echo "    ✅ Current project configuration is valid"
   else
     echo "    ⚠️  Current project has version mismatch - run 'just verify-node' to see details"

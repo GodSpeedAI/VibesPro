@@ -77,12 +77,12 @@ jobs:
       - name: "Devbox: validate overlay pin (supabase)"
         run: |
           set -euo pipefail
-          bash scripts/validate_supabase_overlay_pin.sh
+          bash scripts/dev/validate_supabase_overlay_pin.sh
 
       - name: "Devbox: check supabase availability"
         run: |
           set -euo pipefail
-          bash scripts/check_supabase_in_devbox.sh
+          bash scripts/dev/check_supabase_in_devbox.sh
 
       - name: Install Node dependencies
         run: pnpm install --frozen-lockfile
