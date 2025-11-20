@@ -10,154 +10,164 @@ This matrix tracks all specification IDs across the project, organized by subdir
 
 ## 📁 Ai_workflow Specifications
 
-| Spec ID       | Artifacts                        | Status     | Notes |
-| ------------- | -------------------------------- | ---------- | ----- |
-| `DEV-ADR-001` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-ADR-002` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-ADR-003` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-ADR-004` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-ADR-006` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-ADR-007` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-ADR-009` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-ADR-010` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-ADR-018` | `ai_workflow/ai_workflow.adr.md` | referenced |       |
-| `DEV-PRD-001` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
-| `DEV-PRD-002` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
-| `DEV-PRD-003` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
-| `DEV-PRD-004` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
-| `DEV-PRD-006` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
-| `DEV-PRD-007` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
-| `DEV-PRD-009` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
-| `DEV-PRD-010` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
-| `DEV-PRD-032` | `ai_workflow/ai_workflow.prd.md` | referenced |       |
+| Spec ID       | Artifacts                                                                                                                        | Status     | Notes |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----- |
+| `DEV-ADR-001` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
+| `DEV-ADR-002` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
+| `DEV-ADR-003` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
+| `DEV-ADR-004` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
+| `DEV-ADR-006` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
+| `DEV-ADR-007` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
+| `DEV-ADR-009` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
+| `DEV-ADR-010` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`traceability_matrix.md`                                 | referenced |       |
+| `DEV-ADR-018` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`traceability_matrix.md`                                 | referenced |       |
+| `DEV-PRD-002` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
+| `DEV-PRD-003` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
+| `DEV-PRD-004` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
+| `DEV-PRD-006` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                               | referenced |       |
+| `DEV-PRD-007` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
+| `DEV-PRD-009` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
+| `DEV-PRD-010` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
+| `DEV-PRD-020` | `ai_workflow/ai_workflow.adr.md`<br>`core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                         | referenced |       |
+| `DEV-PRD-032` | `ai_workflow/ai_workflow.prd.md`<br>`traceability_matrix.md`                                                                     | referenced |       |
+| `DEV-SDS-009` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
+| `DEV-SDS-020` | `ai_workflow/ai_workflow.adr.md`<br>`core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                         | referenced |       |
+| `DEV-SDS-021` | `ai_workflow/ai_workflow.prd.md`<br>`generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md` | referenced |       |
+| `DEV-SDS-022` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                         | referenced |       |
+| `PRD-019`     | `ai_workflow/ai_workflow.prd.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                   | referenced |       |
 
-**Total**: 18 specification(s)
+**Total**: 23 specification(s)
 
 
 ## 📁 Core Specifications
 
-| Spec ID       | Artifacts          | Status     | Notes |
-| ------------- | ------------------ | ---------- | ----- |
-| `DEV-ADR-020` | `core/core.adr.md` | referenced |       |
-| `DEV-ADR-022` | `core/core.adr.md` | referenced |       |
-| `DEV-ADR-024` | `core/core.adr.md` | referenced |       |
-| `DEV-ADR-025` | `core/core.adr.md` | referenced |       |
-| `DEV-ADR-029` | `core/core.adr.md` | referenced |       |
-| `DEV-PRD-020` | `core/core.prd.md` | referenced |       |
-| `DEV-PRD-022` | `core/core.prd.md` | referenced |       |
-| `DEV-PRD-023` | `core/core.prd.md` | referenced |       |
-| `DEV-PRD-025` | `core/core.prd.md` | referenced |       |
-| `DEV-PRD-026` | `core/core.prd.md` | referenced |       |
-| `DEV-PRD-030` | `core/core.prd.md` | referenced |       |
-| `DEV-PRD-031` | `core/core.prd.md` | referenced |       |
-| `DEV-SDS-001` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-002` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-003` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-004` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-006` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-007` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-008` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-009` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-016` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-019` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-020` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-022` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-024` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-025` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-029` | `core/core.sds.md` | referenced |       |
-| `DEV-SDS-030` | `core/core.sds.md` | referenced |       |
+| Spec ID       | Artifacts                                                                                                                                                                                          | Status     | Notes |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----- |
+| `ADR-006`     | `core/core.adr.md`<br>`traceability_matrix.md`                                                                                                                                                     | referenced |       |
+| `ADR-008`     | `core/core.adr.md`<br>`traceability_matrix.md`                                                                                                                                                     | referenced |       |
+| `ADR-010`     | `core/core.adr.md`<br>`traceability_matrix.md`                                                                                                                                                     | referenced |       |
+| `DEV-ADR-005` | `core/core.spec.md`<br>`security/security.adr.md`<br>`security/security.prd.md`<br>`traceability_matrix.md`                                                                                        | referenced |       |
+| `DEV-ADR-008` | `core/core.spec.md`<br>`generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                                                | referenced |       |
+| `DEV-ADR-019` | `core/core.adr.md`<br>`core/core.prd.md`<br>`core/core.sds.md`<br>`environment/environment.adr.md`<br>`generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md` | referenced |       |
+| `DEV-ADR-020` | `core/core.adr.md`<br>`core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                         | referenced |       |
+| `DEV-ADR-022` | `core/core.adr.md`<br>`core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                         | referenced |       |
+| `DEV-ADR-024` | `core/core.adr.md`<br>`core/core.prd.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-ADR-025` | `core/core.adr.md`<br>`core/core.prd.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-ADR-026` | `core/core.prd.md`<br>`environment/environment.adr.md`<br>`environment/environment.prd.md`<br>`traceability_matrix.md`                                                                             | referenced |       |
+| `DEV-ADR-029` | `core/core.adr.md`<br>`core/core.prd.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-PRD-005` | `core/core.sds.md`<br>`core/core.spec.md`<br>`security/security.prd.md`<br>`traceability_matrix.md`                                                                                                | referenced |       |
+| `DEV-PRD-008` | `core/core.sds.md`<br>`core/core.spec.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                                                            | referenced |       |
+| `DEV-PRD-011` | `core/core.sds.md`<br>`environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                                                                             | referenced |       |
+| `DEV-PRD-019` | `core/core.sds.md`<br>`generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                                                 | referenced |       |
+| `DEV-PRD-022` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-PRD-023` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-PRD-025` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-PRD-026` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-PRD-030` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-PRD-031` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-SDS-001` | `core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                                                              | referenced |       |
+| `DEV-SDS-002` | `core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                                                              | referenced |       |
+| `DEV-SDS-003` | `core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                                                              | referenced |       |
+| `DEV-SDS-004` | `core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                                                              | referenced |       |
+| `DEV-SDS-006` | `core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                                                              | referenced |       |
+| `DEV-SDS-007` | `core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                                                              | referenced |       |
+| `DEV-SDS-008` | `core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                                                              | referenced |       |
+| `DEV-SDS-016` | `core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                                                     | referenced |       |
+| `DEV-SDS-019` | `core/core.prd.md`<br>`core/core.sds.md`<br>`generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                           | referenced |       |
+| `DEV-SDS-024` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-SDS-025` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-SDS-029` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `DEV-SDS-030` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `SDS-009`     | `core/core.adr.md`<br>`traceability_matrix.md`                                                                                                                                                     | referenced |       |
 
-**Total**: 28 specification(s)
+**Total**: 36 specification(s)
 
 
 ## 📁 Environment Specifications
 
-| Spec ID       | Artifacts                        | Status     | Notes |
-| ------------- | -------------------------------- | ---------- | ----- |
-| `DEV-ADR-011` | `environment/environment.adr.md` | referenced |       |
-| `DEV-ADR-012` | `environment/environment.adr.md` | referenced |       |
-| `DEV-ADR-014` | `environment/environment.adr.md` | referenced |       |
-| `DEV-ADR-015` | `environment/environment.adr.md` | referenced |       |
-| `DEV-ADR-026` | `environment/environment.adr.md` | referenced |       |
-| `DEV-ADR-027` | `environment/environment.adr.md` | referenced |       |
-| `DEV-PRD-011` | `environment/environment.prd.md` | referenced |       |
-| `DEV-PRD-012` | `environment/environment.prd.md` | referenced |       |
-| `DEV-PRD-014` | `environment/environment.prd.md` | referenced |       |
-| `DEV-PRD-015` | `environment/environment.prd.md` | referenced |       |
-| `DEV-PRD-016` | `environment/environment.prd.md` | referenced |       |
-| `DEV-PRD-027` | `environment/environment.prd.md` | referenced |       |
-| `DEV-PRD-028` | `environment/environment.prd.md` | referenced |       |
-| `DEV-SDS-010` | `environment/environment.sds.md` | referenced |       |
-| `DEV-SDS-011` | `environment/environment.sds.md` | referenced |       |
-| `DEV-SDS-013` | `environment/environment.sds.md` | referenced |       |
-| `DEV-SDS-014` | `environment/environment.sds.md` | referenced |       |
-| `DEV-SDS-015` | `environment/environment.sds.md` | referenced |       |
-| `DEV-SDS-026` | `environment/environment.sds.md` | referenced |       |
-| `DEV-SDS-027` | `environment/environment.sds.md` | referenced |       |
+| Spec ID       | Artifacts                                                                                                                      | Status     | Notes |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------- | ----- |
+| `ADR-014`     | `environment/environment.adr.md`<br>`traceability_matrix.md`                                                                   | referenced |       |
+| `ADR-015`     | `environment/environment.adr.md`<br>`traceability_matrix.md`                                                                   | referenced |       |
+| `DEV-ADR-011` | `environment/environment.adr.md`<br>`environment/environment.prd.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-ADR-012` | `environment/environment.adr.md`<br>`environment/environment.prd.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-ADR-013` | `environment/environment.prd.md`<br>`security/security.adr.md`<br>`security/security.prd.md`<br>`traceability_matrix.md`       | referenced |       |
+| `DEV-ADR-014` | `environment/environment.adr.md`<br>`environment/environment.prd.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-ADR-015` | `environment/environment.adr.md`<br>`traceability_matrix.md`                                                                   | referenced |       |
+| `DEV-ADR-027` | `environment/environment.adr.md`<br>`environment/environment.prd.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-PRD-012` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-PRD-014` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-PRD-015` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`security/security.sds.md`<br>`traceability_matrix.md` | referenced |       |
+| `DEV-PRD-016` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-PRD-027` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-PRD-028` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-SDS-010` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-SDS-011` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-SDS-013` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-SDS-014` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-SDS-015` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-SDS-026` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
+| `DEV-SDS-027` | `environment/environment.prd.md`<br>`environment/environment.sds.md`<br>`traceability_matrix.md`                               | referenced |       |
 
-**Total**: 20 specification(s)
+**Total**: 21 specification(s)
 
 
 ## 📁 Generators Specifications
 
-| Spec ID       | Artifacts                      | Status     | Notes |
-| ------------- | ------------------------------ | ---------- | ----- |
-| `DEV-ADR-008` | `generators/generators.adr.md` | referenced |       |
-| `DEV-ADR-019` | `generators/generators.adr.md` | referenced |       |
-| `DEV-ADR-021` | `generators/generators.adr.md` | referenced |       |
-| `DEV-ADR-023` | `generators/generators.adr.md` | referenced |       |
-| `DEV-ADR-028` | `generators/generators.adr.md` | referenced |       |
-| `DEV-PRD-008` | `generators/generators.prd.md` | referenced |       |
-| `DEV-PRD-019` | `generators/generators.prd.md` | referenced |       |
-| `DEV-PRD-021` | `generators/generators.prd.md` | referenced |       |
-| `DEV-PRD-024` | `generators/generators.prd.md` | referenced |       |
-| `DEV-PRD-029` | `generators/generators.prd.md` | referenced |       |
-| `DEV-SDS-021` | `generators/generators.sds.md` | referenced |       |
-| `DEV-SDS-023` | `generators/generators.sds.md` | referenced |       |
-| `DEV-SDS-028` | `generators/generators.sds.md` | referenced |       |
+| Spec ID       | Artifacts                                                                                                                                                                          | Status     | Notes |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----- |
+| `ADR-007`     | `generators/generators.adr.md`<br>`traceability_matrix.md`                                                                                                                         | referenced |       |
+| `ADR-012`     | `generators/generators.adr.md`<br>`traceability_matrix.md`                                                                                                                         | referenced |       |
+| `DEV-ADR-017` | `generators/generators.prd.md`<br>`observability/observability.adr.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md`                                         | referenced |       |
+| `DEV-ADR-021` | `generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                     | referenced |       |
+| `DEV-ADR-023` | `generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
+| `DEV-ADR-028` | `generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
+| `DEV-PRD-017` | `generators/generators.prd.md`<br>`observability/observability.adr.md`<br>`observability/observability.prd.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md` | referenced |       |
+| `DEV-PRD-021` | `generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
+| `DEV-PRD-024` | `generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
+| `DEV-PRD-029` | `generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
+| `DEV-SDS-023` | `generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
+| `DEV-SDS-028` | `generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
 
-**Total**: 13 specification(s)
+**Total**: 12 specification(s)
 
 
 ## 📁 Observability Specifications
 
-| Spec ID       | Artifacts                            | Status     | Notes |
-| ------------- | ------------------------------------ | ---------- | ----- |
-| `DEV-ADR-016` | `observability/observability.adr.md` | referenced |       |
-| `DEV-ADR-017` | `observability/observability.adr.md` | referenced |       |
-| `DEV-PRD-017` | `observability/observability.prd.md` | referenced |       |
-| `DEV-SDS-017` | `observability/observability.sds.md` | referenced |       |
-| `DEV-SDS-018` | `observability/observability.sds.md` | referenced |       |
+| Spec ID       | Artifacts                                                                                                                                        | Status     | Notes |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ----- |
+| `DEV-SDS-017` | `observability/observability.adr.md`<br>`observability/observability.prd.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md` | referenced |       |
+| `PRD-017`     | `observability/observability.prd.md`<br>`traceability_matrix.md`                                                                                 | referenced |       |
+| `PRD-018`     | `observability/observability.prd.md`<br>`traceability_matrix.md`                                                                                 | referenced |       |
 
-**Total**: 5 specification(s)
+**Total**: 3 specification(s)
 
 
 ## 📁 Security Specifications
 
-| Spec ID       | Artifacts                  | Status     | Notes |
-| ------------- | -------------------------- | ---------- | ----- |
-| `DEV-ADR-005` | `security/security.adr.md` | referenced |       |
-| `DEV-ADR-013` | `security/security.adr.md` | referenced |       |
-| `DEV-PRD-005` | `security/security.prd.md` | referenced |       |
-| `DEV-PRD-013` | `security/security.prd.md` | referenced |       |
-| `DEV-SDS-012` | `security/security.sds.md` | referenced |       |
+| Spec ID       | Artifacts                                                                            | Status     | Notes |
+| ------------- | ------------------------------------------------------------------------------------ | ---------- | ----- |
+| `DEV-PRD-013` | `security/security.prd.md`<br>`security/security.sds.md`<br>`traceability_matrix.md` | referenced |       |
+| `DEV-SDS-012` | `security/security.prd.md`<br>`security/security.sds.md`<br>`traceability_matrix.md` | referenced |       |
 
-**Total**: 5 specification(s)
+**Total**: 2 specification(s)
 
 
 ## 📋 Unsorted Specifications
 
-| Spec ID       | Artifacts                                                                   | Status     | Notes |
-| ------------- | --------------------------------------------------------------------------- | ---------- | ----- |
-| `DEV-PRD-018` | `ai-system-profile-architecture.md`<br>`observability/observability.prd.md` | referenced |       |
-| `DEV-SDS-005` | `ai-system-profile-architecture.md`<br>`core/core.sds.md`                   | referenced |       |
+| Spec ID       | Artifacts                                                                                                                                                                                         | Status     | Notes |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----- |
+| `DEV-ADR-016` | `README.md`<br>`generators/generators.prd.md`<br>`observability/observability.adr.md`<br>`observability/observability.prd.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md` | referenced |       |
+| `DEV-PRD-001` | `README.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                          | referenced |       |
+| `DEV-PRD-018` | `ai-system-profile-architecture.md`<br>`observability/observability.adr.md`<br>`observability/observability.prd.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md`           | referenced |       |
+| `DEV-SDS-005` | `ai-system-profile-architecture.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                      | referenced |       |
+| `DEV-SDS-018` | `README.md`<br>`generators/generators.prd.md`<br>`observability/observability.adr.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md`                                         | referenced |       |
 
-**Total**: 2 specification(s)
+**Total**: 5 specification(s)
 
 ---
 
 ## 📊 Summary
 
-- **Total Specifications**: 91
+- **Total Specifications**: 102
 - **Subdirectories**: 7
-

@@ -8,7 +8,7 @@ Principle: OS dependencies are reproducible and never depend on host state.
 
 Design:
 
-devbox.json defines OS utilities (git, curl, jq, make, ffmpeg, postgresql-client, optional uv).
+devbox.json defines OS utilities (git, curl, jq, make, postgresql-client, optional uv).
 
 Developer flow: devbox shell → all subsequent commands execute inside this parent shell.
 

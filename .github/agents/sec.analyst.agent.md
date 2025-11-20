@@ -1,4 +1,5 @@
 ---
+model: GPT-5 mini
 name: sec.analyst
 description: Security analysis chatmode that routes work to the Security Agent for remediations.
 tools: ["runCommands", "runTasks", "runTests", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]

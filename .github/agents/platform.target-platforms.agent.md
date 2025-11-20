@@ -1,4 +1,5 @@
 ---
+model: GPT-5 mini
 name: platform.strategy
 description: Evaluate target platforms and tech stacks; feed decisions into product and spec workflows.
 tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]

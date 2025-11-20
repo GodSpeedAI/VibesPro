@@ -37,7 +37,7 @@ Examples:
 
 1. **By Domain**: Navigate to the relevant domain folder (e.g., `observability/` for logging specs)
 2. **By ID**: Use the traceability matrix: `docs/traceability_matrix.md`
-3. **By Search**: Run `grep -r "DEV-PRD-018" docs/specs/`
+3. **By Search**: Run `grep -r "DEV-PRD-XXX" docs/specs/`
 
 ## Traceability
 

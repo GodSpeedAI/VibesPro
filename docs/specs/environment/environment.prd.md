@@ -6,7 +6,7 @@
 
 Description: As a developer, I want a reproducible OS-level toolchain so that builds and scripts behave identically across machines.
 
-EARS: When I enter the project using a standard command, the system shall provide OS utilities (e.g., git, curl, jq, make, ffmpeg, postgresql-client) without host installation steps.
+EARS: When I enter the project using a standard command, the system shall provide OS utilities (e.g., git, curl, jq, make, postgresql-client) without host installation steps.
 
 DX Metrics: “First successful build” on a fresh machine ≤ 10 minutes; zero host package installs documented.
 

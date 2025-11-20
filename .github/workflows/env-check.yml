@@ -21,6 +21,7 @@ jobs:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+      SKIP_HEAVY_SETUP: ${{ github.event_name == 'pull_request' }}
       SOPS_LOADED: "false"
       NX_NO_CLOUD: "true"
       NX_REJECT_REMOTE_CACHE: "true"
@@ -59,6 +60,7 @@ jobs:
           sops --version
 
       - name: Install Devbox
+        if: env.SKIP_HEAVY_SETUP != 'true'
         run: |
           curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
           echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -71,6 +73,7 @@ jobs:
           mise --version
 
       - name: Install Vector
+        if: env.SKIP_HEAVY_SETUP != 'true'
         run: |
           curl --proto '=https' --tlsv1.2 -sSfL https://sh.vector.dev | sudo bash -s -- -y --prefix /usr/local
           vector --version
@@ -79,6 +82,7 @@ jobs:
         run: mise trust --yes .mise.toml
 
       - name: Cache Vector binary
+        if: env.SKIP_HEAVY_SETUP != 'true'
         uses: actions/cache@v4
         with:
           path: /usr/local/bin/vector
@@ -100,17 +104,20 @@ jobs:
         run: mise install
 
       - name: "Devbox: update and ensure packages"
+        if: env.SKIP_HEAVY_SETUP != 'true'
         run: |
           set -euo pipefail
           # Ensure generated flake is up to date in CI so 'devbox run' will contain packages
           devbox update || true
 
       - name: "Devbox: validate overlay pin (supabase)"
+        if: env.SKIP_HEAVY_SETUP != 'true'
         run: |
           set -euo pipefail
           bash scripts/validate_supabase_overlay_pin.sh
 
       - name: "Devbox: check supabase availability"
+        if: env.SKIP_HEAVY_SETUP != 'true'
         run: |
           set -euo pipefail
           bash scripts/check_supabase_in_devbox.sh

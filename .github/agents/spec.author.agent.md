@@ -1,4 +1,5 @@
 ---
+model: GPT-5 mini
 name: spec.author
 description: Consolidated spec author for PRD/SDS/TS (includes functional, NFR, lean/wide modes) with traceability and MCP grounding.
 tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]

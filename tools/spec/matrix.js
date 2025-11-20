@@ -137,15 +137,18 @@ function buildMatrix(rootDir) {
     const contentIds = extractIdsFromFile(f);
     for (const specId of contentIds) {
       // Uniqueness check: Ensure ID is defined in only one spec file
-      if (idSourceMap.has(specId.id) && idSourceMap.get(specId.id) !== f) {
-        throw new Error(
-          `Duplicate Spec ID definition found: ${specId.id} in ${path.relative(
-            rootDir,
-            f,
-          )} and ${path.relative(rootDir, idSourceMap.get(specId.id))}`,
-        );
+      // Only enforce uniqueness for definitions (headers), not references
+      if (specId.isDefinition) {
+        if (idSourceMap.has(specId.id) && idSourceMap.get(specId.id) !== f) {
+          throw new Error(
+            `Duplicate Spec ID definition found: ${specId.id} in ${path.relative(
+              rootDir,
+              f,
+            )} and ${path.relative(rootDir, idSourceMap.get(specId.id))}`,
+          );
+        }
+        idSourceMap.set(specId.id, f);
       }
-      idSourceMap.set(specId.id, f);
 
       addSpecIdToMatrix(rows, specId, f, rootDir, specsDir);
     }
@@ -265,7 +268,7 @@ This matrix tracks all specification IDs across the project, organized by subdir
 
 `;
 
-  const content = banner + table + summary;
+  const content = (banner + table + summary).trim() + '\n';
   const existing = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
 
   if (existing !== content) {

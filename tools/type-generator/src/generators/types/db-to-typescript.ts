@@ -9,8 +9,9 @@ import {
 } from 'fs';
 import { dirname, isAbsolute, join, normalize, parse, relative, resolve } from 'path';
 
-// Import pathSecurity utilities from the JavaScript file directly
-import * as pathSecurity from '../../../utils/pathSecurity';
+// Import pathSecurity utilities from the JavaScript file directly (outside dist output)
+
+const pathSecurity = require(resolve(process.cwd(), 'tools/type-generator/utils/pathSecurity.js'));
 const { assertFilenameSafe, isPathSafe, resolvePathWithinWorkspace, sanitizePathInput } =
   pathSecurity;
 
@@ -29,6 +30,19 @@ interface TableDef {
 interface DbSchema {
   tables?: Record<string, TableDef>;
   [k: string]: unknown;
+}
+
+function singularize(name: string): string {
+  if (name.endsWith('ies')) {
+    return `${name.slice(0, -3)}y`;
+  }
+  if (name.endsWith('ses')) {
+    return name.slice(0, -2);
+  }
+  if (name.endsWith('s') && name.length > 1) {
+    return name.slice(0, -1);
+  }
+  return name;
 }
 
 const WORKSPACE_MARKERS = ['nx.json', 'pnpm-workspace.yaml', '.git'];
@@ -230,7 +244,7 @@ export class DbToTypeScript {
     if (!schema.tables || typeof schema.tables !== 'object') return types;
 
     for (const [tableName, tableDefRaw] of Object.entries(schema.tables)) {
-      const className = toPascalCase(tableName);
+      const className = toPascalCase(singularize(tableName));
       const fields: Record<string, string> = {};
 
       const tableDef = (tableDefRaw as TableDef) || {};
@@ -334,14 +348,14 @@ export class DbToTypeScript {
         `${className} type file`,
       );
 
-      let content = `// Auto-generated TypeScript types for ${className}\n`;
+      let content = `// Auto-generated TypeScript types\n`;
       content += `export interface ${className} {\n`;
 
       for (const [fieldName, fieldType] of Object.entries(fields)) {
         content += `  ${fieldName}: ${fieldType};\n`;
       }
 
-      content += '}\n\n';
+      content += '}\n';
 
       // Check file size before writing
       const contentSize = Buffer.byteLength(content, 'utf8');
