@@ -79,11 +79,24 @@ const modelsPath = path.join(repoRoot, '.github', 'models.yaml');
 const models = loadModels(modelsPath);
 console.log('Loaded models:', Object.keys(models));
 
-const chatDir = path.join(repoRoot, '.github', 'chatmodes');
-const files = fs.readdirSync(chatDir).filter((f) => f.endsWith('.chatmode.md'));
+const agentsDir = path.join(repoRoot, '.github', 'agents');
+
+// Check if agents directory exists (migrated from chatmodes)
+if (!fs.existsSync(agentsDir)) {
+  console.error('[FAIL] .github/agents directory not found. Expected after migration from chatmodes.');
+  process.exit(1);
+}
+
+const files = fs.readdirSync(agentsDir).filter((f) => f.endsWith('.agent.md'));
+
+if (files.length === 0) {
+  console.log('[INFO] No .agent.md files found in .github/agents directory');
+  process.exit(0);
+}
+
 let failed = false;
 for (const f of files) {
-  const fp = path.join(chatDir, f);
+  const fp = path.join(agentsDir, f);
   const parsed = extractModelFromFile(fp);
   if (!parsed) {
     console.error(`[FAIL] ${fp}: no frontmatter detected`);

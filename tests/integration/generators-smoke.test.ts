@@ -1,4 +1,4 @@
-import { spawnSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -50,7 +50,6 @@ describe('Generators Smoke Test', () => {
     console.log('\nGenerated files:', readdirSync(workspaceRoot));
 
     // List all files recursively to debug
-    const { execSync } = require('child_process');
     try {
       const allFiles = execSync(`find ${workspaceRoot} -type f | head -50`, { encoding: 'utf-8' });
       console.log('\nFirst 50 files generated:\n', allFiles);
