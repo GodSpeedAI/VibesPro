@@ -1,4 +1,4 @@
-/* Generate/update docs/traceability_matrix.md by scanning docs for Spec IDs.
+/* Generate/update docs/specs/traceability_matrix.md by scanning docs/specs for Spec IDs.
 Implements: PRD-002/PRD-007; SDS-003 */
 const fs = require('node:fs');
 const path = require('node:path');
@@ -106,7 +106,7 @@ function gatherMarkdownFiles(root) {
 }
 
 // Add spec ID to matrix row
-function addSpecIdToMatrix(rows, specId, filePath, rootDir) {
+function addSpecIdToMatrix(rows, specId, filePath, rootDir, specsDir) {
   if (!validateIdFormat(specId.id)) return;
 
   const row = rows.get(specId.id) || {
@@ -114,12 +114,16 @@ function addSpecIdToMatrix(rows, specId, filePath, rootDir) {
     status: 'referenced',
     notes: '',
   };
-  row.artifacts.add(path.relative(rootDir, specId.source || filePath));
+
+  // Get the relative path from specs directory
+  const relativePath = path.relative(specsDir, specId.source || filePath);
+  row.artifacts.add(relativePath);
   rows.set(specId.id, row);
 }
 
 function buildMatrix(rootDir) {
-  const files = gatherMarkdownFiles(path.join(rootDir, 'docs/specs'));
+  const specsDir = path.join(rootDir, 'docs/specs');
+  const files = gatherMarkdownFiles(specsDir);
   const rows = new Map(); // id -> { artifacts: Set, status, notes }
   const idSourceMap = new Map(); // id -> filePath (for uniqueness check)
 
@@ -127,8 +131,7 @@ function buildMatrix(rootDir) {
     // Extract IDs from content (existing functionality)
     const contentIds = extractIdsFromFile(f);
     for (const specId of contentIds) {
-      // Uniqueness check: Ensure ID is defined in only one spec file (ignoring references in other docs if we were scanning all docs, but here we scan specs)
-      // Actually, extractIdsFromFile finds *definitions* (headers), so duplicates are errors.
+      // Uniqueness check: Ensure ID is defined in only one spec file
       if (idSourceMap.has(specId.id) && idSourceMap.get(specId.id) !== f) {
         throw new Error(
           `Duplicate Spec ID definition found: ${specId.id} in ${path.relative(
@@ -139,13 +142,13 @@ function buildMatrix(rootDir) {
       }
       idSourceMap.set(specId.id, f);
 
-      addSpecIdToMatrix(rows, specId, f, rootDir);
+      addSpecIdToMatrix(rows, specId, f, rootDir, specsDir);
     }
 
     // Extract IDs from frontmatter matrix_ids
     const frontmatterIds = extractIdsFromFrontmatter(f);
     for (const specId of frontmatterIds) {
-      addSpecIdToMatrix(rows, specId, f, rootDir);
+      addSpecIdToMatrix(rows, specId, f, rootDir, specsDir);
     }
   }
 
@@ -158,30 +161,106 @@ function buildMatrix(rootDir) {
   }));
 }
 
+// Group specs by subdirectory for better organization
+function groupBySubdirectory(rows) {
+  const groups = new Map();
+
+  for (const row of rows) {
+    // Get the subdirectory from the first artifact
+    const firstArtifact = row.artifacts[0] || '';
+    const parts = firstArtifact.split(path.sep);
+    const subdir = parts.length > 1 ? parts[0] : 'unsorted';
+
+    if (!groups.has(subdir)) {
+      groups.set(subdir, []);
+    }
+    groups.get(subdir).push(row);
+  }
+
+  // Sort groups alphabetically, but put 'unsorted' last
+  const sortedGroups = [...groups.entries()].sort((a, b) => {
+    if (a[0] === 'unsorted') return 1;
+    if (b[0] === 'unsorted') return -1;
+    return a[0].localeCompare(b[0]);
+  });
+
+  return sortedGroups;
+}
+
 function renderMatrixTable(rows) {
-  const header = ['Spec ID', 'Artifacts', 'Status', 'Notes'];
-  const dataRows = rows.map((r) => [r.id, r.artifacts.join('<br>'), r.status ?? '', r.notes ?? '']);
+  const groupedSpecs = groupBySubdirectory(rows);
+  const sections = [];
 
-  const widths = header.map((colHeader, idx) =>
-    Math.max(colHeader.length, ...dataRows.map((row) => (row[idx] ?? '').length)),
-  );
+  for (const [subdir, groupRows] of groupedSpecs) {
+    // Create section header
+    const sectionTitle =
+      subdir === 'unsorted'
+        ? '📋 Unsorted Specifications'
+        : `📁 ${subdir.charAt(0).toUpperCase() + subdir.slice(1)} Specifications`;
 
-  const formatRow = (cells) =>
-    `| ${cells.map((cell, idx) => (cell ?? '').padEnd(widths[idx], ' ')).join(' | ')} |`;
+    sections.push(`\n## ${sectionTitle}\n`);
 
-  const separator = `| ${widths.map((w) => '-'.repeat(w)).join(' | ')} |`;
-  const formattedRows = dataRows.map(formatRow);
+    // Create table for this section
+    const header = ['Spec ID', 'Artifacts', 'Status', 'Notes'];
+    const dataRows = groupRows.map((r) => [
+      `\`${r.id}\``,
+      r.artifacts.map((a) => `\`${a}\``).join('<br>'),
+      r.status ?? '',
+      r.notes ?? '',
+    ]);
 
-  return [formatRow(header), separator, ...formattedRows].join('\n');
+    const widths = header.map((colHeader, idx) =>
+      Math.max(colHeader.length, ...dataRows.map((row) => (row[idx] ?? '').length)),
+    );
+
+    const formatRow = (cells) =>
+      `| ${cells.map((cell, idx) => (cell ?? '').padEnd(widths[idx], ' ')).join(' | ')} |`;
+
+    const separator = `| ${widths.map((w) => '-'.repeat(w)).join(' | ')} |`;
+    const formattedRows = dataRows.map(formatRow);
+
+    sections.push([formatRow(header), separator, ...formattedRows].join('\n'));
+    sections.push(`\n**Total**: ${groupRows.length} specification(s)\n`);
+  }
+
+  return sections.join('\n');
 }
 
 function updateMatrixFile(rootDir) {
   const rows = buildMatrix(rootDir);
   const table = renderMatrixTable(rows);
-  const file = path.join(rootDir, 'docs', 'traceability_matrix.md');
-  const banner =
-    '# Traceability Matrix\n\nNote: This file is generated/updated by tools/spec/matrix.js. Do not edit manually.\n\n';
-  const content = banner + table + '\n';
+  const file = path.join(rootDir, 'docs', 'specs', 'traceability_matrix.md');
+
+  const banner = `# 🔍 Traceability Matrix
+
+> **Note**: This file is auto-generated by \`tools/spec/matrix.js\`. Do not edit manually.
+>
+> **Last Updated**: ${new Date().toISOString().split('T')[0]}
+
+This matrix tracks all specification IDs across the project, organized by subdirectory for easy navigation.
+
+---
+`;
+
+  const summary = `
+---
+
+## 📊 Summary
+
+- **Total Specifications**: ${rows.length}
+- **Subdirectories**: ${
+    new Set(
+      rows.map((r) => {
+        const firstArtifact = r.artifacts[0] || '';
+        const parts = firstArtifact.split(path.sep);
+        return parts.length > 1 ? parts[0] : 'unsorted';
+      }),
+    ).size
+  }
+
+`;
+
+  const content = banner + table + summary;
   const existing = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
 
   if (existing !== content) {
