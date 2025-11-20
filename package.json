@@ -1,6 +1,6 @@
 {
   "name": "vibes-pro",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Unified generator-first platform combining HexDDD and VibePDK",
   "type": "module",
   "scripts": {
@@ -56,10 +56,10 @@
     "ajv": "^8.17.1",
     "eslint": "^9.38.0",
     "eslint-config-next": "^16.0.0",
-    "glob": "^11.0.3",
+    "glob": "^11.1.0",
     "jest": "^30.1.3",
     "jest-extended": "^6.0.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "markdownlint": "^0.36.0",
     "markdownlint-cli": "^0.36.0",
     "next": "^16.0.0",
