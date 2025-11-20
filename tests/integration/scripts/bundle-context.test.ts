@@ -49,7 +49,7 @@ describe('bundle-context.sh script', () => {
   });
 
   it('should exist and be executable', async () => {
-    const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
+    const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
 
     try {
       const stats = await fs.stat(scriptPath);
@@ -64,11 +64,11 @@ describe('bundle-context.sh script', () => {
   });
 
   it('should create output directory when executed', async () => {
-    const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
+    const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
 
     // Copy script to test workspace
     const scriptContent = await fs.readFile(scriptPath, 'utf-8');
-    const testScriptPath = join(testWorkspace, 'scripts', 'bundle-context.sh');
+    const testScriptPath = join(testWorkspace, 'scripts', 'dev', 'bundle-context.sh');
     await fs.writeFile(testScriptPath, scriptContent);
     await fs.chmod(testScriptPath, 0o755);
 
@@ -89,9 +89,9 @@ describe('bundle-context.sh script', () => {
   });
 
   it('should collect spec files with prefix', async () => {
-    const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
+    const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
     const scriptContent = await fs.readFile(scriptPath, 'utf-8');
-    const testScriptPath = join(testWorkspace, 'scripts', 'bundle-context.sh');
+    const testScriptPath = join(testWorkspace, 'scripts', 'dev', 'bundle-context.sh');
     await fs.writeFile(testScriptPath, scriptContent);
     await fs.chmod(testScriptPath, 0o755);
 
@@ -113,9 +113,9 @@ describe('bundle-context.sh script', () => {
   });
 
   it('should copy CALM architecture directory', async () => {
-    const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
+    const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
     const scriptContent = await fs.readFile(scriptPath, 'utf-8');
-    const testScriptPath = join(testWorkspace, 'scripts', 'bundle-context.sh');
+    const testScriptPath = join(testWorkspace, 'scripts', 'dev', 'bundle-context.sh');
     await fs.writeFile(testScriptPath, scriptContent);
     await fs.chmod(testScriptPath, 0o755);
 
@@ -136,9 +136,9 @@ describe('bundle-context.sh script', () => {
   });
 
   it('should copy techstack.yaml if present', async () => {
-    const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
+    const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
     const scriptContent = await fs.readFile(scriptPath, 'utf-8');
-    const testScriptPath = join(testWorkspace, 'scripts', 'bundle-context.sh');
+    const testScriptPath = join(testWorkspace, 'scripts', 'dev', 'bundle-context.sh');
     await fs.writeFile(testScriptPath, scriptContent);
     await fs.chmod(testScriptPath, 0o755);
 
@@ -163,9 +163,9 @@ describe('bundle-context.sh script', () => {
     const minimalWorkspace = await fs.mkdtemp(join(tmpdir(), 'minimal-test-'));
     await fs.mkdir(join(minimalWorkspace, 'scripts'), { recursive: true });
 
-    const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
+    const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
     const scriptContent = await fs.readFile(scriptPath, 'utf-8');
-    const testScriptPath = join(minimalWorkspace, 'scripts', 'bundle-context.sh');
+    const testScriptPath = join(minimalWorkspace, 'scripts', 'dev', 'bundle-context.sh');
     await fs.writeFile(testScriptPath, scriptContent);
     await fs.chmod(testScriptPath, 0o755);
 
@@ -190,7 +190,7 @@ describe('bundle-context.sh script', () => {
   });
 
   it('should respect set -euo pipefail for error handling', async () => {
-    const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
+    const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
     const scriptContent = await fs.readFile(scriptPath, 'utf-8');
 
     // Verify script has proper error handling directives
@@ -198,9 +198,9 @@ describe('bundle-context.sh script', () => {
   });
 
   it('should output completion message', async () => {
-    const scriptPath = join(process.cwd(), 'scripts', 'bundle-context.sh');
+    const scriptPath = join(process.cwd(), 'scripts', 'dev', 'bundle-context.sh');
     const scriptContent = await fs.readFile(scriptPath, 'utf-8');
-    const testScriptPath = join(testWorkspace, 'scripts', 'bundle-context.sh');
+    const testScriptPath = join(testWorkspace, 'scripts', 'dev', 'bundle-context.sh');
     await fs.writeFile(testScriptPath, scriptContent);
     await fs.chmod(testScriptPath, 0o755);
 
