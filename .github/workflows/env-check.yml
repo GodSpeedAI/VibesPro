@@ -52,10 +52,10 @@ jobs:
           SOPS_BINARY="sops-v${SOPS_VERSION}.linux.amd64"
           SOPS_SHA="${SOPS_BINARY}.sha256"
           rm -f "${SOPS_BINARY}" "${SOPS_SHA}"
-          curl -LO "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_BINARY}"
-          echo "${SOPS_CHECKSUM}  ${SOPS_BINARY}" > "${SOPS_SHA}"
+          curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_BINARY}"
+          echo "${SOPS_CHECKSUM}  sops" > "${SOPS_SHA}"
           sha256sum -c "${SOPS_SHA}"
-          sudo mv "${SOPS_BINARY}" /usr/local/bin/sops
+          sudo mv sops /usr/local/bin/sops
           sudo chmod +x /usr/local/bin/sops
           sops --version
 
