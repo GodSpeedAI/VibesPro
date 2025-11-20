@@ -92,6 +92,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Load versions
+        run: cat .github/config/versions.env >> $GITHUB_ENV
+
       # ---- Base tools (age/jq) for both OSes ----
       - name: Install base packages
         shell: bash
@@ -129,68 +132,16 @@ jobs:
           just --version || true
 
       # ---- Install SOPS ----
-      - name: Install SOPS
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
-            # Fetch via curl and write to a temp file avoiding pipes to sudo.
-            curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
-            sudo mv sops /usr/local/bin/sops
-            sudo chmod +x /usr/local/bin/sops
-          else
-            brew install sops
-          fi
-          sops --version
-          if ! sops --version | grep -q "${SOPS_VERSION}"; then
-            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
-            sops --version || true
-            exit 1
-          fi
+      - name: Setup SOPS
+        uses: ./.github/actions/setup-sops
 
       # ---- Devbox (OS toolchain) — skip on mac if you prefer native ----
-      - name: Install Devbox
-        shell: bash
-        run: |
-          if command -v devbox &>/dev/null; then
-            echo "Devbox already installed"
-            devbox version
-            exit 0
-          fi
-          # Retry logic for Devbox installation
-          for i in {1..3}; do
-            if curl -fsSL https://get.jetpack.io/devbox | bash; then
-              echo "$HOME/.local/bin" >> $GITHUB_PATH
-              devbox version
-              exit 0
-            fi
-            echo "Retry $i/3 failed, waiting..."
-            sleep $((i * 2))
-          done
-          echo "::error::Failed to install Devbox after 3 attempts"
-          exit 1
+      - name: Setup Devbox
+        uses: ./.github/actions/setup-devbox
 
       # ---- mise runtimes ----
-      - name: Install mise
-        run: |
-          curl https://mise.run | bash
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          mise --version
-      - name: Trust mise config
-        run: mise trust --yes .mise.toml
-      - name: Cache mise runtimes
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.local/share/mise
-            ~/.cache/mise
-          key: ${{ needs.prepare.outputs.mise_cache_key }}
-          restore-keys: |
-            mise-${{ runner.os }}-
-
-      - name: Install runtimes (Node/Python/Rust via mise)
-        run: mise install
+      - name: Setup mise
+        uses: ./.github/actions/setup-mise
 
       - name: Ensure Rust toolchain from rust-toolchain.toml
         shell: bash
@@ -354,56 +305,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Load versions
+        run: cat .github/config/versions.env >> $GITHUB_ENV
+
       - name: Install base packages
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends age jq make
 
-      - name: Install SOPS
-        run: |
-          set -euo pipefail
-          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
-          curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
-          echo "${SOPS_CHECKSUM}  sops" | sha256sum -c -
-          sudo mv sops /usr/local/bin/sops
-          sudo chmod +x /usr/local/bin/sops
-          sops --version
-          if ! sops --version | grep -q "${SOPS_VERSION}"; then
-            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
-            sops --version || true
-            exit 1
-          fi
+      - name: Setup SOPS
+        uses: ./.github/actions/setup-sops
 
-      - name: Install Devbox
-        shell: bash
-        run: |
-          if command -v devbox &>/dev/null; then
-            echo "Devbox already installed"
-            devbox version
-            exit 0
-          fi
-          # Retry logic for Devbox installation
-          for i in {1..3}; do
-            if curl -fsSL https://get.jetpack.io/devbox | bash; then
-              echo "$HOME/.local/bin" >> $GITHUB_PATH
-              devbox version
-              exit 0
-            fi
-            echo "Retry $i/3 failed, waiting..."
-            sleep $((i * 2))
-          done
-          echo "::error::Failed to install Devbox after 3 attempts"
-          exit 1
+      - name: Setup Devbox
+        uses: ./.github/actions/setup-devbox
 
-      - name: Install mise
-        run: |
-          curl https://mise.run | bash
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          mise --version
-          mise trust --yes .mise.toml
-
-      - name: Setup runtimes
-        run: mise install
+      - name: Setup mise
+        uses: ./.github/actions/setup-mise
 
       - name: Decrypt release secrets (if provided)
         run: |

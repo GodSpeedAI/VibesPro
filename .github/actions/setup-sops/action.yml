@@ -1,0 +1,26 @@
+name: "Setup SOPS"
+description: "Install SOPS with version from environment"
+runs:
+  using: "composite"
+  steps:
+    - name: Install SOPS
+      shell: bash
+      run: |
+        SOPS_VERSION="${SOPS_VERSION:-3.11.0}"
+        SOPS_CHECKSUM="${SOPS_CHECKSUM:-775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef}"
+
+        if command -v sops &>/dev/null && sops --version | grep -q "$SOPS_VERSION"; then
+          echo "SOPS $SOPS_VERSION already installed"
+          exit 0
+        fi
+
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+          curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+          echo "${SOPS_CHECKSUM}  sops" | sha256sum -c
+          sudo mv sops /usr/local/bin/sops
+          sudo chmod +x /usr/local/bin/sops
+        else
+          brew install sops
+        fi
+        sops --version

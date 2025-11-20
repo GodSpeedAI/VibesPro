@@ -20,36 +20,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Load versions
+        run: cat .github/config/versions.env >> $GITHUB_ENV
+
       - name: Install system packages (jq, curl)
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends jq curl git
 
-      - name: Install Devbox
-        run: |
-          if command -v devbox &>/dev/null; then
-            echo "Devbox already installed"
-            devbox version
-            exit 0
-          fi
-          # Retry logic for Devbox installation
-          for i in {1..3}; do
-            if curl -fsSL https://get.jetpack.io/devbox | bash; then
-              echo "$HOME/.local/bin" >> $GITHUB_PATH
-              devbox version
-              exit 0
-            fi
-            echo "Retry $i/3 failed, waiting..."
-            sleep $((i * 2))
-          done
-          echo "::error::Failed to install Devbox after 3 attempts"
-          exit 1
+      - name: Setup Devbox
+        uses: ./.github/actions/setup-devbox
 
-      - name: Install mise
-        run: |
-          curl https://mise.run | bash
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          mise --version
+      - name: Setup mise
+        uses: ./.github/actions/setup-mise
 
       - name: Set up Git user
         run: |
