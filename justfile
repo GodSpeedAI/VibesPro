@@ -312,23 +312,50 @@ types-validate:
 gen-types-ts:
 	@echo "🏷️ Generating TypeScript types from Supabase schema..."
 	# Supabase CLI will generate to STDOUT; redirect into the shared types file
-	if command -v supabase >/dev/null 2>&1; then \
+	@if command -v supabase >/dev/null 2>&1; then \
 		supabase gen types typescript --local --schema public > libs/shared/types/src/database.types.ts; \
+		echo "✅ TypeScript types generated successfully"; \
 	else \
-		echo "❌ supabase CLI not found. Please run 'just setup' to install devbox packages or install supabase on PATH"; exit 1; \
+		echo ""; \
+		echo "❌ supabase CLI not found"; \
+		echo ""; \
+		echo "VibesPro requires Supabase CLI for type generation."; \
+		echo ""; \
+		echo "To install:"; \
+		echo "  1. Enter devbox shell: devbox shell"; \
+		echo "  2. Verify installation: supabase --version"; \
+		echo ""; \
+		echo "If devbox is not installed:"; \
+		echo "  curl -fsSL https://get.jetpack.io/devbox | bash"; \
+		echo ""; \
+		echo "For more information, see: docs/ENVIRONMENT.md"; \
+		echo ""; \
+		exit 1; \
 	fi
 
 gen-types-py:
 	@echo "🐍 Generating Python Pydantic models from TypeScript types..."
 	# Use Python script to generate Pydantic models from the TypeScript types output
-	if [ ! -f libs/shared/types/src/database.types.ts ]; then \
-		echo "❌ TypeScript types not found. Run 'just gen-types-ts' first"; exit 1; \
+	@if [ ! -f libs/shared/types/src/database.types.ts ]; then \
+		echo ""; \
+		echo "❌ TypeScript types not found"; \
+		echo ""; \
+		echo "Python type generation requires TypeScript types to be generated first."; \
+		echo ""; \
+		echo "To fix:"; \
+		echo "  1. Generate TypeScript types: just gen-types-ts"; \
+		echo "  2. Then run: just gen-types-py"; \
+		echo ""; \
+		echo "Or run both at once: just gen-types"; \
+		echo ""; \
+		exit 1; \
 	fi
-	if [ ! -d libs/shared/types-py/src ]; then \
+	@if [ ! -d libs/shared/types-py/src ]; then \
 		mkdir -p libs/shared/types-py/src; \
 	fi
-	. .venv/bin/activate >/dev/null 2>&1 || true; \
+	@. .venv/bin/activate >/dev/null 2>&1 || true; \
 	python tools/scripts/gen_py_types.py libs/shared/types/src libs/shared/types-py/src
+	@echo "✅ Python models generated successfully"
 
 gen-types:
 	@echo "🔁 Running all type generation tasks..."
