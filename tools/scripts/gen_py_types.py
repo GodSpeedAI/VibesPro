@@ -76,8 +76,20 @@ def parse_ts_file(path: Path) -> dict[str, dict[str, str]]:
             if not field_match:
                 continue
             raw_name, raw_type = field_match.groups()
+
+            # Check if field is optional (has trailing ?)
+            is_optional = raw_name.endswith("?")
             name_clean = raw_name.rstrip("?")
-            fields[name_clean] = raw_type.strip()
+
+            # Map the TypeScript type to Python
+            py_type = map_ts_type_to_python(raw_type.strip())
+
+            # If the field was marked optional with ?, wrap in Optional
+            # (unless it's already Optional from | null or | undefined)
+            if is_optional and not py_type.startswith("typing.Optional["):
+                py_type = f"typing.Optional[{py_type}]"
+
+            fields[name_clean] = py_type
         if fields:
             interfaces[name] = fields
 
