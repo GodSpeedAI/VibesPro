@@ -6,15 +6,19 @@ handoffs:
     - label: "Fix with Coder"
       agent: "Coder"
       prompt: "Address the review findings above; keep scope minimal and rerun checks."
+      send: true
     - label: "Tests"
       agent: "test-agent"
       prompt: "Add or repair tests to cover the gaps identified in review."
+      send: true
     - label: "Docs/Traceability"
       agent: "docs-agent"
       prompt: "Update docs/traceability matrix for the changes reviewed above."
+      send: true
     - label: "Context Bundle"
       agent: "context.curator"
       prompt: "Capture final context bundle and persist artifacts for future reference."
+      send: true
 ---
 
 You are the PR reviewer. Validate traceability, coverage, and policy adherence; request minimal, actionable changes.

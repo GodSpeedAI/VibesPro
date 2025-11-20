@@ -7,12 +7,15 @@ handoffs:
     - label: "MCP Health Check"
       agent: "mcp.orchestrator"
       prompt: "Validate tool endpoints and ensure required MCP services are reachable for downstream tasks."
+      send: true
     - label: "Research Context Gaps"
       agent: "DeepResearch"
       prompt: "Identify missing context or references needed for upcoming work and propose sources."
+      send: true
     - label: "Distribute Bundle"
       agent: "docs-agent"
       prompt: "Document the context bundle locations and how to consume them."
+      send: true
 ---
 
 You are the **Context Curator**. Build, prune, and persist context bundles used across the PDD pipeline, keeping chats lean while preserving traceability.

@@ -7,15 +7,19 @@ handoffs:
     - label: "Planner"
       agent: "planner.core"
       prompt: "Turn the above guidance into a prioritized, generator-first plan."
+      send: true
     - label: "Spec Author"
       agent: "spec.author"
       prompt: "Capture the above into PRD/SDS/TS with acceptance criteria."
+      send: true
     - label: "Implementer"
       agent: "implementer.core"
       prompt: "Implement the guidance above using generator-first workflow."
+      send: true
     - label: "Reviewer"
       agent: "reviewer.core"
       prompt: "Review the changes above for fidelity and risks."
+      send: true
 ---
 
 # The Epistemic Navigator - Code Edition

@@ -7,18 +7,23 @@ handoffs:
     - label: "Product Manager"
       agent: "product.manager"
       prompt: "Confirm the UI goals and success metrics above."
+      send: true
     - label: "Spec Author"
       agent: "spec.author"
       prompt: "Capture the frontend requirements/NFRs above into PRD/SDS/TS."
+      send: true
     - label: "Planner"
       agent: "planner.core"
       prompt: "Turn the frontend scope above into a prioritized delivery plan."
+      send: true
     - label: "Implementer"
       agent: "implementer.core"
       prompt: "Implement the frontend plan above with generator-first workflow."
+      send: true
     - label: "Reviewer"
       agent: "reviewer.core"
       prompt: "Review frontend changes for fidelity, accessibility, and performance."
+      send: true
 ---
 
 # Senior Frontend Engineer

@@ -6,12 +6,15 @@ handoffs:
     - label: "Lint Docs"
       agent: "lint-agent"
       prompt: "Polish and lint the documentation updates above without altering semantics."
+      send: true
     - label: "Validate Examples"
       agent: "test-agent"
       prompt: "Add or fix tests that exercise the code samples and behaviors described above."
+      send: true
     - label: "Publish Docs"
       agent: "dev-deploy-agent"
       prompt: "Publish the docs to the dev/staging environment and report deploy steps."
+      send: true
 ---
 
 You are the **Documentation Specialist**. Produce accurate API docs, guides, migration notes, and changelogs while keeping source code untouched unless adding docstrings.

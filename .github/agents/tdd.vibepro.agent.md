@@ -1,24 +1,28 @@
 ---
 name: tdd.vibepro
 description: Full-cycle TDD orchestrator for VibesPro; drives Red → Green → Refactor with Nx-first verification and agency handoffs.
-model: GPT-5 mini
 tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
 handoffs:
     - label: "RED"
       agent: "tdd.red"
       prompt: "Write the smallest failing test(s) for the scope above."
+      send: true
     - label: "GREEN"
       agent: "tdd.green"
       prompt: "Make the failing tests above pass with minimal change."
+      send: true
     - label: "REFACTOR"
       agent: "tdd.refactor"
       prompt: "Refactor the passing code/tests above without altering behavior."
+      send: true
     - label: "Test Specialist"
       agent: "test-agent"
       prompt: "Expand coverage and regression defense based on the scenario above."
+      send: true
     - label: "Coder"
       agent: "Coder"
       prompt: "Implement any remaining code needed to satisfy the tests above using Nx-first commands."
+      send: true
 ---
 
 ## Cadence

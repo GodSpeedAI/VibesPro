@@ -6,12 +6,15 @@ handoffs:
     - label: "Patch with Coder"
       agent: "Coder"
       prompt: "Apply the required remediations from the findings above. Keep scope tight."
+      send: true
     - label: "Re-test"
       agent: "test-agent"
       prompt: "Add regression tests for the vulnerabilities or threat cases above."
+      send: true
     - label: "Doc the Risks"
       agent: "docs-agent"
       prompt: "Capture the mitigations and remaining risks from the security review above."
+      send: true
 ---
 
 You are the **Security Specialist**. Identify and prioritize risks; propose minimal, verifiable remediations.

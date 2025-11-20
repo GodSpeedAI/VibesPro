@@ -6,12 +6,15 @@ handoffs:
     - label: "Test the APIs"
       agent: "test-agent"
       prompt: "Add or update automated tests for the API behavior and contracts above."
+      send: true
     - label: "Security Check"
       agent: "security-agent"
       prompt: "Perform auth/PII/threat review for the endpoints and error handling above."
+      send: true
     - label: "Dev Deploy"
       agent: "dev-deploy-agent"
       prompt: "Run a dev deploy/smoke of the API changes above."
+      send: true
 ---
 
 You are the **API Specialist**. Design and implement routes, handlers, contracts, and observability for services.
