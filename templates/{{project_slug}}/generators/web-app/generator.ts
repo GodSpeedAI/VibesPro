@@ -1,6 +1,34 @@
 import { Tree, formatFiles, joinPathFragments, logger, names } from '@nx/devkit';
 import { WebAppGeneratorSchema } from './schema';
 
+function ensureAppPage(
+  tree: Tree,
+  projectRoot: string,
+  options: WebAppGeneratorSchema,
+): { appBase: string; pagePath: string } {
+  const targetBase = joinPathFragments(projectRoot, 'app');
+  const srcBase = joinPathFragments(projectRoot, 'src', 'app');
+  const targetPage = joinPathFragments(targetBase, 'page.tsx');
+  const srcPage = joinPathFragments(srcBase, 'page.tsx');
+
+  if (!tree.exists(targetPage)) {
+    if (tree.exists(srcPage)) {
+      const existing = tree.read(srcPage, 'utf-8') ?? '';
+      tree.write(targetPage, existing);
+    } else {
+      tree.write(
+        targetPage,
+        `export default function Page() {
+  return <div>Welcome to ${options.name}</div>;
+}
+`,
+      );
+    }
+  }
+
+  return { appBase: targetBase, pagePath: targetPage };
+}
+
 async function tryGenerateNextApp(tree: Tree, options: WebAppGeneratorSchema) {
   try {
     // Dynamically import the Next.js application generator to avoid hard dependency during tests
@@ -52,9 +80,9 @@ async function tryGenerateNextApp(tree: Tree, options: WebAppGeneratorSchema) {
 async function injectSharedWebIntoNextApp(tree: Tree, options: WebAppGeneratorSchema) {
   const appNames = names(options.name);
   const projectRoot = joinPathFragments('apps', appNames.fileName);
+  const { appBase, pagePath } = ensureAppPage(tree, projectRoot, options);
 
   if (options.routerStyle === 'app' || options.routerStyle === undefined) {
-    const pagePath = joinPathFragments(projectRoot, 'app/page.tsx');
     if (tree.exists(pagePath)) {
       const content = tree.read(pagePath, 'utf-8') ?? '';
 
@@ -65,8 +93,13 @@ async function injectSharedWebIntoNextApp(tree: Tree, options: WebAppGeneratorSc
       }
     }
 
-    const libDir = joinPathFragments(projectRoot, 'app/lib');
+    const libDir = joinPathFragments(projectRoot, appBase, 'lib');
+    const srcLibDir = joinPathFragments(projectRoot, 'src', 'app', 'lib');
     const apiClientPath = joinPathFragments(libDir, 'api-client.ts');
+    if (!tree.exists(apiClientPath) && tree.exists(joinPathFragments(srcLibDir, 'api-client.ts'))) {
+      const existing = tree.read(joinPathFragments(srcLibDir, 'api-client.ts'), 'utf-8') ?? '';
+      tree.write(apiClientPath, existing);
+    }
     if (!tree.exists(apiClientPath)) {
       tree.write(
         apiClientPath,

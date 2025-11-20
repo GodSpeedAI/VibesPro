@@ -1,10 +1,17 @@
-# Prompt: generator-spec
-
+---
 kind: prompt
 domain: ai-workflows
-precedence: high
-
+task: generator-spec
+thread: generator-spec
+matrix_ids: []
+budget: M
+mode: "agent"
+model: GPT-5 mini
+tools: ["codebase", "search"]
+description: "Classify and draft generator specifications for feature slices, route contracts, or data-access scaffolds."
 ---
+
+# Prompt: generator-spec
 
 ## Instructions
 
