@@ -64,9 +64,23 @@ jobs:
 
       - name: Install Devbox (CI)
         run: |
-          curl -fsSL https://get.jetpack.io/devbox | bash -s -- -f
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          devbox version
+          if command -v devbox &>/dev/null; then
+            echo "Devbox already installed"
+            devbox version
+            exit 0
+          fi
+          # Retry logic for Devbox installation
+          for i in {1..3}; do
+            if curl -fsSL https://get.jetpack.io/devbox | bash; then
+              echo "$HOME/.local/bin" >> $GITHUB_PATH
+              devbox version
+              exit 0
+            fi
+            echo "Retry $i/3 failed, waiting..."
+            sleep $((i * 2))
+          done
+          echo "::error::Failed to install Devbox after 3 attempts"
+          exit 1
 
       - name: "Devbox: update and ensure packages"
         run: |
