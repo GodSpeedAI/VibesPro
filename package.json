@@ -1,6 +1,6 @@
 {
   "name": "vibes-pro",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "Unified generator-first platform combining HexDDD and VibePDK",
   "type": "module",
   "scripts": {
