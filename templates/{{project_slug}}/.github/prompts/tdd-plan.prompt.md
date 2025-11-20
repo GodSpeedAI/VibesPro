@@ -1,10 +1,18 @@
-# Prompt: tdd-plan
-
-kind: prompt
-domain: ai-workflows
-precedence: high
-
 ---
+kind: prompt
+domain: tdd
+task: plan
+thread: tdd-plan
+matrix_ids: []
+budget: M
+precedence: high
+mode: "agent"
+model: GPT-5 mini
+tools: ["codebase", "search", "runTests"]
+description: "Produce a VibePro-aligned TDD implementation plan grounded in specs."
+---
+
+# Prompt: tdd-plan
 
 ## Instructions
 

@@ -1,8 +1,18 @@
-kind: prompt
-domain: ai-workflows
-precedence: high
-
 ---
+kind: prompt
+domain: tdd
+task: trunk-based-plan
+thread: tdd-tbd
+matrix_ids: []
+budget: M
+precedence: high
+mode: "agent"
+model: GPT-5 mini
+tools: ["codebase", "search", "runTests"]
+description: "Lay out trunk-based development flow for TDD cycles across tasks and branches."
+---
+
+# Prompt: tdd-tbd
 
 ## Instructions
 
