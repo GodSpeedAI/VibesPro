@@ -17,6 +17,7 @@ const runCopierGeneration = async (): Promise<string> => {
     'copy',
     '.',
     workspace,
+    '--vcs-ref=HEAD',
     '--data-file',
     'tests/fixtures/test-data.yml',
     '--defaults',

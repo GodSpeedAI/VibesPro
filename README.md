@@ -277,6 +277,7 @@ GitHub Actions consistently drifted from local runs—Devbox installs broke, too
 - **Script + workflow cleanup** — CI helpers reorganized under `scripts/{ci,setup,dev}` with updated paths and docs; Rust toolchain pins aligned to repo config.
 - **Aggressive caching** — Devbox binaries, mise runtimes, pnpm store, Cargo registry, and uv cache now share consistent keys, cutting runtime 30–50%.
 - **Zero-vuln baseline** — patched esbuild, vite, koa, js-yaml, glob, and estree-util-value-to-estree; `pnpm audit` now reports 0 issues.
+- **Template parity (reissue)** — generated workspaces ship with root docs (`spec_index.md`, `traceability_matrix.md`, `commit_message_guidelines.md`), validated prompt frontmatter (TDD plans), and web-app scaffolds that always emit `apps/<name>/app/page.tsx` for Nx app router tests.
 
 See `RELEASE_NOTES_v0.5.0.md` for the full breakdown and migration notes.
 
