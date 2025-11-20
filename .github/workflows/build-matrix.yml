@@ -217,7 +217,7 @@ jobs:
             echo "SOPS_AGE_KEY appears set; attempting decryption..."
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
             # Delegate parsing and safe GITHUB_ENV writes to a helper script
-            bash ./scripts/decrypt-ci-env.sh /tmp/ci.env
+            bash ./scripts/ci/decrypt-ci-env.sh /tmp/ci.env
             echo "loaded=true" >> $GITHUB_OUTPUT
           else
             echo "SOPS_AGE_KEY not set or .secrets.env.sops missing; skipping decryption."
@@ -382,7 +382,7 @@ jobs:
             echo "SOPS_AGE_KEY present; decrypting release secrets"
             sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > /tmp/ci.env
             # Use shared decrypt script to parse and write secrets into GITHUB_ENV
-            bash ./scripts/decrypt-ci-env.sh /tmp/ci.env
+            bash ./scripts/ci/decrypt-ci-env.sh /tmp/ci.env
           else
             echo "No SOPS_AGE_KEY provided or .secrets.env.sops missing; skipping release secret decryption"
           fi
