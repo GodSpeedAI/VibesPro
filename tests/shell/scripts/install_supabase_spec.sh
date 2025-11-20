@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 Describe 'scripts/install_supabase.sh'
   It 'exists and is executable'
     When call test -f scripts/install_supabase.sh

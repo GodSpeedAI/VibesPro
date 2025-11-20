@@ -397,16 +397,14 @@ devbox-overlay-pin COMMIT="":
 	fi
 	@echo "Pinning overlay to: {{COMMIT}}"
 	@python - <<PY
-import io,sys,re
-path='.devbox/overlays/supabase.nix'
-commit='{{COMMIT}}'
-with open(path) as f:
-    data=f.read()
-data=re.sub(r"https://github.com/NixOS/nixpkgs/archive/[^\n']+",f"https://github.com/NixOS/nixpkgs/archive/{commit}.tar.gz",data)
-with open(path,'w') as f:
-    f.write(data)
-print('OK: updated overlay')
-PY
+	import io,sys,re
+	path='.devbox/overlays/supabase.nix'
+	commit='{{COMMIT}}'
+	data=open(path).read()
+	data=re.sub(r"https://github.com/NixOS/nixpkgs/archive/[^\n']+",f"https://github.com/NixOS/nixpkgs/archive/{commit}.tar.gz",data)
+	open(path,'w').write(data)
+	print('OK: updated overlay')
+	PY
 
 
 # --- SOPS utilities ---

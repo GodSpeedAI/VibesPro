@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 Describe 'Type generation pipeline'
   Include scripts/run_prompt.sh
 

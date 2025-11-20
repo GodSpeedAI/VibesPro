@@ -30,7 +30,7 @@ short_sha=${commit_sha:0:7}
 
 echo "Candidate commit: ${commit_sha} (${short_sha})"
 
-current_url=$(awk '/fetchTarball/ { print $0; exit }' "${OVERLAY_PATH}" || true)
+# Check if overlay already has this commit
 if grep -q "${commit_sha}" "${OVERLAY_PATH}"; then
   echo "No bump necessary; overlay already pinned to ${commit_sha}";
   exit 0
@@ -69,15 +69,16 @@ else
 fi
 
 # Push branch and open PR (if not already existing)
-remote="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${REPO}.git"
+remote="https://${GITHUB_ACTOR:-github-actions}:${GITHUB_TOKEN}@github.com/${REPO}.git"
 if [[ -n "${DRY_RUN:-}" ]]; then
   echo "DRY_RUN set - skipping push and PR creation"
 else
-  git push "${remote}" HEAD:${branch_name} -f
+  git push "${remote}" "HEAD:${branch_name}" -f
 fi
 
 pr_title="chore(devbox-overlay): bump supabase overlay to ${short_sha}"
-pr_body="This PR updates the `.devbox/overlays/supabase.nix` overlay to use nixpkgs commit ${commit_sha} for reproducible devbox builds.\n\nAutomatically created by CI autobump workflow."
+# shellcheck disable=SC2006
+pr_body="This PR updates the \`.devbox/overlays/supabase.nix\` overlay to use nixpkgs commit ${commit_sha} for reproducible devbox builds.\\n\\nAutomatically created by CI autobump workflow."
 
 if [[ -n "${DRY_RUN:-}" ]]; then
   echo "DRY_RUN set - skipping existing PR check and PR creation"

@@ -1,15 +1,22 @@
 # AI Agent Instructions for VibesPro
 
-> **🎯 Core Concept**: VibesPro is an AI-native meta-infrastructure and **Software Generator** (leveraging copier templates and Nx generators) that synthesizes production-ready Nx monorepos. You modify Jinja2 templates in `templates/{{project_slug}}/`, test with `just test-generation`, and changes affect all future synthesized applications. Each synthesized application ships with its own AI development team—specialized agents that understand your domain, enforce your patterns, and evolve with your decisions.
+VibesPro is AI-native meta-infrastructure that combines architectural intelligence, temporal learning, and autonomous workflows to synthesize complete development platforms. Each synthesized application ships with its own AI development team of specialized agents that understand your domain, enforce your patterns, and evolve with your decisions.
 
-## Critical Mental Model
+Think: **Infrastructure-as-Code meets AI-Powered Software Agency.**
 
-**VibesPro Repository Architecture:**
+## 🎯 Cognitive Infrastructure Architecture
 
-- **THIS repo** = Jinja2 templates + synthesis tooling + AI workflow system
-- **Synthesized applications** = Complete Nx monorepos created by `copier copy` and developers use the AI agents within them which follow the same principles
-- **Your changes** propagate to all future synthesized projects
-- **Test locally** with `just test-generation` → `../test-output` before committing
+VibesPro operates as a self-contained software development agency.
+
+When you initialize with VibesPro, you're deploying:
+
+- 🏗️ **Application Infrastructure** – Enterprise-grade Nx monorepo with hexagonal architecture
+- 🤖 **AI Development Team** – specialized agents (architects, TDD coaches, debuggers, product managers)
+- 🧠 **Institutional Memory** – Temporal learning system that captures every architectural decision
+- 📊 **Production Telemetry** – OpenTelemetry + Vector observability stack
+- 🔧 **Platform Engineering** – Reproducible environments via Devbox + Mise + SOPS
+
+Each synthesized application **IS** a self-sustaining development platform. VibesPro is the cognitive layer that creates it.
 
 ## Essential Workflows
 
