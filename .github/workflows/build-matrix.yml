@@ -390,6 +390,12 @@ jobs:
       - name: Build (release)
         run: just build
 
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Example: npm publish / docker push (uncomment & tailor)
       # - name: Publish package
       #   env:
