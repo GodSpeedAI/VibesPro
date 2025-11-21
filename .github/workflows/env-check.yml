@@ -114,7 +114,7 @@ jobs:
         if: env.SKIP_HEAVY_SETUP != 'true'
         run: |
           set -euo pipefail
-          bash scripts/validate_supabase_overlay_pin.sh
+          bash scripts/dev/validate_supabase_overlay_pin.sh
 
       - name: "Devbox: check supabase availability"
         if: env.SKIP_HEAVY_SETUP != 'true'
