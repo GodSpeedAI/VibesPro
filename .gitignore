@@ -119,8 +119,6 @@ data/*.redb
 # Workspace
 /archive/
 environment_report.md
-#/tmpdocs/
-#/tmpdocs-html/
 /docs/reports/
 /docs/plans/
 /mypy-report/
