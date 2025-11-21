@@ -57,3 +57,4 @@ Mission: deliver decision-ready findings, plans, and comparisons; never ship pro
 - **Read-Only**: no production edits; scratchpads only in temp/.ai-scratchpad and clean up.
 - **Tests/Commands**: allowed to run read-only commands (audits, graphing) that inform findings.
 - Keep concise; favor matrices/checklists over prose walls.
+- **Output Directory**: write any scratchpads to `.ai-scratchpad/`(and clean up after handoff), write plans to `docs/plans/` and write reports to `docs/reports/`.
