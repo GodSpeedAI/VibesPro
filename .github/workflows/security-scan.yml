@@ -58,7 +58,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y bc
 
       - name: Run binary size check
-        run: bash scripts/track-binary-size.sh
+        run: bash scripts/dev/track-binary-size.sh
 
       - name: Upload size report
         if: always()

@@ -1,24 +1,24 @@
 # Copier ignore file - exclude non-template directories from processing
 VibePDK/
 VibePDK/**
-apps/
-libs/
+ /apps/
+ /libs/
 tools/type-generator/
 tools/ai/node_modules/
 tools/ai/dist/
 tests/
-tests/**
-coverage/
+ /tests/
+ /tests/**
 htmlcov/
 target/
 src/
 mcp/
 generators/
-hooks/__pycache__/
+ /generators/
 architecture/
-domain/
-scripts/
-.git/
+ /architecture/
+ /domain/
+/scripts/
 node_modules/
 *.pyc
 __pycache__/
