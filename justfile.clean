@@ -1,5 +1,0 @@
-# Vibes Pro Build System
-set shell := ["bash", "-uc"]
-
-default:
-	@just --list
