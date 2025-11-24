@@ -109,13 +109,15 @@ jobs:
 
       - name: Generate Types to temp directory
         run: |
-          TMPDIR=$(mktemp -d)
-          node tools/type-generator/cli.js generate tools/type-generator/test-fixtures/db_schema.json -o $TMPDIR
+          mkdir -p tmp
+          TMPDIR=$(mktemp -d "$PWD/tmp/types-XXXXXX")
+          node tools/type-generator/cli.js generate tools/type-generator/test-fixtures/db_schema.json -o "$TMPDIR"
           # Compare generated file to committed version
-          if ! diff -u libs/shared/types/src/database.types.ts $TMPDIR/user.ts; then
+          if ! diff -u libs/shared/types/src/database.types.ts "$TMPDIR/user.ts"; then
             echo "❌ Generated TS types differ from committed file. Update by running 'just gen-types' and commit the changes.";
             exit 1
           fi
+          rm -rf "$TMPDIR"
 
       - name: Generate Python models and compare
         run: |
