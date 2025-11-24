@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Configuration settings for Logfire observability and instrumentation.
 
@@ -16,6 +15,7 @@ Example:
     if settings.INSTRUMENT_REQUESTS:
         print("Requests instrumentation is enabled.")
 """
+
 from __future__ import annotations
 
 import os
