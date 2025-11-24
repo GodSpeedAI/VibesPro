@@ -1,7 +1,59 @@
-//! VibePro: Rust-native observability helpers.
+//! # VibePro Rust-Native Observability Helpers
 //!
-//! Default: JSON logs to stdout via `tracing_subscriber`.
-//! If `VIBEPRO_OBSERVE=1` and feature `otlp` is enabled, export OTLP to `OTLP_ENDPOINT` (default: grpc://127.0.0.1:4317).
+//! This crate provides a standardized and easy-to-use interface for setting up
+//! structured logging and distributed tracing for Rust services within the VibePro ecosystem.
+//! It is designed to be a "one-liner" integration for most services.
+//!
+//! ## Core Features
+//!
+//! - **Structured Logging**: By default, it configures `tracing_subscriber` to emit
+//!   JSON-formatted logs to standard output. This is suitable for production environments
+//!   where logs are collected and processed by an external agent.
+//! - **Distributed Tracing**: When the `otlp` feature is enabled and the `VIBEPRO_OBSERVE`
+//!   environment variable is set to `1`, the crate automatically configures and installs
+//!   an OpenTelemetry (OTLP) exporter. This sends trace data to a configured OTLP
+//!   endpoint, enabling distributed tracing across services.
+//! - **Dynamic Configuration**: The behavior of the crate is controlled by environment
+//!   variables, allowing for flexible configuration without code changes.
+//! - **Idempotent Initialization**: The `init_tracing` function is safe to call
+//!   multiple times; it will only initialize the global tracer once.
+//!
+//! ## Usage
+//!
+//! Add `vibepro-observe` to your `Cargo.toml`, enabling the `otlp` feature if you need
+//! distributed tracing:
+//!
+//! ```toml
+//! [dependencies]
+//! vibepro-observe = { version = "0.1.0", features = ["otlp"] }
+//! ```
+//!
+//! Then, at the beginning of your application's `main` function, call `init_tracing`:
+//!
+//! ```rust
+//! use vibepro_observe::init_tracing;
+//! use anyhow::Result;
+//!
+//! #[tokio::main]
+//! async fn main() -> Result<()> {
+//!     // Initialize tracing for your service.
+//!     init_tracing("my-rust-service")?;
+//!
+//!     // Your application logic here...
+//!
+//!     // Gracefully shut down the tracer before exiting.
+//!     vibepro_observe::shutdown_tracing()?;
+//!     Ok(())
+//! }
+//! ```
+//!
+//! ## Environment Variables
+//!
+//! - `RUST_LOG`: Controls the log level (e.g., `info`, `debug`, `my_crate=trace`).
+//!   Defaults to `info`.
+//! - `VIBEPRO_OBSERVE`: Set to `1` to enable the OTLP exporter (requires the `otlp` feature).
+//! - `OTLP_ENDPOINT`: The OTLP endpoint to send traces to. Defaults to `http://127.0.0.1:4317`.
+//! - `OTLP_PROTOCOL`: The OTLP protocol (`grpc` or `http`). Defaults to `grpc`.
 
 use anyhow::Result;
 use once_cell::sync::OnceCell;
@@ -17,11 +69,40 @@ static INIT_GUARD: OnceCell<()> = OnceCell::new();
 #[cfg(feature = "otlp")]
 static OTLP_TRACER_PROVIDER: OnceCell<SdkTracerProvider> = OnceCell::new();
 
-/// Initialize tracing for a given service name.
-/// Behavior:
-/// - Always installs JSON fmt layer + EnvFilter (RUST_LOG or default "info").
-/// - If `VIBEPRO_OBSERVE=1` and feature `otlp` is enabled,
-///   installs an OTLP exporter targeting `OTLP_ENDPOINT` (default http://127.0.0.1:4317).
+/// Initializes the global tracing subscriber for a given service.
+///
+/// This function is the main entry point for the crate. It sets up a global
+/// `tracing` subscriber that handles both logging and, optionally, distributed tracing.
+/// The function is idempotent and can be safely called multiple times.
+///
+/// # Behavior
+///
+/// - It always installs a JSON formatting layer that writes structured logs to stdout.
+/// - It respects the `RUST_LOG` environment variable for log filtering, defaulting to `info`.
+/// - If the `otlp` feature is enabled and the `VIBEPRO_OBSERVE` environment variable
+///   is set to `1`, it also installs an OTLP trace exporter. The exporter's endpoint
+///   and protocol are configured via the `OTLP_ENDPOINT` and `OTLP_PROTOCOL`
+///   environment variables.
+///
+/// # Arguments
+///
+/// * `service_name` - A string slice that holds the name of the service. This name
+///   will be included in all traces as the `service.name` resource attribute.
+///
+/// # Errors
+///
+/// This function will return an error if there is a problem initializing the OTLP
+/// exporter. However, it will not error if a global subscriber has already been set.
+///
+/// # Examples
+///
+/// ```
+/// # use anyhow::Result;
+/// # fn main() -> Result<()> {
+/// vibepro_observe::init_tracing("my-awesome-service")?;
+/// # Ok(())
+/// # }
+/// ```
 pub fn init_tracing(service_name: &str) -> Result<()> {
     if INIT_GUARD.get().is_some() {
         return Ok(());
@@ -109,8 +190,23 @@ pub fn init_tracing(service_name: &str) -> Result<()> {
     Ok(())
 }
 
-/// Record a simple numeric metric as a structured event.
-/// For richer metrics, integrate OpenTelemetry metrics when stabilized for your use-case.
+/// Records a simple numeric metric as a structured event.
+///
+/// This function provides a basic way to emit metrics through the logging system.
+/// It creates a structured log event with `metric.key` and `metric.value` fields.
+/// This is intended for simple use cases. For more advanced metrics with aggregation
+/// and different instrument types, consider using a dedicated OpenTelemetry metrics SDK.
+///
+/// # Arguments
+///
+/// * `key` - The name of the metric (e.g., "http_requests_total").
+/// * `value` - The numeric value of the metric.
+///
+/// # Examples
+///
+/// ```
+/// vibepro_observe::record_metric("files_processed", 42.0);
+/// ```
 pub fn record_metric(key: &str, value: f64) {
     tracing::info!(metric.key = key, metric.value = value, "metric");
 }
@@ -132,7 +228,6 @@ fn setup_otlp_exporter(
     use opentelemetry_otlp::{SpanExporter, WithExportConfig};
     use opentelemetry_sdk::{trace as sdktrace, Resource};
 
-    // Build the OTLP exporter based on protocol
     let build_exporter = || -> Result<SpanExporter> {
         if matches!(
             protocol.to_lowercase().as_str(),
@@ -150,7 +245,6 @@ fn setup_otlp_exporter(
         }
     };
 
-    // Build the tracer provider with resource attributes
     let resource = Resource::builder_empty()
         .with_attributes(vec![
             KeyValue::new("service.name", service_name.to_string()),
@@ -158,7 +252,6 @@ fn setup_otlp_exporter(
         ])
         .build();
 
-    // Prefer batch processing when a Tokio runtime is available; otherwise fall back to simple.
     let mut provider_builder = sdktrace::SdkTracerProvider::builder().with_resource(resource);
     if tokio::runtime::Handle::try_current().is_ok() {
         let exporter = build_exporter()?;
@@ -171,11 +264,7 @@ fn setup_otlp_exporter(
     }
 
     let tracer_provider = provider_builder.build();
-
-    // Get tracer before setting global provider
     let tracer = tracer_provider.tracer("vibepro-observe");
-
-    // Store provider for optional shutdown and set global provider for convenience
     let provider_handle = tracer_provider.clone();
     let _ = OTLP_TRACER_PROVIDER.set(provider_handle.clone());
     opentelemetry::global::set_tracer_provider(provider_handle);
@@ -183,8 +272,27 @@ fn setup_otlp_exporter(
     Ok(tracer)
 }
 
-/// Gracefully shut down the OTLP tracer provider if one was initialized.
-/// Safe to call multiple times.
+/// Gracefully shuts down the OTLP tracer provider, flushing any buffered spans.
+///
+/// It is recommended to call this function at the end of the application's lifecycle
+/// to ensure that all telemetry data is sent before the process exits. The function
+/// is safe to call multiple times and will do nothing if no tracer was initialized.
+///
+/// # Errors
+///
+/// Returns an error if the shutdown process fails for a reason other than the
+/// tracer already being shut down.
+///
+/// # Examples
+///
+/// ```
+/// # use anyhow::Result;
+/// # fn main() -> Result<()> {
+/// // ... application logic ...
+/// vibepro_observe::shutdown_tracing()?;
+/// # Ok(())
+/// # }
+/// ```
 #[cfg(feature = "otlp")]
 pub fn shutdown_tracing() -> Result<()> {
     use opentelemetry_sdk::error::OTelSdkError;
@@ -200,7 +308,10 @@ pub fn shutdown_tracing() -> Result<()> {
     }
 }
 
-/// No-op when OTLP support is disabled.
+/// A no-op version of `shutdown_tracing` for when the `otlp` feature is not enabled.
+///
+/// This allows for unconditional calls to `shutdown_tracing` in application code
+/// without needing to use `#[cfg]` attributes.
 #[cfg(not(feature = "otlp"))]
 pub fn shutdown_tracing() -> Result<()> {
     Ok(())

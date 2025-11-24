@@ -1,4 +1,11 @@
-//! Similarity search using cosine distance
+//! This module provides the core similarity search functionality, using cosine
+//! similarity to find the most relevant patterns for a given query.
+//!
+//! The main component is the [`SimilaritySearch`] struct, which orchestrates the
+//! search process. It retrieves embeddings from a [`VectorStore`], calculates their
+//! similarity to a query embedding, and returns a ranked list of results. The
+//! implementation includes optimizations such as SIMD-accelerated dot product
+//! calculations for improved performance.
 
 use crate::pattern_extractor::Pattern;
 use crate::vector_store::VectorStore;
@@ -6,11 +13,20 @@ use crate::{Result, TemporalAIError};
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 
-/// Similarity search result
+/// Represents a single result from a similarity search.
+///
+/// This struct contains the ID of the matching pattern, its similarity score,
+/// and the full `Pattern` object for further processing. It implements `Ord`
+/// to be used in a min-heap for efficient top-k selection.
 #[derive(Debug, Clone)]
 pub struct SimilarityResult {
+    /// The unique identifier of the matched pattern.
     pub pattern_id: String,
+    /// The cosine similarity score, ranging from -1.0 to 1.0 (though typically
+    /// 0.0 to 1.0 for normalized embeddings). A higher score indicates greater
+    /// similarity.
     pub score: f32,
+    /// The full `Pattern` data associated with the result.
     pub pattern: Pattern,
 }
 
@@ -19,12 +35,13 @@ impl PartialEq for SimilarityResult {
         self.score == other.score
     }
 }
-
 impl Eq for SimilarityResult {}
 
 impl PartialOrd for SimilarityResult {
+    /// The comparison is reversed to make `BinaryHeap` a min-heap of scores.
+    /// This means that items with lower scores are considered "greater", so they
+    /// are evicted first when the heap is full.
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        // Reverse ordering for min-heap (smaller scores at top)
         other.score.partial_cmp(&self.score)
     }
 }
@@ -35,32 +52,71 @@ impl Ord for SimilarityResult {
     }
 }
 
-/// Search filters
+/// A set of filters to constrain a similarity search.
+///
+/// This struct allows for more sophisticated queries by enabling callers to
+/// filter the search space based on criteria like score thresholds, file paths,
+/// tags, and timestamps.
 #[derive(Default, Debug, Clone)]
 pub struct SearchFilters {
+    /// If set, only results with a score greater than or equal to this value
+    /// will be returned.
     pub min_score: Option<f32>,
+    /// A glob pattern to filter patterns by their affected file paths.
     pub file_path_glob: Option<String>,
+    /// A list of tags that all returned patterns must have.
     pub tags: Vec<String>,
+    /// If set, only patterns with a timestamp greater than or equal to this
+    /// value will be returned.
     pub since_timestamp: Option<i64>,
 }
 
-/// Similarity search engine
+/// The main engine for performing similarity searches.
+///
+/// An instance of `SimilaritySearch` is tied to a specific `VectorStore` and
+/// provides the methods to execute searches against it.
 pub struct SimilaritySearch<'a> {
     store: &'a VectorStore,
 }
 
 impl<'a> SimilaritySearch<'a> {
-    /// Create new search instance
+    /// Creates a new `SimilaritySearch` instance.
+    ///
+    /// # Arguments
+    ///
+    /// * `store` - A reference to the `VectorStore` to be searched.
     pub fn new(store: &'a VectorStore) -> Self {
         Self { store }
     }
 
-    /// Find top-k most similar patterns
+    /// Finds the top `k` most similar patterns to a query embedding, without filters.
+    ///
+    /// # Arguments
+    ///
+    /// * `query_embedding` - The embedding vector of the search query.
+    /// * `k` - The number of top results to return.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `Vec<SimilarityResult>` sorted by score in descending order.
     pub fn search(&self, query_embedding: &[f32], k: usize) -> Result<Vec<SimilarityResult>> {
         self.search_filtered(query_embedding, k, &SearchFilters::default())
     }
 
-    /// Search with filters
+    /// Finds the top `k` most similar patterns, applying a set of filters.
+    ///
+    /// This method first narrows down the search space based on the provided filters
+    /// and then performs the similarity calculation on the candidate patterns.
+    ///
+    /// # Arguments
+    ///
+    /// * `query_embedding` - The embedding vector of the search query.
+    /// * `k` - The number of top results to return.
+    /// * `filters` - The `SearchFilters` to apply.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `Vec<SimilarityResult>` sorted by score.
     pub fn search_filtered(
         &self,
         query_embedding: &[f32],
@@ -69,7 +125,7 @@ impl<'a> SimilaritySearch<'a> {
     ) -> Result<Vec<SimilarityResult>> {
         let pattern_ids = self.get_candidate_pattern_ids(filters)?;
 
-        // Min-heap to keep top-k results
+        // A min-heap is used to efficiently keep track of the top k results.
         let mut heap = BinaryHeap::with_capacity(k + 1);
 
         for pattern_id in pattern_ids {
@@ -78,61 +134,48 @@ impl<'a> SimilaritySearch<'a> {
                 None => continue,
             };
 
-            // Apply timestamp filter
             if let Some(since) = filters.since_timestamp {
                 if pattern.timestamp < since {
                     continue;
                 }
             }
 
-            // Calculate similarity
             let score = cosine_similarity(query_embedding, &embedding);
 
-            // Apply minimum score filter
             if let Some(min_score) = filters.min_score {
                 if score < min_score {
                     continue;
                 }
             }
 
-            // Add to heap
-            let result = SimilarityResult {
+            heap.push(SimilarityResult {
                 pattern_id: pattern_id.clone(),
                 score,
                 pattern,
-            };
+            });
 
-            heap.push(result);
-
-            // Keep only top-k
             if heap.len() > k {
                 heap.pop();
             }
         }
 
-        // Convert heap to sorted vector (highest score first)
         let mut results: Vec<_> = heap.into_vec();
         results.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(Ordering::Equal));
-
         Ok(results)
     }
 
-    /// Get candidate pattern IDs based on filters
+    /// Retrieves a list of candidate pattern IDs based on the applied filters.
     fn get_candidate_pattern_ids(&self, filters: &SearchFilters) -> Result<Vec<String>> {
-        // If tags specified, use tag index
         if !filters.tags.is_empty() {
-            let mut candidates = Vec::new();
+            let mut candidates = vec![];
             for tag in &filters.tags {
-                let tag_patterns = self.store.find_by_tag(tag)?;
-                candidates.extend(tag_patterns);
+                candidates.extend(self.store.find_by_tag(tag)?);
             }
-            // Remove duplicates
-            candidates.sort();
+            candidates.sort_unstable();
             candidates.dedup();
             return Ok(candidates);
         }
 
-        // If file path glob specified, use file path index
         if let Some(glob_str) = &filters.file_path_glob {
             let glob_pattern = glob::Pattern::new(glob_str).map_err(|e| {
                 TemporalAIError::IoError(std::io::Error::new(
@@ -140,102 +183,78 @@ impl<'a> SimilaritySearch<'a> {
                     e.to_string(),
                 ))
             })?;
-
-            // This is inefficient - in production we'd need better indexing
-            let all_patterns = self.store.list_patterns()?;
-            let mut candidates = Vec::new();
-
-            for pattern_id in all_patterns {
+            let mut candidates = vec![];
+            for pattern_id in self.store.list_patterns()? {
                 if let Some(pattern) = self.store.get_pattern(&pattern_id)? {
                     if pattern.file_paths.iter().any(|p| glob_pattern.matches(p)) {
                         candidates.push(pattern_id);
                     }
                 }
             }
-
             return Ok(candidates);
         }
 
-        // Otherwise return all patterns
         self.store.list_patterns()
     }
 }
 
-/// Calculate cosine similarity between two vectors
+/// Calculates the cosine similarity between two vector slices.
+///
+/// Cosine similarity measures the cosine of the angle between two vectors,
+/// producing a value between -1 and 1. For non-negative vectors, the range is
+/// 0 to 1. A value of 1 means the vectors are identical in orientation.
 pub fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
     if a.len() != b.len() {
         return 0.0;
     }
 
-    // Optimized dot product
     let dot_product = dot_product_simd(a, b);
-
-    // Calculate norms
     let norm_a = l2_norm(a);
     let norm_b = l2_norm(b);
 
     if norm_a == 0.0 || norm_b == 0.0 {
         return 0.0;
     }
-
     dot_product / (norm_a * norm_b)
 }
 
-/// SIMD-optimized dot product (x86_64)
+/// A platform-specific dispatcher for dot product calculation, using SIMD where available.
 #[cfg(target_arch = "x86_64")]
 fn dot_product_simd(a: &[f32], b: &[f32]) -> f32 {
-    if std::arch::is_x86_feature_detected!("avx") {
+    if is_x86_feature_detected!("avx") {
         unsafe { dot_product_avx(a, b) }
     } else {
         dot_product_fallback(a, b)
     }
 }
 
-/// Fallback dot product for non-x86_64 architectures
 #[cfg(not(target_arch = "x86_64"))]
 fn dot_product_simd(a: &[f32], b: &[f32]) -> f32 {
     dot_product_fallback(a, b)
 }
 
-/// AVX-accelerated dot product
+/// An AVX-accelerated dot product implementation (unsafe).
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx")]
 unsafe fn dot_product_avx(a: &[f32], b: &[f32]) -> f32 {
     use std::arch::x86_64::*;
-
-    let len = a.len();
     let mut sum = _mm256_setzero_ps();
-
-    let chunks = len / 8;
-    let remainder = len % 8;
-
-    for i in 0..chunks {
-        let idx = i * 8;
-        let va = _mm256_loadu_ps(a.as_ptr().add(idx));
-        let vb = _mm256_loadu_ps(b.as_ptr().add(idx));
-        let mul = _mm256_mul_ps(va, vb);
-        sum = _mm256_add_ps(sum, mul);
+    for (a_chunk, b_chunk) in a.chunks_exact(8).zip(b.chunks_exact(8)) {
+        let va = _mm256_loadu_ps(a_chunk.as_ptr());
+        let vb = _mm256_loadu_ps(b_chunk.as_ptr());
+        sum = _mm256_add_ps(sum, _mm256_mul_ps(va, vb));
     }
-
-    // Horizontal add
     let mut result = [0.0f32; 8];
     _mm256_storeu_ps(result.as_mut_ptr(), sum);
-    let mut total = result.iter().sum::<f32>();
-
-    // Handle remainder
-    for i in (len - remainder)..len {
-        total += a[i] * b[i];
-    }
-
-    total
+    result.iter().sum::<f32>() + a.chunks_exact(8).remainder().iter().zip(b.chunks_exact(8).remainder()).map(|(x, y)| x * y).sum::<f32>()
 }
 
-/// Fallback dot product (portable)
+/// A portable, non-SIMD fallback for dot product calculation.
 fn dot_product_fallback(a: &[f32], b: &[f32]) -> f32 {
     a.iter().zip(b).map(|(x, y)| x * y).sum()
 }
 
-/// Calculate L2 norm
+/// Calculates the L2 norm (Euclidean length) of a vector.
 fn l2_norm(vec: &[f32]) -> f32 {
     vec.iter().map(|x| x * x).sum::<f32>().sqrt()
 }
@@ -319,18 +338,17 @@ mod tests {
         store.insert(&pattern2, vec![0.3; 768])?;
 
         let query_emb = vec![1.0; 768];
+        let min_score = 0.95;
         let filters = SearchFilters {
-            min_score: Some(0.95),
+            min_score: Some(min_score),
             ..Default::default()
         };
 
         let search = SimilaritySearch::new(&store);
         let results = search.search_filtered(&query_emb, 10, &filters)?;
 
-        // Only high-scoring pattern should be returned
-        assert!(results.len() <= 1);
-        if !results.is_empty() {
-            assert!(results[0].score >= 0.95);
+        for result in &results {
+            assert!(result.score >= min_score);
         }
 
         Ok(())

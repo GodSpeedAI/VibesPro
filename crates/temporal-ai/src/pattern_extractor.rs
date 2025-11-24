@@ -1,14 +1,13 @@
 //! Git commit pattern extraction
 
 use crate::{Result, TemporalAIError};
-use chrono::Utc;
 use git2::{Commit, DiffOptions, Repository};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::HashSet;
 use std::fmt::Write;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 /// Extracted pattern from Git commit history
 #[derive(Debug, Clone, Serialize, Deserialize)]

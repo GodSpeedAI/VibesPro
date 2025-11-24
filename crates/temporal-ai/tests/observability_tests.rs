@@ -9,7 +9,7 @@ async fn test_observability_client_creation() {
     env::set_var("OPENOBSERVE_TOKEN", "test-token");
     env::set_var("OPENOBSERVE_URL", "http://localhost:5080");
 
-    let client = ObservabilityClient::from_env().unwrap();
+    let _client = ObservabilityClient::from_env().unwrap();
     // We can't easily inspect private fields, but if it didn't panic, it's good.
 }
 
