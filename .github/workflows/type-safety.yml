@@ -106,7 +106,6 @@ jobs:
 
       - name: Build Type Generator
         run: pnpm exec tsc --project tools/type-generator/tsconfig.json
-        working-directory: tools/type-generator
 
       - name: Generate Types to temp directory
         run: |
