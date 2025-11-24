@@ -1,5 +1,3 @@
-# mypy: ignore-errors
-# -*- coding: utf-8 -*-
 """
 VibePro Logfire helpers for structured logging and observability.
 
@@ -33,21 +31,99 @@ Example:
 from __future__ import annotations
 
 import os
-from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any
-
-import logfire
+from collections.abc import Mapping, Sequence
+from pathlib import Path
+from typing import Literal, Protocol, TypedDict, Unpack, cast
 
 from .logging_settings import settings
 
-if TYPE_CHECKING:  # pragma: no cover - used for type hints only
-    from fastapi import FastAPI
 
-# Module-level singleton to hold the configured Logfire instance.
-_LOGFIRE_INSTANCE: logfire.Logfire | None = None
+class LogfireLogger(Protocol):
+    def with_settings(self, *, tags: Sequence[str]) -> LogfireLogger: ...
 
 
-def configure_logger(service: str | None = None, **kwargs: Any) -> logfire.Logfire:
+class LogfireModule(Protocol):
+    def configure(self, **kwargs: object) -> LogfireLogger: ...
+
+    def instrument_fastapi(self, app: object) -> None: ...
+
+    def instrument_requests(self) -> None: ...
+
+    def instrument_pydantic(self) -> None: ...
+
+
+_LOGFIRE_INSTANCE: LogfireLogger | None = None
+
+
+class SpanProcessor(Protocol):
+    def on_start(self, *args: object, **kwargs: object) -> None: ...
+
+    def on_end(self, *args: object, **kwargs: object) -> None: ...
+
+    def shutdown(self) -> None: ...
+
+    def force_flush(self, *args: object, **kwargs: object) -> bool: ...
+
+
+try:
+    import logfire as _logfire_module
+except Exception:  # pragma: no cover
+
+    class _FallbackLogfire(LogfireLogger):
+        def with_settings(self, *, tags: Sequence[str]) -> _FallbackLogfire:
+            return self
+
+    class _FallbackLogfireModule(LogfireModule):
+        def configure(self, **kwargs: object) -> _FallbackLogfire:
+            return _FallbackLogfire()
+
+        def instrument_fastapi(self, app: object) -> None:
+            return None
+
+        def instrument_requests(self) -> None:
+            return None
+
+        def instrument_pydantic(self) -> None:
+            return None
+
+    _logfire_api: LogfireModule = _FallbackLogfireModule()
+else:
+    _logfire_api = cast(LogfireModule, _logfire_module)
+
+
+class FastAPILike(Protocol):
+    """Minimal FastAPI protocol for instrumentation."""
+
+
+FastAPI = FastAPILike
+
+
+class ConfigureOptions(TypedDict, total=False):
+    local: bool
+    token: str | None
+    service_version: str | None
+    console: object | Literal[False] | None
+    config_dir: str | Path | None
+    data_dir: str | Path | None
+    additional_span_processors: Sequence[SpanProcessor] | None
+    metrics: object | Literal[False] | None
+    scrubbing: object | Literal[False] | None
+    inspect_arguments: bool | None
+    sampling: object | None
+    min_level: int | str | None
+    add_baggage_to_attributes: bool
+    code_source: object | None
+    distributed_tracing: bool | None
+    advanced: object | None
+
+
+def configure_logger(
+    service: str | None = None,
+    *,
+    environment: str | None = None,
+    send_to_logfire: bool | Literal["if-token-present"] | None = None,
+    **options: Unpack[ConfigureOptions],
+) -> LogfireLogger:
     """
     Configures the global Logfire instance (if not already done) and returns a logger.
 
@@ -61,14 +137,20 @@ def configure_logger(service: str | None = None, **kwargs: Any) -> logfire.Logfi
         service (str, optional): The name of the service. If not provided, it
                                  falls back to the `SERVICE_NAME` environment
                                  variable, and then to 'vibepro-py'.
-        **kwargs (Any): Additional keyword arguments to pass directly to
-                        `logfire.configure()` on the first invocation.
+        environment (str | None): Optional environment name override.
+        send_to_logfire (bool | Literal["if-token-present"] | None): Control whether logs are sent.
+        **options: Additional keyword arguments to pass directly to `logfire.configure()`.
 
     Returns:
-        logfire.Logfire: A Logfire logger instance with default metadata pre-applied.
+        LogfireLogger: A Logfire logger instance with default metadata pre-applied.
     """
-    service_name = _resolve_service_name(service)
-    logger = _configure_global_logfire(service_name=service_name, **kwargs)
+    service_name: str = _resolve_service_name(service)
+    logger = _configure_global_logfire(
+        service_name=service_name,
+        environment=environment,
+        send_to_logfire=send_to_logfire,
+        **options,
+    )
     return _apply_metadata(logger, default_metadata(service_name))
 
 
@@ -97,7 +179,14 @@ def default_metadata(service: str | None = None) -> dict[str, str]:
     }
 
 
-def bootstrap_logfire(app: FastAPI, **kwargs: Any) -> FastAPI:
+def bootstrap_logfire(
+    app: FastAPI,
+    service: str | None = None,
+    *,
+    environment: str | None = None,
+    send_to_logfire: bool | Literal["if-token-present"] | None = None,
+    **options: Unpack[ConfigureOptions],
+) -> FastAPI:
     """
     Bootstraps Logfire for a FastAPI application.
 
@@ -107,18 +196,23 @@ def bootstrap_logfire(app: FastAPI, **kwargs: Any) -> FastAPI:
 
     Args:
         app (FastAPI): The FastAPI application instance to instrument.
-        **kwargs (Any): Additional keyword arguments to pass to `logfire.configure()`.
+        **options: Additional keyword arguments to pass to `logfire.configure()`.
 
     Returns:
         FastAPI: The instrumented FastAPI app instance, allowing for method chaining.
     """
-    service_name = _resolve_service_name(kwargs.pop("service", None))
-    _configure_global_logfire(service_name=service_name, **kwargs)
-    logfire.instrument_fastapi(app)
+    service_name: str = _resolve_service_name(service)
+    _configure_global_logfire(
+        service_name=service_name,
+        environment=environment,
+        send_to_logfire=send_to_logfire,
+        **options,
+    )
+    _logfire_api.instrument_fastapi(app)
     return app
 
 
-def get_logger(category: str | None = None, **kwargs: Any) -> logfire.Logfire:
+def get_logger(category: str | None = None, **kwargs: object) -> LogfireLogger:
     """
     Returns a Logfire-bound logger with shared and category-specific metadata.
 
@@ -128,14 +222,15 @@ def get_logger(category: str | None = None, **kwargs: Any) -> logfire.Logfire:
     Args:
         category (str, optional): The category of the log (e.g., 'app', 'audit').
                                   See the `LogCategory` class for predefined values.
-        **kwargs (Any): Additional key-value pairs to be included as metadata.
+        **kwargs (object): Additional key-value pairs to be included as metadata.
 
     Returns:
-        logfire.Logfire: A configured Logfire logger with the specified metadata.
+        LogfireLogger: A configured Logfire logger with the specified metadata.
     """
     logger = _configure_global_logfire(service_name=_resolve_service_name(None))
 
-    metadata = default_metadata()
+    base_metadata = default_metadata()
+    metadata: dict[str, object] = {**base_metadata}
     if category:
         metadata["category"] = category
     metadata.update(kwargs)
@@ -171,17 +266,26 @@ def instrument_integrations(requests: bool = False, pydantic: bool = False) -> N
         pydantic (bool): If True, forces instrumentation of the `pydantic` library.
     """
     if requests or settings.INSTRUMENT_REQUESTS:
-        logfire.instrument_requests()
+        _logfire_api.instrument_requests()
     if pydantic or settings.INSTRUMENT_PYDANTIC:
-        logfire.instrument_pydantic()
+        _logfire_api.instrument_pydantic()
 
 
 def _resolve_service_name(service: str | None) -> str:
     """Resolves the service name from an argument or environment variable."""
-    return service or os.getenv("SERVICE_NAME", "vibepro-py")
+    if service is not None:
+        return service
+    env_value = os.getenv("SERVICE_NAME", "vibepro-py")
+    return env_value if env_value else "vibepro-py"
 
 
-def _configure_global_logfire(service_name: str, **kwargs: Any) -> logfire.Logfire:
+def _configure_global_logfire(
+    service_name: str,
+    *,
+    environment: str | None = None,
+    send_to_logfire: bool | Literal["if-token-present"] | None = None,
+    **options: Unpack[ConfigureOptions],
+) -> LogfireLogger:
     """
     Configures the global Logfire instance once and returns the shared logger.
     This internal function implements the singleton pattern for configuration.
@@ -189,22 +293,24 @@ def _configure_global_logfire(service_name: str, **kwargs: Any) -> logfire.Logfi
     global _LOGFIRE_INSTANCE
 
     if _LOGFIRE_INSTANCE is None:
-        send_to_logfire = kwargs.pop("send_to_logfire", "if-token-present")
+        configure_kwargs: ConfigureOptions = cast(ConfigureOptions, {**options})
+        resolved_environment = environment or os.getenv("APP_ENV", "local")
+        resolved_send_to_logfire = (
+            send_to_logfire if send_to_logfire is not None else "if-token-present"
+        )
 
-        configure_kwargs: dict[str, Any] = {
-            "service_name": service_name,
-            "environment": os.getenv("APP_ENV", "local"),
-            "send_to_logfire": send_to_logfire,
-        }
+        if (
+            os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+            and "additional_span_processors" not in configure_kwargs
+        ):
+            configure_kwargs["additional_span_processors"] = []
 
-        otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
-        if otlp_endpoint:
-            configure_kwargs["additional_span_processors"] = kwargs.pop(
-                "additional_span_processors", []
-            )
-
-        configure_kwargs.update({k: v for k, v in kwargs.items() if v is not None})
-        _LOGFIRE_INSTANCE = logfire.configure(**configure_kwargs)
+        _LOGFIRE_INSTANCE = _logfire_api.configure(
+            service_name=service_name,
+            environment=resolved_environment,
+            send_to_logfire=resolved_send_to_logfire,
+            **configure_kwargs,
+        )
 
     return _LOGFIRE_INSTANCE
 
@@ -221,9 +327,7 @@ def _reset_logfire_state() -> None:
     _LOGFIRE_INSTANCE = None
 
 
-def _apply_metadata(
-    logger: logfire.Logfire, metadata: Mapping[str, object]
-) -> logfire.Logfire:
+def _apply_metadata(logger: LogfireLogger, metadata: Mapping[str, object]) -> LogfireLogger:
     """Applies a dictionary of metadata to a logger instance as tags."""
     tags = tuple(f"{key}:{value}" for key, value in metadata.items() if value is not None)
     if not tags:

@@ -11,7 +11,7 @@ use crate::pattern_extractor::Pattern;
 use crate::vector_store::VectorStore;
 use crate::{Result, TemporalAIError};
 use std::cmp::Ordering;
-use std::collections::BinaryHeap;
+use std::collections::{BinaryHeap, HashSet};
 
 /// Represents a single result from a similarity search.
 ///
@@ -160,20 +160,41 @@ impl<'a> SimilaritySearch<'a> {
         }
 
         let mut results: Vec<_> = heap.into_vec();
-        results.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(Ordering::Equal));
+        results.sort_by(|a, b| {
+            let a_nan = a.score.is_nan();
+            let b_nan = b.score.is_nan();
+
+            match (a_nan, b_nan) {
+                (true, true) => Ordering::Equal,
+                (true, false) => Ordering::Greater,
+                (false, true) => Ordering::Less,
+                (false, false) => b
+                    .score
+                    .partial_cmp(&a.score)
+                    .unwrap_or(Ordering::Equal),
+            }
+        });
         Ok(results)
     }
 
     /// Retrieves a list of candidate pattern IDs based on the applied filters.
     fn get_candidate_pattern_ids(&self, filters: &SearchFilters) -> Result<Vec<String>> {
         if !filters.tags.is_empty() {
-            let mut candidates = vec![];
-            for tag in &filters.tags {
-                candidates.extend(self.store.find_by_tag(tag)?);
+            let mut tags_iter = filters.tags.iter();
+            if let Some(first_tag) = tags_iter.next() {
+                let mut candidates: HashSet<String> =
+                    self.store.find_by_tag(first_tag)?.into_iter().collect();
+
+                for tag in tags_iter {
+                    let next: HashSet<String> =
+                        self.store.find_by_tag(tag)?.into_iter().collect();
+                    candidates.retain(|id| next.contains(id));
+                }
+
+                let mut intersected: Vec<String> = candidates.into_iter().collect();
+                intersected.sort_unstable();
+                return Ok(intersected);
             }
-            candidates.sort_unstable();
-            candidates.dedup();
-            return Ok(candidates);
         }
 
         if let Some(glob_str) = &filters.file_path_glob {

@@ -1,5 +1,3 @@
-# mypy: ignore-errors
-# -*- coding: utf-8 -*-
 """
 Renders all Jinja2 templates to validate them against a sample context.
 
@@ -27,13 +25,56 @@ Security Note:
     offline validation tool. This ensures that if these templates were ever used
     in a web context, they would be safe by default.
 """
+# mypy: ignore-errors
 
 import argparse
+import importlib
 import os
 import sys
-from typing import cast, Dict, Any
+from collections.abc import Mapping
+from dataclasses import dataclass
+from typing import Protocol, cast
 
-from jinja2 import Environment, FileSystemLoader, StrictUndefined
+_jinja_spec = importlib.util.find_spec("jinja2")
+
+if _jinja_spec:
+    from jinja2 import Environment as RuntimeEnvironment  # type: ignore[no-any-unimported]
+    from jinja2 import (
+        FileSystemLoader as RuntimeFileSystemLoader,  # type: ignore[no-any-unimported]
+    )
+    from jinja2 import StrictUndefined as RuntimeStrictUndefined  # type: ignore[no-any-unimported]
+else:  # pragma: no cover
+
+    class RuntimeStrictUndefined:  # type: ignore[no-redef]
+        """Fallback StrictUndefined placeholder."""
+
+    class RuntimeFileSystemLoader:  # type: ignore[no-redef]
+        def __init__(self, searchpath: str) -> None:
+            self.searchpath = searchpath
+
+    class RuntimeEnvironment:  # type: ignore[no-redef]
+        def __init__(
+            self,
+            *,
+            loader: RuntimeFileSystemLoader,
+            undefined: RuntimeStrictUndefined,
+            autoescape: bool,
+        ) -> None:
+            self.loader = loader
+            self.undefined = undefined
+            self.autoescape = autoescape
+
+        def get_template(self, name: str) -> "TemplateProtocol":
+            raise NotImplementedError
+
+
+class TemplateProtocol(Protocol):
+    def render(self, context: Mapping[str, str]) -> str: ...
+
+
+class EnvironmentProtocol(Protocol):
+    def get_template(self, name: str) -> TemplateProtocol: ...
+
 
 # nosemgrep: python.flask.security.xss.audit.direct-use-of-jinja2
 # Justification: autoescape=True is explicitly enabled. This is an offline
@@ -45,13 +86,49 @@ ROOT = os.path.join(os.getcwd(), "templates", "{{project_slug}}")
 # A minimal, conservative sample context for rendering the templates.
 # This context should contain all the common variables that templates are
 # expected to use. Add new keys here as the project's templates evolve.
-SAMPLE_CONTEXT: Dict[str, Any] = {
+SAMPLE_CONTEXT: dict[str, str] = {
     "project_name": "Example Project",
     "project_slug": "example-project",
     "author_name": "Acme Maintainer",
     "repo_url": "https://github.com/example/example-project",
     "year": "2025",
 }
+
+
+@dataclass(frozen=True)
+class CliArgs:
+    subdir: str | None
+    check_all: bool
+    year: str
+
+
+def parse_args() -> CliArgs:
+    """Parse and normalize CLI arguments."""
+    parser = argparse.ArgumentParser(
+        description="Check Jinja2 templates under templates/{{project_slug}} using StrictUndefined."
+    )
+    parser.add_argument(
+        "--subdir",
+        "-s",
+        default="docs",
+        help="Subdirectory to check (default: 'docs').",
+    )
+    parser.add_argument("--all", action="store_true", help="Check all templates.")
+    parser.add_argument(
+        "--year", default=SAMPLE_CONTEXT["year"], help="Year to inject into sample context."
+    )
+    parsed = parser.parse_args()
+
+    check_all = cast(bool, parsed.all)
+    subdir_raw = cast(str | None, parsed.subdir)
+    subdir_arg = None if check_all else str(subdir_raw) if subdir_raw else None
+    year_value = cast(str, parsed.year)
+
+    return CliArgs(
+        subdir=subdir_arg,
+        check_all=check_all,
+        year=year_value,
+    )
 
 
 def find_templates(root: str, subdir: str | None = None) -> list[str]:
@@ -95,47 +172,34 @@ def main() -> int:
         int: Returns 0 on success, 1 if there are template rendering failures,
              and 2 for configuration errors (e.g., templates not found).
     """
-    parser = argparse.ArgumentParser(
-        description="Check Jinja2 templates under templates/{{project_slug}} using StrictUndefined."
-    )
-    parser.add_argument(
-        "--subdir",
-        "-s",
-        default="docs",
-        help="Subdirectory to check (default: 'docs').",
-    )
-    parser.add_argument(
-        "--all", action="store_true", help="Check all templates."
-    )
-    parser.add_argument(
-        "--year", default=SAMPLE_CONTEXT["year"], help="Year to inject into sample context."
-    )
-    args = parser.parse_args()
-
-    # Cast argparse results for better type checking.
-    all_arg = cast(bool, args.all)
-    subdir_arg = cast(str | None, args.subdir)
-    year_arg = cast(str, args.year)
+    args = parse_args()
 
     if not os.path.isdir(ROOT):
         print(f"Error: Templates root directory not found at '{ROOT}'.")
         return 2
 
-    loader = FileSystemLoader(ROOT)
+    loader: RuntimeFileSystemLoader = RuntimeFileSystemLoader(ROOT)  # type: ignore[misc]
     # Configure Jinja2 environment for safety and strictness.
-    env = Environment(loader=loader, undefined=StrictUndefined, autoescape=True)
+    env = cast(
+        EnvironmentProtocol,
+        RuntimeEnvironment(
+            loader=loader,
+            undefined=RuntimeStrictUndefined,  # type: ignore[misc]
+            autoescape=True,
+        ),
+    )
 
-    target_subdir = None if all_arg else subdir_arg
+    target_subdir = args.subdir if not args.check_all else None
     templates = find_templates(ROOT, subdir=target_subdir)
     if not templates:
         print(f"Warning: No templates found to check in '{ROOT}' for subdir '{target_subdir}'.")
-        return 0 # Not a failure if no templates exist to check.
+        return 0  # Not a failure if no templates exist to check.
 
     print(f"Found {len(templates)} templates to check...")
 
     # Create the rendering context, allowing CLI overrides.
-    ctx = dict(SAMPLE_CONTEXT)
-    ctx["year"] = year_arg
+    ctx: dict[str, str] = dict(SAMPLE_CONTEXT)
+    ctx["year"] = args.year
 
     failures = 0
     for tname in templates:

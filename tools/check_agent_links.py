@@ -77,7 +77,7 @@ def check_local_links(agent_files: list[Path]) -> list[tuple[str, str, str]]:
                 # Skip empty targets or absolute paths
                 continue
 
-            # Resolve the target relative to the repo root.
+            # Resolve the target relative to the markdown file's directory.
             candidate = (f.parent / target_path_str).resolve()
             if not candidate.exists():
                 errors.append((str(rel_path), target, str(candidate)))
@@ -115,7 +115,9 @@ def check_external_links(
         RuntimeError: If the `requests` library is not installed.
     """
     if requests is None:
-        raise RuntimeError("'requests' library is required for external link checking. Please `pip install requests`.")
+        raise RuntimeError(
+            "'requests' library is required for external link checking. Please `pip install requests`."
+        )
 
     seen: set[str] = set()
     errors: list[tuple[str, str]] = []

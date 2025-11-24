@@ -56,9 +56,9 @@ impl SecureDb {
 
             if !uuid_exists {
                 let uuid = *Uuid::new_v4().as_bytes();
-                table
-                    .insert(DB_UUID_KEY, uuid.as_slice())
-                    .map_err(|err| SecureDbError::storage("failed to persist database uuid", err))?;
+                table.insert(DB_UUID_KEY, uuid.as_slice()).map_err(|err| {
+                    SecureDbError::storage("failed to persist database uuid", err)
+                })?;
             }
 
             // Check if counter exists
@@ -94,7 +94,9 @@ impl SecureDb {
         let db_uuid: [u8; 16] = table
             .get(DB_UUID_KEY)
             .map_err(|err| SecureDbError::storage("failed to load database uuid", err))?
-            .ok_or(SecureDbError::metadata("database uuid not found after initialization"))?
+            .ok_or(SecureDbError::metadata(
+                "database uuid not found after initialization",
+            ))?
             .value()
             .try_into()
             .map_err(|_| SecureDbError::metadata("stored database uuid has invalid length"))?;
@@ -102,7 +104,9 @@ impl SecureDb {
         let counter = table
             .get(NONCE_COUNTER_KEY)
             .map_err(|err| SecureDbError::storage("failed to load nonce counter", err))?
-            .ok_or(SecureDbError::metadata("nonce counter not found after initialization"))?
+            .ok_or(SecureDbError::metadata(
+                "nonce counter not found after initialization",
+            ))?
             .value()
             .try_into()
             .map(u64::from_le_bytes)
@@ -277,9 +281,9 @@ impl SecureDb {
         })?;
 
         {
-            let mut table = write_txn.open_table(DATA_TABLE).map_err(|err| {
-                SecureDbError::table("failed to open data table for flush", err)
-            })?;
+            let mut table = write_txn
+                .open_table(DATA_TABLE)
+                .map_err(|err| SecureDbError::table("failed to open data table for flush", err))?;
 
             table
                 .insert(NONCE_COUNTER_KEY, counter_value.to_le_bytes().as_slice())
