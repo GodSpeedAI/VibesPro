@@ -1,5 +1,5 @@
 /**
- * @file Validates all Nx generator schemas (`generators/**/schema.json`) against the JSON Schema standard.
+ * @file Validates all Nx generator schemas (glob: generators/** pattern for schema.json) against the JSON Schema standard.
  * @author Jules
  *
  * @description
@@ -48,7 +48,7 @@ function isModuleMissing(error: unknown, moduleName: string): boolean {
  *
  * If 'ajv' is not installed, it returns null and logs a warning to the console instead of
  * throwing an error. This allows the script to run without crashing in environments
-* where dev dependencies might be missing.
+ * where dev dependencies might be missing.
  *
  * @returns {Promise<typeof import('ajv').default | null>} A promise that resolves to the `Ajv`
  *   constructor if the import is successful, or `null` if the module is not found.
@@ -57,8 +57,7 @@ function isModuleMissing(error: unknown, moduleName: string): boolean {
 async function loadAjv(): Promise<typeof import('ajv').default | null> {
   try {
     const mod = await import('ajv');
-    // Handles both CJS and ESM module interop.
-    return mod.default ?? (mod as unknown as typeof import('ajv').default);
+    return mod.default;
   } catch (error) {
     if (isModuleMissing(error, 'ajv')) {
       console.warn(

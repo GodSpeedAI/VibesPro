@@ -27,15 +27,6 @@ import { getCategory } from './stack';
  *   The package manager for Node.js-based services.
  */
 
-/**
- * @type {object} ServiceDefaults
- * @description Defines the set of default options for a new service, which are derived
- *   from the project's tech stack. This type provides a clear contract for the output of
- *   the `deriveServiceDefaults` function.
- * @property {LanguageOption} language - The default programming language.
- * @property {BackendFrameworkOption} backendFramework - The default backend framework.
- * @property {PackageManagerOption} packageManager - The default package manager.
- */
 export type ServiceDefaults = {
   language: 'python' | 'typescript';
   backendFramework: 'fastapi' | 'express' | 'nest' | 'none';
