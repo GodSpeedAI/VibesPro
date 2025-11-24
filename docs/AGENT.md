@@ -320,7 +320,7 @@ specs:
 
 ## References
 
-- [DEV-PRD-042](./dev_prd.md)
+- DEV-PRD-042 (example spec ID; see [spec catalog](./specs/README.md))
 - [Implementation PR #123](https://github.com/...)
 ```
 
