@@ -4,7 +4,7 @@ from libs.python import vibepro_logging
 from libs.python.vibepro_logging import get_logger
 
 
-@patch("libs.python.vibepro_logging.logfire")
+@patch("libs.python.vibepro_logging._logfire_api")
 def test_get_logger_configures_with_settings(mock_logfire, monkeypatch):
     """
     RED: This test should fail.
