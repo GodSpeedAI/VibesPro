@@ -73,7 +73,7 @@ def test_requests_instrumentation(logfire_setup):
     assert http_span.attributes.get("http.url") is not None
 
 
-@patch("libs.python.vibepro_logging.logfire")
+@patch("libs.python.vibepro_logging._logfire_api")
 def test_pydantic_instrumentation(mock_logfire):
     """
     Asserts that pydantic instrumentation is enabled.
