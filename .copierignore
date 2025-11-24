@@ -13,7 +13,6 @@ htmlcov/
 target/
 src/
 mcp/
-generators/
 hooks/__pycache__/
 architecture/
 domain/
