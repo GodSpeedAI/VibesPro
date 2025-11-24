@@ -105,6 +105,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Copier
+        run: uv tool install copier
+
       - name: Ensure Rust toolchain from rust-toolchain.toml
         shell: bash
         run: |
