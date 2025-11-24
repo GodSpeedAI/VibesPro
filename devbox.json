@@ -13,7 +13,7 @@
     "jdk"
   ],
   "shell": {
-    "init_hook": ["bash scripts/devbox_boot.sh"]
+    "init_hook": ["bash scripts/setup/devbox_boot.sh"]
   },
   "nix": {
     "overlays": ["./.devbox/overlays/supabase.nix"]
