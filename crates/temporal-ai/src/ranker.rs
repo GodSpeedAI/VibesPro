@@ -1,23 +1,43 @@
-//! Recommendation ranking with multi-factor scoring
+//! This module provides the `RecommendationRanker`, a multi-factor scoring engine
+//! that processes raw similarity search results and re-ranks them to produce the
+//! final, context-aware recommendations.
 
 use crate::pattern_extractor::Pattern;
 use crate::similarity::SimilarityResult;
 use crate::vector_store::VectorStore;
-use crate::{Result, TemporalAIError};
+use crate::Result;
 use chrono::Utc;
 
-/// Final recommendation with explanation
+/// Represents a final, scored, and explained recommendation.
+///
+/// This struct is the output of the `RecommendationRanker`. It contains the original
+/// `Pattern`, the individual scores that contributed to its ranking, and a
+/// human-readable explanation of why it was recommended.
 #[derive(Debug, Clone)]
 pub struct Recommendation {
+    /// The underlying development pattern being recommended.
     pub pattern: Pattern,
+    /// The raw cosine similarity score (between 0.0 and 1.0).
     pub similarity_score: f32,
+    /// A score based on the age of the pattern, calculated with exponential decay.
+    /// Newer patterns receive a higher score.
     pub recency_score: f32,
+    /// A score based on how frequently this pattern has been used, normalized to a
+    /// value between 0.0 and 1.0.
     pub usage_score: f32,
+    /// The final, weighted score that determines the rank of the recommendation.
     pub final_score: f32,
+    /// A human-readable string that summarizes the pattern and its scores.
     pub explanation: String,
 }
 
-/// Recommendation ranker
+/// A multi-factor scoring engine for ranking similarity search results.
+///
+/// The `RecommendationRanker` takes the initial list of semantically similar
+/// patterns and applies a weighted scoring model to re-rank them. This model
+/// considers not only the similarity of the pattern to the query but also its
+/// recency, historical usage count, and success rate. This ensures that the
+/// recommendations are not just relevant but also timely and proven.
 pub struct RecommendationRanker<'a> {
     store: &'a VectorStore,
     recency_weight: f32,
@@ -27,7 +47,14 @@ pub struct RecommendationRanker<'a> {
 }
 
 impl<'a> RecommendationRanker<'a> {
-    /// Create new ranker with default weights
+    /// Creates a new `RecommendationRanker` with default weights.
+    ///
+    /// The default weights are chosen to provide a balanced ranking.
+    ///
+    /// # Arguments
+    ///
+    /// * `store` - A reference to the `VectorStore`, which is needed to retrieve
+    ///   performance metrics for the patterns.
     pub fn new(store: &'a VectorStore) -> Self {
         Self {
             store,
@@ -38,7 +65,17 @@ impl<'a> RecommendationRanker<'a> {
         }
     }
 
-    /// Create ranker with custom weights
+    /// Creates a new `RecommendationRanker` with custom, user-defined weights.
+    ///
+    /// The provided weights will be normalized to ensure they sum to 1.0.
+    ///
+    /// # Arguments
+    ///
+    /// * `store` - A reference to the `VectorStore`.
+    /// * `recency` - The weight for the recency score.
+    /// * `usage` - The weight for the usage score.
+    /// * `similarity` - The weight for the similarity score.
+    /// * `success_rate` - The weight for the success rate score.
     pub fn with_weights(
         store: &'a VectorStore,
         recency: f32,
@@ -46,11 +83,10 @@ impl<'a> RecommendationRanker<'a> {
         similarity: f32,
         success_rate: f32,
     ) -> Self {
-        // Normalize weights to sum to 1.0
         let total = recency + usage + similarity + success_rate;
         let (recency_weight, usage_weight, similarity_weight, success_rate_weight) =
             if total.abs() <= f32::EPSILON {
-                (0.25, 0.25, 0.25, 0.25)
+                (0.25, 0.25, 0.25, 0.25) // Avoid division by zero
             } else {
                 (
                     recency / total,
@@ -68,38 +104,48 @@ impl<'a> RecommendationRanker<'a> {
         }
     }
 
-    /// Rank similarity results
+    /// Ranks a vector of `SimilarityResult`s to produce a sorted list of `Recommendation`s.
+    ///
+    /// This is the core method of the `RecommendationRanker`. It iterates through the
+    /// input results, calculates the recency, usage, and success rate scores for each,
+    /// computes the final weighted score, and generates an explanation. The final list
+    /// is sorted in descending order of `final_score`.
+    ///
+    /// # Arguments
+    ///
+    /// * `results` - A `Vec<SimilarityResult>` from the `SimilaritySearch` module.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `Vec<Recommendation>` sorted by `final_score`.
     pub fn rank(&self, results: Vec<SimilarityResult>) -> Result<Vec<Recommendation>> {
         let now = Utc::now().timestamp();
 
         let mut recommendations: Vec<Recommendation> = results
             .into_iter()
             .map(|result| {
-                // Calculate recency score (exponential decay)
-                let raw_days = (now - result.pattern.timestamp) as f32 / 86400.0;
-                let days_since = raw_days.max(0.0);
+                // Calculate recency score using an exponential decay function.
+                let days_since = ((now - result.pattern.timestamp) as f32 / 86400.0).max(0.0);
                 let recency_score = (-0.01 * days_since).exp();
 
-                // Get usage metrics
-                let metrics = self.store.get_metrics(&result.pattern_id).ok().flatten();
-                let (usage_score, usage_count, success_rate_score) = if let Some(m) = metrics {
-                    // Normalize usage count (cap at 100)
-                    (
-                        (m.usage_count as f32 / 100.0).min(1.0),
-                        m.usage_count,
-                        m.success_rate.unwrap_or(0.5), // Default neutral success rate
-                    )
-                } else {
-                    (0.0, 0, 0.5)
-                };
+                let (usage_score, usage_count, success_rate_score) = self
+                    .store
+                    .get_metrics(&result.pattern.id)
+                    .ok()
+                    .flatten()
+                    .map_or((0.0, 0, 0.5), |m| {
+                        (
+                            (m.usage_count as f32 / 100.0).min(1.0), // Normalize usage
+                            m.usage_count,
+                            m.success_rate.unwrap_or(0.5), // Default to neutral
+                        )
+                    });
 
-                // Calculate final score
                 let final_score = self.similarity_weight * result.score
                     + self.recency_weight * recency_score
                     + self.usage_weight * usage_score
                     + self.success_rate_weight * success_rate_score;
 
-                // Generate explanation
                 let explanation = self.generate_explanation(
                     &result.pattern,
                     result.score,
@@ -119,7 +165,6 @@ impl<'a> RecommendationRanker<'a> {
             })
             .collect();
 
-        // Sort by final score descending
         recommendations.sort_by(|a, b| {
             b.final_score
                 .partial_cmp(&a.final_score)
@@ -129,7 +174,7 @@ impl<'a> RecommendationRanker<'a> {
         Ok(recommendations)
     }
 
-    /// Generate human-readable explanation
+    /// Generates a human-readable explanation for a recommendation.
     fn generate_explanation(
         &self,
         pattern: &Pattern,
@@ -139,18 +184,12 @@ impl<'a> RecommendationRanker<'a> {
         success_rate: f32,
     ) -> String {
         let commit_short: String = pattern.commit_sha.chars().take(7).collect();
-        let commit_display = if commit_short.is_empty() {
-            pattern.commit_sha.clone()
-        } else {
-            commit_short
-        };
-        let tags = pattern.tags.join(", ");
         let day_label = if days_ago == 1 { "day" } else { "days" };
 
         format!(
             "Pattern from {} ({}): {} - Similarity: {:.1}%, Recency: {} {} ago, Usage: {} times, Success: {:.1}%",
-            commit_display,
-            tags,
+            commit_short,
+            pattern.tags.join(", "),
             pattern.description,
             similarity * 100.0,
             days_ago,

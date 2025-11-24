@@ -4,8 +4,8 @@ use crate::pattern_extractor::Pattern;
 use crate::schema::{
     EmbeddingRecord, PerformanceMetrics, EMBEDDINGS, FILE_PATH_INDEX, METADATA, METRICS, TAG_INDEX,
 };
-use crate::{Result, TemporalAIError};
-use redb::{Database, ReadableTable, Table, TableDefinition};
+use crate::Result;
+use redb::{Database, ReadableTable, Table};
 use std::collections::HashSet;
 use std::path::Path;
 
