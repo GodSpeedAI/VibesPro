@@ -52,6 +52,9 @@ docs/tmp/
 temporal_db/*.redb
 data/*.redb
 
+# Docker Supabase environment (contains secrets)
+docker/.env.supabase
+
 # AI Models (large binary files)
 models/*.gguf
 models/*.bin

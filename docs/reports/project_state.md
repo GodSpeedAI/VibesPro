@@ -33,7 +33,7 @@ VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal a
 | **AGENT System**             | AGENT-SYSTEM.md, AGENT-MAP.md | ✅ Complete (Phase 1+2)  | 14 AGENT.md files across all directories                       |
 | **AI Workflow System**       | 26 prompts, 17 instructions   | ✅ Complete              | `.github/prompts/`, `.github/instructions/`                    |
 | **Hexagonal Architecture**   | DEV-ADR-020, 022, SDS-022     | ✅ Implemented           | Ports/Adapters pattern in `libs/shared/domain/`                |
-| **Type Safety Foundation**   | DEV-SDS-020 (design)          | ⚠️ Design Complete       | Spec exists, pipeline not yet implemented                      |
+| **Type Safety Pipeline**     | DEV-SDS-020, DEV-PRD-020      | ✅ Complete              | Docker Compose Supabase, TypeScript/Python types, CI validation |
 | **Nx Configuration**         | Package alignment             | ✅ Complete              | All @nx packages at v22.0.2                                    |
 | **Python Testing**           | pytest coverage               | ✅ Complete              | No exclusions, temporal tests functional                       |
 | **Core Template**            | Hexagonal architecture        | ✅ Complete              | `templates/{{project_slug}}/` generates working projects       |
@@ -118,40 +118,35 @@ VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal a
 
 ## Current Gaps & Priorities
 
-### Gap 1: End-to-End Type Safety Pipeline (Generation Implemented, Supabase Integration Pending)
+### ✅ Gap 1: End-to-End Type Safety Pipeline (Complete)
 
-**Status**: ⚠️ Type generation pipeline implemented; Supabase integration and migrations still pending
+**Status**: ✅ Complete - Full implementation with Docker Compose Supabase stack
 
 **Specifications**:
 
-- ✅ DEV-PRD-020: End-to-End Type Safety from Database to UI (spec exists)
-- ✅ DEV-SDS-020: Type Generation and Propagation Pipeline (design complete)
+- ✅ DEV-PRD-020: End-to-End Type Safety from Database to UI
+- ✅ DEV-SDS-020: Type Generation and Propagation Pipeline
 - ✅ DEV-ADR-020: Type system architecture decisions
-- ✅ DEV-SDS-019: Database Schema and Migration Workflow (design complete)
+- ✅ DEV-SDS-019: Database Schema and Migration Workflow
 
-**What Exists**:
+**What Was Delivered**:
 
-- Complete design specifications in `docs/dev_sds.md` (lines 861-883)
-- Hexagonal architecture ports/adapters implemented in `libs/shared/domain/`
-- Foundation for type-safe domain models
+- ✅ Docker Compose Supabase stack (`docker/docker-compose.supabase.yml`)
+- ✅ Database migrations (`supabase/migrations/`)
+- ✅ PostgreSQL introspection-based type generation (`tools/scripts/gen_ts_from_pg.py`)
+- ✅ TypeScript types with Database namespace (`libs/shared/types/src/database.types.ts`)
+- ✅ Python Pydantic models (`libs/shared/types-py/src/models.py`)
+- ✅ Just recipes: `supabase-start`, `supabase-stop`, `db-migrate`, `db-seed`, `gen-types`
+- ✅ CI validation in `.github/workflows/type-safety.yml`
+- ✅ Integration tests (`tests/integration/supabase/`)
 
-**What's Missing**:
+**Just Commands**:
 
-- Supabase schema source of truth and automated migration runner (`just db-migrate`)
-- Environment-validated Supabase CLI availability in CI and dev shells
-- CI validation wired to fail when generated types drift from schema changes
-
-**Recent Progress**:
-
-- `gen-types-ts` and `gen-types-py` commands generate and commit shared types
-- `libs/shared/types/src/database.types.ts` and `libs/shared/types-py/src/models.py` now tracked for freshness
-- `check-types` guard compares generated outputs against Git state
-
-**Implementation Effort**: Medium (2-3 days)
-
-- Wire Supabase CLI into devbox/mise overlay
-- Connect migration runner to schema source and `check-types`
-- Extend CI workflow to execute `just db-migrate && just check-types`
+- `just supabase-start` - Start local Supabase stack
+- `just supabase-stop` - Stop the stack
+- `just db-migrate` - Apply database migrations
+- `just db-seed` - Seed with test data
+- `just gen-types` - Generate TypeScript and Python types
 
 ### Gap 2: Temporal AI Phase 3D - Observability Integration (Not Started)
 
