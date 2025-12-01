@@ -153,8 +153,23 @@ def get_table_list(host: str, port: int, user: str, password: str, database: str
     return [row[0] for row in results if row and row[0]]
 
 
+def validate_identifier(name: str) -> str:
+    """Validate and sanitize a SQL identifier (table/column name).
+    
+    Only allows alphanumeric characters and underscores.
+    Raises ValueError if invalid.
+    """
+    import re
+    if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', name):
+        raise ValueError(f"Invalid SQL identifier: {name}")
+    return name
+
+
 def get_table_columns(table_name: str, host: str, port: int, user: str, password: str, database: str) -> list[ColumnInfo]:
     """Get columns for a specific table."""
+    # Validate table name to prevent SQL injection
+    safe_table_name = validate_identifier(table_name)
+    
     query = f"""
         SELECT 
             column_name,
@@ -163,7 +178,7 @@ def get_table_columns(table_name: str, host: str, port: int, user: str, password
             column_default
         FROM information_schema.columns 
         WHERE table_schema = 'public' 
-        AND table_name = '{table_name}'
+        AND table_name = '{safe_table_name}'
         ORDER BY ordinal_position;
     """
     results = run_psql_query(query, host, port, user, password, database)
