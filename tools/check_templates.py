@@ -29,6 +29,7 @@ Security Note:
 
 import argparse
 import importlib
+import importlib.util
 import os
 import sys
 from collections.abc import Mapping

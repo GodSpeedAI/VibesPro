@@ -31,6 +31,7 @@ from pathlib import Path
 @dataclass
 class ColumnInfo:
     """Represents a database column."""
+
     name: str
     data_type: str
     is_nullable: bool
@@ -41,6 +42,7 @@ class ColumnInfo:
 @dataclass
 class TableInfo:
     """Represents a database table."""
+
     name: str
     columns: list[ColumnInfo]
 
@@ -111,23 +113,31 @@ PG_TO_TS_TYPES: dict[str, str] = {
 }
 
 
-def run_psql_query(query: str, host: str, port: int, user: str, password: str, database: str) -> list[tuple[str, ...]]:
+def run_psql_query(
+    query: str, host: str, port: int, user: str, password: str, database: str
+) -> list[tuple[str, ...]]:
     """Execute a psql query and return results."""
     env = os.environ.copy()
     env["PGPASSWORD"] = password
-    
+
     cmd = [
         "psql",
-        "-h", host,
-        "-p", str(port),
-        "-U", user,
-        "-d", database,
+        "-h",
+        host,
+        "-p",
+        str(port),
+        "-U",
+        user,
+        "-d",
+        database,
         "-t",  # Tuples only
         "-A",  # Unaligned output
-        "-F", "|",  # Field separator
-        "-c", query,
+        "-F",
+        "|",  # Field separator
+        "-c",
+        query,
     ]
-    
+
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, env=env, check=True)
         lines = [line.strip() for line in result.stdout.strip().split("\n") if line.strip()]
@@ -155,21 +165,24 @@ def get_table_list(host: str, port: int, user: str, password: str, database: str
 
 def validate_identifier(name: str) -> str:
     """Validate and sanitize a SQL identifier (table/column name).
-    
+
     Only allows alphanumeric characters and underscores.
     Raises ValueError if invalid.
     """
     import re
-    if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', name):
+
+    if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", name):
         raise ValueError(f"Invalid SQL identifier: {name}")
     return name
 
 
-def get_table_columns(table_name: str, host: str, port: int, user: str, password: str, database: str) -> list[ColumnInfo]:
+def get_table_columns(
+    table_name: str, host: str, port: int, user: str, password: str, database: str
+) -> list[ColumnInfo]:
     """Get columns for a specific table."""
     # Validate table name to prevent SQL injection
     safe_table_name = validate_identifier(table_name)
-    
+
     query = f"""
         SELECT 
             column_name,
@@ -180,7 +193,7 @@ def get_table_columns(table_name: str, host: str, port: int, user: str, password
         WHERE table_schema = 'public' 
         AND table_name = '{safe_table_name}'
         ORDER BY ordinal_position;
-    """
+    """  # noqa: S608
     results = run_psql_query(query, host, port, user, password, database)
     columns = []
     for row in results:
@@ -189,19 +202,21 @@ def get_table_columns(table_name: str, host: str, port: int, user: str, password
             data_type = row[1]
             is_nullable = row[2].upper() == "YES"
             column_default = row[3] if len(row) > 3 and row[3] else None
-            
+
             # Check if it's an array type (PostgreSQL arrays start with _)
             is_array = data_type.startswith("_")
             if is_array:
                 data_type = data_type[1:]  # Remove leading underscore
-            
-            columns.append(ColumnInfo(
-                name=name,
-                data_type=data_type,
-                is_nullable=is_nullable,
-                is_array=is_array,
-                column_default=column_default,
-            ))
+
+            columns.append(
+                ColumnInfo(
+                    name=name,
+                    data_type=data_type,
+                    is_nullable=is_nullable,
+                    is_array=is_array,
+                    column_default=column_default,
+                )
+            )
     return columns
 
 
@@ -209,15 +224,15 @@ def pg_type_to_ts(pg_type: str, is_array: bool, is_nullable: bool) -> str:
     """Convert PostgreSQL type to TypeScript type."""
     # Get base TypeScript type
     ts_type = PG_TO_TS_TYPES.get(pg_type.lower(), "unknown")
-    
+
     # Handle arrays
     if is_array:
         ts_type = f"{ts_type}[]"
-    
+
     # Handle nullability
     if is_nullable:
         ts_type = f"{ts_type} | null"
-    
+
     return ts_type
 
 
@@ -230,19 +245,19 @@ def generate_typescript_interface(table: TableInfo) -> str:
     """Generate TypeScript interface for a table."""
     interface_name = snake_to_pascal(table.name)
     lines = [
-        f"/**",
+        "/**",
         f" * Database table: {table.name}",
-        f" * Auto-generated from PostgreSQL schema",
-        f" */",
+        " * Auto-generated from PostgreSQL schema",
+        " */",
         f"export interface {interface_name} {{",
     ]
-    
+
     for col in table.columns:
         ts_type = pg_type_to_ts(col.data_type, col.is_array, col.is_nullable)
         # Use camelCase for field names
         field_name = col.name
         lines.append(f"  {field_name}: {ts_type};")
-    
+
     lines.append("}")
     return "\n".join(lines)
 
@@ -262,9 +277,9 @@ def generate_database_types(tables: list[TableInfo]) -> str:
         "/* eslint-disable @typescript-eslint/no-explicit-any */",
         "",
     ]
-    
+
     interfaces = [generate_typescript_interface(table) for table in tables]
-    
+
     # Add Database namespace for compatibility with Supabase patterns
     db_namespace = [
         "",
@@ -275,25 +290,29 @@ def generate_database_types(tables: list[TableInfo]) -> str:
         "  public: {",
         "    Tables: {",
     ]
-    
+
     for table in tables:
         interface_name = snake_to_pascal(table.name)
-        db_namespace.extend([
-            f"      {table.name}: {{",
-            f"        Row: {interface_name};",
-            f"        Insert: Partial<{interface_name}>;",
-            f"        Update: Partial<{interface_name}>;",
-            "      };",
-        ])
-    
-    db_namespace.extend([
-        "    };",
-        "    Views: Record<string, never>;",
-        "    Functions: Record<string, never>;",
-        "  };",
-        "}",
-    ])
-    
+        db_namespace.extend(
+            [
+                f"      {table.name}: {{",
+                f"        Row: {interface_name};",
+                f"        Insert: Partial<{interface_name}>;",
+                f"        Update: Partial<{interface_name}>;",
+                "      };",
+            ]
+        )
+
+    db_namespace.extend(
+        [
+            "    };",
+            "    Views: Record<string, never>;",
+            "    Functions: Record<string, never>;",
+            "  };",
+            "}",
+        ]
+    )
+
     return "\n".join(header + interfaces + db_namespace) + "\n"
 
 
@@ -333,22 +352,20 @@ def main() -> int:
         default="libs/shared/types/src/database.types.ts",
         help="Output file path",
     )
-    
+
     args = parser.parse_args()
-    
+
     print(f"🔍 Connecting to PostgreSQL at {args.host}:{args.port}...")
-    
+
     # Get list of tables
-    table_names = get_table_list(
-        args.host, args.port, args.user, args.password, args.database
-    )
-    
+    table_names = get_table_list(args.host, args.port, args.user, args.password, args.database)
+
     if not table_names:
         print("⚠️  No tables found in the public schema")
         return 1
-    
+
     print(f"📋 Found {len(table_names)} tables: {', '.join(table_names)}")
-    
+
     # Collect table information
     tables: list[TableInfo] = []
     for table_name in table_names:
@@ -357,15 +374,15 @@ def main() -> int:
         )
         tables.append(TableInfo(name=table_name, columns=columns))
         print(f"   - {table_name}: {len(columns)} columns")
-    
+
     # Generate TypeScript
     typescript_content = generate_database_types(tables)
-    
+
     # Write output
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(typescript_content, encoding="utf-8")
-    
+
     print(f"✅ Generated TypeScript types to {output_path}")
     return 0
 

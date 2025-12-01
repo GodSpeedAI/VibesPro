@@ -14,8 +14,8 @@ TS_TO_PY: dict[str, str] = {
     "string": "str",
     "number": "float",
     "boolean": "bool",
-    "unknown": "typing.Any",
-    "any": "typing.Any",
+    "unknown": "JsonValue",
+    "any": "JsonValue",
     "object": "dict",
     "uuid": "str",
 }
@@ -42,13 +42,13 @@ def map_ts_type_to_python(ts_type: str) -> str:
         inner = ts_type[len("Array<") : -1].strip()
         py_type = f"list[{map_ts_type_to_python(inner)}]"
     elif ts_type.lower().startswith("record<"):
-        py_type = "dict[str, typing.Any]"
+        py_type = "dict[str, JsonValue]"
     else:
         base = ts_type.lower()
-        py_type = TS_TO_PY.get(base, "typing.Any")
+        py_type = TS_TO_PY.get(base, "JsonValue")
 
     if nullable:
-        return f"typing.Optional[{py_type}]"
+        return f"{py_type} | None"
     return py_type
 
 
@@ -86,8 +86,8 @@ def parse_ts_file(path: Path) -> dict[str, dict[str, tuple[str, str]]]:
             py_type = map_ts_type_to_python(raw_type.strip())
 
             # If the field was marked optional (via ? or | undefined), ensure it's Optional
-            if is_optional and not py_type.startswith("typing.Optional["):
-                py_type = f"typing.Optional[{py_type}]"
+            if is_optional and not py_type.endswith(" | None"):
+                py_type = f"{py_type} | None"
 
             # If optional via ? or | undefined, provide a default None to make the
             # Pydantic model accept missing properties (omitted in JSON payloads).
@@ -102,10 +102,9 @@ def parse_ts_file(path: Path) -> dict[str, dict[str, tuple[str, str]]]:
 def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
     """Generate a consolidated models.py file from TS interface definitions."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    imports = {"from pydantic import BaseModel"}
-    needs_typing = False
+    imports = {"from pydantic import BaseModel, JsonValue"}
     models: list[str] = []
-    
+
     # Skip the Database namespace as it's a TypeScript-specific pattern
     # that doesn't translate well to Python Pydantic models
     skip_classes = {"Database"}
@@ -116,11 +115,9 @@ def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
             # Skip utility interfaces that don't represent tables
             if class_name in skip_classes:
                 continue
-                
+
             py_fields: list[str] = []
             for fname, (py_type, default) in fields.items():
-                if "typing." in py_type:
-                    needs_typing = True
                 py_fields.append(f"    {fname}: {py_type}{default}")
             class_lines = [f"class {class_name}(BaseModel):"]
             if py_fields:
@@ -128,9 +125,6 @@ def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
             else:
                 class_lines.append("    pass")
             models.append("\n".join(class_lines))
-
-    if needs_typing:
-        imports.add("import typing")
 
     output_path = out_dir / "models.py"
     header = [
