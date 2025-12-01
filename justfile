@@ -257,7 +257,7 @@ lint-node:
 
 lint-templates:
 	@echo "🔍 Validating templates..."
-	python tools/validate-templates.py
+	uv run python tools/validate-templates.py
 
 # --- Template Maintenance ---
 template-cleanup:
@@ -772,6 +772,10 @@ validate-generator-schemas:
 		echo "❌ Neither pnpm/corepack nor npx is available to run tsx. Install dependencies with 'just setup'."; \
 		exit 1; \
 	fi
+
+validate-agent-files:
+	@echo "🔍 Validating AGENT.md files..."
+	@python3 tools/check_agent_links.py
 
 ai-validate:
 	@echo "🔍 Validating project..."

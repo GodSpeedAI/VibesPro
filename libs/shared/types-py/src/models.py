@@ -6,43 +6,48 @@
 #
 # Note: The TypeScript Database namespace is not generated here
 # as it's a TypeScript-specific pattern for Supabase client typing.
-from pydantic import BaseModel
-import typing
+from pydantic import BaseModel, JsonValue
 
 
 class Profiles(BaseModel):
     id: str
     user_id: str
-    bio: typing.Optional[str]
-    location: typing.Optional[str]
-    website_url: typing.Optional[str]
-    social_links: typing.Optional[dict[str, typing.Any]]
-    preferences: typing.Optional[dict[str, typing.Any]]
+    bio: str | None
+    location: str | None
+    website_url: str | None
+    social_links: dict[str, JsonValue] | None
+    preferences: dict[str, JsonValue] | None
     created_at: str
     updated_at: str
+
+
 class ProjectMembers(BaseModel):
     id: str
     project_id: str
     user_id: str
-    role: typing.Optional[str]
+    role: str | None
     joined_at: str
+
+
 class Projects(BaseModel):
     id: str
     owner_id: str
     name: str
-    description: typing.Optional[str]
-    tags: typing.Optional[list[str]]
-    status: typing.Optional[str]
-    visibility: typing.Optional[str]
-    settings: typing.Optional[dict[str, typing.Any]]
+    description: str | None
+    tags: list[str] | None
+    status: str | None
+    visibility: str | None
+    settings: dict[str, JsonValue] | None
     created_at: str
     updated_at: str
+
+
 class Users(BaseModel):
     id: str
     email: str
     created_at: str
     updated_at: str
     is_active: bool
-    display_name: typing.Optional[str]
-    avatar_url: typing.Optional[str]
-    metadata: typing.Optional[dict[str, typing.Any]]
+    display_name: str | None
+    avatar_url: str | None
+    metadata: dict[str, JsonValue] | None
