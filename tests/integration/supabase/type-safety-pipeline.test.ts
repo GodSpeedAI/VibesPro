@@ -50,7 +50,7 @@ function runJust(command: string): { success: boolean; output: string } {
     return { success: true, output };
   } catch (error) {
     const err = error as { stdout?: string; stderr?: string };
-    return { success: false, output: err.stderr || err.stdout || 'Unknown error' };
+    return { success: false, output: err.stderr ?? err.stdout ?? 'Unknown error' };
   }
 }
 
@@ -200,11 +200,11 @@ describe('Type Safety Pipeline', () => {
       const pyContent = readFileSync(PY_TYPES_PATH, 'utf-8');
 
       // Extract interface names from TypeScript
-      const tsInterfaces = tsContent.match(/export\s+interface\s+(\w+)/g) || [];
+      const tsInterfaces = tsContent.match(/export\s+interface\s+(\w+)/g) ?? [];
       const tsNames = tsInterfaces.map((m) => m.replace(/export\s+interface\s+/, ''));
 
       // Extract class names from Python
-      const pyClasses = pyContent.match(/class\s+(\w+)\s*\(\s*BaseModel\s*\)/g) || [];
+      const pyClasses = pyContent.match(/class\s+(\w+)\s*\(\s*BaseModel\s*\)/g) ?? [];
       const pyNames = pyClasses.map((m) => m.replace(/class\s+(\w+)\s*\(\s*BaseModel\s*\)/, '$1'));
 
       // Filter out Database namespace which has different structure
