@@ -9,23 +9,23 @@
 
 ---
 
-## 🎯 Why This Exists
+## 🎯 The Problem That Shouldn't Exist
 
 **Every new project starts the same way:**
 
-You spend the first week configuring tools, arguing about folder structures, setting up testing frameworks, and debugging "works on my machine" issues. By the time you write your first line of business logic, you're already behind schedule and accumulating technical debt.
+You spend the first week configuring tools, debating folder structures, setting up testing frameworks, and debugging "works on my machine" issues. By the time you write your first line of business logic, you're already behind schedule—and you've just created technical debt that will haunt the project for years.
 
-**The hidden cost:** Senior developers spend 40% of their time on boilerplate, configuration, and onboarding. New team members take a week to become productive. Architectural decisions get made once and forgotten, leading to inconsistent patterns across projects.
+**The hidden cost is staggering:** Senior developers spend 40% of their time on boilerplate and configuration. New team members need a full week to become productive. Architectural decisions get made once and forgotten, leading to drift and inconsistency across projects.
 
-**What if your project came with a full development team already inside it?**
+**What if your project came with an entire development team's worth of expertise already embedded in it—ready to guide every decision?**
 
 ---
 
-## ⚡ What VibesPro Actually Does
+## ⚡ What VibesPro Gives You
 
-**VibesPro deploys a complete software development agency as code.**
+**VibesPro is a Cognitive Infrastructure Platform**—it synthesizes production-ready codebases with enterprise architecture, an embedded AI development team, and institutional memory that compounds over time.
 
-One command gives you:
+One command:
 
 ```bash
 copier copy gh:GodSpeedAI/VibesPro my-project
@@ -33,12 +33,13 @@ copier copy gh:GodSpeedAI/VibesPro my-project
 
 **In 30 seconds, you have:**
 
-- ✅ **Production-ready monorepo** — Nx 22+ with hexagonal architecture, not empty folders
-- ✅ **32+ AI development agents** — Architects, TDD coaches, debuggers, product managers who understand YOUR domain
-- ✅ **Institutional memory system** — Rust-based database that remembers every architectural decision
+- ✅ **Production-ready monorepo** — Nx with hexagonal architecture, not empty folders
+- ✅ **32+ AI development agents** — Architects, TDD coaches, debuggers, security analysts who understand YOUR domain
+- ✅ **Institutional memory** — A Rust-based temporal database that remembers every architectural decision
 - ✅ **Full observability stack** — OpenTelemetry → Vector → OpenObserve (traces, logs, metrics)
-- ✅ **Zero-config environment** — Devbox + Mise + SOPS means "works on my machine" = "works everywhere"
-- ✅ **Type-safe by default** — TypeScript strict mode, Python mypy, Rust — all configured and passing
+- ✅ **Zero-config environment** — Devbox + Mise + SOPS = "works everywhere"
+- ✅ **Type-safe by default** — TypeScript strict, Python mypy, Rust—all configured and passing
+- ✅ **Database layer** — Supabase (Postgres + pgvector) with type generation pipeline
 
 **No more "Week 1: Setup." It's "Hour 1: Ship features."**
 
@@ -47,19 +48,19 @@ copier copy gh:GodSpeedAI/VibesPro my-project
 ## 🚀 Try It in 3 Commands
 
 ```bash
-# 1. Deploy your cognitive infrastructure
+# 1. Synthesize your cognitive infrastructure
 copier copy gh:GodSpeedAI/VibesPro my-awesome-project
 
-# 2. Activate the agency (one command handles everything)
+# 2. Activate everything (one command handles it all)
 cd my-awesome-project && just setup
 
 # 3. Start building
-pnpm dev
+just dev
 ```
 
 **That's it.** Your AI development team is operational. Your tests pass. Your observability pipeline is running. Your environment is reproducible.
 
-> 💡 **Important:** Don't clone VibesPro directly. Use Copier to **synthesize** a new project. VibesPro is the factory; what you generate is your actual workspace.
+> 💡 **Important:** Don't clone VibesPro directly. Use Copier to **synthesize** a new project. VibesPro is the platform; what you generate is your workspace.
 
 ---
 
@@ -78,18 +79,19 @@ When you run `copier copy`, VibesPro synthesizes:
 - Complete testing setup (Jest, pytest, cargo test)
 - Production observability (OpenTelemetry + Vector + OpenObserve)
 - Reproducible environments (Devbox + Mise + SOPS)
+- Supabase data layer with automatic type generation
 
 **2. AI Development Team (What Makes It Smart)**
 
-Your synthesized project includes 32+ specialized agents in `.github/chatmodes/`:
+Your synthesized project includes 32+ specialized agents in `.github/agents/`:
 
-- **System Architect** — Designs scalable patterns
-- **TDD Coaches** — `tdd.red`, `tdd.green`, `tdd.refactor` modes
-- **Debug Team** — `debug.start`, `debug.repro`, `debug.isolate`, `debug.fix`
-- **Product Manager** — Translates requirements into specs
-- **Security Analyst** — Audits and hardens code
+- **System Architect** — Designs scalable patterns using CALM methodology
+- **TDD Coaches** — `tdd.red`, `tdd.green`, `tdd.refactor` modes for disciplined development
+- **Debug Team** — 6-phase workflow: `debug.start` → `debug.repro` → `debug.isolate` → `debug.fix` → `debug.refactor` → `debug.regress`
+- **Product Manager** — Translates requirements into traceable specs (PRD/SDS/TS/ADR)
+- **Security Analyst** — Audits code with STRIDE threat modeling
 
-Each agent has **modular knowledge** (16 instruction files with hierarchical precedence) and **26 workflow protocols** for proven methodologies.
+Each agent draws from **20 modular instruction files** with hierarchical precedence and **26 workflow protocols** for proven methodologies.
 
 **3. Institutional Memory (What Makes It Learn)**
 
@@ -130,7 +132,7 @@ Query before major decisions: _"What authentication patterns have we validated i
 ### 2. AI Development Team
 
 - **32+ Specialized Agents** — System architects, TDD coaches, debuggers, security analysts, product managers
-- **Modular Expertise** — 16 domain-specific knowledge systems (MECE organizational principle)
+- **Modular Expertise** — 20 domain-specific instruction files (MECE organizational principle)
 - **26 Workflow Protocols** — Proven methodologies for specs, testing, security, performance
 - **Cognitive Context Management** — Intelligent information retrieval and synthesis
 
@@ -141,20 +143,22 @@ Query before major decisions: _"What authentication patterns have we validated i
 - **Pattern Intelligence** — Query organizational knowledge before architectural decisions
 - **Evolutionary Understanding** — Tracks how your architecture adapts over time
 
-### 4. Production Observability Infrastructure (v0.3.0)
+### 4. Production Observability Infrastructure
 
 - **OpenTelemetry Instrumentation** — Distributed tracing with <1µs overhead
 - **Vector Data Pipeline** — Transformation, PII redaction, routing
+- **Logfire Integration** — Structured logging with trace correlation
 - **OpenObserve Storage** — Long-term analytics and SQL querying
 - **Runtime Flags** — Enable/disable with `VIBEPRO_OBSERVE` environment variable
 
-### 5. Development Environment Platform (v0.2.0)
+### 5. Data & Environment Platform
 
+- **Supabase Stack** — Postgres + pgvector + RLS via Docker Compose
+- **Type Generation Pipeline** — `just gen-types` syncs TypeScript ↔ Python models
 - **Devbox** — Reproducible OS-level toolchain
 - **Mise** — Node/Python/Rust version management
 - **SOPS** — Secret encryption and management
 - **Just** — Cross-platform task orchestration
-- **Environment Validation** — 11+ automated tests ensure everything works
 
 ### 6. Quality & Compliance System
 
@@ -162,100 +166,106 @@ Query before major decisions: _"What authentication patterns have we validated i
 - **Generator-First Policy** — Enforced via Nx generators
 - **Type Safety** — TypeScript strict mode, Python mypy, Rust compile checks
 - **Security Guardrails** — Pre-commit hooks, PII redaction, input validation
+- **6-Phase Debug Workflow** — Structured bug resolution with chat mode guidance
 
 </details>
 
 ---
 
 <details>
-<summary><h2>📊 Measured Impact: The Numbers</h2></summary>
+<summary><h2>📊 Measured Impact</h2></summary>
 
-### Synthesized Application Quality
+### Synthesis Quality
 
-- ✅ **100% architecture compliance** — Hexagonal boundaries enforced at synthesis time
-- 🎯 **Zero manual configuration** — All tooling pre-configured (Nx, ESLint, Jest, mypy)
-- ⚡ **<30 second synthesis** — Complete application infrastructure deployed
-- 🚀 **<2 minute operational readiness** — From synthesis to passing tests
-- 🛠️ **Environment determinism** — Devbox + Mise = guaranteed reproducibility
+| Metric                        | Value                                             |
+| ----------------------------- | ------------------------------------------------- |
+| Architecture compliance       | 100% — Hexagonal boundaries enforced at synthesis |
+| Manual configuration required | Zero — All tooling pre-configured                 |
+| Synthesis time                | <30 seconds                                       |
+| Time to passing tests         | <2 minutes                                        |
 
 ### AI Development System
 
-- 🤖 **32+ specialized chat modes** — TDD, debugging, specs, product planning
-- 📋 **16 modular instructions** — MECE principle with precedence stacking
-- 🧠 **Temporal learning** — Query past architectural decisions
-- 🎯 **Generator-first enforcement** — Prevents inconsistent code structure
+| Metric                      | Value                                                  |
+| --------------------------- | ------------------------------------------------------ |
+| Specialized chat modes      | 32+ (TDD, debugging, specs, security)                  |
+| Modular instruction files   | 20 with precedence stacking                            |
+| Debug workflow phases       | 6 (start → repro → isolate → fix → refactor → regress) |
+| Generator-first enforcement | Automatic via Nx                                       |
 
-### Observability (v0.3.0)
+### Observability Performance
 
-- 🚀 **<1µs span overhead** — Minimal performance impact
-- 📊 **Full distributed tracing** — End-to-end request tracking
-- 🔄 **Vector pipeline** — <3% CPU at 1k spans/s
-- ⚡ **Runtime flags** — Zero overhead when `VIBEPRO_OBSERVE=0`
+| Metric                   | Value                      |
+| ------------------------ | -------------------------- |
+| Span overhead            | <1µs                       |
+| Vector CPU at 1k spans/s | <3%                        |
+| Overhead when disabled   | Zero (`VIBEPRO_OBSERVE=0`) |
 
 ### Developer Experience
 
-- ⏱️ **95% faster setup** — Minutes vs weeks
-- 🔧 **1-2 hours saved per project** — No dependency debugging
-- 🎯 **CI reliability** — Environment validation catches issues early
-- 📚 **Living documentation** — Specs, ADRs, traceability maintained
+| Metric                      | Value                  |
+| --------------------------- | ---------------------- |
+| Setup time reduction        | 95% (minutes vs weeks) |
+| Environment debugging saved | 1-2 hours per project  |
+| New dev onboarding          | Day 1 productivity     |
+
+</details>
 
 </details>
 
 ---
 
 <details>
-<summary><h2>🛠️ Platform Operations: Complete Command Reference</h2></summary>
+<summary><h2>🛠️ Command Reference</h2></summary>
 
-### For Application Developers (Using VibesPro)
+### Getting Started (Using VibesPro)
 
 ```bash
-# Bootstrap your development platform
+# Synthesize your project
 copier copy gh:GodSpeedAI/VibesPro my-project
-
-# Activate platform components
 cd my-project
-just setup              # Initialize all infrastructure layers
+
+# Activate platform
+just setup              # Initialize all infrastructure
 just doctor             # Validate platform health
-just test-env           # Verify environment configuration
+just dev                # Start development servers
 
-# Operate with AI development team
+# AI-assisted development
 pnpm exec nx list       # Discover available generators
-pnpm exec nx g @nx/js:lib user-domain  # AI-orchestrated scaffolding
-export VIBEPRO_OBSERVE=1 && pnpm dev   # Start with telemetry active
+just ai-scaffold name=@nx/js:lib  # Scaffold new code
+just ai-validate        # Run all quality checks
 
-# Platform quality gates
-just spec-guard         # Validate specs, prompts, documentation
-just ai-validate        # Lint + typecheck across platform
-pnpm nx run-many --target=test --all  # Execute test suite
+# Database operations
+just supabase-start     # Start local Postgres + Studio
+just db-migrate         # Apply migrations
+just gen-types          # Generate TypeScript + Python types
+
+# Observability
+export VIBEPRO_OBSERVE=1
+just observe-start      # Start Vector pipeline
+just test-logs          # Validate logging pipeline
 ```
 
-### For Meta-Infrastructure Contributors (Developing VibesPro)
+### Contributing to VibesPro
 
 ```bash
-# Clone the meta-infrastructure repository
 git clone https://github.com/GodSpeedAI/VibesPro.git
 cd VibesPro
-just setup              # Bootstrap development environment
+just setup
 
-# Meta-infrastructure development
+# Development
 just test-generation    # Test synthesis pipeline
 just ai-validate        # Validate AI agent system
 just prompt-lint        # Lint workflow protocols
-just spec-guard         # Full quality compliance gate
+just spec-guard         # Full quality compliance
 
-# Platform development
-just ai-context-bundle  # Generate cognitive context bundles
-just ai-scaffold name=@nx/js:lib  # Test generator integration
-```
-
-### Observability Operations (v0.3.0)
-
-```bash
-just observe-start        # Start Vector edge collector
-just observe-stop         # Stop Vector gracefully
-just observe-logs         # Tail Vector logs
-just observe-validate     # Validate Vector config
-just observe-test-all     # Run all observability tests
+# Debug workflow (6 phases)
+just debug-start        # Phase 1: Normalize bug report
+just debug-repro        # Phase 2: Write failing test
+just debug-isolate      # Phase 3: Narrow root cause
+just debug-fix          # Phase 4: Minimal fix
+just debug-refactor     # Phase 5: Clean up
+just debug-regress      # Phase 6: Regression suite
 ```
 
 </details>
@@ -263,100 +273,68 @@ just observe-test-all     # Run all observability tests
 ---
 
 <details>
-<summary><h2>🆕 Recent Improvements & Changelog</h2></summary>
+<summary><h2>🆕 Recent Releases</h2></summary>
 
 ### v0.5.0 — CI Environment Optimization (November 2025)
 
-**The Problem We Solved:**
-GitHub Actions consistently drifted from local runs—Devbox installs broke, tool versions diverged, and caches were underused—causing flaky env-check/build jobs.
+**Problem:** GitHub Actions drifted from local runs—Devbox installs broke, tool versions diverged, caches underused.
 
-**The Solution:**
+**Solution:**
 
-- **Composite actions for setup** — new `setup-devbox`, `setup-mise`, and `setup-sops` actions with retries and checksum validation.
-- **Single source of truth for versions** — `.github/config/versions.env` keeps Node/Python/SOPS pins in sync across workflows and scripts.
-- **Script + workflow cleanup** — CI helpers reorganized under `scripts/{ci,setup,dev}` with updated paths and docs; Rust toolchain pins aligned to repo config.
-- **Aggressive caching** — Devbox binaries, mise runtimes, pnpm store, Cargo registry, and uv cache now share consistent keys, cutting runtime 30–50%.
-- **Zero-vuln baseline** — patched esbuild, vite, koa, js-yaml, glob, and estree-util-value-to-estree; `pnpm audit` now reports 0 issues.
-- **Template parity (reissue)** — generated workspaces ship with root docs (`spec_index.md`, `traceability_matrix.md`, `commit_message_guidelines.md`), validated prompt frontmatter (TDD plans), and web-app scaffolds that always emit `apps/<name>/app/page.tsx` for Nx app router tests.
+- Composite actions for setup (`setup-devbox`, `setup-mise`, `setup-sops`) with retries
+- Single source of truth: `.github/config/versions.env`
+- Aggressive caching cuts runtime 30–50%
+- Zero-vuln baseline (`pnpm audit` reports 0 issues)
 
-See `RELEASE_NOTES_v0.5.0.md` for the full breakdown and migration notes.
+### v0.3.0 — Production-Ready Observability (October 2025)
 
-### v0.3.0 — Production-Ready Observability Stack (October 2025)
+**Problem:** Fragmented logging, missing traces, no unified system health view.
 
-**The Problem We Solved:**
-Modern applications need visibility into performance, errors, and behavior in production. Teams struggled with fragmented logging, missing traces, and no unified view of system health.
+**Solution:**
 
-**The Solution:**
-A **complete observability pipeline** following industry best practices (OpenTelemetry, Vector, OpenObserve):
+- Rust-native `vibepro-observe` crate with OpenTelemetry
+- Vector data pipeline with PII redaction
+- Logfire + OpenObserve for traces and logs
+- Runtime flags (`VIBEPRO_OBSERVE`) for zero-overhead disable
+- <1µs span overhead, <3% CPU at 1k spans/s
 
-✅ **Rust-Native Instrumentation** — `vibepro-observe` crate with OpenTelemetry tracing
-✅ **Runtime Feature Flags** — Enable/disable telemetry via `VIBEPRO_OBSERVE` environment variable
-✅ **Vector Data Pipeline** — OTLP ingestion, transformation, routing, and buffering
-✅ **OpenObserve Storage** — Long-term trace and log storage with SQL querying
-✅ **Structured Logging** — JSON logs for Node.js (Pino) and Python (Logfire)
-✅ **PII Redaction** — Automatic removal of sensitive data in Vector transforms
-✅ **Trace Correlation** — Link logs to distributed traces with trace_id/span_id
-✅ **Comprehensive Testing** — 8 test suites validate the entire pipeline
-✅ **Complete Documentation** — 630+ lines in `docs/observability/README.md`
+### v0.2.0 — Development Environment (October 2025)
 
-**Performance:** <1µs span overhead, <3% CPU at 1k spans/s, zero impact when disabled
+**Problem:** "Works on my machine" chaos, CI/local drift.
 
----
+**Solution:**
 
-### v0.2.0 — Development Environment & CI/CD (October 2025)
-
-**The Problem We Solved:**
-Inconsistent development environments across machines and fragile CI pipelines caused "works on my machine" issues and failed builds. Teams struggled with tool version mismatches and missing dependencies.
-
-**The Solution:**
-Comprehensive development environment setup with automated validation:
-
-✅ **Devbox Integration** — Reproducible dev environments via `devbox.json` configuration
-✅ **Mise Tool Management** — Automatic version management for Node, Python, and Rust
-✅ **SOPS Secret Management** — Secure handling of environment secrets with encryption
-✅ **CI Workflow Improvements** — New `env-check.yml` and `build-matrix.yml` workflows
-✅ **Environment Testing Suite** — Comprehensive tests in `tests/env/` validate tool installation
-✅ **Just Task Awareness** — Tasks now detect and adapt to local environment configuration
-✅ **Volta Coexistence** — Guards prevent conflicts between Volta and Mise
-✅ **Complete Documentation** — New `docs/ENVIRONMENT.md` with setup and troubleshooting guides
-
----
+- Devbox + Mise + SOPS stack
+- Environment validation test suite
+- `just doctor` health checks
 
 ### v0.1.0 — Complete Nx & TypeScript Configuration (October 2025)
 
-**The Problem We Solved:**
-Early synthesized applications required manual configuration of Nx, ESLint, Jest, and TypeScript settings. Developers faced daemon crashes, module resolution errors, and missing dependencies that took hours to fix.
+**Problem:** Manual configuration of Nx, ESLint, Jest, TypeScript took hours.
 
-**The Solution:**
-Synthesized applications now include **complete, production-ready development infrastructure**:
+**Solution:**
 
-✅ **Nx Workspace** — Fully configured with proper `namedInputs` (no more daemon crashes!)
-✅ **TypeScript** — Strict mode enabled with zero compilation errors
-✅ **ESLint** — Code quality enforcement with Nx module boundaries
-✅ **Jest** — Complete testing framework with sample tests
-✅ **All Dependencies** — Everything installed: tslib, ts-jest, @nx/jest, @nx/eslint
-✅ **Module Resolution** — Fixed TypeScript bundler/node conflicts
-✅ **Error Handling Patterns** — TypeScript strict mode examples included
+- Fully configured Nx workspace (no more daemon crashes)
+- TypeScript strict mode, zero compilation errors
+- All dependencies pre-installed
 
-See: [CHANGELOG.md](CHANGELOG.md) for complete release history.
+See [CHANGELOG.md](CHANGELOG.md) for complete history.
 
 </details>
 
 ---
 
 <details>
-<summary><h2>🗺️ Roadmap: What's Coming Next</h2></summary>
+<summary><h2>🗺️ Roadmap</h2></summary>
 
-### 📜 **v0.4.0 — AI Platform Evolution** (Q4 2025)
-
-Planned:
+### In Progress
 
 - 🧠 Enhanced pattern recognition from temporal database
 - 📊 Automated architecture validation and suggestions
 - 🎯 Context-aware AI recommendations
 - ⚡ Performance profiling and optimization toolkit
 
-### 🏗️ **Future** (2026+)
+### Future
 
 - 🪐 Community knowledge marketplace for organizational patterns
 - 🎨 Additional domain synthesizers (auth, e-commerce, analytics)
@@ -368,40 +346,32 @@ Planned:
 ---
 
 <details>
-<summary><h2>📚 Documentation & Resources</h2></summary>
+<summary><h2>📚 Documentation</h2></summary>
 
 ### Getting Started
 
-- **📖 [Quick Start](docs/QUICKSTART.md)** — 5-minute setup guide
-- **🛠️ [Environment Setup](docs/ENVIRONMENT.md)** — Devbox, Mise, SOPS configuration
-- **🤖 [AI Agent Guide](.github/copilot-instructions.md)** — Essential workflows for AI coding
+- **[Quick Start](docs/QUICKSTART.md)** — 5-minute setup guide
+- **[Environment Setup](docs/ENVIRONMENT.md)** — Devbox, Mise, SOPS configuration
+- **[AI Agent Guide](.github/copilot-instructions.md)** — Essential workflows
 
-### Architecture & Specs
+### Architecture
 
-- **🏛️ [Software Design](docs/specs/)** — System architecture (DEV-SDS specs)
-- **📋 [Product Requirements](docs/specs/)** — Feature requirements (DEV-PRD specs)
-- **🎯 [Architecture Decisions](docs/specs/)** — ADRs with rationale
-- **🔬 [Technical Specifications](docs/specs/)** — Implementation details
-- **🗺️ [Traceability Matrix](docs/traceability_matrix.md)** — Spec-to-code mapping
+- **[Specifications](docs/specs/)** — PRD, SDS, ADR, Technical Specs
+- **[Traceability Matrix](docs/traceability_matrix.md)** — Spec-to-code mapping
+- **[CALM Diagrams](architecture/calm/)** — C4 model documentation
 
 ### AI Workflows
 
-- **🤖 [Chat Modes](.github/chatmodes/)** — 32+ specialized personas
-- **📝 [Prompts](.github/prompts/)** — 26 reusable templates
-- **📋 [Instructions](.github/instructions/)** — 16 modular guidance files
-- **🧠 [Temporal Database](temporal_db/README.md)** — Learning system usage
+- **[Agents](.github/agents/)** — 32+ specialized personas
+- **[Prompts](.github/prompts/)** — 26 reusable templates
+- **[Instructions](.github/instructions/)** — 20 modular guidance files
+- **[Temporal Database](temporal_db/README.md)** — Institutional memory
 
-### Observability (v0.3.0)
+### Operations
 
-- **📊 [Observability Guide](docs/observability/README.md)** — 630+ line operational guide
-- **📡 OpenTelemetry + Vector + OpenObserve setup**
-- **🔐 VRL transforms, PII redaction, sampling**
-
-### Development
-
-- **🔧 [Nx Generators](docs/nx-generators-guide.md)** — Generator-first workflow
-- **🧪 [Testing Strategy](docs/testing/)** — TDD, unit, integration, shell tests
-- **🔒 [Security Guidelines](.github/instructions/security.instructions.md)** — Security-first practices
+- **[Observability](docs/observability/README.md)** — OpenTelemetry + Vector + OpenObserve
+- **[Nx Generators](docs/nx-generators-guide.md)** — Generator-first workflow
+- **[Security](.github/instructions/security.instructions.md)** — Guardrails and SOPS
 
 </details>
 
@@ -473,18 +443,16 @@ See `LICENSE` for complete legal terms.
 ## 🚦 Ready to Start?
 
 ```bash
-# Deploy your software agency in 30 seconds
+# Synthesize your cognitive infrastructure
 copier copy gh:GodSpeedAI/VibesPro my-awesome-project
 
-# Activate and operate
+# Activate and build
 cd my-awesome-project
 just setup
-pnpm dev
+just dev
 ```
 
 Built with ❤️ by the VibesPro community.
-
-**Special thanks** to every contributor who believed that building software could feel less like archaeology and more like artistry.
 
 ---
 

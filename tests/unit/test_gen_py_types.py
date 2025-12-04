@@ -48,8 +48,8 @@ def test_generate_optional_field_becomes_optional_in_python(tmp_path: Path):
 
     models_file = py_out / "models.py"
     content = models_file.read_text(encoding="utf-8")
-    # Optional nickname should be Optional[str] and default None so Pydantic accepts missing
-    assert "nickname: typing.Optional[str] = None" in content
+    # Optional nickname should use modern Python union syntax and default None so Pydantic accepts missing
+    assert "nickname: str | None = None" in content
 
 
 def test_generated_model_accepts_missing_optional_field(tmp_path: Path):

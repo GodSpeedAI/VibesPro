@@ -257,7 +257,7 @@ lint-node:
 
 lint-templates:
 	@echo "🔍 Validating templates..."
-	python tools/validate-templates.py
+	uv run python tools/validate-templates.py
 
 # --- Template Maintenance ---
 template-cleanup:
@@ -310,32 +310,26 @@ types-validate:
 
 # --- Supabase & Type Generation Wrappers ---
 gen-types-ts:
-	@echo "🏷️ Generating TypeScript types from Supabase schema..."
-	# Supabase CLI will generate to STDOUT; redirect into the shared types file
+	@echo "🏷️ Generating TypeScript types from database schema..."
+	@# Check if Supabase stack is running
+	@if ! docker compose -f docker/docker-compose.supabase.yml ps 2>/dev/null | grep -q "db.*running\|db.*healthy"; then \
+		echo "⚠️  Supabase database not running. Starting..."; \
+		just supabase-start; \
+		sleep 8; \
+		just db-migrate; \
+	fi
+	@# Use Supabase CLI if available, otherwise fall back to PostgreSQL introspection
 	@if command -v supabase >/dev/null 2>&1; then \
+		echo "   Using Supabase CLI..."; \
 		supabase gen types typescript --local --schema public > libs/shared/types/src/database.types.ts; \
-		echo "✅ TypeScript types generated successfully"; \
+		echo "✅ TypeScript types generated successfully (via Supabase CLI)"; \
 	else \
-		echo ""; \
-		echo "❌ supabase CLI not found"; \
-		echo ""; \
-		echo "VibesPro requires Supabase CLI for type generation."; \
-		echo ""; \
-		echo "To install:"; \
-		echo "  1. Enter devbox shell: devbox shell"; \
-		echo "  2. Verify installation: supabase --version"; \
-		echo ""; \
-		echo "If devbox is not installed:"; \
-		echo "  curl -fsSL https://get.jetpack.io/devbox | bash"; \
-		echo ""; \
-		echo "For more information, see: docs/ENVIRONMENT.md"; \
-		echo ""; \
-		exit 1; \
+		echo "   Supabase CLI not found, using PostgreSQL introspection..."; \
+		python3 tools/scripts/gen_ts_from_pg.py --output libs/shared/types/src/database.types.ts; \
 	fi
 
 gen-types-py:
 	@echo "🐍 Generating Python Pydantic models from TypeScript types..."
-	# Use Python script to generate Pydantic models from the TypeScript types output
 	@if [ ! -f libs/shared/types/src/database.types.ts ]; then \
 		echo ""; \
 		echo "❌ TypeScript types not found"; \
@@ -353,8 +347,7 @@ gen-types-py:
 	@if [ ! -d libs/shared/types-py/src ]; then \
 		mkdir -p libs/shared/types-py/src; \
 	fi
-	@. .venv/bin/activate >/dev/null 2>&1 || true; \
-	python tools/scripts/gen_py_types.py libs/shared/types/src libs/shared/types-py/src
+	@python3 tools/scripts/gen_py_types.py libs/shared/types/src libs/shared/types-py/src
 	@echo "✅ Python models generated successfully"
 
 gen-types:
@@ -362,13 +355,120 @@ gen-types:
 	just gen-types-ts
 	just gen-types-py
 
-db-migrate:
-	@echo "🗄️ Running Supabase migrations (deploy)..."
-	if command -v supabase >/dev/null 2>&1; then \
-		supabase migration deploy; \
-	else \
-		echo "❌ supabase CLI not found. Please install supabase via devbox or on PATH"; exit 1; \
+# --- Supabase Local Development Stack ---
+# Uses Docker Compose for local Supabase database and services
+# Ref: docs/guides/supabase-workflow.md
+
+supabase-start:
+	@echo "🚀 Starting Supabase local stack..."
+	@if ! command -v docker >/dev/null 2>&1; then \
+		echo "❌ Docker is required to run Supabase locally."; \
+		echo "   Install Docker from: https://docs.docker.com/get-docker/"; \
+		exit 1; \
 	fi
+	@if ! docker compose version >/dev/null 2>&1; then \
+		echo "❌ Docker Compose is required."; \
+		echo "   Install Docker Compose from: https://docs.docker.com/compose/install/"; \
+		exit 1; \
+	fi
+	@# Copy env file if it doesn't exist
+	@if [ ! -f docker/.env.supabase ]; then \
+		cp docker/.env.supabase.example docker/.env.supabase; \
+		echo "📝 Created docker/.env.supabase from example"; \
+	fi
+	@# Start the stack
+	docker compose -f docker/docker-compose.supabase.yml --env-file docker/.env.supabase up -d
+	@echo "⏳ Waiting for database to be ready..."
+	@sleep 5
+	@# Check if database is healthy
+	@docker compose -f docker/docker-compose.supabase.yml --env-file docker/.env.supabase ps | grep -q "healthy" && \
+		echo "✅ Supabase local stack running:" && \
+		echo "   Database: localhost:54322" && \
+		echo "   Studio: http://localhost:54323" || \
+		echo "⚠️  Database may still be starting. Check: just supabase-status"
+
+supabase-stop:
+	@echo "🛑 Stopping Supabase local stack..."
+	@if [ -f docker/docker-compose.supabase.yml ]; then \
+		docker compose -f docker/docker-compose.supabase.yml down || true; \
+	fi
+	@echo "✅ Supabase stack stopped"
+
+supabase-status:
+	@echo "📊 Supabase stack status:"
+	@if [ -f docker/docker-compose.supabase.yml ]; then \
+		docker compose -f docker/docker-compose.supabase.yml ps; \
+	else \
+		echo "   Docker Compose file not found"; \
+	fi
+
+supabase-reset:
+	@echo "🔄 Resetting Supabase stack (removes all data)..."
+	@if [ -f docker/docker-compose.supabase.yml ]; then \
+		docker compose -f docker/docker-compose.supabase.yml down -v; \
+	fi
+	just supabase-start
+	@echo "⏳ Waiting for database to be ready..."
+	@sleep 8
+	just db-migrate
+	just db-seed
+	@echo "✅ Supabase reset complete"
+
+supabase-logs:
+	@echo "📋 Supabase logs (follow mode)..."
+	docker compose -f docker/docker-compose.supabase.yml logs -f
+
+db-migrate:
+	@echo "🗄️ Running database migrations..."
+	@# Check if Supabase stack is running
+	@if ! docker compose -f docker/docker-compose.supabase.yml ps 2>/dev/null | grep -q "db.*running\|db.*healthy"; then \
+		echo "⚠️  Supabase database not running. Starting..."; \
+		just supabase-start; \
+		sleep 8; \
+	fi
+	@# Apply migrations using psql
+	@echo "📝 Applying migrations from supabase/migrations/..."
+	@for f in supabase/migrations/*.sql; do \
+		if [ -f "$$f" ]; then \
+			echo "   Applying: $$(basename $$f)"; \
+			PGPASSWORD=postgres psql -h localhost -p 54322 -U postgres -d postgres -f "$$f" -q 2>&1 || { \
+				echo "❌ Migration failed: $$f"; \
+				exit 1; \
+			}; \
+		fi; \
+	done
+	@echo "✅ Migrations applied successfully"
+
+db-seed:
+	@echo "🌱 Seeding database..."
+	@# Check if Supabase stack is running
+	@if ! docker compose -f docker/docker-compose.supabase.yml ps 2>/dev/null | grep -q "db.*running\|db.*healthy"; then \
+		echo "❌ Supabase database not running. Run: just supabase-start"; \
+		exit 1; \
+	fi
+	@if [ -f supabase/seed.sql ]; then \
+		PGPASSWORD=postgres psql -h localhost -p 54322 -U postgres -d postgres -f supabase/seed.sql -q 2>&1 || { \
+			echo "❌ Seed failed"; \
+			exit 1; \
+		}; \
+		echo "✅ Database seeded successfully"; \
+	else \
+		echo "⚠️  No seed file found at supabase/seed.sql"; \
+	fi
+
+db-migration-create NAME:
+	@echo "📝 Creating new migration: {{NAME}}"
+	@TIMESTAMP=$$(date +%Y%m%d%H%M%S); \
+	FILENAME="supabase/migrations/$${TIMESTAMP}_{{NAME}}.sql"; \
+	echo "-- Migration: {{NAME}}" > "$$FILENAME"; \
+	echo "-- Created: $$(date -Iseconds)" >> "$$FILENAME"; \
+	echo "" >> "$$FILENAME"; \
+	echo "-- Add your SQL statements here" >> "$$FILENAME"; \
+	echo "✅ Created: $$FILENAME"
+
+db-psql:
+	@echo "🔌 Connecting to database..."
+	@PGPASSWORD=postgres psql -h localhost -p 54322 -U postgres -d postgres
 
 check-types:
 	@echo "🔍 Checking generated types are committed and up to date..."
@@ -672,6 +772,10 @@ validate-generator-schemas:
 		echo "❌ Neither pnpm/corepack nor npx is available to run tsx. Install dependencies with 'just setup'."; \
 		exit 1; \
 	fi
+
+validate-agent-files:
+	@echo "🔍 Validating AGENT.md files..."
+	@python3 tools/check_agent_links.py
 
 ai-validate:
 	@echo "🔍 Validating project..."
