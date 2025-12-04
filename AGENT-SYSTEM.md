@@ -124,7 +124,7 @@ grep -r "search term" */AGENT.md
 cat AGENT-MAP.md
 
 # Validate (when CI is set up)
-just validate-agent-files  # TODO: Add to justfile
+just validate-agent-files
 ```
 
 ## Maintenance
