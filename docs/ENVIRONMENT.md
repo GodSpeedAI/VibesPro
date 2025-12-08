@@ -11,6 +11,7 @@ This guide covers setting up your development environment for VibesPro.
 | **just**           | v1.0+   | Command runner (`cargo install just`) |
 | **psql**           | v15+    | PostgreSQL client for migrations      |
 | **Node.js**        | v20+    | JavaScript runtime                    |
+| **Bun**            | v1.1+   | Fast TypeScript runtime               |
 | **pnpm**           | v9+     | Package manager                       |
 | **Python**         | v3.11+  | Python runtime                        |
 | **uv**             | v0.4+   | Python package manager                |
@@ -22,16 +23,56 @@ This guide covers setting up your development environment for VibesPro.
 git clone <repository-url>
 cd vibespro
 
-# Run full setup (installs Node, Python deps, tools)
+# Run full setup (installs Node, Bun, Python deps, tools)
 just setup
 
 # Verify environment
 just doctor
 ```
 
-## Devbox (Recommended)
+## Tool Management Strategy
 
-VibesPro uses [Devbox](https://www.jetpack.io/devbox/) for reproducible development environments. Devbox automatically provides all required tools.
+VibesPro uses a two-tier tool management approach:
+
+| Tool       | Purpose                                         | Config File   |
+| ---------- | ----------------------------------------------- | ------------- |
+| **mise**   | Project-level runtimes (Node, Bun, Python, etc) | `.mise.toml`  |
+| **Devbox** | OS-level dependencies + container generation    | `devbox.json` |
+
+### mise (Project Runtimes)
+
+[mise](https://mise.run) manages language runtimes with exact version pinning:
+
+```toml
+# .mise.toml
+[tools]
+node = "20.11.1"
+bun = "1.1.42"
+python = "3.11.11"
+rust = "1.80.1"
+uv = "0.9.2"
+just = "1.43.0"
+```
+
+**Quick Start:**
+
+```bash
+# Install mise (https://mise.run)
+curl https://mise.run | sh
+
+# Activate mise in your shell
+eval "$(mise activate bash)"  # or zsh/fish
+
+# Install all project runtimes
+mise install
+
+# Verify
+mise doctor
+```
+
+### Devbox (OS Dependencies & Containers)
+
+[Devbox](https://www.jetpack.io/devbox/) provides Nix-based OS-level dependencies and enables creating reproducible containers/devcontainers:
 
 ```bash
 # Install devbox
@@ -42,7 +83,16 @@ devbox shell
 
 # Or run commands directly
 devbox run just setup
+
+# Generate a Docker container from your environment
+devbox generate dockerfile
 ```
+
+**Note:** Use mise for runtime versioning (faster, lighter) and Devbox when you need:
+
+- Complete OS-level dependency isolation
+- Container/devcontainer generation
+- Nix-based reproducibility across machines
 
 ## Supabase Local Development
 
@@ -125,6 +175,28 @@ just devbox-fix
 
 ```bash
 just devbox-check
+```
+
+### mise Issues
+
+**Runtimes not loading:**
+
+```bash
+# Ensure mise is activated in your shell
+eval "$(mise activate bash)"
+
+# Trust the project config
+mise trust
+
+# Install all tools
+mise install
+```
+
+**Bun not available:**
+
+```bash
+mise install bun
+bun --version
 ```
 
 ### Python Environment Issues

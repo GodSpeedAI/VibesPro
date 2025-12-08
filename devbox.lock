@@ -1,6 +1,10 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "bun": {
+      "resolved": "github:NixOS/nixpkgs/6f374686605df381de8541c072038472a5ea2e2d?narHash=sha256-AJHrsT7VoeQzErpBRlLJM1SODcaayp0joAoEA35yiwM%3D#bun",
+      "source": "nixpkg"
+    },
     "curl": {
       "resolved": "github:NixOS/nixpkgs/cb82756ecc37fa623f8cf3e88854f9bf7f64af93?narHash=sha256-0JDOal5P7xzzAibvD0yTE3ptyvoVOAL0rcELmDdtSKg%3D#curl",
       "source": "nixpkg",

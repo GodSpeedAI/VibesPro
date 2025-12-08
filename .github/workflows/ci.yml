@@ -48,6 +48,11 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
 
+      - name: Install Bun runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.1.42"
+
       - name: Install Copier
         run: uv tool install copier
 

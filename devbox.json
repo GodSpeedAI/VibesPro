@@ -4,6 +4,7 @@
     "curl",
     "just",
     "jq",
+    "bun",
     "shellcheck",
     "postgresql@15",
     "ripgrep",
