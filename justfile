@@ -325,7 +325,8 @@ gen-types-ts:
 		echo "✅ TypeScript types generated successfully (via Supabase CLI)"; \
 	else \
 		echo "   Supabase CLI not found, using PostgreSQL introspection..."; \
-		python3 tools/scripts/gen_ts_from_pg.py --output libs/shared/types/src/database.types.ts; \
+		PORT=$$(just _get_db_port); \
+		python3 tools/scripts/gen_ts_from_pg.py --port $$PORT --output libs/shared/types/src/database.types.ts; \
 	fi
 
 gen-types-py:
