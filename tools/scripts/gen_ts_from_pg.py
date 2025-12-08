@@ -153,9 +153,9 @@ def run_psql_query(
 def get_table_list(host: str, port: int, user: str, password: str, database: str) -> list[str]:
     """Get list of tables in the public schema."""
     query = """
-        SELECT table_name 
-        FROM information_schema.tables 
-        WHERE table_schema = 'public' 
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
         AND table_type = 'BASE TABLE'
         ORDER BY table_name;
     """
@@ -184,13 +184,13 @@ def get_table_columns(
     safe_table_name = validate_identifier(table_name)
 
     query = f"""
-        SELECT 
+        SELECT
             column_name,
             udt_name,
             is_nullable,
             column_default
-        FROM information_schema.columns 
-        WHERE table_schema = 'public' 
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
         AND table_name = '{safe_table_name}'
         ORDER BY ordinal_position;
     """  # noqa: S608
