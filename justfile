@@ -1,6 +1,10 @@
 # Vibes Pro Build System
 set shell := ["bash", "-uc"]
 
+# Runtime detection: prefer bun for script execution when available, fall back to node
+# Note: pnpm remains the package manager; bun is used only as the runtime
+_js_runtime := `command -v bun >/dev/null 2>&1 && echo "bun" || echo "node"`
+
 default:
 	@just --list
 
@@ -23,9 +27,20 @@ env-enter:
 	fi
 
 setup-node:
-	@echo "🛠️ Setting up Node.js environment..."
+	@echo "🛠️ Setting up Node.js and Bun environment..."
+	@# Install bun via mise if available
+	@if command -v mise >/dev/null 2>&1; then \
+		echo "Installing runtimes via mise..."; \
+		mise install || true; \
+	fi
 	corepack enable
 	pnpm install
+	@# Verify bun is available
+	@if command -v bun >/dev/null 2>&1; then \
+		echo "✅ Bun runtime: $(bun --version)"; \
+	else \
+		echo "⚠️ Bun not found. Install via: mise install bun"; \
+	fi
 
 setup-python:
 	@echo "🔧 Setting up Python environment..."
@@ -614,7 +629,7 @@ sops-rotate RECIPIENT="":
 
 doctor:
 	@echo "🩺 Running project doctor (no secrets will be shown)"
-	@bash scripts/doctor.sh
+	@bash scripts/dev/doctor.sh
 
 # --- Documentation Generation ---
 docs-generate PROJECT_NAME="vibes-pro":

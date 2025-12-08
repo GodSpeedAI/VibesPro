@@ -37,6 +37,13 @@ if command -v mise >/dev/null 2>&1; then
   else
     echo "  rust (mise): not installed (run 'mise install')"
   fi
+
+  if mise which bun >/dev/null 2>&1; then
+    echo -n "  bun (mise): "
+    mise exec -- bun --version 2>&1 || echo "not installed"
+  else
+    echo "  bun (mise): not installed (run 'mise install bun')"
+  fi
 else
   echo "  mise: not installed"
   echo "  Install: curl https://mise.jdx.dev/install.sh | sh"
