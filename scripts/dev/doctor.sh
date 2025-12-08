@@ -91,6 +91,50 @@ check_and_print sops " — install: https://github.com/mozilla/sops"
 check_and_print vector " — install: https://vector.dev/"
 check_and_print direnv " — install: https://direnv.net/"
 
+printf '\nOptional stack status:\n'
+
+# Supabase
+if docker compose -f docker/docker-compose.supabase.yml ps 2>/dev/null | grep -q "running\|healthy"; then
+  echo "  supabase: ✅ running"
+else
+  echo "  supabase: ⏹️  stopped (start: just supabase-start)"
+fi
+
+# Vector
+if pgrep -x vector >/dev/null 2>&1 || docker ps 2>/dev/null | grep -q vector; then
+  echo "  vector: ✅ running"
+else
+  echo "  vector: ⏹️  stopped (start: just observe-start)"
+fi
+
+# OpenObserve
+if docker ps 2>/dev/null | grep -q openobserve; then
+  echo "  openobserve: ✅ running"
+else
+  echo "  openobserve: ⏹️  stopped (start: just observe-openobserve-up)"
+fi
+
+# Temporal AI
+if [[ -x ./crates/temporal-ai/target/release/temporal-ai ]]; then
+  echo "  temporal-ai: ✅ built"
+else
+  echo "  temporal-ai: ⏹️  not built (build: just setup-ai)"
+fi
+
+# Embedding model
+if [[ -f models/embedding-gemma-300M-Q4_K_M.gguf ]] || [[ -f models/embeddinggemma-300M-Q8_0.gguf ]]; then
+  echo "  embedding-model: ✅ downloaded"
+else
+  echo "  embedding-model: ⏹️  missing (download: just download-embedding-model)"
+fi
+
+# Mountebank (API mocking)
+if docker ps 2>/dev/null | grep -q mountebank; then
+  echo "  mountebank: ✅ running (http://localhost:2525)"
+else
+  echo "  mountebank: ⏹️  stopped (start: just mocks-start)"
+fi
+
 printf '\nDoctor finished. No secrets are printed by this script.\n'
 
 if [[ "${failed:-0}" -ne 0 ]]; then
@@ -99,4 +143,3 @@ if [[ "${failed:-0}" -ne 0 ]]; then
 else
   printf '\nSummary: all checks passed.\n'
 fi
-printf '\nDoctor finished. No secrets are printed by this script.\n'

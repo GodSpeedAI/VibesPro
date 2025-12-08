@@ -9,8 +9,117 @@ default:
 	@just --list
 
 # --- Environment Setup ---
+# Tiered setup architecture:
+#   Tier 0: Core (setup)         - Node, Bun, Python, pnpm install
+#   Tier 1: Database (setup-db)  - Supabase + migrations
+#   Tier 2: Observability        - Vector + OpenObserve + Logfire
+#   Tier 3: AI/Temporal          - temporal-ai CLI + embeddings
+#   Tier 4: Full (setup-all)     - Everything
+
 setup: setup-node setup-python setup-tools
-	@echo "✅ Development environment ready"
+	@echo "✅ Core development environment ready"
+	@echo ""
+	@echo "Optional stacks (run as needed):"
+	@echo "  just setup-db       → Supabase database"
+	@echo "  just setup-observe  → Observability (Vector, OpenObserve, Logfire)"
+	@echo "  just setup-ai       → Temporal AI + embeddings"
+	@echo "  just setup-all      → All of the above"
+
+# Tier 1: Database layer
+setup-db: supabase-start db-migrate db-seed
+	@echo "✅ Database ready (PostgreSQL on port 54322)"
+	@echo "   Studio: just supabase-studio"
+
+# Tier 2: Observability layer
+setup-observe:
+	@echo "🔭 Setting up observability stack..."
+	@just observe-validate || true
+	@just observe-start || echo "⚠️ Vector start failed - may need config"
+	@echo ""
+	@echo "✅ Observability setup complete"
+	@echo "   Vector: running (if installed)"
+	@echo "   OpenObserve: just observe-openobserve-up"
+	@echo "   Logfire: configured via LOGFIRE_TOKEN in .secrets.env.sops"
+	@echo ""
+	@echo "Required secrets (add to .secrets.env.sops):"
+	@echo "   OPENOBSERVE_URL, OPENOBSERVE_TOKEN, OPENOBSERVE_ORG, OPENOBSERVE_USER"
+	@echo "   LOGFIRE_TOKEN"
+
+# Tier 3: AI/Temporal layer
+setup-ai: download-embedding-model
+	@echo "🤖 Setting up AI infrastructure..."
+	@just temporal-ai-build
+	@just temporal-ai-init || echo "⚠️ temporal-ai init skipped (may already exist)"
+	@echo "✅ Temporal AI ready"
+	@echo "   Query patterns: just temporal-ai-query \"your query\""
+	@echo "   Stats: just temporal-ai-stats"
+
+# Download embedding model for temporal-ai
+download-embedding-model:
+	@echo "📥 Checking embedding model..."
+	@MODEL_PATH="models/embedding-gemma-300M-Q4_K_M.gguf"; \
+	if [ -f "$$MODEL_PATH" ]; then \
+		echo "✅ Embedding model already exists"; \
+	else \
+		echo "📥 Downloading embedding model (~180MB)..."; \
+		mkdir -p models; \
+		curl -L -o "$$MODEL_PATH" \
+			"https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embedding-gemma-300M-Q4_K_M.gguf" \
+			|| { echo "❌ Download failed"; exit 1; }; \
+		echo "✅ Model downloaded: $$MODEL_PATH"; \
+	fi
+
+# Tier 4: Full setup (all tiers)
+setup-all: setup setup-db setup-observe setup-ai setup-mocks
+	@echo ""
+	@echo "🎉 Full development environment ready!"
+	@echo "   Run 'just dev-full' to start all services"
+
+# Tier 5: Mocking infrastructure (Mountebank + Testcontainers)
+setup-mocks:
+	@echo "🎭 Setting up mocking infrastructure..."
+	@if [ ! -f tests/mocks/imposters/imposters.ejs ]; then \
+		echo "❌ Imposter definitions not found"; \
+		exit 1; \
+	fi
+	@# Ensure testcontainers is installed
+	@uv sync --group dev || pip install testcontainers
+	@just mocks-start || echo "⚠️ Mountebank start failed - Docker required"
+	@echo "✅ Mocking infrastructure ready"
+	@echo "   Mountebank UI: http://localhost:2525"
+	@echo "   LLM Mock: http://localhost:3001"
+	@echo "   Auth Mock: http://localhost:3002"
+	@echo "   Payment Mock: http://localhost:3003"
+
+# Start Mountebank mock server
+mocks-start:
+	@echo "🎭 Starting Mountebank..."
+	@docker compose -f docker/docker-compose.mocks.yml up -d
+	@echo "✅ Mountebank running at http://localhost:2525"
+
+# Stop Mountebank mock server
+mocks-stop:
+	@echo "🛑 Stopping Mountebank..."
+	@docker compose -f docker/docker-compose.mocks.yml down
+	@echo "✅ Mountebank stopped"
+
+# Check Mountebank status
+mocks-status:
+	@echo "📊 Mountebank status:"
+	@docker compose -f docker/docker-compose.mocks.yml ps
+
+# Start dev with observability
+dev-observe: setup-observe
+	@echo "🚀 Starting dev servers with observability..."
+	@pnpm exec nx run-many --target=serve --all --parallel=5
+
+# Start full development stack (database + observability + mocks + dev servers)
+dev-full:
+	@echo "🚀 Starting full development stack..."
+	@just supabase-start || echo "⚠️ Supabase already running or failed"
+	@just observe-start || echo "⚠️ Vector already running or failed"
+	@just mocks-start || echo "⚠️ Mountebank already running or failed"
+	@pnpm exec nx run-many --target=serve --all --parallel=5
 
 test-env:
 	@echo "🧪 Running environment tests..."
