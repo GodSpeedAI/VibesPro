@@ -6,7 +6,7 @@ services:
   # PostgreSQL database - the core of Supabase
   db:
     image: supabase/postgres:15.1.0.117
-    container_name: vibespro-supabase-db
+    container_name: {{ project_slug }}-supabase-db
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -30,7 +30,7 @@ services:
   # Postgres Meta - API for database introspection
   meta:
     image: supabase/postgres-meta:v0.84.2
-    container_name: vibespro-supabase-meta
+    container_name: {{ project_slug }}-supabase-meta
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
@@ -51,7 +51,7 @@ services:
   # PostgREST - RESTful API for PostgreSQL
   rest:
     image: postgrest/postgrest:v12.2.8
-    container_name: vibespro-supabase-rest
+    container_name: {{ project_slug }}-supabase-rest
     restart: unless-stopped
     environment:
       PGRST_DB_URI: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}
@@ -68,7 +68,7 @@ services:
   # Supabase Studio - Database Management UI
   studio:
     image: supabase/studio:20240422-5cf5f86
-    container_name: vibespro-supabase-studio
+    container_name: {{ project_slug }}-supabase-studio
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/profile"]

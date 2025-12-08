@@ -283,8 +283,8 @@ format:
 
 format-python:
 	@echo "✨ Formatting Python code..."
-	uv run black .
-	uv run isort .
+	uv run ruff check --select I --fix .
+	uv run ruff format .
 
 format-node:
 	@echo "✨ Formatting Node.js code..."
@@ -359,6 +359,14 @@ gen-types:
 # Uses Docker Compose for local Supabase database and services
 # Ref: docs/guides/supabase-workflow.md
 
+# Helper to get dynamic database port from running container
+_get_db_port:
+	@docker compose -f docker/docker-compose.supabase.yml port db 5432 2>/dev/null | cut -d: -f2 || echo "54322"
+
+# Helper to get dynamic Studio port from running container
+_get_studio_port:
+	@docker compose -f docker/docker-compose.supabase.yml port studio 3000 2>/dev/null | cut -d: -f2 || echo "54323"
+
 supabase-start:
 	@echo "🚀 Starting Supabase local stack..."
 	@if ! command -v docker >/dev/null 2>&1; then \
@@ -418,6 +426,22 @@ supabase-logs:
 	@echo "📋 Supabase logs (follow mode)..."
 	docker compose -f docker/docker-compose.supabase.yml logs -f
 
+supabase-studio:
+	@echo "🌐 Opening Supabase Studio..."
+	@PORT=$$(just _get_studio_port); \
+	echo "   Studio URL: http://localhost:$$PORT"; \
+	if command -v xdg-open >/dev/null 2>&1; then \
+		xdg-open "http://localhost:$$PORT"; \
+	elif command -v open >/dev/null 2>&1; then \
+		open "http://localhost:$$PORT"; \
+	else \
+		echo "   Open http://localhost:$$PORT in your browser"; \
+	fi
+
+supabase-health:
+	@echo "🩺 Checking Supabase stack health..."
+	@docker compose -f docker/docker-compose.supabase.yml ps --format 'table {{"{{"}}.Name{{"}}"}}	{{"{{"}}.Status{{"}}"}}	{{"{{"}}.Ports{{"}}"}}'
+
 db-migrate:
 	@echo "🗄️ Running database migrations..."
 	@# Check if Supabase stack is running
@@ -426,12 +450,13 @@ db-migrate:
 		just supabase-start; \
 		sleep 8; \
 	fi
-	@# Apply migrations using psql
+	@# Apply migrations using psql with dynamic port
 	@echo "📝 Applying migrations from supabase/migrations/..."
-	@for f in supabase/migrations/*.sql; do \
+	@PORT=$$(just _get_db_port); \
+	for f in supabase/migrations/*.sql; do \
 		if [ -f "$$f" ]; then \
 			echo "   Applying: $$(basename $$f)"; \
-			PGPASSWORD=postgres psql -h localhost -p 54322 -U postgres -d postgres -f "$$f" -q 2>&1 || { \
+			PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres -f "$$f" -q 2>&1 || { \
 				echo "❌ Migration failed: $$f"; \
 				exit 1; \
 			}; \
@@ -446,8 +471,9 @@ db-seed:
 		echo "❌ Supabase database not running. Run: just supabase-start"; \
 		exit 1; \
 	fi
-	@if [ -f supabase/seed.sql ]; then \
-		PGPASSWORD=postgres psql -h localhost -p 54322 -U postgres -d postgres -f supabase/seed.sql -q 2>&1 || { \
+	@PORT=$$(just _get_db_port); \
+	if [ -f supabase/seed.sql ]; then \
+		PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres -f supabase/seed.sql -q 2>&1 || { \
 			echo "❌ Seed failed"; \
 			exit 1; \
 		}; \
@@ -468,7 +494,15 @@ db-migration-create NAME:
 
 db-psql:
 	@echo "🔌 Connecting to database..."
-	@PGPASSWORD=postgres psql -h localhost -p 54322 -U postgres -d postgres
+	@PORT=$$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres
+
+db-tables:
+	@echo "📋 Listing tables in public schema..."
+	@PORT=$$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres -c "\dt public.*"
+
+db-describe TABLE:
+	@echo "📝 Describing table: {{TABLE}}"
+	@PORT=$$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres -c "\d+ public.{{TABLE}}"
 
 check-types:
 	@echo "🔍 Checking generated types are committed and up to date..."

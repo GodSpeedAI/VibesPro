@@ -61,31 +61,40 @@ just supabase-stop
 
 ### Stack Management
 
-| Command | Description |
-|---------|-------------|
-| `just supabase-start` | Start the Docker Compose Supabase stack |
-| `just supabase-stop` | Stop the stack |
-| `just supabase-reset` | Reset stack (removes all data, reapplies migrations and seed) |
-| `just supabase-status` | Show container status |
-| `just supabase-logs` | Tail container logs |
+| Command                | Description                                                   |
+| ---------------------- | ------------------------------------------------------------- |
+| `just supabase-start`  | Start the Docker Compose Supabase stack                       |
+| `just supabase-stop`   | Stop the stack                                                |
+| `just supabase-reset`  | Reset stack (removes all data, reapplies migrations and seed) |
+| `just supabase-status` | Show container status                                         |
+| `just supabase-logs`   | Tail container logs                                           |
 
 ### Database Operations
 
-| Command | Description |
-|---------|-------------|
-| `just db-migrate` | Apply all migrations from `supabase/migrations/` |
-| `just db-seed` | Run seed script `supabase/seed.sql` |
-| `just db-migration-create NAME` | Create new migration file |
-| `just db-psql` | Connect to database via psql |
+| Command                         | Description                                      |
+| ------------------------------- | ------------------------------------------------ |
+| `just db-migrate`               | Apply all migrations from `supabase/migrations/` |
+| `just db-seed`                  | Run seed script `supabase/seed.sql`              |
+| `just db-migration-create NAME` | Create new migration file                        |
+| `just db-psql`                  | Connect to database via psql                     |
 
 ### Type Generation
 
-| Command | Description |
-|---------|-------------|
-| `just gen-types` | Generate both TypeScript and Python types |
-| `just gen-types-ts` | Generate TypeScript types only |
-| `just gen-types-py` | Generate Python Pydantic models only |
-| `just check-types` | Verify types match database schema |
+| Command             | Description                               |
+| ------------------- | ----------------------------------------- |
+| `just gen-types`    | Generate both TypeScript and Python types |
+| `just gen-types-ts` | Generate TypeScript types only            |
+| `just gen-types-py` | Generate Python Pydantic models only      |
+| `just check-types`  | Verify types match database schema        |
+
+### Developer Convenience
+
+| Command                  | Description                                        |
+| ------------------------ | -------------------------------------------------- |
+| `just supabase-studio`   | Open Studio UI in browser                          |
+| `just supabase-health`   | Check health of all containers with ports          |
+| `just db-tables`         | List all tables in public schema                   |
+| `just db-describe TABLE` | Show table schema (e.g., `just db-describe users`) |
 
 ## Directory Structure
 
@@ -115,40 +124,46 @@ just supabase-stop
 ### 1. Making Schema Changes
 
 1. Create a new migration:
-   ```bash
-   just db-migration-create add_user_roles
-   ```
+
+    ```bash
+    just db-migration-create add_user_roles
+    ```
 
 2. Edit the migration file in `supabase/migrations/`:
-   ```sql
-   -- Migration: add_user_roles
-   ALTER TABLE public.users ADD COLUMN role VARCHAR(20) DEFAULT 'member';
-   ```
+
+    ```sql
+    -- Migration: add_user_roles
+    ALTER TABLE public.users ADD COLUMN role VARCHAR(20) DEFAULT 'member';
+    ```
 
 3. Apply the migration:
-   ```bash
-   just db-migrate
-   ```
+
+    ```bash
+    just db-migrate
+    ```
 
 4. Regenerate types:
-   ```bash
-   just gen-types
-   ```
+
+    ```bash
+    just gen-types
+    ```
 
 5. Commit both migration and types:
-   ```bash
-   git add supabase/migrations/ libs/shared/types/ libs/shared/types-py/
-   git commit -m "feat(db): add user roles field"
-   ```
+    ```bash
+    git add supabase/migrations/ libs/shared/types/ libs/shared/types-py/
+    git commit -m "feat(db): add user roles field"
+    ```
 
 ### 2. Testing Schema Changes
 
 The CI pipeline validates that:
+
 - Migrations apply successfully to a fresh database
 - Generated types match the committed types
 - TypeScript and Python types are in sync
 
 Run locally:
+
 ```bash
 just supabase-reset  # Fresh database with migrations
 just gen-types       # Regenerate types
@@ -160,19 +175,19 @@ just check-types     # Verify types are up to date
 #### TypeScript
 
 ```typescript
-import { Users, Database } from '@vibespro/shared-types';
+import { Users, Database } from "@vibespro/shared-types";
 
 // Use the interface directly
 const user: Users = {
-  id: 'uuid-here',
-  email: 'test@example.com',
-  is_active: true,
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+    id: "uuid-here",
+    email: "test@example.com",
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
 };
 
 // Use the Database namespace for Supabase client patterns
-type UserRow = Database['public']['Tables']['users']['Row'];
+type UserRow = Database["public"]["Tables"]["users"]["Row"];
 ```
 
 #### Python
@@ -200,17 +215,47 @@ The `.github/workflows/type-safety.yml` workflow validates:
 1. **TypeScript Type Check**: Compiles TypeScript with strict mode
 2. **Python Type Check**: Runs mypy with strict mode
 3. **Supabase Integration**:
-   - Starts PostgreSQL container
-   - Applies migrations
-   - Generates types from live database
-   - Compares with committed types
-   - Runs type safety tests
+    - Starts PostgreSQL container
+    - Applies migrations
+    - Generates types from live database
+    - Compares with committed types
+    - Runs type safety tests
+
+## Using Supabase Studio
+
+Supabase Studio provides a web-based UI for database management.
+
+### Opening Studio
+
+```bash
+# Open Studio in your default browser
+just supabase-studio
+```
+
+Studio runs on port 54323 by default (configurable via `STUDIO_PORT` in `docker/.env.supabase`).
+
+### Studio Features
+
+- **Table Editor**: Browse and edit data in your tables
+- **SQL Editor**: Run custom SQL queries
+- **Database Structure**: View schemas, tables, and relationships
+- **API Documentation**: Auto-generated REST API docs
+
+### Dynamic Ports
+
+VibesPro uses dynamic port detection. If you change ports in `docker/.env.supabase`, all commands will automatically use the correct ports:
+
+```bash
+# Check actual ports being used
+just supabase-health
+```
 
 ## Troubleshooting
 
 ### Docker Issues
 
 **Port conflicts**:
+
 ```bash
 # Check what's using port 54322
 lsof -i :54322
@@ -220,6 +265,7 @@ POSTGRES_PORT=54332
 ```
 
 **Container won't start**:
+
 ```bash
 # Check logs
 just supabase-logs
@@ -231,6 +277,7 @@ just supabase-reset
 ### Type Generation Issues
 
 **TypeScript types not generating**:
+
 ```bash
 # Ensure database is running
 just supabase-status
@@ -241,6 +288,7 @@ just db-psql
 ```
 
 **Python types out of sync**:
+
 ```bash
 # Regenerate from TypeScript
 just gen-types-py
@@ -252,6 +300,7 @@ just gen-types
 ### Migration Issues
 
 **Migration failed**:
+
 ```bash
 # Check error in logs
 just supabase-logs
@@ -261,6 +310,7 @@ just db-psql
 ```
 
 **Schema mismatch**:
+
 ```bash
 # Reset database and reapply
 just supabase-reset
