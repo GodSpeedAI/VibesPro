@@ -1,0 +1,160 @@
+{
+  "imposters": [
+    {
+      "port": 3001,
+      "protocol": "http",
+      "name": "LLM API Mock",
+      "stubs": [
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "POST",
+                "path": "/v1/chat/completions"
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "id": "chatcmpl-mock-123",
+                  "object": "chat.completion",
+                  "created": 1234567890,
+                  "model": "gpt-4-mock",
+                  "choices": [
+                    {
+                      "index": 0,
+                      "message": {
+                        "role": "assistant",
+                        "content": "This is a mock response from the LLM API."
+                      },
+                      "finish_reason": "stop"
+                    }
+                  ],
+                  "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 15,
+                    "total_tokens": 25
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "POST",
+                "path": "/v1/embeddings"
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "object": "list",
+                  "data": [
+                    {
+                      "object": "embedding",
+                      "index": 0,
+                      "embedding": [0.1, 0.2, 0.3, 0.4, 0.5]
+                    }
+                  ],
+                  "model": "text-embedding-mock",
+                  "usage": {
+                    "prompt_tokens": 5,
+                    "total_tokens": 5
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "port": 3002,
+      "protocol": "http",
+      "name": "Auth API Mock (Ory Kratos)",
+      "stubs": [
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/sessions/whoami"
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "id": "session-mock-123",
+                  "active": true,
+                  "identity": {
+                    "id": "user-mock-456",
+                    "traits": {
+                      "email": "test@example.com",
+                      "name": "Test User"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "port": 3003,
+      "protocol": "http",
+      "name": "Payment API Mock (Stripe)",
+      "stubs": [
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "POST",
+                "path": "/v1/payment_intents"
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "id": "pi_mock_123",
+                  "object": "payment_intent",
+                  "amount": 1000,
+                  "currency": "usd",
+                  "status": "succeeded",
+                  "client_secret": "pi_mock_123_secret_mock"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

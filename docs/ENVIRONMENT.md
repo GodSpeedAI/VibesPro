@@ -6,15 +6,14 @@ This guide covers setting up your development environment for VibesPro.
 
 | Tool               | Version | Purpose                               |
 | ------------------ | ------- | ------------------------------------- |
-| **Docker**         | v20+    | Container runtime for Supabase        |
+| **Docker**         | v20+    | Container runtime for services        |
 | **Docker Compose** | v2+     | Multi-container orchestration         |
 | **just**           | v1.0+   | Command runner (`cargo install just`) |
-| **psql**           | v15+    | PostgreSQL client for migrations      |
 | **Node.js**        | v20+    | JavaScript runtime                    |
 | **Bun**            | v1.1+   | Fast TypeScript runtime               |
 | **pnpm**           | v9+     | Package manager                       |
 | **Python**         | v3.11+  | Python runtime                        |
-| **uv**             | v0.4+   | Python package manager                |
+| **Rust**           | v1.80+  | Rust toolchain (for temporal-ai)      |
 
 ## Quick Setup
 
@@ -23,21 +22,37 @@ This guide covers setting up your development environment for VibesPro.
 git clone <repository-url>
 cd vibespro
 
-# Run full setup (installs Node, Bun, Python deps, tools)
+# Core setup (Node, Bun, Python, dependencies)
 just setup
 
 # Verify environment
 just doctor
 ```
 
-## Tool Management Strategy
+## Tiered Setup Architecture
 
-VibesPro uses a two-tier tool management approach:
+VibesPro uses progressive disclosure for environment setup:
 
-| Tool       | Purpose                                         | Config File   |
-| ---------- | ----------------------------------------------- | ------------- |
-| **mise**   | Project-level runtimes (Node, Bun, Python, etc) | `.mise.toml`  |
-| **Devbox** | OS-level dependencies + container generation    | `devbox.json` |
+| Tier                 | Command              | Components                            | Time  |
+| -------------------- | -------------------- | ------------------------------------- | ----- |
+| **0: Core**          | `just setup`         | Node, Bun, Python, pnpm install       | ~30s  |
+| **1: Database**      | `just setup-db`      | Supabase + migrations                 | ~15s  |
+| **2: Observability** | `just setup-observe` | Vector + OpenObserve + Logfire        | ~10s  |
+| **3: AI/Temporal**   | `just setup-ai`      | temporal-ai CLI + embeddings (~180MB) | ~2min |
+| **4: Mocking**       | `just setup-mocks`   | Mountebank + Testcontainers           | ~10s  |
+| **5: Full**          | `just setup-all`     | Everything                            | ~3min |
+
+### Development Commands
+
+| Command            | Purpose                                        |
+| ------------------ | ---------------------------------------------- |
+| `just dev`         | Start Nx dev servers only                      |
+| `just dev-observe` | Dev servers + observability                    |
+| `just dev-full`    | Database + observability + mocks + dev servers |
+
+---
+
+## Tool Management
 
 ### mise (Project Runtimes)
 
@@ -50,172 +65,212 @@ node = "20.11.1"
 bun = "1.1.42"
 python = "3.11.11"
 rust = "1.80.1"
-uv = "0.9.2"
-just = "1.43.0"
 ```
 
-**Quick Start:**
-
 ```bash
-# Install mise (https://mise.run)
+# Install mise
 curl https://mise.run | sh
+eval "$(mise activate bash)"
 
-# Activate mise in your shell
-eval "$(mise activate bash)"  # or zsh/fish
-
-# Install all project runtimes
+# Install all runtimes
 mise install
-
-# Verify
-mise doctor
 ```
 
 ### Devbox (OS Dependencies & Containers)
 
-[Devbox](https://www.jetpack.io/devbox/) provides Nix-based OS-level dependencies and enables creating reproducible containers/devcontainers:
+[Devbox](https://www.jetpack.io/devbox/) provides Nix-based OS-level dependencies:
 
 ```bash
 # Install devbox
 curl -fsSL https://get.jetpack.io/devbox | bash
 
-# Enter devbox shell (auto-installs all tools)
+# Enter isolated environment
 devbox shell
 
-# Or run commands directly
-devbox run just setup
-
-# Generate a Docker container from your environment
+# Generate Docker container
 devbox generate dockerfile
 ```
 
-**Note:** Use mise for runtime versioning (faster, lighter) and Devbox when you need:
+---
 
-- Complete OS-level dependency isolation
-- Container/devcontainer generation
-- Nix-based reproducibility across machines
+## Secrets Management
 
-## Supabase Local Development
+### SOPS + age
 
-VibesPro uses a local Supabase stack for database development. See [Supabase Workflow Guide](guides/supabase-workflow.md) for complete details.
+Secrets are encrypted using [SOPS](https://github.com/mozilla/sops) with [age](https://github.com/FiloSottile/age) keys.
 
-### Quick Start
+**Setup your key:**
 
 ```bash
-# Start the Supabase stack
-just supabase-start
+# Generate an age key (one-time)
+age-keygen -o ~/.config/sops/key.txt
 
-# Apply database migrations
-just db-migrate
-
-# Open Studio UI in browser
-just supabase-studio
-
-# Stop the stack when done
-just supabase-stop
+# Share public key with team to add to .sops.yaml
+cat ~/.config/sops/key.txt | grep "public key"
 ```
 
-### Port Reference
+**Required secrets** (in `.secrets.env.sops`):
 
-| Service    | Default Port | Environment Variable |
-| ---------- | ------------ | -------------------- |
-| PostgreSQL | 54322        | `POSTGRES_PORT`      |
-| Studio UI  | 54323        | `STUDIO_PORT`        |
-| PostgREST  | 54324        | `REST_PORT`          |
-| Kong API   | 54321        | `KONG_PORT`          |
+| Variable            | Purpose                  |
+| ------------------- | ------------------------ |
+| `OPENOBSERVE_URL`   | OpenObserve API endpoint |
+| `OPENOBSERVE_TOKEN` | OpenObserve auth token   |
+| `OPENOBSERVE_ORG`   | OpenObserve organization |
+| `OPENOBSERVE_USER`  | OpenObserve user email   |
+| `LOGFIRE_TOKEN`     | Logfire tracing token    |
+| `SUPABASE_*`        | Supabase credentials     |
 
-Ports are configured in `docker/.env.supabase`. Dynamic port detection is used, so you can change ports without modifying the justfile.
+**Decrypt secrets:**
+
+```bash
+# View decrypted content
+sops -d .secrets.env.sops
+
+# Edit secrets in-place
+sops .secrets.env.sops
+```
+
+### direnv
+
+The `.envrc` file auto-loads:
+
+1. Devbox environment
+2. mise runtimes
+3. Decrypted secrets (via SOPS)
+
+```bash
+# Allow direnv for this project
+direnv allow
+```
+
+---
+
+## Observability Stack
+
+```
+┌─────────────────────────┐
+│ App (Rust/Python/TS)    │
+│ OpenTelemetry SDK       │
+└───────────┬─────────────┘
+            │ OTLP
+            ▼
+┌─────────────────────────┐
+│ Vector (edge collector) │
+│ PII redaction + routing │
+└───────────┬─────────────┘
+            │
+    ┌───────┴───────┐
+    ▼               ▼
+Logfire         OpenObserve
+(tracing)       (long-term)
+```
+
+| Command                       | Purpose                 |
+| ----------------------------- | ----------------------- |
+| `just observe-start`          | Start Vector pipeline   |
+| `just observe-openobserve-up` | Start OpenObserve UI    |
+| `just observe-validate`       | Validate Vector config  |
+| `just test-logs`              | Run observability tests |
+| `just test-logfire`           | Logfire smoke test      |
+
+---
+
+## Temporal AI
+
+Pattern analysis and embeddings-based similarity search.
+
+| Command                          | Purpose                    |
+| -------------------------------- | -------------------------- |
+| `just setup-ai`                  | Build CLI + download model |
+| `just temporal-ai-query "query"` | Query similar patterns     |
+| `just temporal-ai-stats`         | Show database stats        |
+| `just download-embedding-model`  | Download ~180MB model      |
+
+---
+
+## Mocking Infrastructure
+
+External API mocking using Mountebank + Testcontainers.
+
+| Command             | Purpose                           |
+| ------------------- | --------------------------------- |
+| `just setup-mocks`  | Setup Mountebank + Testcontainers |
+| `just mocks-start`  | Start mock server                 |
+| `just mocks-stop`   | Stop mock server                  |
+| `just mocks-status` | Check mock server status          |
+
+### Mock Endpoints
+
+| Port | Service          | Purpose                           |
+| ---- | ---------------- | --------------------------------- |
+| 2525 | Mountebank Admin | http://localhost:2525             |
+| 3001 | LLM API          | OpenAI-compatible chat/embeddings |
+| 3002 | Auth API         | Ory Kratos session mock           |
+| 3003 | Payment API      | Stripe payment intents mock       |
+
+### Adding Custom Imposters
+
+Edit `tests/mocks/imposters/imposters.ejs` to add new mock responses.
+
+---
+
+## Database (Supabase)
+
+| Command                | Purpose                    |
+| ---------------------- | -------------------------- |
+| `just supabase-start`  | Start PostgreSQL + Studio  |
+| `just supabase-studio` | Open database UI           |
+| `just db-migrate`      | Apply migrations           |
+| `just db-seed`         | Seed database              |
+| `just gen-types`       | Generate TS + Python types |
+
+---
 
 ## Troubleshooting
 
-### Docker Issues
-
-**Docker daemon not running:**
+### Secrets not loading
 
 ```bash
-# Linux
-sudo systemctl start docker
+# Check SOPS key
+ls -la ~/.config/sops/key.txt
 
-# macOS
-open -a Docker
+# Manually test decryption
+sops -d .secrets.env.sops
 ```
 
-**Permission denied:**
+### mise runtimes not loading
 
 ```bash
-# Add user to docker group (Linux)
-sudo usermod -aG docker $USER
-# Log out and back in
-```
-
-### Port Conflicts
-
-**Check what's using a port:**
-
-```bash
-lsof -i :54322  # Check database port
-```
-
-**Use different ports:**
-
-```bash
-# Edit docker/.env.supabase
-POSTGRES_PORT=55322
-STUDIO_PORT=55323
-```
-
-### Devbox Issues
-
-**Devbox update issues:**
-
-```bash
-just devbox-fix
-```
-
-**Supabase CLI not found in devbox:**
-
-```bash
-just devbox-check
-```
-
-### mise Issues
-
-**Runtimes not loading:**
-
-```bash
-# Ensure mise is activated in your shell
 eval "$(mise activate bash)"
-
-# Trust the project config
 mise trust
-
-# Install all tools
 mise install
 ```
 
-**Bun not available:**
+### Docker services failing
 
 ```bash
-mise install bun
-bun --version
+# Check Docker is running
+docker ps
+
+# View service logs
+just supabase-logs
 ```
 
-### Python Environment Issues
-
-**Virtual environment not found:**
+### Observability not working
 
 ```bash
-just setup-python
+# Validate Vector config
+just observe-validate
+
+# Check required secrets are set
+echo $OPENOBSERVE_URL
+echo $LOGFIRE_TOKEN
 ```
 
-**Package conflicts:**
-
-```bash
-rm -rf .venv
-just setup-python
-```
+---
 
 ## Related Documentation
 
-- [Supabase Workflow Guide](guides/supabase-workflow.md) - Database development
-- [copilot-instructions.md](/.github/copilot-instructions.md) - Project overview
-- [Architecture Overview](architecture/) - System architecture
+- [Supabase Workflow Guide](guides/supabase-workflow.md)
+- [copilot-instructions.md](/.github/copilot-instructions.md)
+- [Architecture Overview](architecture/)
