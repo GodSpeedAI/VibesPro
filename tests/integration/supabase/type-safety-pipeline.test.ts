@@ -26,7 +26,7 @@ function _isSupabaseRunning(): boolean {
     const result = spawnSync(
       'docker',
       ['compose', '-f', 'docker/docker-compose.supabase.yml', 'ps', '--status', 'running'],
-      { cwd: WORKSPACE_ROOT, encoding: 'utf-8' }
+      { cwd: WORKSPACE_ROOT, encoding: 'utf-8' },
     );
     return result.stdout.includes('vibespro-supabase-db');
   } catch {
@@ -166,7 +166,9 @@ describe('Type Safety Pipeline', () => {
     it('should have proper field types for Users', () => {
       const content = readFileSync(PY_TYPES_PATH, 'utf-8');
       // Use a more robust extraction that handles multi-class files
-      const usersMatch = content.match(/class\s+Users\s*\(\s*BaseModel\s*\):\s*\n((?:\s+\w+:.*\n)+)/);
+      const usersMatch = content.match(
+        /class\s+Users\s*\(\s*BaseModel\s*\):\s*\n((?:\s+\w+:.*\n)+)/,
+      );
       expect(usersMatch).toBeTruthy();
 
       if (usersMatch) {
@@ -223,7 +225,9 @@ describe('Type Safety Pipeline', () => {
 
       // Extract Users fields from TypeScript (required fields have no | null)
       const tsUsersMatch = tsContent.match(/export\s+interface\s+Users\s*\{([^}]+)\}/s);
-      const pyUsersMatch = pyContent.match(/class\s+Users\s*\(\s*BaseModel\s*\):\s*\n((?:\s+\w+:.*\n)+)/);
+      const pyUsersMatch = pyContent.match(
+        /class\s+Users\s*\(\s*BaseModel\s*\):\s*\n((?:\s+\w+:.*\n)+)/,
+      );
 
       expect(tsUsersMatch).toBeTruthy();
       expect(pyUsersMatch).toBeTruthy();

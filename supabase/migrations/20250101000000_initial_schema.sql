@@ -1,7 +1,7 @@
 -- Initial Schema Migration for VibesPro
 -- Creates base tables for type generation demonstration
 -- DEV-SDS-020: End-to-End Type Safety Pipeline
--- 
+--
 -- This migration establishes the foundational database schema that serves as
 -- the single source of truth for TypeScript and Python type generation.
 

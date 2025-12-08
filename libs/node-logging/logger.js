@@ -70,7 +70,7 @@ function logger(service = process.env.SERVICE_NAME || 'vibepro-node') {
         const result = {
           ...obj,
           trace_id: obj.trace_id || '', // Ensures trace_id is always present
-          span_id: obj.span_id || '',   // Ensures span_id is always present
+          span_id: obj.span_id || '', // Ensures span_id is always present
           category: obj.category || 'app', // Defaults category to 'app'
         };
 

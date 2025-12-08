@@ -15,7 +15,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 
 # Colors for output
 RED='\033[0;31m'
@@ -54,16 +54,17 @@ fail_test() {
 }
 
 # Cleanup function
+# shellcheck disable=SC2317
 cleanup() {
     log_info "Cleaning up..."
-    cd "$REPO_ROOT"
+    cd "${REPO_ROOT}"
     just supabase-stop 2>/dev/null || true
 }
 
 # Set trap for cleanup on exit
 trap cleanup EXIT
 
-cd "$REPO_ROOT"
+cd "${REPO_ROOT}"
 
 # Test 1: Check prerequisites
 log_test "Checking prerequisites..."
@@ -109,16 +110,22 @@ sleep 5
 # Test 3: Check Supabase status
 log_test "Checking Supabase status..."
 STATUS_OUTPUT=$(just supabase-status 2>&1)
-if echo "$STATUS_OUTPUT" | grep -q "vibespro-supabase-db"; then
+if echo "${STATUS_OUTPUT}" | grep -q "vibespro-supabase-db"; then
     pass_test "Database container is running"
 else
     fail_test "Database container is not running"
 fi
 
-if echo "$STATUS_OUTPUT" | grep -q "vibespro-supabase-meta"; then
+if echo "${STATUS_OUTPUT}" | grep -q "vibespro-supabase-meta"; then
     pass_test "Meta container is running"
 else
     fail_test "Meta container is not running"
+fi
+
+if echo "${STATUS_OUTPUT}" | grep -q "vibespro-supabase-studio"; then
+    pass_test "Studio container is running"
+else
+    fail_test "Studio container is not running"
 fi
 
 # Test 4: Run migrations
@@ -133,26 +140,26 @@ fi
 log_test "Verifying database tables..."
 if command -v psql &> /dev/null; then
     TABLES=$(PGPASSWORD=postgres psql -h localhost -p 54322 -U postgres -d postgres -t -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name;" 2>/dev/null | tr -d ' ')
-    
-    if echo "$TABLES" | grep -q "users"; then
+
+    if echo "${TABLES}" | grep -q "users"; then
         pass_test "Users table exists"
     else
         fail_test "Users table not found"
     fi
-    
-    if echo "$TABLES" | grep -q "profiles"; then
+
+    if echo "${TABLES}" | grep -q "profiles"; then
         pass_test "Profiles table exists"
     else
         fail_test "Profiles table not found"
     fi
-    
-    if echo "$TABLES" | grep -q "projects"; then
+
+    if echo "${TABLES}" | grep -q "projects"; then
         pass_test "Projects table exists"
     else
         fail_test "Projects table not found"
     fi
-    
-    if echo "$TABLES" | grep -q "project_members"; then
+
+    if echo "${TABLES}" | grep -q "project_members"; then
         pass_test "Project_members table exists"
     else
         fail_test "Project_members table not found"
@@ -173,9 +180,9 @@ fi
 log_test "Verifying seed data..."
 if command -v psql &> /dev/null; then
     USER_COUNT=$(PGPASSWORD=postgres psql -h localhost -p 54322 -U postgres -d postgres -t -c "SELECT COUNT(*) FROM public.users;" 2>/dev/null | tr -d ' ')
-    
-    if [ "$USER_COUNT" -ge 1 ]; then
-        pass_test "Seed data present ($USER_COUNT users)"
+
+    if [[ "${USER_COUNT}" -ge 1 ]]; then
+        pass_test "Seed data present (${USER_COUNT} users)"
     else
         fail_test "No seed data found"
     fi
@@ -194,22 +201,22 @@ fi
 # Test 9: Verify TypeScript types file
 log_test "Verifying TypeScript types file..."
 TS_FILE="libs/shared/types/src/database.types.ts"
-if [ -f "$TS_FILE" ]; then
+if [[ -f "${TS_FILE}" ]]; then
     pass_test "TypeScript types file exists"
-    
-    if grep -q "interface Users" "$TS_FILE"; then
+
+    if grep -q "interface Users" "${TS_FILE}"; then
         pass_test "Users interface found in types"
     else
         fail_test "Users interface not found"
     fi
-    
-    if grep -q "interface Profiles" "$TS_FILE"; then
+
+    if grep -q "interface Profiles" "${TS_FILE}"; then
         pass_test "Profiles interface found in types"
     else
         fail_test "Profiles interface not found"
     fi
-    
-    if grep -q "interface Database" "$TS_FILE"; then
+
+    if grep -q "interface Database" "${TS_FILE}"; then
         pass_test "Database namespace found in types"
     else
         fail_test "Database namespace not found"
@@ -229,16 +236,16 @@ fi
 # Test 11: Verify Python types file
 log_test "Verifying Python types file..."
 PY_FILE="libs/shared/types-py/src/models.py"
-if [ -f "$PY_FILE" ]; then
+if [[ -f "${PY_FILE}" ]]; then
     pass_test "Python types file exists"
-    
-    if grep -q "class Users" "$PY_FILE"; then
+
+    if grep -q "class Users" "${PY_FILE}"; then
         pass_test "Users class found in Python models"
     else
         fail_test "Users class not found"
     fi
-    
-    if grep -q "class Profiles" "$PY_FILE"; then
+
+    if grep -q "class Profiles" "${PY_FILE}"; then
         pass_test "Profiles class found in Python models"
     else
         fail_test "Profiles class not found"
@@ -264,7 +271,7 @@ echo -e "Passed: ${GREEN}${TESTS_PASSED}${NC}"
 echo -e "Failed: ${RED}${TESTS_FAILED}${NC}"
 echo ""
 
-if [ "$TESTS_FAILED" -gt 0 ]; then
+if [[ "${TESTS_FAILED}" -gt 0 ]]; then
     log_error "Some tests failed!"
     exit 1
 else
