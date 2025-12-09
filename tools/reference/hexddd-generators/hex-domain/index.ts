@@ -1,1 +1,1 @@
-export { default } from './generator';
+export { default, hexDomainGenerator } from './generator';

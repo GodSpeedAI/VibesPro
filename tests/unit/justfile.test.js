@@ -23,6 +23,7 @@ test('spec-guard recipe bundles Spec Guard CI steps in order', () => {
     'pnpm run lint:md',
     'node scripts/check_all_agents.mjs',
     'node tools/docs/link_check.js || echo "⚠️ Link check found broken links - needs fixing but not blocking CI"',
+    'pnpm exec tsx tools/validate-generator-schemas.ts || echo "⚠️ Generator schema validation issues found"',
     'pnpm run test:node',
     'pnpm run env:audit',
     'pnpm run pr:comment',

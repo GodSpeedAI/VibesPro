@@ -1,8 +1,8 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { performance } from 'node:perf_hooks';
 import type { MeasureOptions, PerformanceMeasure } from 'node:perf_hooks';
+import { performance } from 'node:perf_hooks';
 import type { PerformanceAdvisory } from '../../tools/performance/monitor.js';
 import { PerformanceMonitor } from '../../tools/performance/monitor.js';
 

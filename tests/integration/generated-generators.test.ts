@@ -37,8 +37,8 @@ describe('Generated Generator Integration', () => {
 
       // Step 4: Validate the schema is valid JSON
       const schemaContent = tree.read('generators/test-feature/schema.json', 'utf-8');
-      expect(schemaContent).toBeTruthy();
-      const schema = JSON.parse(schemaContent!);
+      if (!schemaContent) throw new Error('schema.json not found');
+      const schema = JSON.parse(schemaContent);
       expect(schema.properties).toBeDefined();
       expect(schema.properties.name).toBeDefined();
     });
@@ -49,7 +49,9 @@ describe('Generated Generator Integration', () => {
         type: 'utility',
       });
 
-      const packageJson = JSON.parse(tree.read('generators/my-lib/package.json', 'utf-8')!);
+      const packageContent = tree.read('generators/my-lib/package.json', 'utf-8');
+      if (!packageContent) throw new Error('package.json not found');
+      const packageJson = JSON.parse(packageContent);
 
       expect(packageJson.name).toBe('@vibespro/my-lib');
       expect(packageJson.generators).toBe('./generators.json');
@@ -131,7 +133,8 @@ describe('Generated Generator Integration', () => {
       });
 
       const schemaContent = tree.read('generators/valid-gen/schema.json', 'utf-8');
-      const schema = JSON.parse(schemaContent!);
+      if (!schemaContent) throw new Error('schema.json not found');
+      const schema = JSON.parse(schemaContent);
 
       // Validate it has required Nx generator schema fields
       expect(schema.$schema).toBeDefined();
@@ -146,9 +149,9 @@ describe('Generated Generator Integration', () => {
         description: 'Test config generator',
       });
 
-      const generatorsJson = JSON.parse(
-        tree.read('generators/config-gen/generators.json', 'utf-8')!,
-      );
+      const genJsonContent = tree.read('generators/config-gen/generators.json', 'utf-8');
+      if (!genJsonContent) throw new Error('generators.json not found');
+      const generatorsJson = JSON.parse(genJsonContent);
 
       expect(generatorsJson.generators).toBeDefined();
       expect(generatorsJson.generators['config-gen']).toBeDefined();
@@ -201,9 +204,9 @@ describe('Generated Generator Integration', () => {
       });
 
       expect(tree.exists('generators/my-special-feature-gen/generator.ts')).toBeTruthy();
-      const packageJson = JSON.parse(
-        tree.read('generators/my-special-feature-gen/package.json', 'utf-8')!,
-      );
+      const pkgContent = tree.read('generators/my-special-feature-gen/package.json', 'utf-8');
+      if (!pkgContent) throw new Error('package.json not found');
+      const packageJson = JSON.parse(pkgContent);
       expect(packageJson.name).toBe('@vibespro/my-special-feature-gen');
     });
 

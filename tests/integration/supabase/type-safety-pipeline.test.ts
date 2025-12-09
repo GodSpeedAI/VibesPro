@@ -138,14 +138,9 @@ describe('Type Safety Pipeline', () => {
       expect(content).toContain('Auto-generated');
     });
 
-    it('should import Pydantic BaseModel', () => {
+    it('should import Pydantic BaseModel and JsonValue', () => {
       const content = readFileSync(PY_TYPES_PATH, 'utf-8');
-      expect(content).toContain('from pydantic import BaseModel');
-    });
-
-    it('should import typing module', () => {
-      const content = readFileSync(PY_TYPES_PATH, 'utf-8');
-      expect(content).toContain('import typing');
+      expect(content).toContain('from pydantic import BaseModel, JsonValue');
     });
 
     it('should define Users class', () => {
@@ -179,20 +174,23 @@ describe('Type Safety Pipeline', () => {
       }
     });
 
-    it('should handle Optional fields correctly', () => {
+    it('should handle Optional fields correctly with union syntax', () => {
       const content = readFileSync(PY_TYPES_PATH, 'utf-8');
-      expect(content).toMatch(/display_name:\s*typing\.Optional\[str\]/);
-      expect(content).toMatch(/avatar_url:\s*typing\.Optional\[str\]/);
+      // Modern Python 3.10+ union syntax: `str | None` instead of `typing.Optional[str]`
+      expect(content).toMatch(/display_name:\s*str\s*\|\s*None/);
+      expect(content).toMatch(/avatar_url:\s*str\s*\|\s*None/);
     });
 
-    it('should handle JSON fields as dict types', () => {
+    it('should handle JSON fields as dict types with JsonValue', () => {
       const content = readFileSync(PY_TYPES_PATH, 'utf-8');
-      expect(content).toMatch(/metadata:\s*typing\.Optional\[dict\[str,\s*typing\.Any\]\]/);
+      // Modern Python 3.10+ syntax with Pydantic's JsonValue
+      expect(content).toMatch(/metadata:\s*dict\[str,\s*JsonValue\]\s*\|\s*None/);
     });
 
-    it('should handle list fields correctly', () => {
+    it('should handle list fields correctly with union syntax', () => {
       const content = readFileSync(PY_TYPES_PATH, 'utf-8');
-      expect(content).toMatch(/tags:\s*typing\.Optional\[list\[str\]\]/);
+      // Modern Python 3.10+ syntax
+      expect(content).toMatch(/tags:\s*list\[str\]\s*\|\s*None/);
     });
   });
 
