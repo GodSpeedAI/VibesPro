@@ -2,60 +2,75 @@
 
 ## 📍 Context
 
-> **Purpose**: Code generators for scaffolding libraries, applications, and components using Nx and Copier.
+> **Purpose**: Code generators for scaffolding libraries, applications, and components using Nx.
 > **When to use**: When creating new projects, libraries, or components - ALWAYS check generators before writing code manually.
 
 ## 🔗 Parent Context
 
 See [root copilot-instructions.md](/.github/copilot-instructions.md) for comprehensive project guidance and [AGENT-MAP.md](/AGENT-MAP.md) for navigation across contexts.
 
+## 🚀 Quick Start for AI Agents
+
+```bash
+# Create a new generator (the generator that creates generators)
+just generator-new my-generator domain
+
+# List available generators
+just generator-list
+
+# Validate a generator
+just generator-validate my-generator
+
+# Run quality checks
+just generator-quality
+```
+
 ## 🎯 Local Scope
 
 **This directory handles:**
 
+- **Meta-Generator System** - Create new generators on-the-fly
 - Custom Nx generators for hexagonal architecture
 - Generator templates and schematics
 - Code scaffolding following project conventions
 - Generator-first workflow enforcement
-- Copier integration patterns
 
 **Related Policy**: See [.github/instructions/generators-first.instructions.md](/.github/instructions/generators-first.instructions.md) for the **generator-first development policy**.
 
-## 📁 Key Files & Patterns
-
-### Directory Structure
+## 📁 Current Directory Structure
 
 ```
 generators/
-├── service/                    # Service/bounded context generator
-│   ├── generator.ts            # Generator implementation
-│   ├── schema.json             # Generator options schema
-│   ├── schema.d.ts             # TypeScript types for options
-│   ├── files/                  # Template files
-│   │   ├── domain/
-│   │   │   ├── src/
-│   │   │   │   ├── entities/__name__.entity.ts.template
-│   │   │   │   └── index.ts.template
-│   │   │   ├── project.json.template
-│   │   │   └── README.md.template
-│   │   ├── application/
-│   │   │   └── ...
-│   │   └── infrastructure/
-│   │       └── ...
-│   └── README.md
-├── component/                  # React component generator
-│   ├── generator.ts
-│   ├── schema.json
-│   └── files/
-├── api-endpoint/               # API endpoint generator
-│   ├── generator.ts
-│   ├── schema.json
-│   └── files/
+├── generator/                  # META-GENERATOR (creates other generators)
+│   ├── generator.ts            # Main meta-generator logic
+│   ├── generator.spec.ts       # Unit tests (8 tests)
+│   ├── schema.json             # Options schema
+│   ├── schema.d.ts             # TypeScript types (auto-generated)
+│   ├── generators.json         # Nx generator config
+│   ├── package.json            # @vibespro/generator package
+│   ├── README.md               # Documentation
+│   └── files/                  # Templates for new generators
+│       ├── core/               # Core generator files
+│       ├── spec/               # Spec documentation template
+│       └── tests/              # Test file template
+├── service/                    # Service generator (hexagonal architecture)
+│   ├── generator.ts            # Service scaffolding logic
+│   ├── generator.spec.ts       # Unit tests
+│   ├── schema.json             # Options (name, language, directory)
+│   ├── schema.d.ts             # TypeScript types
+│   ├── generators.json         # Nx generator config
+│   ├── package.json            # @vibespro/service-generator package
+│   ├── README.md               # Documentation
+│   └── files/                  # Service templates
+│       ├── python/             # FastAPI templates
+│       └── typescript/         # TypeScript templates
 ├── _utils/                     # Shared generator utilities
-│   ├── naming.ts               # Naming conventions
-│   ├── templates.ts            # Template helpers
-│   └── validation.ts           # Validation utilities
-└── generators.json             # Generator collection definition
+│   ├── index.ts                # Re-exports all utilities
+│   ├── shared.ts               # Common functions (validateKebabCase, etc.)
+│   ├── stack.ts                # Tech stack resolution
+│   ├── stack_defaults.ts       # Service defaults from stack
+│   └── README.md               # Utility documentation
+└── AGENT.md                    # This file
 ```
 
 ### Generator Collection Configuration
