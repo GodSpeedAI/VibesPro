@@ -241,7 +241,7 @@ spec-guard:
 	pnpm run lint:md
 	node scripts/check_all_agents.mjs
 	node tools/docs/link_check.js || echo "⚠️ Link check found broken links - needs fixing but not blocking CI"
-	node tools/validate-generator-schemas.ts || echo "⚠️ Generator schema validation issues found"
+	pnpm exec tsx tools/validate-generator-schemas.ts || echo "⚠️ Generator schema validation issues found"
 	pnpm run test:node
 	pnpm run env:audit
 	pnpm run pr:comment
@@ -1391,13 +1391,13 @@ temporal-ai-refresh-metrics DAYS="7":
 # Create a new Nx generator using the meta-generator
 # Usage: just generator-new name type=custom
 generator-new name type="custom":
-    @echo "🔧 Creating new generator: {{name}} (type: {{type}})"
-    @if command -v pnpm > /dev/null 2>&1; then \
-        pnpm exec nx g @vibespro/generator:generator {{name}} --type={{type}}; \
-    else \
-        echo "❌ pnpm not found. Run: just setup"; \
-        exit 1; \
-    fi
+	@echo "🔧 Creating new generator: {{name}} (type: {{type}})"
+	@if command -v pnpm > /dev/null 2>&1; then \
+		pnpm exec nx g @vibespro/generator:generator {{name}} --type={{type}}; \
+	else \
+		echo "❌ pnpm not found. Run: just setup"; \
+		exit 1; \
+	fi
 
 # Create a generator with hexagonal architecture patterns
 generator-new-hex name type="domain":
@@ -1486,11 +1486,11 @@ generator-types:
 
 # Validate all generator schemas match JSON Schema draft-07
 generator-schemas-validate:
-    @echo "🔍 Validating all generator schemas..."
-    @pnpm exec tsx tools/validate-generator-schemas.ts
-    @echo "✅ All schemas valid"
+	@echo "🔍 Validating all generator schemas..."
+	@pnpm exec tsx tools/validate-generator-schemas.ts
+	@echo "✅ All schemas valid"
 
 # Run comprehensive quality checks on generators
 generator-quality:
-    @echo "🔍 Running generator quality checks..."
-    @pnpm exec tsx tools/validate-generator-quality.ts
+	@echo "🔍 Running generator quality checks..."
+	@pnpm exec tsx tools/validate-generator-quality.ts

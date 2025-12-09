@@ -88,7 +88,7 @@ describe('Meta-Generator Integration Test', () => {
       {
         cwd: workspaceRoot,
         encoding: 'utf-8',
-        stdio: 'inherit',
+        stdio: 'pipe',
         env: { ...cleanEnv, NX_DAEMON: 'false' },
       },
     );
