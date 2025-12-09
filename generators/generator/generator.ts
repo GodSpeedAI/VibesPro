@@ -112,8 +112,11 @@ function validateOptions(options: NormalizedSchema): void {
   }
 
   // Validate directory doesn't escape
-  if (options.directory?.includes('..')) {
-    throw new Error('Directory cannot contain ".."');
+  if (options.directory) {
+    const normalized = path.normalize(options.directory);
+    if (normalized.startsWith('..') || path.isAbsolute(normalized)) {
+      throw new Error('Directory cannot be absolute or contain ".." segments that escape root');
+    }
   }
 }
 
@@ -292,11 +295,6 @@ function generateHexagonalFiles(tree: Tree, options: NormalizedSchema): void {
   if (!options.withHexagonal) return;
 
   const templatePath = path.join(__dirname, 'files', 'hexagonal');
-  if (!fs.existsSync(templatePath)) {
-    // Hexagonal templates are embedded in core for certain types
-    return;
-  }
-
   generateFiles(tree, templatePath, joinPathFragments(options.generatorRoot, 'files'), {
     ...options,
     template: '',
@@ -355,7 +353,7 @@ function generateSpecFile(tree: Tree, options: NormalizedSchema): void {
 }
 
 /**
- * Update parent generators.json to include the new generator.
+ * Create a generator-specific generators.json inside the new generator directory if it doesn't exist.
  */
 function updateGeneratorsCollection(tree: Tree, options: NormalizedSchema): void {
   // This generator has its own generators.json, so we just ensure it's valid
@@ -363,7 +361,7 @@ function updateGeneratorsCollection(tree: Tree, options: NormalizedSchema): void
 
   if (!tree.exists(collectionPath)) {
     const collection = {
-      $schema: 'https://json-schema.org/schema',
+      $schema: 'https://json.schemastore.org/nx-collection',
       name: options.fileName,
       version: '1.0.0',
       generators: {

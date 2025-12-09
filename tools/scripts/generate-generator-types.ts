@@ -34,7 +34,7 @@ async function generateTypes() {
       process.exit(1);
     }
 
-    // Determine interface name from title or fallback to 'Schema' (default for compile)
+    // Determine interface name from title or fallback to 'Options' (default for compile)
     // compile function typically uses the `title` in top level schema to name the interface.
     // If we pass a name as second arg, it uses that.
 
