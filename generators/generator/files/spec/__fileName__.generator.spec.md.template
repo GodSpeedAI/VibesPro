@@ -1,0 +1,156 @@
+# GENERATOR_SPEC — <%= className %>
+
+**Spec Path (docs):** `docs/specs/generators/<%= fileName %>.generator.spec.md`
+**Owning Plugin (target):** `@vibepro/<%= fileName %>` (at `generators/<%= fileName %>/`)
+**Generator Name:** `<%= fileName %>`
+**Version Target:** `v1`
+**Owners:** `VibesPro Team`
+**Related ADRs:** `DEV-ADR-019, DEV-ADR-023`
+**Related PRD/SDS:** `DEV-PRD-019, DEV-SDS-019`
+**VibePro Context:** `.github/instructions/ai-workflows.instructions.md`, `.github/instructions/testing.instructions.md`, relevant `AGENT.md`.
+
+---
+
+## 1) Purpose & Scope
+
+**Problem**
+<%= description %>
+
+**When to use**
+Use this generator when you need to create a new <%= type %> following VibesPro conventions.
+
+**Non-goals**
+- Does not implement business logic
+- Does not create external integrations
+- Does not modify existing code outside the generated project
+
+---
+
+## 2) Invocation & Placement (once implemented)
+
+**CLI**
+
+```bash
+pnpm nx g @vibepro/<%= fileName %>:<%= fileName %> <name> \
+  --tags=scope:example
+```
+
+**Plugin Layout**
+
+```
+generators/<%= fileName %>/
+  generator.ts
+  schema.json
+  schema.d.ts
+  files/
+```
+
+---
+
+## 3) Inputs / Options (Schema)
+
+> Keep names/types in sync with `schema.json` and `schema.d.ts`.
+
+| Name | Type | Description | Default |
+|------|------|-------------|---------|
+| `name` | `string` | The name of the project to create | *required* |
+| `type` | `string` | Generator category (domain/service/component/adapter/utility/custom) | `custom` |
+| `directory` | `string` | Directory to create the project in | - |
+| `tags` | `string` | Comma-separated Nx tags | <% if (Array.isArray(parsedTags) && parsedTags.length > 0) { %>`<%= parsedTags.join(',') %>`<% } else { %>-<% } %> |
+
+**Validation Rules**
+- `name` must be kebab-case
+- `directory` must be a valid path
+
+### 3.1 Type Mapping Matrix
+
+| Schema Type | TypeScript Type |
+|-------------|-----------------|
+| `string` | `string` |
+| `boolean` | `boolean` |
+| `array` | `T[]` |
+
+---
+
+## 4) Outputs / Artifacts
+
+```
+<%= targetScope %>/<name>/
+├── src/
+│   └── index.ts
+├── project.json
+└── README.md
+```
+
+---
+
+## 5) Targets & Cacheability
+
+- `build` → `@nx/js:tsc` (cacheable)
+- `test` → `@nx/vite:test` (cacheable)
+- `lint` → ESLint
+
+---
+
+## 6) Conventions & Policy
+
+- Follows VibesPro naming conventions
+- Tags include `type:<%= type %>`
+- Tests use Vitest
+
+---
+
+## 7) Idempotency Strategy
+
+- [x] Skip (warn and do nothing) - Files that exist are not overwritten
+- [ ] Merge (use AST/JSON update)
+- [ ] Prompt user for conflict resolution
+- [ ] Fail with clear error message
+
+---
+
+## 8) Implementation Hints
+
+- Use `@nx/devkit` helpers: `generateFiles`, `formatFiles`, `names`
+- Verify tags/project graph with `readProjectConfiguration`
+- Keep the generator idempotent
+
+---
+
+## 9) Acceptance Tests
+
+- Dry run prints expected plan
+- Generated artifacts exist with correct content
+- `pnpm nx test <affected>` succeeds
+- Re-running generator produces no diff
+- Module-boundary lint passes
+
+---
+
+## 10) VibePro Execution Hooks
+
+```bash
+just ai-context-bundle
+pnpm nx run-many -t test -p <affected-projects>
+just ai-validate
+```
+
+---
+
+## 11) Example
+
+```bash
+pnpm nx g @vibepro/<%= fileName %>:<%= fileName %> sample \
+  --tags=scope:example
+```
+
+---
+
+## 12) Review Checklist
+
+- [ ] `schema.json` / `schema.d.ts` alignment verified
+- [ ] Tags include `type:<%= type %>`
+- [ ] Targets cacheable
+- [ ] Generator re-run idempotent
+- [ ] Tests pass
+- [ ] Docs updated

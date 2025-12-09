@@ -1,0 +1,46 @@
+# <%= className %> Generator
+
+> <%= description %>
+
+## Usage
+
+```bash
+pnpm exec nx g @vibepro/<%= fileName %>:<%= fileName %> my-<%= fileName %>
+```
+
+## Options
+
+| Option | Type | Description | Default |
+|--------|------|-------------|---------|
+| `name` | `string` | Name of the <%= fileName %> to create (kebab-case) | *required* |
+| `directory` | `string` | Directory to create the <%= fileName %> in | - |
+| `tags` | `string` | Comma-separated tags for Nx boundary rules | <% if (parsedTags.length > 0) { %>`<%= parsedTags.join(',') %>`<% } else { %>-<% } %> |
+
+## Generated Structure
+
+```
+<%= targetScope %>/<name>/
+├── src/
+│   └── index.ts
+├── project.json
+└── README.md
+```
+
+## Examples
+
+### Basic usage
+
+```bash
+pnpm exec nx g @vibepro/<%= fileName %>:<%= fileName %> orders
+```
+
+### With custom directory
+
+```bash
+pnpm exec nx g @vibepro/<%= fileName %>:<%= fileName %> orders --directory=features
+```
+
+## Related
+
+- [Generator Spec](../../docs/specs/generators/<%= fileName %>.generator.spec.md)
+- [generators-first.instructions.md](/.github/instructions/generators-first.instructions.md)

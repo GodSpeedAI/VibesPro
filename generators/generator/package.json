@@ -1,0 +1,6 @@
+{
+  "name": "@vibespro/generator",
+  "version": "0.0.1",
+  "main": "generator.js",
+  "generators": "./generators.json"
+}

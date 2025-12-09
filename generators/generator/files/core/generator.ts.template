@@ -1,0 +1,171 @@
+/**
+ * @file Nx generator for <%= fileName %>.
+ * @description <%= description %>
+ *
+ * @example
+ * ```bash
+ * pnpm exec nx g @vibepro/<%= fileName %>:<%= fileName %> my-<%= fileName %>
+ * ```
+ *
+ * @traceability TODO: Add spec reference
+ */
+
+import {
+  Tree,
+  formatFiles,
+  generateFiles,
+  names,
+  joinPathFragments,
+  logger,
+  GeneratorCallback,
+  <% if (withComposition) { %>
+  callRule,
+  chain,
+  externalSchematic,
+  GeneratorContext,
+  Rule,
+  <% } %>
+} from '@nx/devkit';
+import * as path from 'path';
+import { <%= className %>Schema } from './schema.d';
+
+/**
+ * Normalized options with computed properties.
+ */
+interface NormalizedSchema extends <%= className %>Schema {
+  projectRoot: string;
+  projectName: string;
+  className: string;
+  propertyName: string;
+  fileName: string;
+  parsedTags: string[];
+}
+
+/**
+ * Normalize raw schema options into computed properties.
+ */
+function normalizeOptions(options: <%= className %>Schema): NormalizedSchema {
+  const projectNames = names(options.name);
+  const projectRoot = joinPathFragments('<%= targetScope %>', projectNames.fileName);
+
+  const parsedTags = options.tags
+    ? options.tags.split(',').map((t) => t.trim()).filter(Boolean)
+    : [<% if (parsedTags.length > 0) { %><% parsedTags.forEach((tag, i) => { %>'<%= tag %>'<% if (i < parsedTags.length - 1) { %>, <% } %><% }); %><% } %>];
+
+  return {
+    ...options,
+    projectRoot,
+    projectName: projectNames.fileName,
+    className: projectNames.className,
+    propertyName: projectNames.propertyName,
+    fileName: projectNames.fileName,
+    parsedTags,
+  };
+}
+
+/**
+ * Validate the generator options.
+ */
+function validateOptions(options: NormalizedSchema): void {
+  if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(options.name)) {
+    throw new Error(
+      `Name "${options.name}" must be kebab-case (e.g., "my-feature")`
+    );
+  }
+}
+<% if (withComposition) { %>
+
+/**
+ * Call composed generators.
+ */
+function runComposedGenerators(options: NormalizedSchema): Rule {
+  const rules: Rule[] = [
+    <% parsedCompositionGenerators.forEach((gen) => {
+      const [plugin, generator] = gen.split(':');
+    %>
+    // Compose: <%= gen %>
+    externalSchematic('<%= plugin %>', '<%= generator %>', {
+      name: options.name,
+      // Add additional options as needed
+    }),
+    <% }); %>
+  ];
+
+  return chain(rules);
+}
+<% } %>
+<% if (withHexagonal) { %>
+
+/**
+ * Add hexagonal architecture structure.
+ */
+function addHexagonalStructure(tree: Tree, options: NormalizedSchema): void {
+  const dirs = [
+    'domain/entities',
+    'domain/value-objects',
+    'application/ports',
+    'application/use-cases',
+    'infrastructure/adapters',
+  ];
+
+  dirs.forEach((dir) => {
+    const indexPath = joinPathFragments(options.projectRoot, dir, 'index.ts');
+    if (!tree.exists(indexPath)) {
+      tree.write(indexPath, `// ${dir} barrel export\nexport {};\n`);
+    }
+  });
+}
+<% } %>
+
+/**
+ * Generate project files from templates.
+ */
+function generateProjectFiles(tree: Tree, options: NormalizedSchema): void {
+  const templatePath = path.join(__dirname, 'files');
+
+  generateFiles(tree, templatePath, options.projectRoot, {
+    ...options,
+    template: '',
+    tmpl: '',
+    dot: '.',
+  });
+}
+
+/**
+ * Main generator function.
+ */
+export async function <%= propertyName %>Generator(
+  tree: Tree,
+  schema: <%= className %>Schema<% if (withComposition) { %>,
+  context: GeneratorContext<% } %>
+): Promise<GeneratorCallback> {
+  const options = normalizeOptions(schema);
+
+  logger.info(`🔧 Creating <%= fileName %>: ${options.name}`);
+
+  // Validate
+  validateOptions(options);
+<% if (withComposition) { %>
+
+  // Run composed generators first
+  await callRule(runComposedGenerators(options), tree, context);
+<% } %>
+
+  // Generate files
+  generateProjectFiles(tree, options);
+<% if (withHexagonal) { %>
+
+  // Add hexagonal structure
+  addHexagonalStructure(tree, options);
+<% } %>
+
+  // Format
+  await formatFiles(tree);
+
+  return () => {
+    logger.info('');
+    logger.info(`✅ <%= className %> "${options.name}" created at ${options.projectRoot}`);
+  };
+}
+
+export default <%= propertyName %>Generator;

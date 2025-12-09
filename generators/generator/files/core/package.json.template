@@ -1,0 +1,5 @@
+{
+  "name": "@vibespro/<%= fileName %>",
+  "version": "1.0.0",
+  "generators": "./generators.json"
+}

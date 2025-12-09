@@ -170,17 +170,49 @@ If `just ai-scaffold` fails:
 
 ## Custom Generator Development
 
-If you frequently create similar code patterns:
+If you frequently create similar code patterns, create a custom generator:
+
+### Using the Meta-Generator (Recommended)
+
+```bash
+# Create a new generator with defaults
+just generator-new my-generator type=custom
+
+# Create a domain generator with hexagonal patterns
+just generator-new-hex order-aggregate type=domain
+
+# Create a composed generator wrapping official Nx generators
+just generator-new-composed web-feature generators="@nx/react:lib,@nx/react:component"
+```
+
+### Manual Creation (Alternative)
 
 1. Create a custom Nx generator in `generators/`
 2. Follow the pattern in `generators/service/generator.ts`
 3. Add just recipe for easy invocation
-4. Update this document with the new generator
+4. Update documentation
+
+### After Creating a Generator
+
+1. Customize templates in `generators/<name>/files/`
+2. Update schema options in `generators/<name>/schema.json`
+3. Test with: `just generator-validate <name>`
+4. Use: `pnpm exec nx g @vibepro/<name>:<name> test-project`
+
+## Just Recipes for Generators
+
+```bash
+just generator-new <name> type=<type>  # Create new generator
+just generator-list                     # List available generators
+just generator-validate <name>          # Validate a generator
+just generator-dry-run <name> ...       # Dry run preview
+```
 
 ## References
 
 - Nx generators documentation: https://nx.dev/concepts/more-concepts/generating-code
 - Custom generators guide: https://nx.dev/extending-nx/recipes/local-generators
 - @nxlv/python plugin: https://github.com/lucasvieirasilva/nx-plugins
-- Just recipes: see `justfile` (lines 376-398 for `ai-scaffold`)
+- Generator creation prompt: `.github/prompts/generator.create.prompt.md`
+- Just recipes: see `justfile` (search for `generator-` recipes)
 - Nx integration: `.github/instructions/nx.instructions.md`

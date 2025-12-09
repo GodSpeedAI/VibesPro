@@ -1,0 +1,22 @@
+/**
+ * Schema for the <%= fileName %> generator.
+ * This interface must stay in sync with schema.json.
+ *
+ * @see schema.json
+ */
+export interface <%= className %>Schema {
+  /**
+   * Name of the <%= fileName %> to create (kebab-case).
+   */
+  name: string;
+
+  /**
+   * Directory to create the <%= fileName %> in.
+   */
+  directory?: string;
+
+  /**
+   * Comma-separated tags for Nx boundary rules.
+   */
+  tags?: string;
+}
