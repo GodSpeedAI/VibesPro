@@ -368,7 +368,7 @@ test-type-generator:
 test-generation:
 	@echo "🧪 Testing template generation..."
 	rm -rf ./test-output
-	copier copy . ./test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force
+	copier copy . ./test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force --vcs-ref HEAD
 	cd ./test-output && pnpm install && { \
 		echo "🏗️ Building all projects..."; \
 		pnpm exec nx run-many --target=build --all || { \
