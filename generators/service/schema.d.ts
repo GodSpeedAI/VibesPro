@@ -4,14 +4,21 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+/**
+ * Schema for generating backend services with hexagonal architecture
+ */
 export interface ServiceGeneratorOptions {
   /**
-   * Name of the service to scaffold
+   * Name of the service to scaffold (kebab-case)
    */
   name: string;
   /**
    * Programming language for the service
    */
   language?: 'python' | 'typescript';
+  /**
+   * Custom directory for the service (relative to apps/)
+   */
+  directory?: string;
   [k: string]: unknown;
 }

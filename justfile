@@ -1489,3 +1489,8 @@ generator-schemas-validate:
     @echo "🔍 Validating all generator schemas..."
     @pnpm exec tsx tools/validate-generator-schemas.ts
     @echo "✅ All schemas valid"
+
+# Run comprehensive quality checks on generators
+generator-quality:
+    @echo "🔍 Running generator quality checks..."
+    @pnpm exec tsx tools/validate-generator-quality.ts

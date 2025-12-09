@@ -1,17 +1,37 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "VibeProServiceGenerator",
   "title": "Service Generator Options",
+  "description": "Schema for generating backend services with hexagonal architecture",
   "type": "object",
   "properties": {
     "name": {
       "type": "string",
-      "description": "Name of the service to scaffold"
+      "description": "Name of the service to scaffold (kebab-case)",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What is the name of the service? (kebab-case)"
     },
     "language": {
       "type": "string",
       "enum": ["python", "typescript"],
       "default": "python",
-      "description": "Programming language for the service"
+      "description": "Programming language for the service",
+      "x-prompt": {
+        "message": "What language should the service use?",
+        "type": "list",
+        "items": [
+          { "value": "python", "label": "Python (FastAPI)" },
+          { "value": "typescript", "label": "TypeScript" }
+        ]
+      }
+    },
+    "directory": {
+      "type": "string",
+      "description": "Custom directory for the service (relative to apps/)"
     }
   },
   "required": ["name"]
