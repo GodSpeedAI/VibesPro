@@ -1,4 +1,4 @@
-# 🌟 VibesPro — Cognitive Infrastructure Development Environment
+# 🌟 VibesPro — Generative Development Environment (GDE)
 
 [![CI](https://github.com/GodSpeedAI/VibesPro/actions/workflows/ci.yml/badge.svg)](https://github.com/GodSpeedAI/VibesPro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
@@ -14,7 +14,7 @@ Today, transforming a business concept into working software requires translatin
 
 **What if you could describe what you need—and the system built it?**
 
-VibesPro is a **Cognitive Infrastructure Development Environment** that understands your domain, remembers your decisions, and grows with your organization. You describe the business logic. The environment handles the rest.
+VibesPro transforms how organizations build software. Just as IDEs gave individual developers a standardized environment for writing code, VibesPro provides the infrastructure for AI-native development—where your organizational knowledge becomes the foundation for generating entire systems. You capture the patterns. The environment executes them.
 
 ---
 
@@ -24,15 +24,15 @@ VibesPro is a **Cognitive Infrastructure Development Environment** that understa
 
 - **Describe, Don't Code** — Express business requirements in natural language; AI translates them into validated, tested implementations
 - **See Results Immediately** — Changes materialize in minutes, not sprints
-- **Your Knowledge Becomes The System** — Every decision is captured and compounds over time
-- **Consistency Guaranteed** — Patterns established once apply everywhere automatically
+- **Knowledge as Infrastructure** — Your decisions, conventions, and expertise become executable patterns that compound over time
+- **Consistency by Design** — Organizational standards enforced automatically across every generated system
 
 ### For Your Organization
 
-- **Living Documentation** — Specifications, decisions, and patterns stay synchronized with the actual system
-- **Institutional Memory** — Query what worked, what failed, and why before making decisions
-- **Infinite Scalability** — New patterns spawn new capabilities; the environment evolves with you
-- **Quality By Default** — Every generated component is tested, documented, and validated
+- **Living Organizational Knowledge** — Specifications, decisions, and patterns stay synchronized with running systems
+- **Executable Institutional Memory** — Past decisions become reusable patterns, not just documentation
+- **Pattern-Driven Scale** — New capabilities emerge from combining proven organizational patterns
+- **Quality Infrastructure** — Every generated component inherits your organization's standards automatically
 
 ---
 
@@ -77,22 +77,22 @@ Specialized assistants understand different aspects of building software:
 - **Quality Guardian** — Ensures everything is tested and validated
 - **Security Analyst** — Identifies risks before they become problems
 
-**2. Memory Layer — Organizational Knowledge**
+**2. Memory Layer — Knowledge Infrastructure**
 
-Everything learned becomes organizational capital:
+Organizational knowledge becomes executable:
 
-- Architectural decisions and their rationale
-- Patterns that worked (and those that didn't)
-- Domain-specific conventions and rules
-- Temporal evolution of your systems
+- Architectural decisions captured as reusable patterns
+- Proven approaches codified into generators
+- Domain-specific conventions enforced automatically
+- Complete evolution history of system patterns
 
 **3. Generation Layer — Pattern-to-Code**
 
-Proven patterns automatically become reusable capabilities:
+Your organizational patterns become the building blocks:
 
-- Describe a pattern once; apply it everywhere
-- New patterns spawn new generators automatically
-- Consistency enforced at the infrastructure level
+- Define a pattern once; generate unlimited implementations
+- Patterns compose into higher-level capabilities
+- Standards and conventions enforced through infrastructure
 
 **4. Traceability Layer — Decision to Implementation**
 
@@ -107,14 +107,14 @@ Complete audit trail from concept to running code:
 
 ## 📊 What You Can Expect
 
-| Traditional Approach                  | With VibesPro                          |
-| ------------------------------------- | -------------------------------------- |
-| Weeks of developer setup              | Ready in minutes                       |
-| Requirements lost in translation      | Direct domain expression               |
-| Knowledge locked in developers' heads | Institutional memory compounds         |
-| Inconsistent implementations          | Patterns enforced automatically        |
-| "Works on my machine" chaos           | Reproducible everywhere                |
-| Technical debt from day one           | Best practices embedded from the start |
+| Traditional Approach                  | With VibesPro                               |
+| ------------------------------------- | ------------------------------------------- |
+| Weeks of developer setup              | Ready in minutes                            |
+| Requirements lost in translation      | Patterns executed directly                  |
+| Knowledge locked in developers' heads | Knowledge becomes executable infrastructure |
+| Inconsistent implementations          | Organizational standards enforced by design |
+| "Works on my machine" chaos           | Reproducible everywhere                     |
+| Technical debt from day one           | Best practices embedded in infrastructure   |
 
 ---
 
@@ -142,7 +142,7 @@ VibesPro provides **end-to-end traceability** that compliance teams require:
 
 ### Tomorrow
 
-VibesPro is building toward a future where the question isn't _"how do I code this?"_ but _"what should this do?"_—and the system handles the rest.
+VibesPro is building toward infrastructure where organizations define what they know—patterns, standards, domain logic—and systems generate themselves from that foundation.
 
 ---
 
@@ -198,9 +198,17 @@ We welcome contributions from everyone—whether you're a developer, domain expe
 
 ## 📜 License
 
-VibesPro is distributed under the MPL-2.0 for most use cases, which enforces a file-level copyleft: any modified MPL-covered file (or file that includes MPLed content) must remain under the MPL, and you must make the source or modifications to those files available when you distribute or deploy them. The MPL obligations are triggered per-file, so you can still combine MPLed code with other licenses as long as the MPL files stay open.
+### VibesPro & Generators: MPL 2.0
+
+VibesPro itself and any custom generators you create from it are distributed under **MPL 2.0**, which enforces a file-level copyleft: any modified MPL-covered file (or file that includes MPLed content) must remain under the MPL, and you must make the source or modifications to those files available when you distribute or deploy them.
 
 A commercial license is required if you want to re-license VibesPro itself or embed it inside a closed-source product or service without exposing the MPL-covered files.
+
+### Your Generated Software: Unrestricted
+
+**All software and systems generated by VibesPro belong to you with no restrictions.** Any projects, applications, or code created using VibesPro are yours to use commercially, distribute, modify, or license however you choose. Generated output is not subject to VibesPro's licensing terms.
+
+**In short:** VibesPro is MPL 2.0, but everything you build with it is completely yours.
 
 See [LICENSE](LICENSE) for the full legal text, and consult legal counsel if you need certainty about your release or deployment plans.
 
