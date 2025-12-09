@@ -436,11 +436,11 @@ format-node:
 # --- Database and AI Tools ---
 db-init:
 	@echo "🗄️  Initializing temporal database..."
-	python tools/temporal-db/init.py
+	python tools/temporal-db/init.py init
 
 db-backup:
 	@echo "💾 Backing up temporal database..."
-	python tools/temporal-db/backup.py
+	python tools/temporal-db/init.py backup
 
 # --- Type Generation ---
 types-generate SCHEMA="tools/type-generator/test-fixtures/db_schema.json":
