@@ -69,6 +69,7 @@ module.exports = (() => {
         '.nx/**',
         'tmp/**',
         'test-output/**',
+        'tests/.tmp-typegen/**',
         'tools/reference/**',
         '**/*.js',
         '**/*.d.ts',

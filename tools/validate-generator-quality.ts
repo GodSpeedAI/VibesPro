@@ -107,7 +107,7 @@ async function validateSchema(generatorPath: string): Promise<ValidationIssue[]>
     // Check that properties have descriptions
     if (schemaContent.properties) {
       for (const [propName, propDef] of Object.entries(schemaContent.properties)) {
-        const prop = propDef as any;
+        const prop = propDef as { description?: string };
         if (!prop.description) {
           issues.push({
             generator: generatorPath,
@@ -221,8 +221,8 @@ async function validateGeneratorsJson(generatorPath: string): Promise<Validation
     }
 
     // Validate each generator entry
-    for (const [genName, genConfig] of Object.entries(generatorsContent.generators || {})) {
-      const config = genConfig as any;
+    for (const [genName, genConfig] of Object.entries(generatorsContent.generators ?? {})) {
+      const config = genConfig as { factory?: string; schema?: string; description?: string };
       if (!config.factory) {
         issues.push({
           generator: generatorPath,
@@ -348,7 +348,7 @@ async function validateGenerator(generatorPath: string): Promise<ValidationResul
 /**
  * Main validation function
  */
-async function main() {
+async function main(): Promise<void> {
   const targetPath = process.argv[2];
   const globFn = await loadGlob();
 

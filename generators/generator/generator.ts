@@ -295,6 +295,13 @@ function generateHexagonalFiles(tree: Tree, options: NormalizedSchema): void {
   if (!options.withHexagonal) return;
 
   const templatePath = path.join(__dirname, 'files', 'hexagonal');
+
+  // If hexagonal templates don't exist yet, skip with a warning
+  if (!fs.existsSync(templatePath)) {
+    logger.warn(`Hexagonal templates not found at ${templatePath}. Skipping hexagonal generation.`);
+    return;
+  }
+
   generateFiles(tree, templatePath, joinPathFragments(options.generatorRoot, 'files'), {
     ...options,
     template: '',

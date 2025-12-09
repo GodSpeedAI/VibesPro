@@ -11,8 +11,6 @@ export default defineConfig({
       'libs/**/*.{test,spec}.ts',
     ],
     setupFiles: ['tests/setup/vitest.setup.ts'],
-  },
-  server: {
     deps: {
       inline: ['@nx/devkit'],
     },
