@@ -4,6 +4,17 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.{test,spec}.ts'],
+    include: [
+      'tests/**/*.{test,spec}.ts',
+      'generators/**/*.{test,spec}.ts',
+      'tools/**/*.{test,spec}.ts',
+      'libs/**/*.{test,spec}.ts',
+    ],
+    setupFiles: ['tests/setup/vitest.setup.ts'],
+  },
+  server: {
+    deps: {
+      inline: ['@nx/devkit'],
+    },
   },
 });

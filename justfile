@@ -241,9 +241,28 @@ spec-guard:
 	pnpm run lint:md
 	node scripts/check_all_agents.mjs
 	node tools/docs/link_check.js || echo "⚠️ Link check found broken links - needs fixing but not blocking CI"
+	node tools/validate-generator-schemas.ts || echo "⚠️ Generator schema validation issues found"
 	pnpm run test:node
 	pnpm run env:audit
 	pnpm run pr:comment
+
+# Run pre-commit hooks on all files (fixes formatting issues before commit)
+pre-commit:
+	@echo "🔍 Running pre-commit hooks on all files..."
+	@pre-commit run --all-files || { \
+		echo ""; \
+		echo "⚠️  Pre-commit made changes. Re-run 'just pre-commit' to verify."; \
+		exit 1; \
+	}
+	@echo "✅ Pre-commit passed"
+
+# Prepare for a clean commit (run this before committing)
+commit-ready:
+	@echo "🧹 Preparing for commit..."
+	@git add -A
+	@just pre-commit
+	@git add -A
+	@echo "✅ Ready to commit"
 
 # --- Build Orchestration ---
 build TARGET="": (_detect_build_strategy TARGET)
@@ -1364,3 +1383,109 @@ temporal-ai-refresh-metrics DAYS="7":
     fi
     @./scripts/run-with-secrets.sh ./crates/temporal-ai/target/release/temporal-ai refresh-metrics --days {{DAYS}}
     @echo "✅ Metrics refreshed successfully"
+
+# --- Generator Development ---
+# Recipes for creating and managing Nx generators
+# Traceability: DEV-PRD-019, DEV-ADR-019
+
+# Create a new Nx generator using the meta-generator
+# Usage: just generator-new name type=custom
+generator-new name type="custom":
+    @echo "🔧 Creating new generator: {{name}} (type: {{type}})"
+    @if command -v pnpm > /dev/null 2>&1; then \
+        pnpm exec nx g @vibespro/generator:generator {{name}} --type={{type}}; \
+    else \
+        echo "❌ pnpm not found. Run: just setup"; \
+        exit 1; \
+    fi
+
+# Create a generator with hexagonal architecture patterns
+generator-new-hex name type="domain":
+	@echo "🔧 Creating hexagonal generator: {{name}}"
+	@if command -v pnpm >/dev/null 2>&1; then \
+		pnpm exec nx g @vibespro/generator:generator {{name}} --type={{type}} --withHexagonal=true --withSpec=true; \
+	else \
+		echo "❌ pnpm not found. Run: just setup"; \
+		exit 1; \
+	fi
+
+# Create a composed generator that wraps other Nx generators
+generator-new-composed name generators:
+	@echo "🔧 Creating composed generator: {{name}}"
+	@if [ -z "{{generators}}" ]; then \
+		echo "❌ 'generators' argument is required (e.g., --generators=\"@nx/js:lib,@nx/react:component\")"; \
+		exit 1; \
+	fi
+	@if command -v pnpm >/dev/null 2>&1; then \
+		pnpm exec nx g @vibespro/generator:generator {{name}} \
+			--type=custom \
+			--withComposition=true \
+			--compositionGenerators="{{generators}}"; \
+	else \
+		echo "❌ pnpm not found. Run: just setup"; \
+		exit 1; \
+	fi
+
+# Validate a generator against its spec and run tests
+generator-validate name:
+    @echo "🔍 Validating generator: {{name}}"
+    @# Validate schema
+    @if [ -f "generators/{{name}}/schema.json" ]; then \
+        echo "   Validating schema.json..."; \
+        pnpm exec tsx tools/validate-generator-schemas.ts generators/{{name}}/schema.json || exit 1; \
+    else \
+        echo "❌ generators/{{name}}/schema.json not found"; \
+        exit 1; \
+    fi
+    @# Run generator tests
+    @if [ -f "generators/{{name}}/generator.spec.ts" ]; then \
+        echo "   Running generator tests..."; \
+        pnpm exec vitest run generators/{{name}}/generator.spec.ts; \
+    fi
+    @echo "✅ Generator {{name}} validated"
+
+# List all available generators
+generator-list:
+    @echo "📋 Available generators:"
+    @echo ""
+    @echo "Official Nx Generators:"
+    @pnpm exec nx list 2>/dev/null | head -50 || echo "   Run 'pnpm exec nx list' for full list"
+    @echo ""
+    @echo "VibesPro Custom Generators:"
+    @for dir in generators/*/; do \
+        if [ -f "$${dir}generators.json" ]; then \
+            name=$$(basename "$$dir"); \
+            desc=$$(cat "$${dir}generators.json" | grep -o '"description": "[^"]*"' | head -1 | sed 's/"description": "//; s/"$$//'); \
+            echo "   @vibespro/$$name - $$desc"; \
+        fi; \
+    done
+
+# Run generator in dry-run mode to preview changes
+generator-dry-run name *ARGS:
+	@echo "🔍 Dry run: @vibespro/{{name}}"
+	@if command -v pnpm >/dev/null 2>&1; then \
+		pnpm exec nx g @vibespro/{{name}}:{{name}} {{ARGS}} --dry-run; \
+	else \
+		echo "❌ pnpm not found. Run: just setup"; \
+		exit 1; \
+	fi
+
+# Generate TypeScript types from all generator schemas (schema.json -> schema.d.ts)
+generator-types:
+	@echo "🏷️ Generating TypeScript types from generator schemas..."
+	@if command -v pnpm >/dev/null 2>&1; then \
+		pnpm exec tsx tools/scripts/generate-generator-types.ts || { \
+			echo "❌ Failed to generate schema.d.ts files from generator schemas"; \
+			exit 1; \
+		}; \
+	else \
+		echo "❌ pnpm not found. Run: just setup"; \
+		exit 1; \
+	fi
+	@echo "✅ schema.d.ts regenerated for each generator schema"
+
+# Validate all generator schemas match JSON Schema draft-07
+generator-schemas-validate:
+    @echo "🔍 Validating all generator schemas..."
+    @pnpm exec tsx tools/validate-generator-schemas.ts
+    @echo "✅ All schemas valid"

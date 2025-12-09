@@ -1,0 +1,65 @@
+/**
+ * Tests for <%= fileName %> generator.
+ * @traceability DEV-PRD-019
+ */
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
+import { Tree, readProjectConfiguration } from '@nx/devkit';
+import <%= propertyName %>Generator from './generator';
+
+describe('<%= fileName %> generator', () => {
+  let tree: Tree;
+
+  beforeEach(() => {
+    tree = createTreeWithEmptyWorkspace();
+  });
+
+  it('should generate basic project structure', async () => {
+    await <%= propertyName %>Generator(tree, {
+      name: 'test-<%= fileName %>',
+    });
+
+    expect(tree.exists('<%= targetScope %>/test-<%= fileName %>/src/index.ts')).toBeTruthy();
+    expect(tree.exists('<%= targetScope %>/test-<%= fileName %>/project.json')).toBeTruthy();
+    expect(tree.exists('<%= targetScope %>/test-<%= fileName %>/README.md')).toBeTruthy();
+  });
+
+  it('should set correct project configuration', async () => {
+    await <%= propertyName %>Generator(tree, {
+      name: 'test-<%= fileName %>',
+      tags: 'scope:test,type:<%= fileName %>',
+    });
+
+    const config = readProjectConfiguration(tree, 'test-<%= fileName %>');
+    expect(config.tags).toContain('scope:test');
+    expect(config.tags).toContain('type:<%= fileName %>');
+  });
+
+  it('should be idempotent (no diff on second run)', async () => {
+    // First run
+    await <%= propertyName %>Generator(tree, { name: 'test-<%= fileName %>' });
+
+    // Capture state
+    const firstRunFiles = tree.listChanges().map((c) => ({
+      path: c.path,
+      content: c.content?.toString(),
+    }));
+
+    // Create fresh tree with same files
+    const tree2 = createTreeWithEmptyWorkspace();
+    firstRunFiles.forEach((f) => {
+      if (f.content !== undefined) {
+        tree2.write(f.path, f.content);
+      }
+    });
+
+    // Second run
+    await <%= propertyName %>Generator(tree2, { name: 'test-<%= fileName %>' });
+
+    // Should have no new changes
+    const secondRunChanges = tree2.listChanges().filter(
+      (c) => c.type !== 'UPDATE' || c.content?.toString() !== firstRunFiles.find((f) => f.path === c.path)?.content
+    );
+
+    expect(secondRunChanges.length).toBe(0);
+  });
+});

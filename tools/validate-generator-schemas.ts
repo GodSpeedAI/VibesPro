@@ -97,7 +97,7 @@ async function loadGlob(): Promise<typeof import('glob').glob | null> {
 /**
  * The main validation function for the script.
  *
- * It orchestrates the process of loading dependencies, finding all generator schemas,
+ * It orchestrates the process of loading dependencies, finding all generator schemas (or using the provided one),
  * parsing them, and validating them. It tracks whether any errors occurred and exits
  * the process with an appropriate status code.
  *
@@ -113,10 +113,19 @@ async function validate(): Promise<void> {
   }
 
   const ajv = new AjvCtor({ strict: true, validateSchema: true });
-  const schemas = await globFn('generators/**/schema.json');
+
+  // Check if a specific file passed as argument
+  const targetFile = process.argv[2];
+  let schemas: string[] = [];
+
+  if (targetFile) {
+    schemas = [targetFile];
+  } else {
+    schemas = await globFn('generators/**/schema.json');
+  }
 
   if (schemas.length === 0) {
-    console.error('❌ No generator schemas found with pattern "generators/**/schema.json".');
+    console.error('❌ No generator schemas found.');
     console.error(`Current working directory: ${process.cwd()}`);
     process.exit(1);
   }

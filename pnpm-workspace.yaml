@@ -3,6 +3,7 @@ packages:
   - "libs/*"
   - "tools/*"
   - "tests/*"
+  - "generators/*"
 
 onlyBuiltDependencies:
   - esbuild
