@@ -46,13 +46,39 @@ setup-observe:
 	@echo "   LOGFIRE_TOKEN"
 
 # Tier 3: AI/Temporal layer
-setup-ai: download-embedding-model
+setup-ai: download-embedding-model setup-aider
 	@echo "🤖 Setting up AI infrastructure..."
 	@just temporal-ai-build
 	@just temporal-ai-init || echo "⚠️ temporal-ai init skipped (may already exist)"
 	@echo "✅ Temporal AI ready"
 	@echo "   Query patterns: just temporal-ai-query \"your query\""
 	@echo "   Stats: just temporal-ai-stats"
+	@echo "   Aider: Configure OPENAI_API_KEY, OPENROUTER_API_KEY, or start Ollama"
+
+# Install aider-chat for AI context integration
+setup-aider:
+	@echo "🤖 Setting up Aider CLI..."
+	@if command -v aider >/dev/null 2>&1; then \
+		echo "✅ Aider already installed: $(aider --version 2>/dev/null | head -1)"; \
+	else \
+		echo "📦 Installing aider-chat..."; \
+		if [ -d ".venv" ]; then \
+			.venv/bin/pip install aider-chat || pip install aider-chat; \
+		else \
+			pip install aider-chat || pipx install aider-chat; \
+		fi; \
+		echo "✅ Aider installed"; \
+	fi
+	@echo ""
+	@echo "Configure Aider backends in .secrets.env.sops:"
+	@echo "  OpenAI:     OPENAI_API_KEY=sk-..."
+	@echo "  OpenRouter: OPENROUTER_API_KEY=sk-or-..."
+	@echo "  GitHub:     OPENAI_API_BASE=https://api.githubcopilot.com"
+	@echo "  Ollama:     ollama serve (no secrets needed)"
+	@echo ""
+	@echo "Edit secrets: sops .secrets.env.sops"
+	@echo "Reload env:   direnv allow"
+
 
 # Download embedding model for temporal-ai
 download-embedding-model:

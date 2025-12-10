@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+// Jest globals (describe, expect, it) are available automatically
 import { AIContextManager, ContextSource } from '../context-manager.js';
 
 describe('AIContextManager', () => {

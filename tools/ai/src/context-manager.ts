@@ -162,6 +162,8 @@ export interface AIContextManagerConfig {
   reservedTokens?: number;
   cacheSize?: number;
   weights?: Partial<AIContextManagerWeights>;
+  /** Optional Aider CLI integration */
+  aider?: import('./aider/types.js').AiderConfig;
 }
 
 export class AIContextManager {
@@ -205,6 +207,19 @@ export class AIContextManager {
 
     // Validate weights
     this.validateWeights(this.weights);
+
+    // Auto-register Aider context source if enabled
+    if (config.aider?.enabled) {
+      const aiderConfig = config.aider;
+      import('./aider/context-source.js')
+        .then(({ AiderContextSource }) => {
+          this.registerSource(new AiderContextSource(aiderConfig));
+          console.log('[AIContextManager] Aider context source registered');
+        })
+        .catch((err) => {
+          console.warn('[AIContextManager] Failed to load Aider module:', err);
+        });
+    }
   }
 
   registerSource(source: ContextSource): void {

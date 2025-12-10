@@ -2,7 +2,7 @@
  * Integration tests for Temporal AI Client
  */
 
-import { beforeAll, describe, expect, it } from 'vitest';
+// Jest globals (beforeAll, describe, expect, it) are available automatically
 import { TemporalAIClient, getRecommendations } from './temporal-ai-client.js';
 
 describe('TemporalAIClient', () => {
