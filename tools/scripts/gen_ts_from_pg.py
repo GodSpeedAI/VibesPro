@@ -274,8 +274,6 @@ def generate_database_types(tables: list[TableInfo]) -> str:
         " * DEV-SDS-020: End-to-End Type Safety Pipeline",
         " */",
         "",
-        "/* eslint-disable @typescript-eslint/no-explicit-any */",
-        "",
     ]
 
     interfaces = [generate_typescript_interface(table) for table in tables]
