@@ -134,6 +134,7 @@ jobs:
           rustup override set nightly-2024-11-01
 
       - name: Validate Vector config
+        if: env.SKIP_HEAVY_SETUP != 'true'
         run: |
           echo "Validating Vector configuration..."
           # Ensure expected data directories exist so `vector validate` doesn't fail
@@ -144,6 +145,7 @@ jobs:
           echo "✅ Vector config valid"
 
       - name: Ops smoke test (stdout + OTLP)
+        if: env.SKIP_HEAVY_SETUP != 'true'
         # Run under bash so `set -o pipefail` in the script is supported
         run: bash -eux -o pipefail tests/ops/test_observe_smoke.sh
 

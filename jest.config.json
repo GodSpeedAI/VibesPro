@@ -13,7 +13,6 @@
     "/tmp/",
     "/dist/",
     "/coverage/",
-    "/tools/ai/",
     "/tests/ci/",
     "tests/unit/spec_ids.test.js",
     "tests/unit/matrix.test.js"

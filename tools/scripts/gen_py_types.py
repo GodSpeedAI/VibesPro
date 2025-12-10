@@ -137,8 +137,11 @@ def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
         "# Note: The TypeScript Database namespace is not generated here",
         "# as it's a TypeScript-specific pattern for Supabase client typing.",
     ]
-    content = [*header, *sorted(imports), "", "", *models]
-    output_path.write_text("\n".join(content) + "\n", encoding="utf-8")
+    # PEP 8: Use 2 blank lines between top-level class definitions
+    combined_models = "\n\n\n".join(models) if models else ""
+    # Join with double newlines: header, imports, then 2 blank lines before first class
+    content_parts = ["\n".join(header), "\n".join(sorted(imports)), "", "", combined_models]
+    output_path.write_text("\n".join(content_parts) + "\n", encoding="utf-8")
     return output_path
 
 
