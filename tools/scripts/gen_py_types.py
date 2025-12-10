@@ -139,7 +139,8 @@ def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
     ]
     # PEP 8: Use 2 blank lines between top-level class definitions
     combined_models = "\n\n\n".join(models) if models else ""
-    content_parts = ["\n".join(header), "\n".join(sorted(imports)), "", combined_models]
+    # Join with double newlines: header, imports, then 2 blank lines before first class
+    content_parts = ["\n".join(header), "\n".join(sorted(imports)), "", "", combined_models]
     output_path.write_text("\n".join(content_parts) + "\n", encoding="utf-8")
     return output_path
 
