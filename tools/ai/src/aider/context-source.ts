@@ -50,8 +50,16 @@ function buildBackendConfig(backend: AiderBackend, config: AiderConfig): AiderBa
       const model = config.model ?? process.env['AIDER_MODEL'] ?? DEFAULT_MODELS.openai;
 
       const defaultBase = 'https://api.openai.com/v1';
-      const isCustomBase =
-        apiBase && apiBase !== defaultBase && !apiBase.startsWith('https://api.openai.com');
+      let isOfficialOpenAI = false;
+      if (apiBase) {
+        try {
+          const parsedBase = new URL(apiBase);
+          isOfficialOpenAI = parsedBase.hostname === 'api.openai.com';
+        } catch {
+          isOfficialOpenAI = false;
+        }
+      }
+      const isCustomBase = apiBase && apiBase !== defaultBase && !isOfficialOpenAI;
 
       // Prefix with openai/ if using custom base and model doesn't have prefix
       const finalModel = isCustomBase && !model.includes('/') ? `openai/${model}` : model;
