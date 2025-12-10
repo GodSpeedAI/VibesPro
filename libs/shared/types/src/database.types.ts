@@ -7,8 +7,6 @@
  * DEV-SDS-020: End-to-End Type Safety Pipeline
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Database table: profiles
  * Auto-generated from PostgreSQL schema

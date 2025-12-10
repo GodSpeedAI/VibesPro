@@ -1,11 +1,19 @@
 /**
  * Integration tests for Temporal AI Client
+ *
+ * Note: These tests require the temporal-ai Rust binary to be built.
+ * They are skipped in CI environments where the binary isn't available.
  */
 
 // Jest globals (beforeAll, describe, expect, it) are available automatically
+import { existsSync } from 'node:fs';
 import { TemporalAIClient, getRecommendations } from './temporal-ai-client.js';
 
-describe('TemporalAIClient', () => {
+const BINARY_PATH = 'crates/temporal-ai/target/release/temporal-ai';
+const hasBinary = existsSync(BINARY_PATH);
+const describeWithBinary = hasBinary ? describe : describe.skip;
+
+describeWithBinary('TemporalAIClient', () => {
   let client: TemporalAIClient;
 
   beforeAll(() => {
@@ -44,7 +52,7 @@ describe('TemporalAIClient', () => {
   }, 30000);
 });
 
-describe('TemporalAIClient - E2E', () => {
+describeWithBinary('TemporalAIClient - E2E', () => {
   it('should refresh and query end-to-end', async () => {
     const client = new TemporalAIClient();
 
