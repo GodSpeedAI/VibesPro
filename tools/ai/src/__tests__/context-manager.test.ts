@@ -18,7 +18,7 @@ describe('AIContextManager', () => {
   });
 
   it('should provide optimal context within token budget', async () => {
-    const manager = new AIContextManager({
+    const manager = await AIContextManager.create({
       maxTokens: 8000,
       reservedTokens: 2000,
     });
@@ -64,7 +64,7 @@ describe('AIContextManager', () => {
   });
 
   it('should reuse cached context for identical tasks', async () => {
-    const manager = new AIContextManager({
+    const manager = await AIContextManager.create({
       maxTokens: 4000,
       reservedTokens: 1000,
     });

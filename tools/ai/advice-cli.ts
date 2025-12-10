@@ -481,7 +481,7 @@ async function main(): Promise<void> {
     printAdvisories(advisories);
 
     if (options.task) {
-      const manager = new AIContextManager({
+      const manager = await AIContextManager.create({
         maxTokens: 1600,
         reservedTokens: 200,
         weights: {

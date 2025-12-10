@@ -19,8 +19,9 @@ const execFileAsync = promisify(execFile);
  * Check if a command exists on the system
  */
 async function commandExists(command: string): Promise<boolean> {
+  const cmd = process.platform === 'win32' ? 'where' : 'which';
   try {
-    await execFileAsync('which', [command]);
+    await execFileAsync(cmd, [command]);
     return true;
   } catch {
     return false;
@@ -47,8 +48,13 @@ function buildBackendConfig(backend: AiderBackend, config: AiderConfig): AiderBa
       }
 
       const model = config.model ?? process.env['AIDER_MODEL'] ?? DEFAULT_MODELS.openai;
+
+      const defaultBase = 'https://api.openai.com/v1';
+      const isCustomBase =
+        apiBase && apiBase !== defaultBase && !apiBase.startsWith('https://api.openai.com');
+
       // Prefix with openai/ if using custom base and model doesn't have prefix
-      const finalModel = apiBase && !model.includes('/') ? `openai/${model}` : model;
+      const finalModel = isCustomBase && !model.includes('/') ? `openai/${model}` : model;
 
       return { backend, model: finalModel, envVars };
     }
@@ -73,7 +79,8 @@ function buildBackendConfig(backend: AiderBackend, config: AiderConfig): AiderBa
 
       const model = config.model ?? process.env['AIDER_MODEL'] ?? DEFAULT_MODELS.ollama;
       // Ensure ollama_chat/ prefix
-      const finalModel = model.startsWith('ollama') ? model : `ollama_chat/${model}`;
+      const lowerModel = model.trim().toLowerCase();
+      const finalModel = lowerModel.startsWith('ollama_chat/') ? model : `ollama_chat/${model}`;
 
       return { backend, model: finalModel, envVars };
     }
@@ -98,7 +105,6 @@ export class AiderContextSource implements ContextSource {
   private readonly config: AiderConfig;
   private readonly fallbackOrder: AiderBackend[];
   private cachedAvailability: boolean | null = null;
-  private lastQuery: string = '';
   private lastContent: string = '';
 
   constructor(config: AiderConfig) {
@@ -150,8 +156,8 @@ export class AiderContextSource implements ContextSource {
       return '';
     }
 
-    // Return cached content if query hasn't changed
-    if (this.lastQuery && this.lastContent) {
+    // Return cached content if available
+    if (this.lastContent) {
       return this.lastContent;
     }
 
@@ -186,16 +192,6 @@ export class AiderContextSource implements ContextSource {
       const message = error instanceof Error ? error.message : String(error);
       console.warn(`[AiderContextSource] Failed to get context: ${message}`);
       return '';
-    }
-  }
-
-  /**
-   * Set the current task query (for caching)
-   */
-  setQuery(query: string): void {
-    if (query !== this.lastQuery) {
-      this.lastQuery = query;
-      this.lastContent = ''; // Clear cache on new query
     }
   }
 }

@@ -24,7 +24,7 @@ describe('AIContextManager scoring integration', () => {
   });
 
   it('applies pattern confidence boosts and performance penalties when ranking sources', async () => {
-    const manager = new AIContextManager({
+    const manager = await AIContextManager.create({
       maxTokens: 1200,
       reservedTokens: 200,
       weights: {
