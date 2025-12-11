@@ -1,220 +1,211 @@
-# 🌟 VibesPro — Generative Development Environment (GDE)
+# 🌟 VibesPro — From Idea to Working Software, Without the Wait
 
 [![CI](https://github.com/GodSpeedAI/VibesPro/actions/workflows/ci.yml/badge.svg)](https://github.com/GodSpeedAI/VibesPro/actions/workflows/ci.yml)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
-[![DeepWiki](https://img.shields.io/badge/DeepWiki-View-orange)](https://deepwiki.com/SPRIME01/Vibes-Pro)
+[![DeepWiki](https://img.shields.io/badge/DeepWiki-Explore-orange)](https://deepwiki.com/SPRIME01/Vibes-Pro)
 
 ---
 
-## 🎯 What If Building Software Didn't Require Learning to Code?
+## 💡 The Problem Everyone Feels, But Few Solve
 
-**The gap between idea and implementation is artificial.**
+**You have an idea. Six weeks later, you're still explaining it.**
 
-Today, transforming a business concept into working software requires translating your vision through developers, waiting for sprints, and hoping nothing gets lost in translation. By the time you see results, requirements have changed.
+Right now, organizations waste an average of 40% of development time on miscommunication, rework, and knowledge loss. Domain experts describe what they need, developers interpret it differently, and by the time code ships—requirements have already changed.
 
-**What if you could describe what you need—and the system built it?**
+The gap between what you _imagine_ and what you _get_ shouldn't take months.
 
-VibesPro transforms how organizations build software. Just as IDEs gave individual developers a standardized environment for writing code, VibesPro provides the infrastructure for AI-native development—where your organizational knowledge becomes the foundation for generating entire systems. You capture the patterns. The environment executes them.
-
----
-
-## ⚡ What VibesPro Enables
-
-### For Domain Experts & Product Teams
-
-- **Describe, Don't Code** — Express business requirements in natural language; AI translates them into validated, tested implementations
-- **See Results Immediately** — Changes materialize in minutes, not sprints
-- **Knowledge as Infrastructure** — Your decisions, conventions, and expertise become executable patterns that compound over time
-- **Consistency by Design** — Organizational standards enforced automatically across every generated system
-
-### For Your Organization
-
-- **Living Organizational Knowledge** — Specifications, decisions, and patterns stay synchronized with running systems
-- **Executable Institutional Memory** — Past decisions become reusable patterns, not just documentation
-- **Pattern-Driven Scale** — New capabilities emerge from combining proven organizational patterns
-- **Quality Infrastructure** — Every generated component inherits your organization's standards automatically
+**What if you could describe what you need—and actually get it?**
 
 ---
 
-## 🚀 Getting Started
+## 🚀 VibesPro: Your Ideas, Made Real
 
-### Quick Start (3 Commands)
+VibesPro is a **Generative Development Environment**—infrastructure that transforms how your organization builds software.
+
+Instead of waiting for developers to interpret requirements, you describe what you need conversationally. Instead of hoping institutional knowledge survives employee turnover, your decisions become reusable building blocks. Instead of starting every project from scratch, proven patterns compound automatically.
+
+**The result?** Working software in hours, not quarters. Knowledge that grows, never leaves.
+
+---
+
+## ✨ What Changes for You
+
+### Before VibesPro
+
+| The Pain                              | What It Costs                         |
+| ------------------------------------- | ------------------------------------- |
+| Requirements lost in translation      | Weeks of rework after launch          |
+| "Works on my machine" chaos           | Delayed deployments, frustrated teams |
+| Knowledge locked in senior developers | Risk every time someone leaves        |
+| Inconsistent implementations          | Technical debt from day one           |
+| Waiting through development queues    | Missed market windows                 |
+
+### After VibesPro
+
+| The Shift                                | What You Gain                          |
+| ---------------------------------------- | -------------------------------------- |
+| **Describe once, generate correctly**    | Hours to first working version         |
+| **Reproducible environments**            | Deploy anywhere with confidence        |
+| **Organizational memory that compounds** | Knowledge survives and grows           |
+| **Standards enforced automatically**     | Quality without policing               |
+| **Self-serve prototyping**               | Test ideas before committing resources |
+
+---
+
+## 🎯 Who Thrives With VibesPro
+
+### Product Managers & Domain Experts
+
+You understand the business better than anyone—but translating that into technical specs feels like playing telephone. With VibesPro, you articulate what you need in plain language, see a proposal, and watch it become working software. No more waiting for developer availability. No more "that's not what I meant" after weeks of work.
+
+> _"I described our new order management flow before lunch. By afternoon, I was testing a working prototype."_
+
+### Technical Leaders & Architects
+
+You've solved the same problems across multiple projects—but that knowledge stays trapped in your head or scattered across Confluence pages no one reads. VibesPro turns your architectural decisions into executable patterns that every future project inherits automatically. Your expertise scales without your constant presence.
+
+> _"Our API conventions, our security patterns, our testing standards—they're not documentation anymore. They're infrastructure."_
+
+### Compliance & Security Teams
+
+You need audit trails. You need traceability. You need to prove that decisions connect to implementations. VibesPro generates complete evidence chains from requirement to code to test—automatically. No more chasing developers for documentation after the fact.
+
+> _"Every line of generated code links back to the decision that created it. Audits went from weeks to hours."_
+
+### Development Teams
+
+You want to build features, not the same boilerplate for the hundredth time. VibesPro eliminates the repetitive scaffolding and lets you focus on the logic that matters. Architectural consistency is handled. You just build.
+
+> _"I stopped writing CRUD endpoints. Now I describe the domain and the system builds them with our exact conventions."_
+
+---
+
+## 🧠 How It Actually Works
+
+### 1. You Describe What You Need
+
+Not code. Not technical specifications. Just what you're trying to accomplish:
+
+_"I need to track customer orders with status updates and send notifications when orders ship."_
+
+### 2. The System Proposes a Plan
+
+VibesPro's AI team (architect, product specialist, quality guardian) translates your request into a concrete proposal—what will be built, how it fits your existing patterns, what tests will verify it works.
+
+### 3. You Review and Approve
+
+Nothing happens without your sign-off. You see exactly what will be generated before it's generated. Adjust, refine, or approve.
+
+### 4. Working Software Materializes
+
+The system scaffolds implementations using your organization's proven patterns—not generic templates, but _your_ standards, _your_ conventions, _your_ quality requirements.
+
+### 5. Your Knowledge Compounds
+
+Every decision, every successful pattern gets captured. Next time someone needs similar functionality, the system remembers—and builds even faster.
+
+---
+
+## 🔒 Built for Regulated Industries
+
+For organizations where compliance isn't optional, VibesPro provides what auditors require:
+
+| Requirement         | How VibesPro Delivers                                                 |
+| ------------------- | --------------------------------------------------------------------- |
+| **Audit trail**     | Every artifact links to its originating decision                      |
+| **Change control**  | All modifications flow through validated generators                   |
+| **Reproducibility** | Same inputs produce identical outputs—always                          |
+| **AI governance**   | AI operates within validated boundaries, not arbitrary code invention |
+| **Evidence**        | Traceability matrix generated automatically; specs stay synchronized  |
+
+---
+
+## 🏃 Get Started in 5 Minutes
 
 ```bash
-# 1. Create your environment
+# 1. Generate your personalized environment
 copier copy gh:GodSpeedAI/VibesPro my-project
 
-# 2. Initialize
+# 2. Set up dependencies
 cd my-project && just setup
 
 # 3. Start building
 just dev
 ```
 
-> 💡 **Note:** VibesPro synthesizes a complete development environment tailored to your project. Don't clone the repository—use Copier to generate your personalized environment.
+> ⚡ **Important:** Don't clone the repository—use Copier to generate an environment customized to your project.
 
-### What Happens Next
-
-Once your environment is running, you interact with it conversationally:
-
-1. **Describe what you need**: "I need to track customer orders with status updates and notifications"
-2. **Review the proposal**: The AI drafts specifications and a plan
-3. **Approve and generate**: The system scaffolds the implementation
-4. **Validate and iterate**: Review generated tests and refine as needed
+Once running, you'll interact conversationally. Describe what you need. Review proposals. Watch working software appear.
 
 ---
 
-## 🧠 How It Works
-
-### The Three Layers
-
-**1. Intelligence Layer — Your AI Development Team**
-
-Specialized assistants understand different aspects of building software:
-
-- **Architect** — Designs scalable patterns
-- **Product Specialist** — Translates requirements into specifications
-- **Quality Guardian** — Ensures everything is tested and validated
-- **Security Analyst** — Identifies risks before they become problems
-
-**2. Memory Layer — Knowledge Infrastructure**
-
-Organizational knowledge becomes executable:
-
-- Architectural decisions captured as reusable patterns
-- Proven approaches codified into generators
-- Domain-specific conventions enforced automatically
-- Complete evolution history of system patterns
-
-**3. Generation Layer — Pattern-to-Code**
-
-Your organizational patterns become the building blocks:
-
-- Define a pattern once; generate unlimited implementations
-- Patterns compose into higher-level capabilities
-- Standards and conventions enforced through infrastructure
-
-**4. Traceability Layer — Decision to Implementation**
-
-Complete audit trail from concept to running code:
-
-- **ADR → Spec → Generator → Code → Test** — Every artifact links to its origin
-- **Constrained AI** — AI doesn't invent code; it selects from validated patterns
-- **Schema-enforced outputs** — All generation validated against contracts
-- **Immutable decision history** — Query what was decided, when, and why
-
----
-
-## 📊 What You Can Expect
-
-| Traditional Approach                  | With VibesPro                               |
-| ------------------------------------- | ------------------------------------------- |
-| Weeks of developer setup              | Ready in minutes                            |
-| Requirements lost in translation      | Patterns executed directly                  |
-| Knowledge locked in developers' heads | Knowledge becomes executable infrastructure |
-| Inconsistent implementations          | Organizational standards enforced by design |
-| "Works on my machine" chaos           | Reproducible everywhere                     |
-| Technical debt from day one           | Best practices embedded in infrastructure   |
-
----
-
-## 🎯 Who Is This For?
-
-### Today
-
-- **Product Managers** who want to prototype and iterate without waiting for developer availability
-- **Domain Experts** who understand the business but not the code
-- **Technical Leaders** who want to encode organizational knowledge
-- **Development Teams** who want to eliminate boilerplate and focus on business logic
-- **Compliance Officers** who need complete audit trails from decision to deployment
-
-### For Regulated Industries
-
-VibesPro provides **end-to-end traceability** that compliance teams require:
-
-| Requirement     | How VibesPro Delivers                                                                                 |
-| --------------- | ----------------------------------------------------------------------------------------------------- |
-| Audit trail     | Every code artifact links to its originating decision (ADR/PRD/SDS)                                   |
-| Change control  | All modifications flow through validated generators, not manual edits                                 |
-| Reproducibility | Same inputs produce identical outputs; environments are deterministic                                 |
-| AI governance   | **Constrained AI generation** — AI operates within validated boundaries, not arbitrary code invention |
-| Evidence        | Traceability matrix auto-generated; specifications stay synchronized with implementation              |
-
-### Tomorrow
-
-VibesPro is building toward infrastructure where organizations define what they know—patterns, standards, domain logic—and systems generate themselves from that foundation.
-
----
-
-## 📚 Learn More
+## 📚 Go Deeper
 
 ### Getting Started
 
 - **[Quick Start Guide](docs/QUICKSTART.md)** — Complete setup walkthrough
 - **[Environment Guide](docs/ENVIRONMENT.md)** — Understanding your workspace
 
-### For Developers
+### For Builders
 
-- **[Technical Architecture](docs/specs/)** — Deep dive into system design
+- **[Technical Architecture](docs/specs/)** — How the pieces fit together
 - **[Generator Development](docs/nx-generators-guide.md)** — Creating custom patterns
-- **[AI Workflow Reference](.github/copilot-instructions.md)** — Full agent documentation
+- **[AI Workflow Reference](.github/copilot-instructions.md)** — Full capabilities
 
-### Architecture & Patterns
+### Governance & Security
 
 - **[Specification Framework](docs/traceability_matrix.md)** — How decisions become code
+- **[Security Guidelines](.github/instructions/security.instructions.md)** — Policies and guardrails
 - **[Observability Stack](docs/observability/README.md)** — Monitoring and insights
-- **[Security Guidelines](.github/instructions/security.instructions.md)** — Guardrails and policies
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Where We're Heading
 
-### Current Focus
+### Now Building
 
 - 🧠 Enhanced conversational pattern definition
 - 📊 Automated architecture validation
 - 🎯 Context-aware recommendations
 - 🔄 Real-time collaboration on specifications
 
-### Future
+### On the Horizon
 
 - 🌐 Community pattern marketplace
-- 🎨 Domain-specific accelerators (auth, e-commerce, analytics)
+- 🎨 Domain accelerators (auth, e-commerce, analytics)
 - 🔌 Extension system for custom capabilities
 - 🌍 Multi-cloud infrastructure patterns
 
 ---
 
-## 🤝 Contributing
+## 🤝 Join the Movement
 
-We welcome contributions from everyone—whether you're a developer, domain expert, or just have ideas about how software should be built.
+VibesPro is open source because transforming how software gets built shouldn't require a vendor lock-in.
 
-- 🐛 **Found an issue?** Open a bug report
-- 💡 **Have an idea?** Start a discussion
+- 🐛 **Found a problem?** [Open an issue](https://github.com/GodSpeedAI/VibesPro/issues)
+- 💡 **Have an idea?** [Start a discussion](https://github.com/GodSpeedAI/VibesPro/discussions)
 - 📝 **Want to improve docs?** Every clarity improvement helps
-- 🔧 **Ready to code?** See [CONTRIBUTING.md](CONTRIBUTING.md)
+- 🔧 **Ready to contribute?** See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
-## 📜 License
+## 📜 Licensing: Simple and Fair
 
-### VibesPro & Generators: MPL 2.0
+### VibesPro Itself: MPL 2.0
 
-VibesPro itself and any custom generators you create from it are distributed under **MPL 2.0**, which enforces a file-level copyleft: any modified MPL-covered file (or file that includes MPLed content) must remain under the MPL, and you must make the source or modifications to those files available when you distribute or deploy them.
+The VibesPro infrastructure is open source under MPL 2.0. Modifications to VibesPro's files must remain open. Commercial licensing available for closed-source embedding.
 
-A commercial license is required if you want to re-license VibesPro itself or embed it inside a closed-source product or service without exposing the MPL-covered files.
+### What You Build: Entirely Yours
 
-### Your Generated Software: Unrestricted
+**Everything you generate with VibesPro belongs to you—completely.** No restrictions, no royalties, no licensing obligations on your output. Use it commercially, modify it, license it however you want.
 
-**All software and systems generated by VibesPro belong to you with no restrictions.** Any projects, applications, or code created using VibesPro are yours to use commercially, distribute, modify, or license however you choose. Generated output is not subject to VibesPro's licensing terms.
+_VibesPro is MPL 2.0. Your software is yours._
 
-**In short:** VibesPro is MPL 2.0, but everything you build with it is completely yours.
-
-See [LICENSE](LICENSE) for the full legal text, and consult legal counsel if you need certainty about your release or deployment plans.
+See [LICENSE](LICENSE) for full details.
 
 ---
 
-## 🚦 Ready to Start?
+## 🚦 Ready?
 
 ```bash
 copier copy gh:GodSpeedAI/VibesPro my-project
@@ -223,6 +214,10 @@ cd my-project && just setup && just dev
 
 **Your ideas. Your domain. Your pace.**
 
+Stop waiting weeks for what should take hours. Stop losing knowledge when people leave. Stop rebuilding the same patterns project after project.
+
+Start building infrastructure that remembers, adapts, and accelerates.
+
 ---
 
-_"The best systems are the ones that understand you—before you have to explain."_
+_When your organization's knowledge becomes executable, everything changes._
