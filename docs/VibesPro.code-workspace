@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../g3-main"
+		}
+	],
+	"settings": {
+		"terminal.integrated.env.linux": {
+			"LC_ALL": "C.UTF-8",
+			"LANG": "C.UTF-8",
+			"LANGUAGE": "C.UTF-8"
+		}
+	}
+}
