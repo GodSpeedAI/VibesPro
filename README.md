@@ -90,7 +90,7 @@ _"I need to track customer orders with status updates and send notifications whe
 
 ### 2. The System Proposes a Plan
 
-VibesPro's AI team (architect, product specialist, quality guardian) translates your request into a concrete proposal—what will be built, how it fits your existing patterns, what tests will verify it works.
+VibesPro's **ARC agent** (Architectural Reasoning Companion) translates your request into a concrete proposal—what will be built, how it fits your existing patterns, what tests will verify it works. ARC combines multi-provider LLM support with institutional memory to reason about your domain.
 
 ### 3. You Review and Approve
 
@@ -149,6 +149,7 @@ Once running, you'll interact conversationally. Describe what you need. Review p
 ### For Builders
 
 - **[Technical Architecture](docs/specs/)** — How the pieces fit together
+- **[ARC Agent System](crates/ARC.md)** — The AI brain powering VibesPro
 - **[Generator Development](docs/nx-generators-guide.md)** — Creating custom patterns
 - **[AI Workflow Reference](.github/copilot-instructions.md)** — Full capabilities
 
@@ -164,9 +165,10 @@ Once running, you'll interact conversationally. Describe what you need. Review p
 
 ### Now Building
 
+- ✅ **ARC Agent System** — Multi-provider agentic AI core (Anthropic, OpenAI, Databricks, local LLM)
 - 🧠 Enhanced conversational pattern definition
 - 📊 Automated architecture validation
-- 🎯 Context-aware recommendations
+- 🎯 Context-aware recommendations powered by temporal memory
 - 🔄 Real-time collaboration on specifications
 
 ### On the Horizon
