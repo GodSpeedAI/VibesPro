@@ -1,4 +1,0 @@
--- Placeholder seed data for Supabase dev stack smoke tests.
--- Replace with project-specific seed statements when implementing HexDDD integrations.
--- Example:
--- INSERT INTO app.users (id, email) VALUES ('00000000-0000-0000-0000-000000000000', 'admin@example.com');

@@ -121,8 +121,9 @@ models/*.gguf
 data/*.redb
 
 # Workspace
-/archive/
+archive/
 environment_report.md
-/docs/reports/
-/docs/plans/
-/mypy-report/
+docs/reports/
+docs/plans/
+mypy-report/
+docs/work

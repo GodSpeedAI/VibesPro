@@ -22,22 +22,22 @@ VibesPro v0.3.0 is a **production-ready Copier template** generating hexagonal a
 
 ### Production-Ready Capabilities ✅
 
-| Component                    | Specs                         | Status                   | Evidence                                                       |
-| ---------------------------- | ----------------------------- | ------------------------ | -------------------------------------------------------------- |
-| **Specification System**     | 91 specs across 6 domains     | ✅ Complete (Refactored) | `docs/specs/` with domain folders, uniqueness enforced         |
-| **Observability Stack**      | DEV-ADR-016, SDS-017, PRD-017 | ✅ Complete (6 phases)   | `crates/vibepro-observe/`, `ops/vector/`, 10 test suites       |
-| **Python Logging (Logfire)** | DEV-PRD-018, SDS-018          | ✅ Complete (Cycle 1)    | `libs/python/vibepro_logging.py`, 26 tests passing             |
-| **Generator Spec Template**  | DEV-PRD-019, SDS-019          | ✅ Complete (Cycle 2)    | 0 TODO markers, 11 validation tests                            |
-| **Temporal AI Fabric**       | DEV-PRD-032, SDS-020, ADR-018 | ✅ Complete (Cycle 3)    | `crates/temporal-ai/` (2,500 LOC), TypeScript client, 21 tests |
-| **Environment Setup**        | DEV-ADR-011-015, PRD-011-016  | ✅ Complete              | Devbox, mise, SOPS, 5 test suites in `tests/env/`              |
-| **AGENT System**             | AGENT-SYSTEM.md, AGENT-MAP.md | ✅ Complete (Phase 1+2)  | 14 AGENT.md files across all directories                       |
-| **AI Workflow System**       | 26 prompts, 17 instructions   | ✅ Complete              | `.github/prompts/`, `.github/instructions/`                    |
-| **Hexagonal Architecture**   | DEV-ADR-020, 022, SDS-022     | ✅ Implemented           | Ports/Adapters pattern in `libs/shared/domain/`                |
+| Component                    | Specs                         | Status                   | Evidence                                                        |
+| ---------------------------- | ----------------------------- | ------------------------ | --------------------------------------------------------------- |
+| **Specification System**     | 91 specs across 6 domains     | ✅ Complete (Refactored) | `docs/specs/` with domain folders, uniqueness enforced          |
+| **Observability Stack**      | DEV-ADR-016, SDS-017, PRD-017 | ✅ Complete (6 phases)   | `crates/vibepro-observe/`, `ops/vector/`, 10 test suites        |
+| **Python Logging (Logfire)** | DEV-PRD-018, SDS-018          | ✅ Complete (Cycle 1)    | `libs/python/vibepro_logging.py`, 26 tests passing              |
+| **Generator Spec Template**  | DEV-PRD-019, SDS-019          | ✅ Complete (Cycle 2)    | 0 TODO markers, 11 validation tests                             |
+| **Temporal AI Fabric**       | DEV-PRD-032, SDS-020, ADR-018 | ✅ Complete (Cycle 3)    | `crates/temporal-ai/` (2,500 LOC), TypeScript client, 21 tests  |
+| **Environment Setup**        | DEV-ADR-011-015, PRD-011-016  | ✅ Complete              | Devbox, mise, SOPS, 5 test suites in `tests/env/`               |
+| **AGENT System**             | AGENT-SYSTEM.md, AGENT-MAP.md | ✅ Complete (Phase 1+2)  | 14 AGENT.md files across all directories                        |
+| **AI Workflow System**       | 26 prompts, 17 instructions   | ✅ Complete              | `.github/prompts/`, `.github/instructions/`                     |
+| **Hexagonal Architecture**   | DEV-ADR-020, 022, SDS-022     | ✅ Implemented           | Ports/Adapters pattern in `libs/shared/domain/`                 |
 | **Type Safety Pipeline**     | DEV-SDS-020, DEV-PRD-020      | ✅ Complete              | Docker Compose Supabase, TypeScript/Python types, CI validation |
-| **Nx Configuration**         | Package alignment             | ✅ Complete              | All @nx packages at v22.0.2                                    |
-| **Python Testing**           | pytest coverage               | ✅ Complete              | No exclusions, temporal tests functional                       |
-| **Core Template**            | Hexagonal architecture        | ✅ Complete              | `templates/{{project_slug}}/` generates working projects       |
-| **Documentation**            | 87 work summaries             | ✅ Comprehensive         | `docs/work-summaries/`, `docs/reports/`, `docs/plans/`         |
+| **Nx Configuration**         | Package alignment             | ✅ Complete              | All @nx packages at v22.0.2                                     |
+| **Python Testing**           | pytest coverage               | ✅ Complete              | No exclusions, temporal tests functional                        |
+| **Core Template**            | Hexagonal architecture        | ✅ Complete              | `templates/{{project_slug}}/` generates working projects        |
+| **Documentation**            | 87 work summaries             | ✅ Comprehensive         | `docs/work-summaries/`, `docs/reports/`, `docs/plans/`          |
 
 ---
 
