@@ -20,7 +20,7 @@ This matrix tracks all specification IDs across the project, organized by subdir
 | `DEV-ADR-007` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
 | `DEV-ADR-009` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`          | referenced |       |
 | `DEV-ADR-010` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`traceability_matrix.md`                                 | referenced |       |
-| `DEV-ADR-018` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`traceability_matrix.md`                                 | referenced |       |
+| `DEV-ADR-018` | `ai_workflow/ai_workflow.adr.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/arc_agent.spec.md`<br>`traceability_matrix.md`     | referenced |       |
 | `DEV-PRD-002` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
 | `DEV-PRD-003` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
 | `DEV-PRD-004` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
@@ -29,7 +29,7 @@ This matrix tracks all specification IDs across the project, organized by subdir
 | `DEV-PRD-009` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
 | `DEV-PRD-010` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
 | `DEV-PRD-020` | `ai_workflow/ai_workflow.adr.md`<br>`core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                         | referenced |       |
-| `DEV-PRD-032` | `ai_workflow/ai_workflow.prd.md`<br>`traceability_matrix.md`                                                                     | referenced |       |
+| `DEV-PRD-032` | `ai_workflow/ai_workflow.prd.md`<br>`core/arc_agent.spec.md`<br>`traceability_matrix.md`                                         | referenced |       |
 | `DEV-SDS-009` | `ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                        | referenced |       |
 | `DEV-SDS-020` | `ai_workflow/ai_workflow.adr.md`<br>`core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                         | referenced |       |
 | `DEV-SDS-021` | `ai_workflow/ai_workflow.prd.md`<br>`generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md` | referenced |       |
@@ -78,9 +78,10 @@ This matrix tracks all specification IDs across the project, organized by subdir
 | `DEV-SDS-025` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
 | `DEV-SDS-029` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
 | `DEV-SDS-030` | `core/core.prd.md`<br>`core/core.sds.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
+| `PRD-033`     | `core/arc_agent.spec.md`<br>`traceability_matrix.md`                                                                                                                                               | referenced |       |
 | `SDS-009`     | `core/core.adr.md`<br>`traceability_matrix.md`                                                                                                                                                     | referenced |       |
 
-**Total**: 36 specification(s)
+**Total**: 37 specification(s)
 
 
 ## 📁 Environment Specifications
@@ -120,7 +121,6 @@ This matrix tracks all specification IDs across the project, organized by subdir
 | `ADR-012`     | `generators/generators.adr.md`<br>`traceability_matrix.md`                                                                                                                         | referenced |       |
 | `DEV-ADR-017` | `generators/generators.prd.md`<br>`observability/observability.adr.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md`                                         | referenced |       |
 | `DEV-ADR-021` | `generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                     | referenced |       |
-| `DEV-ADR-023` | `generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
 | `DEV-ADR-028` | `generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
 | `DEV-PRD-017` | `generators/generators.prd.md`<br>`observability/observability.adr.md`<br>`observability/observability.prd.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md` | referenced |       |
 | `DEV-PRD-021` | `generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
@@ -129,7 +129,7 @@ This matrix tracks all specification IDs across the project, organized by subdir
 | `DEV-SDS-023` | `generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
 | `DEV-SDS-028` | `generators/generators.prd.md`<br>`generators/generators.sds.md`<br>`traceability_matrix.md`                                                                                       | referenced |       |
 
-**Total**: 12 specification(s)
+**Total**: 11 specification(s)
 
 
 ## 📁 Observability Specifications
@@ -158,16 +158,19 @@ This matrix tracks all specification IDs across the project, organized by subdir
 | Spec ID       | Artifacts                                                                                                                                                                                         | Status     | Notes |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----- |
 | `DEV-ADR-016` | `README.md`<br>`generators/generators.prd.md`<br>`observability/observability.adr.md`<br>`observability/observability.prd.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md` | referenced |       |
+| `DEV-ADR-023` | `README.md`<br>`core/arc_agent.spec.md`<br>`generators/generators.adr.md`<br>`generators/generators.prd.md`<br>`traceability_matrix.md`                                                           | referenced |       |
 | `DEV-PRD-001` | `README.md`<br>`ai_workflow/ai_workflow.prd.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                          | referenced |       |
 | `DEV-PRD-018` | `ai-system-profile-architecture.md`<br>`observability/observability.adr.md`<br>`observability/observability.prd.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md`           | referenced |       |
+| `DEV-PRD-033` | `README.md`<br>`core/arc_agent.spec.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
 | `DEV-SDS-005` | `ai-system-profile-architecture.md`<br>`core/core.sds.md`<br>`core/core.spec.md`<br>`traceability_matrix.md`                                                                                      | referenced |       |
 | `DEV-SDS-018` | `README.md`<br>`generators/generators.prd.md`<br>`observability/observability.adr.md`<br>`observability/observability.sds.md`<br>`traceability_matrix.md`                                         | referenced |       |
+| `DEV-SDS-031` | `README.md`<br>`core/arc_agent.spec.md`<br>`traceability_matrix.md`                                                                                                                               | referenced |       |
 
-**Total**: 5 specification(s)
+**Total**: 8 specification(s)
 
 ---
 
 ## 📊 Summary
 
-- **Total Specifications**: 102
+- **Total Specifications**: 105
 - **Subdirectories**: 7

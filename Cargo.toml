@@ -1,26 +1,53 @@
-[package]
-name = "VibesPro"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    # VibesPro existing crates
+    "temporal_db",
+    "crates/temporal-ai",
+    "crates/vibepro-observe",
+    # ARC (Architectural Reasoning Companion) agent crates
+    "crates/arc-cli",
+    "crates/arc-core",
+    "crates/arc-config",
+    "crates/arc-planner",
+    "crates/arc-providers",
+    "crates/arc-execution",
+    "crates/arc-computer-control",
+    "crates/arc-console",
+    "crates/arc-ensembles",
+]
+# Default members exclude crates with special native dependencies
+# Use `cargo build --all` to build everything if dependencies are met
+default-members = [
+    "temporal_db",
+    "crates/vibepro-observe",
+    "crates/arc-config",
+    "crates/arc-execution",
+    "crates/arc-providers",
+    "crates/arc-console",
+]
+resolver = "2"
 
-[lib]
-name = "vibes_pro"
-path = "temporal_db/lib.rs"
-
-[dependencies]
-redb = "2.2"
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+# HTTP client
+reqwest = { version = "0.11", default-features = false, features = ["json", "stream", "rustls-tls"] }
+# Serialization
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+# CLI
+clap = { version = "4.0", features = ["derive"] }
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+# Configuration
+config = "0.14"
+# Utilities
 uuid = { version = "1.0", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
-anyhow = "1.0"
-tokio = { version = "1", features = ["rt", "macros"] }
+# Database
+redb = "=2.2.0"
 md5 = "0.7"
-
-[dev-dependencies]
-vibes_pro_security = { path = "libs/security", package = "security" }
-tempfile = "3.9"
-
-[[test]]
-name = "validation_suite"
-path = "tests/security/validation_suite.rs"

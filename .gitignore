@@ -127,3 +127,6 @@ docs/reports/
 docs/plans/
 mypy-report/
 docs/work
+
+# ARC agent import folder (g3-main source)
+g3-import/

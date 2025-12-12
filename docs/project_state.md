@@ -35,6 +35,10 @@ VibesPro has matured from experimental infrastructure into a **production-ready 
 - Embedding-based semantic search over institutional knowledge
 - Observability integration for pattern performance tracking
 - Aider integration for enhanced context awareness
+- **ARC Agent System** (9 Rust crates integrated from g3-main)
+    - Multi-provider LLM support (Anthropic, OpenAI, Databricks, embedded)
+    - Agentic tool execution loop with context management
+    - Task planning and multi-agent orchestration
 
 ✅ **Developer Experience Optimized**
 
@@ -50,44 +54,51 @@ VibesPro has matured from experimental infrastructure into a **production-ready 
 ### The GDE Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Developer Intent                      │
-│         (Conversational descriptions of needs)           │
-└────────────────────┬────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    Developer Intent                              │
+│         (Conversational descriptions of needs)                   │
+└────────────────────┬────────────────────────────────────────────┘
                      │
                      ▼
-┌─────────────────────────────────────────────────────────┐
-│              AI Guidance Fabric                          │
-│  • Temporal DB (Pattern History + Success Metrics)       │
-│  • Semantic Search (Embedding-based Context)             │
-│  • Aider Integration (Intelligent Code Assistance)       │
-└────────────────────┬────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│              AI Guidance Fabric                                  │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │  ARC Agent System (Architectural Reasoning Companion)        ││
+│  │  • arc-core (Agentic loop, tool execution)                  ││
+│  │  • arc-providers (Anthropic, OpenAI, Databricks, embedded)  ││
+│  │  • arc-planner (Task planning, requirements refinement)     ││
+│  │  • arc-ensembles (Multi-agent orchestration)                ││
+│  └─────────────────────────────────────────────────────────────┘│
+│  • Temporal DB (Pattern History + Success Metrics)               │
+│  • Semantic Search (Embedding-based Context)                     │
+│  • Aider Integration (Intelligent Code Assistance)               │
+└────────────────────┬────────────────────────────────────────────┘
                      │
                      ▼
-┌─────────────────────────────────────────────────────────┐
-│           Generation & Validation Layer                  │
-│  • Nx Generators (Hexagonal Architecture)                │
-│  • Copier (Environment Customization)                    │
-│  • Type Safety Pipeline (DB → TypeScript → Python)       │
-│  • Quality Gates (Lint, Type Check, Test, Spec Trace)   │
-└────────────────────┬────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│           Generation & Validation Layer                          │
+│  • Nx Generators (Hexagonal Architecture)                        │
+│  • Copier (Environment Customization)                            │
+│  • Type Safety Pipeline (DB → TypeScript → Python)               │
+│  • Quality Gates (Lint, Type Check, Test, Spec Trace)           │
+└────────────────────┬────────────────────────────────────────────┘
                      │
                      ▼
-┌─────────────────────────────────────────────────────────┐
-│              Working Software                            │
-│  • Hexagonal Domain Models                               │
-│  • Type-Safe API Contracts                               │
-│  • Comprehensive Test Coverage                           │
-│  • Full Observability Integration                        │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│              Working Software                                    │
+│  • Hexagonal Domain Models                                       │
+│  • Type-Safe API Contracts                                       │
+│  • Comprehensive Test Coverage                                   │
+│  • Full Observability Integration                                │
+└─────────────────────────────────────────────────────────────────┘
                      │
                      ▼
-┌─────────────────────────────────────────────────────────┐
-│          Observability & Learning Loop                   │
-│  • Vector Pipeline (PII-Redacted Telemetry)              │
-│  • OpenObserve (Long-term Analytics)                     │
-│  • Pattern Success Feedback → Temporal DB                │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│          Observability & Learning Loop                           │
+│  • Vector Pipeline (PII-Redacted Telemetry)                      │
+│  • OpenObserve (Long-term Analytics)                             │
+│  • Pattern Success Feedback → Temporal DB                        │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Not a Template, But an Environment
@@ -190,16 +201,17 @@ VibesPro has matured from experimental infrastructure into a **production-ready 
 
 ### Codebase Scale
 
-- **Total Rust LOC**: ~80,000 (primarily `crates/temporal-ai/`)
+- **Total Rust LOC**: ~80,000+ (temporal-ai + ARC agent crates)
+- **ARC Agent Crates**: 9 crates (arc-cli, arc-core, arc-config, arc-providers, arc-execution, arc-planner, arc-ensembles, arc-console, arc-computer-control)
 - **Total TypeScript LOC**: ~15,000+ (generators, tools, libs)
 - **Total Python LOC**: ~5,000+ (scripts, tooling, logging)
-- **Test Files**: 87+
-- **Specification Documents**: 17 (PRDs, ADRs, SDSs)
+- **Test Files**: 115+ (including ARC crate tests)
+- **Specification Documents**: 20 (PRDs, ADRs, SDSs including DEV-PRD-033, DEV-ADR-023, DEV-SDS-031)
 - **Documentation Files**: 200+
 
 ### Quality Metrics
 
-- **Type Safety Coverage**: TypeScript `strict` + Python `mypy --strict` enforced
+- **Type Safety Coverage**: TypeScript `strict` + Python `mypy --strict` + Rust strict enforced
 - **Generator Validation**: 100% coverage via integration tests
 - **Spec Traceability**: All code changes link to specs
 - **Observability Overhead**: \u003c3% CPU at 1K spans/sec
@@ -212,6 +224,7 @@ VibesPro has matured from experimental infrastructure into a **production-ready 
 - **Pattern Database**: Redb (5 tables: embeddings, metadata, metrics, indexes)
 - **Recommendation Confidence**: Multi-factor scoring (similarity 50%, recency 20%, usage 30%)
 - **Context Window Optimization**: Token budget management operational
+- **ARC Agent Providers**: 4 (Anthropic, OpenAI, Databricks, Embedded/llama.cpp)
 
 ---
 

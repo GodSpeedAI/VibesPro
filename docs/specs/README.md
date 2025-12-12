@@ -11,8 +11,10 @@ docs/specs/
 ├── generators/        # Nx generators, scaffolding, templates
 ├── environment/       # Devbox, mise, CI/CD, runtime management
 ├── security/          # Security guardrails, secrets management
-└── core/              # Core architecture, type system, hexagonal design
+└── core/              # Core architecture, type system, hexagonal design, ARC agent
 ```
+
+**Note:** The `core/` directory now includes `arc_agent.spec.md` containing the ARC (Architectural Reasoning Companion) agent system specifications (DEV-PRD-033, DEV-ADR-023, DEV-SDS-031).
 
 ## File Naming Convention
 

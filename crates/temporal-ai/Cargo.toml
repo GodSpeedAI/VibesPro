@@ -19,34 +19,34 @@ path = "src/bin/main.rs"
 llama-cpp-2 = "0.1"
 
 # Vector storage
-redb = "2.2"
+redb = { workspace = true }
 
-# Git integration
-git2 = { version = "0.18", default-features = false, features = ["https"] }
+# Git integration - using vendored libgit2 with bundled OpenSSL alternative
+git2 = { version = "0.18", default-features = false, features = ["vendored-libgit2"] }
 
 # Serialization
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde = { workspace = true }
+serde_json = { workspace = true }
 rmp-serde = "1.1"  # MessagePack for compact embedding storage
 
 # Error handling
-anyhow = "1.0"
-thiserror = "1.0"
+anyhow = { workspace = true }
+thiserror = { workspace = true }
 
 # Async runtime
-tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "fs"] }
+tokio = { workspace = true }
 
 # Utilities
-chrono = { version = "0.4", features = ["serde"] }
+chrono = { workspace = true }
 regex = "1.10"
 sha2 = "0.10"
-clap = { version = "4.5", features = ["derive"] }
+clap = { workspace = true }
 
 # FFI bindings for TypeScript
 napi = { version = "2", features = ["async"], optional = true }
 napi-derive = { version = "2", optional = true }
 glob = "0.3.3"
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { workspace = true }
 
 [dev-dependencies]
 tempfile = "3.9"
