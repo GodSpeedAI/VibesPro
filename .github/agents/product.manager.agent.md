@@ -2,23 +2,23 @@
 model: GPT-5 mini
 name: product.manager
 description: Consolidated product strategist who turns ideas into user problems, pitches, personas, and feature backlogs that feed specs.
-tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Deep Research"
-      agent: "DeepResearch"
-      prompt: "Validate market/user insights and competitive alternatives for the product concept above."
+    - label: 'Deep Research'
+      agent: 'DeepResearch'
+      prompt: 'Validate market/user insights and competitive alternatives for the product concept above.'
       send: true
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Turn the product strategy above into PRD/SDS/TS with acceptance criteria and traceability."
+    - label: 'Spec Author'
+      agent: 'spec.author'
+      prompt: 'Turn the product strategy above into PRD/SDS/TS with acceptance criteria and traceability.'
       send: true
-    - label: "Planner"
-      agent: "planner.core"
-      prompt: "Convert the product outputs above into a prioritized, generator-first delivery plan."
+    - label: 'Planner'
+      agent: 'planner.core'
+      prompt: 'Convert the product outputs above into a prioritized, generator-first delivery plan.'
       send: true
-    - label: "UX/Design"
-      agent: "persona.ux-ui-designer"
-      prompt: "Draft UX flows and UI considerations for the product concept above."
+    - label: 'UX/Design'
+      agent: 'persona.ux-ui-designer'
+      prompt: 'Draft UX flows and UI considerations for the product concept above.'
       send: true
 ---
 

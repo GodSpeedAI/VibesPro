@@ -278,16 +278,16 @@ error!(category = "app", code = 500, "upstream timeout");
 Create `libs/node-logging/logger.ts`:
 
 ```typescript
-import pino from "pino";
+import pino from 'pino';
 
-export function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
+export function logger(service = process.env.SERVICE_NAME || 'vibepro-node') {
     return pino({
         base: {
             service,
-            environment: process.env.APP_ENV || "local",
-            application_version: process.env.APP_VERSION || "dev",
+            environment: process.env.APP_ENV || 'local',
+            application_version: process.env.APP_VERSION || 'dev',
         },
-        messageKey: "message",
+        messageKey: 'message',
         formatters: {
             level(label) {
                 return { level: label };
@@ -296,7 +296,7 @@ export function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
                 return {
                     trace_id: obj.trace_id,
                     span_id: obj.span_id,
-                    category: obj.category || "app",
+                    category: obj.category || 'app',
                     ...obj,
                 };
             },
@@ -308,12 +308,12 @@ export function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
 **Usage:**
 
 ```typescript
-import { logger } from "@vibepro/node-logging/logger";
+import { logger } from '@vibepro/node-logging/logger';
 const log = logger();
 
-log.info({ user_id_hash: "abc123", category: "app" }, "request accepted");
-log.warn({ category: "security", action: "rate_limit" }, "client throttled");
-log.error({ category: "app", code: 500 }, "upstream timeout");
+log.info({ user_id_hash: 'abc123', category: 'app' }, 'request accepted');
+log.warn({ category: 'security', action: 'rate_limit' }, 'client throttled');
+log.error({ category: 'app', code: 500 }, 'upstream timeout');
 ```
 
 **Trace context:** Injected via middleware/headers (OpenTelemetry context propagation)
@@ -546,17 +546,17 @@ echo "✅ Log-trace correlation valid"
 #### Node (`tools/logging/test_pino.js`)
 
 ```javascript
-const { logger } = require("../../libs/node-logging/logger");
-const log = logger("test-service");
+const { logger } = require('../../libs/node-logging/logger');
+const log = logger('test-service');
 
 log.info(
     {
-        trace_id: "abc123def456",
-        span_id: "789ghi",
-        category: "app",
-        user_email: "test@example.com", // Should be redacted
+        trace_id: 'abc123def456',
+        span_id: '789ghi',
+        category: 'app',
+        user_email: 'test@example.com', // Should be redacted
     },
-    "test log message",
+    'test log message',
 );
 ```
 

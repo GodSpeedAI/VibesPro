@@ -1,6 +1,6 @@
 ---
-description: "Hexagonal architecture patterns with code examples"
-applyTo: "libs/**,generators/**"
+description: 'Hexagonal architecture patterns with code examples'
+applyTo: 'libs/**,generators/**'
 kind: instructions
 domain: architecture
 precedence: 16
@@ -51,7 +51,7 @@ export class Order {
     // Factory method - validates invariants
     static create(id: OrderId, items: OrderItem[]): Order {
         if (items.length === 0) {
-            throw new DomainException("Order requires at least one item");
+            throw new DomainException('Order requires at least one item');
         }
         return new Order(id, items, OrderStatus.Pending);
     }
@@ -59,7 +59,7 @@ export class Order {
     // Business methods (behavior, not just data)
     confirm(): void {
         if (this._status === OrderStatus.Cancelled) {
-            throw new DomainException("Cannot confirm cancelled order");
+            throw new DomainException('Cannot confirm cancelled order');
         }
         this._status = OrderStatus.Confirmed;
     }
@@ -77,7 +77,7 @@ export class Email {
 
     static create(email: string): Email {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            throw new DomainException("Invalid email format");
+            throw new DomainException('Invalid email format');
         }
         return new Email(email.toLowerCase().trim());
     }
@@ -132,11 +132,11 @@ export class PostgresOrderRepository implements OrderRepository {
     constructor(private readonly pool: Pool) {}
 
     async save(order: Order): Promise<void> {
-        await this.pool.query("INSERT INTO orders (id, status, total) VALUES ($1, $2, $3)", [order.id.value, order.status, order.total]);
+        await this.pool.query('INSERT INTO orders (id, status, total) VALUES ($1, $2, $3)', [order.id.value, order.status, order.total]);
     }
 
     async findById(id: OrderId): Promise<Order | null> {
-        const result = await this.pool.query("SELECT * FROM orders WHERE id = $1", [id.value]);
+        const result = await this.pool.query('SELECT * FROM orders WHERE id = $1', [id.value]);
         return result.rows[0] ? this.toDomain(result.rows[0]) : null;
     }
 }

@@ -2,34 +2,34 @@
 model: GPT-5 mini
 name: Coder
 description: Lead implementation agent that plans, runs, and verifies multi-step coding tasks with chained MCP tooling and strategic handoffs.
-tools: ["runCommands", "runTasks", "Context7/*", "Exa Search/*", "github/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "edit", "search", "Nx Mcp Server/*", "pylance mcp server/*", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo", "github.vscode-pull-request-github/copilotCodingAgent", "github.vscode-pull-request-github/issue_fetch", "github.vscode-pull-request-github/suggest-fix", "github.vscode-pull-request-github/searchSyntax", "github.vscode-pull-request-github/doSearch", "github.vscode-pull-request-github/renderIssues", "github.vscode-pull-request-github/activePullRequest", "github.vscode-pull-request-github/openPullRequest", "ms-python.python/getPythonEnvironmentInfo", "ms-python.python/getPythonExecutableCommand", "ms-python.python/installPythonPackage", "ms-python.python/configurePythonEnvironment", "todos", "runSubagent", "runTests"]
+tools: ['runCommands', 'runTasks', 'Context7/*', 'Exa Search/*', 'github/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'edit', 'search', 'Nx Mcp Server/*', 'pylance mcp server/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github.vscode-pull-request-github/copilotCodingAgent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest', 'ms-python.python/getPythonEnvironmentInfo', 'ms-python.python/getPythonExecutableCommand', 'ms-python.python/installPythonPackage', 'ms-python.python/configurePythonEnvironment', 'todos', 'runSubagent', 'runTests']
 handoffs:
-    - label: "Deep Research"
-      agent: "DeepResearch"
-      prompt: "Run a focused investigation on the blockers above. Return a concise plan and decision-ready options."
+    - label: 'Deep Research'
+      agent: 'DeepResearch'
+      prompt: 'Run a focused investigation on the blockers above. Return a concise plan and decision-ready options.'
       send: true
-    - label: "Docs Agent"
-      agent: "docs-agent"
-      prompt: "Document the changes above: update API docs, guides, and any new interfaces."
+    - label: 'Docs Agent'
+      agent: 'docs-agent'
+      prompt: 'Document the changes above: update API docs, guides, and any new interfaces.'
       send: true
-    - label: "Test Agent"
-      agent: "test-agent"
-      prompt: "Expand/repair automated coverage for the changes above. Keep failing tests intact."
+    - label: 'Test Agent'
+      agent: 'test-agent'
+      prompt: 'Expand/repair automated coverage for the changes above. Keep failing tests intact.'
       send: true
-    - label: "Lint Agent"
-      agent: "lint-agent"
-      prompt: "Apply style-only fixes for the touched files without changing behavior."
-    - label: "API Agent"
-      agent: "api-agent"
-      prompt: "Own API surfacing for this work. Confirm routes, handlers, and error contracts match expectations."
+    - label: 'Lint Agent'
+      agent: 'lint-agent'
+      prompt: 'Apply style-only fixes for the touched files without changing behavior.'
+    - label: 'API Agent'
+      agent: 'api-agent'
+      prompt: 'Own API surfacing for this work. Confirm routes, handlers, and error contracts match expectations.'
       send: true
-    - label: "Security Agent"
-      agent: "security-agent"
-      prompt: "Perform a quick threat sweep of the changes and outline required remediations."
+    - label: 'Security Agent'
+      agent: 'security-agent'
+      prompt: 'Perform a quick threat sweep of the changes and outline required remediations.'
       send: true
-    - label: "Dev Deploy Agent"
-      agent: "dev-deploy-agent"
-      prompt: "Build and exercise the change in a dev environment. Report smoke-test results and deployment steps"
+    - label: 'Dev Deploy Agent'
+      agent: 'dev-deploy-agent'
+      prompt: 'Build and exercise the change in a dev environment. Report smoke-test results and deployment steps'
       send: true
 ---
 

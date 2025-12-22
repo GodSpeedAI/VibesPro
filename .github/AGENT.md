@@ -62,8 +62,8 @@ See [root copilot-instructions.md](/.github/copilot-instructions.md) for compreh
 
 ```yaml
 ---
-description: "Brief description"
-applyTo: "**" # or specific glob pattern
+description: 'Brief description'
+applyTo: '**' # or specific glob pattern
 kind: instructions
 domain: security|testing|general|etc
 precedence: 10-50 # Lower = higher priority
@@ -177,8 +177,8 @@ ${workspaceFolder} # Workspace root path
 
 ```markdown
 ---
-description: "Brief description of the instruction domain"
-applyTo: "**"
+description: 'Brief description of the instruction domain'
+applyTo: '**'
 kind: instructions
 domain: your-domain
 precedence: 40
@@ -200,8 +200,8 @@ precedence: 40
 
 ```markdown
 ---
-name: "domain.task"
-description: "Brief description of this persona/workflow"
+name: 'domain.task'
+description: 'Brief description of this persona/workflow'
 instructions:
     - /.github/instructions/security.instructions.md
     - /.github/instructions/relevant.instructions.md

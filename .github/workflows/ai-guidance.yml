@@ -5,22 +5,22 @@ on:
     branches:
       - main
     paths:
-      - "temporal_db/**"
-      - "tools/performance/**"
-      - "tools/ai/**"
-      - "tests/**"
-      - "justfile"
-      - ".github/workflows/ai-guidance.yml"
-      - "docs/dev_tdd_ai_guidance.md"
+      - 'temporal_db/**'
+      - 'tools/performance/**'
+      - 'tools/ai/**'
+      - 'tests/**'
+      - 'justfile'
+      - '.github/workflows/ai-guidance.yml'
+      - 'docs/dev_tdd_ai_guidance.md'
   pull_request:
     paths:
-      - "temporal_db/**"
-      - "tools/performance/**"
-      - "tools/ai/**"
-      - "tests/**"
-      - "justfile"
-      - ".github/workflows/ai-guidance.yml"
-      - "docs/dev_tdd_ai_guidance.md"
+      - 'temporal_db/**'
+      - 'tools/performance/**'
+      - 'tools/ai/**'
+      - 'tests/**'
+      - 'justfile'
+      - '.github/workflows/ai-guidance.yml'
+      - 'docs/dev_tdd_ai_guidance.md'
 
 jobs:
   ai-guidance:
@@ -28,14 +28,14 @@ jobs:
     env:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - uses: pnpm/action-setup@v4
         with:
@@ -43,8 +43,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.11.1"
-          cache: "pnpm"
+          node-version: '20.11.1'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

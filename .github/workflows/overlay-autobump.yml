@@ -3,7 +3,7 @@ name: devbox-overlay-autobump
 on:
   # Run on a schedule (daily at 03:00 UTC) and allow manual dispatch
   schedule:
-    - cron: "0 3 * * *"
+    - cron: '0 3 * * *'
   workflow_dispatch: {}
 
 permissions:

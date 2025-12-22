@@ -1,6 +1,6 @@
 ---
-description: "Developer-centric docs guardrails"
-applyTo: "docs/dev_*"
+description: 'Developer-centric docs guardrails'
+applyTo: 'docs/dev_*'
 kind: instructions
 domain: docs
 precedence: 31

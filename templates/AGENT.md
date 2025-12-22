@@ -56,42 +56,42 @@ templates/
 # Questions to ask user during generation
 _templates_suffix: .j2
 _envops:
-    block_start_string: "{%"
-    block_end_string: "%}"
-    variable_start_string: "{{"
-    variable_end_string: "}}"
-    comment_start_string: "{#"
-    comment_end_string: "#}"
+    block_start_string: '{%'
+    block_end_string: '%}'
+    variable_start_string: '{{'
+    variable_end_string: '}}'
+    comment_start_string: '{#'
+    comment_end_string: '#}'
 
 # Project configuration
 project_name:
     type: str
-    help: "Project name (human-readable)"
-    default: "My Awesome Project"
+    help: 'Project name (human-readable)'
+    default: 'My Awesome Project'
 
 project_slug:
     type: str
-    help: "Project slug (kebab-case, used for directories)"
+    help: 'Project slug (kebab-case, used for directories)'
     default: "{{ project_name|lower|replace(' ', '-') }}"
 
 description:
     type: str
-    help: "Project description"
-    default: ""
+    help: 'Project description'
+    default: ''
 
 author_name:
     type: str
-    help: "Your name"
-    default: "{{ author_name }}"
+    help: 'Your name'
+    default: '{{ author_name }}'
 
 author_email:
     type: str
-    help: "Your email"
-    default: "{{ author_email }}"
+    help: 'Your email'
+    default: '{{ author_email }}'
 
 license:
     type: str
-    help: "License"
+    help: 'License'
     choices:
         - MIT
         - Apache-2.0
@@ -100,27 +100,27 @@ license:
 
 use_typescript:
     type: bool
-    help: "Use TypeScript?"
+    help: 'Use TypeScript?'
     default: true
 
 use_python:
     type: bool
-    help: "Include Python support?"
+    help: 'Include Python support?'
     default: false
 
 include_web_app:
     type: bool
-    help: "Include Next.js web app?"
+    help: 'Include Next.js web app?'
     default: true
 
 include_api:
     type: bool
-    help: "Include API backend?"
+    help: 'Include API backend?'
     default: true
 
 database:
     type: str
-    help: "Database"
+    help: 'Database'
     choices:
         - postgresql
         - mongodb

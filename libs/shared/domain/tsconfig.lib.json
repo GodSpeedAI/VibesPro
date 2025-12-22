@@ -1,14 +1,9 @@
 {
-  "extends": "../../../tsconfig.base.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "outDir": "../../../dist/out-tsc",
+    "declaration": true
   },
-  "files": [],
-  "include": []
+  "include": ["src/**/*.ts"],
+  "exclude": ["jest.config.cjs", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

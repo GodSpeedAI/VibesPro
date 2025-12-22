@@ -2,23 +2,23 @@
 model: GPT-5 mini
 name: spec.author
 description: Consolidated spec author for PRD/SDS/TS (includes functional, NFR, lean/wide modes) with traceability and MCP grounding.
-tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Product Manager"
-      agent: "product.manager"
-      prompt: "Validate the spec outline above against product goals and success metrics."
+    - label: 'Product Manager'
+      agent: 'product.manager'
+      prompt: 'Validate the spec outline above against product goals and success metrics.'
       send: true
-    - label: "Planner"
-      agent: "planner.core"
-      prompt: "Convert the spec above into a prioritized delivery plan with generator-first steps."
+    - label: 'Planner'
+      agent: 'planner.core'
+      prompt: 'Convert the spec above into a prioritized delivery plan with generator-first steps.'
       send: true
-    - label: "Implementer"
-      agent: "implementer.core"
-      prompt: "Implement the spec per acceptance criteria; follow generator-first + TDD."
+    - label: 'Implementer'
+      agent: 'implementer.core'
+      prompt: 'Implement the spec per acceptance criteria; follow generator-first + TDD.'
       send: true
-    - label: "Reviewer"
-      agent: "reviewer.core"
-      prompt: "Review the spec for completeness, risks, and testability; provide actionable changes."
+    - label: 'Reviewer'
+      agent: 'reviewer.core'
+      prompt: 'Review the spec for completeness, risks, and testability; provide actionable changes.'
       send: true
 ---
 

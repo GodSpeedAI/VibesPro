@@ -11,12 +11,12 @@ To ensure that your generator is idempotent, please follow these steps:
 2.  **Use `ensureIdempotentWrite` for all file operations:** The `ensureIdempotentWrite` function will ensure that you don't overwrite existing files without checking their content. A typical usage pattern looks like this:
 
     ```ts
-    import { ensureIdempotentWrite } from "../../src/generators/utils/idempotency";
+    import { ensureIdempotentWrite } from '../../src/generators/utils/idempotency';
 
     try {
         ensureIdempotentWrite(tree, targetPath, templateContent, {
             merge: true,
-            preserveMarkers: ["// <example:start>", "// <example:end>"],
+            preserveMarkers: ['// <example:start>', '// <example:end>'],
         });
         // The helper skips the write when the normalized content is unchanged.
     } catch (error) {

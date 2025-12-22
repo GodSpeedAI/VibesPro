@@ -125,15 +125,15 @@ tools/vibepro/
 ```ts
 export interface RouteContractSchema {
     name: string;
-    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     path: string;
-    scope?: "api" | "shared";
+    scope?: 'api' | 'shared';
     directory?: string;
-    validator?: "zod" | "valibot" | "none";
+    validator?: 'zod' | 'valibot' | 'none';
     statusCodes?: string;
     withE2E?: boolean;
-    client?: "typescript" | "none";
-    unitTestRunner?: "vitest" | "jest";
+    client?: 'typescript' | 'none';
+    unitTestRunner?: 'vitest' | 'jest';
     tags?: string;
 }
 ```

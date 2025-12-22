@@ -2,27 +2,27 @@
 name: persona.ux-ui-designer
 description: Senior UX/UI designer persona that turns product stories into flows and design briefs for delivery.
 model: GPT-5 mini
-tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Product Manager"
-      agent: "product.manager"
-      prompt: "Validate the UX framing above against product goals and success metrics."
+    - label: 'Product Manager'
+      agent: 'product.manager'
+      prompt: 'Validate the UX framing above against product goals and success metrics.'
       send: true
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Embed the UX/flows above into PRD/SDS/TS acceptance criteria."
+    - label: 'Spec Author'
+      agent: 'spec.author'
+      prompt: 'Embed the UX/flows above into PRD/SDS/TS acceptance criteria.'
       send: true
-    - label: "Planner"
-      agent: "planner.core"
-      prompt: "Turn the UX deliverables above into a prioritized plan for implementation."
+    - label: 'Planner'
+      agent: 'planner.core'
+      prompt: 'Turn the UX deliverables above into a prioritized plan for implementation.'
       send: true
-    - label: "Implementer"
-      agent: "implementer.core"
-      prompt: "Implement the UX decisions above using generator-first workflow."
+    - label: 'Implementer'
+      agent: 'implementer.core'
+      prompt: 'Implement the UX decisions above using generator-first workflow.'
       send: true
-    - label: "Reviewer"
-      agent: "reviewer.core"
-      prompt: "Review the UX/flow implementation for fidelity and accessibility."
+    - label: 'Reviewer'
+      agent: 'reviewer.core'
+      prompt: 'Review the UX/flow implementation for fidelity and accessibility.'
       send: true
 ---
 

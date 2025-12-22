@@ -3,10 +3,10 @@ kind: prompt
 domain: spec
 task: tasks-template
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating numbered task lists from implementation plans and specifications."
+tools: ['codebase', 'search']
+description: 'Template for generating numbered task lists from implementation plans and specifications.'
 ---
 
 # Tasks Template

@@ -6,10 +6,10 @@ thread: tdd-plan
 matrix_ids: []
 budget: M
 precedence: high
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search", "runTests"]
-description: "Produce a VibePro-aligned TDD implementation plan grounded in specs."
+tools: ['codebase', 'search', 'runTests']
+description: 'Produce a VibePro-aligned TDD implementation plan grounded in specs.'
 ---
 
 # Prompt: tdd-plan

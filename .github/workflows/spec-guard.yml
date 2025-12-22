@@ -14,8 +14,8 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     env:
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup pnpm
@@ -24,8 +24,8 @@ jobs:
           run_install: false
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '20'
+          cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
       - name: Verify pnpm installation
         run: pnpm --version

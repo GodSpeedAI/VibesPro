@@ -94,22 +94,22 @@ describe('Merged Project Structure', () => {
     # copier.yml - Derived from VibePDK template configuration
     project_name:
         type: str
-        help: "Name of the project"
-        validator: "{% if not project_name %}Required field{% endif %}"
+        help: 'Name of the project'
+        validator: '{% if not project_name %}Required field{% endif %}'
 
     author_name:
         type: str
         help: "Author's name"
-        default: "Unknown Author"
+        default: 'Unknown Author'
 
     include_ai_workflows:
         type: bool
-        help: "Include AI-enhanced development workflows"
+        help: 'Include AI-enhanced development workflows'
         default: true
 
     architecture_style:
         type: str
-        help: "Primary architecture pattern"
+        help: 'Primary architecture pattern'
         choices:
             - hexagonal
             - layered
@@ -232,16 +232,16 @@ describe('Hybrid Build System', () => {
 
 ```typescript
 // Test file: tests/generators/app.test.ts
-describe("Application Generator", () => {
-    it("should generate React applications with proper architecture", async () => {
-        const result = await runGenerator("app", {
-            name: "admin-portal",
-            framework: "next",
-            domains: ["user-management", "billing"],
+describe('Application Generator', () => {
+    it('should generate React applications with proper architecture', async () => {
+        const result = await runGenerator('app', {
+            name: 'admin-portal',
+            framework: 'next',
+            domains: ['user-management', 'billing'],
         });
 
-        expect(result.files).toContain("apps/admin-portal/pages/index.tsx");
-        expect(result.files).toContain("apps/admin-portal/lib/api-client.ts");
+        expect(result.files).toContain('apps/admin-portal/pages/index.tsx');
+        expect(result.files).toContain('apps/admin-portal/lib/api-client.ts');
     });
 });
 ```
@@ -300,8 +300,8 @@ describe("Application Generator", () => {
 
 ```typescript
 // Test file: tests/type-system/integration.test.ts
-describe("Type System Integration", () => {
-    it("should generate consistent types across languages", async () => {
+describe('Type System Integration', () => {
+    it('should generate consistent types across languages', async () => {
         const schema = loadDatabaseSchema();
         const tsTypes = generateTypeScriptTypes(schema);
         const pyTypes = generatePythonTypes(schema);
@@ -445,14 +445,14 @@ def test_tsink_integration():
 
 ```typescript
 // Test file: tests/ai/context-manager.test.ts
-describe("AI Context Manager", () => {
-    it("should provide optimal context within token budget", async () => {
+describe('AI Context Manager', () => {
+    it('should provide optimal context within token budget', async () => {
         const manager = new AIContextManager({
             maxTokens: 8000,
             reservedTokens: 2000,
         });
 
-        const context = await manager.getOptimalContext("Create user entity");
+        const context = await manager.getOptimalContext('Create user entity');
         expect(context.tokenCount).toBeLessThanOrEqual(6000);
         expect(context.relevanceScore).toBeGreaterThan(0.8);
     });
@@ -516,8 +516,8 @@ describe("AI Context Manager", () => {
 
 ```typescript
 // Test file: tests/integration/end-to-end.test.ts
-describe("End-to-End Integration", () => {
-    it("should generate, build, and test complete project", async () => {
+describe('End-to-End Integration', () => {
+    it('should generate, build, and test complete project', async () => {
         // Generate project using Copier
         // Build all targets
         // Run all tests
@@ -641,8 +641,8 @@ describe('Documentation Generation', () => {
 
 ```typescript
 // Test file: tests/performance/benchmarks.test.ts
-describe("Performance Benchmarks", () => {
-    it("should meet performance targets", async () => {
+describe('Performance Benchmarks', () => {
+    it('should meet performance targets', async () => {
         const metrics = await runPerformanceSuite();
         expect(metrics.generationTime).toBeLessThan(30000); // 30 seconds
         expect(metrics.buildTime).toBeLessThan(120000); // 2 minutes

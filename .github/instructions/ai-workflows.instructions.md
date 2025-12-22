@@ -1,6 +1,6 @@
 ---
-description: "AI workflows policy (TDD/Debug)"
-applyTo: "**"
+description: 'AI workflows policy (TDD/Debug)'
+applyTo: '**'
 kind: instructions
 domain: ai-workflows
 precedence: 20

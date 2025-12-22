@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       run_conversion:
-        description: "Run pandoc conversion tests (html/docx/epub)"
+        description: 'Run pandoc conversion tests (html/docx/epub)'
         required: false
-        default: "false"
+        default: 'false'
 
 concurrency:
   group: docs-${{ github.ref }}
@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ matrix.node }}
-          cache: "pnpm"
+          cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Verify pnpm installation
@@ -98,7 +98,7 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ matrix.node }}
-          cache: "pnpm"
+          cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Verify pnpm installation

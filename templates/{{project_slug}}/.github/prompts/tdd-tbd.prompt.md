@@ -6,10 +6,10 @@ thread: tdd-tbd
 matrix_ids: []
 budget: M
 precedence: high
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search", "runTests"]
-description: "Lay out trunk-based development flow for TDD cycles across tasks and branches."
+tools: ['codebase', 'search', 'runTests']
+description: 'Lay out trunk-based development flow for TDD cycles across tasks and branches.'
 ---
 
 # Prompt: tdd-tbd

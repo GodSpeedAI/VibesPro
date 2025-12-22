@@ -1,7 +1,7 @@
 ---
-description: "Interactive mode: AI audits project then asks targeted questions to customize copilot-instructions.md"
+description: 'Interactive mode: AI audits project then asks targeted questions to customize copilot-instructions.md'
 model: GPT-5 mini
-tools: ["codebase", "search"]
+tools: ['codebase', 'search']
 ---
 
 # Customize Project Instructions Mode

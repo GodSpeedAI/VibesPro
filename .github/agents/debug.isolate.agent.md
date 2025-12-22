@@ -4,9 +4,9 @@ domain: debug
 task: isolate
 budget: M
 model: ${ default_model }
-name: "Debug Isolate Mode"
+name: 'Debug Isolate Mode'
 description: Debug isolate mode for narrowing down issues to minimal reproducible cases
-tools: ["codebase", "search", "runInTerminal", "runTests"]
+tools: ['codebase', 'search', 'runInTerminal', 'runTests']
 ---
 
 # Debug Isolate Mode

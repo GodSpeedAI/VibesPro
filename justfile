@@ -391,6 +391,11 @@ test-type-generator:
 	@echo "🧪 Running type-generator tests..."
 	cd tools/type-generator && pnpm exec jest
 
+# Run generator smoke tests (validates Nx generators produce correct output)
+test-generator-smoke:
+	@echo "🧪 Running generator smoke tests..."
+	pnpm exec nx run generator-smoke-tests:smoke-test
+
 test-generation:
 	@echo "🧪 Testing template generation..."
 	rm -rf ./test-output

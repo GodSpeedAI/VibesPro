@@ -5,10 +5,10 @@ task: generate
 thread: docs-generate
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Generate AI guidance docs from product and developer specs."
+tools: ['codebase', 'search']
+description: 'Generate AI guidance docs from product and developer specs.'
 ---
 
 # Generate AI Guidance Docs from Product & Developer Specs

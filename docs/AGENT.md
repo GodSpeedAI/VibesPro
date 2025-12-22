@@ -165,7 +165,7 @@ When specifications conflict:
 
 ```yaml
 ---
-title: "Feature Name"
+title: 'Feature Name'
 matrix_ids:
     - DEV-PRD-042
     - DEV-SDS-015
@@ -293,7 +293,7 @@ After a development session, save summary in `docs/work-summaries/`:
 ```markdown
 ---
 date: 2025-10-13
-session: "Feature X Implementation"
+session: 'Feature X Implementation'
 specs:
     - DEV-PRD-042
     - DEV-SDS-015

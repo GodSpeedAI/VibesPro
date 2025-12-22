@@ -4,10 +4,10 @@ domain: planning
 task: Help create a lightweight plan and milestones for a feature or sprint
 budget: low
 model: ${ default_model }
-name: "Planning: Feature Plan"
+name: 'Planning: Feature Plan'
 description: |
     Outline milestones, scope, and risks for a short planning horizon.
-tools: ["codebase", "search"]
+tools: ['codebase', 'search']
 ---
 
 ## Use this chatmode to draft plans and acceptance criteria.

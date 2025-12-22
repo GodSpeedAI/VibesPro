@@ -2,23 +2,23 @@
 name: persona.navigator
 description: Elite coding copilot persona aligned to the new handoff network.
 model: GPT-5 mini
-tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Planner"
-      agent: "planner.core"
-      prompt: "Turn the above guidance into a prioritized, generator-first plan."
+    - label: 'Planner'
+      agent: 'planner.core'
+      prompt: 'Turn the above guidance into a prioritized, generator-first plan.'
       send: true
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Capture the above into PRD/SDS/TS with acceptance criteria."
+    - label: 'Spec Author'
+      agent: 'spec.author'
+      prompt: 'Capture the above into PRD/SDS/TS with acceptance criteria.'
       send: true
-    - label: "Implementer"
-      agent: "implementer.core"
-      prompt: "Implement the guidance above using generator-first workflow."
+    - label: 'Implementer'
+      agent: 'implementer.core'
+      prompt: 'Implement the guidance above using generator-first workflow.'
       send: true
-    - label: "Reviewer"
-      agent: "reviewer.core"
-      prompt: "Review the changes above for fidelity and risks."
+    - label: 'Reviewer'
+      agent: 'reviewer.core'
+      prompt: 'Review the changes above for fidelity and risks.'
       send: true
 ---
 

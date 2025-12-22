@@ -152,7 +152,7 @@ CMD ["node", "server.js"]
 
 ```yaml
 # ops/docker/docker-compose.yml
-version: "3.9"
+version: '3.9'
 
 services:
     web:
@@ -160,7 +160,7 @@ services:
             context: ../..
             dockerfile: ops/docker/Dockerfile.dev
         ports:
-            - "3000:3000"
+            - '3000:3000'
         environment:
             - NODE_ENV=development
             - DATABASE_URL=postgresql://postgres:postgres@db:5432/vibespro_dev
@@ -176,7 +176,7 @@ services:
             context: ../..
             dockerfile: ops/docker/Dockerfile.api
         ports:
-            - "3001:3001"
+            - '3001:3001'
         environment:
             - NODE_ENV=development
             - DATABASE_URL=postgresql://postgres:postgres@db:5432/vibespro_dev
@@ -191,7 +191,7 @@ services:
     db:
         image: postgres:15-alpine
         ports:
-            - "5432:5432"
+            - '5432:5432'
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
@@ -202,7 +202,7 @@ services:
     redis:
         image: redis:7-alpine
         ports:
-            - "6379:6379"
+            - '6379:6379'
         volumes:
             - redis_data:/data
 
@@ -255,9 +255,9 @@ spec:
                         protocol: TCP
                   env:
                       - name: NODE_ENV
-                        value: "production"
+                        value: 'production'
                       - name: PORT
-                        value: "3001"
+                        value: '3001'
                       - name: DATABASE_URL
                         valueFrom:
                             secretKeyRef:
@@ -265,11 +265,11 @@ spec:
                                 key: database-url
                   resources:
                       requests:
-                          cpu: "250m"
-                          memory: "512Mi"
+                          cpu: '250m'
+                          memory: '512Mi'
                       limits:
-                          cpu: "1000m"
-                          memory: "1Gi"
+                          cpu: '1000m'
+                          memory: '1Gi'
                   livenessProbe:
                       httpGet:
                           path: /health
@@ -438,7 +438,7 @@ rule_files:
 
 scrape_configs:
     # Application metrics
-    - job_name: "vibespro-api"
+    - job_name: 'vibespro-api'
       kubernetes_sd_configs:
           - role: pod
             namespaces:
@@ -453,17 +453,17 @@ scrape_configs:
             regex: api
 
     # Node metrics
-    - job_name: "node-exporter"
+    - job_name: 'node-exporter'
       kubernetes_sd_configs:
           - role: node
       relabel_configs:
           - source_labels: [__address__]
-            regex: "(.*):10250"
-            replacement: "${1}:9100"
+            regex: '(.*):10250'
+            replacement: '${1}:9100'
             target_label: __address__
 
     # PostgreSQL metrics
-    - job_name: "postgres"
+    - job_name: 'postgres'
       static_configs:
           - targets:
                 - postgres-exporter:9187
@@ -485,8 +485,8 @@ groups:
             labels:
                 severity: critical
             annotations:
-                summary: "High error rate detected"
-                description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.job }}"
+                summary: 'High error rate detected'
+                description: 'Error rate is {{ $value | humanizePercentage }} for {{ $labels.job }}'
 
           - alert: HighResponseTime
             expr: |
@@ -495,8 +495,8 @@ groups:
             labels:
                 severity: warning
             annotations:
-                summary: "High response time"
-                description: "95th percentile response time is {{ $value }}s"
+                summary: 'High response time'
+                description: '95th percentile response time is {{ $value }}s'
 
           - alert: PodDown
             expr: |
@@ -505,8 +505,8 @@ groups:
             labels:
                 severity: critical
             annotations:
-                summary: "Pod not running"
-                description: "Pod {{ $labels.pod }} is in {{ $labels.phase }} state"
+                summary: 'Pod not running'
+                description: 'Pod {{ $labels.pod }} is in {{ $labels.phase }} state'
 ```
 
 ## 📚 Related Instructions

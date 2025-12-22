@@ -2,27 +2,27 @@
 name: persona.ux-ui
 description: UX/UI considerations entrypoint aligned to the product/spec/plan network.
 model: GPT-5 mini
-tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Product Manager"
-      agent: "product.manager"
-      prompt: "Align the UX/UI considerations above with product goals, audience, and metrics."
+    - label: 'Product Manager'
+      agent: 'product.manager'
+      prompt: 'Align the UX/UI considerations above with product goals, audience, and metrics.'
       send: true
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Embed the UX/UI considerations above into acceptance criteria and constraints."
+    - label: 'Spec Author'
+      agent: 'spec.author'
+      prompt: 'Embed the UX/UI considerations above into acceptance criteria and constraints.'
       send: true
-    - label: "Planner"
-      agent: "planner.core"
-      prompt: "Translate the UX/UI considerations above into a delivery plan."
+    - label: 'Planner'
+      agent: 'planner.core'
+      prompt: 'Translate the UX/UI considerations above into a delivery plan.'
       send: true
-    - label: "Implementer"
-      agent: "implementer.core"
-      prompt: "Implement the UX/UI approach above using generator-first workflow."
+    - label: 'Implementer'
+      agent: 'implementer.core'
+      prompt: 'Implement the UX/UI approach above using generator-first workflow.'
       send: true
-    - label: "Reviewer"
-      agent: "reviewer.core"
-      prompt: "Review the UX/UI implementation for fidelity and accessibility."
+    - label: 'Reviewer'
+      agent: 'reviewer.core'
+      prompt: 'Review the UX/UI implementation for fidelity and accessibility.'
       send: true
 ---
 

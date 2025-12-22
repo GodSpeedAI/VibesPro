@@ -5,10 +5,10 @@ task: hardening
 thread: test-hardening
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Harden tests for recently touched SDS components and update traceability."
+tools: ['codebase', 'search']
+description: 'Harden tests for recently touched SDS components and update traceability.'
 ---
 
 # Test Hardening & Quality Gates

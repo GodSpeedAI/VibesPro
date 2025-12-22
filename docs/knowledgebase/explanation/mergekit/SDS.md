@@ -61,8 +61,8 @@ templates/
 # copier.yml example
 _templates_suffix: .jinja
 _envops:
-    block_start_string: "{%"
-    block_end_string: "%}"
+    block_start_string: '{%'
+    block_end_string: '%}'
 
 project_type:
     type: str
@@ -305,24 +305,24 @@ _ai-context-injection:
 interface BuildDecision {
     isMonorepo: boolean;
     hasInterdependencies: boolean;
-    taskComplexity: "simple" | "medium" | "complex";
+    taskComplexity: 'simple' | 'medium' | 'complex';
     aiIntegration: boolean;
 }
 
 function selectBuildStrategy(decision: BuildDecision): BuildStrategy {
-    if (!decision.isMonorepo && decision.taskComplexity === "simple") {
-        return "direct-tools";
+    if (!decision.isMonorepo && decision.taskComplexity === 'simple') {
+        return 'direct-tools';
     }
 
-    if (decision.hasInterdependencies || decision.taskComplexity === "complex") {
-        return "nx-orchestration";
+    if (decision.hasInterdependencies || decision.taskComplexity === 'complex') {
+        return 'nx-orchestration';
     }
 
     if (decision.aiIntegration) {
-        return "ai-enhanced";
+        return 'ai-enhanced';
     }
 
-    return "direct-tools";
+    return 'direct-tools';
 }
 ```
 
@@ -350,14 +350,14 @@ graph LR
 ```typescript
 // Custom ESLint rules for hexagonal architecture
 export const hexagonalArchitectureRules = {
-    "hex/no-infrastructure-in-domain": {
+    'hex/no-infrastructure-in-domain': {
         create(context) {
             return {
                 ImportDeclaration(node) {
                     if (isDomainFile(context.getFilename()) && isInfrastructureImport(node.source.value)) {
                         context.report({
                             node,
-                            message: "Domain layer cannot import from infrastructure layer",
+                            message: 'Domain layer cannot import from infrastructure layer',
                         });
                     }
                 },
@@ -365,7 +365,7 @@ export const hexagonalArchitectureRules = {
         },
     },
 
-    "hex/port-adapter-compliance": {
+    'hex/port-adapter-compliance': {
         create(context) {
             // Validate port/adapter pattern compliance
         },

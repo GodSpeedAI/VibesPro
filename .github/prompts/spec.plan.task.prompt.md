@@ -5,10 +5,10 @@ task: plan-task
 thread: spec-plan-task
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating Task plans from technical specifications and implementation requirements."
+tools: ['codebase', 'search']
+description: 'Template for generating Task plans from technical specifications and implementation requirements.'
 ---
 
 # Task Plan Template

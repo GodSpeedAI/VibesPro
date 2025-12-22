@@ -26,11 +26,11 @@ export default async function Page() {
 ### Next.js (Pages Router)
 
 ```typescript
-import { ApiClient, env } from "@vibes-pro/shared-web";
+import { ApiClient, env } from '@vibes-pro/shared-web';
 
 export async function getServerSideProps() {
     const client = new ApiClient({ baseUrl: env.API_URL });
-    const data = await client.get("/api/users");
+    const data = await client.get('/api/users');
     return { props: { data } };
 }
 ```
@@ -38,12 +38,12 @@ export async function getServerSideProps() {
 ### Remix
 
 ```typescript
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { ApiClient, env } from "@vibes-pro/shared-web";
+import { json, type LoaderFunctionArgs } from '@remix-run/node';
+import { ApiClient, env } from '@vibes-pro/shared-web';
 
 export async function loader({ request }: LoaderFunctionArgs) {
     const client = new ApiClient({ baseUrl: env.API_URL });
-    const data = await client.get("/api/users");
+    const data = await client.get('/api/users');
     return json({ data });
 }
 ```
@@ -69,7 +69,7 @@ export default function App() {
 ## Validation
 
 ```typescript
-import { UserSchema, validate } from "@vibes-pro/shared-web";
+import { UserSchema, validate } from '@vibes-pro/shared-web';
 
 const user = validate.user(data); // Throws if invalid
 const result = safeParse.user(data); // Returns { success, data, error }

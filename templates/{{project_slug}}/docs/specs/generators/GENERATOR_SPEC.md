@@ -162,12 +162,12 @@ export interface <Type>Schema {
 Generators can be composed to create more complex workflows. For example, a `feature` generator could call the `component` and `service` generators to scaffold out a new feature.
 
 ```typescript
-import { Tree } from "@nx/devkit";
-import { componentGenerator } from "../component/generator";
-import { serviceGenerator } from "../service/generator";
+import { Tree } from '@nx/devkit';
+import { componentGenerator } from '../component/generator';
+import { serviceGenerator } from '../service/generator';
 
 export async function featureGenerator(tree: Tree, schema: any) {
-    await componentGenerator(tree, { name: schema.name, style: "css" });
+    await componentGenerator(tree, { name: schema.name, style: 'css' });
     await serviceGenerator(tree, { name: schema.name, port: 3000 });
 }
 ```

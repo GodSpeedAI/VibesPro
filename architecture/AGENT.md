@@ -728,10 +728,10 @@ Context:
 
 ```typescript
 // tools/architecture/store-adr.ts
-import { TemporalDb } from "../temporal_db";
+import { TemporalDb } from '../temporal_db';
 
 async function storeADR(adrFile: string) {
-    const content = await readFile(adrFile, "utf-8");
+    const content = await readFile(adrFile, 'utf-8');
     const adr = parseADR(content);
 
     await TemporalDb.storeDecision({

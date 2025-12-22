@@ -5,10 +5,10 @@ task: plan-prd
 thread: spec-plan-prd
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating Product Requirements Document (PRD) plans from feature specifications."
+tools: ['codebase', 'search']
+description: 'Template for generating Product Requirements Document (PRD) plans from feature specifications.'
 ---
 
 # Product Requirements Document (PRD) Plan Template

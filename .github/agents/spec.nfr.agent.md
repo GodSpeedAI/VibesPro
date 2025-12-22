@@ -2,11 +2,11 @@
 model: GPT-5 mini
 name: spec.nfr
 description: NFR-focused entrypoint that routes to spec.author to embed measurable quality bars.
-tools: ["runCommands", "runTasks", "search", "Memory Tool/*", "Vibe Check/*"]
+tools: ['runCommands', 'runTasks', 'search', 'Memory Tool/*', 'Vibe Check/*']
 handoffs:
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Capture NFRs (perf/security/reliability/accessibility/scale) with metrics and integrate into the spec above."
+    - label: 'Spec Author'
+      agent: 'spec.author'
+      prompt: 'Capture NFRs (perf/security/reliability/accessibility/scale) with metrics and integrate into the spec above.'
       send: true
 ---
 

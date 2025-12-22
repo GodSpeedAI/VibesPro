@@ -23,34 +23,34 @@ pnpm install
 ### Basic Logging
 
 ```javascript
-const { logger } = require("@vibepro/node-logging/logger");
+const { logger } = require('@vibepro/node-logging/logger');
 
-const log = logger("my-service");
+const log = logger('my-service');
 
 // App log
-log.info({ category: "app", user_id_hash: "abc123" }, "request accepted");
+log.info({ category: 'app', user_id_hash: 'abc123' }, 'request accepted');
 
 // Security log
-log.warn({ category: "security", action: "rate_limit" }, "client throttled");
+log.warn({ category: 'security', action: 'rate_limit' }, 'client throttled');
 
 // Error log with stack trace
-log.error({ category: "app", code: 500, err: new Error("Timeout") }, "upstream timeout");
+log.error({ category: 'app', code: 500, err: new Error('Timeout') }, 'upstream timeout');
 ```
 
 ### With Trace Context
 
 ```javascript
-const log = logger("my-service");
+const log = logger('my-service');
 
 // Inject trace context from OpenTelemetry or headers
 log.info(
     {
-        trace_id: "abc123def456...",
-        span_id: "789ghi...",
-        category: "app",
-        user_id: "user-123",
+        trace_id: 'abc123def456...',
+        span_id: '789ghi...',
+        category: 'app',
+        user_id: 'user-123',
     },
-    "user action performed",
+    'user action performed',
 );
 ```
 

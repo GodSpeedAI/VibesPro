@@ -5,10 +5,10 @@ task: workflow
 thread: debug-workflow
 matrix_ids: [DEV-PRD-004]
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["search", "runTests", "Context7/*", "Exa Search/*", "github/*", "Ref/*", "Vibe Check/*"]
-description: "Structured debugging phases from report to regression."
+tools: ['search', 'runTests', 'Context7/*', 'Exa Search/*', 'github/*', 'Ref/*', 'Vibe Check/*']
+description: 'Structured debugging phases from report to regression.'
 ---
 
 # CI/CD Workflow Diagnostic & Resolution Protocol

@@ -182,29 +182,29 @@ Principle: The generator specification template must be comprehensive, AI-friend
 ```typescript
 interface SchemaPropertyTypes {
     string: {
-        validation: ["pattern", "minLength", "maxLength", "format"];
-        examples: ["kebab-case names", "email", "url"];
+        validation: ['pattern', 'minLength', 'maxLength', 'format'];
+        examples: ['kebab-case names', 'email', 'url'];
     };
     number: {
-        validation: ["minimum", "maximum", "multipleOf"];
-        examples: ["port numbers", "retry counts"];
+        validation: ['minimum', 'maximum', 'multipleOf'];
+        examples: ['port numbers', 'retry counts'];
     };
     boolean: {
         defaults: true;
-        examples: ["skipTests", "buildable", "publishable"];
+        examples: ['skipTests', 'buildable', 'publishable'];
     };
     array: {
-        validation: ["minItems", "maxItems", "uniqueItems"];
-        items: "string | object";
-        examples: ["tags", "dependencies"];
+        validation: ['minItems', 'maxItems', 'uniqueItems'];
+        items: 'string | object';
+        examples: ['tags', 'dependencies'];
     };
     enum: {
-        validation: ["enum values"];
-        examples: ["language: typescript|python", "framework: next|remix"];
+        validation: ['enum values'];
+        examples: ['language: typescript|python', 'framework: next|remix'];
     };
     conditional: {
-        keywords: ["if", "then", "else"];
-        examples: ["require boundedContext when type=domain"];
+        keywords: ['if', 'then', 'else'];
+        examples: ['require boundedContext when type=domain'];
     };
 }
 ```
@@ -364,16 +364,16 @@ function validateSchema(schema: MySchema): void {
 **Test Harness Integration:**
 
 ```typescript
-import { runGenerator } from "./utils"; // Existing project utility
+import { runGenerator } from './utils'; // Existing project utility
 
-it("should generate all expected files", async () => {
-    const result = await runGenerator("domain-entity", {
-        name: "user",
-        boundedContext: "identity",
+it('should generate all expected files', async () => {
+    const result = await runGenerator('domain-entity', {
+        name: 'user',
+        boundedContext: 'identity',
     });
 
     expect(result.success).toBe(true);
-    expect(result.files).toContain("libs/user/domain/entities/User.ts");
+    expect(result.files).toContain('libs/user/domain/entities/User.ts');
 });
 ```
 

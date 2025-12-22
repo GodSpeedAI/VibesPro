@@ -2,19 +2,19 @@
 model: GPT-5 mini
 name: docs-agent
 description: Documentation specialist for API references, guides, and changelog notes with zero logic changes.
-tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo", "github.vscode-pull-request-github/copilotCodingAgent", "github.vscode-pull-request-github/issue_fetch", "github.vscode-pull-request-github/suggest-fix", "github.vscode-pull-request-github/searchSyntax", "github.vscode-pull-request-github/doSearch", "github.vscode-pull-request-github/renderIssues", "github.vscode-pull-request-github/activePullRequest", "github.vscode-pull-request-github/openPullRequest"]
+tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github.vscode-pull-request-github/copilotCodingAgent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest']
 handoffs:
-    - label: "Lint Docs"
-      agent: "lint-agent"
-      prompt: "Polish and lint the documentation updates above without altering semantics."
+    - label: 'Lint Docs'
+      agent: 'lint-agent'
+      prompt: 'Polish and lint the documentation updates above without altering semantics.'
       send: true
-    - label: "Validate Examples"
-      agent: "test-agent"
-      prompt: "Add or fix tests that exercise the code samples and behaviors described above."
+    - label: 'Validate Examples'
+      agent: 'test-agent'
+      prompt: 'Add or fix tests that exercise the code samples and behaviors described above.'
       send: true
-    - label: "Publish Docs"
-      agent: "dev-deploy-agent"
-      prompt: "Publish the docs to the dev/staging environment and report deploy steps."
+    - label: 'Publish Docs'
+      agent: 'dev-deploy-agent'
+      prompt: 'Publish the docs to the dev/staging environment and report deploy steps.'
       send: true
 ---
 

@@ -59,14 +59,14 @@ Jest will automatically discover and run tests matching these patterns:
 #### File System Matchers
 
 ```typescript
-expect("/path/to/file").toBeFile();
-expect("/path/to/directory").toBeDirectory();
+expect('/path/to/file').toBeFile();
+expect('/path/to/directory').toBeDirectory();
 ```
 
 #### TypeScript Validation Matcher
 
 ```typescript
-expect("/path/to/typescript-file.ts").toHaveValidTypeScript();
+expect('/path/to/typescript-file.ts').toHaveValidTypeScript();
 ```
 
 ### Global Test Utilities
@@ -82,8 +82,8 @@ testUtils.cleanupTempDir(tempDir);
 
 // Create mock file structure
 testUtils.createMockFiles(baseDir, {
-    "file1.ts": 'export const foo = "bar";',
-    "dir/file2.js": 'console.log("hello");',
+    'file1.ts': 'export const foo = "bar";',
+    'dir/file2.js': 'console.log("hello");',
 });
 ```
 
@@ -98,13 +98,13 @@ testUtils.createMockFiles(baseDir, {
 ### Test Organization
 
 ```typescript
-describe("ComponentName", () => {
-    describe("method or feature", () => {
-        it("should do something specific", () => {
+describe('ComponentName', () => {
+    describe('method or feature', () => {
+        it('should do something specific', () => {
             // Test implementation
         });
 
-        it("should handle error cases", () => {
+        it('should handle error cases', () => {
             // Error handling test
         });
     });
@@ -114,9 +114,9 @@ describe("ComponentName", () => {
 ### Async Testing
 
 ```typescript
-it("should handle async operations", async () => {
+it('should handle async operations', async () => {
     const result = await asyncFunction();
-    expect(result).toBe("expected value");
+    expect(result).toBe('expected value');
 });
 ```
 
@@ -125,12 +125,12 @@ it("should handle async operations", async () => {
 Console methods are automatically mocked in tests. To test actual console output:
 
 ```typescript
-it("should log specific message", () => {
-    const consoleSpy = jest.spyOn(console, "log");
+it('should log specific message', () => {
+    const consoleSpy = jest.spyOn(console, 'log');
 
     functionThatLogs();
 
-    expect(consoleSpy).toHaveBeenCalledWith("expected message");
+    expect(consoleSpy).toHaveBeenCalledWith('expected message');
     consoleSpy.mockRestore();
 });
 ```

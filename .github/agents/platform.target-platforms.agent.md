@@ -2,19 +2,19 @@
 model: GPT-5 mini
 name: platform.strategy
 description: Evaluate target platforms and tech stacks; feed decisions into product and spec workflows.
-tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Product Manager"
-      agent: "product.manager"
-      prompt: "Integrate the platform recommendations above into the product framing and feature priorities."
+    - label: 'Product Manager'
+      agent: 'product.manager'
+      prompt: 'Integrate the platform recommendations above into the product framing and feature priorities.'
       send: true
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Translate the platform decisions above into PRD/SDS/TS constraints and acceptance criteria."
+    - label: 'Spec Author'
+      agent: 'spec.author'
+      prompt: 'Translate the platform decisions above into PRD/SDS/TS constraints and acceptance criteria.'
       send: true
-    - label: "Deep Research"
-      agent: "DeepResearch"
-      prompt: "Validate platform trade-offs and frameworks above with competitive/comparative data."
+    - label: 'Deep Research'
+      agent: 'DeepResearch'
+      prompt: 'Validate platform trade-offs and frameworks above with competitive/comparative data.'
       send: true
 ---
 

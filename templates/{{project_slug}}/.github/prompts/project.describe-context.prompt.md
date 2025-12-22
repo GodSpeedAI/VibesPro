@@ -5,9 +5,9 @@ task: describe-context
 thread: project-setup
 matrix_ids: []
 budget: S
-mode: "chat"
+mode: 'chat'
 model: GPT-5 mini
-description: "Gather project context to update Copilot instructions"
+description: 'Gather project context to update Copilot instructions'
 instructions:
     - general
     - context
@@ -23,7 +23,7 @@ Let me first read the current description:
 
 ```typescript
 // Read current copilot-instructions.md file
-const currentContext = await readFile(".github/copilot-instructions.md");
+const currentContext = await readFile('.github/copilot-instructions.md');
 ```
 
 ## Questions for You

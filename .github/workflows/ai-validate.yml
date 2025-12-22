@@ -7,16 +7,16 @@ on:
     branches:
       - main
     paths:
-      - "justfile"
-      - "tools/logging/**"
-      - ".github/workflows/ai-validate.yml"
-      - "docs/dev_tdd.md"
+      - 'justfile'
+      - 'tools/logging/**'
+      - '.github/workflows/ai-validate.yml'
+      - 'docs/dev_tdd.md'
   pull_request:
     paths:
-      - "justfile"
-      - "tools/logging/**"
-      - ".github/workflows/ai-validate.yml"
-      - "docs/dev_tdd.md"
+      - 'justfile'
+      - 'tools/logging/**'
+      - '.github/workflows/ai-validate.yml'
+      - 'docs/dev_tdd.md'
 
 jobs:
   ai-validate:
@@ -24,14 +24,14 @@ jobs:
     env:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - uses: pnpm/action-setup@v4
         with:
@@ -39,8 +39,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.11.1"
-          cache: "pnpm"
+          node-version: '20.11.1'
+          cache: 'pnpm'
 
       - name: Install uv
         uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
@@ -48,7 +48,7 @@ jobs:
       - name: Install just
         uses: extractions/setup-just@v2
         with:
-          just-version: "1.27.0"
+          just-version: '1.27.0'
 
       - name: Install Node dependencies
         run: pnpm install --frozen-lockfile

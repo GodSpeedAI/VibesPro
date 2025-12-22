@@ -3,7 +3,7 @@ name: build-matrix
 on:
   push:
     branches: [main]
-    tags: ["v*.*.*"] # enables optional release job
+    tags: ['v*.*.*'] # enables optional release job
   pull_request:
     branches: [main]
 
@@ -73,20 +73,20 @@ jobs:
             pkg_mgr: brew
     runs-on: ${{ matrix.os }}
     env:
-      MISE_NONINTERACTIVE: "1"
+      MISE_NONINTERACTIVE: '1'
       # Allow building PyO3-based wheels on newer Python by using ABI3 forward
       # compatibility. This avoids build aborts when runner Python is newer than
       # PyO3's checked maximum (example: CPython 3.14 vs PyO3 0.24.1 expecting <=3.13).
-      PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
+      PYO3_USE_ABI3_FORWARD_COMPATIBILITY: '1'
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
-      SOPS_LOADED: "false"
+      SOPS_LOADED: 'false'
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AQUA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SOPS_VERSION: "3.11.0"
-      SOPS_CHECKSUM: "775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
+      SOPS_VERSION: '3.11.0'
+      SOPS_CHECKSUM: '775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef'
 
     steps:
       - name: Checkout
@@ -328,14 +328,14 @@ jobs:
     needs: [prepare, build-test]
     runs-on: ubuntu-latest
     env:
-      MISE_NONINTERACTIVE: "1"
+      MISE_NONINTERACTIVE: '1'
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AQUA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SOPS_VERSION: "3.11.0"
-      SOPS_CHECKSUM: "775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
+      SOPS_VERSION: '3.11.0'
+      SOPS_CHECKSUM: '775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

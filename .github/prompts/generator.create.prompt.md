@@ -78,18 +78,18 @@ After scaffolding, customize files in `generators/<name>/`:
 #### A. Main Generator Logic (`generator.ts`)
 
 ```typescript
-import { Tree, formatFiles, generateFiles, names } from "@nx/devkit";
-import * as path from "path";
-import { MyGeneratorSchema } from "./schema.d";
+import { Tree, formatFiles, generateFiles, names } from '@nx/devkit';
+import * as path from 'path';
+import { MyGeneratorSchema } from './schema.d';
 
 export async function myGenerator(tree: Tree, schema: MyGeneratorSchema) {
     const options = normalizeOptions(schema);
 
     // Generate files from templates
-    generateFiles(tree, path.join(__dirname, "files"), options.projectRoot, {
+    generateFiles(tree, path.join(__dirname, 'files'), options.projectRoot, {
         ...options,
         ...names(options.name),
-        template: "", // Removes __template__ from file names
+        template: '', // Removes __template__ from file names
     });
 
     await formatFiles(tree);
@@ -140,7 +140,7 @@ Use EJS syntax in template files:
 
 ```typescript
 // files/src/index.ts.template
-export * from "./<%= fileName %>";
+export * from './<%= fileName %>';
 ```
 
 ```typescript

@@ -1,6 +1,6 @@
 ---
-description: "Refactoring workflow to reduce debt while preserving behavior"
-applyTo: "**"
+description: 'Refactoring workflow to reduce debt while preserving behavior'
+applyTo: '**'
 kind: instructions
 domain: refactoring
 precedence: 39

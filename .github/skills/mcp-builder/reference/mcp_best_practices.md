@@ -232,13 +232,13 @@ Example error handling:
 ```typescript
 try {
     const result = performOperation();
-    return { content: [{ type: "text", text: result }] };
+    return { content: [{ type: 'text', text: result }] };
 } catch (error) {
     return {
         isError: true,
         content: [
             {
-                type: "text",
+                type: 'text',
                 text: `Error: ${error.message}. Try using filter='active_only' to reduce results.`,
             },
         ],

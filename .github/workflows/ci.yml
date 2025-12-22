@@ -19,8 +19,8 @@ jobs:
     env:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
 
     steps:
       - name: Checkout repository
@@ -37,13 +37,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: "20.11.1"
-          cache: "pnpm"
+          node-version: '20.11.1'
+          cache: 'pnpm'
 
       - name: Set up Python
         uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install uv
         uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
@@ -51,7 +51,7 @@ jobs:
       - name: Install Bun runtime
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: "1.1.42"
+          bun-version: '1.1.42'
 
       - name: Install Copier
         run: uv tool install copier
@@ -73,18 +73,18 @@ jobs:
       - name: Setup Devbox (CI)
         uses: ./.github/actions/setup-devbox
 
-      - name: "Devbox: update and ensure packages"
+      - name: 'Devbox: update and ensure packages'
         run: |
           set -euo pipefail
           # Update generated flake to ensure packages are available in the shell
           devbox update || true
 
-      - name: "Devbox: validate overlay pin (supabase)"
+      - name: 'Devbox: validate overlay pin (supabase)'
         run: |
           set -euo pipefail
           bash scripts/dev/validate_supabase_overlay_pin.sh
 
-      - name: "Devbox: check supabase availability"
+      - name: 'Devbox: check supabase availability'
         run: |
           set -euo pipefail
           bash scripts/dev/check_supabase_in_devbox.sh
@@ -129,4 +129,4 @@ jobs:
             exit 1
           }
         env:
-          UV_NO_SYNC: "1"
+          UV_NO_SYNC: '1'

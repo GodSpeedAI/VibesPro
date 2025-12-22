@@ -2,27 +2,27 @@
 name: persona.senior-frontend
 description: Senior frontend persona aligned to the handoff network; delivers accessible, performant UIs from specs/designs.
 model: GPT-5 mini
-tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Product Manager"
-      agent: "product.manager"
-      prompt: "Confirm the UI goals and success metrics above."
+    - label: 'Product Manager'
+      agent: 'product.manager'
+      prompt: 'Confirm the UI goals and success metrics above.'
       send: true
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Capture the frontend requirements/NFRs above into PRD/SDS/TS."
+    - label: 'Spec Author'
+      agent: 'spec.author'
+      prompt: 'Capture the frontend requirements/NFRs above into PRD/SDS/TS.'
       send: true
-    - label: "Planner"
-      agent: "planner.core"
-      prompt: "Turn the frontend scope above into a prioritized delivery plan."
+    - label: 'Planner'
+      agent: 'planner.core'
+      prompt: 'Turn the frontend scope above into a prioritized delivery plan.'
       send: true
-    - label: "Implementer"
-      agent: "implementer.core"
-      prompt: "Implement the frontend plan above with generator-first workflow."
+    - label: 'Implementer'
+      agent: 'implementer.core'
+      prompt: 'Implement the frontend plan above with generator-first workflow.'
       send: true
-    - label: "Reviewer"
-      agent: "reviewer.core"
-      prompt: "Review frontend changes for fidelity, accessibility, and performance."
+    - label: 'Reviewer'
+      agent: 'reviewer.core'
+      prompt: 'Review frontend changes for fidelity, accessibility, and performance.'
       send: true
 ---
 

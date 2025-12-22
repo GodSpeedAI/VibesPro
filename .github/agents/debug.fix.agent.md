@@ -4,9 +4,9 @@ domain: debug
 task: fix
 budget: S
 model: ${ default_model }
-name: "Debug Fix Mode"
+name: 'Debug Fix Mode'
 description: Minimal debug.fix chatmode placeholder
-tools: ["codebase", "search"]
+tools: ['codebase', 'search']
 ---
 
 # Debug Fix Mode

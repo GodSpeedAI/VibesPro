@@ -113,12 +113,12 @@ apps/my-app/
 
 ```typescript
 // ❌ BAD - Business logic in controller
-@Controller("/users")
+@Controller('/users')
 export class UserController {
     async create(req: Request) {
         // DON'T: Put validation, business rules here
-        if (!req.body.email.includes("@")) {
-            throw new Error("Invalid email");
+        if (!req.body.email.includes('@')) {
+            throw new Error('Invalid email');
         }
         // DON'T: Direct database access
         const user = await db.users.insert(req.body);
@@ -127,7 +127,7 @@ export class UserController {
 }
 
 // ✅ GOOD - Delegate to use case (application layer)
-@Controller("/users")
+@Controller('/users')
 export class UserController {
     constructor(
         private readonly createUser: CreateUserUseCase, // Port
@@ -169,14 +169,14 @@ export class UserController {
 
 ```typescript
 // apps/my-app/src/main.ts
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     // App-level configuration
-    app.setGlobalPrefix("api");
+    app.setGlobalPrefix('api');
     app.enableCors();
 
     await app.listen(3000);
@@ -201,7 +201,7 @@ bootstrap();
     providers: [
         // Wire dependencies
         {
-            provide: "UserRepository",
+            provide: 'UserRepository',
             useClass: PostgresUserRepository, // Infrastructure
         },
         CreateUserUseCase,
@@ -217,7 +217,7 @@ export class AppModule {}
 
 ```typescript
 // apps/my-app/src/dto/create-user.dto.ts
-import { z } from "zod";
+import { z } from 'zod';
 
 // Schema for validation
 const CreateUserSchema = z.object({
@@ -248,7 +248,7 @@ export class CreateUserDto {
 
 ```typescript
 // apps/my-app/src/presenters/user.presenter.ts
-import { User } from "@my-app/domain";
+import { User } from '@my-app/domain';
 
 export interface UserResponse {
     id: string;
@@ -299,9 +299,9 @@ export default async function HomePage() {
 
 ```typescript
 // apps/api/src/controllers/user.controller.ts
-import { Controller, Post, Body, Get, Param } from "@nestjs/common";
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 
-@Controller("users")
+@Controller('users')
 export class UserController {
     constructor(
         private readonly createUser: CreateUserUseCase,
@@ -315,8 +315,8 @@ export class UserController {
         return this.presenter.toResponse(user);
     }
 
-    @Get(":id")
-    async getById(@Param("id") id: string) {
+    @Get(':id')
+    async getById(@Param('id') id: string) {
         const user = await this.getUser.execute({ id });
         return this.presenter.toResponse(user);
     }
@@ -327,28 +327,28 @@ export class UserController {
 
 ```typescript
 // apps/cli/src/main.ts
-import { Command } from "commander";
-import { createContainer } from "./di/container";
+import { Command } from 'commander';
+import { createContainer } from './di/container';
 
 const program = new Command();
 const container = createContainer();
 
 program
-    .command("user:create")
-    .description("Create a new user")
-    .requiredOption("-e, --email <email>", "User email")
-    .requiredOption("-n, --name <name>", "User name")
+    .command('user:create')
+    .description('Create a new user')
+    .requiredOption('-e, --email <email>', 'User email')
+    .requiredOption('-n, --name <name>', 'User name')
     .action(async (options) => {
-        const createUser = container.get<CreateUserUseCase>("CreateUserUseCase");
+        const createUser = container.get<CreateUserUseCase>('CreateUserUseCase');
 
         try {
             const user = await createUser.execute({
                 email: options.email,
                 name: options.name,
             });
-            console.log("✅ User created:", user.id.value);
+            console.log('✅ User created:', user.id.value);
         } catch (error) {
-            console.error("❌ Error:", error.message);
+            console.error('❌ Error:', error.message);
             process.exit(1);
         }
     });
@@ -403,12 +403,12 @@ export function UserProfileScreen({ route }) {
 
 ```typescript
 // apps/api/src/controllers/order.controller.ts
-import { Controller, Post, Get, Body, Param, HttpStatus } from "@nestjs/common";
-import { CreateOrderUseCase, GetOrderUseCase } from "@my-app/orders-application";
-import { OrderPresenter } from "../presenters/order.presenter";
-import { CreateOrderDto } from "../dto/create-order.dto";
+import { Controller, Post, Get, Body, Param, HttpStatus } from '@nestjs/common';
+import { CreateOrderUseCase, GetOrderUseCase } from '@my-app/orders-application';
+import { OrderPresenter } from '../presenters/order.presenter';
+import { CreateOrderDto } from '../dto/create-order.dto';
 
-@Controller("orders")
+@Controller('orders')
 export class OrderController {
     constructor(
         private readonly createOrder: CreateOrderUseCase,
@@ -432,11 +432,11 @@ export class OrderController {
         return this.presenter.toResponse(order);
     }
 
-    @Get(":id")
-    async findOne(@Param("id") id: string) {
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
         // 1. Validate param
         if (!id) {
-            throw new BadRequestException("Order ID required");
+            throw new BadRequestException('Order ID required');
         }
 
         // 2. Execute use case
@@ -452,11 +452,11 @@ export class OrderController {
 
 ```typescript
 // apps/graphql-api/src/resolvers/user.resolver.ts
-import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
-import { CreateUserUseCase, GetUserUseCase } from "@my-app/users-application";
-import { UserPresenter } from "../presenters/user.presenter";
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { CreateUserUseCase, GetUserUseCase } from '@my-app/users-application';
+import { UserPresenter } from '../presenters/user.presenter';
 
-@Resolver("User")
+@Resolver('User')
 export class UserResolver {
     constructor(
         private readonly createUser: CreateUserUseCase,
@@ -465,13 +465,13 @@ export class UserResolver {
     ) {}
 
     @Query()
-    async user(@Args("id") id: string) {
+    async user(@Args('id') id: string) {
         const user = await this.getUser.execute({ id });
         return this.presenter.toGraphQL(user);
     }
 
     @Mutation()
-    async createUser(@Args("email") email: string, @Args("name") name: string) {
+    async createUser(@Args('email') email: string, @Args('name') name: string) {
         const user = await this.createUser.execute({ email, name });
         return this.presenter.toGraphQL(user);
     }
@@ -482,22 +482,22 @@ export class UserResolver {
 
 ```typescript
 // apps/web/src/app/users/actions.ts
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
-import { createContainer } from "@/di/container";
-import { CreateUserUseCase } from "@my-app/users-application";
+import { revalidatePath } from 'next/cache';
+import { createContainer } from '@/di/container';
+import { CreateUserUseCase } from '@my-app/users-application';
 
 export async function createUser(formData: FormData) {
     const container = createContainer();
-    const useCase = container.get<CreateUserUseCase>("CreateUserUseCase");
+    const useCase = container.get<CreateUserUseCase>('CreateUserUseCase');
 
-    const email = formData.get("email") as string;
-    const name = formData.get("name") as string;
+    const email = formData.get('email') as string;
+    const name = formData.get('name') as string;
 
     try {
         const user = await useCase.execute({ email, name });
-        revalidatePath("/users");
+        revalidatePath('/users');
         return { success: true, userId: user.id.value };
     } catch (error) {
         return { success: false, error: error.message };
@@ -524,15 +524,15 @@ export default function UsersPage() {
 
 ```typescript
 // apps/cli/src/di/container.ts
-import { Container } from "inversify";
-import { CreateUserUseCase } from "@my-app/users-application";
-import { PostgresUserRepository } from "@my-app/users-infrastructure";
+import { Container } from 'inversify';
+import { CreateUserUseCase } from '@my-app/users-application';
+import { PostgresUserRepository } from '@my-app/users-infrastructure';
 
 export function createContainer(): Container {
     const container = new Container();
 
     // Infrastructure
-    container.bind("UserRepository").to(PostgresUserRepository);
+    container.bind('UserRepository').to(PostgresUserRepository);
 
     // Application
     container.bind(CreateUserUseCase).toSelf();
@@ -543,16 +543,16 @@ export function createContainer(): Container {
 
 ```typescript
 // apps/cli/src/commands/user.commands.ts
-import { Command } from "commander";
-import { createContainer } from "../di/container";
+import { Command } from 'commander';
+import { createContainer } from '../di/container';
 
 export function registerUserCommands(program: Command) {
     const container = createContainer();
 
     program
-        .command("user:create")
-        .option("-e, --email <email>")
-        .option("-n, --name <name>")
+        .command('user:create')
+        .option('-e, --email <email>')
+        .option('-n, --name <name>')
         .action(async (options) => {
             const useCase = container.get(CreateUserUseCase);
             const user = await useCase.execute(options);
@@ -674,7 +674,7 @@ pnpm exec nx e2e my-app-e2e
 **Example secure controller:**
 
 ```typescript
-@Controller("users")
+@Controller('users')
 @UseGuards(AuthGuard) // Require authentication
 export class UserController {
     constructor(
@@ -689,7 +689,7 @@ export class UserController {
         const dto = CreateUserDto.from(body); // Throws if invalid
 
         // 2. Check authorization
-        if (!req.user.hasPermission("users:create")) {
+        if (!req.user.hasPermission('users:create')) {
             throw new ForbiddenException();
         }
 
@@ -699,7 +699,7 @@ export class UserController {
             return this.presenter.toResponse(user); // Only safe data
         } catch (error) {
             // 4. Don't leak sensitive info
-            throw new BadRequestException("Failed to create user");
+            throw new BadRequestException('Failed to create user');
         }
     }
 }
@@ -725,8 +725,8 @@ libs/users/infrastructure  (adapters - implementations)
 
 ```typescript
 // apps/api/src/controllers/user.controller.ts
-import { CreateUserUseCase } from "@my-app/users-application"; // Use case
-import { User } from "@my-app/users-domain"; // Domain entity
+import { CreateUserUseCase } from '@my-app/users-application'; // Use case
+import { User } from '@my-app/users-domain'; // Domain entity
 ```
 
 **Configure imports in tsconfig.json:**

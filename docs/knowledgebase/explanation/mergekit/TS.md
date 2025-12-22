@@ -85,8 +85,8 @@ class HexArchitectureExtension:
 # copier.yml with advanced features
 _templates_suffix: .jinja
 _envops:
-    block_start_string: "{%"
-    block_end_string: "%}"
+    block_start_string: '{%'
+    block_end_string: '%}'
 
 _jinja_extensions:
     - extensions.hex_architecture:HexArchitectureExtension
@@ -95,8 +95,8 @@ _jinja_extensions:
 # Template variables with validation
 project_slug:
     type: str
-    validator: "{% if not project_slug.isidentifier() %}Invalid project slug{% endif %}"
-    help: "Python-compatible project identifier"
+    validator: '{% if not project_slug.isidentifier() %}Invalid project slug{% endif %}'
+    help: 'Python-compatible project identifier'
 
 architecture_type:
     type: str
@@ -105,7 +105,7 @@ architecture_type:
         - ai-platform
         - hybrid
     default: hybrid
-    help: "Choose the architectural pattern"
+    help: 'Choose the architectural pattern'
 
 app_frameworks:
     type: str
@@ -120,25 +120,25 @@ app_frameworks:
 ai_features:
     type: bool
     default: true
-    help: "Enable AI-assisted development features"
+    help: 'Enable AI-assisted development features'
 
 python_version:
     type: str
     choices:
-        - "3.11"
-        - "3.12"
-        - "3.13"
-    default: "3.12"
+        - '3.11'
+        - '3.12'
+        - '3.13'
+    default: '3.12'
 
 # Advanced conditional generation
 _skip_if_exists:
-    - "pyproject.toml"
-    - "package.json"
+    - 'pyproject.toml'
+    - 'package.json'
 
 _tasks:
-    - "uv sync"
-    - "pnpm install"
-    - "just setup-dev-environment"
+    - 'uv sync'
+    - 'pnpm install'
+    - 'just setup-dev-environment'
 ```
 
 ## TS-MERGE-002: AI Context Management System
@@ -154,8 +154,8 @@ _tasks:
 
 ```typescript
 // src/ai/context-manager.ts
-import tsink from "tsink-node"; // Node.js bindings for tsink
-import { encoding_for_model } from "tiktoken";
+import tsink from 'tsink-node'; // Node.js bindings for tsink
+import { encoding_for_model } from 'tiktoken';
 
 interface ContextSource {
     readonly id: string;
@@ -172,7 +172,7 @@ interface TokenBudget {
 
 export class AIContextManager {
     private db: tsink.Database;
-    private tokenizer = encoding_for_model("gpt-4");
+    private tokenizer = encoding_for_model('gpt-4');
     private cache = new Map<string, ContextSource>();
 
     constructor(
@@ -750,9 +750,9 @@ reset: clean setup
 
 ```typescript
 // tools/executors/ai-validate/executor.ts
-import { ExecutorContext, logger } from "@nx/devkit";
-import { AIContextManager } from "../../ai/context-manager";
-import { ArchitecturalValidator } from "../../ai/validator";
+import { ExecutorContext, logger } from '@nx/devkit';
+import { AIContextManager } from '../../ai/context-manager';
+import { ArchitecturalValidator } from '../../ai/validator';
 
 interface AIValidateExecutorOptions {
     files?: string[];
@@ -782,9 +782,9 @@ export default async function runExecutor(options: AIValidateExecutorOptions, co
 
         // Run AI-enhanced validation
         const results = await validator.validateFiles(filesToValidate, {
-            rules: options.rules || ["hexagonal-compliance", "ddd-patterns"],
+            rules: options.rules || ['hexagonal-compliance', 'ddd-patterns'],
             strictMode: options.strictMode || false,
-            aiModel: options.aiModel || "gpt-4",
+            aiModel: options.aiModel || 'gpt-4',
         });
 
         // Report results
@@ -832,25 +832,25 @@ async function getProjectFiles(projectRoot: string): Promise<string[]> {
 
 ```typescript
 // eslint-plugin-hexagonal-architecture/index.ts
-import { Rule } from "eslint";
-import { Node } from "estree";
+import { Rule } from 'eslint';
+import { Node } from 'estree';
 
 interface HexRule extends Rule.RuleModule {
     meta: Rule.RuleMetaData & {
         hexagonal?: {
-            layer?: "domain" | "application" | "infrastructure" | "interface";
+            layer?: 'domain' | 'application' | 'infrastructure' | 'interface';
             allowedDependencies?: string[];
         };
     };
 }
 
 const rules: Record<string, HexRule> = {
-    "no-layer-violation": {
+    'no-layer-violation': {
         meta: {
-            type: "problem",
+            type: 'problem',
             docs: {
-                description: "Prevent violations of hexagonal architecture layer boundaries",
-                category: "Architectural",
+                description: 'Prevent violations of hexagonal architecture layer boundaries',
+                category: 'Architectural',
             },
             schema: [],
         },
@@ -878,12 +878,12 @@ const rules: Record<string, HexRule> = {
         },
     },
 
-    "port-adapter-compliance": {
+    'port-adapter-compliance': {
         meta: {
-            type: "suggestion",
+            type: 'suggestion',
             docs: {
-                description: "Ensure proper port/adapter pattern implementation",
-                category: "Architectural",
+                description: 'Ensure proper port/adapter pattern implementation',
+                category: 'Architectural',
             },
             schema: [],
         },
@@ -893,11 +893,11 @@ const rules: Record<string, HexRule> = {
                     const className = (node as any).id.name;
                     const currentFile = context.getFilename();
 
-                    if (isInApplicationLayer(currentFile) && className.endsWith("Port")) {
+                    if (isInApplicationLayer(currentFile) && className.endsWith('Port')) {
                         validatePortInterface(node, context);
                     }
 
-                    if (isInInfrastructureLayer(currentFile) && className.endsWith("Adapter")) {
+                    if (isInInfrastructureLayer(currentFile) && className.endsWith('Adapter')) {
                         validateAdapterImplementation(node, context);
                     }
                 },
@@ -907,19 +907,19 @@ const rules: Record<string, HexRule> = {
 };
 
 function detectLayer(filePath: string): string {
-    if (filePath.includes("/domain/")) return "domain";
-    if (filePath.includes("/application/")) return "application";
-    if (filePath.includes("/infrastructure/")) return "infrastructure";
-    if (filePath.includes("/apps/")) return "interface";
-    return "unknown";
+    if (filePath.includes('/domain/')) return 'domain';
+    if (filePath.includes('/application/')) return 'application';
+    if (filePath.includes('/infrastructure/')) return 'infrastructure';
+    if (filePath.includes('/apps/')) return 'interface';
+    return 'unknown';
 }
 
 function isValidDependency(currentLayer: string, targetLayer: string): boolean {
     const validDependencies: Record<string, string[]> = {
         domain: [],
-        application: ["domain"],
-        infrastructure: ["domain", "application"],
-        interface: ["application"],
+        application: ['domain'],
+        infrastructure: ['domain', 'application'],
+        interface: ['application'],
     };
 
     return validDependencies[currentLayer]?.includes(targetLayer) || currentLayer === targetLayer;
@@ -932,9 +932,9 @@ export = { rules };
 
 ```typescript
 // vscode-extension/src/extension.ts
-import * as vscode from "vscode";
-import { AIContextManager } from "./ai/context-manager";
-import { ArchitecturalValidator } from "./ai/validator";
+import * as vscode from 'vscode';
+import { AIContextManager } from './ai/context-manager';
+import { ArchitecturalValidator } from './ai/validator';
 
 export function activate(context: vscode.ExtensionContext) {
     const contextManager = new AIContextManager();
@@ -959,8 +959,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     // Command for AI-assisted generation
-    const generateCommand = vscode.commands.registerCommand("hexagonal.generateComponent", async () => {
-        const componentType = await vscode.window.showQuickPick(["Domain Entity", "Value Object", "Domain Service", "Application Service", "Port Interface", "Adapter Implementation"]);
+    const generateCommand = vscode.commands.registerCommand('hexagonal.generateComponent', async () => {
+        const componentType = await vscode.window.showQuickPick(['Domain Entity', 'Value Object', 'Domain Service', 'Application Service', 'Port Interface', 'Adapter Implementation']);
 
         if (componentType) {
             await generateComponent(componentType, contextManager);
@@ -976,9 +976,9 @@ async function validateDocument(document: vscode.TextDocument, validator: Archit
     const vscDiagnostics = diagnostics.map((diag) => {
         const range = new vscode.Range(diag.line, diag.column, diag.line, diag.column + diag.length);
 
-        const diagnostic = new vscode.Diagnostic(range, diag.message, diag.severity === "error" ? vscode.DiagnosticSeverity.Error : vscode.DiagnosticSeverity.Warning);
+        const diagnostic = new vscode.Diagnostic(range, diag.message, diag.severity === 'error' ? vscode.DiagnosticSeverity.Error : vscode.DiagnosticSeverity.Warning);
 
-        diagnostic.source = "hexagonal-architecture";
+        diagnostic.source = 'hexagonal-architecture';
         return diagnostic;
     });
 
@@ -986,7 +986,7 @@ async function validateDocument(document: vscode.TextDocument, validator: Archit
 }
 
 function isRelevantFile(fileName: string): boolean {
-    return fileName.endsWith(".ts") || fileName.endsWith(".tsx") || fileName.endsWith(".py");
+    return fileName.endsWith('.ts') || fileName.endsWith('.tsx') || fileName.endsWith('.py');
 }
 ```
 
@@ -1003,9 +1003,9 @@ function isRelevantFile(fileName: string): boolean {
 
 ```typescript
 // tools/type-generator/src/generator.ts
-import { createConnection } from "@supabase/supabase-js";
-import { Project, SourceFile } from "ts-morph";
-import { generatePythonTypes } from "./python-generator";
+import { createConnection } from '@supabase/supabase-js';
+import { Project, SourceFile } from 'ts-morph';
+import { generatePythonTypes } from './python-generator';
 
 interface DatabaseSchema {
     tables: TableSchema[];
@@ -1041,7 +1041,7 @@ export class UnifiedTypeGenerator {
         },
     ) {
         this.project = new Project({
-            tsConfigFilePath: "tsconfig.json",
+            tsConfigFilePath: 'tsconfig.json',
         });
         this.supabase = createConnection(config.supabaseUrl, config.supabaseKey);
     }
@@ -1060,7 +1060,7 @@ export class UnifiedTypeGenerator {
         const validation = await this.validateTypeParity(tsTypes, pyTypes);
 
         if (!validation.isValid) {
-            throw new Error(`Type parity validation failed: ${validation.errors.join(", ")}`);
+            throw new Error(`Type parity validation failed: ${validation.errors.join(', ')}`);
         }
 
         // 5. Write generated files
@@ -1071,7 +1071,7 @@ export class UnifiedTypeGenerator {
     }
 
     private async introspectSchema(): Promise<DatabaseSchema> {
-        const { data: tables } = await this.supabase.from("information_schema.tables").select("*").eq("table_schema", "public");
+        const { data: tables } = await this.supabase.from('information_schema.tables').select('*').eq('table_schema', 'public');
 
         const schema: DatabaseSchema = {
             tables: [],
@@ -1081,14 +1081,14 @@ export class UnifiedTypeGenerator {
         };
 
         for (const table of tables) {
-            const { data: columns } = await this.supabase.from("information_schema.columns").select("*").eq("table_name", table.table_name).eq("table_schema", "public");
+            const { data: columns } = await this.supabase.from('information_schema.columns').select('*').eq('table_name', table.table_name).eq('table_schema', 'public');
 
             schema.tables.push({
                 name: table.table_name,
                 columns: columns.map((col) => ({
                     name: col.column_name,
                     type: col.data_type,
-                    nullable: col.is_nullable === "YES",
+                    nullable: col.is_nullable === 'YES',
                     default: col.column_default,
                     description: col.description,
                 })),
@@ -1101,7 +1101,7 @@ export class UnifiedTypeGenerator {
     }
 
     private async generateTypeScriptTypes(schema: DatabaseSchema): Promise<TypeScriptTypes> {
-        const databaseTypesFile = this.project.createSourceFile(`${this.config.outputDir}/database-types.ts`, "", { overwrite: true });
+        const databaseTypesFile = this.project.createSourceFile(`${this.config.outputDir}/database-types.ts`, '', { overwrite: true });
 
         // Generate table interfaces
         for (const table of schema.tables) {
@@ -1118,7 +1118,7 @@ export class UnifiedTypeGenerator {
             databaseTypesFile.addInterface({
                 name: `${toPascalCase(table.name)}Insert`,
                 properties: table.columns
-                    .filter((col) => !col.name.endsWith("_at") || col.default) // Exclude auto timestamps
+                    .filter((col) => !col.name.endsWith('_at') || col.default) // Exclude auto timestamps
                     .map((col) => ({
                         name: col.name,
                         type: mapPostgresToTypeScript(col.type),
@@ -1128,11 +1128,11 @@ export class UnifiedTypeGenerator {
         }
 
         // Generate Zod schemas
-        const zodSchemasFile = this.project.createSourceFile(`${this.config.outputDir}/zod-schemas.ts`, "", { overwrite: true });
+        const zodSchemasFile = this.project.createSourceFile(`${this.config.outputDir}/zod-schemas.ts`, '', { overwrite: true });
 
         zodSchemasFile.addImportDeclaration({
-            moduleSpecifier: "zod",
-            namedImports: ["z"],
+            moduleSpecifier: 'zod',
+            namedImports: ['z'],
         });
 
         for (const table of schema.tables) {
@@ -1141,22 +1141,22 @@ export class UnifiedTypeGenerator {
             for (const col of table.columns) {
                 let zodType = mapPostgresToZod(col.type);
                 if (col.nullable) {
-                    zodType += ".nullable()";
+                    zodType += '.nullable()';
                 }
                 if (col.default && !col.nullable) {
-                    zodType += ".default()";
+                    zodType += '.default()';
                 }
                 schemaProperties[col.name] = zodType;
             }
 
             zodSchemasFile.addVariableStatement({
-                declarationKind: "const",
+                declarationKind: 'const',
                 declarations: [
                     {
                         name: `${toCamelCase(table.name)}Schema`,
                         initializer: `z.object(${JSON.stringify(schemaProperties, null, 2)
-                            .replace(/"/g, "")
-                            .replace(/([a-zA-Z_][a-zA-Z0-9_]*:)/g, "$1 ")}`,
+                            .replace(/"/g, '')
+                            .replace(/([a-zA-Z_][a-zA-Z0-9_]*:)/g, '$1 ')}`,
                     },
                 ],
             });
@@ -1175,36 +1175,36 @@ export class UnifiedTypeGenerator {
 
 function mapPostgresToTypeScript(pgType: string): string {
     const mapping: Record<string, string> = {
-        integer: "number",
-        bigint: "number",
-        text: "string",
-        varchar: "string",
-        boolean: "boolean",
-        timestamp: "string", // ISO string
-        timestamptz: "string",
-        json: "Record<string, any>",
-        jsonb: "Record<string, any>",
-        uuid: "string",
+        integer: 'number',
+        bigint: 'number',
+        text: 'string',
+        varchar: 'string',
+        boolean: 'boolean',
+        timestamp: 'string', // ISO string
+        timestamptz: 'string',
+        json: 'Record<string, any>',
+        jsonb: 'Record<string, any>',
+        uuid: 'string',
     };
 
-    return mapping[pgType] || "unknown";
+    return mapping[pgType] || 'unknown';
 }
 
 function mapPostgresToZod(pgType: string): string {
     const mapping: Record<string, string> = {
-        integer: "z.number().int()",
-        bigint: "z.number().int()",
-        text: "z.string()",
-        varchar: "z.string()",
-        boolean: "z.boolean()",
-        timestamp: "z.string().datetime()",
-        timestamptz: "z.string().datetime()",
-        json: "z.record(z.any())",
-        jsonb: "z.record(z.any())",
-        uuid: "z.string().uuid()",
+        integer: 'z.number().int()',
+        bigint: 'z.number().int()',
+        text: 'z.string()',
+        varchar: 'z.string()',
+        boolean: 'z.boolean()',
+        timestamp: 'z.string().datetime()',
+        timestamptz: 'z.string().datetime()',
+        json: 'z.record(z.any())',
+        jsonb: 'z.record(z.any())',
+        uuid: 'z.string().uuid()',
     };
 
-    return mapping[pgType] || "z.unknown()";
+    return mapping[pgType] || 'z.unknown()';
 }
 ```
 
@@ -1221,12 +1221,12 @@ function mapPostgresToZod(pgType: string): string {
 
 ```typescript
 // tools/ai-generator/src/hexagonal-generator.ts
-import { OpenAI } from "openai";
-import { AIContextManager } from "../ai/context-manager";
-import { ArchitecturalPatterns } from "../patterns/architectural-patterns";
+import { OpenAI } from 'openai';
+import { AIContextManager } from '../ai/context-manager';
+import { ArchitecturalPatterns } from '../patterns/architectural-patterns';
 
 interface GenerationRequest {
-    component: "entity" | "value-object" | "service" | "port" | "adapter";
+    component: 'entity' | 'value-object' | 'service' | 'port' | 'adapter';
     domain: string;
     requirements: string;
     existingContext?: string[];
@@ -1263,14 +1263,14 @@ export class HexagonalAIGenerator {
 
         // 4. Generate code with AI
         const aiResponse = await this.openai.chat.completions.create({
-            model: "gpt-4",
+            model: 'gpt-4',
             messages: [
                 {
-                    role: "system",
+                    role: 'system',
                     content: this.getSystemPrompt(request.component),
                 },
                 {
-                    role: "user",
+                    role: 'user',
                     content: prompt,
                 },
             ],
@@ -1306,7 +1306,7 @@ export class HexagonalAIGenerator {
     }
 
     private async gatherContext(request: GenerationRequest): Promise<string> {
-        const contextSources = [`domain/${request.domain}/**/*.ts`, `domain/${request.domain}/**/*.py`, "docs/domain-models.md", "docs/architectural-decisions.md"];
+        const contextSources = [`domain/${request.domain}/**/*.ts`, `domain/${request.domain}/**/*.py`, 'docs/domain-models.md', 'docs/architectural-decisions.md'];
 
         return this.contextManager.gatherRelevantContext(contextSources, {
             tokenBudget: 4000,
@@ -1342,7 +1342,7 @@ Focus on creating a domain entity with:
 - Domain events for state changes
 - Immutable value objects where appropriate
 `,
-            "value-object": `
+            'value-object': `
 Focus on creating a value object with:
 - Immutability
 - Value-based equality
@@ -1372,7 +1372,7 @@ Focus on creating an adapter implementation with:
 `,
         };
 
-        return basePrompt + (componentSpecific[component] || "");
+        return basePrompt + (componentSpecific[component] || '');
     }
 
     private async generateTests(parsedCode: ParsedCode, request: GenerationRequest): Promise<string> {
@@ -1393,14 +1393,14 @@ Generated tests should achieve >90% code coverage.
 `;
 
         const response = await this.openai.chat.completions.create({
-            model: "gpt-4",
+            model: 'gpt-4',
             messages: [
                 {
-                    role: "system",
-                    content: "You are an expert in test-driven development and comprehensive testing strategies.",
+                    role: 'system',
+                    content: 'You are an expert in test-driven development and comprehensive testing strategies.',
                 },
                 {
-                    role: "user",
+                    role: 'user',
                     content: testPrompt,
                 },
             ],
@@ -1426,8 +1426,8 @@ Generated tests should achieve >90% code coverage.
 
 ```typescript
 // src/monitoring/performance-monitor.ts
-import { performance, PerformanceObserver } from "perf_hooks";
-import { trace, metrics } from "@opentelemetry/api";
+import { performance, PerformanceObserver } from 'perf_hooks';
+import { trace, metrics } from '@opentelemetry/api';
 
 interface PerformanceMetrics {
     templateGeneration: number;
@@ -1438,8 +1438,8 @@ interface PerformanceMetrics {
 }
 
 export class PerformanceMonitor {
-    private tracer = trace.getTracer("hexagonal-generator");
-    private meter = metrics.getMeter("hexagonal-generator");
+    private tracer = trace.getTracer('hexagonal-generator');
+    private meter = metrics.getMeter('hexagonal-generator');
     private metrics: PerformanceMetrics = {
         templateGeneration: 0,
         aiContextLoading: 0,
@@ -1460,37 +1460,37 @@ export class PerformanceMonitor {
             }
         });
 
-        obs.observe({ entryTypes: ["measure"] });
+        obs.observe({ entryTypes: ['measure'] });
     }
 
     private createMetrics(): void {
-        this.meter.createHistogram("template_generation_duration", {
-            description: "Time taken to generate templates",
-            unit: "ms",
+        this.meter.createHistogram('template_generation_duration', {
+            description: 'Time taken to generate templates',
+            unit: 'ms',
         });
 
-        this.meter.createHistogram("ai_context_loading_duration", {
-            description: "Time taken to load AI context",
-            unit: "ms",
+        this.meter.createHistogram('ai_context_loading_duration', {
+            description: 'Time taken to load AI context',
+            unit: 'ms',
         });
 
-        this.meter.createCounter("cache_hits", {
-            description: "Number of cache hits",
+        this.meter.createCounter('cache_hits', {
+            description: 'Number of cache hits',
         });
 
-        this.meter.createCounter("cache_misses", {
-            description: "Number of cache misses",
+        this.meter.createCounter('cache_misses', {
+            description: 'Number of cache misses',
         });
     }
 
     async measureTemplateGeneration<T>(fn: () => Promise<T>): Promise<T> {
-        const span = this.tracer.startSpan("template_generation");
-        performance.mark("template-start");
+        const span = this.tracer.startSpan('template_generation');
+        performance.mark('template-start');
 
         try {
             const result = await fn();
-            performance.mark("template-end");
-            performance.measure("template_generation", "template-start", "template-end");
+            performance.mark('template-end');
+            performance.measure('template_generation', 'template-start', 'template-end');
 
             span.setStatus({ code: 1 }); // SUCCESS
             return result;

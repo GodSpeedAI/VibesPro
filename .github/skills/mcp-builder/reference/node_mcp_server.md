@@ -11,19 +11,19 @@ This document provides Node/TypeScript-specific best practices and examples for 
 ### Key Imports
 
 ```typescript
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import express from "express";
-import { z } from "zod";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import express from 'express';
+import { z } from 'zod';
 ```
 
 ### Server Initialization
 
 ```typescript
 const server = new McpServer({
-    name: "service-mcp-server",
-    version: "1.0.0",
+    name: 'service-mcp-server',
+    version: '1.0.0',
 });
 ```
 
@@ -31,17 +31,17 @@ const server = new McpServer({
 
 ```typescript
 server.registerTool(
-    "tool_name",
+    'tool_name',
     {
-        title: "Tool Display Name",
-        description: "What the tool does",
+        title: 'Tool Display Name',
+        description: 'What the tool does',
         inputSchema: { param: z.string() },
         outputSchema: { result: z.string() },
     },
     async ({ param }) => {
         const output = { result: `Processed: ${param}` };
         return {
-            content: [{ type: "text", text: JSON.stringify(output) }],
+            content: [{ type: 'text', text: JSON.stringify(output) }],
             structuredContent: output, // Modern pattern for structured data
         };
     },
@@ -123,20 +123,20 @@ Tools are registered using the `registerTool` method with the following requirem
 - Type all parameters and return values explicitly
 
 ```typescript
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 
 const server = new McpServer({
-    name: "example-mcp",
-    version: "1.0.0",
+    name: 'example-mcp',
+    version: '1.0.0',
 });
 
 // Zod schema for input validation
 const UserSearchInputSchema = z
     .object({
-        query: z.string().min(2, "Query must be at least 2 characters").max(200, "Query must not exceed 200 characters").describe("Search string to match against names/emails"),
-        limit: z.number().int().min(1).max(100).default(20).describe("Maximum results to return"),
-        offset: z.number().int().min(0).default(0).describe("Number of results to skip for pagination"),
+        query: z.string().min(2, 'Query must be at least 2 characters').max(200, 'Query must not exceed 200 characters').describe('Search string to match against names/emails'),
+        limit: z.number().int().min(1).max(100).default(20).describe('Maximum results to return'),
+        offset: z.number().int().min(0).default(0).describe('Number of results to skip for pagination'),
         response_format: z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN).describe("Output format: 'markdown' for human-readable or 'json' for machine-readable"),
     })
     .strict();
@@ -145,9 +145,9 @@ const UserSearchInputSchema = z
 type UserSearchInput = z.infer<typeof UserSearchInputSchema>;
 
 server.registerTool(
-    "example_search_users",
+    'example_search_users',
     {
-        title: "Search Example Users",
+        title: 'Search Example Users',
         description: `Search for users in the Example system by name, email, or team.
 
 This tool searches across all user profiles in the Example platform, supporting partial matches and various search filters. It does NOT create or modify users, only searches existing ones.
@@ -197,7 +197,7 @@ Error Handling:
         try {
             // Input validation is handled by Zod schema
             // Make API request using validated parameters
-            const data = await makeApiRequest<any>("users/search", "GET", undefined, {
+            const data = await makeApiRequest<any>('users/search', 'GET', undefined, {
                 q: params.query,
                 limit: params.limit,
                 offset: params.offset,
@@ -210,7 +210,7 @@ Error Handling:
                 return {
                     content: [
                         {
-                            type: "text",
+                            type: 'text',
                             text: `No users found matching '${params.query}'`,
                         },
                     ],
@@ -240,27 +240,27 @@ Error Handling:
             // Format text representation based on requested format
             let textContent: string;
             if (params.response_format === ResponseFormat.MARKDOWN) {
-                const lines = [`# User Search Results: '${params.query}'`, "", `Found ${total} users (showing ${users.length})`, ""];
+                const lines = [`# User Search Results: '${params.query}'`, '', `Found ${total} users (showing ${users.length})`, ''];
                 for (const user of users) {
                     lines.push(`## ${user.name} (${user.id})`);
                     lines.push(`- **Email**: ${user.email}`);
                     if (user.team) lines.push(`- **Team**: ${user.team}`);
-                    lines.push("");
+                    lines.push('');
                 }
-                textContent = lines.join("\n");
+                textContent = lines.join('\n');
             } else {
                 textContent = JSON.stringify(output, null, 2);
             }
 
             return {
-                content: [{ type: "text", text: textContent }],
+                content: [{ type: 'text', text: textContent }],
                 structuredContent: output, // Modern pattern for structured data
             };
         } catch (error) {
             return {
                 content: [
                     {
-                        type: "text",
+                        type: 'text',
                         text: handleApiError(error),
                     },
                 ],
@@ -275,31 +275,31 @@ Error Handling:
 Zod provides runtime type validation:
 
 ```typescript
-import { z } from "zod";
+import { z } from 'zod';
 
 // Basic schema with validation
 const CreateUserSchema = z
     .object({
-        name: z.string().min(1, "Name is required").max(100, "Name must not exceed 100 characters"),
-        email: z.string().email("Invalid email format"),
-        age: z.number().int("Age must be a whole number").min(0, "Age cannot be negative").max(150, "Age cannot be greater than 150"),
+        name: z.string().min(1, 'Name is required').max(100, 'Name must not exceed 100 characters'),
+        email: z.string().email('Invalid email format'),
+        age: z.number().int('Age must be a whole number').min(0, 'Age cannot be negative').max(150, 'Age cannot be greater than 150'),
     })
     .strict(); // Use .strict() to forbid extra fields
 
 // Enums
 enum ResponseFormat {
-    MARKDOWN = "markdown",
-    JSON = "json",
+    MARKDOWN = 'markdown',
+    JSON = 'json',
 }
 
 const SearchSchema = z.object({
-    response_format: z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN).describe("Output format"),
+    response_format: z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN).describe('Output format'),
 });
 
 // Optional fields with defaults
 const PaginationSchema = z.object({
-    limit: z.number().int().min(1).max(100).default(20).describe("Maximum results to return"),
-    offset: z.number().int().min(0).default(0).describe("Number of results to skip"),
+    limit: z.number().int().min(1).max(100).default(20).describe('Maximum results to return'),
+    offset: z.number().int().min(0).default(0).describe('Number of results to skip'),
 });
 ```
 
@@ -309,8 +309,8 @@ Support multiple output formats for flexibility:
 
 ```typescript
 enum ResponseFormat {
-    MARKDOWN = "markdown",
-    JSON = "json",
+    MARKDOWN = 'markdown',
+    JSON = 'json',
 }
 
 const inputSchema = z.object({
@@ -388,23 +388,23 @@ async function searchTool(params: SearchInput) {
 Provide clear, actionable error messages:
 
 ```typescript
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError } from 'axios';
 
 function handleApiError(error: unknown): string {
     if (error instanceof AxiosError) {
         if (error.response) {
             switch (error.response.status) {
                 case 404:
-                    return "Error: Resource not found. Please check the ID is correct.";
+                    return 'Error: Resource not found. Please check the ID is correct.';
                 case 403:
                     return "Error: Permission denied. You don't have access to this resource.";
                 case 429:
-                    return "Error: Rate limit exceeded. Please wait before making more requests.";
+                    return 'Error: Rate limit exceeded. Please wait before making more requests.';
                 default:
                     return `Error: API request failed with status ${error.response.status}`;
             }
-        } else if (error.code === "ECONNABORTED") {
-            return "Error: Request timed out. Please try again.";
+        } else if (error.code === 'ECONNABORTED') {
+            return 'Error: Request timed out. Please try again.';
         }
     }
     return `Error: Unexpected error occurred: ${error instanceof Error ? error.message : String(error)}`;
@@ -417,7 +417,7 @@ Extract common functionality into reusable functions:
 
 ```typescript
 // Shared API request function
-async function makeApiRequest<T>(endpoint: string, method: "GET" | "POST" | "PUT" | "DELETE" = "GET", data?: any, params?: any): Promise<T> {
+async function makeApiRequest<T>(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET', data?: any, params?: any): Promise<T> {
     try {
         const response = await axios({
             method,
@@ -426,8 +426,8 @@ async function makeApiRequest<T>(endpoint: string, method: "GET" | "POST" | "PUT
             params,
             timeout: 30000,
             headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
             },
         });
         return response.data;
@@ -564,27 +564,27 @@ async function getUser(id: string): Promise<any> {
  * project management, and data export capabilities.
  */
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
-import axios, { AxiosError } from "axios";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
+import axios, { AxiosError } from 'axios';
 
 // Constants
-const API_BASE_URL = "https://api.example.com/v1";
+const API_BASE_URL = 'https://api.example.com/v1';
 const CHARACTER_LIMIT = 25000;
 
 // Enums
 enum ResponseFormat {
-    MARKDOWN = "markdown",
-    JSON = "json",
+    MARKDOWN = 'markdown',
+    JSON = 'json',
 }
 
 // Zod schemas
 const UserSearchInputSchema = z
     .object({
-        query: z.string().min(2, "Query must be at least 2 characters").max(200, "Query must not exceed 200 characters").describe("Search string to match against names/emails"),
-        limit: z.number().int().min(1).max(100).default(20).describe("Maximum results to return"),
-        offset: z.number().int().min(0).default(0).describe("Number of results to skip for pagination"),
+        query: z.string().min(2, 'Query must be at least 2 characters').max(200, 'Query must not exceed 200 characters').describe('Search string to match against names/emails'),
+        limit: z.number().int().min(1).max(100).default(20).describe('Maximum results to return'),
+        offset: z.number().int().min(0).default(0).describe('Number of results to skip for pagination'),
         response_format: z.nativeEnum(ResponseFormat).default(ResponseFormat.MARKDOWN).describe("Output format: 'markdown' for human-readable or 'json' for machine-readable"),
     })
     .strict();
@@ -592,7 +592,7 @@ const UserSearchInputSchema = z
 type UserSearchInput = z.infer<typeof UserSearchInputSchema>;
 
 // Shared utility functions
-async function makeApiRequest<T>(endpoint: string, method: "GET" | "POST" | "PUT" | "DELETE" = "GET", data?: any, params?: any): Promise<T> {
+async function makeApiRequest<T>(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET', data?: any, params?: any): Promise<T> {
     try {
         const response = await axios({
             method,
@@ -601,8 +601,8 @@ async function makeApiRequest<T>(endpoint: string, method: "GET" | "POST" | "PUT
             params,
             timeout: 30000,
             headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
             },
         });
         return response.data;
@@ -616,16 +616,16 @@ function handleApiError(error: unknown): string {
         if (error.response) {
             switch (error.response.status) {
                 case 404:
-                    return "Error: Resource not found. Please check the ID is correct.";
+                    return 'Error: Resource not found. Please check the ID is correct.';
                 case 403:
                     return "Error: Permission denied. You don't have access to this resource.";
                 case 429:
-                    return "Error: Rate limit exceeded. Please wait before making more requests.";
+                    return 'Error: Rate limit exceeded. Please wait before making more requests.';
                 default:
                     return `Error: API request failed with status ${error.response.status}`;
             }
-        } else if (error.code === "ECONNABORTED") {
-            return "Error: Request timed out. Please try again.";
+        } else if (error.code === 'ECONNABORTED') {
+            return 'Error: Request timed out. Please try again.';
         }
     }
     return `Error: Unexpected error occurred: ${error instanceof Error ? error.message : String(error)}`;
@@ -633,15 +633,15 @@ function handleApiError(error: unknown): string {
 
 // Create MCP server instance
 const server = new McpServer({
-    name: "example-mcp",
-    version: "1.0.0",
+    name: 'example-mcp',
+    version: '1.0.0',
 });
 
 // Register tools
 server.registerTool(
-    "example_search_users",
+    'example_search_users',
     {
-        title: "Search Example Users",
+        title: 'Search Example Users',
         description: `[Full description as shown above]`,
         inputSchema: UserSearchInputSchema,
         annotations: {
@@ -660,51 +660,51 @@ server.registerTool(
 // For stdio (local):
 async function runStdio() {
     if (!process.env.EXAMPLE_API_KEY) {
-        console.error("ERROR: EXAMPLE_API_KEY environment variable is required");
+        console.error('ERROR: EXAMPLE_API_KEY environment variable is required');
         process.exit(1);
     }
 
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error("MCP server running via stdio");
+    console.error('MCP server running via stdio');
 }
 
 // For streamable HTTP (remote):
 async function runHTTP() {
     if (!process.env.EXAMPLE_API_KEY) {
-        console.error("ERROR: EXAMPLE_API_KEY environment variable is required");
+        console.error('ERROR: EXAMPLE_API_KEY environment variable is required');
         process.exit(1);
     }
 
     const app = express();
     app.use(express.json());
 
-    app.post("/mcp", async (req, res) => {
+    app.post('/mcp', async (req, res) => {
         const transport = new StreamableHTTPServerTransport({
             sessionIdGenerator: undefined,
             enableJsonResponse: true,
         });
-        res.on("close", () => transport.close());
+        res.on('close', () => transport.close());
         await server.connect(transport);
         await transport.handleRequest(req, res, req.body);
     });
 
-    const port = parseInt(process.env.PORT || "3000");
+    const port = parseInt(process.env.PORT || '3000');
     app.listen(port, () => {
         console.error(`MCP server running on http://localhost:${port}/mcp`);
     });
 }
 
 // Choose transport based on environment
-const transport = process.env.TRANSPORT || "stdio";
-if (transport === "http") {
+const transport = process.env.TRANSPORT || 'stdio';
+if (transport === 'http') {
     runHTTP().catch((error) => {
-        console.error("Server error:", error);
+        console.error('Server error:', error);
         process.exit(1);
     });
 } else {
     runStdio().catch((error) => {
-        console.error("Server error:", error);
+        console.error('Server error:', error);
         process.exit(1);
     });
 }
@@ -719,21 +719,21 @@ if (transport === "http") {
 Expose data as resources for efficient, URI-based access:
 
 ```typescript
-import { ResourceTemplate } from "@modelcontextprotocol/sdk/types.js";
+import { ResourceTemplate } from '@modelcontextprotocol/sdk/types.js';
 
 // Register a resource with URI template
 server.registerResource(
     {
-        uri: "file://documents/{name}",
-        name: "Document Resource",
-        description: "Access documents by name",
-        mimeType: "text/plain",
+        uri: 'file://documents/{name}',
+        name: 'Document Resource',
+        description: 'Access documents by name',
+        mimeType: 'text/plain',
     },
     async (uri: string) => {
         // Extract parameter from URI
         const match = uri.match(/^file:\/\/documents\/(.+)$/);
         if (!match) {
-            throw new Error("Invalid URI format");
+            throw new Error('Invalid URI format');
         }
 
         const documentName = match[1];
@@ -743,7 +743,7 @@ server.registerResource(
             contents: [
                 {
                     uri,
-                    mimeType: "text/plain",
+                    mimeType: 'text/plain',
                     text: content,
                 },
             ],
@@ -758,7 +758,7 @@ server.registerResourceList(async () => {
         resources: documents.map((doc) => ({
             uri: `file://documents/${doc.name}`,
             name: doc.name,
-            mimeType: "text/plain",
+            mimeType: 'text/plain',
             description: doc.description,
         })),
     };
@@ -779,20 +779,20 @@ The TypeScript SDK supports two main transport mechanisms:
 #### Streamable HTTP (Recommended for Remote Servers)
 
 ```typescript
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import express from "express";
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import express from 'express';
 
 const app = express();
 app.use(express.json());
 
-app.post("/mcp", async (req, res) => {
+app.post('/mcp', async (req, res) => {
     // Create new transport for each request (stateless, prevents request ID collisions)
     const transport = new StreamableHTTPServerTransport({
         sessionIdGenerator: undefined,
         enableJsonResponse: true,
     });
 
-    res.on("close", () => transport.close());
+    res.on('close', () => transport.close());
 
     await server.connect(transport);
     await transport.handleRequest(req, res, req.body);
@@ -804,7 +804,7 @@ app.listen(3000);
 #### stdio (For Local Integrations)
 
 ```typescript
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
@@ -822,12 +822,12 @@ Notify clients when server state changes:
 ```typescript
 // Notify when tools list changes
 server.notification({
-    method: "notifications/tools/list_changed",
+    method: 'notifications/tools/list_changed',
 });
 
 // Notify when resources change
 server.notification({
-    method: "notifications/resources/list_changed",
+    method: 'notifications/resources/list_changed',
 });
 ```
 

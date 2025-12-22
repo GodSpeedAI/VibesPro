@@ -1,6 +1,6 @@
 ---
-description: "Source code guardrails"
-applyTo: "src/**"
+description: 'Source code guardrails'
+applyTo: 'src/**'
 kind: instructions
 domain: src
 precedence: 32

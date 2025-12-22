@@ -2,19 +2,19 @@
 model: GPT-5 mini
 name: planner.core
 description: Converts ideas into prioritized, generator-first plans with clear handoffs and Nx-aware tasks.
-tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Generate/extend PRD/SDS/TS from the plan above with acceptance criteria and traceability."
+    - label: 'Spec Author'
+      agent: 'spec.author'
+      prompt: 'Generate/extend PRD/SDS/TS from the plan above with acceptance criteria and traceability.'
       send: true
-    - label: "Deep Research"
-      agent: "DeepResearch"
-      prompt: "Investigate unknowns or risks in the plan above; return decision-ready options."
+    - label: 'Deep Research'
+      agent: 'DeepResearch'
+      prompt: 'Investigate unknowns or risks in the plan above; return decision-ready options.'
       send: true
-    - label: "Implement"
-      agent: "implementer.core"
-      prompt: "Implement the plan above using generator-first workflow and TDD."
+    - label: 'Implement'
+      agent: 'implementer.core'
+      prompt: 'Implement the plan above using generator-first workflow and TDD.'
       send: true
 ---
 

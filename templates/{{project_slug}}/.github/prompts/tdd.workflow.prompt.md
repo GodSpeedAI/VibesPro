@@ -5,10 +5,10 @@ task: workflow
 thread: tdd-workflow
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search", "runTests"]
-description: "TDD phases (Red/Green/Refactor) aligned to specs and CALM."
+tools: ['codebase', 'search', 'runTests']
+description: 'TDD phases (Red/Green/Refactor) aligned to specs and CALM.'
 ---
 
 # TDD Workflow (Spec- & Architecture-aware)

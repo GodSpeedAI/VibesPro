@@ -1,6 +1,6 @@
 ---
-description: "Temporal database workflow for AI learning and architectural decisions"
-applyTo: "temporal_db/**,tools/ai/**,tools/temporal-db/**"
+description: 'Temporal database workflow for AI learning and architectural decisions'
+applyTo: 'temporal_db/**,tools/ai/**,tools/temporal-db/**'
 kind: instructions
 domain: ai-memory
 precedence: 25

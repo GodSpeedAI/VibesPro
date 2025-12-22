@@ -62,31 +62,31 @@ All frontend apps receive:
 **Next.js App Router** (`app/page.tsx`):
 
 ```typescript
-import { fetchJson, ENV } from "@shared/web";
+import { fetchJson, ENV } from '@shared/web';
 // RSC-ready API calls
 ```
 
 **Next.js Pages Router** (`pages/index.tsx`):
 
 ```typescript
-import { fetchJson, ENV } from "@shared/web";
-import type { GetServerSideProps } from "next";
+import { fetchJson, ENV } from '@shared/web';
+import type { GetServerSideProps } from 'next';
 // getServerSideProps pattern
 ```
 
 **Remix** (`app/routes/_index.tsx`):
 
 ```typescript
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { fetchJson, ENV } from "@shared/web";
+import { json, type LoaderFunctionArgs } from '@remix-run/node';
+import { fetchJson, ENV } from '@shared/web';
 // Loader/action pattern
 ```
 
 **Expo** (`App.tsx`):
 
 ```typescript
-import { fetchJson, ENV } from "@shared/web";
-import { View, Text } from "react-native";
+import { fetchJson, ENV } from '@shared/web';
+import { View, Text } from 'react-native';
 // React Native compatible
 ```
 
@@ -140,7 +140,7 @@ export async function fetchJson<T>(url: string): Promise<T>;
 export type AppError = ValidationError | NetworkError | UnexpectedError;
 
 // libs/shared/web/src/lib/env.ts
-export const ENV = { API_URL: process.env.NX_API_URL ?? "/api" };
+export const ENV = { API_URL: process.env.NX_API_URL ?? '/api' };
 
 // libs/shared/web/src/lib/schemas.ts
 // Zod schemas (to be expanded in PHASE-004)
@@ -218,7 +218,7 @@ export async function webAppGenerator(tree: Tree, options: Schema) {
 All transformations check before modifying:
 
 ```typescript
-if (content.includes("@shared/web")) {
+if (content.includes('@shared/web')) {
     return; // Already injected, skip
 }
 ```

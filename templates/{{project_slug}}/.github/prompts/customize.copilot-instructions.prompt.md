@@ -1,5 +1,5 @@
 ---
-description: "Flipped interaction: AI asks questions to customize copilot-instructions.md for the project"
+description: 'Flipped interaction: AI asks questions to customize copilot-instructions.md for the project'
 kind: prompt
 domain: docs
 task: customize-instructions
@@ -8,7 +8,7 @@ matrix_ids: []
 budget: 50000
 model: GPT-5 mini
 mode: agent
-tools: ["codebase", "search"]
+tools: ['codebase', 'search']
 ---
 
 # Customize Copilot Instructions (Flipped Interaction)

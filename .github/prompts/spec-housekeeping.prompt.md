@@ -5,10 +5,10 @@ task: housekeeping
 thread: spec-housekeeping
 matrix_ids: []
 budget: S
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Update spec indexes and traceability matrix with minimal context load."
+tools: ['codebase', 'search']
+description: 'Update spec indexes and traceability matrix with minimal context load.'
 ---
 
 # Spec Housekeeping — Index & Traceability Updater (Lean)

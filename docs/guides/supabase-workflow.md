@@ -175,19 +175,19 @@ just check-types     # Verify types are up to date
 #### TypeScript
 
 ```typescript
-import { Users, Database } from "@vibespro/shared-types";
+import { Users, Database } from '@vibespro/shared-types';
 
 // Use the interface directly
 const user: Users = {
-    id: "uuid-here",
-    email: "test@example.com",
+    id: 'uuid-here',
+    email: 'test@example.com',
     is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
 };
 
 // Use the Database namespace for Supabase client patterns
-type UserRow = Database["public"]["Tables"]["users"]["Row"];
+type UserRow = Database['public']['Tables']['users']['Row'];
 ```
 
 #### Python

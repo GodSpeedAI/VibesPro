@@ -115,14 +115,14 @@ tests/
 
 ```typescript
 // tests/unit/libs/auth/domain/user.test.ts
-import { describe, it } from "node:test";
-import assert from "node:assert";
-import { User } from "../../../../libs/auth/domain/user";
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+import { User } from '../../../../libs/auth/domain/user';
 
-describe("User", () => {
-    it("should validate email format", () => {
+describe('User', () => {
+    it('should validate email format', () => {
         // Arrange
-        const invalidEmail = "not-an-email";
+        const invalidEmail = 'not-an-email';
 
         // Act & Assert
         assert.throws(() => new User({ email: invalidEmail }), /Invalid email format/);
@@ -137,7 +137,7 @@ describe("User", () => {
 export class User {
     constructor(private readonly email: string) {
         if (!this.isValidEmail(email)) {
-            throw new Error("Invalid email format");
+            throw new Error('Invalid email format');
         }
     }
 
@@ -156,7 +156,7 @@ export class Email {
 
     static create(email: string): Email {
         if (!Email.isValid(email)) {
-            throw new Error("Invalid email format");
+            throw new Error('Invalid email format');
         }
         return new Email(email);
     }
@@ -174,20 +174,20 @@ export class Email {
 **Use `node:assert` for simple tests:**
 
 ```typescript
-import { describe, it } from "node:test";
-import assert from "node:assert";
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
-describe("ContextManager", () => {
-    it("should bundle context files", () => {
+describe('ContextManager', () => {
+    it('should bundle context files', () => {
         // Arrange
-        const manager = new ContextManager("/path/to/root");
+        const manager = new ContextManager('/path/to/root');
 
         // Act
-        const result = manager.bundleContext("/output");
+        const result = manager.bundleContext('/output');
 
         // Assert
         assert.ok(result.files.size > 0);
-        assert.strictEqual(typeof result.metadata.totalTokens, "number");
+        assert.strictEqual(typeof result.metadata.totalTokens, 'number');
     });
 });
 ```
@@ -195,10 +195,10 @@ describe("ContextManager", () => {
 **Use Jest for complex scenarios:**
 
 ```typescript
-import { jest } from "@jest/globals";
+import { jest } from '@jest/globals';
 
-describe("AuthService", () => {
-    it("should call repository when authenticating", async () => {
+describe('AuthService', () => {
+    it('should call repository when authenticating', async () => {
         // Arrange
         const mockRepo = {
             findByEmail: jest.fn().mockResolvedValue(mockUser),
@@ -206,10 +206,10 @@ describe("AuthService", () => {
         const service = new AuthService(mockRepo);
 
         // Act
-        await service.authenticate("user@example.com", "password");
+        await service.authenticate('user@example.com', 'password');
 
         // Assert
-        expect(mockRepo.findByEmail).toHaveBeenCalledWith("user@example.com");
+        expect(mockRepo.findByEmail).toHaveBeenCalledWith('user@example.com');
     });
 });
 ```
@@ -262,30 +262,30 @@ def sample_spec():
 
 ```typescript
 // tests/integration/template-smoke.test.ts
-import { describe, it } from "node:test";
-import assert from "node:assert";
-import { execSync } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+import { execSync } from 'node:child_process';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-describe("Template Generation", () => {
-    it("should generate project from template", () => {
+describe('Template Generation', () => {
+    it('should generate project from template', () => {
         // Arrange
-        const tempDir = mkdtempSync(join(tmpdir(), "test-"));
+        const tempDir = mkdtempSync(join(tmpdir(), 'test-'));
 
         try {
             // Act
-            execSync("pnpm generate", {
+            execSync('pnpm generate', {
                 cwd: tempDir,
                 env: {
                     ...process.env,
-                    CI: "true",
+                    CI: 'true',
                 },
             });
 
             // Assert
-            const packageJson = join(tempDir, "package.json");
+            const packageJson = join(tempDir, 'package.json');
             assert.ok(existsSync(packageJson));
         } finally {
             // Cleanup
@@ -342,7 +342,7 @@ End
 
 ```typescript
 // Use .tmp-tests/ for temporary files
-const testDir = ".tmp-tests";
+const testDir = '.tmp-tests';
 
 beforeEach(() => {
     mkdirSync(testDir, { recursive: true });
@@ -357,13 +357,13 @@ afterEach(() => {
 
 ```typescript
 // Mock file system
-jest.mock("node:fs", () => ({
+jest.mock('node:fs', () => ({
     readFileSync: jest.fn(),
     writeFileSync: jest.fn(),
 }));
 
 // Mock HTTP requests
-jest.mock("node:http", () => ({
+jest.mock('node:http', () => ({
     request: jest.fn(),
 }));
 ```
@@ -417,16 +417,16 @@ open htmlcov/index.html
 
 ```typescript
 // tests/unit/libs/orders/domain/order.test.ts
-import { describe, it } from "node:test";
-import assert from "node:assert";
-import { Order, OrderStatus } from "../../../../libs/orders/domain/order";
-import { OrderId } from "../../../../libs/orders/domain/order-id";
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+import { Order, OrderStatus } from '../../../../libs/orders/domain/order';
+import { OrderId } from '../../../../libs/orders/domain/order-id';
 
-describe("Order (Domain)", () => {
-    it("should create order with pending status", () => {
+describe('Order (Domain)', () => {
+    it('should create order with pending status', () => {
         // Arrange
         const orderId = OrderId.create();
-        const items = [{ productId: "1", quantity: 2 }];
+        const items = [{ productId: '1', quantity: 2 }];
 
         // Act
         const order = Order.create(orderId, items);
@@ -436,16 +436,16 @@ describe("Order (Domain)", () => {
         assert.strictEqual(order.items.length, 2);
     });
 
-    it("should not allow negative quantities", () => {
+    it('should not allow negative quantities', () => {
         // Arrange
         const orderId = OrderId.create();
-        const items = [{ productId: "1", quantity: -1 }];
+        const items = [{ productId: '1', quantity: -1 }];
 
         // Act & Assert
         assert.throws(() => Order.create(orderId, items), /Quantity must be positive/);
     });
 
-    it("should transition from pending to confirmed", () => {
+    it('should transition from pending to confirmed', () => {
         // Arrange
         const order = Order.create(OrderId.create(), []);
 
@@ -456,7 +456,7 @@ describe("Order (Domain)", () => {
         assert.strictEqual(order.status, OrderStatus.Confirmed);
     });
 
-    it("should not allow confirming cancelled order", () => {
+    it('should not allow confirming cancelled order', () => {
         // Arrange
         const order = Order.create(OrderId.create(), []);
         order.cancel();
@@ -471,11 +471,11 @@ describe("Order (Domain)", () => {
 
 ```typescript
 // tests/unit/libs/orders/application/create-order.test.ts
-import { describe, it, beforeEach } from "node:test";
-import assert from "node:assert";
-import { CreateOrderUseCase } from "../../../../libs/orders/application/create-order";
+import { describe, it, beforeEach } from 'node:test';
+import assert from 'node:assert';
+import { CreateOrderUseCase } from '../../../../libs/orders/application/create-order';
 
-describe("CreateOrderUseCase", () => {
+describe('CreateOrderUseCase', () => {
     let useCase: CreateOrderUseCase;
     let mockOrderRepo: any;
     let mockProductRepo: any;
@@ -491,7 +491,7 @@ describe("CreateOrderUseCase", () => {
             findById: (id: string) =>
                 Promise.resolve({
                     id,
-                    name: "Product",
+                    name: 'Product',
                     price: 100,
                 }),
         };
@@ -499,11 +499,11 @@ describe("CreateOrderUseCase", () => {
         useCase = new CreateOrderUseCase(mockOrderRepo, mockProductRepo);
     });
 
-    it("should create order successfully", async () => {
+    it('should create order successfully', async () => {
         // Arrange
         const input = {
-            userId: "user-1",
-            items: [{ productId: "prod-1", quantity: 2 }],
+            userId: 'user-1',
+            items: [{ productId: 'prod-1', quantity: 2 }],
         };
 
         // Act
@@ -511,15 +511,15 @@ describe("CreateOrderUseCase", () => {
 
         // Assert
         assert.ok(result.orderId);
-        assert.strictEqual(result.status, "pending");
+        assert.strictEqual(result.status, 'pending');
     });
 
-    it("should throw when product not found", async () => {
+    it('should throw when product not found', async () => {
         // Arrange
         mockProductRepo.findById = () => Promise.resolve(null);
         const input = {
-            userId: "user-1",
-            items: [{ productId: "invalid", quantity: 2 }],
+            userId: 'user-1',
+            items: [{ productId: 'invalid', quantity: 2 }],
         };
 
         // Act & Assert
@@ -532,13 +532,13 @@ describe("CreateOrderUseCase", () => {
 
 ```typescript
 // tests/integration/order-repository.test.ts
-import { describe, it, beforeAll, afterAll } from "node:test";
-import assert from "node:assert";
-import { PostgresOrderRepository } from "../../libs/orders/infrastructure/postgres-order-repository";
-import { Order } from "../../libs/orders/domain/order";
-import { setupTestDatabase, teardownTestDatabase } from "../helpers/db";
+import { describe, it, beforeAll, afterAll } from 'node:test';
+import assert from 'node:assert';
+import { PostgresOrderRepository } from '../../libs/orders/infrastructure/postgres-order-repository';
+import { Order } from '../../libs/orders/domain/order';
+import { setupTestDatabase, teardownTestDatabase } from '../helpers/db';
 
-describe("PostgresOrderRepository (Integration)", () => {
+describe('PostgresOrderRepository (Integration)', () => {
     let repository: PostgresOrderRepository;
     let db: any;
 
@@ -551,7 +551,7 @@ describe("PostgresOrderRepository (Integration)", () => {
         await teardownTestDatabase(db);
     });
 
-    it("should save and retrieve order", async () => {
+    it('should save and retrieve order', async () => {
         // Arrange
         const order = Order.create(/* ... */);
 
@@ -778,20 +778,20 @@ markers =
 **Example security test:**
 
 ```typescript
-describe("UserController (Security)", () => {
-    it("should not expose password in error messages", async () => {
+describe('UserController (Security)', () => {
+    it('should not expose password in error messages', async () => {
         // Arrange
-        const invalidCredentials = { email: "user@test.com", password: "wrong" };
+        const invalidCredentials = { email: 'user@test.com', password: 'wrong' };
 
         // Act
         const error = await controller.login(invalidCredentials).catch((e) => e);
 
         // Assert
-        assert.ok(!error.message.includes("wrong")); // Password not in error
-        assert.strictEqual(error.message, "Invalid credentials");
+        assert.ok(!error.message.includes('wrong')); // Password not in error
+        assert.strictEqual(error.message, 'Invalid credentials');
     });
 
-    it("should prevent SQL injection in email field", async () => {
+    it('should prevent SQL injection in email field', async () => {
         // Arrange
         const maliciousEmail = "'; DROP TABLE users; --";
 
@@ -833,14 +833,14 @@ describe("UserController (Security)", () => {
 
 ```typescript
 // DEV-PRD-042, DEV-SDS-015: User authentication
-describe("AuthService", () => {
+describe('AuthService', () => {
     // DEV-PRD-042: Must support OAuth2
-    it("should authenticate via OAuth2", () => {
+    it('should authenticate via OAuth2', () => {
         // Test implementation
     });
 
     // DEV-SDS-015: Must validate email format
-    it("should reject invalid email formats", () => {
+    it('should reject invalid email formats', () => {
         // Test implementation
     });
 });

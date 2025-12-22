@@ -170,10 +170,10 @@ warn!(category = "security", action = "auth_failure", "auth failed");
 **Node (pino):**
 
 ```typescript
-import { logger } from "@vibepro/node-logging/logger";
+import { logger } from '@vibepro/node-logging/logger';
 const log = logger();
-log.info({ category: "app", user_id_hash: "abc123" }, "request accepted");
-log.warn({ category: "security", action: "auth_failure" }, "auth failed");
+log.info({ category: 'app', user_id_hash: 'abc123' }, 'request accepted');
+log.warn({ category: 'security', action: 'auth_failure' }, 'auth failed');
 ```
 
 **Python (Logfire SDK) - Design Target:**

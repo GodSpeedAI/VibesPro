@@ -1,6 +1,6 @@
 ---
-description: "How to refine project context for AI Copilot"
-applies_to: "generated projects"
+description: 'How to refine project context for AI Copilot'
+applies_to: 'generated projects'
 related_specs:
     - AI_PRD-001
     - DEV-ADR-002

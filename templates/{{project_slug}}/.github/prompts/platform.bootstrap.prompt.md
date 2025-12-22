@@ -5,10 +5,10 @@ task: bootstrap
 thread: platform-bootstrap
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Bootstrap developer platform: devcontainer, tasks, tests, CI, lint/typecheck, onboarding."
+tools: ['codebase', 'search']
+description: 'Bootstrap developer platform: devcontainer, tasks, tests, CI, lint/typecheck, onboarding.'
 ---
 
 # Bootstrap Developer Platform (DX)

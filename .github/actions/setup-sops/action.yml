@@ -1,7 +1,7 @@
-name: "Setup SOPS"
-description: "Install SOPS with version from environment"
+name: 'Setup SOPS'
+description: 'Install SOPS with version from environment'
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Install SOPS
       shell: bash

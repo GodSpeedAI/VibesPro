@@ -1,6 +1,6 @@
 ---
-description: "Environment workflows for Copilot and AI agents"
-applyTo: "**"
+description: 'Environment workflows for Copilot and AI agents'
+applyTo: '**'
 kind: instructions
 domain: environment
 precedence: 30

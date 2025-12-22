@@ -1,6 +1,6 @@
 ---
-description: "Testing strategy and tooling (Node + ShellSpec + ShellCheck)"
-applyTo: "**"
+description: 'Testing strategy and tooling (Node + ShellSpec + ShellCheck)'
+applyTo: '**'
 kind: instructions
 domain: testing
 precedence: 35

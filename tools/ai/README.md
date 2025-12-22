@@ -35,32 +35,32 @@ export OPENAI_API_KEY=<oauth_token>
 ### Basic (without Aider)
 
 ```typescript
-import { AIContextManager } from "./context-manager.js";
+import { AIContextManager } from './context-manager.js';
 
 const manager = new AIContextManager({
     maxTokens: 8000,
     reservedTokens: 2000,
 });
 
-const context = await manager.getOptimalContext("Create user entity");
+const context = await manager.getOptimalContext('Create user entity');
 ```
 
 ### With Aider
 
 ```typescript
-import { AIContextManager } from "./context-manager.js";
+import { AIContextManager } from './context-manager.js';
 
 const manager = new AIContextManager({
     maxTokens: 8000,
     reservedTokens: 2000,
     aider: {
         enabled: true,
-        fallbackOrder: ["openai", "openrouter", "ollama"],
-        model: "gpt-4o", // optional, uses default per backend
+        fallbackOrder: ['openai', 'openrouter', 'ollama'],
+        model: 'gpt-4o', // optional, uses default per backend
     },
 });
 
-const context = await manager.getOptimalContext("Create user entity");
+const context = await manager.getOptimalContext('Create user entity');
 // Aider context source is automatically registered
 ```
 

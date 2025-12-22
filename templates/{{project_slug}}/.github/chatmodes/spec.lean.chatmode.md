@@ -4,10 +4,10 @@ domain: spec
 task: mode
 phase: lean
 budget: S
-description: "Lightweight spec mode for quick decisions and minimal documentation."
-tools: ["codebase", "editFiles", "search"]
+description: 'Lightweight spec mode for quick decisions and minimal documentation.'
+tools: ['codebase', 'editFiles', 'search']
 model: GPT-5 mini
-name: "Spec Lean"
+name: 'Spec Lean'
 ---
 
 # Mode Guidance

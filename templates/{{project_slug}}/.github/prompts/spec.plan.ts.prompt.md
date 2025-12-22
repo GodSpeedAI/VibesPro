@@ -5,10 +5,10 @@ task: plan-ts
 thread: spec-plan-ts
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating Technical Specification (TS) plans from SDS specifications."
+tools: ['codebase', 'search']
+description: 'Template for generating Technical Specification (TS) plans from SDS specifications.'
 ---
 
 # Technical Specification (TS) Plan Template

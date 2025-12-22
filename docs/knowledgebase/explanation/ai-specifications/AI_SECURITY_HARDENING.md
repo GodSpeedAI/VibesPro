@@ -332,7 +332,7 @@ ENTRYPOINT ["/usr/local/bin/vibes-pro"]
 **docker-compose.yml:**
 
 ```yaml
-version: "3.9"
+version: '3.9'
 services:
     vibes-pro:
         build: .
@@ -344,7 +344,7 @@ services:
         volumes:
             - vibes_data:/data
         ports:
-            - "8080:8080"
+            - '8080:8080'
         security_opt:
             - no-new-privileges:true
         cap_drop:
@@ -396,22 +396,22 @@ Add to `copier.yml`:
 enable_security_hardening:
     type: bool
     default: false
-    help: "Enable TPM-backed encryption and security hardening features?"
+    help: 'Enable TPM-backed encryption and security hardening features?'
 
 encryption_backend:
     type: str
-    default: "xchacha20poly1305"
+    default: 'xchacha20poly1305'
     choices:
         - xchacha20poly1305
         - aes256gcm
-    when: "{{ enable_security_hardening }}"
-    help: "AEAD cipher for encryption at rest"
+    when: '{{ enable_security_hardening }}'
+    help: 'AEAD cipher for encryption at rest'
 
 tpm_enabled:
     type: bool
     default: false
-    when: "{{ enable_security_hardening }}"
-    help: "Use TPM 2.0 for key sealing (requires TPM hardware)?"
+    when: '{{ enable_security_hardening }}'
+    help: 'Use TPM 2.0 for key sealing (requires TPM hardware)?'
 ```
 
 ### 6.2 Template Structure

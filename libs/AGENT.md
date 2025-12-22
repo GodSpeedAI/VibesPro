@@ -143,10 +143,10 @@ Nothing (Pure business logic)
 
 ```typescript
 // libs/orders/domain/src/entities/order.entity.ts
-import { OrderId } from "../value-objects/order-id.vo";
-import { OrderItem } from "../value-objects/order-item.vo";
-import { OrderStatus } from "../enums/order-status.enum";
-import { DomainException } from "../exceptions/domain.exception";
+import { OrderId } from '../value-objects/order-id.vo';
+import { OrderItem } from '../value-objects/order-item.vo';
+import { OrderStatus } from '../enums/order-status.enum';
+import { DomainException } from '../exceptions/domain.exception';
 
 export class Order {
     private constructor(
@@ -159,7 +159,7 @@ export class Order {
     // Factory method
     static create(id: OrderId, items: OrderItem[]): Order {
         if (items.length === 0) {
-            throw new DomainException("Order must have at least one item");
+            throw new DomainException('Order must have at least one item');
         }
 
         return new Order(id, items, OrderStatus.Pending, new Date());
@@ -185,10 +185,10 @@ export class Order {
     // Business methods (behavior)
     confirm(): void {
         if (this._status === OrderStatus.Cancelled) {
-            throw new DomainException("Cannot confirm a cancelled order");
+            throw new DomainException('Cannot confirm a cancelled order');
         }
         if (this._status === OrderStatus.Confirmed) {
-            throw new DomainException("Order already confirmed");
+            throw new DomainException('Order already confirmed');
         }
 
         this._status = OrderStatus.Confirmed;
@@ -196,7 +196,7 @@ export class Order {
 
     cancel(): void {
         if (this._status === OrderStatus.Shipped) {
-            throw new DomainException("Cannot cancel a shipped order");
+            throw new DomainException('Cannot cancel a shipped order');
         }
 
         this._status = OrderStatus.Cancelled;
@@ -204,7 +204,7 @@ export class Order {
 
     addItem(item: OrderItem): void {
         if (this._status !== OrderStatus.Pending) {
-            throw new DomainException("Cannot add items to non-pending order");
+            throw new DomainException('Cannot add items to non-pending order');
         }
 
         this._items.push(item);
@@ -259,7 +259,7 @@ export class Email {
 
 ```typescript
 // libs/orders/application/src/ports/order-repository.port.ts
-import { Order, OrderId } from "@my-app/orders-domain";
+import { Order, OrderId } from '@my-app/orders-domain';
 
 export interface OrderRepository {
     save(order: Order): Promise<void>;
@@ -366,9 +366,9 @@ export class CreateOrderUseCase {
 
 ```typescript
 // libs/orders/infrastructure/src/repositories/postgres-order.repository.ts
-import { Order, OrderId } from "@my-app/orders-domain";
-import { OrderRepository } from "@my-app/orders-application";
-import { Pool } from "pg";
+import { Order, OrderId } from '@my-app/orders-domain';
+import { OrderRepository } from '@my-app/orders-application';
+import { Pool } from 'pg';
 
 export class PostgresOrderRepository implements OrderRepository {
     constructor(private readonly pool: Pool) {}
@@ -377,7 +377,7 @@ export class PostgresOrderRepository implements OrderRepository {
         const client = await this.pool.connect();
 
         try {
-            await client.query("BEGIN");
+            await client.query('BEGIN');
 
             // Insert order
             await client.query(
@@ -398,10 +398,10 @@ export class PostgresOrderRepository implements OrderRepository {
                 );
             }
 
-            await client.query("COMMIT");
+            await client.query('COMMIT');
         } catch (error) {
-            await client.query("ROLLBACK");
-            throw new InfrastructureException("Failed to save order", error);
+            await client.query('ROLLBACK');
+            throw new InfrastructureException('Failed to save order', error);
         } finally {
             client.release();
         }
@@ -430,8 +430,8 @@ export class PostgresOrderRepository implements OrderRepository {
 
 ```typescript
 // libs/notifications/infrastructure/src/adapters/sendgrid-email.adapter.ts
-import { EmailService } from "@my-app/notifications-application";
-import sgMail from "@sendgrid/mail";
+import { EmailService } from '@my-app/notifications-application';
+import sgMail from '@sendgrid/mail';
 
 export class SendGridEmailAdapter implements EmailService {
     constructor(apiKey: string) {
@@ -442,12 +442,12 @@ export class SendGridEmailAdapter implements EmailService {
         try {
             await sgMail.send({
                 to,
-                from: "noreply@example.com",
+                from: 'noreply@example.com',
                 subject,
                 html: body,
             });
         } catch (error) {
-            throw new InfrastructureException("Failed to send email", error);
+            throw new InfrastructureException('Failed to send email', error);
         }
     }
 }
@@ -459,12 +459,12 @@ export class SendGridEmailAdapter implements EmailService {
 
 ```typescript
 // libs/shared/domain/src/value-objects/id.vo.ts
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
 export abstract class Id {
     protected constructor(private readonly _value: string) {
         if (!Id.isValid(_value)) {
-            throw new Error("Invalid ID format");
+            throw new Error('Invalid ID format');
         }
     }
 
@@ -706,12 +706,12 @@ export class User {
 - **Test value object equality**
 
 ```typescript
-describe("Order (Domain)", () => {
-    it("should not allow confirming cancelled order", () => {
+describe('Order (Domain)', () => {
+    it('should not allow confirming cancelled order', () => {
         const order = Order.create(/* ... */);
         order.cancel();
 
-        expect(() => order.confirm()).toThrow("Cannot confirm cancelled order");
+        expect(() => order.confirm()).toThrow('Cannot confirm cancelled order');
     });
 });
 ```
@@ -744,8 +744,8 @@ describe('CreateOrderUseCase', () => {
 - **Test database queries**
 
 ```typescript
-describe("PostgresOrderRepository", () => {
-    it("should save and retrieve order", async () => {
+describe('PostgresOrderRepository', () => {
+    it('should save and retrieve order', async () => {
         const repo = new PostgresOrderRepository(testDb);
         const order = Order.create(/* ... */);
 

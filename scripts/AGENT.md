@@ -243,9 +243,9 @@ End
 // Script: script_name.mjs
 // Purpose: Brief description
 
-import { readFileSync, writeFileSync } from "node:fs";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -258,10 +258,10 @@ const EXIT_USAGE = 2;
 function main(args) {
     try {
         // Script logic
-        console.log("✅ Success");
+        console.log('✅ Success');
         process.exit(EXIT_SUCCESS);
     } catch (error) {
-        console.error("❌ Error:", error.message);
+        console.error('❌ Error:', error.message);
         process.exit(EXIT_ERROR);
     }
 }

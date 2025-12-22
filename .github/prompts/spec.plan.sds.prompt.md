@@ -5,10 +5,10 @@ task: plan-sds
 thread: spec-plan-sds
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating System Design Specification (SDS) plans from PRD and ADR specifications."
+tools: ['codebase', 'search']
+description: 'Template for generating System Design Specification (SDS) plans from PRD and ADR specifications.'
 ---
 
 # System Design Specification (SDS) Plan Template

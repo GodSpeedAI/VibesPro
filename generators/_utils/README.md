@@ -31,19 +31,19 @@ Service defaults derivation:
 ## Usage
 
 ```typescript
-import { normalizeBaseOptions, validateKebabCase, createHexagonalStructure, logGeneratorStart, logGeneratorComplete } from "../_utils/shared";
-import { deriveServiceDefaults } from "../_utils/stack_defaults";
+import { normalizeBaseOptions, validateKebabCase, createHexagonalStructure, logGeneratorStart, logGeneratorComplete } from '../_utils/shared';
+import { deriveServiceDefaults } from '../_utils/stack_defaults';
 
 // In your generator:
 export default async function myGenerator(tree: Tree, schema: MySchema) {
     validateKebabCase(schema.name);
-    const options = normalizeBaseOptions(schema, "libs");
+    const options = normalizeBaseOptions(schema, 'libs');
 
-    logGeneratorStart(options.name, "my-feature", options.projectRoot);
+    logGeneratorStart(options.name, 'my-feature', options.projectRoot);
 
     // Generate files...
 
-    logGeneratorComplete(options.projectRoot, ["Add your domain logic", "Run tests: pnpm test"]);
+    logGeneratorComplete(options.projectRoot, ['Add your domain logic', 'Run tests: pnpm test']);
 }
 ```
 

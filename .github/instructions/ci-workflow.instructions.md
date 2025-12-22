@@ -1,6 +1,6 @@
 ---
-description: "CI/CD workflow and validation gates"
-applyTo: ".github/workflows/**,justfile"
+description: 'CI/CD workflow and validation gates'
+applyTo: '.github/workflows/**,justfile'
 kind: instructions
 domain: ci
 precedence: 30

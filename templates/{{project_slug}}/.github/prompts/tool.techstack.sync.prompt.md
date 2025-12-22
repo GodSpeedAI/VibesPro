@@ -5,10 +5,10 @@ task: sync
 thread: tool-techstack-sync
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Review techstack.yaml + specs; output idempotent plan to sync Copier defaults and generators."
+tools: ['codebase', 'search']
+description: 'Review techstack.yaml + specs; output idempotent plan to sync Copier defaults and generators.'
 ---
 
 # Sync Tech Stack with Specs → Template

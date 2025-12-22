@@ -1,6 +1,6 @@
 ---
-description: "Commit message guidance with traceability"
-applyTo: "**"
+description: 'Commit message guidance with traceability'
+applyTo: '**'
 kind: instructions
 domain: docs
 precedence: 15

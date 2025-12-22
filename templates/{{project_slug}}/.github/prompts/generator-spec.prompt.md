@@ -5,10 +5,10 @@ task: generator-spec
 thread: generator-spec
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Classify and draft generator specifications for feature slices, route contracts, or data-access scaffolds."
+tools: ['codebase', 'search']
+description: 'Classify and draft generator specifications for feature slices, route contracts, or data-access scaffolds.'
 ---
 
 # Prompt: generator-spec

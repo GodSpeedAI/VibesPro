@@ -5,10 +5,10 @@ task: tdd
 thread: vibecoder-tdd
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search", "runTests"]
-description: "Vibecoder TDD workflow guidance and test-driven development patterns."
+tools: ['codebase', 'search', 'runTests']
+description: 'Vibecoder TDD workflow guidance and test-driven development patterns.'
 ---
 
 # Vibecoder TDD

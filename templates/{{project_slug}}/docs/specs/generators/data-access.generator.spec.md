@@ -121,12 +121,12 @@ tools/vibepro/
 ```ts
 export interface DataAccessSchema {
     entity: string;
-    scope?: "data" | "shared" | "api";
+    scope?: 'data' | 'shared' | 'api';
     directory?: string;
-    backend?: "postgres" | "sqlite" | "http" | "memory";
-    orm?: "drizzle" | "prisma" | "knex" | "none";
+    backend?: 'postgres' | 'sqlite' | 'http' | 'memory';
+    orm?: 'drizzle' | 'prisma' | 'knex' | 'none';
     withContractTests?: boolean;
-    unitTestRunner?: "vitest" | "jest";
+    unitTestRunner?: 'vitest' | 'jest';
     tags?: string;
 }
 ```

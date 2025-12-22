@@ -5,10 +5,10 @@ task: change
 thread: spec-change
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Change a feature (add/update/remove) with spec-first traceability and DX sync."
+tools: ['codebase', 'search']
+description: 'Change a feature (add/update/remove) with spec-first traceability and DX sync.'
 ---
 
 # Change Feature (Add / Update / Remove) — Spec & DX Synchronized

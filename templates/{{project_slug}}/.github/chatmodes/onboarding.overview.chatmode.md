@@ -1,7 +1,7 @@
 ---
-description: "Guide new contributors through project setup, available tools, and development workflows"
+description: 'Guide new contributors through project setup, available tools, and development workflows'
 model: GPT-5 mini
-tools: ["codebase", "search"]
+tools: ['codebase', 'search']
 ---
 
 # Project Onboarding & Interactive Guide

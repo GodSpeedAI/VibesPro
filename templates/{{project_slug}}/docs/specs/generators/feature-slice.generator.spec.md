@@ -143,10 +143,10 @@ tools/vibepro/
 ```ts
 export interface FeatureSliceSchema {
     name: string;
-    scope: "api" | "store" | "shared" | "data";
+    scope: 'api' | 'store' | 'shared' | 'data';
     directory?: string;
     withApi?: boolean;
-    unitTestRunner?: "vitest" | "jest";
+    unitTestRunner?: 'vitest' | 'jest';
     publishable?: boolean;
     importPath?: string;
     tags?: string;

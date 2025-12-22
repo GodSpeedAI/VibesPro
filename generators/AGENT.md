@@ -153,9 +153,9 @@ pnpm exec nx g vibespro:service my-service
 **Standard generator structure (generator.ts):**
 
 ```typescript
-import { Tree, formatFiles, generateFiles, names, offsetFromRoot } from "@nx/devkit";
-import * as path from "path";
-import { ServiceGeneratorSchema } from "./schema";
+import { Tree, formatFiles, generateFiles, names, offsetFromRoot } from '@nx/devkit';
+import * as path from 'path';
+import { ServiceGeneratorSchema } from './schema';
 
 export async function serviceGenerator(tree: Tree, options: ServiceGeneratorSchema) {
     // 1. Normalize options
@@ -190,19 +190,19 @@ function normalizeOptions(tree: Tree, options: ServiceGeneratorSchema): Normaliz
         ...options,
         projectName: name,
         projectRoot,
-        parsedTags: options.tags ? options.tags.split(",").map((t) => t.trim()) : [],
+        parsedTags: options.tags ? options.tags.split(',').map((t) => t.trim()) : [],
     };
 }
 
 function addDomainLayer(tree: Tree, options: NormalizedSchema) {
-    const templatePath = path.join(__dirname, "files", "domain");
+    const templatePath = path.join(__dirname, 'files', 'domain');
     const targetPath = `${options.projectRoot}/domain`;
 
     generateFiles(tree, templatePath, targetPath, {
         ...options,
         ...names(options.projectName),
         offsetFromRoot: offsetFromRoot(options.projectRoot),
-        template: "", // Remove __template__ from file names
+        template: '', // Remove __template__ from file names
     });
 }
 
@@ -291,7 +291,7 @@ export class <%= className %> {
 
 ```typescript
 // generators/_utils/naming.ts
-import { names as nxNames } from "@nx/devkit";
+import { names as nxNames } from '@nx/devkit';
 
 export interface Names {
     name: string; // Original name
@@ -378,24 +378,24 @@ export async function apiEndpointGenerator(tree: Tree, options: ApiEndpointGener
     const normalizedOptions = normalizeOptions(tree, options);
 
     // 1. Generate controller
-    generateFiles(tree, path.join(__dirname, "files", "controller"), normalizedOptions.controllerPath, {
+    generateFiles(tree, path.join(__dirname, 'files', 'controller'), normalizedOptions.controllerPath, {
         ...normalizedOptions,
         ...names(normalizedOptions.name),
-        template: "",
+        template: '',
     });
 
     // 2. Generate DTO
-    generateFiles(tree, path.join(__dirname, "files", "dto"), normalizedOptions.dtoPath, {
+    generateFiles(tree, path.join(__dirname, 'files', 'dto'), normalizedOptions.dtoPath, {
         ...normalizedOptions,
         ...names(normalizedOptions.name),
-        template: "",
+        template: '',
     });
 
     // 3. Generate tests
-    generateFiles(tree, path.join(__dirname, "files", "tests"), normalizedOptions.testsPath, {
+    generateFiles(tree, path.join(__dirname, 'files', 'tests'), normalizedOptions.testsPath, {
         ...normalizedOptions,
         ...names(normalizedOptions.name),
-        template: "",
+        template: '',
     });
 
     // 4. Update route configuration
@@ -534,19 +534,19 @@ names('user-profile') => {
 function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
     // Validate name
     if (!/^[a-z][a-z0-9-]*$/.test(options.name)) {
-        throw new Error("Name must be lowercase kebab-case");
+        throw new Error('Name must be lowercase kebab-case');
     }
 
     // Prevent path traversal
-    const directory = options.directory || "";
-    if (directory.includes("..")) {
+    const directory = options.directory || '';
+    if (directory.includes('..')) {
         throw new Error('Directory cannot contain ".."');
     }
 
     // Sanitize tags
     const tags = options.tags
         ? options.tags
-              .split(",")
+              .split(',')
               .map((t) => t.trim())
               .filter(Boolean)
         : [];
@@ -585,37 +585,37 @@ function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
 
 ```typescript
 // generators/service/generator.spec.ts
-import { createTreeWithEmptyWorkspace } from "@nx/devkit/testing";
-import { Tree, readProjectConfiguration } from "@nx/devkit";
-import serviceGenerator from "./generator";
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
+import { Tree, readProjectConfiguration } from '@nx/devkit';
+import serviceGenerator from './generator';
 
-describe("service generator", () => {
+describe('service generator', () => {
     let tree: Tree;
 
     beforeEach(() => {
         tree = createTreeWithEmptyWorkspace();
     });
 
-    it("should generate domain, application, and infrastructure layers", async () => {
+    it('should generate domain, application, and infrastructure layers', async () => {
         await serviceGenerator(tree, {
-            name: "orders",
-            language: "typescript",
+            name: 'orders',
+            language: 'typescript',
         });
 
-        expect(tree.exists("libs/orders/domain/src/index.ts")).toBeTruthy();
-        expect(tree.exists("libs/orders/application/src/index.ts")).toBeTruthy();
-        expect(tree.exists("libs/orders/infrastructure/src/index.ts")).toBeTruthy();
+        expect(tree.exists('libs/orders/domain/src/index.ts')).toBeTruthy();
+        expect(tree.exists('libs/orders/application/src/index.ts')).toBeTruthy();
+        expect(tree.exists('libs/orders/infrastructure/src/index.ts')).toBeTruthy();
     });
 
-    it("should configure Nx project correctly", async () => {
+    it('should configure Nx project correctly', async () => {
         await serviceGenerator(tree, {
-            name: "orders",
-            tags: "type:service,scope:orders",
+            name: 'orders',
+            tags: 'type:service,scope:orders',
         });
 
-        const config = readProjectConfiguration(tree, "orders-domain");
-        expect(config.tags).toContain("type:service");
-        expect(config.tags).toContain("scope:orders");
+        const config = readProjectConfiguration(tree, 'orders-domain');
+        expect(config.tags).toContain('type:service');
+        expect(config.tags).toContain('scope:orders');
     });
 });
 ```

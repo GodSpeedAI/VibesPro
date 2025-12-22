@@ -3,10 +3,10 @@ kind: prompt
 domain: spec
 task: feature-template
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating feature specifications with proper structure and traceability."
+tools: ['codebase', 'search']
+description: 'Template for generating feature specifications with proper structure and traceability.'
 ---
 
 # Feature Specification Template

@@ -1,6 +1,6 @@
 ---
-description: "Docs guardrails for product/developer specifications"
-applyTo: "docs/**"
+description: 'Docs guardrails for product/developer specifications'
+applyTo: 'docs/**'
 kind: instructions
 domain: docs
 precedence: 30

@@ -854,38 +854,38 @@ error!(category = "app", code = 500, "upstream timeout");
 Library: `libs/node-logging/logger.js`
 
 ```javascript
-const { logger } = require("@vibepro/node-logging/logger");
-const log = logger("my-service");
+const { logger } = require('@vibepro/node-logging/logger');
+const log = logger('my-service');
 
 // App log
 log.info(
     {
-        category: "app",
-        user_id_hash: "abc123",
+        category: 'app',
+        user_id_hash: 'abc123',
         trace_id: req.traceId,
         span_id: req.spanId,
     },
-    "request accepted",
+    'request accepted',
 );
 
 // Security warning
 log.warn(
     {
-        category: "security",
-        action: "rate_limit",
+        category: 'security',
+        action: 'rate_limit',
         client_ip_hash: hashIP(req.ip),
     },
-    "client throttled",
+    'client throttled',
 );
 
 // Error log
 log.error(
     {
-        category: "app",
+        category: 'app',
         code: 500,
-        error: "ECONNREFUSED",
+        error: 'ECONNREFUSED',
     },
-    "upstream timeout",
+    'upstream timeout',
 );
 ```
 

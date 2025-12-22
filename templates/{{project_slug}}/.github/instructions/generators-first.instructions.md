@@ -1,6 +1,6 @@
 ---
-description: "Generator-first development policy for AI workflows"
-applyTo: "**"
+description: 'Generator-first development policy for AI workflows'
+applyTo: '**'
 kind: instructions
 domain: architecture
 precedence: 15

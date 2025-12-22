@@ -20,10 +20,10 @@ export default defineConfig({
     test: {
         // ...
         include: [
-            "tests/**/*.{test,spec}.ts",
-            "generators/**/*.{test,spec}.ts",
-            "tools/**/*.{test,spec}.ts",
-            "libs/**/*.{test,spec}.ts", // <--- Problem: Includes everything
+            'tests/**/*.{test,spec}.ts',
+            'generators/**/*.{test,spec}.ts',
+            'tools/**/*.{test,spec}.ts',
+            'libs/**/*.{test,spec}.ts', // <--- Problem: Includes everything
         ],
         // ...
     },
