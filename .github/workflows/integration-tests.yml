@@ -32,6 +32,7 @@ jobs:
   project-generation:
     name: Project Generation Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         # Keep a reduced matrix for faster feedback. Full matrix runs on main pushes.
@@ -126,6 +127,7 @@ jobs:
   performance-benchmarks:
     name: Performance Benchmarks
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -169,6 +171,7 @@ jobs:
   ai-workflows:
     name: AI Workflows Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -204,6 +207,7 @@ jobs:
   integration-summary:
     name: Integration Test Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [project-generation, end-to-end, performance-benchmarks, ai-workflows]
     if: always()
 

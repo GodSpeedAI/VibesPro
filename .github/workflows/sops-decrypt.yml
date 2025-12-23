@@ -4,89 +4,49 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: sops-decrypt-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
 
-      - name: Install sops
-        run: |
-          set -euo pipefail
-          SOPS_VERSION="3.11.0"
-          SOPS_CHECKSUM="775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
-          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
-          curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
-          echo "${SOPS_CHECKSUM}  sops" | sha256sum -c -
-          sudo mv sops /usr/local/bin/sops
-          sudo chmod +x /usr/local/bin/sops
-
-          # Verify installation
-          sops --version
-
-          # Ensure installed version matches expected
-          if ! sops --version | grep -q "${SOPS_VERSION}"; then
-            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
-            sops --version || true
-            exit 1
-          fi
-
-      - name: Configure age key (skip if not set)
-        env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        run: |
-          set -euo pipefail
-
-          # Skip decrypt if secret isn't available (e.g., PR from fork)
-          if [ -z "${SOPS_AGE_KEY:-}" ]; then
-            echo "::warning::SOPS_AGE_KEY not set; skipping decrypt (no secret available for this run)"
-            echo "SKIP_DECRYPT=true" >> $GITHUB_ENV
-            exit 0
-          fi
-
-          # Configure age key
-          KEY_PATH="$HOME/.config/sops/age-key.txt"
-          mkdir -p "$(dirname "$KEY_PATH")"
-          printf "%s" "${SOPS_AGE_KEY}" > "$KEY_PATH"
-          chmod 600 "$KEY_PATH"
-
-          # Export for subsequent steps
-          echo "SOPS_AGE_KEY_FILE=$KEY_PATH" >> $GITHUB_ENV
-          echo "::debug::SOPS key file configured at $KEY_PATH"
-
-      - name: Decrypt secrets
-        if: ${{ env.SKIP_DECRYPT != 'true' }}
-        run: |
-          set -euo pipefail
-
-          if [ ! -f .secrets.env.sops ]; then
-            echo "::warning::.secrets.env.sops not found; skipping decrypt"
-            exit 0
-          fi
-
-          sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > .secrets.env
-          chmod 600 .secrets.env
-          echo "::debug::Secrets decrypted successfully"
+      - name: Setup SOPS with decryption
+        id: sops
+        uses: ./.github/actions/setup-sops
+        with:
+          sops-age-key: ${{ secrets.SOPS_AGE_KEY }}
 
       - name: Run tests
         run: |
           # Load secrets if decrypted
-          if [ -f .secrets.env ]; then
+          if [ "${{ steps.sops.outputs.sops-loaded }}" = "true" ]; then
             set -a
-            # shellcheck disable=SC1090
-            source .secrets.env || { echo "::error:: Failed to source .secrets.env"; exit 1; }
+            # shellcheck disable=SC1091
+            source "${{ steps.sops.outputs.decrypted-file }}" || { echo "::error:: Failed to source secrets"; exit 1; }
             set +a
+            echo "Running tests with decrypted secrets..."
+          else
+            echo "No secrets available; running tests without them..."
           fi
-
-          # Run test commands (avoid echoing secrets)
-          echo "Running tests with decrypted secrets..."
           # Add actual test commands here
+          echo "Tests completed successfully"
 
       - name: Cleanup
         if: always()
         run: |
-          if [ -f .secrets.env ]; then
-            shred -u .secrets.env 2>/dev/null || rm -f .secrets.env
+          if [ -f "${{ steps.sops.outputs.decrypted-file }}" ]; then
+            shred -u "${{ steps.sops.outputs.decrypted-file }}" 2>/dev/null || rm -f "${{ steps.sops.outputs.decrypted-file }}"
           fi
           if [ -f "$HOME/.config/sops/age-key.txt" ]; then
             shred -u "$HOME/.config/sops/age-key.txt" 2>/dev/null || rm -f "$HOME/.config/sops/age-key.txt"

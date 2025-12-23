@@ -16,6 +16,7 @@ concurrency:
 jobs:
   env-check:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       MISE_NONINTERACTIVE: '1'
       LC_ALL: C.UTF-8
@@ -31,7 +32,9 @@ jobs:
       SOPS_CHECKSUM: '775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
 
       - name: Install system packages (age, jq, make)
         run: |

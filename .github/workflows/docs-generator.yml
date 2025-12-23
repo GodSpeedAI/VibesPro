@@ -21,6 +21,7 @@ concurrency:
 jobs:
   test-docs-generator:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     strategy:
       matrix:
@@ -78,6 +79,7 @@ jobs:
     # Run conversion tests in a separate job, pinned to a known pandoc release
     if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_conversion == 'true')
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: test-docs-generator
 
     strategy:

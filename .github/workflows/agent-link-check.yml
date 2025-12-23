@@ -1,5 +1,8 @@
 name: AGENT Link Check
 
+permissions:
+  contents: read
+
 on:
   pull_request:
   push:
@@ -7,22 +10,33 @@ on:
       - main
       - 'codex/**'
 
+concurrency:
+  group: agent-link-check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-agent-links:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AQUA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
         with:
           python-version: '3.11'
+
       - name: Install requirements
         run: |
           python -m pip install --upgrade pip
           pip install requests
+
       - name: Run AGENT.md link checker (local links)
         run: |
           python3 tools/check_agent_links.py

@@ -18,6 +18,7 @@ jobs:
   # ---------- Prepare: cache keys & versions (Ubuntu) ----------
   prepare:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AQUA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -28,7 +29,9 @@ jobs:
       rust_version: ${{ steps.vers.outputs.rust }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
 
       - name: Install mise (for version introspection)
         run: |
@@ -62,6 +65,7 @@ jobs:
   # ---------- Build & Test Matrix ----------
   build-test:
     needs: prepare
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -90,7 +94,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
 
       # ---- Base tools (age/jq) for both OSes ----
       - name: Install base packages
@@ -327,6 +333,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [prepare, build-test]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       MISE_NONINTERACTIVE: '1'
       SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
@@ -338,7 +345,9 @@ jobs:
       SOPS_CHECKSUM: '775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
 
       - name: Install base packages
         run: |
