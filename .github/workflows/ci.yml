@@ -58,29 +58,7 @@ jobs:
         run: uv tool install copier
 
       - name: Install just
-        shell: bash
-        run: |
-          if command -v just >/dev/null 2>&1; then
-            echo "just already installed"
-            just --version
-          else
-            echo "Installing just with retry logic..."
-            for i in {1..5}; do
-              echo "Attempt $i/5..."
-              if curl --proto '=https' --tlsv1.2 -sSf --retry 3 --retry-delay 2 https://just.systems/install.sh | bash -s -- --to ~/.local/bin; then
-                echo "✅ just installed successfully"
-                break
-              else
-                if [ $i -eq 5 ]; then
-                  echo "❌ Failed to install just after 5 attempts"
-                  exit 1
-                fi
-                echo "⚠️ Attempt $i failed, waiting $((i * 2)) seconds..."
-                sleep $((i * 2))
-              fi
-            done
-            echo "$HOME/.local/bin" >> $GITHUB_PATH
-          fi
+        uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6 # v2
 
       - name: Verify just installation
         run: just --version
