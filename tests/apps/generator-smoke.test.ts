@@ -31,7 +31,7 @@ function runNx(command: string): string {
     });
   } catch (error) {
     const execError = error as { stderr?: string; stdout?: string };
-    console.error('Nx command failed:', execError.stderr || execError.stdout);
+    console.error('Nx command failed:', execError.stderr ?? execError.stdout);
     throw error;
   }
 }
