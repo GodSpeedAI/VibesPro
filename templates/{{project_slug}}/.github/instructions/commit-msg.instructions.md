@@ -1,6 +1,6 @@
 ---
-description: "Commit message guidance with traceability"
-applyTo: "**"
+description: 'Commit message guidance with traceability'
+applyTo: '**'
 kind: instructions
 domain: docs
 precedence: 15
@@ -32,14 +32,14 @@ precedence: 15
 ### 🧠 When to Surface Analytical Context
 
 - **Do include reasoning** for:
-    - Architectural changes
-    - Non-obvious bug fixes
-    - Performance/security optimizations
-    - Trade-offs or alternatives considered
+  - Architectural changes
+  - Non-obvious bug fixes
+  - Performance/security optimizations
+  - Trade-offs or alternatives considered
 - **Keep it concise** for:
-    - Routine refactors
-    - Simple feature additions
-    - Standard dependency updates
+  - Routine refactors
+  - Simple feature additions
+  - Standard dependency updates
 
 ---
 

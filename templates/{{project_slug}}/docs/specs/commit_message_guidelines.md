@@ -1,7 +1,7 @@
 ---
 matrix_ids:
-    - AI_PRD-002
-    - AI_TS-005
+  - AI_PRD-002
+  - AI_TS-005
 ---
 
 # Commit Message Guidelines
@@ -35,14 +35,14 @@ Copilot guardrails enforced across this workspace.
 ### 🧠 When to Surface Analytical Context
 
 - **Do include reasoning** for:
-    - Architectural changes
-    - Non-obvious bug fixes
-    - Performance/security optimizations
-    - Trade-offs or alternatives considered
+  - Architectural changes
+  - Non-obvious bug fixes
+  - Performance/security optimizations
+  - Trade-offs or alternatives considered
 - **Keep it concise** for:
-    - Routine refactors
-    - Simple feature additions
-    - Standard dependency updates
+  - Routine refactors
+  - Simple feature additions
+  - Standard dependency updates
 
 ---
 

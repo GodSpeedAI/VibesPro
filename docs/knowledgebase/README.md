@@ -25,22 +25,22 @@ _Understand the "why" behind the VibePDK platform._
 - **[AI Agent Playbook](./explanation/ai-agent-playbook.md):** The definitive guide to the AI agent stack, its layers, and core tenets.
 - **[AI Workflows Rationale](./explanation/ai-workflows-rationale.md):** The reasoning behind the AI-assisted development process.
 - **[AI Specifications](./explanation/ai-specifications/):** The canonical collection of ADRs, PRDs, and technical specifications for the AI system.
-    - [AI Architecture Decision Records (ADR)](./explanation/ai-specifications/AI_ADR.md)
-    - [AI Product Requirements (PRD)](./explanation/ai-specifications/AI_PRD.md)
-    - [AI Software Design Specification (SDS)](./explanation/ai-specifications/AI_SDS.md)
-    - [AI Technical Specification (TS)](./explanation/ai-specifications/AI_TS.md)
-    - [AI Security Hardening Specification](./explanation/ai-specifications/AI_SECURITY_HARDENING.md)
-    - [VibePDK AI Integration Plan](./explanation/ai-specifications/vibepdk-ai-integration-plan.md)
+  - [AI Architecture Decision Records (ADR)](./explanation/ai-specifications/AI_ADR.md)
+  - [AI Product Requirements (PRD)](./explanation/ai-specifications/AI_PRD.md)
+  - [AI Software Design Specification (SDS)](./explanation/ai-specifications/AI_SDS.md)
+  - [AI Technical Specification (TS)](./explanation/ai-specifications/AI_TS.md)
+  - [AI Security Hardening Specification](./explanation/ai-specifications/AI_SECURITY_HARDENING.md)
+  - [VibePDK AI Integration Plan](./explanation/ai-specifications/vibepdk-ai-integration-plan.md)
 
 ### MergeKit Engine
 
 - **[Integration Blueprint](./explanation/mergekit/integration-blueprint.md):** The strategy for merging HexDDD and VibePDK into a unified generator.
 - **[MergeKit Specifications](./explanation/mergekit/):** The collection of planning and design documents for the MergeKit engine.
-    - [MergeKit ADR](./explanation/mergekit/ADR.md)
-    - [MergeKit PRD](./explanation/mergekit/PRD.md)
-    - [MergeKit SDS](./explanation/mergekit/SDS.md)
-    - [MergeKit TS](./explanation/mergekit/TS.md)
-    - [MergeKit Implementation Plan](./explanation/mergekit/IMPLEMENTATION-PLAN.md)
+  - [MergeKit ADR](./explanation/mergekit/ADR.md)
+  - [MergeKit PRD](./explanation/mergekit/PRD.md)
+  - [MergeKit SDS](./explanation/mergekit/SDS.md)
+  - [MergeKit TS](./explanation/mergekit/TS.md)
+  - [MergeKit Implementation Plan](./explanation/mergekit/IMPLEMENTATION-PLAN.md)
 
 ---
 

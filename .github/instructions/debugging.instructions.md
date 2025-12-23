@@ -1,6 +1,6 @@
 ---
-description: "Debugging workflow for reproducing, isolating, and fixing issues"
-applyTo: "**"
+description: 'Debugging workflow for reproducing, isolating, and fixing issues'
+applyTo: '**'
 kind: instructions
 domain: debugging
 precedence: 38

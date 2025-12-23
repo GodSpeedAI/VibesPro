@@ -75,47 +75,47 @@ describe('Merged Project Structure', () => {
 
 1. **Copy base structure from VibePDK**:
 
-    ```bash
-    # Source: /home/sprime01/projects/VibePDK/
-    # Copy: template metadata → copier.yml (map questions and defaults)
-    # Copy: scaffold payload → templates/
-    # Copy: hooks/ → hooks/ (adapt for Copier)
-    ```
+   ```bash
+   # Source: /home/sprime01/projects/VibePDK/
+   # Copy: template metadata → copier.yml (map questions and defaults)
+   # Copy: scaffold payload → templates/
+   # Copy: hooks/ → hooks/ (adapt for Copier)
+   ```
 
 2. **Create merged project root**:
 
-    ```bash
-    mkdir -p /tmp/merged-project/{templates,hooks,tests,docs,tools}
-    ```
+   ```bash
+   mkdir -p /tmp/merged-project/{templates,hooks,tests,docs,tools}
+   ```
 
 3. **Draft copier.yml from legacy template metadata**:
 
-    ```yaml
-    # copier.yml - Derived from VibePDK template configuration
-    project_name:
-        type: str
-        help: "Name of the project"
-        validator: "{% if not project_name %}Required field{% endif %}"
+   ```yaml
+   # copier.yml - Derived from VibePDK template configuration
+   project_name:
+     type: str
+     help: 'Name of the project'
+     validator: '{% if not project_name %}Required field{% endif %}'
 
-    author_name:
-        type: str
-        help: "Author's name"
-        default: "Unknown Author"
+   author_name:
+     type: str
+     help: "Author's name"
+     default: 'Unknown Author'
 
-    include_ai_workflows:
-        type: bool
-        help: "Include AI-enhanced development workflows"
-        default: true
+   include_ai_workflows:
+     type: bool
+     help: 'Include AI-enhanced development workflows'
+     default: true
 
-    architecture_style:
-        type: str
-        help: "Primary architecture pattern"
-        choices:
-            - hexagonal
-            - layered
-            - microservices
-        default: hexagonal
-    ```
+   architecture_style:
+     type: str
+     help: 'Primary architecture pattern'
+     choices:
+       - hexagonal
+       - layered
+       - microservices
+     default: hexagonal
+   ```
 
 **REFACTOR**:
 
@@ -154,36 +154,36 @@ describe('Hybrid Build System', () => {
 
 1. **Copy justfile foundation from VibePDK**:
 
-    ```bash
-    # Source: /home/sprime01/projects/VibePDK/{{ project_slug }}/justfile
-    # Adapt for merged context with HexDDD patterns
-    ```
+   ```bash
+   # Source: /home/sprime01/projects/VibePDK/{{ project_slug }}/justfile
+   # Adapt for merged context with HexDDD patterns
+   ```
 
 2. **Integrate Nx configuration from HexDDD**:
 
-    ```bash
-    # Source: /home/sprime01/projects/HexDDD/nx.json
-    # Copy: nx.json, workspace.json patterns
-    # Adapt: project configurations for generator context
-    ```
+   ```bash
+   # Source: /home/sprime01/projects/HexDDD/nx.json
+   # Copy: nx.json, workspace.json patterns
+   # Adapt: project configurations for generator context
+   ```
 
 3. **Create hybrid justfile**:
 
-    ```bash
-    # templates/justfile
-    set shell := ["bash", "-uc"]
+   ```bash
+   # templates/justfile
+   set shell := ["bash", "-uc"]
 
-    # Auto-detect build strategy
-    default: (_detect_build_system)
+   # Auto-detect build strategy
+   default: (_detect_build_system)
 
-    _detect_build_system:
-       #!/usr/bin/env bash
-       if [ -f "nx.json" ]; then
-          just build-nx
-       else
-          just build-direct
-       fi
-    ```
+   _detect_build_system:
+      #!/usr/bin/env bash
+      if [ -f "nx.json" ]; then
+         just build-nx
+      else
+         just build-direct
+      fi
+   ```
 
 **REFACTOR**:
 
@@ -232,17 +232,17 @@ describe('Hybrid Build System', () => {
 
 ```typescript
 // Test file: tests/generators/app.test.ts
-describe("Application Generator", () => {
-    it("should generate React applications with proper architecture", async () => {
-        const result = await runGenerator("app", {
-            name: "admin-portal",
-            framework: "next",
-            domains: ["user-management", "billing"],
-        });
-
-        expect(result.files).toContain("apps/admin-portal/pages/index.tsx");
-        expect(result.files).toContain("apps/admin-portal/lib/api-client.ts");
+describe('Application Generator', () => {
+  it('should generate React applications with proper architecture', async () => {
+    const result = await runGenerator('app', {
+      name: 'admin-portal',
+      framework: 'next',
+      domains: ['user-management', 'billing'],
     });
+
+    expect(result.files).toContain('apps/admin-portal/pages/index.tsx');
+    expect(result.files).toContain('apps/admin-portal/lib/api-client.ts');
+  });
 });
 ```
 
@@ -250,31 +250,31 @@ describe("Application Generator", () => {
 
 1. **Extract HexDDD app generators**:
 
-    ```bash
-    # Source: /home/sprime01/projects/HexDDD/libs/ddd/src/generators/web-app/
-    # Copy: Next.js, Remix, Expo templates
-    # Adapt: Convert to unified Copier format
-    ```
+   ```bash
+   # Source: /home/sprime01/projects/HexDDD/libs/ddd/src/generators/web-app/
+   # Copy: Next.js, Remix, Expo templates
+   # Adapt: Convert to unified Copier format
+   ```
 
 2. **Create framework-agnostic templates**:
 
-    ```bash
-    # templates/apps/{{ app_name }}/
-    {% if framework == 'next' %}
-    # Copy from HexDDD Next.js template
-    {% elif framework == 'remix' %}
-    # Copy from HexDDD Remix template
-    {% elif framework == 'expo' %}
-    # Copy from HexDDD Expo template
-    {% endif %}
-    ```
+   ```bash
+   # templates/apps/{{ app_name }}/
+   {% if framework == 'next' %}
+   # Copy from HexDDD Next.js template
+   {% elif framework == 'remix' %}
+   # Copy from HexDDD Remix template
+   {% elif framework == 'expo' %}
+   # Copy from HexDDD Expo template
+   {% endif %}
+   ```
 
 3. **Unified API client generation**:
 
-    ```bash
-    # Source: /home/sprime01/projects/HexDDD/libs/shared/web/src/api/
-    # Adapt: Create template version with domain integration
-    ```
+   ```bash
+   # Source: /home/sprime01/projects/HexDDD/libs/shared/web/src/api/
+   # Adapt: Create template version with domain integration
+   ```
 
 **REFACTOR**:
 
@@ -300,14 +300,14 @@ describe("Application Generator", () => {
 
 ```typescript
 // Test file: tests/type-system/integration.test.ts
-describe("Type System Integration", () => {
-    it("should generate consistent types across languages", async () => {
-        const schema = loadDatabaseSchema();
-        const tsTypes = generateTypeScriptTypes(schema);
-        const pyTypes = generatePythonTypes(schema);
+describe('Type System Integration', () => {
+  it('should generate consistent types across languages', async () => {
+    const schema = loadDatabaseSchema();
+    const tsTypes = generateTypeScriptTypes(schema);
+    const pyTypes = generatePythonTypes(schema);
 
-        expect(validateTypeConsistency(tsTypes, pyTypes)).toBe(true);
-    });
+    expect(validateTypeConsistency(tsTypes, pyTypes)).toBe(true);
+  });
 });
 ```
 
@@ -315,29 +315,29 @@ describe("Type System Integration", () => {
 
 1. **Copy HexDDD type generation system**:
 
-    ```bash
-    # Source: /home/sprime01/projects/HexDDD/tools/type-generator/
-    # Copy: Complete type generation toolchain
-    # Adapt: Integrate with Copier template system
-    ```
+   ```bash
+   # Source: /home/sprime01/projects/HexDDD/tools/type-generator/
+   # Copy: Complete type generation toolchain
+   # Adapt: Integrate with Copier template system
+   ```
 
 2. **Create type generation templates**:
 
-    ```bash
-    # templates/libs/shared/database-types/index.ts.j2
-    # templates/libs/backend/type_utils/__init__.py.j2
-    # Hook into post-generation for type sync
-    ```
+   ```bash
+   # templates/libs/shared/database-types/index.ts.j2
+   # templates/libs/backend/type_utils/__init__.py.j2
+   # Hook into post-generation for type sync
+   ```
 
 3. **Database schema integration**:
 
-    ```python
-    # hooks/post_gen.py
-    def generate_types_from_schema():
-        # Integrate HexDDD type generation logic
-        # Generate TypeScript and Python types
-        # Ensure cross-language consistency
-    ```
+   ```python
+   # hooks/post_gen.py
+   def generate_types_from_schema():
+       # Integrate HexDDD type generation logic
+       # Generate TypeScript and Python types
+       # Ensure cross-language consistency
+   ```
 
 **REFACTOR**:
 
@@ -388,38 +388,38 @@ def test_tsink_integration():
 
 1. **Implement tsink database wrapper**:
 
-    ```python
-    # Based on TS-MERGE-003 specification
-    # templates/tools/temporal-db/repository.py.j2
-    from temporal_db.schema import SpecificationRecord
-    import tsink
+   ```python
+   # Based on TS-MERGE-003 specification
+   # templates/tools/temporal-db/repository.py.j2
+   from temporal_db.schema import SpecificationRecord
+   import tsink
 
-    class TemporalRepository:
-        def __init__(self, db_path: str):
-            self.db_path = db_path
-            # Implementation from TS.md specification
-    ```
+   class TemporalRepository:
+       def __init__(self, db_path: str):
+           self.db_path = db_path
+           # Implementation from TS.md specification
+   ```
 
 2. **Create database initialization**:
 
-    ```bash
-    # hooks/post_gen.py
-    def setup_temporal_database():
-        # Initialize tsink database
-        # Set up time series for specifications
-        # Configure Gorilla compression
-    ```
+   ```bash
+   # hooks/post_gen.py
+   def setup_temporal_database():
+       # Initialize tsink database
+       # Set up time series for specifications
+       # Configure Gorilla compression
+   ```
 
 3. **Add database management commands**:
 
-    ```bash
-    # templates/justfile additions
-    db-init:
-        python tools/temporal-db/init.py
+   ```bash
+   # templates/justfile additions
+   db-init:
+       python tools/temporal-db/init.py
 
-    db-backup:
-        python tools/temporal-db/backup.py
-    ```
+   db-backup:
+       python tools/temporal-db/backup.py
+   ```
 
 **REFACTOR**:
 
@@ -445,17 +445,17 @@ def test_tsink_integration():
 
 ```typescript
 // Test file: tests/ai/context-manager.test.ts
-describe("AI Context Manager", () => {
-    it("should provide optimal context within token budget", async () => {
-        const manager = new AIContextManager({
-            maxTokens: 8000,
-            reservedTokens: 2000,
-        });
-
-        const context = await manager.getOptimalContext("Create user entity");
-        expect(context.tokenCount).toBeLessThanOrEqual(6000);
-        expect(context.relevanceScore).toBeGreaterThan(0.8);
+describe('AI Context Manager', () => {
+  it('should provide optimal context within token budget', async () => {
+    const manager = new AIContextManager({
+      maxTokens: 8000,
+      reservedTokens: 2000,
     });
+
+    const context = await manager.getOptimalContext('Create user entity');
+    expect(context.tokenCount).toBeLessThanOrEqual(6000);
+    expect(context.relevanceScore).toBeGreaterThan(0.8);
+  });
 });
 ```
 
@@ -463,28 +463,28 @@ describe("AI Context Manager", () => {
 
 1. **Copy VibePDK AI workflow foundation**:
 
-    ```bash
-    # Source: /home/sprime01/projects/VibePDK/.github/prompts/
-    # Copy: AI workflow patterns and prompt templates
-    # Adapt: Integrate with HexDDD architectural patterns
-    ```
+   ```bash
+   # Source: /home/sprime01/projects/VibePDK/.github/prompts/
+   # Copy: AI workflow patterns and prompt templates
+   # Adapt: Integrate with HexDDD architectural patterns
+   ```
 
 2. **Implement context manager from TS specification**:
 
-    ```typescript
-    // templates/tools/ai/context-manager.ts.j2
-    // Implementation based on TS-MERGE-007
-    export class AIContextManager {
-        // Copy implementation from TS.md
-    }
-    ```
+   ```typescript
+   // templates/tools/ai/context-manager.ts.j2
+   // Implementation based on TS-MERGE-007
+   export class AIContextManager {
+     // Copy implementation from TS.md
+   }
+   ```
 
 3. **Create AI-enhanced generators**:
 
-    ```bash
-    # templates/.github/workflows/ai-generate.yml.j2
-    # Integration of VibePDK AI workflows with HexDDD generators
-    ```
+   ```bash
+   # templates/.github/workflows/ai-generate.yml.j2
+   # Integration of VibePDK AI workflows with HexDDD generators
+   ```
 
 **REFACTOR**:
 
@@ -516,13 +516,13 @@ describe("AI Context Manager", () => {
 
 ```typescript
 // Test file: tests/integration/end-to-end.test.ts
-describe("End-to-End Integration", () => {
-    it("should generate, build, and test complete project", async () => {
-        // Generate project using Copier
-        // Build all targets
-        // Run all tests
-        // Verify AI workflows
-    });
+describe('End-to-End Integration', () => {
+  it('should generate, build, and test complete project', async () => {
+    // Generate project using Copier
+    // Build all targets
+    // Run all tests
+    // Verify AI workflows
+  });
 });
 ```
 
@@ -530,29 +530,29 @@ describe("End-to-End Integration", () => {
 
 1. **Create comprehensive test suite**:
 
-    ```bash
-    # tests/integration/
-    ├── project-generation.test.ts
-    ├── build-system.test.ts
-    ├── ai-workflows.test.ts
-    └── performance.test.ts
-    ```
+   ```bash
+   # tests/integration/
+   ├── project-generation.test.ts
+   ├── build-system.test.ts
+   ├── ai-workflows.test.ts
+   └── performance.test.ts
+   ```
 
 2. **Automated testing pipeline**:
 
-    ```yaml
-    # .github/workflows/integration-tests.yml
-    # Test matrix for different project configurations
-    # Performance benchmarks
-    # Documentation validation
-    ```
+   ```yaml
+   # .github/workflows/integration-tests.yml
+   # Test matrix for different project configurations
+   # Performance benchmarks
+   # Documentation validation
+   ```
 
 3. **Test data and fixtures**:
 
-    ```bash
-    # tests/fixtures/
-    └── reference-outputs/
-    ```
+   ```bash
+   # tests/fixtures/
+   └── reference-outputs/
+   ```
 
 **REFACTOR**:
 
@@ -592,30 +592,30 @@ describe('Documentation Generation', () => {
 
 1. **Copy VibePDK documentation patterns**:
 
-    ```bash
-    # Source: /home/sprime01/projects/VibePDK/docs/
-    # Adapt: Merge with HexDDD documentation
-    # Create: Unified documentation templates
-    ```
+   ```bash
+   # Source: /home/sprime01/projects/VibePDK/docs/
+   # Adapt: Merge with HexDDD documentation
+   # Create: Unified documentation templates
+   ```
 
 2. **Automated documentation generation**:
 
-    ```bash
-    # templates/tools/docs/generator.py.j2
-    # Generate API documentation
-    # Create architecture diagrams
-    # Build user guides
-    ```
+   ```bash
+   # templates/tools/docs/generator.py.j2
+   # Generate API documentation
+   # Create architecture diagrams
+   # Build user guides
+   ```
 
 3. **Documentation templates**:
 
-    ```markdown
-    # templates/docs/
+   ```markdown
+   # templates/docs/
 
-    ├── README.md.j2
-    ├── ARCHITECTURE.md.j2
-    └── API-REFERENCE.md.j2
-    ```
+   ├── README.md.j2
+   ├── ARCHITECTURE.md.j2
+   └── API-REFERENCE.md.j2
+   ```
 
 **REFACTOR**:
 
@@ -641,13 +641,13 @@ describe('Documentation Generation', () => {
 
 ```typescript
 // Test file: tests/performance/benchmarks.test.ts
-describe("Performance Benchmarks", () => {
-    it("should meet performance targets", async () => {
-        const metrics = await runPerformanceSuite();
-        expect(metrics.generationTime).toBeLessThan(30000); // 30 seconds
-        expect(metrics.buildTime).toBeLessThan(120000); // 2 minutes
-        expect(metrics.memoryUsage).toBeLessThan(512 * 1024 * 1024); // 512MB
-    });
+describe('Performance Benchmarks', () => {
+  it('should meet performance targets', async () => {
+    const metrics = await runPerformanceSuite();
+    expect(metrics.generationTime).toBeLessThan(30000); // 30 seconds
+    expect(metrics.buildTime).toBeLessThan(120000); // 2 minutes
+    expect(metrics.memoryUsage).toBeLessThan(512 * 1024 * 1024); // 512MB
+  });
 });
 ```
 
@@ -655,32 +655,32 @@ describe("Performance Benchmarks", () => {
 
 1. **Performance monitoring from TS-MERGE-008**:
 
-    ```typescript
-    // tools/performance/monitor.ts
-    // Implementation based on TS specification
-    export class PerformanceMonitor {
-        // Copy implementation from TS.md
-    }
-    ```
+   ```typescript
+   // tools/performance/monitor.ts
+   // Implementation based on TS specification
+   export class PerformanceMonitor {
+     // Copy implementation from TS.md
+   }
+   ```
 
 2. **Benchmark suite**:
 
-    ```bash
-    # tests/performance/
-    ├── generation-benchmarks.ts
-    ├── build-benchmarks.ts
-    ├── ai-performance.ts
-    └── database-benchmarks.ts
-    ```
+   ```bash
+   # tests/performance/
+   ├── generation-benchmarks.ts
+   ├── build-benchmarks.ts
+   ├── ai-performance.ts
+   └── database-benchmarks.ts
+   ```
 
 3. **Performance reporting**:
 
-    ```bash
-    # tools/performance/reporter.py
-    # Generate performance reports
-    # Compare with baseline metrics
-    # Identify performance regressions
-    ```
+   ```bash
+   # tools/performance/reporter.py
+   # Generate performance reports
+   # Compare with baseline metrics
+   # Identify performance regressions
+   ```
 
 **REFACTOR**:
 

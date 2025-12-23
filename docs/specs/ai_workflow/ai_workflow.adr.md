@@ -69,9 +69,9 @@ Decision
 - Use rustformers/llm for CPU-only inference and redb for embedded vector storage with zero external dependencies.
 - Build recommendation engine with cosine similarity search, combining similarity scores with recency and usage metrics.
 - Establish shared contracts so that:
-    - Git history → pattern extraction → embedding generation → vector storage pipeline
-    - Semantic search returns top-k patterns ranked by similarity + recency + usage
-    - AIContextManager scoring incorporates pattern confidence and usage success rates when assembling bundles inside token budgets.
+  - Git history → pattern extraction → embedding generation → vector storage pipeline
+  - Semantic search returns top-k patterns ranked by similarity + recency + usage
+  - AIContextManager scoring incorporates pattern confidence and usage success rates when assembling bundles inside token budgets.
 - Ship the fabric in incremental phases with strict TDD coverage tracked in Cycle 3 implementation plan.
 
 Rationale
@@ -95,29 +95,29 @@ Consequences
 Implementation Requirements
 
 1. **Phase 3A: Specifications** ✅
-    - DEV-PRD-020: Product requirements with EARS tables and user stories
-    - DEV-SDS-020: Software design with 6 core components and redb schema
-    - DEV-ADR-018: Status updated to Active (this change)
+   - DEV-PRD-020: Product requirements with EARS tables and user stories
+   - DEV-SDS-020: Software design with 6 core components and redb schema
+   - DEV-ADR-018: Status updated to Active (this change)
 
 2. **Phase 3B: Embedding Infrastructure**
-    - Download embedding-gemma-300M model (~180MB GGUF)
-    - Implement `embedder.rs` with llm integration
-    - Implement `vector_store.rs` with redb (3 tables: EMBEDDINGS, METADATA, METRICS)
-    - Implement `similarity.rs` with SIMD-optimized cosine similarity
-    - Implement `pattern_extractor.rs` with git2 for commit parsing
-    - Performance targets: <500ms embedding, <100ms search (10k patterns)
+   - Download embedding-gemma-300M model (~180MB GGUF)
+   - Implement `embedder.rs` with llm integration
+   - Implement `vector_store.rs` with redb (3 tables: EMBEDDINGS, METADATA, METRICS)
+   - Implement `similarity.rs` with SIMD-optimized cosine similarity
+   - Implement `pattern_extractor.rs` with git2 for commit parsing
+   - Performance targets: <500ms embedding, <100ms search (10k patterns)
 
 3. **Phase 3C: Recommendation Engine**
-    - Implement `ranker.rs` with weighted scoring (similarity 50%, recency 20%, usage 30%)
-    - Build CLI binary for pattern refresh and query
-    - Create TypeScript FFI bindings via NAPI-RS
-    - Write integration tests for end-to-end pipeline
+   - Implement `ranker.rs` with weighted scoring (similarity 50%, recency 20%, usage 30%)
+   - Build CLI binary for pattern refresh and query
+   - Create TypeScript FFI bindings via NAPI-RS
+   - Write integration tests for end-to-end pipeline
 
 4. **Phase 3D: Observability Integration**
-    - Implement `observability_aggregator.rs` to query OpenObserve metrics
-    - Correlate pattern recommendations with performance data
-    - Add tracing spans for all operations
-    - Create dashboard queries for recommendation effectiveness
+   - Implement `observability_aggregator.rs` to query OpenObserve metrics
+   - Correlate pattern recommendations with performance data
+   - Add tracing spans for all operations
+   - Create dashboard queries for recommendation effectiveness
 
 Dependencies
 

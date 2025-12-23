@@ -139,16 +139,16 @@
 
 ```json
 {
-    "timestamp": "2025-10-12T16:00:00.000Z",
-    "level": "info",
-    "message": "request accepted",
-    "trace_id": "abc123def456...",
-    "span_id": "789ghi...",
-    "service": "user-api",
-    "environment": "staging",
-    "application_version": "v1.2.3",
-    "category": "app",
-    "...additional_fields": "..."
+  "timestamp": "2025-10-12T16:00:00.000Z",
+  "level": "info",
+  "message": "request accepted",
+  "trace_id": "abc123def456...",
+  "span_id": "789ghi...",
+  "service": "user-api",
+  "environment": "staging",
+  "application_version": "v1.2.3",
+  "category": "app",
+  "...additional_fields": "..."
 }
 ```
 

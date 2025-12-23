@@ -102,10 +102,10 @@ generators/<name>/
 Generators can compose other Nx generators:
 
 ```typescript
-import { externalSchematic } from "@nx/devkit";
+import { externalSchematic } from '@nx/devkit';
 
 // Call official Nx generator
-await externalSchematic("@nx/react", "lib", { name: options.name });
+await externalSchematic('@nx/react', 'lib', { name: options.name });
 ```
 
 ### Hexagonal Architecture

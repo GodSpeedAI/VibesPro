@@ -11,7 +11,7 @@ See also: `.github/instructions/commit-msg.instructions.md` (AI/copilot guardrai
 Example
 
 - feat(domain): add user profile service (PRD-023, ADR-008)
-    - Adds service + integration tests; documents API in docs/dev_technical-specifications.md
-    - Risk: cache stampede on warm start; Mitigation: request coalescing
+  - Adds service + integration tests; documents API in docs/dev_technical-specifications.md
+  - Risk: cache stampede on warm start; Mitigation: request coalescing
 
 This aligns with the commit-msg hook that expects a spec ID in the commit message.

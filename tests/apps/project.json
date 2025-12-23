@@ -1,0 +1,25 @@
+{
+  "name": "generator-smoke-tests",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "tests/apps",
+  "projectType": "library",
+  "tags": ["type:test", "scope:generators", "scope:smoke-test"],
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec jest --config jest.config.json --testPathPatterns=tests/apps/generator-smoke.test.ts --testTimeout=300000 --forceExit",
+        "cwd": "."
+      },
+      "outputs": []
+    },
+    "smoke-test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec jest --config jest.config.json --testPathPatterns=tests/apps/generator-smoke.test.ts --testTimeout=300000 --forceExit",
+        "cwd": "."
+      },
+      "outputs": []
+    }
+  }
+}

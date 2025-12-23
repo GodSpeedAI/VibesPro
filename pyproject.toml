@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = [ "setuptools>=68.0", "wheel" ]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,52 +8,47 @@ version = "0.5.0"
 description = "HexDDD-VibePDK Merger: Generator-first platform"
 requires-python = ">=3.11"
 dependencies = [
-    "copier>=9.0.0",
-    "jinja2>=3.1.0",
-    "logfire[fastapi,requests,httpx,sqlalchemy]>=4.14.2",
-    "pyyaml>=6.0",
+  "copier>=9.0.0",
+  "jinja2>=3.1.0",
+  "logfire[fastapi,requests,httpx,sqlalchemy]>=4.14.2",
+  "pyyaml>=6.0",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "ruff>=0.6.0",
-    "mypy>=1.11.0",
-    "pytest>=8.0.0",
-    "pytest-asyncio>=0.23.0",
-    "psutil>=5.9.0",
-    "fastapi>=0.120.1",
-    "httpx>=0.28.1",
-    "sqlalchemy>=2.0.0",
-    "datamodel-code-generator>=0.14.0",
-    "pydantic>=2.0.0",
+  [project.optional-dependencies]
+  dev = [
+  "ruff>=0.6.0",
+  "mypy>=1.11.0",
+  "pytest>=8.0.0",
+  "pytest-asyncio>=0.23.0",
+  "psutil>=5.9.0",
+  "fastapi>=0.120.1",
+  "httpx>=0.28.1",
+  "sqlalchemy>=2.0.0",
+  "datamodel-code-generator>=0.14.0",
+  "pydantic>=2.0.0"
 ]
 
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-extend-exclude = [
-    "tests/fixtures/**",
-    "**/test-output/**",
-    "**/*.j2",
-    # End of excludes
+extend-exclude = [ "tests/fixtures/**", "**/test-output/**", "**/*.j2" ]
+
+  [tool.ruff.lint]
+  select = [ "E", "F", "I", "N", "UP", "S" ]
+  extend-select = [ "TID" ]
+  ignore = [
+  "E501",
+  "S603",
+  "S607",
+  "S105",
+  "S324",
+  "S101",
+  "TID251",
+  "TID252"
 ]
 
-[tool.ruff.lint]
-select = ["E", "F", "I", "N", "UP", "S"]
-extend-select = ["TID"]
-ignore = [
-    "E501",  # Line length handled by formatter
-    "S603",  # subprocess call with untrusted input (false positive in our controlled context)
-    "S607",  # Starting process with partial executable path (acceptable for our use case)
-    "S105",  # Possible hardcoded password (false positives for enum values and punctuation)
-    "S324",  # hashlib.md5 usage (acceptable for content hashing, not cryptographic purposes)
-    "S101",  # Use of assert detected (acceptable in test files)
-    "TID251",  # Relative imports are allowed; we only ban specific modules here
-    "TID252",  # Allow existing relative imports during migration; module bans enforced separately
-]
-
-[tool.ruff.lint.flake8-tidy-imports]
-banned-module-level-imports = ["structlog"]
+    [tool.ruff.lint.flake8-tidy-imports]
+    banned-module-level-imports = [ "structlog" ]
 
 [tool.mypy]
 python_version = "3.11"
@@ -79,66 +74,64 @@ no_implicit_optional = true
 strict_equality = true
 extra_checks = true
 exclude = [
-    "tests/fixtures/",
-    "test-output/",
-    ".*\\.j2$",
-    # Standard (underscored) prompt optimizer package path
-    # Project templates and generated artifacts
-    "templates/.*",
-    "tmp/copier-inspect/.*",
-    "tests/fixtures/.*",
-    # Tests often use pytest fixtures and intentional untyped helpers; exclude them for strict mypy runs
-    "tests/.*",
-    # Temporal DB tooling (templates and generated)
-    "tools/temporal-db/.*",
-    "tools/temporal_db/.*",
-    # Hyphenated or templated generated artifacts - keep them excluded
-    "templates/tools/.*",
-    "tmp/copier-inspect/.*",
-    "tmp/copier-inspect-noai/.*",
-    # Exclude copier-inspect generated trees (noai variant too)
-    "tmp/copier-inspect-noai/.*",
-    # Exclude any path that contains Jinja-style template braces to avoid
-    # treating placeholders like {{domain_name}} as real package names.
-    "^.*\\{\\{.*\\}\\}.*$",
-    "target/.*",
-    "scripts/",
-    # Auto-generated Python type models from TypeScript
-    "libs/shared/types-py/.*",
+  "tests/fixtures/",
+  "test-output/",
+  ".*\\.j2$",
+  "templates/.*",
+  "tmp/copier-inspect/.*",
+  "tests/fixtures/.*",
+  "tests/.*",
+  "tools/temporal-db/.*",
+  "tools/temporal_db/.*",
+  "templates/tools/.*",
+  "tmp/copier-inspect/.*",
+  "tmp/copier-inspect-noai/.*",
+  "tmp/copier-inspect-noai/.*",
+  "^.*\\{\\{.*\\}\\}.*$",
+  "target/.*",
+  "scripts/",
+  "libs/shared/types-py/.*"
 ]
-[[tool.mypy.overrides]]
-module = ["prompt_optimizer.*", "my_test_domain.*"]
-ignore_missing_imports = true
+
+  [[tool.mypy.overrides]]
+  module = [ "prompt_optimizer.*", "my_test_domain.*" ]
+  ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-# Implements: AI_SDS-004, AI_TS-004
-testpaths = ["tests"]
-python_files = ["test_*.py", "*_test.py"]
+testpaths = [ "tests" ]
+python_files = [ "test_*.py", "*_test.py" ]
 norecursedirs = [
-    "tmp",
-    "tmp/*",
-    "tmpdocs",
-    "tmpdocs-html",
-    "templates",
-    "node_modules",
-    ".venv",
-    ".git",
-    "target",
+  "tmp",
+  "tmp/*",
+  "tmpdocs",
+  "tmpdocs-html",
+  "templates",
+  "node_modules",
+  ".venv",
+  ".git",
+  "target"
 ]
+
+
+
 
 [dependency-groups]
 dev = [
-    "mypy>=1.18.2",
-    "pre-commit>=4.0.0",
-    "pytest>=8.4.2",
-    "pytest-asyncio>=1.2.0",
-    "pytest-copier>=0.4.1",
-    "requests>=2.32.0",
-    "ruff>=0.13.1",
-    "psutil>=5.9.0",
-    "fastapi>=0.120.1",
-    "httpx>=0.28.1",
-    "sqlalchemy>=2.0.0",
-    "pydantic>=2.0.0",
-    "testcontainers>=4.10.0",
+  "mypy>=1.18.2",
+  "pre-commit>=4.0.0",
+  "pytest>=8.4.2",
+  "pytest-asyncio>=1.2.0",
+  "pytest-copier>=0.4.1",
+  "requests>=2.32.0",
+  "ruff>=0.13.1",
+  "psutil>=5.9.0",
+  "fastapi>=0.120.1",
+  "httpx>=0.28.1",
+  "sqlalchemy>=2.0.0",
+  "pydantic>=2.0.0",
+  "testcontainers>=4.10.0",
+  "autopep8>=2.3.1",
+  "pytest-sugar>=1.0.0",
+  "pytest-cov>=6.0.0",
+  "pytest-html>=4.1.1"
 ]

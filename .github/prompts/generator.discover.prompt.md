@@ -31,21 +31,21 @@ pnpm exec nx list
 1. **A new backend service or API?**
    → Use `@vibespro/service-generator:service`
 
-    ```bash
-    pnpm exec nx g @vibespro/service-generator:service my-api
-    ```
+   ```bash
+   pnpm exec nx g @vibespro/service-generator:service my-api
+   ```
 
 2. **A new library or package?**
    → Check type:
-    - TypeScript lib: `@nx/js:lib`
-    - React lib: `@nx/react:lib`
-    - Python lib: `@nxlv/python:lib`
+   - TypeScript lib: `@nx/js:lib`
+   - React lib: `@nx/react:lib`
+   - Python lib: `@nxlv/python:lib`
 
 3. **A new frontend application?**
    → Check framework:
-    - Next.js: `@nx/next:app`
-    - React: `@nx/react:app`
-    - Remix: `@nx/remix:app`
+   - Next.js: `@nx/next:app`
+   - React: `@nx/react:app`
+   - Remix: `@nx/remix:app`
 
 4. **A UI component?**
    → Use `@nx/react:component` or custom component generator
@@ -53,15 +53,15 @@ pnpm exec nx list
 5. **A new Nx generator?**
    → Use `@vibespro/generator:generator`
 
-    ```bash
-    just generator-new my-gen custom
-    ```
+   ```bash
+   just generator-new my-gen custom
+   ```
 
 6. **Something domain-specific not covered?**
    → Create a new generator first!
-    ```bash
-    just generator-new my-pattern domain
-    ```
+   ```bash
+   just generator-new my-pattern domain
+   ```
 
 ## Available Generators by Category
 

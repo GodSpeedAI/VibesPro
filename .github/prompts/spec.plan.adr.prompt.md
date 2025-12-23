@@ -5,10 +5,10 @@ task: plan-adr
 thread: spec-plan-adr
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating Architecture Decision Record (ADR) plans from feature specifications."
+tools: ['codebase', 'search']
+description: 'Template for generating Architecture Decision Record (ADR) plans from feature specifications.'
 ---
 
 # Architecture Decision Record (ADR) Plan Template
@@ -53,11 +53,11 @@ description: "Template for generating Architecture Decision Record (ADR) plans f
 
 - Description of the approach
 - Pros:
-    - [Benefit 1]
-    - [Benefit 2]
+  - [Benefit 1]
+  - [Benefit 2]
 - Cons:
-    - [Drawback 1]
-    - [Drawback 2]
+  - [Drawback 1]
+  - [Drawback 2]
 - Implementation complexity: [Low/Medium/High]
 - Maintenance overhead: [Low/Medium/High]
 - Scalability: [Low/Medium/High]
@@ -66,11 +66,11 @@ description: "Template for generating Architecture Decision Record (ADR) plans f
 
 - Description of the approach
 - Pros:
-    - [Benefit 1]
-    - [Benefit 2]
+  - [Benefit 1]
+  - [Benefit 2]
 - Cons:
-    - [Drawback 1]
-    - [Drawback 2]
+  - [Drawback 1]
+  - [Drawback 2]
 - Implementation complexity: [Low/Medium/High]
 - Maintenance overhead: [Low/Medium/High]
 - Scalability: [Low/Medium/High]

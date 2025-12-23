@@ -18,30 +18,30 @@ This document describes the security testing and validation procedures for Vibes
 **Test Cases:**
 
 1. **Cargo Audit (`test_cargo_audit_passes`)**
-    - Verifies no HIGH/CRITICAL security vulnerabilities in dependencies
-    - Runs automatically in CI on every commit
-    - Command: `cargo audit`
+   - Verifies no HIGH/CRITICAL security vulnerabilities in dependencies
+   - Runs automatically in CI on every commit
+   - Command: `cargo audit`
 
 2. **Performance Overhead (`test_performance_overhead`)**
-    - Measures encryption/decryption performance impact
-    - Current overhead: ~200% (acceptable for security-critical applications)
-    - Future optimization target: < 10%
-    - Command: `just security-benchmark`
+   - Measures encryption/decryption performance impact
+   - Current overhead: ~200% (acceptable for security-critical applications)
+   - Future optimization target: < 10%
+   - Command: `just security-benchmark`
 
 3. **Plaintext Detection (`test_no_plaintext_in_encrypted_db`)**
-    - Ensures no plaintext data is discoverable in database files
-    - Critical security property
-    - Must pass for all releases
+   - Ensures no plaintext data is discoverable in database files
+   - Critical security property
+   - Must pass for all releases
 
 4. **Startup Time (`test_startup_time_overhead`)**
-    - Ensures database initialization is fast (< 100ms)
-    - Current performance: ~4ms
-    - Validates edge-device suitability
+   - Ensures database initialization is fast (< 100ms)
+   - Current performance: ~4ms
+   - Validates edge-device suitability
 
 5. **Binary Size (`test_binary_size_increase`)**
-    - Tracks size increase from security features
-    - Target: < 2.5MB increase
-    - Ensures viability for resource-constrained environments
+   - Tracks size increase from security features
+   - Target: < 2.5MB increase
+   - Ensures viability for resource-constrained environments
 
 **Running Tests:**
 
@@ -63,24 +63,24 @@ cargo test --test validation_suite --release -- --nocapture --test-threads=1
 **Test Cases:**
 
 1. **SecureDb Inclusion**
-    - Verifies `libs/security/src/secure_db.rs` exists when `enable_security_hardening=true`
-    - Checks `Cargo.toml` contains required cryptographic dependencies
+   - Verifies `libs/security/src/secure_db.rs` exists when `enable_security_hardening=true`
+   - Checks `Cargo.toml` contains required cryptographic dependencies
 
 2. **Security Exclusion**
-    - Verifies `libs/security/` is absent when `enable_security_hardening=false`
-    - Ensures zero overhead for non-hardened projects
+   - Verifies `libs/security/` is absent when `enable_security_hardening=false`
+   - Ensures zero overhead for non-hardened projects
 
 3. **Distroless Dockerfile**
-    - Validates use of `gcr.io/distroless/cc` base image
-    - Confirms non-root user (UID 65532)
+   - Validates use of `gcr.io/distroless/cc` base image
+   - Confirms non-root user (UID 65532)
 
 4. **Docker Compose Security Options**
-    - Checks for `no-new-privileges:true`
-    - Validates capability dropping (`cap_drop: ALL`)
+   - Checks for `no-new-privileges:true`
+   - Validates capability dropping (`cap_drop: ALL`)
 
 5. **Documentation Generation**
-    - Ensures `docs/security/ENCRYPTION.md` is created
-    - Validates content includes XChaCha20-Poly1305 details and key rotation instructions
+   - Ensures `docs/security/ENCRYPTION.md` is created
+   - Validates content includes XChaCha20-Poly1305 details and key rotation instructions
 
 **Running Tests:**
 
@@ -101,29 +101,29 @@ pnpm test tests/integration/
 **Jobs:**
 
 1. **cargo-audit**
-    - Runs weekly and on every PR
-    - Fails on HIGH/CRITICAL vulnerabilities
-    - Updates advisory database automatically
+   - Runs weekly and on every PR
+   - Fails on HIGH/CRITICAL vulnerabilities
+   - Updates advisory database automatically
 
 2. **performance-benchmark**
-    - Tracks encryption overhead over time
-    - Reports metrics as artifacts
-    - Fails if overhead > 300% (current threshold)
+   - Tracks encryption overhead over time
+   - Reports metrics as artifacts
+   - Fails if overhead > 300% (current threshold)
 
 3. **binary-size-tracking**
-    - Monitors size impact of security features
-    - Uploads size reports as artifacts
-    - Fails if increase > 2.5MB
+   - Monitors size impact of security features
+   - Uploads size reports as artifacts
+   - Fails if increase > 2.5MB
 
 4. **security-validation**
-    - Runs full validation suite
-    - Includes both Rust and TypeScript tests
-    - Must pass for merge to main
+   - Runs full validation suite
+   - Includes both Rust and TypeScript tests
+   - Must pass for merge to main
 
 5. **plaintext-detection**
-    - Specialized test for data-at-rest encryption
-    - Scans test outputs for leaked secrets
-    - Critical security gate
+   - Specialized test for data-at-rest encryption
+   - Scans test outputs for leaked secrets
+   - Critical security gate
 
 **Triggering CI:**
 
@@ -181,20 +181,20 @@ cargo build --release
 ### Optimization Strategies
 
 1. **Batch Operations**
-    - Buffer multiple operations before flushing
-    - Reduce per-operation overhead
+   - Buffer multiple operations before flushing
+   - Reduce per-operation overhead
 
 2. **Lazy Key Derivation**
-    - Cache derived keys for session
-    - Reduce HKDF calls
+   - Cache derived keys for session
+   - Reduce HKDF calls
 
 3. **Parallel Encryption**
-    - Use Rayon for parallel batch encryption
-    - Leverage multi-core processors
+   - Use Rayon for parallel batch encryption
+   - Leverage multi-core processors
 
 4. **Memory Pooling**
-    - Reuse buffers to reduce allocations
-    - Minimize GC pressure
+   - Reuse buffers to reduce allocations
+   - Minimize GC pressure
 
 ## Security Metrics Dashboard
 

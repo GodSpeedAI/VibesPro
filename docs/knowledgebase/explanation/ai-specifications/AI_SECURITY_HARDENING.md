@@ -37,54 +37,54 @@ This specification defines the security hardening approach for VibesPro-generate
 ### 3.1 Core Security Primitives (P0)
 
 1. **Key Storage: TPM-Backed Sealing**
-    - Use device TPM 2.0 to seal master key
-    - No network calls required
-    - Key unseals only on same hardware (hardware-bound)
-    - Fallback to secure enclave or file-based sealing where TPM unavailable
+   - Use device TPM 2.0 to seal master key
+   - No network calls required
+   - Key unseals only on same hardware (hardware-bound)
+   - Fallback to secure enclave or file-based sealing where TPM unavailable
 
 2. **In-Memory Key Handling**
-    - Derive ephemeral keys with HKDF-SHA256
-    - Immediately zero secret buffers after use (via `zeroize` crate)
-    - No keys persist in process heap after use
+   - Derive ephemeral keys with HKDF-SHA256
+   - Immediately zero secret buffers after use (via `zeroize` crate)
+   - No keys persist in process heap after use
 
 3. **AEAD Cipher: XChaCha20-Poly1305**
-    - Safer nonce handling (192-bit nonce space vs 96-bit for AES-GCM)
-    - Fast on ARM and small CPUs without AES-NI
-    - RustCrypto `chacha20poly1305` for minimal dependency surface
+   - Safer nonce handling (192-bit nonce space vs 96-bit for AES-GCM)
+   - Fast on ARM and small CPUs without AES-NI
+   - RustCrypto `chacha20poly1305` for minimal dependency surface
 
 4. **Deterministic Nonce Scheme**
-    - Monotonic counter (64-bit) + database UUID (128-bit) → 192-bit nonce
-    - Persist counter in sled metadata atomically with writes
-    - Nonce embedded in ciphertext: `[nonce || ciphertext]` per record
+   - Monotonic counter (64-bit) + database UUID (128-bit) → 192-bit nonce
+   - Persist counter in sled metadata atomically with writes
+   - Nonce embedded in ciphertext: `[nonce || ciphertext]` per record
 
 ### 3.2 Deployment Hardening (P1)
 
 5. **Least-Privilege Process Model**
-    - Run as non-root (UID 65532)
-    - Drop all Linux capabilities
-    - Use minimal systemd unit (preferred) or distroless container
+   - Run as non-root (UID 65532)
+   - Drop all Linux capabilities
+   - Use minimal systemd unit (preferred) or distroless container
 
 6. **Read-Only Code Image**
-    - Deploy as single immutable binary
-    - Writable data directory: `/var/lib/vibes` (or `/data` in container)
-    - Code directory marked read-only
+   - Deploy as single immutable binary
+   - Writable data directory: `/var/lib/vibes` (or `/data` in container)
+   - Code directory marked read-only
 
 7. **Secure Updates: Signed OTA**
-    - Sign releases with Ed25519
-    - Verify signature on-device before binary replacement
-    - Atomic update with rollback on failure
+   - Sign releases with Ed25519
+   - Verify signature on-device before binary replacement
+   - Atomic update with rollback on failure
 
 8. **Minimal Network Crypto: mTLS**
-    - Use `rustls` with client certificates
-    - Certificates stored in TPM or sealed file
-    - No dependency on heavyweight auth servers
+   - Use `rustls` with client certificates
+   - Certificates stored in TPM or sealed file
+   - No dependency on heavyweight auth servers
 
 ### 3.3 Operational Security (P2)
 
 9. **Compact Audit Logging**
-    - Write-only append log encrypted with master key-derived subkey
-    - Automatic rotation by size (default: 10MB)
-    - Structured JSON lines for parsing
+   - Write-only append log encrypted with master key-derived subkey
+   - Automatic rotation by size (default: 10MB)
+   - Structured JSON lines for parsing
 
 10. **Prompt Redaction at Ingest**
     - Regex-based secret masking before storage
@@ -332,26 +332,26 @@ ENTRYPOINT ["/usr/local/bin/vibes-pro"]
 **docker-compose.yml:**
 
 ```yaml
-version: "3.9"
+version: '3.9'
 services:
-    vibes-pro:
-        build: .
-        container_name: vibes-pro
-        restart: unless-stopped
-        environment:
-            - ENCRYPTION_KEY=${ENCRYPTION_KEY:?must_provide}
-            - VIBES_DATA_DIR=/data
-        volumes:
-            - vibes_data:/data
-        ports:
-            - "8080:8080"
-        security_opt:
-            - no-new-privileges:true
-        cap_drop:
-            - ALL
+  vibes-pro:
+    build: .
+    container_name: vibes-pro
+    restart: unless-stopped
+    environment:
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:?must_provide}
+      - VIBES_DATA_DIR=/data
+    volumes:
+      - vibes_data:/data
+    ports:
+      - '8080:8080'
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
 
 volumes:
-    vibes_data:
+  vibes_data:
 ```
 
 **.env (example):**
@@ -394,24 +394,24 @@ Add to `copier.yml`:
 
 ```yaml
 enable_security_hardening:
-    type: bool
-    default: false
-    help: "Enable TPM-backed encryption and security hardening features?"
+  type: bool
+  default: false
+  help: 'Enable TPM-backed encryption and security hardening features?'
 
 encryption_backend:
-    type: str
-    default: "xchacha20poly1305"
-    choices:
-        - xchacha20poly1305
-        - aes256gcm
-    when: "{{ enable_security_hardening }}"
-    help: "AEAD cipher for encryption at rest"
+  type: str
+  default: 'xchacha20poly1305'
+  choices:
+    - xchacha20poly1305
+    - aes256gcm
+  when: '{{ enable_security_hardening }}'
+  help: 'AEAD cipher for encryption at rest'
 
 tpm_enabled:
-    type: bool
-    default: false
-    when: "{{ enable_security_hardening }}"
-    help: "Use TPM 2.0 for key sealing (requires TPM hardware)?"
+  type: bool
+  default: false
+  when: '{{ enable_security_hardening }}'
+  help: 'Use TPM 2.0 for key sealing (requires TPM hardware)?'
 ```
 
 ### 6.2 Template Structure

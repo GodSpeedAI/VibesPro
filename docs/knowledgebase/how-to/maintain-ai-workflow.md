@@ -1,9 +1,9 @@
 ---
 matrix_ids:
-    - AI_ADR-003
-    - AI_PRD-002
-    - AI_SDS-002
-    - AI_TS-005
+  - AI_ADR-003
+  - AI_PRD-002
+  - AI_SDS-002
+  - AI_TS-005
 ---
 
 # Maintainer Guide · AI Workflow Alignment
@@ -48,10 +48,10 @@ PR after security review, as required by AI_SDS-002 and AI_TS-005.
 
 1. **Plan via specs:** Capture updates in the PRD/SDS/TS before touching code or docs. Update `AI_traceability.md` accordingly.
 2. **Validate assets locally:**
-    - `pnpm prompt:lint` to enforce prompt budgets and frontmatter requirements.
-    - `pnpm prompt:plan` for lifecycle previews.
-    - `pnpm spec:matrix` to regenerate traceability data.
-    - `pnpm lint:md` and `pnpm docs:links` to ensure documentation stays healthy.
+   - `pnpm prompt:lint` to enforce prompt budgets and frontmatter requirements.
+   - `pnpm prompt:plan` for lifecycle previews.
+   - `pnpm spec:matrix` to regenerate traceability data.
+   - `pnpm lint:md` and `pnpm docs:links` to ensure documentation stays healthy.
 3. **Regress generated projects:** Run `pnpm test:integration` or the targeted smoke tests in `tests/integration/` to confirm the
    Copier template emits the synced assets.
 4. **Record outcomes:** Update this guide and the integration plan with lessons learned or deviations. Reference the relevant

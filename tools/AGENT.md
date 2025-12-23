@@ -143,30 +143,30 @@ tools/
 
 ```typescript
 // Strict mode always enabled
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 // Export typed interfaces
 export interface ToolOptions {
-    verbose: boolean;
-    dryRun: boolean;
+  verbose: boolean;
+  dryRun: boolean;
 }
 
 // Pure functions preferred
 export function processFile(path: string, options: ToolOptions): Result {
-    // Implementation
+  // Implementation
 }
 
 // Error handling with proper types
 export class ToolError extends Error {
-    constructor(
-        message: string,
-        public readonly code: string,
-        public readonly details?: unknown,
-    ) {
-        super(message);
-        this.name = "ToolError";
-    }
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly details?: unknown,
+  ) {
+    super(message);
+    this.name = 'ToolError';
+  }
 }
 ```
 
@@ -219,14 +219,14 @@ def process_files(
 
 ```typescript
 // tests/unit/tools/context_manager.test.ts
-import assert from "node:assert";
-import { describe, it } from "node:test";
-import { ContextManager } from "../../../tools/ai/context_manager";
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+import { ContextManager } from '../../../tools/ai/context_manager';
 
-describe("ContextManager", () => {
-    it("should bundle context files", () => {
-        // Arrange, Act, Assert
-    });
+describe('ContextManager', () => {
+  it('should bundle context files', () => {
+    // Arrange, Act, Assert
+  });
 });
 ```
 
@@ -236,21 +236,21 @@ describe("ContextManager", () => {
 
 ```typescript
 #!/usr/bin/env node
-import { Command } from "commander";
-import { version } from "../package.json";
+import { Command } from 'commander';
+import { version } from '../package.json';
 
 const program = new Command();
 
-program.name("dev-cli").description("Developer CLI for VibesPro").version(version);
+program.name('dev-cli').description('Developer CLI for VibesPro').version(version);
 
 program
-    .command("validate")
-    .description("Validate project files")
-    .option("-v, --verbose", "Verbose output")
-    .option("--dry-run", "Dry run mode")
-    .action((options) => {
-        // Implementation
-    });
+  .command('validate')
+  .description('Validate project files')
+  .option('-v, --verbose', 'Verbose output')
+  .option('--dry-run', 'Dry run mode')
+  .action((options) => {
+    // Implementation
+  });
 
 program.parse();
 ```
@@ -260,12 +260,12 @@ program.parse();
 **Structured logging:**
 
 ```typescript
-import { createLogger } from "./logging/structured_logger";
+import { createLogger } from './logging/structured_logger';
 
-const logger = createLogger("tool-name");
+const logger = createLogger('tool-name');
 
-logger.info("Processing files", { count: 5, path: "/some/path" });
-logger.error("Failed to process", { error: err, context: { file: "x.ts" } });
+logger.info('Processing files', { count: 5, path: '/some/path' });
+logger.error('Failed to process', { error: err, context: { file: 'x.ts' } });
 ```
 
 **Exit codes:**
@@ -304,39 +304,39 @@ process.exit(3);
 
 ```typescript
 // tools/validate/validate_config.ts
-import { readFileSync } from "node:fs";
-import { z } from "zod";
+import { readFileSync } from 'node:fs';
+import { z } from 'zod';
 
 // Define schema
 const ConfigSchema = z.object({
-    version: z.string(),
-    features: z.array(z.string()),
-    settings: z.record(z.unknown()),
+  version: z.string(),
+  features: z.array(z.string()),
+  settings: z.record(z.unknown()),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;
 
 export function validateConfig(filePath: string): Config {
-    try {
-        const content = readFileSync(filePath, "utf-8");
-        const json = JSON.parse(content);
-        return ConfigSchema.parse(json);
-    } catch (error) {
-        throw new ValidationError(`Invalid config file: ${filePath}`, "INVALID_CONFIG", { originalError: error });
-    }
+  try {
+    const content = readFileSync(filePath, 'utf-8');
+    const json = JSON.parse(content);
+    return ConfigSchema.parse(json);
+  } catch (error) {
+    throw new ValidationError(`Invalid config file: ${filePath}`, 'INVALID_CONFIG', { originalError: error });
+  }
 }
 
 // CLI wrapper
 if (import.meta.url === `file://${process.argv[1]}`) {
-    const [, , filePath] = process.argv;
-    try {
-        const config = validateConfig(filePath);
-        console.log("✅ Config is valid");
-        process.exit(0);
-    } catch (error) {
-        console.error("❌ Validation failed:", error.message);
-        process.exit(1);
-    }
+  const [, , filePath] = process.argv;
+  try {
+    const config = validateConfig(filePath);
+    console.log('✅ Config is valid');
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Validation failed:', error.message);
+    process.exit(1);
+  }
 }
 ```
 
@@ -396,33 +396,33 @@ if __name__ == "__main__":
 
 ```typescript
 // tools/type-generator/generate_schema_types.ts
-import { compile } from "json-schema-to-typescript";
-import { readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { compile } from 'json-schema-to-typescript';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 export async function generateTypes(schemaPath: string, outputPath: string): Promise<void> {
-    const schema = JSON.parse(readFileSync(schemaPath, "utf-8"));
+  const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'));
 
-    const types = await compile(schema, schema.title || "Schema", {
-        bannerComment: "/* Generated by generate_schema_types.ts - DO NOT EDIT */",
-        style: {
-            semi: true,
-            singleQuote: true,
-            trailingComma: "es5",
-        },
-    });
+  const types = await compile(schema, schema.title || 'Schema', {
+    bannerComment: '/* Generated by generate_schema_types.ts - DO NOT EDIT */',
+    style: {
+      semi: true,
+      singleQuote: true,
+      trailingComma: 'es5',
+    },
+  });
 
-    writeFileSync(outputPath, types);
-    console.log(`✅ Generated types: ${outputPath}`);
+  writeFileSync(outputPath, types);
+  console.log(`✅ Generated types: ${outputPath}`);
 }
 
 // CLI usage
 if (import.meta.url === `file://${process.argv[1]}`) {
-    const [, , schemaPath, outputPath] = process.argv;
-    generateTypes(schemaPath, outputPath).catch((err) => {
-        console.error("❌ Generation failed:", err);
-        process.exit(1);
-    });
+  const [, , schemaPath, outputPath] = process.argv;
+  generateTypes(schemaPath, outputPath).catch((err) => {
+    console.error('❌ Generation failed:', err);
+    process.exit(1);
+  });
 }
 ```
 
@@ -430,66 +430,66 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
 ```typescript
 // tools/ai/context_manager.ts
-import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { join, relative } from "node:path";
-import { glob } from "glob";
+import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { join, relative } from 'node:path';
+import { glob } from 'glob';
 
 export interface ContextBundle {
-    files: Map<string, string>;
-    metadata: {
-        timestamp: string;
-        totalFiles: number;
-        totalTokens: number;
-    };
+  files: Map<string, string>;
+  metadata: {
+    timestamp: string;
+    totalFiles: number;
+    totalTokens: number;
+  };
 }
 
 export class ContextManager {
-    constructor(private readonly rootDir: string) {}
+  constructor(private readonly rootDir: string) {}
 
-    async bundleContext(outputDir: string): Promise<ContextBundle> {
-        const files = new Map<string, string>();
+  async bundleContext(outputDir: string): Promise<ContextBundle> {
+    const files = new Map<string, string>();
 
-        // Collect CALM docs
-        const calmFiles = await glob("architecture/calm/**/*.md", {
-            cwd: this.rootDir,
-        });
+    // Collect CALM docs
+    const calmFiles = await glob('architecture/calm/**/*.md', {
+      cwd: this.rootDir,
+    });
 
-        // Collect specs
-        const specFiles = await glob("docs/dev_*.md", {
-            cwd: this.rootDir,
-        });
+    // Collect specs
+    const specFiles = await glob('docs/dev_*.md', {
+      cwd: this.rootDir,
+    });
 
-        // Read and bundle
-        for (const file of [...calmFiles, ...specFiles]) {
-            const fullPath = join(this.rootDir, file);
-            const content = readFileSync(fullPath, "utf-8");
-            files.set(file, content);
-        }
-
-        // Write bundle
-        mkdirSync(outputDir, { recursive: true });
-
-        for (const [file, content] of files) {
-            const outPath = join(outputDir, file);
-            mkdirSync(join(outPath, ".."), { recursive: true });
-            writeFileSync(outPath, content);
-        }
-
-        return {
-            files,
-            metadata: {
-                timestamp: new Date().toISOString(),
-                totalFiles: files.size,
-                totalTokens: this.estimateTokens(files),
-            },
-        };
+    // Read and bundle
+    for (const file of [...calmFiles, ...specFiles]) {
+      const fullPath = join(this.rootDir, file);
+      const content = readFileSync(fullPath, 'utf-8');
+      files.set(file, content);
     }
 
-    private estimateTokens(files: Map<string, string>): number {
-        // Rough estimate: ~4 chars per token
-        const totalChars = Array.from(files.values()).reduce((sum, content) => sum + content.length, 0);
-        return Math.ceil(totalChars / 4);
+    // Write bundle
+    mkdirSync(outputDir, { recursive: true });
+
+    for (const [file, content] of files) {
+      const outPath = join(outputDir, file);
+      mkdirSync(join(outPath, '..'), { recursive: true });
+      writeFileSync(outPath, content);
     }
+
+    return {
+      files,
+      metadata: {
+        timestamp: new Date().toISOString(),
+        totalFiles: files.size,
+        totalTokens: this.estimateTokens(files),
+      },
+    };
+  }
+
+  private estimateTokens(files: Map<string, string>): number {
+    // Rough estimate: ~4 chars per token
+    const totalChars = Array.from(files.values()).reduce((sum, content) => sum + content.length, 0);
+    return Math.ceil(totalChars / 4);
+  }
 }
 ```
 
@@ -593,18 +593,18 @@ mypy tools/
 **Example secure file access:**
 
 ```typescript
-import { resolve, relative, dirname } from "node:path";
+import { resolve, relative, dirname } from 'node:path';
 
 function safeReadFile(basePath: string, userPath: string): string {
-    const resolved = resolve(basePath, userPath);
-    const rel = relative(basePath, resolved);
+  const resolved = resolve(basePath, userPath);
+  const rel = relative(basePath, resolved);
 
-    // Prevent path traversal
-    if (rel.startsWith("..") || resolve(rel) !== resolved) {
-        throw new Error("Invalid path: path traversal detected");
-    }
+  // Prevent path traversal
+  if (rel.startsWith('..') || resolve(rel) !== resolved) {
+    throw new Error('Invalid path: path traversal detected');
+  }
 
-    return readFileSync(resolved, "utf-8");
+  return readFileSync(resolved, 'utf-8');
 }
 ```
 
@@ -646,14 +646,14 @@ Register tools as Nx targets in `project.json`:
 
 ```json
 {
-    "targets": {
-        "validate": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "python tools/check_templates.py"
-            }
-        }
+  "targets": {
+    "validate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "python tools/check_templates.py"
+      }
     }
+  }
 }
 ```
 
@@ -670,20 +670,20 @@ Register tools as Nx targets in `project.json`:
 **Example test:**
 
 ```typescript
-import { describe, it } from "node:test";
-import assert from "node:assert";
-import { validateConfig } from "../../../tools/validate/validate_config";
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+import { validateConfig } from '../../../tools/validate/validate_config';
 
-describe("validateConfig", () => {
-    it("should validate correct config", () => {
-        const result = validateConfig("tests/fixtures/valid_config.json");
-        assert.ok(result);
-        assert.strictEqual(result.version, "1.0.0");
-    });
+describe('validateConfig', () => {
+  it('should validate correct config', () => {
+    const result = validateConfig('tests/fixtures/valid_config.json');
+    assert.ok(result);
+    assert.strictEqual(result.version, '1.0.0');
+  });
 
-    it("should throw on invalid config", () => {
-        assert.throws(() => validateConfig("tests/fixtures/invalid_config.json"), /Invalid config/);
-    });
+  it('should throw on invalid config', () => {
+    assert.throws(() => validateConfig('tests/fixtures/invalid_config.json'), /Invalid config/);
+  });
 });
 ```
 

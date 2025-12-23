@@ -5,10 +5,10 @@ task: create-component
 thread: ui-react-create-component
 matrix_ids: []
 budget: S
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["githubRepo", "codebase"]
-description: "Generate a new React component"
+tools: ['githubRepo', 'codebase']
+description: 'Generate a new React component'
 ---
 
 # Create a React Component

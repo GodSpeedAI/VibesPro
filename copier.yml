@@ -1,28 +1,28 @@
 # HexDDD-VibePDK Merger Template Configuration
 # Improved with layman-friendly questions and concrete examples
 
-_subdirectory: "templates/{% raw %}{{project_slug}}{% endraw %}"
+_subdirectory: 'templates/{% raw %}{{project_slug}}{% endraw %}'
 _templates_suffix: .j2
 _skip_if_exists:
   - .gitignore
-  - "*.md"
-  - &AI_TOOLS_AI_GLOB "{% if not include_ai_workflows %}tools/ai/**{% endif %}"
-  - &AI_TOOLS_AI_DIR "{% if not include_ai_workflows %}tools/ai{% endif %}"
-  - &AI_TOOLS_TEMPORAL_GLOB "{% if not include_ai_workflows %}tools/temporal-db/**{% endif %}"
-  - &AI_TOOLS_TEMPORAL_DIR "{% if not include_ai_workflows %}tools/temporal-db{% endif %}"
-  - &AI_TEMPORAL_DB_GLOB "{% if not include_ai_workflows %}temporal_db/**{% endif %}"
-  - &AI_TEMPORAL_DB_DIR "{% if not include_ai_workflows %}temporal_db{% endif %}"
-  - &AI_WORKFLOW_TEMPLATE "{% if not include_ai_workflows %}.github/workflows/ai-generate.yml.j2{% endif %}"
-  - &AI_WORKFLOW_FILE "{% if not include_ai_workflows %}.github/workflows/ai-generate.yml{% endif %}"
-  - &AI_TEMPLATE_TOOLS_GLOB "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/ai/**{% endif %}"
-  - &AI_TEMPLATE_TOOLS_DIR "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/ai{% endif %}"
-  - &AI_TEMPLATE_TEMPORAL_GLOB "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/temporal-db/**{% endif %}"
-  - &AI_TEMPLATE_TEMPORAL_DIR "{% if not include_ai_workflows %}templates/{{project_slug}}/tools/temporal-db{% endif %}"
-  - &AI_TEMPLATE_TEMPORAL_DB_GLOB "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db/**{% endif %}"
-  - &AI_TEMPLATE_TEMPORAL_DB_DIR "{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db{% endif %}"
+  - '*.md'
+  - &AI_TOOLS_AI_GLOB '{% if not include_ai_workflows %}tools/ai/**{% endif %}'
+  - &AI_TOOLS_AI_DIR '{% if not include_ai_workflows %}tools/ai{% endif %}'
+  - &AI_TOOLS_TEMPORAL_GLOB '{% if not include_ai_workflows %}tools/temporal-db/**{% endif %}'
+  - &AI_TOOLS_TEMPORAL_DIR '{% if not include_ai_workflows %}tools/temporal-db{% endif %}'
+  - &AI_TEMPORAL_DB_GLOB '{% if not include_ai_workflows %}temporal_db/**{% endif %}'
+  - &AI_TEMPORAL_DB_DIR '{% if not include_ai_workflows %}temporal_db{% endif %}'
+  - &AI_WORKFLOW_TEMPLATE '{% if not include_ai_workflows %}.github/workflows/ai-generate.yml.j2{% endif %}'
+  - &AI_WORKFLOW_FILE '{% if not include_ai_workflows %}.github/workflows/ai-generate.yml{% endif %}'
+  - &AI_TEMPLATE_TOOLS_GLOB '{% if not include_ai_workflows %}templates/{{project_slug}}/tools/ai/**{% endif %}'
+  - &AI_TEMPLATE_TOOLS_DIR '{% if not include_ai_workflows %}templates/{{project_slug}}/tools/ai{% endif %}'
+  - &AI_TEMPLATE_TEMPORAL_GLOB '{% if not include_ai_workflows %}templates/{{project_slug}}/tools/temporal-db/**{% endif %}'
+  - &AI_TEMPLATE_TEMPORAL_DIR '{% if not include_ai_workflows %}templates/{{project_slug}}/tools/temporal-db{% endif %}'
+  - &AI_TEMPLATE_TEMPORAL_DB_GLOB '{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db/**{% endif %}'
+  - &AI_TEMPLATE_TEMPORAL_DB_DIR '{% if not include_ai_workflows %}templates/{{project_slug}}/temporal_db{% endif %}'
 
 _tasks:
-  - ["{{ _copier_python }}", "{{ _copier_conf.src_path }}/hooks/post_gen.py"]
+  - ['{{ _copier_python }}', '{{ _copier_conf.src_path }}/hooks/post_gen.py']
 
 # ============================================================================
 # SECTION 1: Basic Project Information
@@ -31,27 +31,27 @@ _tasks:
 project_name:
   type: str
   help: What should we call your project? (Display name like "My Task Manager")
-  placeholder: "My Awesome App"
-  default: "My Project"
+  placeholder: 'My Awesome App'
+  default: 'My Project'
 
 project_slug:
   type: str
   help: Technical name for folders/URLs (lowercase-with-dashes, auto-suggested from project name)
-  placeholder: "my-awesome-app"
+  placeholder: 'my-awesome-app'
   default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
   validator: "{% if not project_slug.replace('-', '').isalnum() %}Project slug must contain only letters, numbers, and dashes (no spaces or special characters){% endif %}"
 
 author_name:
   type: str
   help: Your name or company name (appears in docs and package files)
-  placeholder: "Jane Smith"
-  default: "Developer"
+  placeholder: 'Jane Smith'
+  default: 'Developer'
 
 author_email:
   type: str
   help: Email for project documentation (not used for signups)
-  placeholder: "jane@example.com"
-  default: "developer@example.com"
+  placeholder: 'jane@example.com'
+  default: 'developer@example.com'
   validator: "{% if '@' not in author_email %}Please enter a valid email address (must contain @){% endif %}"
 
 # ============================================================================
@@ -69,8 +69,8 @@ project_purpose:
     - "A task manager that helps teams organize their work"
     - "An online store for selling handmade crafts"
     - "A customer relationship management system for small businesses"
-  placeholder: "A task manager that helps teams organize their work and track progress"
-  default: "a modular application"
+  placeholder: 'A task manager that helps teams organize their work and track progress'
+  default: 'a modular application'
 
 # ============================================================================
 # SECTION 3: What Should Your App Be Called Internally?
@@ -79,8 +79,8 @@ project_purpose:
 domain_name:
   type: str
   help: Main business area/concept (lowercase-with-dashes, ONE ONLY - e.g., 'task-manager')
-  placeholder: "task-manager"
-  default: "{{ project_slug }}"
+  placeholder: 'task-manager'
+  default: '{{ project_slug }}'
   validator: "{% if ',' in domain_name %}Use the 'domains' field for multiple areas, this field is for ONE main domain only{% elif not domain_name.replace('-', '').isalnum() or domain_name != domain_name.lower() %}Domain name must contain only lowercase letters, numbers, and dashes (no commas){% endif %}"
 
 domains:
@@ -95,8 +95,8 @@ domains:
     - 'users,billing,notifications' for an app with user management, billing, and notifications
     - 'products,inventory,orders' for an e-commerce system
     - 'patients,doctors,appointments' for a healthcare app
-  placeholder: "users,billing,notifications"
-  default: ""
+  placeholder: 'users,billing,notifications'
+  default: ''
   validator: "{% if domains %}{% set invalid = [] %}{% for d in domains.split(',') %}{% set dn = d.strip() %}{% if dn != dn.lower() or not dn.replace('-', '').replace('_', '').isalnum() %}{% set _ = invalid.append(dn) %}{% endif %}{% endfor %}{% if invalid %}Invalid domain names: {{ invalid|join(', ') }}. Use lowercase letters, numbers, dashes, and underscores only{% endif %}{% endif %}"
 
 primary_domains:
@@ -105,8 +105,8 @@ primary_domains:
     Which business areas are most important? (Advanced - skip if unsure)
 
     This helps organize your code. We'll use your domain from above if you leave this blank.
-  placeholder: "users,billing"
-  default: "{{ domains if domains else domain_name }}"
+  placeholder: 'users,billing'
+  default: '{{ domains if domains else domain_name }}'
 
 bounded_context:
   type: str
@@ -115,8 +115,8 @@ bounded_context:
 
     This is for developers who understand Domain-Driven Design.
     If you're not sure, just press Enter - we'll use your domain name.
-  placeholder: "task-management-context"
-  default: "{{ domain_name }}"
+  placeholder: 'task-management-context'
+  default: '{{ domain_name }}'
 
 # ============================================================================
 # SECTION 4: Technology Choices (Pick What You Know!)
@@ -156,8 +156,8 @@ app_name:
     What should we call the app folder?
 
     This is just for organizing files. Usually it's fine to use your project slug.
-  placeholder: "my-awesome-app"
-  default: "{{ project_slug }}"
+  placeholder: 'my-awesome-app'
+  default: '{{ project_slug }}'
   validator: "{% if not app_name.replace('-', '').isalnum() %}App name must contain only lowercase letters, numbers, and dashes{% endif %}"
 
 app_router_style:
@@ -245,8 +245,8 @@ tech_stack_summary:
     - "Temporal for background jobs"
 
     If unsure, just press Enter to skip.
-  placeholder: "Redis for caching, Stripe for payments"
-  default: ""
+  placeholder: 'Redis for caching, Stripe for payments'
+  default: ''
 
 base_url:
   type: str
@@ -255,8 +255,8 @@ base_url:
 
     This is just for local testing. The default works for most people.
     Only change this if you know you need a different port or domain.
-  placeholder: "http://localhost:3000"
-  default: "http://localhost:8000"
+  placeholder: 'http://localhost:3000'
+  default: 'http://localhost:8000'
 
 # ============================================================================
 # SECTION 5: AI-Powered Development Features (Optional but Recommended!)
@@ -290,7 +290,7 @@ enable_temporal_learning:
     Choose "yes" for smarter AI suggestions.
     Choose "no" for basic AI features without learning.
   default: true
-  when: "{{ include_ai_workflows }}"
+  when: '{{ include_ai_workflows }}'
 
 # ============================================================================
 # SECTION 6: Code Structure Options (Advanced - Safe to Use Defaults)
@@ -354,8 +354,8 @@ app_domains:
 
     List the domains your app needs to work with (comma-separated).
     Usually this is the same as your main domain.
-  placeholder: "users,products"
-  default: "{{ domain_name }}"
+  placeholder: 'users,products'
+  default: '{{ domain_name }}'
   validator: "{% if app_domains %}{% set invalid = [] %}{% for d in app_domains.split(',') %}{% set dn = d.strip() %}{% if dn != dn.lower() or not dn.replace('-', '').replace('_', '').isalnum() %}{% set _ = invalid.append(dn) %}{% endif %}{% endfor %}{% if invalid %}Invalid domain names: {{ invalid|join(', ') }}. Use lowercase letters, numbers, dashes, and underscores only{% endif %}{% endif %}"
 
 include_api_client:
@@ -409,9 +409,9 @@ encryption_backend:
 
     The default (xchacha20poly1305) is military-grade and works great.
     Only change if you have specific compliance requirements.
-  placeholder: "xchacha20poly1305"
-  default: "xchacha20poly1305"
-  when: "{{ enable_security_hardening }}"
+  placeholder: 'xchacha20poly1305'
+  default: 'xchacha20poly1305'
+  when: '{{ enable_security_hardening }}'
 
 tpm_enabled:
   type: bool
@@ -427,7 +427,7 @@ tpm_enabled:
 
     For most users: choose "no"
   default: false
-  when: "{{ enable_security_hardening }}"
+  when: '{{ enable_security_hardening }}'
 
 # ============================================================================
 # EXCLUDE RULES (Don't worry about this - it's automatic)

@@ -78,8 +78,8 @@ export class InMemoryEventBus implements EventBus<unknown> {
       }
 
       const ctor = asRec['constructor'] as Record<string, unknown> | undefined;
-      if (ctor && typeof ctor.name === 'string') {
-        return ctor.name;
+      if (ctor && typeof ctor['name'] === 'string') {
+        return ctor['name'] as string;
       }
     }
 

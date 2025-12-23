@@ -5,10 +5,10 @@ task: review
 thread: sec-review
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["githubRepo", "codebase"]
-description: "Perform a security audit on selected files or the entire repository"
+tools: ['githubRepo', 'codebase']
+description: 'Perform a security audit on selected files or the entire repository'
 ---
 
 # Security Review Prompt

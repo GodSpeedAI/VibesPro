@@ -20,7 +20,7 @@ A prompt file has two main parts: the frontmatter and the body.
 
     ```yaml
     ---
-    description: "A prompt to summarize the recent code changes in a file."
+    description: 'A prompt to summarize the recent code changes in a file.'
     ---
     ```
 

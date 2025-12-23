@@ -2,24 +2,24 @@
 name: persona.qa
 description: QA/test persona aligned to the handoff network; adapts to frontend/backend/E2E contexts.
 model: GPT-5 mini
-tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Planner"
-      agent: "planner.core"
-      prompt: "Translate the test strategy above into a prioritized plan."
-      send: true
-    - label: "Implementer"
-      agent: "implementer.core"
-      prompt: "Coordinate implementation steps needed for the tests above."
-      send: true
-    - label: "Coder"
-      agent: "Coder"
-      prompt: "Implement the fixes required to satisfy the tests above."
-      send: true
-    - label: "Reviewer"
-      agent: "reviewer.core"
-      prompt: "Review coverage and traceability for the tests above."
-      send: true
+  - label: 'Planner'
+    agent: 'planner.core'
+    prompt: 'Translate the test strategy above into a prioritized plan.'
+    send: true
+  - label: 'Implementer'
+    agent: 'implementer.core'
+    prompt: 'Coordinate implementation steps needed for the tests above.'
+    send: true
+  - label: 'Coder'
+    agent: 'Coder'
+    prompt: 'Implement the fixes required to satisfy the tests above.'
+    send: true
+  - label: 'Reviewer'
+    agent: 'reviewer.core'
+    prompt: 'Review coverage and traceability for the tests above.'
+    send: true
 ---
 
 # QA & Test Automation Engineer

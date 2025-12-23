@@ -20,10 +20,10 @@ repos:
       - id: check-toml
       - id: check-merge-conflict
       - id: check-added-large-files
-        args: ["--maxkb=1000"]
+        args: ['--maxkb=1000']
       - id: check-case-conflict
       - id: mixed-line-ending
-        args: ["--fix=lf"]
+        args: ['--fix=lf']
       - id: detect-private-key
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
@@ -55,7 +55,7 @@ repos:
         args:
           - --strict
           - --python-version=3.12
-          - "--ignore-missing-imports"
+          - '--ignore-missing-imports'
           - .
         # Let mypy do its own discovery so the `exclude` regex in pyproject.toml
         # is honored. We run mypy on '.' (pass_filenames:false) so pyproject
@@ -67,7 +67,7 @@ repos:
     rev: v0.43.0
     hooks:
       - id: markdownlint
-        args: ["--config", ".markdownlint.json", "--fix"]
+        args: ['--config', '.markdownlint.json', '--fix']
         exclude: ^(docs/knowledgebase/archive/.*|docs/update/.*|docs/wiki/.*)$
 
   # Shell script linting
@@ -75,7 +75,7 @@ repos:
     rev: v0.10.0.1
     hooks:
       - id: shellcheck
-        args: ["-S", "style", "-o", "all"]
+        args: ['-S', 'style', '-o', 'all']
         # ShellCheck on templates and test fixtures produces many style warnings for
         # intentionally templated scripts. Ignore templates and some test fixtures.
         exclude: ^(.*\.j2|tests/fixtures/|tests/cli/|tests/env/.*|templates/.*|apps/\{\{app_name\}\}/.*|tests/ops/.*)$
@@ -159,7 +159,7 @@ repos:
 
 # Configuration
 fail_fast: false
-minimum_pre_commit_version: "2.15.0"
+minimum_pre_commit_version: '2.15.0'
 
 # CI skip tags
 ci:

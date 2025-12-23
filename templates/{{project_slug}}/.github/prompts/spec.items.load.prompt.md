@@ -5,10 +5,10 @@ task: items
 thread: spec-items-load
 matrix_ids: []
 budget: S
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Load specific spec items using indexes and summarize constraints."
+tools: ['codebase', 'search']
+description: 'Load specific spec items using indexes and summarize constraints.'
 ---
 
 # Load Spec Items (Selective)

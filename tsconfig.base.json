@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@shared/web": ["libs/shared/web/src/index.ts"],
+      "nx/src/native/index": ["types/nx-fixes/native-index.d.ts"],
+      "nx/src/project-graph/error-types": ["types/nx-fixes/project-graph-error-types.d.ts"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "tmp",
+    "tools/reference/**/*",
+    ".nx",
+    "templates/**",
+    "apps/{{app_name}}/**",
+    "libs/{{domain_name}}/**",
+    "apps/**/templates/**"
+  ]
+}

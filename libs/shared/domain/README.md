@@ -14,21 +14,21 @@ Both patterns are available in TypeScript and Python with feature parity.
 ## TypeScript Usage
 
 ```typescript
-import { InMemoryUnitOfWork, InMemoryEventBus } from "@vibes-pro/shared-domain";
+import { InMemoryUnitOfWork, InMemoryEventBus } from '@vibes-pro/shared-domain';
 
 // Unit of Work
 const uow = new InMemoryUnitOfWork();
 await uow.withTransaction(async () => {
-    uow.registerNew(entity);
-    await repository.save(entity);
+  uow.registerNew(entity);
+  await repository.save(entity);
 });
 
 // Event Bus
 const eventBus = new InMemoryEventBus();
-eventBus.subscribe({ name: "UserCreated" }, (event) => {
-    console.log("User created:", event);
+eventBus.subscribe({ name: 'UserCreated' }, (event) => {
+  console.log('User created:', event);
 });
-eventBus.publish({ name: "UserCreated", userId: "123" });
+eventBus.publish({ name: 'UserCreated', userId: '123' });
 ```
 
 ## Python Usage

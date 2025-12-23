@@ -1,9 +1,9 @@
 ---
-description: "How to refine project context for AI Copilot"
-applies_to: "generated projects"
+description: 'How to refine project context for AI Copilot'
+applies_to: 'generated projects'
 related_specs:
-    - AI_PRD-001
-    - DEV-ADR-002
+  - AI_PRD-001
+  - DEV-ADR-002
 ---
 
 # How to Refine Project Context for AI Copilot
@@ -164,21 +164,21 @@ After updating, verify the context is helpful:
 
 1. **Ask Copilot to summarize your project:**
 
-    ```plaintext
-    @workspace What is this application about?
-    ```
+   ```plaintext
+   @workspace What is this application about?
+   ```
 
 2. **Request domain-specific code:**
 
-    ```plaintext
-    Create a use case for [your domain]
-    ```
+   ```plaintext
+   Create a use case for [your domain]
+   ```
 
 3. **Check architectural awareness:**
 
-    ```plaintext
-    What architectural patterns does this project use?
-    ```
+   ```plaintext
+   What architectural patterns does this project use?
+   ```
 
 If Copilot's responses are more relevant and accurate, your context is good!
 

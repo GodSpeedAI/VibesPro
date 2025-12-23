@@ -48,11 +48,11 @@ CALM JSON:
 
 ```json
 {
-    "nodes": [
-        { "id": "auth", "description": "User auth service" },
-        { "id": "chat", "description": "Real-time chat" }
-    ],
-    "relationships": [{ "source": "auth", "target": "chat", "type": "authenticated_by" }]
+  "nodes": [
+    { "id": "auth", "description": "User auth service" },
+    { "id": "chat", "description": "Real-time chat" }
+  ],
+  "relationships": [{ "source": "auth", "target": "chat", "type": "authenticated_by" }]
 }
 ```
 
@@ -60,16 +60,16 @@ Maps to domain YAML:
 
 ```yaml
 services:
-    - name: auth
-      description: User auth service
-      entities: []
-    - name: chat
-      description: Real-time chat
-      entities: []
+  - name: auth
+    description: User auth service
+    entities: []
+  - name: chat
+    description: Real-time chat
+    entities: []
 relationships:
-    - from: auth
-      to: chat
-      type: authenticated_by
+  - from: auth
+    to: chat
+    type: authenticated_by
 ```
 
 This YAML then drives Nx generators to scaffold two services with a dependency from `chat` to `auth`.

@@ -1,6 +1,6 @@
 ---
-description: "Documentation and annotations for code, specs, and developer docs"
-applyTo: "**"
+description: 'Documentation and annotations for code, specs, and developer docs'
+applyTo: '**'
 kind: instructions
 domain: documentation
 precedence: 36

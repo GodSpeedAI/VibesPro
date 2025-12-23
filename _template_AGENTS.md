@@ -187,10 +187,10 @@ Use these cores as composition primitives rather than proliferating mode-level p
 - **HexDDD Base**: `/home/sprime01/projects/HexDDD/`
 - **VibePDK Base**: `/home/sprime01/projects/VibePDK/`
 - **Key Locations**:
-    - HexDDD Generators: `libs/ddd/src/generators/`
-    - VibePDK Templates: `{{ project_slug }}/`
-    - VibePDK Hooks: `hooks/`
-    - Build Configurations: `nx.json`, `package.json`, `justfile`
+  - HexDDD Generators: `libs/ddd/src/generators/`
+  - VibePDK Templates: `{{ project_slug }}/`
+  - VibePDK Hooks: `hooks/`
+  - Build Configurations: `nx.json`, `package.json`, `justfile`
 
 ## Operational Procedures
 

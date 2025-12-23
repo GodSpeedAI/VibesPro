@@ -132,14 +132,14 @@ Note: Ensure `GITHUB_TOKEN` has permission to create releases (default in most r
 There are two common patterns for `stage` (staging):
 
 1. Long-lived `stage` branch
-    - `stage` receives merges from `dev` or `release/*` to create a deployable staging snapshot.
-    - Teams test on the `stage` environment. After verification, merge the release into `main`.
+   - `stage` receives merges from `dev` or `release/*` to create a deployable staging snapshot.
+   - Teams test on the `stage` environment. After verification, merge the release into `main`.
 
 Example flow: `dev -> release/v1.x -> stage -> main` or simply `dev -> stage` then `dev -> main`.
 
 2. Ephemeral staging from `release/*` branches
-    - Create `release/*` from `dev`, deploy that branch to staging for QA, iterate on `release/*` until ready, then merge into `main`.
-    - This avoids a long-lived `stage` branch and keeps staging environment tied to explicit release candidates.
+   - Create `release/*` from `dev`, deploy that branch to staging for QA, iterate on `release/*` until ready, then merge into `main`.
+   - This avoids a long-lived `stage` branch and keeps staging environment tied to explicit release candidates.
 
 Choose the pattern that matches your deployment process and CI tooling. If you have automated deployment per-branch (e.g., Netlify, Vercel, or your CI), map the branch name(s) to the correct environment in CI/CD settings.
 

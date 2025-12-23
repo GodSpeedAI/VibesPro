@@ -11,12 +11,12 @@ This workflow guides you through creating a new bespoke Nx generator.
 // turbo
 
 1. Determine the generator type based on what it creates:
-    - `domain` - Domain/entity libraries (DDD)
-    - `service` - Backend services with hexagonal architecture
-    - `component` - UI components
-    - `adapter` - Infrastructure adapters (repositories, API clients)
-    - `utility` - Utility/helper libraries
-    - `custom` - Anything else
+   - `domain` - Domain/entity libraries (DDD)
+   - `service` - Backend services with hexagonal architecture
+   - `component` - UI components
+   - `adapter` - Infrastructure adapters (repositories, API clients)
+   - `utility` - Utility/helper libraries
+   - `custom` - Anything else
 
 // turbo 2. Create the generator scaffold:
 
@@ -26,13 +26,13 @@ just generator-new <name> <type>
 ```
 
 3. Customize the generator templates in `generators/<name>/files/`:
-    - Add `.template` suffix to files that need variable substitution
-    - Use EJS syntax: `<%= className %>`, `<%= fileName %>`, etc.
+   - Add `.template` suffix to files that need variable substitution
+   - Use EJS syntax: `<%= className %>`, `<%= fileName %>`, etc.
 
 4. Update schema options in `generators/<name>/schema.json`:
-    - Add properties for generator options
-    - Include `x-prompt` for interactive CLI experience
-    - Set defaults where appropriate
+   - Add properties for generator options
+   - Include `x-prompt` for interactive CLI experience
+   - Set defaults where appropriate
 
 // turbo 5. Regenerate TypeScript types:
 
@@ -53,8 +53,8 @@ just generator-dry-run <name> test-project
 ```
 
 8. Update documentation:
-    - Edit `generators/<name>/README.md`
-    - Review generated spec at `docs/specs/generators/<name>.generator.spec.md`
+   - Edit `generators/<name>/README.md`
+   - Review generated spec at `docs/specs/generators/<name>.generator.spec.md`
 
 ## Available Template Variables
 

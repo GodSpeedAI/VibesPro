@@ -5,10 +5,10 @@ task: analyze
 thread: perf-analyze
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["githubRepo", "codebase"]
-description: "Analyse the performance characteristics of a code segment or component"
+tools: ['githubRepo', 'codebase']
+description: 'Analyse the performance characteristics of a code segment or component'
 ---
 
 # Performance Analysis Prompt

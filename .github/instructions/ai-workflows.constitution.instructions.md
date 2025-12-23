@@ -1,6 +1,6 @@
 ---
-description: "AI workflows constitution and governance"
-applyTo: "**"
+description: 'AI workflows constitution and governance'
+applyTo: '**'
 kind: instructions
 domain: ai-workflows
 precedence: 10

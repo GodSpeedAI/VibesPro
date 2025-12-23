@@ -10,11 +10,11 @@ Local usage
 
 1. Install dev dependencies:
 
-    npm ci
+   npm ci
 
 2. Run the linter across the repository:
 
-    npm run lint:md
+   npm run lint:md
 
 The script runs `markdownlint` against all `**/*.md` files using the repository config.
 
