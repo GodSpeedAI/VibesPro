@@ -81,19 +81,19 @@ just observe:verify
 
 - **Local syntax check**
 
-    ```bash
-    vector validate ops/vector/vector.toml
-    ```
+  ```bash
+  vector validate ops/vector/vector.toml
+  ```
 
 - **CI**: `.github/workflows/env-check.yml` runs `vector validate` and the smoke test:
 
-    ```yaml
-    - name: Validate Vector config
-      run: vector validate ops/vector/vector.toml
+  ```yaml
+  - name: Validate Vector config
+    run: vector validate ops/vector/vector.toml
 
-    - name: Ops smoke test (stdout + OTLP)
-      run: sh -eu tests/ops/test_observe_smoke.sh
-    ```
+  - name: Ops smoke test (stdout + OTLP)
+    run: sh -eu tests/ops/test_observe_smoke.sh
+  ```
 
 ---
 

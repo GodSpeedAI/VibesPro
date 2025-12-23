@@ -90,51 +90,51 @@ tools/vibepro/
 
 ```json
 {
-    "$schema": "https://json-schema.org/schema",
-    "$id": "MyOrgFeatureSlice",
-    "title": "Feature Slice",
-    "type": "object",
-    "properties": {
-        "name": {
-            "type": "string",
-            "description": "Feature name (kebab-case)",
-            "$default": { "$source": "argv", "index": 0 },
-            "x-prompt": "What is the feature name (kebab-case)?"
-        },
-        "scope": {
-            "type": "string",
-            "description": "Organizational scope (affects folder & tags)",
-            "enum": ["api", "store", "shared", "data"],
-            "default": "api",
-            "x-prompt": {
-                "message": "Choose a scope",
-                "type": "list",
-                "items": [
-                    { "value": "api", "label": "api" },
-                    { "value": "store", "label": "store" },
-                    { "value": "shared", "label": "shared" },
-                    { "value": "data", "label": "data" }
-                ]
-            }
-        },
-        "directory": { "type": "string" },
-        "withApi": { "type": "boolean", "default": false },
-        "unitTestRunner": {
-            "type": "string",
-            "enum": ["vitest", "jest"],
-            "default": "vitest"
-        },
-        "publishable": { "type": "boolean", "default": false },
-        "importPath": { "type": "string" },
-        "tags": { "type": "string", "description": "comma-separated" }
+  "$schema": "https://json-schema.org/schema",
+  "$id": "MyOrgFeatureSlice",
+  "title": "Feature Slice",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Feature name (kebab-case)",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the feature name (kebab-case)?"
     },
-    "required": ["name"],
-    "allOf": [
-        {
-            "if": { "properties": { "publishable": { "const": true } } },
-            "then": { "required": ["importPath"] }
-        }
-    ]
+    "scope": {
+      "type": "string",
+      "description": "Organizational scope (affects folder & tags)",
+      "enum": ["api", "store", "shared", "data"],
+      "default": "api",
+      "x-prompt": {
+        "message": "Choose a scope",
+        "type": "list",
+        "items": [
+          { "value": "api", "label": "api" },
+          { "value": "store", "label": "store" },
+          { "value": "shared", "label": "shared" },
+          { "value": "data", "label": "data" }
+        ]
+      }
+    },
+    "directory": { "type": "string" },
+    "withApi": { "type": "boolean", "default": false },
+    "unitTestRunner": {
+      "type": "string",
+      "enum": ["vitest", "jest"],
+      "default": "vitest"
+    },
+    "publishable": { "type": "boolean", "default": false },
+    "importPath": { "type": "string" },
+    "tags": { "type": "string", "description": "comma-separated" }
+  },
+  "required": ["name"],
+  "allOf": [
+    {
+      "if": { "properties": { "publishable": { "const": true } } },
+      "then": { "required": ["importPath"] }
+    }
+  ]
 }
 ```
 
@@ -142,14 +142,14 @@ tools/vibepro/
 
 ```ts
 export interface FeatureSliceSchema {
-    name: string;
-    scope: "api" | "store" | "shared" | "data";
-    directory?: string;
-    withApi?: boolean;
-    unitTestRunner?: "vitest" | "jest";
-    publishable?: boolean;
-    importPath?: string;
-    tags?: string;
+  name: string;
+  scope: 'api' | 'store' | 'shared' | 'data';
+  directory?: string;
+  withApi?: boolean;
+  unitTestRunner?: 'vitest' | 'jest';
+  publishable?: boolean;
+  importPath?: string;
+  tags?: string;
 }
 ```
 

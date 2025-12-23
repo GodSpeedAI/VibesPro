@@ -4,9 +4,9 @@ domain: debug
 task: repro
 budget: S
 model: ${ default_model }
-name: "Debug Repro Mode"
+name: 'Debug Repro Mode'
 description: Minimal debug.repro chatmode placeholder
-tools: ["codebase", "search"]
+tools: ['codebase', 'search']
 ---
 
 # Debug Repro Mode

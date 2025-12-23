@@ -5,10 +5,10 @@ task: transcript
 thread: spec-transcript-to-spec
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Convert a conversation transcript into product spec drafts with IDs."
+tools: ['codebase', 'search']
+description: 'Convert a conversation transcript into product spec drafts with IDs.'
 ---
 
 # Convert Transcript to Product Spec Draft

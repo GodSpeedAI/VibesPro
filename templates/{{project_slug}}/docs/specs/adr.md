@@ -43,8 +43,8 @@ date: {{ year }}
 - **Rationale**: TypeScript provides compile-time type checking, excellent tooling support, and doesn't significantly slow down build times
 - **DX Impact**: Better autocomplete, earlier error detection, improved refactoring confidence
 - **Trade-offs**:
-    - Gain: Type safety, better tooling, self-documenting code
-    - Lose: Slightly longer build times, learning curve for team members new to TypeScript
+  - Gain: Type safety, better tooling, self-documenting code
+  - Lose: Slightly longer build times, learning curve for team members new to TypeScript
 - **Status**: Accepted
 - **Date**: {{ year }}-XX-XX
 - **Related Specs**: SDS-001

@@ -4,9 +4,9 @@ domain: sec
 task: analyst
 budget: M
 description: Comprehensive security analysis and vulnerability assessment for applications and infrastructure. Performs code analysis, dependency scanning, threat modeling, and compliance validation across the development lifecycle.
-tools: ["search", "githubRepo"]
+tools: ['search', 'githubRepo']
 model: GPT-5
-name: "Sec Analyst"
+name: 'Sec Analyst'
 ---
 
 # Security Analyst Agent

@@ -5,10 +5,10 @@ task: bootstrap
 thread: platform-bootstrap
 matrix_ids: [DEV-PRD-008]
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Bootstrap developer platform: devcontainer, tasks, tests, CI, lint/typecheck, onboarding."
+tools: ['codebase', 'search']
+description: 'Bootstrap developer platform: devcontainer, tasks, tests, CI, lint/typecheck, onboarding.'
 inputs: []
 outputs: []
 ---
@@ -22,8 +22,8 @@ outputs: []
 ## Task
 
 - Generate or update:
-    - Devcontainer, task runner, test harness, CI jobs, linters/type-checkers.
-    - Sample “hello world” + smoke tests.
+  - Devcontainer, task runner, test harness, CI jobs, linters/type-checkers.
+  - Sample “hello world” + smoke tests.
 - Ensure each step cites relevant DEV spec IDs and notes any conflicts with ADR/SDS/TS.
 
 ## Output

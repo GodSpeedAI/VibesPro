@@ -4,9 +4,9 @@ domain: product
 task: elevator-pitch
 budget: S
 description: Summarise the core idea of a project into a concise elevator pitch.
-tools: ["search", "githubRepo"]
+tools: ['search', 'githubRepo']
 model: ${ default_model }
-name: "Product Elevator Pitch"
+name: 'Product Elevator Pitch'
 ---
 
 # Elevator Pitch Mode

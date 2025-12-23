@@ -655,17 +655,17 @@ if __name__ == "__main__":
 Your implementation MUST prioritize composability and code reuse:
 
 1. **Extract Common Functionality**:
-    - Create reusable helper functions for operations used across multiple tools
-    - Build shared API clients for HTTP requests instead of duplicating code
-    - Centralize error handling logic in utility functions
-    - Extract business logic into dedicated functions that can be composed
-    - Extract shared markdown or JSON field selection & formatting functionality
+   - Create reusable helper functions for operations used across multiple tools
+   - Build shared API clients for HTTP requests instead of duplicating code
+   - Centralize error handling logic in utility functions
+   - Extract business logic into dedicated functions that can be composed
+   - Extract shared markdown or JSON field selection & formatting functionality
 
 2. **Avoid Duplication**:
-    - NEVER copy-paste similar code between tools
-    - If you find yourself writing similar logic twice, extract it into a function
-    - Common operations like pagination, filtering, field selection, and formatting should be shared
-    - Authentication/authorization logic should be centralized
+   - NEVER copy-paste similar code between tools
+   - If you find yourself writing similar logic twice, extract it into a function
+   - Common operations like pagination, filtering, field selection, and formatting should be shared
+   - Authentication/authorization logic should be centralized
 
 ### Python-Specific Best Practices
 

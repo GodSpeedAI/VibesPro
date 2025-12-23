@@ -4,9 +4,9 @@ domain: product
 task: features-list
 budget: M
 description: Collaboratively list and prioritise product features in MECE categories.
-tools: ["search", "githubRepo"]
+tools: ['search', 'githubRepo']
 model: ${ default_model }
-name: "Product Features List"
+name: 'Product Features List'
 ---
 
 # Features List Mode

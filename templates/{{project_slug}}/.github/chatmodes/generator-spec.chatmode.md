@@ -23,33 +23,33 @@ Given a short request (e.g., “scaffold profiles endpoint” or “new invoice 
 ## Behavioral Directives
 
 1. **Specification-First**
-    - Never emit generator code; emit a **GENERATOR_SPEC** document only.
+   - Never emit generator code; emit a **GENERATOR_SPEC** document only.
 
 2. **Classification Rules (deterministic)**
-    - **route-contract**: Mentions HTTP/REST/GraphQL endpoints, methods (`GET|POST|...`), paths, request/response, validators, status codes, client SDKs.
-    - **data-access**: Mentions repositories, persistence, adapters (postgres/sqlite/http/memory), DTOs, ports; no UI/endpoint.
-    - **feature-slice**: Domain module/library with API surface used by apps/services; may optionally include an API shell.
-    - If multiple apply, prefer **route-contract** when a concrete route is specified; else **data-access** when persistence dominates; else **feature-slice**.
+   - **route-contract**: Mentions HTTP/REST/GraphQL endpoints, methods (`GET|POST|...`), paths, request/response, validators, status codes, client SDKs.
+   - **data-access**: Mentions repositories, persistence, adapters (postgres/sqlite/http/memory), DTOs, ports; no UI/endpoint.
+   - **feature-slice**: Domain module/library with API surface used by apps/services; may optionally include an API shell.
+   - If multiple apply, prefer **route-contract** when a concrete route is specified; else **data-access** when persistence dominates; else **feature-slice**.
 
 3. **Inputs & Traceability**
-    - Pull identifiers and constraints from the user text and from provided ADR/PRD/SDS excerpts (if any).
-    - Add ADR/PRD/SDS placeholders when not provided.
+   - Pull identifiers and constraints from the user text and from provided ADR/PRD/SDS excerpts (if any).
+   - Add ADR/PRD/SDS placeholders when not provided.
 
 4. **VibePro Conventions**
-    - Reference Nx projects & tags, `just ai-context-bundle`, `just ai-validate`, and `pnpm nx` targets.
-    - Honor `.github/instructions/*` precedence (testing, security, ai-workflows).
+   - Reference Nx projects & tags, `just ai-context-bundle`, `just ai-validate`, and `pnpm nx` targets.
+   - Honor `.github/instructions/*` precedence (testing, security, ai-workflows).
 
 5. **MCP-Aware**
-    - In the spec, include a “MCP Assistance” section describing how to use:
-        - **context7** → context grounding with ADR/PRD/SDS and prior specs
-        - **ref** → seams & duplication checks; module boundaries
-        - **exa** → external examples/standards (list 3–5 to review)
+   - In the spec, include a “MCP Assistance” section describing how to use:
+     - **context7** → context grounding with ADR/PRD/SDS and prior specs
+     - **ref** → seams & duplication checks; module boundaries
+     - **exa** → external examples/standards (list 3–5 to review)
 
 6. **Output Shape**
-    - Use the corresponding spec template sections verbatim (titles and order).
-    - Mirror the canonical skeleton in `docs/specs/generators/GENERATOR_SPEC.md`.
-    - Include an explicit **Options Schema** summary (names/types/defaults).
-    - Include **Acceptance Tests** and **Review Checklist** sections.
+   - Use the corresponding spec template sections verbatim (titles and order).
+   - Mirror the canonical skeleton in `docs/specs/generators/GENERATOR_SPEC.md`.
+   - Include an explicit **Options Schema** summary (names/types/defaults).
+   - Include **Acceptance Tests** and **Review Checklist** sections.
 
 ---
 

@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       run_conversion:
-        description: "Run pandoc conversion tests (html/docx/epub)"
+        description: 'Run pandoc conversion tests (html/docx/epub)'
         required: false
-        default: "false"
+        default: 'false'
 
 concurrency:
   group: docs-${{ github.ref }}
@@ -21,6 +21,7 @@ concurrency:
 jobs:
   test-docs-generator:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     strategy:
       matrix:
@@ -40,7 +41,7 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ matrix.node }}
-          cache: "pnpm"
+          cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Verify pnpm installation
@@ -78,6 +79,7 @@ jobs:
     # Run conversion tests in a separate job, pinned to a known pandoc release
     if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_conversion == 'true')
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: test-docs-generator
 
     strategy:
@@ -98,7 +100,7 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ matrix.node }}
-          cache: "pnpm"
+          cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Verify pnpm installation

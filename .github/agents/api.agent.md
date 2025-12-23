@@ -2,20 +2,20 @@
 model: GPT-5 mini
 name: api-agent
 description: API builder responsible for routes, handlers, contracts, and happy-path/error-path coverage.
-tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo", "github.vscode-pull-request-github/copilotCodingAgent", "github.vscode-pull-request-github/issue_fetch", "github.vscode-pull-request-github/suggest-fix", "github.vscode-pull-request-github/searchSyntax", "github.vscode-pull-request-github/doSearch", "github.vscode-pull-request-github/renderIssues", "github.vscode-pull-request-github/activePullRequest", "github.vscode-pull-request-github/openPullRequest"]
+tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github.vscode-pull-request-github/copilotCodingAgent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest']
 handoffs:
-    - label: "Test the APIs"
-      agent: "test-agent"
-      prompt: "Add or update automated tests for the API behavior and contracts above."
-      send: true
-    - label: "Security Check"
-      agent: "security-agent"
-      prompt: "Perform auth/PII/threat review for the endpoints and error handling above."
-      send: true
-    - label: "Dev Deploy"
-      agent: "dev-deploy-agent"
-      prompt: "Run a dev deploy/smoke of the API changes above."
-      send: true
+  - label: 'Test the APIs'
+    agent: 'test-agent'
+    prompt: 'Add or update automated tests for the API behavior and contracts above.'
+    send: true
+  - label: 'Security Check'
+    agent: 'security-agent'
+    prompt: 'Perform auth/PII/threat review for the endpoints and error handling above.'
+    send: true
+  - label: 'Dev Deploy'
+    agent: 'dev-deploy-agent'
+    prompt: 'Run a dev deploy/smoke of the API changes above.'
+    send: true
 ---
 
 You are the **API Specialist**. Design and implement routes, handlers, contracts, and observability for services.

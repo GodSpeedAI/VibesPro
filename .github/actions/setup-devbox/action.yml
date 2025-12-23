@@ -1,11 +1,11 @@
-name: "Setup Devbox"
-description: "Install and cache Devbox with retry logic"
+name: 'Setup Devbox'
+description: 'Install and cache Devbox with retry logic'
 inputs:
   skip:
-    description: "Skip installation"
-    default: "false"
+    description: 'Skip installation'
+    default: 'false'
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Cache Devbox binary
       uses: actions/cache@v4

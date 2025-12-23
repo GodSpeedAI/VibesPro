@@ -33,15 +33,15 @@ Under the **MPL-2.0 open source license**, you may:
 You must obtain a commercial license if you:
 
 1. **Redistribute VibesPro**
-    - Provide VibesPro itself (in whole or in part) to third parties.
-    - Include VibesPro in a distributed product, software bundle, or appliance.
+   - Provide VibesPro itself (in whole or in part) to third parties.
+   - Include VibesPro in a distributed product, software bundle, or appliance.
 
 2. **Offer VibesPro as a Service**
-    - Host VibesPro (or a derivative) for third parties via SaaS, cloud APIs, managed services, or similar.
-    - Permit external users to directly or indirectly access VibesPro’s functionality.
+   - Host VibesPro (or a derivative) for third parties via SaaS, cloud APIs, managed services, or similar.
+   - Permit external users to directly or indirectly access VibesPro’s functionality.
 
 3. **Rebrand or White-Label**
-    - Market VibesPro or VibesPro-derived functionality as your own proprietary product or technology.
+   - Market VibesPro or VibesPro-derived functionality as your own proprietary product or technology.
 
 **Boundary Rule:** If third parties are interacting with VibesPro itself, you need a commercial license. If third parties are only using your Output (which operates independently of VibesPro), no commercial license is required.
 
@@ -143,10 +143,10 @@ Are licensed under MPL-2.0 and subject to the following restrictions:
 1. **Personal/Internal Use**: Freely use generated generators within your organization
 2. **Generated Code**: You own and may commercially use code produced BY generators
 3. **Generator Distribution**: You MAY NOT:
-    - Sell generators themselves as products
-    - Offer generators as a commercial service
-    - Package generators for commercial distribution
-    - Create competing generator platforms
+   - Sell generators themselves as products
+   - Offer generators as a commercial service
+   - Package generators for commercial distribution
+   - Create competing generator platforms
 
 4. **Attribution**: All generators must maintain attribution to VibesPro
 5. **Source Availability**: Modified generators must be shared under MPL-2.0

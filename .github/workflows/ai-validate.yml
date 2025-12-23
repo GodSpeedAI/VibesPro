@@ -1,4 +1,5 @@
 name: AI Validation
+
 permissions:
   contents: read
 
@@ -7,48 +8,59 @@ on:
     branches:
       - main
     paths:
-      - "justfile"
-      - "tools/logging/**"
-      - ".github/workflows/ai-validate.yml"
-      - "docs/dev_tdd.md"
+      - 'justfile'
+      - 'tools/logging/**'
+      - '.github/workflows/ai-validate.yml'
+      - 'docs/dev_tdd.md'
   pull_request:
     paths:
-      - "justfile"
-      - "tools/logging/**"
-      - ".github/workflows/ai-validate.yml"
-      - "docs/dev_tdd.md"
+      - 'justfile'
+      - 'tools/logging/**'
+      - '.github/workflows/ai-validate.yml'
+      - 'docs/dev_tdd.md'
+
+concurrency:
+  group: ai-validate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ai-validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          python-version: "3.11"
+          fetch-depth: 1
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: '3.11'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
         with:
           run_install: false
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: "20.11.1"
-          cache: "pnpm"
+          node-version: '20.11.1'
+          cache: 'pnpm'
 
       - name: Install uv
-        uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0
 
       - name: Install just
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6 # v2.0.0
         with:
-          just-version: "1.27.0"
+          just-version: '1.27.0'
 
       - name: Install Node dependencies
         run: pnpm install --frozen-lockfile

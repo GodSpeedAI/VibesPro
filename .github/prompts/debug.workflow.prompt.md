@@ -5,10 +5,10 @@ task: workflow
 thread: debug-workflow
 matrix_ids: [DEV-PRD-004]
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search", "runTests"]
-description: "Structured debugging phases from report to regression."
+tools: ['codebase', 'search', 'runTests']
+description: 'Structured debugging phases from report to regression.'
 ---
 
 # Debugging Workflow

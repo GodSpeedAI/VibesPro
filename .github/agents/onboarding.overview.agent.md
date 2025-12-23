@@ -4,9 +4,9 @@ domain: onboarding
 task: overview
 budget: S
 model: ${ default_model }
-name: "Project Onboarding"
-description: "Guide new contributors to specs, guardrails, prompts, and lifecycle commands."
-tools: ["codebase", "search"]
+name: 'Project Onboarding'
+description: 'Guide new contributors to specs, guardrails, prompts, and lifecycle commands.'
+tools: ['codebase', 'search']
 ---
 
 # Welcome to vibePDK

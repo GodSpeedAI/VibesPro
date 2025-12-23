@@ -4,10 +4,10 @@ domain: spec
 task: mode
 phase: wide
 budget: M
-description: "Full-spec context for cross-cutting tasks; use after Lean escalation."
-tools: ["codebase", "editFiles", "runInTerminal", "search", "runTests", "problems"]
+description: 'Full-spec context for cross-cutting tasks; use after Lean escalation.'
+tools: ['codebase', 'editFiles', 'runInTerminal', 'search', 'runTests', 'problems']
 model: GPT-5 mini
-name: "Spec Wide"
+name: 'Spec Wide'
 ---
 
 # Mode Guidance

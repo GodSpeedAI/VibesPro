@@ -1,26 +1,170 @@
-name: "Setup SOPS"
-description: "Install SOPS with version from environment"
+name: 'Setup SOPS'
+description: 'Install and configure SOPS with age encryption for CI/CD workflows'
+author: 'VibesPro Team'
+
+inputs:
+  version:
+    description: 'SOPS version to install'
+    required: false
+    default: '3.11.0'
+  checksum:
+    description: 'SHA256 checksum for the SOPS binary'
+    required: false
+    default: '775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef'
+  sops-age-key:
+    description: 'SOPS age key for decryption (from secrets)'
+    required: false
+    default: ''
+  secrets-file:
+    description: 'Path to the encrypted secrets file'
+    required: false
+    default: '.secrets.env.sops'
+  decrypt-to:
+    description: 'Path to write decrypted secrets'
+    required: false
+    default: '/tmp/ci.env'
+  skip-on-fork:
+    description: 'Skip decryption for fork PRs'
+    required: false
+    default: 'true'
+  is-fork:
+    description: 'Whether this is a fork PR'
+    required: false
+    default: 'false'
+
+outputs:
+  sops-loaded:
+    description: 'Whether secrets were successfully decrypted'
+    value: ${{ steps.decrypt.outputs.loaded }}
+  decrypted-file:
+    description: 'Path to decrypted secrets file (if successful)'
+    value: ${{ steps.decrypt.outputs.decrypted-file }}
+
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Install SOPS
+      id: install
       shell: bash
       run: |
-        SOPS_VERSION="${SOPS_VERSION:-3.11.0}"
-        SOPS_CHECKSUM="${SOPS_CHECKSUM:-775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef}"
+        set -euo pipefail
 
+        SOPS_VERSION="${{ inputs.version }}"
+        SOPS_CHECKSUM="${{ inputs.checksum }}"
+
+        # Check if already installed with correct version
         if command -v sops &>/dev/null && sops --version | grep -q "$SOPS_VERSION"; then
-          echo "SOPS $SOPS_VERSION already installed"
+          echo "✅ SOPS $SOPS_VERSION already installed"
           exit 0
         fi
 
-        if [ "$RUNNER_OS" = "Linux" ]; then
-          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
-          curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
-          echo "${SOPS_CHECKSUM}  sops" | sha256sum -c
-          sudo mv sops /usr/local/bin/sops
-          sudo chmod +x /usr/local/bin/sops
-        else
-          brew install sops
-        fi
+        # Detect OS and install
+        case "$RUNNER_OS" in
+          Linux)
+            SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
+            echo "Downloading SOPS v${SOPS_VERSION}..."
+            curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+            echo "${SOPS_CHECKSUM}  sops" | sha256sum -c -
+            sudo mv sops /usr/local/bin/sops
+            sudo chmod +x /usr/local/bin/sops
+            ;;
+          macOS)
+            if command -v brew &>/dev/null; then
+              echo "Installing SOPS via Homebrew..."
+              brew install sops
+            else
+              SOPS_FILE="sops-v${SOPS_VERSION}.darwin.amd64"
+              curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
+              sudo mv sops /usr/local/bin/sops
+              sudo chmod +x /usr/local/bin/sops
+            fi
+            ;;
+          *)
+            echo "::error::Unsupported OS: $RUNNER_OS"
+            exit 1
+            ;;
+        esac
+
+        # Verify installation
         sops --version
+        if ! sops --version | grep -q "${SOPS_VERSION}"; then
+          echo "::error::Installed SOPS version does not match expected ${SOPS_VERSION}"
+          exit 1
+        fi
+        echo "✅ SOPS v${SOPS_VERSION} installed successfully"
+
+    - name: Configure age key
+      id: configure-key
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        SOPS_AGE_KEY="${{ inputs.sops-age-key }}"
+        IS_FORK="${{ inputs.is-fork }}"
+        SKIP_ON_FORK="${{ inputs.skip-on-fork }}"
+
+        # Skip if fork and skip-on-fork is enabled
+        if [ "$SKIP_ON_FORK" = "true" ] && [ "$IS_FORK" = "true" ]; then
+          echo "::notice::Skipping SOPS configuration for fork PR"
+          echo "configured=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        # Skip if no key provided
+        if [ -z "${SOPS_AGE_KEY}" ]; then
+          echo "::notice::SOPS_AGE_KEY not provided; skipping key configuration"
+          echo "configured=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        # Configure key
+        KEY_PATH="$HOME/.config/sops/age-key.txt"
+        mkdir -p "$(dirname "$KEY_PATH")"
+        printf "%s" "${SOPS_AGE_KEY}" > "$KEY_PATH"
+        chmod 600 "$KEY_PATH"
+
+        # Export for subsequent steps
+        echo "SOPS_AGE_KEY_FILE=$KEY_PATH" >> $GITHUB_ENV
+        echo "configured=true" >> $GITHUB_OUTPUT
+        echo "✅ SOPS age key configured"
+
+    - name: Decrypt secrets
+      id: decrypt
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        SECRETS_FILE="${{ inputs.secrets-file }}"
+        DECRYPT_TO="${{ inputs.decrypt-to }}"
+        KEY_CONFIGURED="${{ steps.configure-key.outputs.configured }}"
+
+        # Skip if key not configured
+        if [ "$KEY_CONFIGURED" != "true" ]; then
+          echo "loaded=false" >> $GITHUB_OUTPUT
+          echo "decrypted-file=" >> $GITHUB_OUTPUT
+          echo "SOPS_LOADED=false" >> $GITHUB_ENV
+          exit 0
+        fi
+
+        # Check if secrets file exists
+        if [ ! -f "$SECRETS_FILE" ]; then
+          echo "::notice::Secrets file '$SECRETS_FILE' not found; skipping decryption"
+          echo "loaded=false" >> $GITHUB_OUTPUT
+          echo "decrypted-file=" >> $GITHUB_OUTPUT
+          echo "SOPS_LOADED=false" >> $GITHUB_ENV
+          exit 0
+        fi
+
+        # Decrypt
+        echo "Decrypting secrets from $SECRETS_FILE..."
+        sops --input-type dotenv --output-type dotenv -d "$SECRETS_FILE" > "$DECRYPT_TO"
+        chmod 600 "$DECRYPT_TO"
+
+        echo "loaded=true" >> $GITHUB_OUTPUT
+        echo "decrypted-file=$DECRYPT_TO" >> $GITHUB_OUTPUT
+        echo "SOPS_LOADED=true" >> $GITHUB_ENV
+        echo "✅ Secrets decrypted to $DECRYPT_TO"
+
+branding:
+  icon: 'lock'
+  color: 'green'

@@ -1,5 +1,5 @@
 ---
-description: "Flipped interaction: AI asks questions to customize copilot-instructions.md for the project"
+description: 'Flipped interaction: AI asks questions to customize copilot-instructions.md for the project'
 kind: prompt
 domain: docs
 task: customize-instructions
@@ -8,7 +8,7 @@ matrix_ids: []
 budget: 50000
 model: GPT-5 mini
 mode: agent
-tools: ["codebase", "search"]
+tools: ['codebase', 'search']
 ---
 
 # Customize Copilot Instructions (Flipped Interaction)
@@ -34,33 +34,33 @@ Use this prompt to **customize `.github/copilot-instructions.md`** for your spec
 **Before asking ANY questions, the AI MUST:**
 
 1. **Read `copier.yml` or `.copier-answers.yml`** to understand initial template choices:
-    - Project name, slug, description
-    - Selected architecture style
-    - Chosen tech stack components
-    - Enabled features (AI workflows, database, etc.)
+   - Project name, slug, description
+   - Selected architecture style
+   - Chosen tech stack components
+   - Enabled features (AI workflows, database, etc.)
 
 2. **Analyze `package.json`** (if Node.js project):
-    - Detect framework: Next.js, Remix, React, Vue, etc.
-    - Identify language: TypeScript vs JavaScript
-    - List key dependencies (auth, database clients, testing libs)
+   - Detect framework: Next.js, Remix, React, Vue, etc.
+   - Identify language: TypeScript vs JavaScript
+   - List key dependencies (auth, database clients, testing libs)
 
 3. **Check `pyproject.toml`** (if Python project):
-    - Detect framework: FastAPI, Django, Flask
-    - Identify dependencies
+   - Detect framework: FastAPI, Django, Flask
+   - Identify dependencies
 
 4. **Inspect `nx.json`**:
-    - Understand workspace structure
-    - Identify existing projects/libraries
-    - Detect configured generators
+   - Understand workspace structure
+   - Identify existing projects/libraries
+   - Detect configured generators
 
 5. **Scan directory structure**:
-    - `apps/` - identify application types
-    - `libs/` - understand domain structure
-    - `tests/` - detect testing setup
+   - `apps/` - identify application types
+   - `libs/` - understand domain structure
+   - `tests/` - detect testing setup
 
 6. **Review existing `.github/copilot-instructions.md`**:
-    - Identify already-customized sections
-    - Find `[CUSTOMIZE: ...]` placeholders that need filling
+   - Identify already-customized sections
+   - Find `[CUSTOMIZE: ...]` placeholders that need filling
 
 **Audit Summary Template:**
 
@@ -132,34 +132,34 @@ Is this correct? Anything to add or change?
 Once confirmed, update `.github/copilot-instructions.md`:
 
 1. **Update Project Overview section**
-    - Replace generic description with project-specific context
-    - Include domain terminology
-    - Reference actual tech stack
+   - Replace generic description with project-specific context
+   - Include domain terminology
+   - Reference actual tech stack
 
 2. **Update Architecture & Structure section**
-    - Adjust directory structure to match project type
-    - Add project-specific layers/modules
-    - Document actual tech stack versions
+   - Adjust directory structure to match project type
+   - Add project-specific layers/modules
+   - Document actual tech stack versions
 
 3. **Update Coding Standards section**
-    - Add domain-specific naming conventions
-    - Include project-specific patterns
-    - Reference actual libraries/frameworks used
+   - Add domain-specific naming conventions
+   - Include project-specific patterns
+   - Reference actual libraries/frameworks used
 
 4. **Update Testing Strategy section**
-    - Match team's preferred approach (TDD, test-after, etc.)
-    - Reference actual testing tools
-    - Adjust complexity to team experience
+   - Match team's preferred approach (TDD, test-after, etc.)
+   - Reference actual testing tools
+   - Adjust complexity to team experience
 
 5. **Update Security Guidelines section**
-    - Add compliance requirements (HIPAA, SOC2, etc.)
-    - Include domain-specific security concerns
-    - Reference actual deployment environment
+   - Add compliance requirements (HIPAA, SOC2, etc.)
+   - Include domain-specific security concerns
+   - Reference actual deployment environment
 
 6. **Update Custom sections**
-    - Add project-specific workflows
-    - Document domain concepts
-    - Include team conventions
+   - Add project-specific workflows
+   - Document domain concepts
+   - Include team conventions
 
 ### Step 5: Present Changes
 

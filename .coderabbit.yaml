@@ -1,5 +1,5 @@
 language: en-US
-tone_instructions: "Generate concise, actionable, and unambiguous fix instructions. Specify exact file paths and edits; focus on mechanical details required for automated or manual application. Focus on critical functional issues only. Avoid unnecessary explanations or context."
+tone_instructions: 'Generate concise, actionable, and unambiguous fix instructions. Specify exact file paths and edits; focus on mechanical details required for automated or manual application. Focus on critical functional issues only. Avoid unnecessary explanations or context.'
 reviews:
   profile: assertive
   commit_status: true
@@ -11,8 +11,8 @@ reviews:
       - main
       - dev
     exclude_globs:
-      - "dist/**"
-      - "test-output/**"
+      - 'dist/**'
+      - 'test-output/**'
   tools:
     eslint:
       enabled: true
@@ -24,11 +24,11 @@ knowledge_base:
   code_guidelines:
     enabled: true
     filePatterns:
-      - ".github/copilot-instructions.md"
-      - ".github/instructions/*.md"
-      - "docs/dev_adr.md"
-      - "docs/dev_prd.md"
-      - "docs/dev_sds.md"
-      - "docs/dev_technical-specifications.md"
-      - "AGENTS.md"
-      - "**/AGENTS.md"
+      - '.github/copilot-instructions.md'
+      - '.github/instructions/*.md'
+      - 'docs/dev_adr.md'
+      - 'docs/dev_prd.md'
+      - 'docs/dev_sds.md'
+      - 'docs/dev_technical-specifications.md'
+      - 'AGENTS.md'
+      - '**/AGENTS.md'
