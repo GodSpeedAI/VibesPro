@@ -41,7 +41,7 @@ mkdir -p "${outdir}"
 
 # List runs for the commit
 echo "Listing workflow runs for commit ${sha}..."
-run_list_json=$(gh api repos/"${repo}"/actions/runs --jq ".workflow_runs[] | select(.head_sha==\"${sha}\") | {id: .id, name: .name, status: .status, conclusion: .conclusion, html_url: .html_url}" )
+run_list_json=$(gh api repos/"${repo}"/actions/runs --jq ".workflow_runs[] | select(.head_sha==\"${sha}\") | {id: .id, name: .name, status: .status, conclusion: .conclusion, html_url: .html_url}")
 
 if [[ -z "${run_list_json}" ]]; then
   echo "No workflow runs found for commit ${sha}"
@@ -56,7 +56,7 @@ echo "${run_list_json}" | while read -r line; do
   echo "Downloading logs for run id=${id} name=\"${name}\"..."
   run_dir="${outdir}/run-${id}"
   mkdir -p "${run_dir}"
-  if ! gh run view "${id}" --repo "${repo}" --log > "${run_dir}/logs.txt"; then
+  if ! gh run view "${id}" --repo "${repo}" --log >"${run_dir}/logs.txt"; then
     echo "Download failed for run ${id}"
   fi
 done

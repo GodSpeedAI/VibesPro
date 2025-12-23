@@ -7,8 +7,11 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
-log()  { printf "==> %s\n" "$*"; }
-die()  { printf "❌ %s\n" "$*" >&2; exit 1; }
+log() { printf "==> %s\n" "$*"; }
+die() {
+  printf "❌ %s\n" "$*" >&2
+  exit 1
+}
 have() { command -v "$1" >/dev/null 2>&1; }
 
 ensure_in_repo_root() {
@@ -36,8 +39,8 @@ run_smoke_stdout() {
   set -e
   echo "${out}" | head -n 50
   [[ "${rc}" -eq 0 ]] || die "observe-smoke stdout run failed"
-  echo "${out}" | grep -E '"level":"INFO"|{"fields"' >/dev/null \
-    || die "Expected JSON-ish output not found"
+  echo "${out}" | grep -E '"level":"INFO"|{"fields"' >/dev/null ||
+    die "Expected JSON-ish output not found"
 }
 
 start_vector_bg() {
@@ -84,8 +87,8 @@ run_smoke_otlp() {
 
   echo "${out}" | head -n 80
   [[ "${rc}" -eq 0 ]] || die "observe-smoke otlp run failed"
-  echo "${out}" | grep -E "OTLP exporter enabled|observe-smoke starting up" >/dev/null \
-    || die "Expected exporter/init log lines not found"
+  echo "${out}" | grep -E "OTLP exporter enabled|observe-smoke starting up" >/dev/null ||
+    die "Expected exporter/init log lines not found"
 
   # If Vector logs exist, print tail for context (non-fatal check)
   if [[ -f /tmp/vector.log ]]; then

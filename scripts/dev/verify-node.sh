@@ -41,8 +41,8 @@ if [[ -n "${mise_node}" && -n "${volta_node}" ]]; then
     echo ""
     echo "❌ ERROR: Node version mismatch between mise and Volta!"
     echo ""
-  echo "   mise (.mise.toml):      ${mise_node}"
-  echo "   Volta (package.json):   ${volta_node}"
+    echo "   mise (.mise.toml):      ${mise_node}"
+    echo "   Volta (package.json):   ${volta_node}"
     echo ""
     echo "   Please align versions:"
     echo "   1. Update .mise.toml to match Volta, OR"
@@ -53,7 +53,7 @@ if [[ -n "${mise_node}" && -n "${volta_node}" ]]; then
   else
     echo ""
     echo "✅ Node versions aligned (major version ${mise_major})"
-  echo "   mise will be used as authoritative source"
+    echo "   mise will be used as authoritative source"
     echo ""
     exit 0
   fi

@@ -78,9 +78,9 @@ async def test_recommendation_generation_creates_entries(tmp_path: Path) -> None
 
     result, stored = await _generate_recommendations(tmp_path)
 
-    assert (
-        hasattr(result, "recommendations") and result.recommendations
-    ), "Recognizer should emit recommendations"
+    assert hasattr(result, "recommendations") and result.recommendations, (
+        "Recognizer should emit recommendations"
+    )
     assert stored, "Recommendations should be stored in repository"
 
     recommendation = stored[0]

@@ -9,9 +9,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if repo_root="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null)"; then
-	REPO_ROOT="${repo_root}"
+  REPO_ROOT="${repo_root}"
 else
-	REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+  REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 fi
 # NOTE (lines 10-13): the wrapper must call the repo-level
 # `scripts/run-with-secrets.sh` helper from the actual repository root.
