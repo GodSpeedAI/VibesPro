@@ -26,7 +26,7 @@ if [[ "$#" -ge 1 ]]; then
       show_list
       exit 0
       ;;
-    spec-guard|spec-matrix|ai-context-bundle|ai-validate|ai-scaffold|ai-advice|test-ai-guidance|tdd-red|tdd-green|tdd-refactor|test-generation|clean|setup|build)
+    spec-guard | spec-matrix | ai-context-bundle | ai-validate | ai-scaffold | ai-advice | test-ai-guidance | tdd-red | tdd-green | tdd-refactor | test-generation | clean | setup | build)
       if [[ "$1" = "build" ]]; then
         echo "just: build completed"
       else

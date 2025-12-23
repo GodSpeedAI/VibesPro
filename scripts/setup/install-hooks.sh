@@ -2,7 +2,7 @@
 set -euo pipefail
 
 HOOK_PATH=".git/hooks/pre-commit"
-cat > "${HOOK_PATH}" <<'HOOK'
+cat >"${HOOK_PATH}" <<'HOOK'
 #!/usr/bin/env bash
 # Pre-commit hook: Check AGENT.md links before committing
 python3 tools/check_agent_links.py || {

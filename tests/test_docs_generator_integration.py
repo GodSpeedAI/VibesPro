@@ -29,6 +29,6 @@ def test_docs_generator_writes_markdown(tmp_path: Path) -> None:
     expected = ["README.md", "ARCHITECTURE.md", "API-REFERENCE.md"]
     for fname in expected:
         path = outdir / fname
-        assert (
-            path.exists() and path.stat().st_size > 0
-        ), f"Expected {path} to exist and be non-empty"
+        assert path.exists() and path.stat().st_size > 0, (
+            f"Expected {path} to exist and be non-empty"
+        )

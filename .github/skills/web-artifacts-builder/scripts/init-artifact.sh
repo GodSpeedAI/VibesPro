@@ -33,7 +33,7 @@ else
 fi
 
 # Check if pnpm is installed
-if ! command -v pnpm &> /dev/null; then
+if ! command -v pnpm &>/dev/null; then
   echo "📦 pnpm not found. Installing pnpm..."
   npm install -g pnpm
 fi
@@ -81,7 +81,7 @@ pnpm install -D tailwindcss@3.4.1 postcss autoprefixer @types/node tailwindcss-a
 pnpm install class-variance-authority clsx tailwind-merge lucide-react next-themes
 
 echo "⚙️  Creating Tailwind and PostCSS configuration..."
-cat > postcss.config.js << 'EOF'
+cat >postcss.config.js <<'EOF'
 export default {
   plugins: {
     tailwindcss: {},
@@ -91,7 +91,7 @@ export default {
 EOF
 
 echo "📝 Configuring Tailwind with shadcn theme..."
-cat > tailwind.config.js << 'EOF'
+cat >tailwind.config.js <<'EOF'
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -163,7 +163,7 @@ EOF
 
 # Add Tailwind directives and CSS variables to index.css
 echo "🎨 Adding Tailwind directives and CSS variables..."
-cat > src/index.css << 'EOF'
+cat >src/index.css <<'EOF'
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -254,7 +254,7 @@ fs.writeFileSync(path, JSON.stringify(config, null, 2));
 
 # Update vite.config.ts
 echo "⚙️  Updating Vite configuration..."
-cat > vite.config.ts << 'EOF'
+cat >vite.config.ts <<'EOF'
 import path from "path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -280,7 +280,7 @@ tar -xzf "${COMPONENTS_TARBALL}" -C src/
 
 # Create components.json for reference
 echo "📝 Creating components.json config..."
-cat > components.json << 'EOF'
+cat >components.json <<'EOF'
 {
   "$schema": "https://ui.shadcn.com/schema.json",
   "style": "default",

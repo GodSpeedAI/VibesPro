@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 TMP_DIR="$(mktemp -d)"
-DB_PATH="${TMP_DIR}/temporal"  # sqlite path derived by repo
+DB_PATH="${TMP_DIR}/temporal" # sqlite path derived by repo
 BASELINE_PATH="${TMP_DIR}/baselines.json"
 export DB_PATH
 export PYTHONPATH="${ROOT_DIR}:${PYTHONPATH:-}"

@@ -45,14 +45,14 @@ if [[ -z "${VECTOR_INSTALL_LINE}" ]] || [[ -z "${MISE_INSTALL_LINE}" ]] || [[ -z
 fi
 
 # Vector install should come before mise install
-if (( VECTOR_INSTALL_LINE >= MISE_INSTALL_LINE )); then
+if ((VECTOR_INSTALL_LINE >= MISE_INSTALL_LINE)); then
   echo "❌ Vector installation must occur before mise install" >&2
   echo "   Found: Vector install at line ${VECTOR_INSTALL_LINE}, mise install at line ${MISE_INSTALL_LINE}" >&2
   exit 1
 fi
 
 # Vector validation should come after mise install
-if (( VECTOR_VALIDATE_LINE <= MISE_INSTALL_LINE )); then
+if ((VECTOR_VALIDATE_LINE <= MISE_INSTALL_LINE)); then
   echo "❌ Vector validation must occur after mise install" >&2
   echo "   Found: Vector validate at line ${VECTOR_VALIDATE_LINE}, mise install at line ${MISE_INSTALL_LINE}" >&2
   exit 1

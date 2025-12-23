@@ -1,4 +1,3 @@
-
 /**
  * This script is used to patch the '@nx/expo' package to work with EAS Build.
  * It is run as a eas-build-post-install script in the 'package.json' of expo app.

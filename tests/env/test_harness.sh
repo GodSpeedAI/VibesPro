@@ -14,7 +14,7 @@ cp tests/env/helpers.sh "$tmpdir/tests/env/"
 cp tests/env/run.sh "$tmpdir/tests/env/"
 
 # Create a dummy test that will succeed
-cat > "$tmpdir/tests/env/test_dummy.sh" <<'EOF'
+cat >"$tmpdir/tests/env/test_dummy.sh" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 . tests/env/helpers.sh

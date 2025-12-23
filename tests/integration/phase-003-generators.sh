@@ -110,8 +110,8 @@ else
 fi
 
 if [[ "${EXPO_APP_EXISTS}" = true ]]; then
-  if { [[ -f "apps/test-expo/src/app/App.tsx" ]] && grep -q "@shared/web" "apps/test-expo/src/app/App.tsx" 2>/dev/null; } \
-      || { [[ -f "apps/test-expo/App.tsx" ]] && grep -q "@shared/web" "apps/test-expo/App.tsx" 2>/dev/null; }; then
+  if { [[ -f "apps/test-expo/src/app/App.tsx" ]] && grep -q "@shared/web" "apps/test-expo/src/app/App.tsx" 2>/dev/null; } ||
+    { [[ -f "apps/test-expo/App.tsx" ]] && grep -q "@shared/web" "apps/test-expo/App.tsx" 2>/dev/null; }; then
     echo "${GREEN}✓ Shared-web integration for React Native${NC}"
   else
     echo "✗ Shared-web integration missing"

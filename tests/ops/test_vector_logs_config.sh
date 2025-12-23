@@ -7,8 +7,11 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 VECTOR_CONFIG="${ROOT_DIR}/ops/vector/vector.toml"
 MACRO_FILE="${ROOT_DIR}/tools/vector/macros.vrl"
 
-log()  { printf "==> %s\n" "$*"; }
-die()  { printf "❌ %s\n" "$*" >&2; exit 1; }
+log() { printf "==> %s\n" "$*"; }
+die() {
+  printf "❌ %s\n" "$*" >&2
+  exit 1
+}
 have() { command -v "$1" >/dev/null 2>&1; }
 
 ensure_tools() {

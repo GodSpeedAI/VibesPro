@@ -34,7 +34,7 @@ if command -v mise >/dev/null 2>&1; then
     else
       echo "  ✅ Runtime '$runtime' configured in .mise.toml"
     fi
-  done  # Test version resolution (if runtimes are installed)
+  done # Test version resolution (if runtimes are installed)
   echo "  ℹ️  Checking installed runtimes..."
 
   # Node version check

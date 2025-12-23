@@ -7,8 +7,11 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OBSERVE_OUTPUT=""
 OBSERVE_JSON_LINES=""
 
-log()  { printf "==> %s\n" "$*"; }
-die()  { printf "❌ %s\n" "$*" >&2; exit 1; }
+log() { printf "==> %s\n" "$*"; }
+die() {
+  printf "❌ %s\n" "$*" >&2
+  exit 1
+}
 have() { command -v "$1" >/dev/null 2>&1; }
 
 ensure_tools() {
@@ -56,7 +59,7 @@ test_rust_log_correlation() {
       fi
       break
     fi
-  done <<< "${OBSERVE_JSON_LINES}"
+  done <<<"${OBSERVE_JSON_LINES}"
 
   if [[ "${has_span_info}" = "false" ]]; then
     die "No span correlation fields found in logs"
@@ -99,7 +102,7 @@ test_category_field() {
 
     # Extract and display category values
     local categories
-    categories=$(printf "%s\n" "${OBSERVE_JSON_LINES}" | \
+    categories=$(printf "%s\n" "${OBSERVE_JSON_LINES}" |
       jq -r '.fields.category // empty' | sort -u | tr '\n' ' ')
 
     if [ -n "$categories" ]; then
