@@ -29,9 +29,9 @@ export default async function Page() {
 import { ApiClient, env } from '@vibes-pro/shared-web';
 
 export async function getServerSideProps() {
-    const client = new ApiClient({ baseUrl: env.API_URL });
-    const data = await client.get('/api/users');
-    return { props: { data } };
+  const client = new ApiClient({ baseUrl: env.API_URL });
+  const data = await client.get('/api/users');
+  return { props: { data } };
 }
 ```
 
@@ -42,9 +42,9 @@ import { json, type LoaderFunctionArgs } from '@remix-run/node';
 import { ApiClient, env } from '@vibes-pro/shared-web';
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    const client = new ApiClient({ baseUrl: env.API_URL });
-    const data = await client.get('/api/users');
-    return json({ data });
+  const client = new ApiClient({ baseUrl: env.API_URL });
+  const data = await client.get('/api/users');
+  return json({ data });
 }
 ```
 

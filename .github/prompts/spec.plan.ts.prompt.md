@@ -66,42 +66,42 @@ description: 'Template for generating Technical Specification (TS) plans from SD
 #### Public Interfaces
 
 - Interface: [Interface Name]
-    - Methods: [Method signatures]
-    - Parameters: [Types and descriptions]
-    - Return values: [Types and descriptions]
-    - Exceptions: [Error conditions]
+  - Methods: [Method signatures]
+  - Parameters: [Types and descriptions]
+  - Return values: [Types and descriptions]
+  - Exceptions: [Error conditions]
 
 #### Event Specifications
 
 - Event: [Event Name]
-    - Event payload structure
-    - Event sources and consumers
-    - Event handling patterns
+  - Event payload structure
+  - Event sources and consumers
+  - Event handling patterns
 
 ### 5. Data Structures
 
 #### Data Models
 
 - Model: [Model Name]
-    - Properties: [Field types and descriptions]
-    - Validation rules
-    - Serialization format
+  - Properties: [Field types and descriptions]
+  - Validation rules
+  - Serialization format
 
 #### Data Transfer Objects
 
 - DTO: [DTO Name]
-    - Fields: [Field types and descriptions]
-    - Usage context
-    - Mapping rules
+  - Fields: [Field types and descriptions]
+  - Usage context
+  - Mapping rules
 
 ### 6. Database Schema
 
 #### Table Definitions
 
 - Table: [Table Name]
-    - Columns: [Column types and constraints]
-    - Indexes: [Index definitions]
-    - Relationships: [Foreign key constraints]
+  - Columns: [Column types and constraints]
+  - Indexes: [Index definitions]
+  - Relationships: [Foreign key constraints]
 
 #### Database Operations
 
@@ -114,10 +114,10 @@ description: 'Template for generating Technical Specification (TS) plans from SD
 #### Error Types
 
 - Error: [Error Type]
-    - Error code
-    - Error message
-    - Error context
-    - Recovery actions
+  - Error code
+  - Error message
+  - Error context
+  - Recovery actions
 
 #### Exception Handling
 
@@ -242,17 +242,17 @@ description: 'Template for generating Technical Specification (TS) plans from SD
 #### External Dependencies
 
 - Library: [Library Name]
-    - Version: [Version]
-    - Purpose: [Usage]
-    - License: [License type]
+  - Version: [Version]
+  - Purpose: [Usage]
+  - License: [License type]
 
 #### Integration Dependencies
 
 - Service: [Service Name]
-    - API endpoints
-    - Authentication requirements
-    - Rate limiting
-    - SLA requirements
+  - API endpoints
+  - Authentication requirements
+  - Rate limiting
+  - SLA requirements
 
 ### 16. Version Control & Documentation
 

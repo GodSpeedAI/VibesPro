@@ -17,9 +17,9 @@ Generated projects without the flag have zero runtime impact or dependencies.
 
 1. Generate a 64-character hex key (256 bits):
 
-    ```bash
-    openssl rand -hex 32
-    ```
+   ```bash
+   openssl rand -hex 32
+   ```
 
 2. Store the value in `.env` (see `.env.j2` for an annotated template) and
    propagate it to deployment secrets or a TPM-backed secret store if available.
@@ -41,10 +41,10 @@ Generated projects without the flag have zero runtime impact or dependencies.
   binding; set `tpm_enabled=true` in Copier answers when hardware support
   exists.
 - Perform key rotation by:
-    1. Exporting encrypted data (optional backup).
-    2. Deploying a new key value to staging and verifying application behaviour.
-    3. Rolling the change through production with zero-downtime deployments.
-    4. Retiring the previous key once all replicas confirm successful startup.
+  1. Exporting encrypted data (optional backup).
+  2. Deploying a new key value to staging and verifying application behaviour.
+  3. Rolling the change through production with zero-downtime deployments.
+  4. Retiring the previous key once all replicas confirm successful startup.
 - Monitor application logs for `SecureDbError` variants; failed decryptions may
   indicate key mismatches across services.
 

@@ -53,11 +53,11 @@ description: 'Template for generating Architecture Decision Record (ADR) plans f
 
 - Description of the approach
 - Pros:
-    - [Benefit 1]
-    - [Benefit 2]
+  - [Benefit 1]
+  - [Benefit 2]
 - Cons:
-    - [Drawback 1]
-    - [Drawback 2]
+  - [Drawback 1]
+  - [Drawback 2]
 - Implementation complexity: [Low/Medium/High]
 - Maintenance overhead: [Low/Medium/High]
 - Scalability: [Low/Medium/High]
@@ -66,11 +66,11 @@ description: 'Template for generating Architecture Decision Record (ADR) plans f
 
 - Description of the approach
 - Pros:
-    - [Benefit 1]
-    - [Benefit 2]
+  - [Benefit 1]
+  - [Benefit 2]
 - Cons:
-    - [Drawback 1]
-    - [Drawback 2]
+  - [Drawback 1]
+  - [Drawback 2]
 - Implementation complexity: [Low/Medium/High]
 - Maintenance overhead: [Low/Medium/High]
 - Scalability: [Low/Medium/High]

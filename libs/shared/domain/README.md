@@ -19,14 +19,14 @@ import { InMemoryUnitOfWork, InMemoryEventBus } from '@vibes-pro/shared-domain';
 // Unit of Work
 const uow = new InMemoryUnitOfWork();
 await uow.withTransaction(async () => {
-    uow.registerNew(entity);
-    await repository.save(entity);
+  uow.registerNew(entity);
+  await repository.save(entity);
 });
 
 // Event Bus
 const eventBus = new InMemoryEventBus();
 eventBus.subscribe({ name: 'UserCreated' }, (event) => {
-    console.log('User created:', event);
+  console.log('User created:', event);
 });
 eventBus.publish({ name: 'UserCreated', userId: '123' });
 ```

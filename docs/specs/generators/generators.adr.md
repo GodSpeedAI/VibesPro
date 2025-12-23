@@ -54,40 +54,40 @@ Implementation Requirements (MECE Cycles)
 **Cycle A — Template Foundations & Tests** (`feature/generator-spec-cycle-a`)
 
 1. Implement Jest tests using `tests/generators/utils.ts` to validate spec completeness
-    - **DRI:** QA Team
-    - **Dependencies:** Existing test harness, copier setup
-    - **Artifacts:** `tests/generators/spec-template.test.ts`, `tests/generators/spec-completeness.test.ts`
-    - **Exit criteria:** RED tests fail on TODO detection, pass after minimal stub content added
+   - **DRI:** QA Team
+   - **Dependencies:** Existing test harness, copier setup
+   - **Artifacts:** `tests/generators/spec-template.test.ts`, `tests/generators/spec-completeness.test.ts`
+   - **Exit criteria:** RED tests fail on TODO detection, pass after minimal stub content added
 
 2. Stub Sections 1, 3–10 with "TBD" comments (plan-level, not in template)
-    - **DRI:** Documentation Team
-    - **Artifacts:** Updated `GENERATOR_SPEC.md` with section headers and minimal examples
-    - **Exit criteria:** Tests pass, `grep "TODO:" GENERATOR_SPEC.md` returns zero matches
+   - **DRI:** Documentation Team
+   - **Artifacts:** Updated `GENERATOR_SPEC.md` with section headers and minimal examples
+   - **Exit criteria:** Tests pass, `grep "TODO:" GENERATOR_SPEC.md` returns zero matches
 
 **Cycle B — Schema & Pattern Depth** (`feature/generator-spec-cycle-b`)
 
 1. Populate comprehensive schema guidance with all validation types
-    - **DRI:** Platform Team
-    - **Dependencies:** Context7 Nx docs, existing generator schemas
-    - **Artifacts:** Complete Section 3 with schema matrix, Section 3.5 pattern library
-    - **Exit criteria:** Schema examples cover all types, mapping table complete, AJV validation passes
+   - **DRI:** Platform Team
+   - **Dependencies:** Context7 Nx docs, existing generator schemas
+   - **Artifacts:** Complete Section 3 with schema matrix, Section 3.5 pattern library
+   - **Exit criteria:** Schema examples cover all types, mapping table complete, AJV validation passes
 
 2. Document generator composition and conditional templates
-    - **DRI:** Architecture Team
-    - **Artifacts:** Section 6 supplement, composition examples
-    - **Exit criteria:** Examples executable, references to existing Nx patterns validated
+   - **DRI:** Architecture Team
+   - **Artifacts:** Section 6 supplement, composition examples
+   - **Exit criteria:** Examples executable, references to existing Nx patterns validated
 
 **Cycle C — AI Enablement & Regression Safety** (`feature/generator-spec-cycle-c`)
 
 1. Write AI quick-start, troubleshooting taxonomy, MCP guidance
-    - **DRI:** AI/ML Team
-    - **Artifacts:** Sections 13–14, MCP assistance checklist
-    - **Exit criteria:** AI simulation test passes, troubleshooting covers all common errors
+   - **DRI:** AI/ML Team
+   - **Artifacts:** Sections 13–14, MCP assistance checklist
+   - **Exit criteria:** AI simulation test passes, troubleshooting covers all common errors
 
 2. Add validation automation and regression harness
-    - **DRI:** DevOps Team
-    - **Artifacts:** ShellSpec tests, `just ai-validate` integration
-    - **Exit criteria:** Full test suite passes, template generation produces TODO-free output
+   - **DRI:** DevOps Team
+   - **Artifacts:** ShellSpec tests, `just ai-validate` integration
+   - **Exit criteria:** Full test suite passes, template generation produces TODO-free output
 
 Related Specs
 

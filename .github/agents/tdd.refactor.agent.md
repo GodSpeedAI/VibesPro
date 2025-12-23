@@ -4,18 +4,18 @@ name: tdd.refactor
 description: Clean up after green; preserve behavior with tests green and Nx-first checks.
 tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
 handoffs:
-    - label: 'Lint'
-      agent: 'lint-agent'
-      prompt: 'Ensure style/imports are tidy after refactor above.'
-      send: true
-    - label: 'Security Sweep'
-      agent: 'security-agent'
-      prompt: 'Check the refactored areas for auth/PII/logging issues.'
-      send: true
-    - label: 'Review'
-      agent: 'reviewer.core'
-      prompt: 'Review the refactored code/tests for maintainability and traceability.'
-      send: true
+  - label: 'Lint'
+    agent: 'lint-agent'
+    prompt: 'Ensure style/imports are tidy after refactor above.'
+    send: true
+  - label: 'Security Sweep'
+    agent: 'security-agent'
+    prompt: 'Check the refactored areas for auth/PII/logging issues.'
+    send: true
+  - label: 'Review'
+    agent: 'reviewer.core'
+    prompt: 'Review the refactored code/tests for maintainability and traceability.'
+    send: true
 ---
 
 ## Phase: REFACTOR

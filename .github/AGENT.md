@@ -203,10 +203,10 @@ precedence: 40
 name: 'domain.task'
 description: 'Brief description of this persona/workflow'
 instructions:
-    - /.github/instructions/security.instructions.md
-    - /.github/instructions/relevant.instructions.md
+  - /.github/instructions/security.instructions.md
+  - /.github/instructions/relevant.instructions.md
 prompts:
-    - /.github/prompts/relevant.prompt.md
+  - /.github/prompts/relevant.prompt.md
 ---
 
 # Domain Task Chat Mode

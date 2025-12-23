@@ -87,10 +87,10 @@ description: 'Template for generating System Design Specification (SDS) plans fr
 #### REST API Endpoints
 
 - Endpoint: [METHOD] /[path]
-    - Description: [Purpose]
-    - Request/Response format
-    - Authentication requirements
-    - Rate limiting
+  - Description: [Purpose]
+  - Request/Response format
+  - Authentication requirements
+  - Rate limiting
 
 #### GraphQL Schema (if applicable)
 

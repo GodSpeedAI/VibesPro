@@ -64,7 +64,7 @@ tools/vibepro/
 - `backend: 'postgres' | 'sqlite' | 'http' | 'memory'` (default: `memory`)
 - `orm: 'drizzle' | 'prisma' | 'knex' | 'none'` (default: `none`)
 
-    > Only meaningful for SQL backends; ignored for `http`/`memory`.
+  > Only meaningful for SQL backends; ignored for `http`/`memory`.
 
 - `withContractTests?: boolean` (default: `true`)
 - `unitTestRunner?: 'vitest' | 'jest'` (default: `vitest`)
@@ -79,40 +79,40 @@ tools/vibepro/
 
 ```json
 {
-    "$schema": "https://json-schema.org/schema",
-    "$id": "MyOrgDataAccess",
-    "title": "Data Access",
-    "type": "object",
-    "properties": {
-        "entity": {
-            "type": "string",
-            "$default": { "$source": "argv", "index": 0 }
-        },
-        "scope": {
-            "type": "string",
-            "enum": ["data", "shared", "api"],
-            "default": "data"
-        },
-        "directory": { "type": "string" },
-        "backend": {
-            "type": "string",
-            "enum": ["postgres", "sqlite", "http", "memory"],
-            "default": "memory"
-        },
-        "orm": {
-            "type": "string",
-            "enum": ["drizzle", "prisma", "knex", "none"],
-            "default": "none"
-        },
-        "withContractTests": { "type": "boolean", "default": true },
-        "unitTestRunner": {
-            "type": "string",
-            "enum": ["vitest", "jest"],
-            "default": "vitest"
-        },
-        "tags": { "type": "string" }
+  "$schema": "https://json-schema.org/schema",
+  "$id": "MyOrgDataAccess",
+  "title": "Data Access",
+  "type": "object",
+  "properties": {
+    "entity": {
+      "type": "string",
+      "$default": { "$source": "argv", "index": 0 }
     },
-    "required": ["entity"]
+    "scope": {
+      "type": "string",
+      "enum": ["data", "shared", "api"],
+      "default": "data"
+    },
+    "directory": { "type": "string" },
+    "backend": {
+      "type": "string",
+      "enum": ["postgres", "sqlite", "http", "memory"],
+      "default": "memory"
+    },
+    "orm": {
+      "type": "string",
+      "enum": ["drizzle", "prisma", "knex", "none"],
+      "default": "none"
+    },
+    "withContractTests": { "type": "boolean", "default": true },
+    "unitTestRunner": {
+      "type": "string",
+      "enum": ["vitest", "jest"],
+      "default": "vitest"
+    },
+    "tags": { "type": "string" }
+  },
+  "required": ["entity"]
 }
 ```
 
@@ -120,14 +120,14 @@ tools/vibepro/
 
 ```ts
 export interface DataAccessSchema {
-    entity: string;
-    scope?: 'data' | 'shared' | 'api';
-    directory?: string;
-    backend?: 'postgres' | 'sqlite' | 'http' | 'memory';
-    orm?: 'drizzle' | 'prisma' | 'knex' | 'none';
-    withContractTests?: boolean;
-    unitTestRunner?: 'vitest' | 'jest';
-    tags?: string;
+  entity: string;
+  scope?: 'data' | 'shared' | 'api';
+  directory?: string;
+  backend?: 'postgres' | 'sqlite' | 'http' | 'memory';
+  orm?: 'drizzle' | 'prisma' | 'knex' | 'none';
+  withContractTests?: boolean;
+  unitTestRunner?: 'vitest' | 'jest';
+  tags?: string;
 }
 ```
 

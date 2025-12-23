@@ -96,37 +96,37 @@ FastAPI services receive:
 
 1. **Hexagonal Architecture** (default):
 
-    ```
-    apps/my-api/
-    ├── domain/
-    │   ├── entities/
-    │   └── value_objects/
-    ├── application/
-    │   ├── ports/
-    │   │   └── repository.py      # Protocol definitions
-    │   └── use_cases/
-    ├── infrastructure/
-    │   └── adapters/
-    │       ├── in_memory/          # Test adapters
-    │       └── supabase/           # Production adapters
-    ├── main.py                     # FastAPI app
-    ├── schemas.py                  # Pydantic models
-    └── tests/
-        └── test_main.py
-    ```
+   ```
+   apps/my-api/
+   ├── domain/
+   │   ├── entities/
+   │   └── value_objects/
+   ├── application/
+   │   ├── ports/
+   │   │   └── repository.py      # Protocol definitions
+   │   └── use_cases/
+   ├── infrastructure/
+   │   └── adapters/
+   │       ├── in_memory/          # Test adapters
+   │       └── supabase/           # Production adapters
+   ├── main.py                     # FastAPI app
+   ├── schemas.py                  # Pydantic models
+   └── tests/
+       └── test_main.py
+   ```
 
 2. **Logfire Instrumentation** (default):
-    - Automatic bootstrap in `main.py`
-    - Configured logger with categories
-    - Structured logging ready to use
+   - Automatic bootstrap in `main.py`
+   - Configured logger with categories
+   - Structured logging ready to use
 
 3. **Pydantic Type Sync**:
-    - `schemas.py` with `BaseSchema`
-    - Ready for auto-generation from Supabase (PHASE-004)
+   - `schemas.py` with `BaseSchema`
+   - Ready for auto-generation from Supabase (PHASE-004)
 
 4. **OpenAPI Export**:
-    - `/api/openapi.json` endpoint
-    - Enables frontend type generation
+   - `/api/openapi.json` endpoint
+   - Enables frontend type generation
 
 ## Shared Web Library
 
@@ -194,16 +194,16 @@ This validates:
 
 ```typescript
 export async function webAppGenerator(tree: Tree, options: Schema) {
-    // 1. Delegate to official Nx generator
-    await tryGenerateNextApp(tree, options);
+  // 1. Delegate to official Nx generator
+  await tryGenerateNextApp(tree, options);
 
-    // 2. Apply VibesPro transformations
-    if (options.apiClient !== false) {
-        await injectSharedWebIntoNextApp(tree, options);
-    }
+  // 2. Apply VibesPro transformations
+  if (options.apiClient !== false) {
+    await injectSharedWebIntoNextApp(tree, options);
+  }
 
-    // 3. Ensure shared library exists
-    ensureSharedWeb(tree, options);
+  // 3. Ensure shared library exists
+  ensureSharedWeb(tree, options);
 }
 ```
 
@@ -219,7 +219,7 @@ All transformations check before modifying:
 
 ```typescript
 if (content.includes('@shared/web')) {
-    return; // Already injected, skip
+  return; // Already injected, skip
 }
 ```
 

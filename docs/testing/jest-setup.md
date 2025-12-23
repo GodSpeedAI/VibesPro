@@ -82,8 +82,8 @@ testUtils.cleanupTempDir(tempDir);
 
 // Create mock file structure
 testUtils.createMockFiles(baseDir, {
-    'file1.ts': 'export const foo = "bar";',
-    'dir/file2.js': 'console.log("hello");',
+  'file1.ts': 'export const foo = "bar";',
+  'dir/file2.js': 'console.log("hello");',
 });
 ```
 
@@ -99,15 +99,15 @@ testUtils.createMockFiles(baseDir, {
 
 ```typescript
 describe('ComponentName', () => {
-    describe('method or feature', () => {
-        it('should do something specific', () => {
-            // Test implementation
-        });
-
-        it('should handle error cases', () => {
-            // Error handling test
-        });
+  describe('method or feature', () => {
+    it('should do something specific', () => {
+      // Test implementation
     });
+
+    it('should handle error cases', () => {
+      // Error handling test
+    });
+  });
 });
 ```
 
@@ -115,8 +115,8 @@ describe('ComponentName', () => {
 
 ```typescript
 it('should handle async operations', async () => {
-    const result = await asyncFunction();
-    expect(result).toBe('expected value');
+  const result = await asyncFunction();
+  expect(result).toBe('expected value');
 });
 ```
 
@@ -126,12 +126,12 @@ Console methods are automatically mocked in tests. To test actual console output
 
 ```typescript
 it('should log specific message', () => {
-    const consoleSpy = jest.spyOn(console, 'log');
+  const consoleSpy = jest.spyOn(console, 'log');
 
-    functionThatLogs();
+  functionThatLogs();
 
-    expect(consoleSpy).toHaveBeenCalledWith('expected message');
-    consoleSpy.mockRestore();
+  expect(consoleSpy).toHaveBeenCalledWith('expected message');
+  consoleSpy.mockRestore();
 });
 ```
 
@@ -176,19 +176,19 @@ While Jest is configured as a standalone tool, it integrates with the Nx workspa
 ### Common Issues
 
 1. **TypeScript Compilation Errors**
-    - Ensure `tsconfig.spec.json` includes the test file
-    - Check that custom types are properly imported
-    - Verify Jest globals are available in test files
+   - Ensure `tsconfig.spec.json` includes the test file
+   - Check that custom types are properly imported
+   - Verify Jest globals are available in test files
 
 2. **Module Resolution Issues**
-    - Check `moduleNameMapping` in Jest config
-    - Ensure relative imports use correct paths
-    - Verify external dependencies are installed
+   - Check `moduleNameMapping` in Jest config
+   - Ensure relative imports use correct paths
+   - Verify external dependencies are installed
 
 3. **Test Discovery Problems**
-    - Confirm test files match the pattern in `testMatch`
-    - Check file extensions are supported
-    - Ensure test files are not in ignored directories
+   - Confirm test files match the pattern in `testMatch`
+   - Check file extensions are supported
+   - Ensure test files are not in ignored directories
 
 ### Debug Mode
 

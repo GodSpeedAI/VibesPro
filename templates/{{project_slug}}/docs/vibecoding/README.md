@@ -38,21 +38,21 @@ Use the sidebar below to jump to what you need.
 ### Contents
 
 - Tutorials
-    - Getting started with TDD + Copilot → `tutorials/getting-started-tdd.md`
+  - Getting started with TDD + Copilot → `tutorials/getting-started-tdd.md`
 - How-to guides
-    - Bundle context → `how-to/bundle-context.md`
-    - Use chat modes → `how-to/use-chat-modes.md`
-    - Scaffold with Nx → `how-to/scaffold-with-nx.md`
-    - Validate repo → `how-to/validate-repo.md`
-    - Configure MCP tools → `how-to/configure-mcp.md`
+  - Bundle context → `how-to/bundle-context.md`
+  - Use chat modes → `how-to/use-chat-modes.md`
+  - Scaffold with Nx → `how-to/scaffold-with-nx.md`
+  - Validate repo → `how-to/validate-repo.md`
+  - Configure MCP tools → `how-to/configure-mcp.md`
 - Reference
-    - Chat modes → `reference/chat-modes.md`
-    - Prompts → `reference/prompts.md`
-    - Just recipes → `reference/just-recipes.md`
-    - FAQ → `reference/faq.md`
+  - Chat modes → `reference/chat-modes.md`
+  - Prompts → `reference/prompts.md`
+  - Just recipes → `reference/just-recipes.md`
+  - FAQ → `reference/faq.md`
 - Explanations
-    - Why this workflow → `explanation/ai-workflows-rationale.md`
-    - Architecture-aware context → `explanation/architecture-aware-context.md`
+  - Why this workflow → `explanation/ai-workflows-rationale.md`
+  - Architecture-aware context → `explanation/architecture-aware-context.md`
 
 ---
 

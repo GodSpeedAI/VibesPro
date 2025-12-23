@@ -27,16 +27,16 @@ Configure in `.vscode/mcp.json`:
 
 ```json
 {
-    "mcpServers": {
-        "example-http": {
-            "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/cli", "http"],
-            "env": {
-                "EXAMPLE_HTTP_BASE_URL": "${env:EXAMPLE_HTTP_BASE_URL}",
-                "EXAMPLE_HTTP_TOKEN": "${env:EXAMPLE_HTTP_TOKEN}"
-            }
-        }
+  "mcpServers": {
+    "example-http": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/cli", "http"],
+      "env": {
+        "EXAMPLE_HTTP_BASE_URL": "${env:EXAMPLE_HTTP_BASE_URL}",
+        "EXAMPLE_HTTP_TOKEN": "${env:EXAMPLE_HTTP_TOKEN}"
+      }
     }
+  }
 }
 ```
 

@@ -44,13 +44,13 @@ const log = logger('my-service');
 
 // Inject trace context from OpenTelemetry or headers
 log.info(
-    {
-        trace_id: 'abc123def456...',
-        span_id: '789ghi...',
-        category: 'app',
-        user_id: 'user-123',
-    },
-    'user action performed',
+  {
+    trace_id: 'abc123def456...',
+    span_id: '789ghi...',
+    category: 'app',
+    user_id: 'user-123',
+  },
+  'user action performed',
 );
 ```
 
@@ -73,16 +73,16 @@ Every log line includes:
 
 ```json
 {
-    "timestamp": "2025-10-12T16:00:00.000Z",
-    "level": "info",
-    "message": "request accepted",
-    "trace_id": "abc123def456...",
-    "span_id": "789ghi...",
-    "service": "user-api",
-    "environment": "staging",
-    "application_version": "v1.2.3",
-    "category": "app",
-    "user_id_hash": "abc123"
+  "timestamp": "2025-10-12T16:00:00.000Z",
+  "level": "info",
+  "message": "request accepted",
+  "trace_id": "abc123def456...",
+  "span_id": "789ghi...",
+  "service": "user-api",
+  "environment": "staging",
+  "application_version": "v1.2.3",
+  "category": "app",
+  "user_id_hash": "abc123"
 }
 ```
 

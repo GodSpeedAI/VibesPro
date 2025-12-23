@@ -149,66 +149,66 @@ import { OrderStatus } from '../enums/order-status.enum';
 import { DomainException } from '../exceptions/domain.exception';
 
 export class Order {
-    private constructor(
-        private readonly _id: OrderId,
-        private _items: OrderItem[],
-        private _status: OrderStatus,
-        private readonly _createdAt: Date,
-    ) {}
+  private constructor(
+    private readonly _id: OrderId,
+    private _items: OrderItem[],
+    private _status: OrderStatus,
+    private readonly _createdAt: Date,
+  ) {}
 
-    // Factory method
-    static create(id: OrderId, items: OrderItem[]): Order {
-        if (items.length === 0) {
-            throw new DomainException('Order must have at least one item');
-        }
-
-        return new Order(id, items, OrderStatus.Pending, new Date());
+  // Factory method
+  static create(id: OrderId, items: OrderItem[]): Order {
+    if (items.length === 0) {
+      throw new DomainException('Order must have at least one item');
     }
 
-    // Getters (no setters - immutability)
-    get id(): OrderId {
-        return this._id;
+    return new Order(id, items, OrderStatus.Pending, new Date());
+  }
+
+  // Getters (no setters - immutability)
+  get id(): OrderId {
+    return this._id;
+  }
+
+  get items(): readonly OrderItem[] {
+    return Object.freeze([...this._items]);
+  }
+
+  get status(): OrderStatus {
+    return this._status;
+  }
+
+  get total(): number {
+    return this._items.reduce((sum, item) => sum + item.total, 0);
+  }
+
+  // Business methods (behavior)
+  confirm(): void {
+    if (this._status === OrderStatus.Cancelled) {
+      throw new DomainException('Cannot confirm a cancelled order');
+    }
+    if (this._status === OrderStatus.Confirmed) {
+      throw new DomainException('Order already confirmed');
     }
 
-    get items(): readonly OrderItem[] {
-        return Object.freeze([...this._items]);
+    this._status = OrderStatus.Confirmed;
+  }
+
+  cancel(): void {
+    if (this._status === OrderStatus.Shipped) {
+      throw new DomainException('Cannot cancel a shipped order');
     }
 
-    get status(): OrderStatus {
-        return this._status;
+    this._status = OrderStatus.Cancelled;
+  }
+
+  addItem(item: OrderItem): void {
+    if (this._status !== OrderStatus.Pending) {
+      throw new DomainException('Cannot add items to non-pending order');
     }
 
-    get total(): number {
-        return this._items.reduce((sum, item) => sum + item.total, 0);
-    }
-
-    // Business methods (behavior)
-    confirm(): void {
-        if (this._status === OrderStatus.Cancelled) {
-            throw new DomainException('Cannot confirm a cancelled order');
-        }
-        if (this._status === OrderStatus.Confirmed) {
-            throw new DomainException('Order already confirmed');
-        }
-
-        this._status = OrderStatus.Confirmed;
-    }
-
-    cancel(): void {
-        if (this._status === OrderStatus.Shipped) {
-            throw new DomainException('Cannot cancel a shipped order');
-        }
-
-        this._status = OrderStatus.Cancelled;
-    }
-
-    addItem(item: OrderItem): void {
-        if (this._status !== OrderStatus.Pending) {
-            throw new DomainException('Cannot add items to non-pending order');
-        }
-
-        this._items.push(item);
-    }
+    this._items.push(item);
+  }
 }
 ```
 
@@ -262,10 +262,10 @@ export class Email {
 import { Order, OrderId } from '@my-app/orders-domain';
 
 export interface OrderRepository {
-    save(order: Order): Promise<void>;
-    findById(id: OrderId): Promise<Order | null>;
-    findByUserId(userId: string): Promise<Order[]>;
-    delete(id: OrderId): Promise<void>;
+  save(order: Order): Promise<void>;
+  findById(id: OrderId): Promise<Order | null>;
+  findByUserId(userId: string): Promise<Order[]>;
+  delete(id: OrderId): Promise<void>;
 }
 ```
 
@@ -371,58 +371,58 @@ import { OrderRepository } from '@my-app/orders-application';
 import { Pool } from 'pg';
 
 export class PostgresOrderRepository implements OrderRepository {
-    constructor(private readonly pool: Pool) {}
+  constructor(private readonly pool: Pool) {}
 
-    async save(order: Order): Promise<void> {
-        const client = await this.pool.connect();
+  async save(order: Order): Promise<void> {
+    const client = await this.pool.connect();
 
-        try {
-            await client.query('BEGIN');
+    try {
+      await client.query('BEGIN');
 
-            // Insert order
-            await client.query(
-                `INSERT INTO orders (id, user_id, status, created_at, total)
+      // Insert order
+      await client.query(
+        `INSERT INTO orders (id, user_id, status, created_at, total)
          VALUES ($1, $2, $3, $4, $5)
          ON CONFLICT (id) DO UPDATE SET
            status = EXCLUDED.status,
            total = EXCLUDED.total`,
-                [order.id.value, order.userId, order.status, order.createdAt, order.total],
-            );
+        [order.id.value, order.userId, order.status, order.createdAt, order.total],
+      );
 
-            // Insert order items
-            for (const item of order.items) {
-                await client.query(
-                    `INSERT INTO order_items (order_id, product_id, quantity, price)
+      // Insert order items
+      for (const item of order.items) {
+        await client.query(
+          `INSERT INTO order_items (order_id, product_id, quantity, price)
            VALUES ($1, $2, $3, $4)`,
-                    [order.id.value, item.productId, item.quantity, item.price],
-                );
-            }
+          [order.id.value, item.productId, item.quantity, item.price],
+        );
+      }
 
-            await client.query('COMMIT');
-        } catch (error) {
-            await client.query('ROLLBACK');
-            throw new InfrastructureException('Failed to save order', error);
-        } finally {
-            client.release();
-        }
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw new InfrastructureException('Failed to save order', error);
+    } finally {
+      client.release();
+    }
+  }
+
+  async findById(id: OrderId): Promise<Order | null> {
+    const result = await this.pool.query(`SELECT * FROM orders WHERE id = $1`, [id.value]);
+
+    if (result.rows.length === 0) {
+      return null;
     }
 
-    async findById(id: OrderId): Promise<Order | null> {
-        const result = await this.pool.query(`SELECT * FROM orders WHERE id = $1`, [id.value]);
+    // Map database row to domain entity
+    return this.toDomain(result.rows[0]);
+  }
 
-        if (result.rows.length === 0) {
-            return null;
-        }
-
-        // Map database row to domain entity
-        return this.toDomain(result.rows[0]);
-    }
-
-    private toDomain(row: any): Order {
-        // Reconstruct domain entity from database row
-        // This is where ORM mapping would happen
-        return Order.reconstitute(OrderId.from(row.id), row.items, row.status, new Date(row.created_at));
-    }
+  private toDomain(row: any): Order {
+    // Reconstruct domain entity from database row
+    // This is where ORM mapping would happen
+    return Order.reconstitute(OrderId.from(row.id), row.items, row.status, new Date(row.created_at));
+  }
 }
 ```
 
@@ -434,22 +434,22 @@ import { EmailService } from '@my-app/notifications-application';
 import sgMail from '@sendgrid/mail';
 
 export class SendGridEmailAdapter implements EmailService {
-    constructor(apiKey: string) {
-        sgMail.setApiKey(apiKey);
-    }
+  constructor(apiKey: string) {
+    sgMail.setApiKey(apiKey);
+  }
 
-    async send(to: string, subject: string, body: string): Promise<void> {
-        try {
-            await sgMail.send({
-                to,
-                from: 'noreply@example.com',
-                subject,
-                html: body,
-            });
-        } catch (error) {
-            throw new InfrastructureException('Failed to send email', error);
-        }
+  async send(to: string, subject: string, body: string): Promise<void> {
+    try {
+      await sgMail.send({
+        to,
+        from: 'noreply@example.com',
+        subject,
+        html: body,
+      });
+    } catch (error) {
+      throw new InfrastructureException('Failed to send email', error);
     }
+  }
 }
 ```
 
@@ -462,27 +462,27 @@ export class SendGridEmailAdapter implements EmailService {
 import { v4 as uuidv4 } from 'uuid';
 
 export abstract class Id {
-    protected constructor(private readonly _value: string) {
-        if (!Id.isValid(_value)) {
-            throw new Error('Invalid ID format');
-        }
+  protected constructor(private readonly _value: string) {
+    if (!Id.isValid(_value)) {
+      throw new Error('Invalid ID format');
     }
+  }
 
-    static generate(): string {
-        return uuidv4();
-    }
+  static generate(): string {
+    return uuidv4();
+  }
 
-    static isValid(value: string): boolean {
-        return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
-    }
+  static isValid(value: string): boolean {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+  }
 
-    get value(): string {
-        return this._value;
-    }
+  get value(): string {
+    return this._value;
+  }
 
-    equals(other: Id): boolean {
-        return this._value === other._value;
-    }
+  equals(other: Id): boolean {
+    return this._value === other._value;
+  }
 }
 ```
 
@@ -620,17 +620,17 @@ pnpm exec nx affected:test
 
 ```json
 {
-    "name": "orders-domain",
-    "tags": ["type:domain", "scope:orders"],
-    "implicitDependencies": []
+  "name": "orders-domain",
+  "tags": ["type:domain", "scope:orders"],
+  "implicitDependencies": []
 }
 ```
 
 ```json
 {
-    "name": "orders-application",
-    "tags": ["type:application", "scope:orders"],
-    "implicitDependencies": ["orders-domain"]
+  "name": "orders-application",
+  "tags": ["type:application", "scope:orders"],
+  "implicitDependencies": ["orders-domain"]
 }
 ```
 
@@ -638,14 +638,14 @@ pnpm exec nx affected:test
 
 ```json
 {
-    "compilerOptions": {
-        "paths": {
-            "@my-app/orders-domain": ["libs/orders/domain/src/index.ts"],
-            "@my-app/orders-application": ["libs/orders/application/src/index.ts"],
-            "@my-app/orders-infrastructure": ["libs/orders/infrastructure/src/index.ts"],
-            "@my-app/shared-domain": ["libs/shared/domain/src/index.ts"]
-        }
+  "compilerOptions": {
+    "paths": {
+      "@my-app/orders-domain": ["libs/orders/domain/src/index.ts"],
+      "@my-app/orders-application": ["libs/orders/application/src/index.ts"],
+      "@my-app/orders-infrastructure": ["libs/orders/infrastructure/src/index.ts"],
+      "@my-app/shared-domain": ["libs/shared/domain/src/index.ts"]
     }
+  }
 }
 ```
 
@@ -677,22 +677,22 @@ pnpm exec nx affected:test
 
 ```typescript
 export class User {
-    private constructor(
-        private readonly _id: UserId,
-        private readonly _email: Email,
-        private _hashedPassword: string, // Never expose raw password
-        private readonly _roles: Role[],
-    ) {}
+  private constructor(
+    private readonly _id: UserId,
+    private readonly _email: Email,
+    private _hashedPassword: string, // Never expose raw password
+    private readonly _roles: Role[],
+  ) {}
 
-    // No getPassword() method - password never leaves entity
+  // No getPassword() method - password never leaves entity
 
-    verifyPassword(plainPassword: string): boolean {
-        return bcrypt.compareSync(plainPassword, this._hashedPassword);
-    }
+  verifyPassword(plainPassword: string): boolean {
+    return bcrypt.compareSync(plainPassword, this._hashedPassword);
+  }
 
-    hasRole(role: Role): boolean {
-        return this._roles.includes(role);
-    }
+  hasRole(role: Role): boolean {
+    return this._roles.includes(role);
+  }
 }
 ```
 
@@ -707,12 +707,12 @@ export class User {
 
 ```typescript
 describe('Order (Domain)', () => {
-    it('should not allow confirming cancelled order', () => {
-        const order = Order.create(/* ... */);
-        order.cancel();
+  it('should not allow confirming cancelled order', () => {
+    const order = Order.create(/* ... */);
+    order.cancel();
 
-        expect(() => order.confirm()).toThrow('Cannot confirm cancelled order');
-    });
+    expect(() => order.confirm()).toThrow('Cannot confirm cancelled order');
+  });
 });
 ```
 
@@ -745,15 +745,15 @@ describe('CreateOrderUseCase', () => {
 
 ```typescript
 describe('PostgresOrderRepository', () => {
-    it('should save and retrieve order', async () => {
-        const repo = new PostgresOrderRepository(testDb);
-        const order = Order.create(/* ... */);
+  it('should save and retrieve order', async () => {
+    const repo = new PostgresOrderRepository(testDb);
+    const order = Order.create(/* ... */);
 
-        await repo.save(order);
-        const retrieved = await repo.findById(order.id);
+    await repo.save(order);
+    const retrieved = await repo.findById(order.id);
 
-        expect(retrieved).toEqual(order);
-    });
+    expect(retrieved).toEqual(order);
+  });
 });
 ```
 

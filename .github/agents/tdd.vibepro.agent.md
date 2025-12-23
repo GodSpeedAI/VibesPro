@@ -4,48 +4,48 @@ name: tdd.vibepro
 description: Full-cycle TDD orchestrator for VibesPro; drives Red → Green → Refactor with Nx-first verification and agency handoffs.
 tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
 handoffs:
-    - label: 'RED'
-      agent: 'tdd.red'
-      prompt: 'Write the smallest failing test(s) for the scope above.'
-      send: true
-    - label: 'GREEN'
-      agent: 'tdd.green'
-      prompt: 'Make the failing tests above pass with minimal change.'
-      send: true
-    - label: 'REFACTOR'
-      agent: 'tdd.refactor'
-      prompt: 'Refactor the passing code/tests above without altering behavior.'
-      send: true
-    - label: 'Test Specialist'
-      agent: 'test-agent'
-      prompt: 'Expand coverage and regression defense based on the scenario above.'
-      send: true
-    - label: 'Coder'
-      agent: 'Coder'
-      prompt: 'Implement any remaining code needed to satisfy the tests above using Nx-first commands.'
-      send: true
+  - label: 'RED'
+    agent: 'tdd.red'
+    prompt: 'Write the smallest failing test(s) for the scope above.'
+    send: true
+  - label: 'GREEN'
+    agent: 'tdd.green'
+    prompt: 'Make the failing tests above pass with minimal change.'
+    send: true
+  - label: 'REFACTOR'
+    agent: 'tdd.refactor'
+    prompt: 'Refactor the passing code/tests above without altering behavior.'
+    send: true
+  - label: 'Test Specialist'
+    agent: 'test-agent'
+    prompt: 'Expand coverage and regression defense based on the scenario above.'
+    send: true
+  - label: 'Coder'
+    agent: 'Coder'
+    prompt: 'Implement any remaining code needed to satisfy the tests above using Nx-first commands.'
+    send: true
 ---
 
 ## Cadence
 
 1. **Prep**
-    - `search-memory` for related specs/ADRs and patterns.
-    - Use Context7/Ref/Exa for framework APIs; prefer Nx info for project mapping.
-    - `vibe_check` to trim scope; identify target project for `nx test`.
+   - `search-memory` for related specs/ADRs and patterns.
+   - Use Context7/Ref/Exa for framework APIs; prefer Nx info for project mapping.
+   - `vibe_check` to trim scope; identify target project for `nx test`.
 2. **RED** (handoff or inline)
-    - Write the minimal failing test; tag spec IDs.
-    - Run `nx test <project>` (or framework equivalent) to confirm red.
+   - Write the minimal failing test; tag spec IDs.
+   - Run `nx test <project>` (or framework equivalent) to confirm red.
 3. **GREEN** (handoff or inline)
-    - Make only the changes needed to pass.
-    - Re-run `nx test <project>`; capture outputs.
+   - Make only the changes needed to pass.
+   - Re-run `nx test <project>`; capture outputs.
 4. **REFACTOR** (handoff or inline)
-    - Clean structure/naming/duplication; keep tests green each step.
-    - Run lint/format via Nx or language formatter if safe.
+   - Clean structure/naming/duplication; keep tests green each step.
+   - Run lint/format via Nx or language formatter if safe.
 5. **Verify & Persist**
-    - Ensure no failing tests remain; note risks and TODOs.
-    - `add-memory` for patterns/edge cases.
+   - Ensure no failing tests remain; note risks and TODOs.
+   - `add-memory` for patterns/edge cases.
 6. **Handoffs**
-    - Route to Test Specialist for broader coverage, Coder for remaining implementation, Reviewer for final checks.
+   - Route to Test Specialist for broader coverage, Coder for remaining implementation, Reviewer for final checks.
 
 ## Constraints
 
@@ -250,9 +250,9 @@ Fixture Strategy:
 - [ ] Test files created under owning Nx project
 - [ ] Tests fail for documented, intentional reasons
 - [ ] `docs/plans/<plan_name>/TASK-XXX-RED-PHASE.md` documenting:
-    - MCP research conducted
-    - Chosen approaches + rationale
-    - Expected failure modes
+  - MCP research conducted
+  - Chosen approaches + rationale
+  - Expected failure modes
 
 **Commands:**
 
@@ -288,9 +288,9 @@ Integration Points:
 - [ ] Minimal code to pass tests
 - [ ] All tests green locally
 - [ ] `docs/plans/<plan_name>/TASK-XXX-GREEN-PHASE.md` documenting:
-    - Implementation decisions
-    - MCP validation performed
-    - Trade-offs made
+  - Implementation decisions
+  - MCP validation performed
+  - Trade-offs made
 
 **Commands:**
 
@@ -327,9 +327,9 @@ Boundary Detection:
 - [ ] Code refactored, tests remain green
 - [ ] New `libs/*` created if boundaries emerged ([nx] generator used)
 - [ ] `docs/plans/<plan_name>/TASK-XXX-REFACTOR-PHASE.md` documenting:
-    - Refactoring rationale (MCP-sourced)
-    - Architectural improvements
-    - Boundary decisions
+  - Refactoring rationale (MCP-sourced)
+  - Architectural improvements
+  - Boundary decisions
 
 **Commands:**
 
@@ -368,9 +368,9 @@ CI Remediation:
 - [ ] Workspace validation: `just ai-validate`
 - [ ] CI green: [github] workflows successful
 - [ ] `docs/plans/<plan_name>/TASK-XXX-REGRESSION.md` documenting:
-    - Regression coverage
-    - Failures encountered + resolutions
-    - CI/CD insights
+  - Regression coverage
+  - Failures encountered + resolutions
+  - CI/CD insights
 
 ---
 
@@ -742,28 +742,28 @@ Insufficient Results:
 **Every plan MUST include:**
 
 1. **`PRE_PLAN_INTELLIGENCE.md`**
-    - All pre-planning MCP queries + results
-    - Synthesized insights
-    - Confidence assessments
+   - All pre-planning MCP queries + results
+   - Synthesized insights
+   - Confidence assessments
 
 2. **Phase-Level Intelligence Logs** (`docs/plans/<plan_name>/PHASE-NNN-INTELLIGENCE.md`)
-    - Tools used per phase
-    - Research conducted
-    - Decisions made + rationale
+   - Tools used per phase
+   - Research conducted
+   - Decisions made + rationale
 
 3. **Task-Level Intelligence Logs** (`docs/plans/<plan_name>/TASK-XXX-INTELLIGENCE.md`)
-    - MCP orchestration for specific task
-    - Pattern research outcomes
-    - Validation results
+   - MCP orchestration for specific task
+   - Pattern research outcomes
+   - Validation results
 
 4. **Retrospectives** (`docs/plans/<plan_name>/PHASE-NNN-RETROSPECTIVE.md`)
-    - What worked (with tool attribution)
-    - What didn't (tool limitations, incorrect assumptions)
-    - Lessons learned (stored in [memory])
+   - What worked (with tool attribution)
+   - What didn't (tool limitations, incorrect assumptions)
+   - Lessons learned (stored in [memory])
 
 5. **MCP Traceability Matrix**
-    - Tool → Query → Result → Impact on Plan
-    - Enables audit and continuous improvement
+   - Tool → Query → Result → Impact on Plan
+   - Enables audit and continuous improvement
 
 ---
 
@@ -875,8 +875,8 @@ Knowledge Persistence:
 
 - [context7] Official Nx generator docs: v18.3+ → patterns validated
 - [exa] Reference implementations:
-    - https://github.com/nrwl/nx-examples/tree/master/libs/auth (2.1k stars)
-    - https://github.com/nestjs/nest/tree/master/sample/19-auth (5.8k stars)
+  - https://github.com/nrwl/nx-examples/tree/master/libs/auth (2.1k stars)
+  - https://github.com/nestjs/nest/tree/master/sample/19-auth (5.8k stars)
 - [ref] JSON Schema validation guides: Nx generator standards applied
 
 ### Purpose & Scope

@@ -82,13 +82,13 @@ description: 'Template for generating Product Requirements Document (PRD) plans 
 #### Functional Requirements
 
 - [ ] FR-1: [Requirement description]
-    - Acceptance Criteria:
-        - [ ] Given [context], when [action], then [result]
-        - [ ] Given [context], when [action], then [result]
+  - Acceptance Criteria:
+    - [ ] Given [context], when [action], then [result]
+    - [ ] Given [context], when [action], then [result]
 - [ ] FR-2: [Requirement description]
-    - Acceptance Criteria:
-        - [ ] Given [context], when [action], then [result]
-        - [ ] Given [context], when [action], then [result]
+  - Acceptance Criteria:
+    - [ ] Given [context], when [action], then [result]
+    - [ ] Given [context], when [action], then [result]
 
 #### Non-Functional Requirements
 
@@ -104,15 +104,15 @@ description: 'Template for generating Product Requirements Document (PRD) plans 
 
 - As a [user persona], I want [goal] so that [benefit]
 - Acceptance Criteria:
-    - [ ] [Criterion 1]
-    - [ ] [Criterion 2]
+  - [ ] [Criterion 1]
+  - [ ] [Criterion 2]
 
 #### Epic: [Epic Name]
 
 - As a [user persona], I want [goal] so that [benefit]
 - Acceptance Criteria:
-    - [ ] [Criterion 1]
-    - [ ] [Criterion 2]
+  - [ ] [Criterion 1]
+  - [ ] [Criterion 2]
 
 ### 7. User Flow & Scenarios
 

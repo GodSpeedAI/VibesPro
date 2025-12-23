@@ -42,49 +42,49 @@ precedence: 16
 ```typescript
 // libs/{domain}/domain/src/entities/order.entity.ts
 export class Order {
-    private constructor(
-        private readonly _id: OrderId,
-        private _items: OrderItem[],
-        private _status: OrderStatus,
-    ) {}
+  private constructor(
+    private readonly _id: OrderId,
+    private _items: OrderItem[],
+    private _status: OrderStatus,
+  ) {}
 
-    // Factory method - validates invariants
-    static create(id: OrderId, items: OrderItem[]): Order {
-        if (items.length === 0) {
-            throw new DomainException('Order requires at least one item');
-        }
-        return new Order(id, items, OrderStatus.Pending);
+  // Factory method - validates invariants
+  static create(id: OrderId, items: OrderItem[]): Order {
+    if (items.length === 0) {
+      throw new DomainException('Order requires at least one item');
     }
+    return new Order(id, items, OrderStatus.Pending);
+  }
 
-    // Business methods (behavior, not just data)
-    confirm(): void {
-        if (this._status === OrderStatus.Cancelled) {
-            throw new DomainException('Cannot confirm cancelled order');
-        }
-        this._status = OrderStatus.Confirmed;
+  // Business methods (behavior, not just data)
+  confirm(): void {
+    if (this._status === OrderStatus.Cancelled) {
+      throw new DomainException('Cannot confirm cancelled order');
     }
+    this._status = OrderStatus.Confirmed;
+  }
 
-    get total(): number {
-        return this._items.reduce((sum, item) => sum + item.total, 0);
-    }
+  get total(): number {
+    return this._items.reduce((sum, item) => sum + item.total, 0);
+  }
 }
 ```
 
 ```typescript
 // libs/{domain}/domain/src/value-objects/email.vo.ts
 export class Email {
-    private constructor(private readonly value: string) {}
+  private constructor(private readonly value: string) {}
 
-    static create(email: string): Email {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            throw new DomainException('Invalid email format');
-        }
-        return new Email(email.toLowerCase().trim());
+  static create(email: string): Email {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      throw new DomainException('Invalid email format');
     }
+    return new Email(email.toLowerCase().trim());
+  }
 
-    equals(other: Email): boolean {
-        return this.value === other.value;
-    }
+  equals(other: Email): boolean {
+    return this.value === other.value;
+  }
 }
 ```
 
@@ -94,32 +94,32 @@ export class Email {
 // libs/{domain}/application/src/ports/order-repository.port.ts
 // PORT = Interface (what, not how)
 export interface OrderRepository {
-    save(order: Order): Promise<void>;
-    findById(id: OrderId): Promise<Order | null>;
-    findByUserId(userId: string): Promise<Order[]>;
+  save(order: Order): Promise<void>;
+  findById(id: OrderId): Promise<Order | null>;
+  findByUserId(userId: string): Promise<Order[]>;
 }
 ```
 
 ```typescript
 // libs/{domain}/application/src/use-cases/create-order.use-case.ts
 export class CreateOrderUseCase {
-    constructor(
-        private readonly orderRepo: OrderRepository, // Port, not implementation
-        private readonly eventBus: EventBus, // Port, not implementation
-    ) {}
+  constructor(
+    private readonly orderRepo: OrderRepository, // Port, not implementation
+    private readonly eventBus: EventBus, // Port, not implementation
+  ) {}
 
-    async execute(input: CreateOrderInput): Promise<CreateOrderOutput> {
-        // 1. Create domain entities
-        const order = Order.create(OrderId.generate(), input.items);
+  async execute(input: CreateOrderInput): Promise<CreateOrderOutput> {
+    // 1. Create domain entities
+    const order = Order.create(OrderId.generate(), input.items);
 
-        // 2. Persist via port
-        await this.orderRepo.save(order);
+    // 2. Persist via port
+    await this.orderRepo.save(order);
 
-        // 3. Publish domain event
-        await this.eventBus.publish(new OrderCreatedEvent(order.id));
+    // 3. Publish domain event
+    await this.eventBus.publish(new OrderCreatedEvent(order.id));
 
-        return { orderId: order.id.value, total: order.total };
-    }
+    return { orderId: order.id.value, total: order.total };
+  }
 }
 ```
 
@@ -129,16 +129,16 @@ export class CreateOrderUseCase {
 // libs/{domain}/infrastructure/src/repositories/postgres-order.repository.ts
 // ADAPTER = Implementation of a port
 export class PostgresOrderRepository implements OrderRepository {
-    constructor(private readonly pool: Pool) {}
+  constructor(private readonly pool: Pool) {}
 
-    async save(order: Order): Promise<void> {
-        await this.pool.query('INSERT INTO orders (id, status, total) VALUES ($1, $2, $3)', [order.id.value, order.status, order.total]);
-    }
+  async save(order: Order): Promise<void> {
+    await this.pool.query('INSERT INTO orders (id, status, total) VALUES ($1, $2, $3)', [order.id.value, order.status, order.total]);
+  }
 
-    async findById(id: OrderId): Promise<Order | null> {
-        const result = await this.pool.query('SELECT * FROM orders WHERE id = $1', [id.value]);
-        return result.rows[0] ? this.toDomain(result.rows[0]) : null;
-    }
+  async findById(id: OrderId): Promise<Order | null> {
+    const result = await this.pool.query('SELECT * FROM orders WHERE id = $1', [id.value]);
+    return result.rows[0] ? this.toDomain(result.rows[0]) : null;
+  }
 }
 ```
 

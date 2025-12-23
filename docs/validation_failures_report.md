@@ -17,16 +17,16 @@ The `ai-context-tools` project (defined in `tools/ai/project.json`) has a `vites
 ```typescript
 // tools/ai/vitest.config.ts
 export default defineConfig({
-    test: {
-        // ...
-        include: [
-            'tests/**/*.{test,spec}.ts',
-            'generators/**/*.{test,spec}.ts',
-            'tools/**/*.{test,spec}.ts',
-            'libs/**/*.{test,spec}.ts', // <--- Problem: Includes everything
-        ],
-        // ...
-    },
+  test: {
+    // ...
+    include: [
+      'tests/**/*.{test,spec}.ts',
+      'generators/**/*.{test,spec}.ts',
+      'tools/**/*.{test,spec}.ts',
+      'libs/**/*.{test,spec}.ts', // <--- Problem: Includes everything
+    ],
+    // ...
+  },
 });
 ```
 
@@ -39,7 +39,7 @@ The tests in `libs/shared/web` (e.g., `api-client.spec.ts`) explicitly use `jest
 ```typescript
 // libs/shared/web/src/lib/__tests__/api-client.spec.ts
 afterEach(() => {
-    jest.restoreAllMocks(); // Fails here
+  jest.restoreAllMocks(); // Fails here
 });
 ```
 

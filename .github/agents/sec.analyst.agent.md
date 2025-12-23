@@ -4,22 +4,22 @@ name: sec.analyst
 description: Security analysis chatmode that routes work to the Security Agent for remediations.
 tools: ['runCommands', 'runTasks', 'runTests', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
 handoffs:
-    - label: 'Security Agent'
-      agent: 'security-agent'
-      prompt: 'Turn the findings above into concrete mitigations and checks. Keep scope minimal.'
-      send: true
-    - label: 'Fix with Coder'
-      agent: 'Coder'
-      prompt: 'Apply the required remediations from the findings above.'
-      send: true
-    - label: 'Add Regression Tests'
-      agent: 'test-agent'
-      prompt: 'Add tests to prevent recurrence of the vulnerabilities above.'
-      send: true
-    - label: 'Doc Risks'
-      agent: 'docs-agent'
-      prompt: 'Document mitigations and any accepted risks from the review above.'
-      send: true
+  - label: 'Security Agent'
+    agent: 'security-agent'
+    prompt: 'Turn the findings above into concrete mitigations and checks. Keep scope minimal.'
+    send: true
+  - label: 'Fix with Coder'
+    agent: 'Coder'
+    prompt: 'Apply the required remediations from the findings above.'
+    send: true
+  - label: 'Add Regression Tests'
+    agent: 'test-agent'
+    prompt: 'Add tests to prevent recurrence of the vulnerabilities above.'
+    send: true
+  - label: 'Doc Risks'
+    agent: 'docs-agent'
+    prompt: 'Document mitigations and any accepted risks from the review above.'
+    send: true
 ---
 
 You provide rapid security analysis and route remediation to the specialist network.

@@ -53,25 +53,25 @@ description: 'Template for generating Task plans from technical specifications a
 #### Main Activities
 
 1. **Activity 1:** [Description]
-    - Sub-tasks:
-        - [ ] [Sub-task 1]
-        - [ ] [Sub-task 2]
-    - Estimated effort: [Time estimate]
-    - Dependencies: [Related tasks]
+   - Sub-tasks:
+     - [ ] [Sub-task 1]
+     - [ ] [Sub-task 2]
+   - Estimated effort: [Time estimate]
+   - Dependencies: [Related tasks]
 
 2. **Activity 2:** [Description]
-    - Sub-tasks:
-        - [ ] [Sub-task 1]
-        - [ ] [Sub-task 2]
-    - Estimated effort: [Time estimate]
-    - Dependencies: [Related tasks]
+   - Sub-tasks:
+     - [ ] [Sub-task 1]
+     - [ ] [Sub-task 2]
+   - Estimated effort: [Time estimate]
+   - Dependencies: [Related tasks]
 
 3. **Activity 3:** [Description]
-    - Sub-tasks:
-        - [ ] [Sub-task 1]
-        - [ ] [Sub-task 2]
-    - Estimated effort: [Time estimate]
-    - Dependencies: [Related tasks]
+   - Sub-tasks:
+     - [ ] [Sub-task 1]
+     - [ ] [Sub-task 2]
+   - Estimated effort: [Time estimate]
+   - Dependencies: [Related tasks]
 
 ### 4. Technical Requirements
 

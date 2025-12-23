@@ -9,8 +9,8 @@ mode: 'chat'
 model: GPT-5 mini
 description: 'Gather project context to update Copilot instructions'
 instructions:
-    - general
-    - context
+  - general
+  - context
 ---
 
 # Project Context Interview

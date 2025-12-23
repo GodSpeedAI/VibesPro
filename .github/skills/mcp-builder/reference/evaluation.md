@@ -48,49 +48,49 @@ Create 10 human-readable questions requiring ONLY READ-ONLY, INDEPENDENT, NON-DE
 ### Core Requirements
 
 1. **Questions MUST be independent**
-    - Each question should NOT depend on the answer to any other question
-    - Should not assume prior write operations from processing another question
+   - Each question should NOT depend on the answer to any other question
+   - Should not assume prior write operations from processing another question
 
 2. **Questions MUST require ONLY NON-DESTRUCTIVE AND IDEMPOTENT tool use**
-    - Should not instruct or require modifying state to arrive at the correct answer
+   - Should not instruct or require modifying state to arrive at the correct answer
 
 3. **Questions must be REALISTIC, CLEAR, CONCISE, and COMPLEX**
-    - Must require another LLM to use multiple (potentially dozens of) tools or steps to answer
+   - Must require another LLM to use multiple (potentially dozens of) tools or steps to answer
 
 ### Complexity and Depth
 
 4. **Questions must require deep exploration**
-    - Consider multi-hop questions requiring multiple sub-questions and sequential tool calls
-    - Each step should benefit from information found in previous questions
+   - Consider multi-hop questions requiring multiple sub-questions and sequential tool calls
+   - Each step should benefit from information found in previous questions
 
 5. **Questions may require extensive paging**
-    - May need paging through multiple pages of results
-    - May require querying old data (1-2 years out-of-date) to find niche information
-    - The questions must be DIFFICULT
+   - May need paging through multiple pages of results
+   - May require querying old data (1-2 years out-of-date) to find niche information
+   - The questions must be DIFFICULT
 
 6. **Questions must require deep understanding**
-    - Rather than surface-level knowledge
-    - May pose complex ideas as True/False questions requiring evidence
-    - May use multiple-choice format where LLM must search different hypotheses
+   - Rather than surface-level knowledge
+   - May pose complex ideas as True/False questions requiring evidence
+   - May use multiple-choice format where LLM must search different hypotheses
 
 7. **Questions must not be solvable with straightforward keyword search**
-    - Do not include specific keywords from the target content
-    - Use synonyms, related concepts, or paraphrases
-    - Require multiple searches, analyzing multiple related items, extracting context, then deriving the answer
+   - Do not include specific keywords from the target content
+   - Use synonyms, related concepts, or paraphrases
+   - Require multiple searches, analyzing multiple related items, extracting context, then deriving the answer
 
 ### Tool Testing
 
 8. **Questions should stress-test tool return values**
-    - May elicit tools returning large JSON objects or lists, overwhelming the LLM
-    - Should require understanding multiple modalities of data:
-        - IDs and names
-        - Timestamps and datetimes (months, days, years, seconds)
-        - File IDs, names, extensions, and mimetypes
-        - URLs, GIDs, etc.
-    - Should probe the tool's ability to return all useful forms of data
+   - May elicit tools returning large JSON objects or lists, overwhelming the LLM
+   - Should require understanding multiple modalities of data:
+     - IDs and names
+     - Timestamps and datetimes (months, days, years, seconds)
+     - File IDs, names, extensions, and mimetypes
+     - URLs, GIDs, etc.
+   - Should probe the tool's ability to return all useful forms of data
 
 9. **Questions should MOSTLY reflect real human use cases**
-    - The kinds of information retrieval tasks that HUMANS assisted by an LLM would care about
+   - The kinds of information retrieval tasks that HUMANS assisted by an LLM would care about
 
 10. **Questions may require dozens of tool calls**
     - This challenges LLMs with limited context
@@ -106,9 +106,9 @@ Create 10 human-readable questions requiring ONLY READ-ONLY, INDEPENDENT, NON-DE
 12. **Questions must be designed so the answer DOES NOT CHANGE**
     - Do not ask questions that rely on "current state" which is dynamic
     - For example, do not count:
-        - Number of reactions to a post
-        - Number of replies to a thread
-        - Number of members in a channel
+      - Number of reactions to a post
+      - Number of replies to a thread
+      - Number of members in a channel
 
 13. **DO NOT let the MCP server RESTRICT the kinds of questions you create**
     - Create challenging and complex questions
@@ -121,58 +121,58 @@ Create 10 human-readable questions requiring ONLY READ-ONLY, INDEPENDENT, NON-DE
 ### Verification
 
 1. **Answers must be VERIFIABLE via direct string comparison**
-    - If the answer can be re-written in many formats, clearly specify the output format in the QUESTION
-    - Examples: "Use YYYY/MM/DD.", "Respond True or False.", "Answer A, B, C, or D and nothing else."
-    - Answer should be a single VERIFIABLE value such as:
-        - User ID, user name, display name, first name, last name
-        - Channel ID, channel name
-        - Message ID, string
-        - URL, title
-        - Numerical quantity
-        - Timestamp, datetime
-        - Boolean (for True/False questions)
-        - Email address, phone number
-        - File ID, file name, file extension
-        - Multiple choice answer
-    - Answers must not require special formatting or complex, structured output
-    - Answer will be verified using DIRECT STRING COMPARISON
+   - If the answer can be re-written in many formats, clearly specify the output format in the QUESTION
+   - Examples: "Use YYYY/MM/DD.", "Respond True or False.", "Answer A, B, C, or D and nothing else."
+   - Answer should be a single VERIFIABLE value such as:
+     - User ID, user name, display name, first name, last name
+     - Channel ID, channel name
+     - Message ID, string
+     - URL, title
+     - Numerical quantity
+     - Timestamp, datetime
+     - Boolean (for True/False questions)
+     - Email address, phone number
+     - File ID, file name, file extension
+     - Multiple choice answer
+   - Answers must not require special formatting or complex, structured output
+   - Answer will be verified using DIRECT STRING COMPARISON
 
 ### Readability
 
 2. **Answers should generally prefer HUMAN-READABLE formats**
-    - Examples: names, first name, last name, datetime, file name, message string, URL, yes/no, true/false, a/b/c/d
-    - Rather than opaque IDs (though IDs are acceptable)
-    - The VAST MAJORITY of answers should be human-readable
+   - Examples: names, first name, last name, datetime, file name, message string, URL, yes/no, true/false, a/b/c/d
+   - Rather than opaque IDs (though IDs are acceptable)
+   - The VAST MAJORITY of answers should be human-readable
 
 ### Stability
 
 3. **Answers must be STABLE/STATIONARY**
-    - Look at old content (e.g., conversations that have ended, projects that have launched, questions answered)
-    - Create QUESTIONS based on "closed" concepts that will always return the same answer
-    - Questions may ask to consider a fixed time window to insulate from non-stationary answers
-    - Rely on context UNLIKELY to change
-    - Example: if finding a paper name, be SPECIFIC enough so answer is not confused with papers published later
+   - Look at old content (e.g., conversations that have ended, projects that have launched, questions answered)
+   - Create QUESTIONS based on "closed" concepts that will always return the same answer
+   - Questions may ask to consider a fixed time window to insulate from non-stationary answers
+   - Rely on context UNLIKELY to change
+   - Example: if finding a paper name, be SPECIFIC enough so answer is not confused with papers published later
 
 4. **Answers must be CLEAR and UNAMBIGUOUS**
-    - Questions must be designed so there is a single, clear answer
-    - Answer can be derived from using the MCP server tools
+   - Questions must be designed so there is a single, clear answer
+   - Answer can be derived from using the MCP server tools
 
 ### Diversity
 
 5. **Answers must be DIVERSE**
-    - Answer should be a single VERIFIABLE value in diverse modalities and formats
-    - User concept: user ID, user name, display name, first name, last name, email address, phone number
-    - Channel concept: channel ID, channel name, channel topic
-    - Message concept: message ID, message string, timestamp, month, day, year
+   - Answer should be a single VERIFIABLE value in diverse modalities and formats
+   - User concept: user ID, user name, display name, first name, last name, email address, phone number
+   - Channel concept: channel ID, channel name, channel topic
+   - Message concept: message ID, message string, timestamp, month, day, year
 
 6. **Answers must NOT be complex structures**
-    - Not a list of values
-    - Not a complex object
-    - Not a list of IDs or strings
-    - Not natural language text
-    - UNLESS the answer can be straightforwardly verified using DIRECT STRING COMPARISON
-    - And can be realistically reproduced
-    - It should be unlikely that an LLM would return the same list in any other order or format
+   - Not a list of values
+   - Not a complex object
+   - Not a list of IDs or strings
+   - Not natural language text
+   - UNLESS the answer can be straightforwardly verified using DIRECT STRING COMPARISON
+   - And can be realistically reproduced
+   - It should be unlikely that an LLM would return the same list in any other order or format
 
 ## Evaluation Process
 
@@ -405,21 +405,21 @@ After creating your evaluation file, you can use the provided evaluation harness
 
 1. **Install Dependencies**
 
-    ```bash
-    pip install -r scripts/requirements.txt
-    ```
+   ```bash
+   pip install -r scripts/requirements.txt
+   ```
 
-    Or install manually:
+   Or install manually:
 
-    ```bash
-    pip install anthropic mcp
-    ```
+   ```bash
+   pip install anthropic mcp
+   ```
 
 2. **Set API Key**
 
-    ```bash
-    export ANTHROPIC_API_KEY=your_api_key_here
-    ```
+   ```bash
+   export ANTHROPIC_API_KEY=your_api_key_here
+   ```
 
 ## Evaluation File Format
 
@@ -528,18 +528,18 @@ sse/http options:
 The evaluation script generates a detailed report including:
 
 - **Summary Statistics**:
-    - Accuracy (correct/total)
-    - Average task duration
-    - Average tool calls per task
-    - Total tool calls
+  - Accuracy (correct/total)
+  - Average task duration
+  - Average tool calls per task
+  - Total tool calls
 
 - **Per-Task Results**:
-    - Prompt and expected response
-    - Actual response from the agent
-    - Whether the answer was correct (✅/❌)
-    - Duration and tool call details
-    - Agent's summary of its approach
-    - Agent's feedback on the tools
+  - Prompt and expected response
+  - Actual response from the agent
+  - Whether the answer was correct (✅/❌)
+  - Duration and tool call details
+  - Agent's summary of its approach
+  - Agent's feedback on the tools
 
 ### Save Report to File
 
@@ -595,10 +595,10 @@ python scripts/evaluation.py \
 ```
 
 4. **Review the report** in `github_eval_report.md` to:
-    - See which questions passed/failed
-    - Read the agent's feedback on your tools
-    - Identify areas for improvement
-    - Iterate on your MCP server design
+   - See which questions passed/failed
+   - Read the agent's feedback on your tools
+   - Identify areas for improvement
+   - Iterate on your MCP server design
 
 ## Troubleshooting
 

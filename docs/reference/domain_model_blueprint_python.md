@@ -17,35 +17,35 @@ This document codifies the domain-driven design (DDD) and hexagonal architecture
 ## What the Python generators produce (summary)
 
 - Domain (pure business logic, no infra imports)
-    - Entities (identity objects) — e.g. `entities/order.py`
-    - Value Objects (immutable, equality semantics) — e.g. `value_objects/money.py`
-    - Aggregates & Aggregate Roots — `aggregates/order_aggregate.py`
-    - Domain Events — `events/order_created.py` (dataclass / TypedDict)
-    - Domain Services, Specifications, Exceptions — `services/*.py`, `specifications/*.py`, `errors/*.py`
-    - Factories / Test Builders — `factories/order_factory.py`
+  - Entities (identity objects) — e.g. `entities/order.py`
+  - Value Objects (immutable, equality semantics) — e.g. `value_objects/money.py`
+  - Aggregates & Aggregate Roots — `aggregates/order_aggregate.py`
+  - Domain Events — `events/order_created.py` (dataclass / TypedDict)
+  - Domain Services, Specifications, Exceptions — `services/*.py`, `specifications/*.py`, `errors/*.py`
+  - Factories / Test Builders — `factories/order_factory.py`
 
 - Application (use cases, DTOs, ports)
-    - Use cases (application services) — `use_cases/create_order.py` (async-first)
-    - DTOs / input schemas — `dto/create_order_dto.py` (pydantic Models)
-    - Ports / Protocols — `ports/order_repository.py`, `ports/unit_of_work.py`, `ports/event_bus.py`
-    - Helpers for dependency injection or UoW/EventBus wiring
+  - Use cases (application services) — `use_cases/create_order.py` (async-first)
+  - DTOs / input schemas — `dto/create_order_dto.py` (pydantic Models)
+  - Ports / Protocols — `ports/order_repository.py`, `ports/unit_of_work.py`, `ports/event_bus.py`
+  - Helpers for dependency injection or UoW/EventBus wiring
 
 - Infrastructure (adapters implementing ports)
-    - In-memory adapters for tests — `adapters/in_memory/in_memory_order_repo.py`, `in_memory_uow.py`, `in_memory_event_bus.py`
-    - DB adapter skeletons (SQLAlchemy, asyncpg, Supabase) — e.g. `adapters/sqlalchemy/order_repo.py`
-    - Message bus adapters (asyncio, Kafka scaffolds) — `adapters/kafka/event_bus.py`
-    - Mappers for persistence ↔ domain — `mappers/order_mapper.py`
-    - Alembic migration scaffolding when DB option is chosen
+  - In-memory adapters for tests — `adapters/in_memory/in_memory_order_repo.py`, `in_memory_uow.py`, `in_memory_event_bus.py`
+  - DB adapter skeletons (SQLAlchemy, asyncpg, Supabase) — e.g. `adapters/sqlalchemy/order_repo.py`
+  - Message bus adapters (asyncio, Kafka scaffolds) — `adapters/kafka/event_bus.py`
+  - Mappers for persistence ↔ domain — `mappers/order_mapper.py`
+  - Alembic migration scaffolding when DB option is chosen
 
 - Interface (delivery adapters)
-    - FastAPI controllers / routers — `interface/http/controllers/orders_controller.py`
-    - Pydantic request/response schemas — `interface/http/schemas.py`
-    - App factory / TestClient wiring for local tests — `interface/main.py`
+  - FastAPI controllers / routers — `interface/http/controllers/orders_controller.py`
+  - Pydantic request/response schemas — `interface/http/schemas.py`
+  - App factory / TestClient wiring for local tests — `interface/main.py`
 
 - Tests & docs
-    - Unit tests with `pytest` + `pytest-asyncio`
-    - Integration tests using in-memory adapters or optional Supabase dev stack
-    - `README.md`, `docs/traceability.md`, and `project.json` (Nx metadata)
+  - Unit tests with `pytest` + `pytest-asyncio`
+  - Integration tests using in-memory adapters or optional Supabase dev stack
+  - `README.md`, `docs/traceability.md`, and `project.json` (Nx metadata)
 
 ## Sample scaffolded file tree for an `orders` domain
 
@@ -121,37 +121,37 @@ When a workspace needs multiple domains, duplicate this structure under `libs/{d
 ## Python-specific patterns, conventions and tools
 
 - Protocols & typing
-    - Ports are `typing.Protocol` classes in `application/ports/` so infrastructure implements them without import cycles.
+  - Ports are `typing.Protocol` classes in `application/ports/` so infrastructure implements them without import cycles.
 
 - Async-first patterns
-    - Use `async def` / `await` for use-cases and adapters where IO is expected.
-    - UnitOfWork scaffolds as an async context manager (`__aenter__/__aexit__`) by default so use-cases call `async with`. If a manual `begin` / `commit` / `rollback` workflow is required, choose the “manual transaction mode” answer in the Python generator prompts (see `generators/python-app/schema.json`) to switch templates.
+  - Use `async def` / `await` for use-cases and adapters where IO is expected.
+  - UnitOfWork scaffolds as an async context manager (`__aenter__/__aexit__`) by default so use-cases call `async with`. If a manual `begin` / `commit` / `rollback` workflow is required, choose the “manual transaction mode” answer in the Python generator prompts (see `generators/python-app/schema.json`) to switch templates.
 
 - Pydantic for DTOs & validation
-    - Incoming/outgoing schemas are `pydantic.BaseModel` classes under `interface/*/schemas`.
-    - FastAPI `Depends` is used to inject use-cases and adapters in route handlers.
+  - Incoming/outgoing schemas are `pydantic.BaseModel` classes under `interface/*/schemas`.
+  - FastAPI `Depends` is used to inject use-cases and adapters in route handlers.
 
 - FastAPI wiring
-    - `main.py` provides an application factory to make TestClient-based tests simple and to support containerized entrypoints.
+  - `main.py` provides an application factory to make TestClient-based tests simple and to support containerized entrypoints.
 
 - Persistence skeletons
-    - SQLAlchemy (sync) or SQLAlchemy’s async dialect paired with the `asyncpg` driver are scaffolded based on template choices.
-    - Supabase adapters are provided as a skeleton with TODOs and mapping helpers.
+  - SQLAlchemy (sync) or SQLAlchemy’s async dialect paired with the `asyncpg` driver are scaffolded based on template choices.
+  - Supabase adapters are provided as a skeleton with TODOs and mapping helpers.
 
 - Event bus & async queues
-    - `in_memory_event_bus.py` uses `asyncio.Queue` and `asyncio.create_task` for handler execution; Kafka/Rabbit adapters are skeletons.
+  - `in_memory_event_bus.py` uses `asyncio.Queue` and `asyncio.create_task` for handler execution; Kafka/Rabbit adapters are skeletons.
 
 - Testing stack
-    - `pytest` + `pytest-asyncio` for async tests.
-    - `conftest.py` fixtures for in-memory adapters are generated to make tests deterministic and fast.
+  - `pytest` + `pytest-asyncio` for async tests.
+  - `conftest.py` fixtures for in-memory adapters are generated to make tests deterministic and fast.
 
 ## Typical file contracts (examples)
 
 - `application/ports/unit_of_work.py`
-    - Defines a `Protocol` for UnitOfWork with `async def __aenter__/__aexit__` or `async def begin()/commit()/rollback()` and resource registration APIs.
+  - Defines a `Protocol` for UnitOfWork with `async def __aenter__/__aexit__` or `async def begin()/commit()/rollback()` and resource registration APIs.
 
 - `infrastructure/adapters/in_memory/in_memory_uow.py`
-    - Implements UnitOfWork as an async context manager so tests call use-cases like:
+  - Implements UnitOfWork as an async context manager so tests call use-cases like:
 
 ```py
 async with InMemoryUnitOfWork() as uow:
@@ -159,17 +159,17 @@ async with InMemoryUnitOfWork() as uow:
 ```
 
 - `interface/http/controllers/orders_controller.py`
-    - FastAPI APIRouter that maps pydantic request models → application DTOs → use-cases and converts domain exceptions into proper problem responses.
+  - FastAPI APIRouter that maps pydantic request models → application DTOs → use-cases and converts domain exceptions into proper problem responses.
 
 ## Testing, CI and dev DX
 
 - Tests
-    - Unit tests for domain & application layers; integration tests for transactional boundaries and adapter contracts.
-    - Use in-memory adapters for fast CI; optional Supabase dev stack for deeper integration tests (wired via `just` targets in generated projects).
+  - Unit tests for domain & application layers; integration tests for transactional boundaries and adapter contracts.
+  - Use in-memory adapters for fast CI; optional Supabase dev stack for deeper integration tests (wired via `just` targets in generated projects).
 
 - Tooling
-    - `pyproject.toml` for packaging and dependency pins; `requirements-dev.txt` for developer tools.
-    - `project.json` includes Nx targets for `test`, `lint`, and `build` to keep generated projects consistent with workspace conventions.
+  - `pyproject.toml` for packaging and dependency pins; `requirements-dev.txt` for developer tools.
+  - `project.json` includes Nx targets for `test`, `lint`, and `build` to keep generated projects consistent with workspace conventions.
 
 ## Extensibility & guidance
 

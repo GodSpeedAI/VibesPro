@@ -428,28 +428,28 @@ import { promisify } from 'util';
 const execAsync = promisify(exec);
 
 interface Specification {
-    id: string;
-    spec_type: string;
-    title: string;
-    content: string;
+  id: string;
+  spec_type: string;
+  title: string;
+  content: string;
 }
 
 /**
  * Query temporal database for specifications.
  */
 export async function querySpecs(specType?: string): Promise<Specification[]> {
-    const cmd = specType ? `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --type ${specType}` : `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --all`;
+  const cmd = specType ? `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --type ${specType}` : `cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --all`;
 
-    const { stdout } = await execAsync(cmd);
-    return JSON.parse(stdout);
+  const { stdout } = await execAsync(cmd);
+  return JSON.parse(stdout);
 }
 
 /**
  * Get architectural decisions.
  */
 export async function getDecisions(): Promise<any[]> {
-    const { stdout } = await execAsync('cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --decisions');
-    return JSON.parse(stdout);
+  const { stdout } = await execAsync('cargo run --manifest-path temporal_db/Cargo.toml --bin query -- --decisions');
+  return JSON.parse(stdout);
 }
 ```
 

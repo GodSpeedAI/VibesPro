@@ -256,19 +256,19 @@ const EXIT_ERROR = 1;
 const EXIT_USAGE = 2;
 
 function main(args) {
-    try {
-        // Script logic
-        console.log('✅ Success');
-        process.exit(EXIT_SUCCESS);
-    } catch (error) {
-        console.error('❌ Error:', error.message);
-        process.exit(EXIT_ERROR);
-    }
+  try {
+    // Script logic
+    console.log('✅ Success');
+    process.exit(EXIT_SUCCESS);
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    process.exit(EXIT_ERROR);
+  }
 }
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-    main(process.argv.slice(2));
+  main(process.argv.slice(2));
 }
 ```
 
@@ -766,7 +766,7 @@ Scripts run in GitHub Actions workflows:
 
 - name: Measure tokens
   run: |
-      bash scripts/measure_tokens.sh .github/prompts/*.prompt.md
+    bash scripts/measure_tokens.sh .github/prompts/*.prompt.md
 ```
 
 ### With Nx
@@ -775,14 +775,14 @@ Scripts can be Nx targets:
 
 ```json
 {
-    "targets": {
-        "doctor": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "bash scripts/doctor.sh"
-            }
-        }
+  "targets": {
+    "doctor": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bash scripts/doctor.sh"
+      }
     }
+  }
 }
 ```
 

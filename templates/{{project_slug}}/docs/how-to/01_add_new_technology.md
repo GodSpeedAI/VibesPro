@@ -18,11 +18,11 @@ This guide explains how to add a new dependency, library, or tool to the project
 # techstack.yaml
 
 utility_helper_dependencies:
-    # ... other sections
-    data_processing:
-        - pandas # structured data manipulation (optional)
-        - pyarrow # columnar data + interoperability
-        - polars # new, fast data manipulation library
+  # ... other sections
+  data_processing:
+    - pandas # structured data manipulation (optional)
+    - pyarrow # columnar data + interoperability
+    - polars # new, fast data manipulation library
 ```
 
 ## Step 2: Preview the Changes (Recommended)

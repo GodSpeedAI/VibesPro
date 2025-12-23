@@ -60,12 +60,12 @@ Open `.sops.yaml` and add your public key under the `age` recipients. The file a
 
 ```yaml
 creation_rules:
-    - path_regex: '^\.secrets\.env\.sops$'
-      encrypted_regex: '^(.*)$'
-      key_groups:
-          - age:
-                - 'age1...existing-team-key'
-                - 'age1...your_public_key_here'
+  - path_regex: '^\.secrets\.env\.sops$'
+    encrypted_regex: '^(.*)$'
+    key_groups:
+      - age:
+          - 'age1...existing-team-key'
+          - 'age1...your_public_key_here'
 ```
 
 Save the file. From now on, `sops` knows that `.secrets.env.sops` should be encrypted for everyone listed.

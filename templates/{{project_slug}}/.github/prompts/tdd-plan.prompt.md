@@ -19,22 +19,22 @@ description: 'Produce a VibePro-aligned TDD implementation plan grounded in spec
 When this prompt is invoked under the `tdd-plan` chatmode:
 
 1. **Read Inputs**
-    - `docs/specs/adr.md`, `docs/specs/prd.md`, `docs/specs/sds.md`, `docs/specs/technical-specifications.md`, and `docs/specs/traceability-matrix.md`.
-    - If any are missing, note them under _Phase 0 → Missing Inputs_.
+   - `docs/specs/adr.md`, `docs/specs/prd.md`, `docs/specs/sds.md`, `docs/specs/technical-specifications.md`, and `docs/specs/traceability-matrix.md`.
+   - If any are missing, note them under _Phase 0 → Missing Inputs_.
 
 2. **Generate Output**
-    - Produce a full **VibePro-aligned TDD Implementation Plan**.
-    - Follow the section order and formatting below.
-    - Replace “generator creation” steps with **Generator Specification Plans** that conform to `GENERATOR_SPEC.md`.
-    - Embed **MCP Assistance** notes within relevant tasks to indicate how `context7`, `ref`, and `exa` should be used.
+   - Produce a full **VibePro-aligned TDD Implementation Plan**.
+   - Follow the section order and formatting below.
+   - Replace “generator creation” steps with **Generator Specification Plans** that conform to `GENERATOR_SPEC.md`.
+   - Embed **MCP Assistance** notes within relevant tasks to indicate how `context7`, `ref`, and `exa` should be used.
 
 3. **Execution Conventions**
-    - All commands use VibePro’s workflow:
-        - `just ai-context-bundle`
-        - `pnpm nx <target> <project>`
-        - `pnpm nx run-many -t test -p <projects>`
-        - `just ai-validate`
-    - Reference applicable `.github/instructions/*.instructions.md` for lint, test, and security policies.
+   - All commands use VibePro’s workflow:
+     - `just ai-context-bundle`
+     - `pnpm nx <target> <project>`
+     - `pnpm nx run-many -t test -p <projects>`
+     - `just ai-validate`
+   - Reference applicable `.github/instructions/*.instructions.md` for lint, test, and security policies.
 
 ---
 

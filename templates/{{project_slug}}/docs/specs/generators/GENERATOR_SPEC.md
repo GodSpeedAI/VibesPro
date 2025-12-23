@@ -74,15 +74,15 @@ tools/vibepro/
 
 ```json
 {
-    "$schema": "https://json-schema.org/schema",
-    "$id": "MyOrg<Type>",
-    "type": "object",
-    "properties": {
-        "name": { "type": "string" },
-        "type": { "type": "string", "enum": ["ui", "service", "util"] },
-        "directory": { "type": "string" }
-    },
-    "required": ["name", "type"]
+  "$schema": "https://json-schema.org/schema",
+  "$id": "MyOrg<Type>",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "type": { "type": "string", "enum": ["ui", "service", "util"] },
+    "directory": { "type": "string" }
+  },
+  "required": ["name", "type"]
 }
 ```
 
@@ -167,8 +167,8 @@ import { componentGenerator } from '../component/generator';
 import { serviceGenerator } from '../service/generator';
 
 export async function featureGenerator(tree: Tree, schema: any) {
-    await componentGenerator(tree, { name: schema.name, style: 'css' });
-    await serviceGenerator(tree, { name: schema.name, port: 3000 });
+  await componentGenerator(tree, { name: schema.name, style: 'css' });
+  await serviceGenerator(tree, { name: schema.name, port: 3000 });
 }
 ```
 
@@ -187,9 +187,9 @@ Conflict resolution code (if applicable):
 
 ```typescript
 if (tree.exists(targetPath)) {
-    // Strategy: Skip with warning
-    console.warn(`File ${targetPath} already exists, skipping`);
-    return;
+  // Strategy: Skip with warning
+  console.warn(`File ${targetPath} already exists, skipping`);
+  return;
 }
 ```
 

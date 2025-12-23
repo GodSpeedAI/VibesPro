@@ -125,34 +125,34 @@ just supabase-stop
 
 1. Create a new migration:
 
-    ```bash
-    just db-migration-create add_user_roles
-    ```
+   ```bash
+   just db-migration-create add_user_roles
+   ```
 
 2. Edit the migration file in `supabase/migrations/`:
 
-    ```sql
-    -- Migration: add_user_roles
-    ALTER TABLE public.users ADD COLUMN role VARCHAR(20) DEFAULT 'member';
-    ```
+   ```sql
+   -- Migration: add_user_roles
+   ALTER TABLE public.users ADD COLUMN role VARCHAR(20) DEFAULT 'member';
+   ```
 
 3. Apply the migration:
 
-    ```bash
-    just db-migrate
-    ```
+   ```bash
+   just db-migrate
+   ```
 
 4. Regenerate types:
 
-    ```bash
-    just gen-types
-    ```
+   ```bash
+   just gen-types
+   ```
 
 5. Commit both migration and types:
-    ```bash
-    git add supabase/migrations/ libs/shared/types/ libs/shared/types-py/
-    git commit -m "feat(db): add user roles field"
-    ```
+   ```bash
+   git add supabase/migrations/ libs/shared/types/ libs/shared/types-py/
+   git commit -m "feat(db): add user roles field"
+   ```
 
 ### 2. Testing Schema Changes
 
@@ -179,11 +179,11 @@ import { Users, Database } from '@vibespro/shared-types';
 
 // Use the interface directly
 const user: Users = {
-    id: 'uuid-here',
-    email: 'test@example.com',
-    is_active: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+  id: 'uuid-here',
+  email: 'test@example.com',
+  is_active: true,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
 };
 
 // Use the Database namespace for Supabase client patterns
@@ -215,11 +215,11 @@ The `.github/workflows/type-safety.yml` workflow validates:
 1. **TypeScript Type Check**: Compiles TypeScript with strict mode
 2. **Python Type Check**: Runs mypy with strict mode
 3. **Supabase Integration**:
-    - Starts PostgreSQL container
-    - Applies migrations
-    - Generates types from live database
-    - Compares with committed types
-    - Runs type safety tests
+   - Starts PostgreSQL container
+   - Applies migrations
+   - Generates types from live database
+   - Compares with committed types
+   - Runs type safety tests
 
 ## Using Supabase Studio
 

@@ -18,26 +18,26 @@ description: 'Classify and draft generator specifications for feature slices, ro
 When invoked under `generator-spec` chatmode:
 
 1. **Classify Request**
-    - Decide among **feature-slice**, **route-contract**, or **data-access** using the chatmode’s classification rules.
-    - If ambiguous, choose the **most constrained** category (route with explicit path → route-contract; persistence-heavy → data-access; else feature-slice).
-    - Note the classification decision in the output.
+   - Decide among **feature-slice**, **route-contract**, or **data-access** using the chatmode’s classification rules.
+   - If ambiguous, choose the **most constrained** category (route with explicit path → route-contract; persistence-heavy → data-access; else feature-slice).
+   - Note the classification decision in the output.
 
 2. **Produce a Generator Specification (spec-first)**
-    - Use the matching template sections and headings from `docs/specs/generators/<type>.generator.spec.md`.
-    - Mirror the canonical structure defined in `docs/specs/generators/GENERATOR_SPEC.md`.
-    - Fill concrete fields from the request: names, scope, paths, options, test focus, acceptance criteria.
-    - Keep **placeholders** where inputs are unknown, clearly marked `TODO:`.
+   - Use the matching template sections and headings from `docs/specs/generators/<type>.generator.spec.md`.
+   - Mirror the canonical structure defined in `docs/specs/generators/GENERATOR_SPEC.md`.
+   - Fill concrete fields from the request: names, scope, paths, options, test focus, acceptance criteria.
+   - Keep **placeholders** where inputs are unknown, clearly marked `TODO:`.
 
 3. **Embed VibePro Execution Conventions**
-    - Start with `just ai-context-bundle`.
-    - Show how Nx targets will run (`pnpm nx ...`), and phase gate with `just ai-validate`.
-    - Include tags for module-boundary linting.
+   - Start with `just ai-context-bundle`.
+   - Show how Nx targets will run (`pnpm nx ...`), and phase gate with `just ai-validate`.
+   - Include tags for module-boundary linting.
 
 4. **MCP Assistance (directive-only)**
-    - Add a section describing how to use:
-        - `context7` for grounding (list the doc snippets to pull)
-        - `ref` for seams/duplication analysis across libs/apps
-        - `exa` for 3–5 relevant public examples/specs to review
+   - Add a section describing how to use:
+     - `context7` for grounding (list the doc snippets to pull)
+     - `ref` for seams/duplication analysis across libs/apps
+     - `exa` for 3–5 relevant public examples/specs to review
 
 ---
 

@@ -38,8 +38,8 @@ export OPENAI_API_KEY=<oauth_token>
 import { AIContextManager } from './context-manager.js';
 
 const manager = new AIContextManager({
-    maxTokens: 8000,
-    reservedTokens: 2000,
+  maxTokens: 8000,
+  reservedTokens: 2000,
 });
 
 const context = await manager.getOptimalContext('Create user entity');
@@ -51,13 +51,13 @@ const context = await manager.getOptimalContext('Create user entity');
 import { AIContextManager } from './context-manager.js';
 
 const manager = new AIContextManager({
-    maxTokens: 8000,
-    reservedTokens: 2000,
-    aider: {
-        enabled: true,
-        fallbackOrder: ['openai', 'openrouter', 'ollama'],
-        model: 'gpt-4o', // optional, uses default per backend
-    },
+  maxTokens: 8000,
+  reservedTokens: 2000,
+  aider: {
+    enabled: true,
+    fallbackOrder: ['openai', 'openrouter', 'ollama'],
+    model: 'gpt-4o', // optional, uses default per backend
+  },
 });
 
 const context = await manager.getOptimalContext('Create user entity');
@@ -82,30 +82,30 @@ Secrets are managed via `.secrets.env.sops` and auto-loaded by direnv. **Never c
 
 1. **Edit secrets file:**
 
-    ```bash
-    sops .secrets.env.sops
-    ```
+   ```bash
+   sops .secrets.env.sops
+   ```
 
 2. **Add your preferred backend credentials:**
 
-    ```env
-    # OpenAI (default)
-    OPENAI_API_KEY=sk-...
+   ```env
+   # OpenAI (default)
+   OPENAI_API_KEY=sk-...
 
-    # Optional: Custom endpoint (GitHub Copilot, LiteLLM, etc.)
-    OPENAI_API_BASE=https://api.githubcopilot.com
+   # Optional: Custom endpoint (GitHub Copilot, LiteLLM, etc.)
+   OPENAI_API_BASE=https://api.githubcopilot.com
 
-    # OpenRouter (alternative)
-    OPENROUTER_API_KEY=sk-or-...
+   # OpenRouter (alternative)
+   OPENROUTER_API_KEY=sk-or-...
 
-    # Optional: Override model for any backend
-    AIDER_MODEL=gpt-4o
-    ```
+   # Optional: Override model for any backend
+   AIDER_MODEL=gpt-4o
+   ```
 
 3. **Reload environment:**
-    ```bash
-    direnv allow
-    ```
+   ```bash
+   direnv allow
+   ```
 
 ### Ollama (Local)
 

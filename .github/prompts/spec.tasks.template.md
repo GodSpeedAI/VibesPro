@@ -36,110 +36,110 @@ description: 'Template for generating numbered task lists from implementation pl
 #### Research & Analysis Tasks
 
 1. **TASK-001:** Research [specific topic or technology]
-    - **Description:** [Detailed description of research needed]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [Specific deliverable or outcome]
-        - [ ] [Verification method]
+   - **Description:** [Detailed description of research needed]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [Specific deliverable or outcome]
+     - [ ] [Verification method]
 
 2. **TASK-002:** Analyze [specific requirement or constraint]
-    - **Description:** [Detailed analysis description]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [Specific deliverable or outcome]
-        - [ ] [Verification method]
+   - **Description:** [Detailed analysis description]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [Specific deliverable or outcome]
+     - [ ] [Verification method]
 
 #### Design & Architecture Tasks
 
 3. **TASK-003:** Design [component or system architecture]
-    - **Description:** [Design approach and scope]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [Design documentation created]
-        - [ ] [Architecture review completed]
-        - [ ] [Stakeholder approval obtained]
+   - **Description:** [Design approach and scope]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [Design documentation created]
+     - [ ] [Architecture review completed]
+     - [ ] [Stakeholder approval obtained]
 
 4. **TASK-004:** Create [specific design artifact]
-    - **Description:** [Design artifact details]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [Design artifact completed]
-        - [ ] [Review feedback incorporated]
+   - **Description:** [Design artifact details]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [Design artifact completed]
+     - [ ] [Review feedback incorporated]
 
 #### Development Tasks
 
 5. **TASK-005:** Implement [specific feature or component]
-    - **Description:** [Implementation details and scope]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [Code implemented]
-        - [ ] [Unit tests written and passing]
-        - [ ] [Code review completed]
-        - [ ] [Integration with existing system]
+   - **Description:** [Implementation details and scope]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [Code implemented]
+     - [ ] [Unit tests written and passing]
+     - [ ] [Code review completed]
+     - [ ] [Integration with existing system]
 
 6. **TASK-006:** Develop [specific API or endpoint]
-    - **Description:** [API development details]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [API endpoint implemented]
-        - [ ] [API documentation created]
-        - [ ] [Integration tests passing]
-        - [ ] [Performance benchmarks met]
+   - **Description:** [API development details]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [API endpoint implemented]
+     - [ ] [API documentation created]
+     - [ ] [Integration tests passing]
+     - [ ] [Performance benchmarks met]
 
 #### Testing & Quality Tasks
 
 7. **TASK-007:** Write [specific test type] tests
-    - **Description:** [Testing scope and approach]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [Test coverage achieved]
-        - [ ] [All tests passing]
-        - [ ] [Test documentation created]
+   - **Description:** [Testing scope and approach]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [Test coverage achieved]
+     - [ ] [All tests passing]
+     - [ ] [Test documentation created]
 
 8. **TASK-008:** Perform [specific testing activity]
-    - **Description:** [Testing activity details]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [Testing completed]
-        - [ ] [Defects documented and tracked]
-        - [ ] [Quality metrics met]
+   - **Description:** [Testing activity details]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [Testing completed]
+     - [ ] [Defects documented and tracked]
+     - [ ] [Quality metrics met]
 
 #### Documentation Tasks
 
 9. **TASK-009:** Create [specific documentation]
-    - **Description:** [Documentation scope and content]
-    - **Estimate:** [Time estimate]
-    - **Dependencies:** [Related tasks]
-    - **Owner:** [Assigned team member]
-    - **Status:** [Not Started | In Progress | Completed | Blocked]
-    - **Acceptance Criteria:**
-        - [ ] [Documentation created]
-        - [ ] [Documentation reviewed]
-        - [ ] [Documentation published]
+   - **Description:** [Documentation scope and content]
+   - **Estimate:** [Time estimate]
+   - **Dependencies:** [Related tasks]
+   - **Owner:** [Assigned team member]
+   - **Status:** [Not Started | In Progress | Completed | Blocked]
+   - **Acceptance Criteria:**
+     - [ ] [Documentation created]
+     - [ ] [Documentation reviewed]
+     - [ ] [Documentation published]
 
 10. **TASK-010:** Update [existing documentation]
 
@@ -149,9 +149,9 @@ description: 'Template for generating numbered task lists from implementation pl
 - **Owner:** [Assigned team member]
 - **Status:** [Not Started | In Progress | Completed | Blocked]
 - **Acceptance Criteria:**
-    - [ ] [Documentation updated]
-    - [ ] [Changes reviewed]
-    - [ ] [Documentation synchronized]
+  - [ ] [Documentation updated]
+  - [ ] [Changes reviewed]
+  - [ ] [Documentation synchronized]
 
 #### Deployment & Release Tasks
 
@@ -163,9 +163,9 @@ description: 'Template for generating numbered task lists from implementation pl
 - **Owner:** [Assigned team member]
 - **Status:** [Not Started | In Progress | Completed | Blocked]
 - **Acceptance Criteria:**
-    - [ ] [Environment configured]
-    - [ ] [Infrastructure validated]
-    - [ ] [Deployment scripts ready]
+  - [ ] [Environment configured]
+  - [ ] [Infrastructure validated]
+  - [ ] [Deployment scripts ready]
 
 12. **TASK-012:** Deploy [specific component or feature]
 
@@ -175,10 +175,10 @@ description: 'Template for generating numbered task lists from implementation pl
 - **Owner:** [Assigned team member]
 - **Status:** [Not Started | In Progress | Completed | Blocked]
 - **Acceptance Criteria:**
-    - [ ] [Deployment completed]
-    - [ ] [Health checks passing]
-    - [ ] [Monitoring active]
-    - [ ] [Rollback plan tested]
+  - [ ] [Deployment completed]
+  - [ ] [Health checks passing]
+  - [ ] [Monitoring active]
+  - [ ] [Rollback plan tested]
 
 #### Review & Approval Tasks
 
@@ -190,9 +190,9 @@ description: 'Template for generating numbered task lists from implementation pl
 - **Owner:** [Assigned team member]
 - **Status:** [Not Started | In Progress | Completed | Blocked]
 - **Acceptance Criteria:**
-    - [ ] [Review completed]
-    - [ ] [Feedback documented]
-    - [ ] [Action items tracked]
+  - [ ] [Review completed]
+  - [ ] [Feedback documented]
+  - [ ] [Action items tracked]
 
 14. **TASK-014:** Obtain [specific approval]
 
@@ -202,9 +202,9 @@ description: 'Template for generating numbered task lists from implementation pl
 - **Owner:** [Assigned team member]
 - **Status:** [Not Started | In Progress | Completed | Blocked]
 - **Acceptance Criteria:**
-    - [ ] [Approval obtained]
-    - [ ] [Approval documented]
-    - [ ] [Stakeholders notified]
+  - [ ] [Approval obtained]
+  - [ ] [Approval documented]
+  - [ ] [Stakeholders notified]
 
 ### 3. Task Dependencies
 

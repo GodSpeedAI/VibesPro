@@ -85,60 +85,60 @@ class HexArchitectureExtension:
 # copier.yml with advanced features
 _templates_suffix: .jinja
 _envops:
-    block_start_string: '{%'
-    block_end_string: '%}'
+  block_start_string: '{%'
+  block_end_string: '%}'
 
 _jinja_extensions:
-    - extensions.hex_architecture:HexArchitectureExtension
-    - extensions.ai_context:AIContextExtension
+  - extensions.hex_architecture:HexArchitectureExtension
+  - extensions.ai_context:AIContextExtension
 
 # Template variables with validation
 project_slug:
-    type: str
-    validator: '{% if not project_slug.isidentifier() %}Invalid project slug{% endif %}'
-    help: 'Python-compatible project identifier'
+  type: str
+  validator: '{% if not project_slug.isidentifier() %}Invalid project slug{% endif %}'
+  help: 'Python-compatible project identifier'
 
 architecture_type:
-    type: str
-    choices:
-        - hexagonal-monorepo
-        - ai-platform
-        - hybrid
-    default: hybrid
-    help: 'Choose the architectural pattern'
+  type: str
+  choices:
+    - hexagonal-monorepo
+    - ai-platform
+    - hybrid
+  default: hybrid
+  help: 'Choose the architectural pattern'
 
 app_frameworks:
-    type: str
-    choices:
-        - next
-        - remix
-        - expo
-        - all
-    default: all
-    when: "{{ architecture_type in ['hexagonal-monorepo', 'hybrid'] }}"
+  type: str
+  choices:
+    - next
+    - remix
+    - expo
+    - all
+  default: all
+  when: "{{ architecture_type in ['hexagonal-monorepo', 'hybrid'] }}"
 
 ai_features:
-    type: bool
-    default: true
-    help: 'Enable AI-assisted development features'
+  type: bool
+  default: true
+  help: 'Enable AI-assisted development features'
 
 python_version:
-    type: str
-    choices:
-        - '3.11'
-        - '3.12'
-        - '3.13'
-    default: '3.12'
+  type: str
+  choices:
+    - '3.11'
+    - '3.12'
+    - '3.13'
+  default: '3.12'
 
 # Advanced conditional generation
 _skip_if_exists:
-    - 'pyproject.toml'
-    - 'package.json'
+  - 'pyproject.toml'
+  - 'package.json'
 
 _tasks:
-    - 'uv sync'
-    - 'pnpm install'
-    - 'just setup-dev-environment'
+  - 'uv sync'
+  - 'pnpm install'
+  - 'just setup-dev-environment'
 ```
 
 ## TS-MERGE-002: AI Context Management System
@@ -158,71 +158,71 @@ import tsink from 'tsink-node'; // Node.js bindings for tsink
 import { encoding_for_model } from 'tiktoken';
 
 interface ContextSource {
-    readonly id: string;
-    readonly priority: number;
-    readonly tokenCost: number;
-    getContent(): Promise<string>;
+  readonly id: string;
+  readonly priority: number;
+  readonly tokenCost: number;
+  getContent(): Promise<string>;
 }
 
 interface TokenBudget {
-    readonly total: number;
-    readonly allocated: Map<string, number>;
-    readonly remaining: number;
+  readonly total: number;
+  readonly allocated: Map<string, number>;
+  readonly remaining: number;
 }
 
 export class AIContextManager {
-    private db: tsink.Database;
-    private tokenizer = encoding_for_model('gpt-4');
-    private cache = new Map<string, ContextSource>();
+  private db: tsink.Database;
+  private tokenizer = encoding_for_model('gpt-4');
+  private cache = new Map<string, ContextSource>();
 
-    constructor(
-        private budgetConfig: TokenBudget,
-        private sources: ContextSource[],
-    ) {
-        this.initializeDatabase();
-    }
+  constructor(
+    private budgetConfig: TokenBudget,
+    private sources: ContextSource[],
+  ) {
+    this.initializeDatabase();
+  }
 
-    async getOptimalContext(task: string): Promise<string> {
-        // 1. Analyze task to determine context needs
-        const taskAnalysis = await this.analyzeTask(task);
+  async getOptimalContext(task: string): Promise<string> {
+    // 1. Analyze task to determine context needs
+    const taskAnalysis = await this.analyzeTask(task);
 
-        // 2. Score and rank available context sources
-        const rankedSources = await this.rankContextSources(taskAnalysis, this.sources);
+    // 2. Score and rank available context sources
+    const rankedSources = await this.rankContextSources(taskAnalysis, this.sources);
 
-        // 3. Select sources within token budget
-        const selectedSources = this.selectWithinBudget(rankedSources, this.budgetConfig);
+    // 3. Select sources within token budget
+    const selectedSources = this.selectWithinBudget(rankedSources, this.budgetConfig);
 
-        // 4. Compose final context
-        return this.composeContext(selectedSources);
-    }
+    // 4. Compose final context
+    return this.composeContext(selectedSources);
+  }
 
-    private async analyzeTask(task: string): Promise<TaskAnalysis> {
-        const tokens = this.tokenizer.encode(task);
+  private async analyzeTask(task: string): Promise<TaskAnalysis> {
+    const tokens = this.tokenizer.encode(task);
+
+    return {
+      taskType: this.classifyTask(task),
+      complexity: this.assessComplexity(tokens),
+      domains: this.extractDomains(task),
+      requiredPatterns: this.identifyPatterns(task),
+    };
+  }
+
+  private async rankContextSources(analysis: TaskAnalysis, sources: ContextSource[]): Promise<RankedSource[]> {
+    const rankings = await Promise.all(
+      sources.map(async (source) => {
+        const relevance = await this.calculateRelevance(source, analysis);
+        const recency = await this.getRecencyScore(source);
+        const success = await this.getHistoricalSuccess(source, analysis);
 
         return {
-            taskType: this.classifyTask(task),
-            complexity: this.assessComplexity(tokens),
-            domains: this.extractDomains(task),
-            requiredPatterns: this.identifyPatterns(task),
+          source,
+          score: relevance * 0.5 + recency * 0.2 + success * 0.3,
         };
-    }
+      }),
+    );
 
-    private async rankContextSources(analysis: TaskAnalysis, sources: ContextSource[]): Promise<RankedSource[]> {
-        const rankings = await Promise.all(
-            sources.map(async (source) => {
-                const relevance = await this.calculateRelevance(source, analysis);
-                const recency = await this.getRecencyScore(source);
-                const success = await this.getHistoricalSuccess(source, analysis);
-
-                return {
-                    source,
-                    score: relevance * 0.5 + recency * 0.2 + success * 0.3,
-                };
-            }),
-        );
-
-        return rankings.sort((a, b) => b.score - a.score);
-    }
+    return rankings.sort((a, b) => b.score - a.score);
+  }
 }
 ```
 
@@ -755,67 +755,67 @@ import { AIContextManager } from '../../ai/context-manager';
 import { ArchitecturalValidator } from '../../ai/validator';
 
 interface AIValidateExecutorOptions {
-    files?: string[];
-    rules?: string[];
-    aiModel?: string;
-    strictMode?: boolean;
+  files?: string[];
+  rules?: string[];
+  aiModel?: string;
+  strictMode?: boolean;
 }
 
 export default async function runExecutor(options: AIValidateExecutorOptions, context: ExecutorContext): Promise<{ success: boolean }> {
-    const projectName = context.projectName!;
-    const projectConfig = context.workspace.projects[projectName];
+  const projectName = context.projectName!;
+  const projectConfig = context.workspace.projects[projectName];
 
-    logger.info(`Running AI validation for ${projectName}`);
+  logger.info(`Running AI validation for ${projectName}`);
 
-    try {
-        // Initialize AI components
-        const contextManager = new AIContextManager({
-            projectPath: projectConfig.root,
-            tokenBudget: 8000,
-            prioritizeArchitecture: true,
-        });
+  try {
+    // Initialize AI components
+    const contextManager = new AIContextManager({
+      projectPath: projectConfig.root,
+      tokenBudget: 8000,
+      prioritizeArchitecture: true,
+    });
 
-        const validator = new ArchitecturalValidator(contextManager);
+    const validator = new ArchitecturalValidator(contextManager);
 
-        // Get files to validate
-        const filesToValidate = options.files || (await getProjectFiles(projectConfig.root));
+    // Get files to validate
+    const filesToValidate = options.files || (await getProjectFiles(projectConfig.root));
 
-        // Run AI-enhanced validation
-        const results = await validator.validateFiles(filesToValidate, {
-            rules: options.rules || ['hexagonal-compliance', 'ddd-patterns'],
-            strictMode: options.strictMode || false,
-            aiModel: options.aiModel || 'gpt-4',
-        });
+    // Run AI-enhanced validation
+    const results = await validator.validateFiles(filesToValidate, {
+      rules: options.rules || ['hexagonal-compliance', 'ddd-patterns'],
+      strictMode: options.strictMode || false,
+      aiModel: options.aiModel || 'gpt-4',
+    });
 
-        // Report results
-        if (results.violations.length > 0) {
-            logger.error(`Found ${results.violations.length} violations:`);
-            results.violations.forEach((violation) => {
-                logger.error(`  ${violation.file}:${violation.line} - ${violation.message}`);
-            });
+    // Report results
+    if (results.violations.length > 0) {
+      logger.error(`Found ${results.violations.length} violations:`);
+      results.violations.forEach((violation) => {
+        logger.error(`  ${violation.file}:${violation.line} - ${violation.message}`);
+      });
 
-            return { success: false };
-        }
-
-        if (results.suggestions.length > 0) {
-            logger.info(`AI suggestions (${results.suggestions.length}):`);
-            results.suggestions.forEach((suggestion) => {
-                logger.info(`  ${suggestion.file} - ${suggestion.message}`);
-            });
-        }
-
-        logger.info(`Validation complete: ${filesToValidate.length} files processed`);
-        return { success: true };
-    } catch (error) {
-        logger.error(`AI validation failed: ${error.message}`);
-        return { success: false };
+      return { success: false };
     }
+
+    if (results.suggestions.length > 0) {
+      logger.info(`AI suggestions (${results.suggestions.length}):`);
+      results.suggestions.forEach((suggestion) => {
+        logger.info(`  ${suggestion.file} - ${suggestion.message}`);
+      });
+    }
+
+    logger.info(`Validation complete: ${filesToValidate.length} files processed`);
+    return { success: true };
+  } catch (error) {
+    logger.error(`AI validation failed: ${error.message}`);
+    return { success: false };
+  }
 }
 
 async function getProjectFiles(projectRoot: string): Promise<string[]> {
-    // Implementation to get relevant project files
-    // Focus on source files, ignore build artifacts
-    return [];
+  // Implementation to get relevant project files
+  // Focus on source files, ignore build artifacts
+  return [];
 }
 ```
 
@@ -836,93 +836,93 @@ import { Rule } from 'eslint';
 import { Node } from 'estree';
 
 interface HexRule extends Rule.RuleModule {
-    meta: Rule.RuleMetaData & {
-        hexagonal?: {
-            layer?: 'domain' | 'application' | 'infrastructure' | 'interface';
-            allowedDependencies?: string[];
-        };
+  meta: Rule.RuleMetaData & {
+    hexagonal?: {
+      layer?: 'domain' | 'application' | 'infrastructure' | 'interface';
+      allowedDependencies?: string[];
     };
+  };
 }
 
 const rules: Record<string, HexRule> = {
-    'no-layer-violation': {
-        meta: {
-            type: 'problem',
-            docs: {
-                description: 'Prevent violations of hexagonal architecture layer boundaries',
-                category: 'Architectural',
-            },
-            schema: [],
-        },
-        create(context: Rule.RuleContext): Rule.RuleListener {
-            return {
-                ImportDeclaration(node: Node) {
-                    const currentFile = context.getFilename();
-                    const currentLayer = detectLayer(currentFile);
-                    const importPath = (node as any).source.value;
-                    const importedLayer = detectLayerFromImport(importPath);
-
-                    if (!isValidDependency(currentLayer, importedLayer)) {
-                        context.report({
-                            node,
-                            message: `Layer '${currentLayer}' cannot depend on layer '${importedLayer}'. ` + `Hexagonal architecture violation detected.`,
-                            data: {
-                                currentLayer,
-                                importedLayer,
-                                allowedDependencies: getAllowedDependencies(currentLayer),
-                            },
-                        });
-                    }
-                },
-            };
-        },
+  'no-layer-violation': {
+    meta: {
+      type: 'problem',
+      docs: {
+        description: 'Prevent violations of hexagonal architecture layer boundaries',
+        category: 'Architectural',
+      },
+      schema: [],
     },
+    create(context: Rule.RuleContext): Rule.RuleListener {
+      return {
+        ImportDeclaration(node: Node) {
+          const currentFile = context.getFilename();
+          const currentLayer = detectLayer(currentFile);
+          const importPath = (node as any).source.value;
+          const importedLayer = detectLayerFromImport(importPath);
 
-    'port-adapter-compliance': {
-        meta: {
-            type: 'suggestion',
-            docs: {
-                description: 'Ensure proper port/adapter pattern implementation',
-                category: 'Architectural',
-            },
-            schema: [],
+          if (!isValidDependency(currentLayer, importedLayer)) {
+            context.report({
+              node,
+              message: `Layer '${currentLayer}' cannot depend on layer '${importedLayer}'. ` + `Hexagonal architecture violation detected.`,
+              data: {
+                currentLayer,
+                importedLayer,
+                allowedDependencies: getAllowedDependencies(currentLayer),
+              },
+            });
+          }
         },
-        create(context: Rule.RuleContext): Rule.RuleListener {
-            return {
-                ClassDeclaration(node: Node) {
-                    const className = (node as any).id.name;
-                    const currentFile = context.getFilename();
-
-                    if (isInApplicationLayer(currentFile) && className.endsWith('Port')) {
-                        validatePortInterface(node, context);
-                    }
-
-                    if (isInInfrastructureLayer(currentFile) && className.endsWith('Adapter')) {
-                        validateAdapterImplementation(node, context);
-                    }
-                },
-            };
-        },
+      };
     },
+  },
+
+  'port-adapter-compliance': {
+    meta: {
+      type: 'suggestion',
+      docs: {
+        description: 'Ensure proper port/adapter pattern implementation',
+        category: 'Architectural',
+      },
+      schema: [],
+    },
+    create(context: Rule.RuleContext): Rule.RuleListener {
+      return {
+        ClassDeclaration(node: Node) {
+          const className = (node as any).id.name;
+          const currentFile = context.getFilename();
+
+          if (isInApplicationLayer(currentFile) && className.endsWith('Port')) {
+            validatePortInterface(node, context);
+          }
+
+          if (isInInfrastructureLayer(currentFile) && className.endsWith('Adapter')) {
+            validateAdapterImplementation(node, context);
+          }
+        },
+      };
+    },
+  },
 };
 
 function detectLayer(filePath: string): string {
-    if (filePath.includes('/domain/')) return 'domain';
-    if (filePath.includes('/application/')) return 'application';
-    if (filePath.includes('/infrastructure/')) return 'infrastructure';
-    if (filePath.includes('/apps/')) return 'interface';
-    return 'unknown';
+  if (filePath.includes('/domain/')) return 'domain';
+  if (filePath.includes('/application/')) return 'application';
+  if (filePath.includes('/infrastructure/')) return 'infrastructure';
+  if (filePath.includes('/apps/')) return 'interface';
+  return 'unknown';
 }
 
 function isValidDependency(currentLayer: string, targetLayer: string): boolean {
-    const validDependencies: Record<string, string[]> = {
-        domain: [],
-        application: ['domain'],
-        infrastructure: ['domain', 'application'],
-        interface: ['application'],
-    };
+  const validDependencies: Record<string, string[]> = {
+    domain: [],
+    application: ['domain'],
+    infrastructure: ['domain', 'application'],
+    interface: ['application'],
+  };
 
-    return validDependencies[currentLayer]?.includes(targetLayer) || currentLayer === targetLayer;
+  return validDependencies[currentLayer]?.includes(targetLayer) || currentLayer === targetLayer;
 }
 
 export = { rules };
@@ -937,56 +937,56 @@ import { AIContextManager } from './ai/context-manager';
 import { ArchitecturalValidator } from './ai/validator';
 
 export function activate(context: vscode.ExtensionContext) {
-    const contextManager = new AIContextManager();
-    const validator = new ArchitecturalValidator(contextManager);
+  const contextManager = new AIContextManager();
+  const validator = new ArchitecturalValidator(contextManager);
 
-    // Real-time validation on file save
-    const onSaveDisposable = vscode.workspace.onDidSaveTextDocument(async (document) => {
-        if (isRelevantFile(document.fileName)) {
-            await validateDocument(document, validator);
-        }
-    });
+  // Real-time validation on file save
+  const onSaveDisposable = vscode.workspace.onDidSaveTextDocument(async (document) => {
+    if (isRelevantFile(document.fileName)) {
+      await validateDocument(document, validator);
+    }
+  });
 
-    // Real-time validation on text change (debounced)
-    let validationTimeout: NodeJS.Timeout;
-    const onChangeDisposable = vscode.workspace.onDidChangeTextDocument((event) => {
-        clearTimeout(validationTimeout);
-        validationTimeout = setTimeout(async () => {
-            if (isRelevantFile(event.document.fileName)) {
-                await validateDocument(event.document, validator);
-            }
-        }, 1000); // 1 second debounce
-    });
+  // Real-time validation on text change (debounced)
+  let validationTimeout: NodeJS.Timeout;
+  const onChangeDisposable = vscode.workspace.onDidChangeTextDocument((event) => {
+    clearTimeout(validationTimeout);
+    validationTimeout = setTimeout(async () => {
+      if (isRelevantFile(event.document.fileName)) {
+        await validateDocument(event.document, validator);
+      }
+    }, 1000); // 1 second debounce
+  });
 
-    // Command for AI-assisted generation
-    const generateCommand = vscode.commands.registerCommand('hexagonal.generateComponent', async () => {
-        const componentType = await vscode.window.showQuickPick(['Domain Entity', 'Value Object', 'Domain Service', 'Application Service', 'Port Interface', 'Adapter Implementation']);
+  // Command for AI-assisted generation
+  const generateCommand = vscode.commands.registerCommand('hexagonal.generateComponent', async () => {
+    const componentType = await vscode.window.showQuickPick(['Domain Entity', 'Value Object', 'Domain Service', 'Application Service', 'Port Interface', 'Adapter Implementation']);
 
-        if (componentType) {
-            await generateComponent(componentType, contextManager);
-        }
-    });
+    if (componentType) {
+      await generateComponent(componentType, contextManager);
+    }
+  });
 
-    context.subscriptions.push(onSaveDisposable, onChangeDisposable, generateCommand);
+  context.subscriptions.push(onSaveDisposable, onChangeDisposable, generateCommand);
 }
 
 async function validateDocument(document: vscode.TextDocument, validator: ArchitecturalValidator): Promise<void> {
-    const diagnostics = await validator.validateFile(document.fileName);
+  const diagnostics = await validator.validateFile(document.fileName);
 
-    const vscDiagnostics = diagnostics.map((diag) => {
-        const range = new vscode.Range(diag.line, diag.column, diag.line, diag.column + diag.length);
+  const vscDiagnostics = diagnostics.map((diag) => {
+    const range = new vscode.Range(diag.line, diag.column, diag.line, diag.column + diag.length);
 
-        const diagnostic = new vscode.Diagnostic(range, diag.message, diag.severity === 'error' ? vscode.DiagnosticSeverity.Error : vscode.DiagnosticSeverity.Warning);
+    const diagnostic = new vscode.Diagnostic(range, diag.message, diag.severity === 'error' ? vscode.DiagnosticSeverity.Error : vscode.DiagnosticSeverity.Warning);
 
-        diagnostic.source = 'hexagonal-architecture';
-        return diagnostic;
-    });
+    diagnostic.source = 'hexagonal-architecture';
+    return diagnostic;
+  });
 
-    vscode.languages.setDiagnostics(document.uri, vscDiagnostics);
+  vscode.languages.setDiagnostics(document.uri, vscDiagnostics);
 }
 
 function isRelevantFile(fileName: string): boolean {
-    return fileName.endsWith('.ts') || fileName.endsWith('.tsx') || fileName.endsWith('.py');
+  return fileName.endsWith('.ts') || fileName.endsWith('.tsx') || fileName.endsWith('.py');
 }
 ```
 
@@ -1008,203 +1008,203 @@ import { Project, SourceFile } from 'ts-morph';
 import { generatePythonTypes } from './python-generator';
 
 interface DatabaseSchema {
-    tables: TableSchema[];
-    views: ViewSchema[];
-    functions: FunctionSchema[];
-    types: TypeSchema[];
+  tables: TableSchema[];
+  views: ViewSchema[];
+  functions: FunctionSchema[];
+  types: TypeSchema[];
 }
 
 interface TableSchema {
-    name: string;
-    columns: ColumnSchema[];
-    constraints: ConstraintSchema[];
-    indexes: IndexSchema[];
+  name: string;
+  columns: ColumnSchema[];
+  constraints: ConstraintSchema[];
+  indexes: IndexSchema[];
 }
 
 interface ColumnSchema {
-    name: string;
-    type: string;
-    nullable: boolean;
-    default?: string;
-    description?: string;
+  name: string;
+  type: string;
+  nullable: boolean;
+  default?: string;
+  description?: string;
 }
 
 export class UnifiedTypeGenerator {
-    private project: Project;
-    private supabase: any;
+  private project: Project;
+  private supabase: any;
 
-    constructor(
-        private config: {
-            supabaseUrl: string;
-            supabaseKey: string;
-            outputDir: string;
-        },
-    ) {
-        this.project = new Project({
-            tsConfigFilePath: 'tsconfig.json',
-        });
-        this.supabase = createConnection(config.supabaseUrl, config.supabaseKey);
+  constructor(
+    private config: {
+      supabaseUrl: string;
+      supabaseKey: string;
+      outputDir: string;
+    },
+  ) {
+    this.project = new Project({
+      tsConfigFilePath: 'tsconfig.json',
+    });
+    this.supabase = createConnection(config.supabaseUrl, config.supabaseKey);
+  }
+
+  async generateTypes(): Promise<void> {
+    // 1. Introspect database schema
+    const schema = await this.introspectSchema();
+
+    // 2. Generate TypeScript types
+    const tsTypes = await this.generateTypeScriptTypes(schema);
+
+    // 3. Generate Python types
+    const pyTypes = await this.generatePythonTypes(schema);
+
+    // 4. Validate type parity
+    const validation = await this.validateTypeParity(tsTypes, pyTypes);
+
+    if (!validation.isValid) {
+      throw new Error(`Type parity validation failed: ${validation.errors.join(', ')}`);
     }
 
-    async generateTypes(): Promise<void> {
-        // 1. Introspect database schema
-        const schema = await this.introspectSchema();
+    // 5. Write generated files
+    await this.writeGeneratedFiles(tsTypes, pyTypes);
 
-        // 2. Generate TypeScript types
-        const tsTypes = await this.generateTypeScriptTypes(schema);
+    // 6. Update version tracking
+    await this.updateVersionTracking(schema);
+  }
 
-        // 3. Generate Python types
-        const pyTypes = await this.generatePythonTypes(schema);
+  private async introspectSchema(): Promise<DatabaseSchema> {
+    const { data: tables } = await this.supabase.from('information_schema.tables').select('*').eq('table_schema', 'public');
 
-        // 4. Validate type parity
-        const validation = await this.validateTypeParity(tsTypes, pyTypes);
+    const schema: DatabaseSchema = {
+      tables: [],
+      views: [],
+      functions: [],
+      types: [],
+    };
 
-        if (!validation.isValid) {
-            throw new Error(`Type parity validation failed: ${validation.errors.join(', ')}`);
+    for (const table of tables) {
+      const { data: columns } = await this.supabase.from('information_schema.columns').select('*').eq('table_name', table.table_name).eq('table_schema', 'public');
+
+      schema.tables.push({
+        name: table.table_name,
+        columns: columns.map((col) => ({
+          name: col.column_name,
+          type: col.data_type,
+          nullable: col.is_nullable === 'YES',
+          default: col.column_default,
+          description: col.description,
+        })),
+        constraints: [], // TODO: Implement constraint introspection
+        indexes: [], // TODO: Implement index introspection
+      });
+    }
+
+    return schema;
+  }
+
+  private async generateTypeScriptTypes(schema: DatabaseSchema): Promise<TypeScriptTypes> {
+    const databaseTypesFile = this.project.createSourceFile(`${this.config.outputDir}/database-types.ts`, '', { overwrite: true });
+
+    // Generate table interfaces
+    for (const table of schema.tables) {
+      databaseTypesFile.addInterface({
+        name: `${toPascalCase(table.name)}Row`,
+        properties: table.columns.map((col) => ({
+          name: col.name,
+          type: mapPostgresToTypeScript(col.type),
+          hasQuestionToken: col.nullable,
+        })),
+      });
+
+      // Generate insert/update types
+      databaseTypesFile.addInterface({
+        name: `${toPascalCase(table.name)}Insert`,
+        properties: table.columns
+          .filter((col) => !col.name.endsWith('_at') || col.default) // Exclude auto timestamps
+          .map((col) => ({
+            name: col.name,
+            type: mapPostgresToTypeScript(col.type),
+            hasQuestionToken: col.nullable || !!col.default,
+          })),
+      });
+    }
+
+    // Generate Zod schemas
+    const zodSchemasFile = this.project.createSourceFile(`${this.config.outputDir}/zod-schemas.ts`, '', { overwrite: true });
+
+    zodSchemasFile.addImportDeclaration({
+      moduleSpecifier: 'zod',
+      namedImports: ['z'],
+    });
+
+    for (const table of schema.tables) {
+      const schemaProperties: Record<string, string> = {};
+
+      for (const col of table.columns) {
+        let zodType = mapPostgresToZod(col.type);
+        if (col.nullable) {
+          zodType += '.nullable()';
         }
-
-        // 5. Write generated files
-        await this.writeGeneratedFiles(tsTypes, pyTypes);
-
-        // 6. Update version tracking
-        await this.updateVersionTracking(schema);
-    }
-
-    private async introspectSchema(): Promise<DatabaseSchema> {
-        const { data: tables } = await this.supabase.from('information_schema.tables').select('*').eq('table_schema', 'public');
-
-        const schema: DatabaseSchema = {
-            tables: [],
-            views: [],
-            functions: [],
-            types: [],
-        };
-
-        for (const table of tables) {
-            const { data: columns } = await this.supabase.from('information_schema.columns').select('*').eq('table_name', table.table_name).eq('table_schema', 'public');
-
-            schema.tables.push({
-                name: table.table_name,
-                columns: columns.map((col) => ({
-                    name: col.column_name,
-                    type: col.data_type,
-                    nullable: col.is_nullable === 'YES',
-                    default: col.column_default,
-                    description: col.description,
-                })),
-                constraints: [], // TODO: Implement constraint introspection
-                indexes: [], // TODO: Implement index introspection
-            });
+        if (col.default && !col.nullable) {
+          zodType += '.default()';
         }
+        schemaProperties[col.name] = zodType;
+      }
 
-        return schema;
+      zodSchemasFile.addVariableStatement({
+        declarationKind: 'const',
+        declarations: [
+          {
+            name: `${toCamelCase(table.name)}Schema`,
+            initializer: `z.object(${JSON.stringify(schemaProperties, null, 2)
+              .replace(/"/g, '')
+              .replace(/([a-zA-Z_][a-zA-Z0-9_]*:)/g, '$1 ')}`,
+          },
+        ],
+      });
     }
 
-    private async generateTypeScriptTypes(schema: DatabaseSchema): Promise<TypeScriptTypes> {
-        const databaseTypesFile = this.project.createSourceFile(`${this.config.outputDir}/database-types.ts`, '', { overwrite: true });
+    return {
+      databaseTypes: databaseTypesFile.getFullText(),
+      zodSchemas: zodSchemasFile.getFullText(),
+    };
+  }
 
-        // Generate table interfaces
-        for (const table of schema.tables) {
-            databaseTypesFile.addInterface({
-                name: `${toPascalCase(table.name)}Row`,
-                properties: table.columns.map((col) => ({
-                    name: col.name,
-                    type: mapPostgresToTypeScript(col.type),
-                    hasQuestionToken: col.nullable,
-                })),
-            });
-
-            // Generate insert/update types
-            databaseTypesFile.addInterface({
-                name: `${toPascalCase(table.name)}Insert`,
-                properties: table.columns
-                    .filter((col) => !col.name.endsWith('_at') || col.default) // Exclude auto timestamps
-                    .map((col) => ({
-                        name: col.name,
-                        type: mapPostgresToTypeScript(col.type),
-                        hasQuestionToken: col.nullable || !!col.default,
-                    })),
-            });
-        }
-
-        // Generate Zod schemas
-        const zodSchemasFile = this.project.createSourceFile(`${this.config.outputDir}/zod-schemas.ts`, '', { overwrite: true });
-
-        zodSchemasFile.addImportDeclaration({
-            moduleSpecifier: 'zod',
-            namedImports: ['z'],
-        });
-
-        for (const table of schema.tables) {
-            const schemaProperties: Record<string, string> = {};
-
-            for (const col of table.columns) {
-                let zodType = mapPostgresToZod(col.type);
-                if (col.nullable) {
-                    zodType += '.nullable()';
-                }
-                if (col.default && !col.nullable) {
-                    zodType += '.default()';
-                }
-                schemaProperties[col.name] = zodType;
-            }
-
-            zodSchemasFile.addVariableStatement({
-                declarationKind: 'const',
-                declarations: [
-                    {
-                        name: `${toCamelCase(table.name)}Schema`,
-                        initializer: `z.object(${JSON.stringify(schemaProperties, null, 2)
-                            .replace(/"/g, '')
-                            .replace(/([a-zA-Z_][a-zA-Z0-9_]*:)/g, '$1 ')}`,
-                    },
-                ],
-            });
-        }
-
-        return {
-            databaseTypes: databaseTypesFile.getFullText(),
-            zodSchemas: zodSchemasFile.getFullText(),
-        };
-    }
-
-    private async generatePythonTypes(schema: DatabaseSchema): Promise<PythonTypes> {
-        return generatePythonTypes(schema, this.config.outputDir);
-    }
+  private async generatePythonTypes(schema: DatabaseSchema): Promise<PythonTypes> {
+    return generatePythonTypes(schema, this.config.outputDir);
+  }
 }
 
 function mapPostgresToTypeScript(pgType: string): string {
-    const mapping: Record<string, string> = {
-        integer: 'number',
-        bigint: 'number',
-        text: 'string',
-        varchar: 'string',
-        boolean: 'boolean',
-        timestamp: 'string', // ISO string
-        timestamptz: 'string',
-        json: 'Record<string, any>',
-        jsonb: 'Record<string, any>',
-        uuid: 'string',
-    };
+  const mapping: Record<string, string> = {
+    integer: 'number',
+    bigint: 'number',
+    text: 'string',
+    varchar: 'string',
+    boolean: 'boolean',
+    timestamp: 'string', // ISO string
+    timestamptz: 'string',
+    json: 'Record<string, any>',
+    jsonb: 'Record<string, any>',
+    uuid: 'string',
+  };
 
-    return mapping[pgType] || 'unknown';
+  return mapping[pgType] || 'unknown';
 }
 
 function mapPostgresToZod(pgType: string): string {
-    const mapping: Record<string, string> = {
-        integer: 'z.number().int()',
-        bigint: 'z.number().int()',
-        text: 'z.string()',
-        varchar: 'z.string()',
-        boolean: 'z.boolean()',
-        timestamp: 'z.string().datetime()',
-        timestamptz: 'z.string().datetime()',
-        json: 'z.record(z.any())',
-        jsonb: 'z.record(z.any())',
-        uuid: 'z.string().uuid()',
-    };
+  const mapping: Record<string, string> = {
+    integer: 'z.number().int()',
+    bigint: 'z.number().int()',
+    text: 'z.string()',
+    varchar: 'z.string()',
+    boolean: 'z.boolean()',
+    timestamp: 'z.string().datetime()',
+    timestamptz: 'z.string().datetime()',
+    json: 'z.record(z.any())',
+    jsonb: 'z.record(z.any())',
+    uuid: 'z.string().uuid()',
+  };
 
-    return mapping[pgType] || 'z.unknown()';
+  return mapping[pgType] || 'z.unknown()';
 }
 ```
 
@@ -1226,97 +1226,97 @@ import { AIContextManager } from '../ai/context-manager';
 import { ArchitecturalPatterns } from '../patterns/architectural-patterns';
 
 interface GenerationRequest {
-    component: 'entity' | 'value-object' | 'service' | 'port' | 'adapter';
-    domain: string;
-    requirements: string;
-    existingContext?: string[];
+  component: 'entity' | 'value-object' | 'service' | 'port' | 'adapter';
+  domain: string;
+  requirements: string;
+  existingContext?: string[];
 }
 
 interface GenerationResult {
-    code: string;
-    tests: string;
-    documentation: string;
-    patterns: string[];
-    suggestions: string[];
+  code: string;
+  tests: string;
+  documentation: string;
+  patterns: string[];
+  suggestions: string[];
 }
 
 export class HexagonalAIGenerator {
-    private openai: OpenAI;
-    private contextManager: AIContextManager;
-    private patterns: ArchitecturalPatterns;
+  private openai: OpenAI;
+  private contextManager: AIContextManager;
+  private patterns: ArchitecturalPatterns;
 
-    constructor(config: { openaiApiKey: string; model: string }) {
-        this.openai = new OpenAI({ apiKey: config.openaiApiKey });
-        this.contextManager = new AIContextManager();
-        this.patterns = new ArchitecturalPatterns();
+  constructor(config: { openaiApiKey: string; model: string }) {
+    this.openai = new OpenAI({ apiKey: config.openaiApiKey });
+    this.contextManager = new AIContextManager();
+    this.patterns = new ArchitecturalPatterns();
+  }
+
+  async generateComponent(request: GenerationRequest): Promise<GenerationResult> {
+    // 1. Gather relevant context
+    const context = await this.gatherContext(request);
+
+    // 2. Select appropriate patterns
+    const relevantPatterns = await this.patterns.getRelevantPatterns(request.component, request.domain);
+
+    // 3. Compose AI prompt
+    const prompt = await this.composePrompt(request, context, relevantPatterns);
+
+    // 4. Generate code with AI
+    const aiResponse = await this.openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: this.getSystemPrompt(request.component),
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 0.1, // Low temperature for consistent code generation
+      max_tokens: 2000,
+    });
+
+    // 5. Parse and validate generated code
+    const generatedCode = aiResponse.choices[0].message.content!;
+    const parsedResult = await this.parseGeneratedCode(generatedCode);
+
+    // 6. Apply architectural validation
+    const validation = await this.validateArchitecture(parsedResult, request);
+
+    if (!validation.isValid) {
+      // Regenerate with validation feedback
+      return this.regenerateWithFeedback(request, validation.errors);
     }
 
-    async generateComponent(request: GenerationRequest): Promise<GenerationResult> {
-        // 1. Gather relevant context
-        const context = await this.gatherContext(request);
+    // 7. Generate accompanying tests
+    const tests = await this.generateTests(parsedResult, request);
 
-        // 2. Select appropriate patterns
-        const relevantPatterns = await this.patterns.getRelevantPatterns(request.component, request.domain);
+    // 8. Generate documentation
+    const documentation = await this.generateDocumentation(parsedResult, request);
 
-        // 3. Compose AI prompt
-        const prompt = await this.composePrompt(request, context, relevantPatterns);
+    return {
+      code: parsedResult.code,
+      tests,
+      documentation,
+      patterns: relevantPatterns.map((p) => p.name),
+      suggestions: validation.suggestions,
+    };
+  }
 
-        // 4. Generate code with AI
-        const aiResponse = await this.openai.chat.completions.create({
-            model: 'gpt-4',
-            messages: [
-                {
-                    role: 'system',
-                    content: this.getSystemPrompt(request.component),
-                },
-                {
-                    role: 'user',
-                    content: prompt,
-                },
-            ],
-            temperature: 0.1, // Low temperature for consistent code generation
-            max_tokens: 2000,
-        });
+  private async gatherContext(request: GenerationRequest): Promise<string> {
+    const contextSources = [`domain/${request.domain}/**/*.ts`, `domain/${request.domain}/**/*.py`, 'docs/domain-models.md', 'docs/architectural-decisions.md'];
 
-        // 5. Parse and validate generated code
-        const generatedCode = aiResponse.choices[0].message.content!;
-        const parsedResult = await this.parseGeneratedCode(generatedCode);
+    return this.contextManager.gatherRelevantContext(contextSources, {
+      tokenBudget: 4000,
+      prioritizePatterns: true,
+      focusDomain: request.domain,
+    });
+  }
 
-        // 6. Apply architectural validation
-        const validation = await this.validateArchitecture(parsedResult, request);
-
-        if (!validation.isValid) {
-            // Regenerate with validation feedback
-            return this.regenerateWithFeedback(request, validation.errors);
-        }
-
-        // 7. Generate accompanying tests
-        const tests = await this.generateTests(parsedResult, request);
-
-        // 8. Generate documentation
-        const documentation = await this.generateDocumentation(parsedResult, request);
-
-        return {
-            code: parsedResult.code,
-            tests,
-            documentation,
-            patterns: relevantPatterns.map((p) => p.name),
-            suggestions: validation.suggestions,
-        };
-    }
-
-    private async gatherContext(request: GenerationRequest): Promise<string> {
-        const contextSources = [`domain/${request.domain}/**/*.ts`, `domain/${request.domain}/**/*.py`, 'docs/domain-models.md', 'docs/architectural-decisions.md'];
-
-        return this.contextManager.gatherRelevantContext(contextSources, {
-            tokenBudget: 4000,
-            prioritizePatterns: true,
-            focusDomain: request.domain,
-        });
-    }
-
-    private getSystemPrompt(component: string): string {
-        const basePrompt = `
+  private getSystemPrompt(component: string): string {
+    const basePrompt = `
 You are an expert software architect specializing in hexagonal architecture and domain-driven design.
 Your task is to generate high-quality, production-ready code that follows these principles:
 
@@ -1334,49 +1334,49 @@ Generate code that is:
 - Production-ready quality
 `;
 
-        const componentSpecific: Record<string, string> = {
-            entity: `
+    const componentSpecific: Record<string, string> = {
+      entity: `
 Focus on creating a domain entity with:
 - Rich business behavior, not just data containers
 - Invariant enforcement in constructors and methods
 - Domain events for state changes
 - Immutable value objects where appropriate
 `,
-            'value-object': `
+      'value-object': `
 Focus on creating a value object with:
 - Immutability
 - Value-based equality
 - Validation in constructor
 - No identity, only values matter
 `,
-            service: `
+      service: `
 Focus on creating a domain service with:
 - Stateless operations
 - Domain-focused behavior that doesn't belong in entities
 - Clear, intention-revealing method names
 - Dependency injection via constructor
 `,
-            port: `
+      port: `
 Focus on creating a port interface with:
 - Clear contract definition
 - Technology-agnostic abstractions
 - Input/output models using domain types
 - Comprehensive method documentation
 `,
-            adapter: `
+      adapter: `
 Focus on creating an adapter implementation with:
 - Implementation of the corresponding port interface
 - Technology-specific details encapsulated
 - Error handling and logging
 - Connection management and resource cleanup
 `,
-        };
+    };
 
-        return basePrompt + (componentSpecific[component] || '');
-    }
+    return basePrompt + (componentSpecific[component] || '');
+  }
 
-    private async generateTests(parsedCode: ParsedCode, request: GenerationRequest): Promise<string> {
-        const testPrompt = `
+  private async generateTests(parsedCode: ParsedCode, request: GenerationRequest): Promise<string> {
+    const testPrompt = `
 Generate comprehensive unit tests for the following ${request.component}:
 
 ${parsedCode.code}
@@ -1392,24 +1392,24 @@ Requirements:
 Generated tests should achieve >90% code coverage.
 `;
 
-        const response = await this.openai.chat.completions.create({
-            model: 'gpt-4',
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are an expert in test-driven development and comprehensive testing strategies.',
-                },
-                {
-                    role: 'user',
-                    content: testPrompt,
-                },
-            ],
-            temperature: 0.1,
-            max_tokens: 1500,
-        });
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert in test-driven development and comprehensive testing strategies.',
+        },
+        {
+          role: 'user',
+          content: testPrompt,
+        },
+      ],
+      temperature: 0.1,
+      max_tokens: 1500,
+    });
 
-        return response.choices[0].message.content!;
-    }
+    return response.choices[0].message.content!;
+  }
 }
 ```
 
@@ -1430,93 +1430,93 @@ import { performance, PerformanceObserver } from 'perf_hooks';
 import { trace, metrics } from '@opentelemetry/api';
 
 interface PerformanceMetrics {
-    templateGeneration: number;
-    aiContextLoading: number;
-    typeGeneration: number;
-    validationTime: number;
-    cacheHitRate: number;
+  templateGeneration: number;
+  aiContextLoading: number;
+  typeGeneration: number;
+  validationTime: number;
+  cacheHitRate: number;
 }
 
 export class PerformanceMonitor {
-    private tracer = trace.getTracer('hexagonal-generator');
-    private meter = metrics.getMeter('hexagonal-generator');
-    private metrics: PerformanceMetrics = {
-        templateGeneration: 0,
-        aiContextLoading: 0,
-        typeGeneration: 0,
-        validationTime: 0,
-        cacheHitRate: 0,
-    };
+  private tracer = trace.getTracer('hexagonal-generator');
+  private meter = metrics.getMeter('hexagonal-generator');
+  private metrics: PerformanceMetrics = {
+    templateGeneration: 0,
+    aiContextLoading: 0,
+    typeGeneration: 0,
+    validationTime: 0,
+    cacheHitRate: 0,
+  };
 
-    constructor() {
-        this.setupObservers();
-        this.createMetrics();
+  constructor() {
+    this.setupObservers();
+    this.createMetrics();
+  }
+
+  private setupObservers(): void {
+    const obs = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        this.recordMetric(entry.name, entry.duration);
+      }
+    });
+
+    obs.observe({ entryTypes: ['measure'] });
+  }
+
+  private createMetrics(): void {
+    this.meter.createHistogram('template_generation_duration', {
+      description: 'Time taken to generate templates',
+      unit: 'ms',
+    });
+
+    this.meter.createHistogram('ai_context_loading_duration', {
+      description: 'Time taken to load AI context',
+      unit: 'ms',
+    });
+
+    this.meter.createCounter('cache_hits', {
+      description: 'Number of cache hits',
+    });
+
+    this.meter.createCounter('cache_misses', {
+      description: 'Number of cache misses',
+    });
+  }
+
+  async measureTemplateGeneration<T>(fn: () => Promise<T>): Promise<T> {
+    const span = this.tracer.startSpan('template_generation');
+    performance.mark('template-start');
+
+    try {
+      const result = await fn();
+      performance.mark('template-end');
+      performance.measure('template_generation', 'template-start', 'template-end');
+
+      span.setStatus({ code: 1 }); // SUCCESS
+      return result;
+    } catch (error) {
+      span.setStatus({ code: 2, message: error.message }); // ERROR
+      throw error;
+    } finally {
+      span.end();
+    }
+  }
+
+  private recordMetric(name: string, duration: number): void {
+    const histogram = this.meter.getHistogram(name);
+    if (histogram) {
+      histogram.record(duration);
     }
 
-    private setupObservers(): void {
-        const obs = new PerformanceObserver((list) => {
-            for (const entry of list.getEntries()) {
-                this.recordMetric(entry.name, entry.duration);
-            }
-        });
-
-        obs.observe({ entryTypes: ['measure'] });
+    // Store in local metrics for reporting
+    if (name in this.metrics) {
+      this.metrics[name as keyof PerformanceMetrics] = duration;
     }
+  }
 
-    private createMetrics(): void {
-        this.meter.createHistogram('template_generation_duration', {
-            description: 'Time taken to generate templates',
-            unit: 'ms',
-        });
-
-        this.meter.createHistogram('ai_context_loading_duration', {
-            description: 'Time taken to load AI context',
-            unit: 'ms',
-        });
-
-        this.meter.createCounter('cache_hits', {
-            description: 'Number of cache hits',
-        });
-
-        this.meter.createCounter('cache_misses', {
-            description: 'Number of cache misses',
-        });
-    }
-
-    async measureTemplateGeneration<T>(fn: () => Promise<T>): Promise<T> {
-        const span = this.tracer.startSpan('template_generation');
-        performance.mark('template-start');
-
-        try {
-            const result = await fn();
-            performance.mark('template-end');
-            performance.measure('template_generation', 'template-start', 'template-end');
-
-            span.setStatus({ code: 1 }); // SUCCESS
-            return result;
-        } catch (error) {
-            span.setStatus({ code: 2, message: error.message }); // ERROR
-            throw error;
-        } finally {
-            span.end();
-        }
-    }
-
-    private recordMetric(name: string, duration: number): void {
-        const histogram = this.meter.getHistogram(name);
-        if (histogram) {
-            histogram.record(duration);
-        }
-
-        // Store in local metrics for reporting
-        if (name in this.metrics) {
-            this.metrics[name as keyof PerformanceMetrics] = duration;
-        }
-    }
-
-    getMetrics(): PerformanceMetrics {
-        return { ...this.metrics };
-    }
+  getMetrics(): PerformanceMetrics {
+    return { ...this.metrics };
+  }
 }
 ```
 

@@ -29,11 +29,11 @@ description: 'Review techstack.yaml + specs; output idempotent plan to sync Copi
 1. Validate `techstack.yaml` against `docs/techstack.schema.json` (permissive schema).
 2. Reconcile conflicts with PRD/SDS/ADR/TS; list minimal deltas to either specs or techstack.
 3. Produce a plan with:
-    - Proposed edits to `templates/{{ project_slug }}/generators/**` defaults (non-destructive; generated regions only).
-    - Any new files or configs required to reflect the stack (document only; do not auto-apply).
+   - Proposed edits to `templates/{{ project_slug }}/generators/**` defaults (non-destructive; generated regions only).
+   - Any new files or configs required to reflect the stack (document only; do not auto-apply).
 4. Provide the command sequence to run locally:
-    - `just plan-techstack` (review diff)
-    - `just sync-techstack` (apply resolved stack)
+   - `just plan-techstack` (review diff)
+   - `just sync-techstack` (apply resolved stack)
 
 ## Output
 

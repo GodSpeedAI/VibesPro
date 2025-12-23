@@ -609,10 +609,10 @@ See `apps/python-test-service/` for a complete FastAPI application demonstrating
 
 - Ensure logging happens within an HTTP request handler (active span)
 - For background tasks, manually create spans:
-    ```python
-    with logfire.span("background_task"):
-        logger.info("Processing")  # Now has trace_id
-    ```
+  ```python
+  with logfire.span("background_task"):
+      logger.info("Processing")  # Now has trace_id
+  ```
 
 **PII leakage concerns**:
 
@@ -859,33 +859,33 @@ const log = logger('my-service');
 
 // App log
 log.info(
-    {
-        category: 'app',
-        user_id_hash: 'abc123',
-        trace_id: req.traceId,
-        span_id: req.spanId,
-    },
-    'request accepted',
+  {
+    category: 'app',
+    user_id_hash: 'abc123',
+    trace_id: req.traceId,
+    span_id: req.spanId,
+  },
+  'request accepted',
 );
 
 // Security warning
 log.warn(
-    {
-        category: 'security',
-        action: 'rate_limit',
-        client_ip_hash: hashIP(req.ip),
-    },
-    'client throttled',
+  {
+    category: 'security',
+    action: 'rate_limit',
+    client_ip_hash: hashIP(req.ip),
+  },
+  'client throttled',
 );
 
 // Error log
 log.error(
-    {
-        category: 'app',
-        code: 500,
-        error: 'ECONNREFUSED',
-    },
-    'upstream timeout',
+  {
+    category: 'app',
+    code: 500,
+    error: 'ECONNREFUSED',
+  },
+  'upstream timeout',
 );
 ```
 
@@ -1011,23 +1011,23 @@ just test-logs  # Includes Logfire bootstrap smoke coverage
 ### OpenObserve Setup for Logs
 
 1. **Create separate streams:**
-    - `vibepro-logs-{env}` for application logs
-    - `vibepro-traces-{env}` for distributed traces
+   - `vibepro-logs-{env}` for application logs
+   - `vibepro-traces-{env}` for distributed traces
 
 2. **Configure retention:**
-    - Logs: 14–30 days (higher volume)
-    - Traces: 30–90 days (lower volume, higher value)
+   - Logs: 14–30 days (higher volume)
+   - Traces: 30–90 days (lower volume, higher value)
 
 3. **Set up alerts:**
-    - `category="security"` AND `level="warn"`
-    - `code=500` AND `environment="prod"`
-    - `action="auth_failure"` rate threshold
+   - `category="security"` AND `level="warn"`
+   - `code=500` AND `environment="prod"`
+   - `action="auth_failure"` rate threshold
 
 4. **Create dashboards:**
-    - Error rate by service
-    - Security events timeline
-    - Request latency (p50, p95, p99) from logs
-    - Log volume by category
+   - Error rate by service
+   - Security events timeline
+   - Request latency (p50, p95, p99) from logs
+   - Log volume by category
 
 ### Querying Logs with Traces
 

@@ -33,11 +33,11 @@ Traceability & examples
 
 - Include at least one spec ID when applicable to align with commit-msg hooks and review traceability.
 - Examples:
-    - ✨feat(auth): add login rate limiter (PRD-042, DEV-123)
-        - Adds rate limiter + unit tests; updates docs/auth.md
-        - ⚠️Risk: potential login latency spike; Mitigation: gradual rollout with monitoring
-    - 🐛fix(api): handle null payloads (DEV-456)
-        - Prevents 500s on malformed requests; adds regression tests
+  - ✨feat(auth): add login rate limiter (PRD-042, DEV-123)
+    - Adds rate limiter + unit tests; updates docs/auth.md
+    - ⚠️Risk: potential login latency spike; Mitigation: gradual rollout with monitoring
+  - 🐛fix(api): handle null payloads (DEV-456)
+    - Prevents 500s on malformed requests; adds regression tests
 
 Formatting tips
 

@@ -83,20 +83,20 @@ import * as path from 'path';
 import { MyGeneratorSchema } from './schema.d';
 
 export async function myGenerator(tree: Tree, schema: MyGeneratorSchema) {
-    const options = normalizeOptions(schema);
+  const options = normalizeOptions(schema);
 
-    // Generate files from templates
-    generateFiles(tree, path.join(__dirname, 'files'), options.projectRoot, {
-        ...options,
-        ...names(options.name),
-        template: '', // Removes __template__ from file names
-    });
+  // Generate files from templates
+  generateFiles(tree, path.join(__dirname, 'files'), options.projectRoot, {
+    ...options,
+    ...names(options.name),
+    template: '', // Removes __template__ from file names
+  });
 
-    await formatFiles(tree);
+  await formatFiles(tree);
 
-    return () => {
-        console.log(`✅ Created ${options.name}`);
-    };
+  return () => {
+    console.log(`✅ Created ${options.name}`);
+  };
 }
 
 export default myGenerator;
@@ -106,31 +106,31 @@ export default myGenerator;
 
 ```json
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "My Generator Options",
-    "description": "Options for my generator",
-    "type": "object",
-    "properties": {
-        "name": {
-            "type": "string",
-            "description": "Name of the item to create",
-            "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
-            "$default": { "$source": "argv", "index": 0 },
-            "x-prompt": "What is the name?"
-        },
-        "scope": {
-            "type": "string",
-            "description": "Scope/domain for the item",
-            "x-prompt": "What scope should this belong to?"
-        },
-        "withTests": {
-            "type": "boolean",
-            "default": true,
-            "description": "Generate test files",
-            "x-prompt": "Include tests?"
-        }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "My Generator Options",
+  "description": "Options for my generator",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the item to create",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the name?"
     },
-    "required": ["name"]
+    "scope": {
+      "type": "string",
+      "description": "Scope/domain for the item",
+      "x-prompt": "What scope should this belong to?"
+    },
+    "withTests": {
+      "type": "boolean",
+      "default": true,
+      "description": "Generate test files",
+      "x-prompt": "Include tests?"
+    }
+  },
+  "required": ["name"]
 }
 ```
 

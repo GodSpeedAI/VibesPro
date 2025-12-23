@@ -9,13 +9,13 @@ This blueprint explains how VibePDK's AI-assisted scaffolding patterns are merge
 ## 1. Source Inputs
 
 - **HexDDD Monorepo** (`/home/sprime01/projects/HexDDD/`)
-    - Nx generators for domains, applications, and infrastructure layers
-    - Shared type generation utilities
-    - Reference justfile and workspace configuration
+  - Nx generators for domains, applications, and infrastructure layers
+  - Shared type generation utilities
+  - Reference justfile and workspace configuration
 - **VibePDK Platform** (`/home/sprime01/projects/VibePDK/`)
-    - AI workflow scripts and prompt libraries
-    - Documentation patterns and developer experience helpers
-    - Temporal learning bootstrap utilities
+  - AI workflow scripts and prompt libraries
+  - Documentation patterns and developer experience helpers
+  - Temporal learning bootstrap utilities
 
 ## 2. Integration Objectives
 

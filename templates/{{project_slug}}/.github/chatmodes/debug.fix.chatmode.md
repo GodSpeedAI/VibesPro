@@ -6,9 +6,9 @@ budget: medium
 model: ${ default_model }
 name: 'Debug Unified'
 description: |
-    Comprehensive debugging assistant for reproduction, isolation, root cause analysis,
-    fixing, and regression handling with adaptive strategies and post-mortem documentation.
-    Conducts autonomous investigation before requesting user input.
+  Comprehensive debugging assistant for reproduction, isolation, root cause analysis,
+  fixing, and regression handling with adaptive strategies and post-mortem documentation.
+  Conducts autonomous investigation before requesting user input.
 tools: ['codebase', 'search', 'runInTerminal', 'runTests', 'editFiles', 'problems', 'mcp']
 ---
 

@@ -311,22 +311,22 @@ sequenceDiagram
 - **Responsibility**: Order management and fulfillment
 - **Language**: Order, OrderItem, OrderStatus, Customer
 - **Relationships**:
-    - **Upstream**: Products Context (Conformist)
-    - **Downstream**: Shipping Context (Customer-Supplier)
+  - **Upstream**: Products Context (Conformist)
+  - **Downstream**: Shipping Context (Customer-Supplier)
 
 ### Products Context
 
 - **Responsibility**: Product catalog and inventory
 - **Language**: Product, SKU, Category, Inventory
 - **Relationships**:
-    - **Downstream**: Orders Context (Published Language)
+  - **Downstream**: Orders Context (Published Language)
 
 ### Users Context
 
 - **Responsibility**: User authentication and authorization
 - **Language**: User, Role, Permission, Session
 - **Relationships**:
-    - **Shared Kernel**: with all contexts (Identity)
+  - **Shared Kernel**: with all contexts (Identity)
 
 ## Context Relationships
 
@@ -731,18 +731,18 @@ Context:
 import { TemporalDb } from '../temporal_db';
 
 async function storeADR(adrFile: string) {
-    const content = await readFile(adrFile, 'utf-8');
-    const adr = parseADR(content);
+  const content = await readFile(adrFile, 'utf-8');
+  const adr = parseADR(content);
 
-    await TemporalDb.storeDecision({
-        id: adr.id,
-        title: adr.title,
-        status: adr.status,
-        context: adr.context,
-        decision: adr.decision,
-        consequences: adr.consequences,
-        created_at: adr.date,
-    });
+  await TemporalDb.storeDecision({
+    id: adr.id,
+    title: adr.title,
+    status: adr.status,
+    context: adr.context,
+    decision: adr.decision,
+    consequences: adr.consequences,
+    created_at: adr.date,
+  });
 }
 ```
 

@@ -79,27 +79,27 @@ generators/
 
 ```json
 {
-    "$schema": "https://json-schema.org/schema",
-    "name": "vibespro",
-    "version": "1.0.0",
-    "generators": {
-        "service": {
-            "factory": "./service/generator",
-            "schema": "./service/schema.json",
-            "description": "Generate a hexagonal service with domain, application, and infrastructure layers",
-            "aliases": ["bounded-context", "bc"]
-        },
-        "component": {
-            "factory": "./component/generator",
-            "schema": "./component/schema.json",
-            "description": "Generate a React component with tests and stories"
-        },
-        "api-endpoint": {
-            "factory": "./api-endpoint/generator",
-            "schema": "./api-endpoint/schema.json",
-            "description": "Generate a REST API endpoint with controller and tests"
-        }
+  "$schema": "https://json-schema.org/schema",
+  "name": "vibespro",
+  "version": "1.0.0",
+  "generators": {
+    "service": {
+      "factory": "./service/generator",
+      "schema": "./service/schema.json",
+      "description": "Generate a hexagonal service with domain, application, and infrastructure layers",
+      "aliases": ["bounded-context", "bc"]
+    },
+    "component": {
+      "factory": "./component/generator",
+      "schema": "./component/schema.json",
+      "description": "Generate a React component with tests and stories"
+    },
+    "api-endpoint": {
+      "factory": "./api-endpoint/generator",
+      "schema": "./api-endpoint/schema.json",
+      "description": "Generate a REST API endpoint with controller and tests"
     }
+  }
 }
 ```
 
@@ -158,52 +158,52 @@ import * as path from 'path';
 import { ServiceGeneratorSchema } from './schema';
 
 export async function serviceGenerator(tree: Tree, options: ServiceGeneratorSchema) {
-    // 1. Normalize options
-    const normalizedOptions = normalizeOptions(tree, options);
+  // 1. Normalize options
+  const normalizedOptions = normalizeOptions(tree, options);
 
-    // 2. Generate domain layer
-    addDomainLayer(tree, normalizedOptions);
+  // 2. Generate domain layer
+  addDomainLayer(tree, normalizedOptions);
 
-    // 3. Generate application layer
-    addApplicationLayer(tree, normalizedOptions);
+  // 3. Generate application layer
+  addApplicationLayer(tree, normalizedOptions);
 
-    // 4. Generate infrastructure layer
-    addInfrastructureLayer(tree, normalizedOptions);
+  // 4. Generate infrastructure layer
+  addInfrastructureLayer(tree, normalizedOptions);
 
-    // 5. Update workspace configuration
-    updateWorkspaceConfig(tree, normalizedOptions);
+  // 5. Update workspace configuration
+  updateWorkspaceConfig(tree, normalizedOptions);
 
-    // 6. Format files
-    await formatFiles(tree);
+  // 6. Format files
+  await formatFiles(tree);
 
-    return () => {
-        console.log(`✅ Service "${options.name}" created successfully`);
-    };
+  return () => {
+    console.log(`✅ Service "${options.name}" created successfully`);
+  };
 }
 
 function normalizeOptions(tree: Tree, options: ServiceGeneratorSchema): NormalizedSchema {
-    const name = names(options.name).fileName;
-    const projectDirectory = options.directory ? `${names(options.directory).fileName}/${name}` : name;
-    const projectRoot = `libs/${projectDirectory}`;
+  const name = names(options.name).fileName;
+  const projectDirectory = options.directory ? `${names(options.directory).fileName}/${name}` : name;
+  const projectRoot = `libs/${projectDirectory}`;
 
-    return {
-        ...options,
-        projectName: name,
-        projectRoot,
-        parsedTags: options.tags ? options.tags.split(',').map((t) => t.trim()) : [],
-    };
+  return {
+    ...options,
+    projectName: name,
+    projectRoot,
+    parsedTags: options.tags ? options.tags.split(',').map((t) => t.trim()) : [],
+  };
 }
 
 function addDomainLayer(tree: Tree, options: NormalizedSchema) {
-    const templatePath = path.join(__dirname, 'files', 'domain');
-    const targetPath = `${options.projectRoot}/domain`;
+  const templatePath = path.join(__dirname, 'files', 'domain');
+  const targetPath = `${options.projectRoot}/domain`;
 
-    generateFiles(tree, templatePath, targetPath, {
-        ...options,
-        ...names(options.projectName),
-        offsetFromRoot: offsetFromRoot(options.projectRoot),
-        template: '', // Remove __template__ from file names
-    });
+  generateFiles(tree, templatePath, targetPath, {
+    ...options,
+    ...names(options.projectName),
+    offsetFromRoot: offsetFromRoot(options.projectRoot),
+    template: '', // Remove __template__ from file names
+  });
 }
 
 // Similar for application and infrastructure layers...
@@ -215,43 +215,43 @@ export default serviceGenerator;
 
 ```json
 {
-    "$schema": "https://json-schema.org/schema",
-    "type": "object",
-    "properties": {
-        "name": {
-            "type": "string",
-            "description": "Service name",
-            "$default": {
-                "$source": "argv",
-                "index": 0
-            },
-            "x-prompt": "What is the name of the service?"
-        },
-        "directory": {
-            "type": "string",
-            "description": "Directory where service will be created",
-            "x-prompt": "Which directory should this be created in?"
-        },
-        "language": {
-            "type": "string",
-            "enum": ["typescript", "python"],
-            "default": "typescript",
-            "description": "Programming language",
-            "x-prompt": {
-                "message": "Which language?",
-                "type": "list",
-                "items": [
-                    { "value": "typescript", "label": "TypeScript" },
-                    { "value": "python", "label": "Python" }
-                ]
-            }
-        },
-        "tags": {
-            "type": "string",
-            "description": "Comma-separated tags for Nx boundary rules"
-        }
+  "$schema": "https://json-schema.org/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Service name",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What is the name of the service?"
     },
-    "required": ["name"]
+    "directory": {
+      "type": "string",
+      "description": "Directory where service will be created",
+      "x-prompt": "Which directory should this be created in?"
+    },
+    "language": {
+      "type": "string",
+      "enum": ["typescript", "python"],
+      "default": "typescript",
+      "description": "Programming language",
+      "x-prompt": {
+        "message": "Which language?",
+        "type": "list",
+        "items": [
+          { "value": "typescript", "label": "TypeScript" },
+          { "value": "python", "label": "Python" }
+        ]
+      }
+    },
+    "tags": {
+      "type": "string",
+      "description": "Comma-separated tags for Nx boundary rules"
+    }
+  },
+  "required": ["name"]
 }
 ```
 
@@ -294,22 +294,22 @@ export class <%= className %> {
 import { names as nxNames } from '@nx/devkit';
 
 export interface Names {
-    name: string; // Original name
-    className: string; // PascalCase
-    propertyName: string; // camelCase
-    constantName: string; // UPPER_SNAKE_CASE
-    fileName: string; // kebab-case
+  name: string; // Original name
+  className: string; // PascalCase
+  propertyName: string; // camelCase
+  constantName: string; // UPPER_SNAKE_CASE
+  fileName: string; // kebab-case
 }
 
 export function getNames(name: string): Names {
-    const nx = nxNames(name);
-    return {
-        name: nx.name,
-        className: nx.className,
-        propertyName: nx.propertyName,
-        constantName: nx.constantName.toUpperCase(),
-        fileName: nx.fileName,
-    };
+  const nx = nxNames(name);
+  return {
+    name: nx.name,
+    className: nx.className,
+    propertyName: nx.propertyName,
+    constantName: nx.constantName.toUpperCase(),
+    fileName: nx.fileName,
+  };
 }
 ```
 
@@ -375,33 +375,33 @@ pnpm exec nx g @nx/react:component OrderList \
 ```typescript
 // generators/api-endpoint/generator.ts
 export async function apiEndpointGenerator(tree: Tree, options: ApiEndpointGeneratorSchema) {
-    const normalizedOptions = normalizeOptions(tree, options);
+  const normalizedOptions = normalizeOptions(tree, options);
 
-    // 1. Generate controller
-    generateFiles(tree, path.join(__dirname, 'files', 'controller'), normalizedOptions.controllerPath, {
-        ...normalizedOptions,
-        ...names(normalizedOptions.name),
-        template: '',
-    });
+  // 1. Generate controller
+  generateFiles(tree, path.join(__dirname, 'files', 'controller'), normalizedOptions.controllerPath, {
+    ...normalizedOptions,
+    ...names(normalizedOptions.name),
+    template: '',
+  });
 
-    // 2. Generate DTO
-    generateFiles(tree, path.join(__dirname, 'files', 'dto'), normalizedOptions.dtoPath, {
-        ...normalizedOptions,
-        ...names(normalizedOptions.name),
-        template: '',
-    });
+  // 2. Generate DTO
+  generateFiles(tree, path.join(__dirname, 'files', 'dto'), normalizedOptions.dtoPath, {
+    ...normalizedOptions,
+    ...names(normalizedOptions.name),
+    template: '',
+  });
 
-    // 3. Generate tests
-    generateFiles(tree, path.join(__dirname, 'files', 'tests'), normalizedOptions.testsPath, {
-        ...normalizedOptions,
-        ...names(normalizedOptions.name),
-        template: '',
-    });
+  // 3. Generate tests
+  generateFiles(tree, path.join(__dirname, 'files', 'tests'), normalizedOptions.testsPath, {
+    ...normalizedOptions,
+    ...names(normalizedOptions.name),
+    template: '',
+  });
 
-    // 4. Update route configuration
-    updateRouteConfig(tree, normalizedOptions);
+  // 4. Update route configuration
+  updateRouteConfig(tree, normalizedOptions);
 
-    await formatFiles(tree);
+  await formatFiles(tree);
 }
 
 // Usage:
@@ -532,31 +532,31 @@ names('user-profile') => {
 
 ```typescript
 function normalizeOptions(tree: Tree, options: Schema): NormalizedSchema {
-    // Validate name
-    if (!/^[a-z][a-z0-9-]*$/.test(options.name)) {
-        throw new Error('Name must be lowercase kebab-case');
-    }
+  // Validate name
+  if (!/^[a-z][a-z0-9-]*$/.test(options.name)) {
+    throw new Error('Name must be lowercase kebab-case');
+  }
 
-    // Prevent path traversal
-    const directory = options.directory || '';
-    if (directory.includes('..')) {
-        throw new Error('Directory cannot contain ".."');
-    }
+  // Prevent path traversal
+  const directory = options.directory || '';
+  if (directory.includes('..')) {
+    throw new Error('Directory cannot contain ".."');
+  }
 
-    // Sanitize tags
-    const tags = options.tags
-        ? options.tags
-              .split(',')
-              .map((t) => t.trim())
-              .filter(Boolean)
-        : [];
+  // Sanitize tags
+  const tags = options.tags
+    ? options.tags
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean)
+    : [];
 
-    return {
-        ...options,
-        name: options.name.toLowerCase(),
-        directory,
-        tags,
-    };
+  return {
+    ...options,
+    name: options.name.toLowerCase(),
+    directory,
+    tags,
+  };
 }
 ```
 
@@ -590,33 +590,33 @@ import { Tree, readProjectConfiguration } from '@nx/devkit';
 import serviceGenerator from './generator';
 
 describe('service generator', () => {
-    let tree: Tree;
+  let tree: Tree;
 
-    beforeEach(() => {
-        tree = createTreeWithEmptyWorkspace();
+  beforeEach(() => {
+    tree = createTreeWithEmptyWorkspace();
+  });
+
+  it('should generate domain, application, and infrastructure layers', async () => {
+    await serviceGenerator(tree, {
+      name: 'orders',
+      language: 'typescript',
     });
 
-    it('should generate domain, application, and infrastructure layers', async () => {
-        await serviceGenerator(tree, {
-            name: 'orders',
-            language: 'typescript',
-        });
+    expect(tree.exists('libs/orders/domain/src/index.ts')).toBeTruthy();
+    expect(tree.exists('libs/orders/application/src/index.ts')).toBeTruthy();
+    expect(tree.exists('libs/orders/infrastructure/src/index.ts')).toBeTruthy();
+  });
 
-        expect(tree.exists('libs/orders/domain/src/index.ts')).toBeTruthy();
-        expect(tree.exists('libs/orders/application/src/index.ts')).toBeTruthy();
-        expect(tree.exists('libs/orders/infrastructure/src/index.ts')).toBeTruthy();
+  it('should configure Nx project correctly', async () => {
+    await serviceGenerator(tree, {
+      name: 'orders',
+      tags: 'type:service,scope:orders',
     });
 
-    it('should configure Nx project correctly', async () => {
-        await serviceGenerator(tree, {
-            name: 'orders',
-            tags: 'type:service,scope:orders',
-        });
-
-        const config = readProjectConfiguration(tree, 'orders-domain');
-        expect(config.tags).toContain('type:service');
-        expect(config.tags).toContain('scope:orders');
-    });
+    const config = readProjectConfiguration(tree, 'orders-domain');
+    expect(config.tags).toContain('type:service');
+    expect(config.tags).toContain('scope:orders');
+  });
 });
 ```
 

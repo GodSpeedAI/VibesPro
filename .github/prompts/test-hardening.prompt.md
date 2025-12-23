@@ -16,8 +16,8 @@ description: 'Harden tests for recently touched SDS components and update tracea
 ## Task
 
 - For each `SDS` component touched in the last N commits:
-    - Add edge-case and failure-path tests.
-    - Ensure coverage thresholds.
+  - Add edge-case and failure-path tests.
+  - Ensure coverage thresholds.
 - Generate a summary report and update the Traceability Matrix.
 
 ## Acceptance

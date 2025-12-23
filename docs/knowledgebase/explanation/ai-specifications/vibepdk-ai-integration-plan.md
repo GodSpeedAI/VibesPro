@@ -70,8 +70,8 @@ Document the GitHub Copilot + VS Code AI workflow shipped with the VibePDK Cooki
 
 1. Copy `{{cookiecutter.project_slug}}/.github/` from VibePDK into `templates/{{project_slug}}/.github/` (stage under `templates/{{project_slug}}/.github.ai-import/` if needed while reconciling).
 2. Merge instruction files into `templates/{{project_slug}}/.github/instructions/` preserving precedence metadata.
-    - Resolve overlaps with merger-specific `copilot-instructions.md` so generated projects carry both HexDDD+VibePDK guidance.
-    - Adopt VibePDK’s `commit-msg.instructions.md`, `ai-workflows.*`, security/perf/style docs, and ensure template frontmatter precedence stays consistent.
+   - Resolve overlaps with merger-specific `copilot-instructions.md` so generated projects carry both HexDDD+VibePDK guidance.
+   - Adopt VibePDK’s `commit-msg.instructions.md`, `ai-workflows.*`, security/perf/style docs, and ensure template frontmatter precedence stays consistent.
 3. Add prompt/chatmode catalog to `templates/{{project_slug}}/.github/prompts/` and `templates/{{project_slug}}/.github/chatmodes/`; document usage in template README.
 4. Introduce `templates/{{project_slug}}/.github/models.yaml` and update maintainer docs about default model expectations.
 5. Replace/augment template workflows under `templates/{{project_slug}}/.github/workflows/`: add `spec-guard`, `markdownlint`, `node-tests`, and reconcile with existing generated-project workflows to avoid duplicate runs.

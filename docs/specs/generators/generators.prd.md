@@ -244,9 +244,9 @@ Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using
 
 - Description: As a developer, I want to use a single Nx generator to scaffold new features or domains, including all necessary layers (domain, API, UI), so that I can create new modules quickly and consistently for the chosen frontend surface (Next.js App Router, Next.js Pages Router, Remix, or Expo).
 - EARS: When I run the domain generator, the system shall create a full set of libraries for the domain, pre-populated with:
-    - A FastAPI backend API using `@nxlv/python`.
-    - Type-safe Shadcn UI components using `@nx-extend/shadcn-ui`.
-    - All layers connected to the unified type system.
+  - A FastAPI backend API using `@nxlv/python`.
+  - Type-safe Shadcn UI components using `@nx-extend/shadcn-ui`.
+  - All layers connected to the unified type system.
 - DX Metrics: Time to create a new, fully-wired CRUD module < 15 minutes; 100% consistency in folder structure and naming conventions across domains.
 - Supported by: DEV-ADR-021, DEV-SDS-021, `copier.yml`
 
@@ -265,8 +265,8 @@ Enable additional instrumentation (e.g., `requests`, `httpx`, SQL drivers) using
 
 - Description: As a developer, I want wrapper generators that leverage official Nx generators (`@nx/next`, `@nx/remix`, `@nx/expo` for frontend; `@nxlv/python` for backend) and automatically inject shared libraries, typed clients, hexagonal architecture patterns, and FastAPI-Pydantic-Supabase type-sync integration.
 - EARS:
-    - **Frontend**: When I invoke `nx g @vibes-pro/generators:web-app my-app --framework=remix`, the system shall (1) delegate to `@nx/remix` for framework scaffolding, (2) inject imports from `@vibes-pro/shared-web`, (3) apply hexagonal structure patterns, and (4) remain idempotent under repeated runs. Applies to Next.js (App/Pages Router), Remix, and Expo.
-    - **Backend**: When I invoke `nx g @vibes-pro/generators:api-service my-service`, the system shall (1) delegate to `@nxlv/python` for FastAPI scaffolding, (2) inject Logfire bootstrap from `libs/python/vibepro_logging.py`, (3) apply hexagonal ports/adapters from PHASE-002, (4) configure Pydantic models for Supabase type-sync, and (5) remain idempotent under repeated runs.
+  - **Frontend**: When I invoke `nx g @vibes-pro/generators:web-app my-app --framework=remix`, the system shall (1) delegate to `@nx/remix` for framework scaffolding, (2) inject imports from `@vibes-pro/shared-web`, (3) apply hexagonal structure patterns, and (4) remain idempotent under repeated runs. Applies to Next.js (App/Pages Router), Remix, and Expo.
+  - **Backend**: When I invoke `nx g @vibes-pro/generators:api-service my-service`, the system shall (1) delegate to `@nxlv/python` for FastAPI scaffolding, (2) inject Logfire bootstrap from `libs/python/vibepro_logging.py`, (3) apply hexagonal ports/adapters from PHASE-002, (4) configure Pydantic models for Supabase type-sync, and (5) remain idempotent under repeated runs.
 - DX Metrics: All supported surfaces scaffold in < 30 seconds; wrapper + Nx generator combination builds successfully; idempotency tests pass; 100% of Nx wrapper generators use official plugin targets (`@nx/next`, `@nx/remix`, `@nx/expo`, `@nxlv/python`) and remain compatible with at least two downstream minor releases without requiring forks; backend services auto-instrument with Logfire OpenTelemetry.
 - Supported by: DEV-ADR-028, DEV-SDS-028
 

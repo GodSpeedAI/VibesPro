@@ -33,30 +33,30 @@ without loading entire specs unless gaps are detected.
 ## Task
 
 1. Collect IDs + Anchors (Selective)
-    - Quickly scan headings of each spec file for IDs following the patterns above.
-    - For each ID, capture the exact Markdown heading text and the generated anchor.
-    - Do not ingest full bodies unless an anchor cannot be inferred.
+   - Quickly scan headings of each spec file for IDs following the patterns above.
+   - For each ID, capture the exact Markdown heading text and the generated anchor.
+   - Do not ingest full bodies unless an anchor cannot be inferred.
 
 2. Update Product Index (`docs/spec_index.md`)
-    - For each Product ID found, write/update a concise line (≤ 140 chars):
-        - `- <ID> — <short title>. See docs/<FILE>.md#<anchor>`.
-    - Preserve existing lines; update titles/anchors if they changed.
-    - Keep alphabetical by prefix, then numeric.
+   - For each Product ID found, write/update a concise line (≤ 140 chars):
+     - `- <ID> — <short title>. See docs/<FILE>.md#<anchor>`.
+   - Preserve existing lines; update titles/anchors if they changed.
+   - Keep alphabetical by prefix, then numeric.
 
 3. Update Developer Index (`docs/dev_spec_index.md`)
-    - Same approach for all `DEV-*` IDs.
+   - Same approach for all `DEV-*` IDs.
 
 4. Update Traceability Matrix (`docs/traceability_matrix.md`)
-    - Ensure there is a section with columns:
-        - Spec ID | Artifact (file/class/API/test) | Status | PR/Commit | Notes
-    - Append new rows for any IDs that lack entries.
-    - Mark `Status=Planned` if no artifact is detected yet.
-    - If artifacts exist, link to them and set `Status=In-Progress` or `Done`.
+   - Ensure there is a section with columns:
+     - Spec ID | Artifact (file/class/API/test) | Status | PR/Commit | Notes
+   - Append new rows for any IDs that lack entries.
+   - Mark `Status=Planned` if no artifact is detected yet.
+   - If artifacts exist, link to them and set `Status=In-Progress` or `Done`.
 
 5. Report Gaps
-    - List any IDs missing acceptance criteria (PRD) or interface contracts (SDS/TS).
-    - List any orphan artifacts with no spec ID.
-    - If anchor inference failed, escalate to a wide spec load.
+   - List any IDs missing acceptance criteria (PRD) or interface contracts (SDS/TS).
+   - List any orphan artifacts with no spec ID.
+   - If anchor inference failed, escalate to a wide spec load.
 
 ## Output
 

@@ -20,8 +20,8 @@ description: 'Bootstrap developer platform: devcontainer, tasks, tests, CI, lint
 ## Task
 
 - Generate or update:
-    - Devcontainer, task runner, test harness, CI jobs, linters/type-checkers.
-    - Sample “hello world” + smoke tests.
+  - Devcontainer, task runner, test harness, CI jobs, linters/type-checkers.
+  - Sample “hello world” + smoke tests.
 - Ensure each step cites relevant DEV spec IDs and notes any conflicts with ADR/SDS/TS.
 
 ## Output

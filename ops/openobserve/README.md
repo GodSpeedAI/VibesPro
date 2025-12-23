@@ -60,14 +60,14 @@ CI pattern (GitHub Actions) — decrypt securely in the job
 ```yaml
 - name: Decrypt secrets
   run: |
-      printf "%s" "${{ secrets.SOPS_AGE_KEY }}" > "$RUNNER_TEMP/sops.key"
-      export SOPS_AGE_KEY_FILE="$RUNNER_TEMP/sops.key"
-      sops -d .secrets.env.sops > .env
+    printf "%s" "${{ secrets.SOPS_AGE_KEY }}" > "$RUNNER_TEMP/sops.key"
+    export SOPS_AGE_KEY_FILE="$RUNNER_TEMP/sops.key"
+    sops -d .secrets.env.sops > .env
 
 - name: Start OpenObserve
   run: |
-      cd ops/openobserve
-      docker compose up -d
+    cd ops/openobserve
+    docker compose up -d
 ```
 
 If you hit SOPS decryption errors

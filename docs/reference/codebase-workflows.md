@@ -132,40 +132,40 @@ import { GeneratorGeneratorOptions } from './schema.d';
  * @traceability DEV-PRD-019, DEV-ADR-019
  */
 export async function generatorGenerator(tree: Tree, schema: GeneratorGeneratorOptions): Promise<GeneratorCallback> {
-    const options = normalizeOptions(schema);
+  const options = normalizeOptions(schema);
 
-    logger.info(`🔧 Creating generator: ${options.name}`);
-    logger.info(`   Type: ${options.type}`);
-    logger.info(`   Location: ${options.generatorRoot}`);
+  logger.info(`🔧 Creating generator: ${options.name}`);
+  logger.info(`   Type: ${options.type}`);
+  logger.info(`   Location: ${options.generatorRoot}`);
 
-    // Validate
-    validateOptions(options);
+  // Validate
+  validateOptions(options);
 
-    // Check existing
-    checkExisting(tree, options);
+  // Check existing
+  checkExisting(tree, options);
 
-    // Generate files
-    generateCoreFiles(tree, options);
-    generateHexagonalFiles(tree, options);
-    generateCompositionFiles(tree, options);
-    generateTestFiles(tree, options);
-    generateSpecFile(tree, options);
+  // Generate files
+  generateCoreFiles(tree, options);
+  generateHexagonalFiles(tree, options);
+  generateCompositionFiles(tree, options);
+  generateTestFiles(tree, options);
+  generateSpecFile(tree, options);
 
-    // Update collection
-    updateGeneratorsCollection(tree, options);
+  // Update collection
+  updateGeneratorsCollection(tree, options);
 
-    // Format
-    await formatFiles(tree);
+  // Format
+  await formatFiles(tree);
 
-    return () => {
-        logger.info('');
-        logger.info('✅ Generator created successfully!');
-        logger.info('');
-        logger.info('Next steps:');
-        logger.info(`  1. Customize templates in: ${options.generatorRoot}/files/`);
-        logger.info(`  2. Update schema options in: ${options.generatorRoot}/schema.json`);
-        logger.info(`  3. Run your generator: pnpm exec nx g @vibespro/${options.fileName}:${options.fileName} test`);
-    };
+  return () => {
+    logger.info('');
+    logger.info('✅ Generator created successfully!');
+    logger.info('');
+    logger.info('Next steps:');
+    logger.info(`  1. Customize templates in: ${options.generatorRoot}/files/`);
+    logger.info(`  2. Update schema options in: ${options.generatorRoot}/schema.json`);
+    logger.info(`  3. Run your generator: pnpm exec nx g @vibespro/${options.fileName}:${options.fileName} test`);
+  };
 }
 
 export default generatorGenerator;
@@ -177,53 +177,53 @@ export default generatorGenerator;
 
 ```json
 {
-    "$schema": "https://json-schema.org/schema",
-    "type": "object",
-    "properties": {
-        "name": {
-            "type": "string",
-            "description": "Generator name (kebab-case)",
-            "$default": { "$source": "argv", "index": 0 },
-            "x-prompt": "What is the name of the generator?"
-        },
-        "type": {
-            "type": "string",
-            "enum": ["custom", "domain", "service", "component", "adapter", "utility"],
-            "default": "custom",
-            "description": "Generator type determining default templates"
-        },
-        "description": {
-            "type": "string",
-            "description": "Generator description for --help"
-        },
-        "targetScope": {
-            "type": "string",
-            "enum": ["libs", "apps"],
-            "default": "libs",
-            "description": "Default target scope for generated code"
-        },
-        "withComposition": {
-            "type": "boolean",
-            "default": false,
-            "description": "Include composition patterns for wrapping other generators"
-        },
-        "withHexagonal": {
-            "type": "boolean",
-            "default": false,
-            "description": "Include hexagonal architecture templates"
-        },
-        "withTests": {
-            "type": "boolean",
-            "default": true,
-            "description": "Generate test file"
-        },
-        "withSpec": {
-            "type": "boolean",
-            "default": true,
-            "description": "Generate spec documentation"
-        }
+  "$schema": "https://json-schema.org/schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Generator name (kebab-case)",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the name of the generator?"
     },
-    "required": ["name"]
+    "type": {
+      "type": "string",
+      "enum": ["custom", "domain", "service", "component", "adapter", "utility"],
+      "default": "custom",
+      "description": "Generator type determining default templates"
+    },
+    "description": {
+      "type": "string",
+      "description": "Generator description for --help"
+    },
+    "targetScope": {
+      "type": "string",
+      "enum": ["libs", "apps"],
+      "default": "libs",
+      "description": "Default target scope for generated code"
+    },
+    "withComposition": {
+      "type": "boolean",
+      "default": false,
+      "description": "Include composition patterns for wrapping other generators"
+    },
+    "withHexagonal": {
+      "type": "boolean",
+      "default": false,
+      "description": "Include hexagonal architecture templates"
+    },
+    "withTests": {
+      "type": "boolean",
+      "default": true,
+      "description": "Generate test file"
+    },
+    "withSpec": {
+      "type": "boolean",
+      "default": true,
+      "description": "Generate spec documentation"
+    }
+  },
+  "required": ["name"]
 }
 ```
 
@@ -233,13 +233,13 @@ export default generatorGenerator;
 
 ```typescript
 interface NormalizedSchema extends GeneratorGeneratorOptions {
-    generatorRoot: string;
-    className: string;
-    propertyName: string;
-    fileName: string;
-    constantName: string;
-    parsedTags: string[];
-    parsedCompositionGenerators: string[];
+  generatorRoot: string;
+  className: string;
+  propertyName: string;
+  fileName: string;
+  constantName: string;
+  parsedTags: string[];
+  parsedCompositionGenerators: string[];
 }
 ```
 
@@ -345,42 +345,42 @@ import { loadResolvedStack } from '../_utils/stack';
 import { deriveServiceDefaults } from '../_utils/stack_defaults';
 
 interface ServiceSchema {
-    name: string;
-    language?: 'python' | 'typescript';
-    directory?: string;
+  name: string;
+  language?: 'python' | 'typescript';
+  directory?: string;
 }
 
 export default withIdempotency(async function (tree: Tree, schema: unknown) {
-    const options = normalizeOptions(schema);
+  const options = normalizeOptions(schema);
 
-    // Attempt to derive defaults from tech stack
-    try {
-        const root = tree.root;
-        const stack = loadResolvedStack(root);
-        if (process.env.VIBEPDK_USE_STACK_DEFAULTS === '1') {
-            const defaults = deriveServiceDefaults(stack);
-            options.language = options.language ?? defaults.language;
-        }
-    } catch (e) {
-        const message = e instanceof Error ? e.message : String(e);
-        console.warn(`Could not derive defaults from tech stack: ${message}`);
+  // Attempt to derive defaults from tech stack
+  try {
+    const root = tree.root;
+    const stack = loadResolvedStack(root);
+    if (process.env.VIBEPDK_USE_STACK_DEFAULTS === '1') {
+      const defaults = deriveServiceDefaults(stack);
+      options.language = options.language ?? defaults.language;
     }
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    console.warn(`Could not derive defaults from tech stack: ${message}`);
+  }
 
-    const language = options.language ?? 'python';
+  const language = options.language ?? 'python';
 
-    if (language === 'python') {
-        await generatePythonService(tree, options);
-    } else {
-        const serviceRoot = `apps/${options.name}`;
-        generateFiles(tree, path.join(__dirname, 'files', language), serviceRoot, {
-            ...options,
-            serviceName: options.name,
-        });
-    }
+  if (language === 'python') {
+    await generatePythonService(tree, options);
+  } else {
+    const serviceRoot = `apps/${options.name}`;
+    generateFiles(tree, path.join(__dirname, 'files', language), serviceRoot, {
+      ...options,
+      serviceName: options.name,
+    });
+  }
 
-    return () => {
-        installPackagesTask(tree);
-    };
+  return () => {
+    installPackagesTask(tree);
+  };
 });
 ```
 
@@ -444,11 +444,11 @@ The service generator uses `withIdempotency` to ensure safe re-runs:
 
 ```typescript
 export function withIdempotency<T>(fn: (tree: Tree, schema: T) => Promise<() => void>) {
-    return async (tree: Tree, schema: T) => {
-        // Check if generator was already run
-        // Skip already-existing files unless explicitly updated
-        return fn(tree, schema);
-    };
+  return async (tree: Tree, schema: T) => {
+    // Check if generator was already run
+    // Skip already-existing files unless explicitly updated
+    return fn(tree, schema);
+  };
 }
 ```
 
@@ -892,35 +892,35 @@ BaseException
 ```typescript
 // Domain exception (libs/{domain}/domain/src/exceptions/)
 export class DomainException extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'DomainException';
-    }
+  constructor(message: string) {
+    super(message);
+    this.name = 'DomainException';
+  }
 }
 
 // Application exception (libs/{domain}/application/src/exceptions/)
 export class ApplicationException extends Error {
-    constructor(
-        message: string,
-        public readonly code: string,
-    ) {
-        super(message);
-        this.name = 'ApplicationException';
-    }
+  constructor(
+    message: string,
+    public readonly code: string,
+  ) {
+    super(message);
+    this.name = 'ApplicationException';
+  }
 }
 
 // Infrastructure exception (libs/{domain}/infrastructure/src/exceptions/)
 export class InfrastructureException extends Error {
-    constructor(
-        message: string,
-        public readonly cause?: Error,
-    ) {
-        super(message);
-        this.name = 'InfrastructureException';
-        if (cause) {
-            this.stack = `${this.stack}\nCaused by: ${cause.stack}`;
-        }
+  constructor(
+    message: string,
+    public readonly cause?: Error,
+  ) {
+    super(message);
+    this.name = 'InfrastructureException';
+    if (cause) {
+      this.stack = `${this.stack}\nCaused by: ${cause.stack}`;
     }
+  }
 }
 ```
 
@@ -969,21 +969,21 @@ import assert from 'node:assert';
 import { Order, OrderStatus } from '../../../../libs/orders/domain/order';
 
 describe('Order (Domain)', () => {
-    it('should create order with pending status', () => {
-        const orderId = OrderId.create();
-        const items = [{ productId: '1', quantity: 2 }];
+  it('should create order with pending status', () => {
+    const orderId = OrderId.create();
+    const items = [{ productId: '1', quantity: 2 }];
 
-        const order = Order.create(orderId, items);
+    const order = Order.create(orderId, items);
 
-        assert.strictEqual(order.status, OrderStatus.Pending);
-    });
+    assert.strictEqual(order.status, OrderStatus.Pending);
+  });
 
-    it('should not allow confirming cancelled order', () => {
-        const order = Order.create(OrderId.create(), []);
-        order.cancel();
+  it('should not allow confirming cancelled order', () => {
+    const order = Order.create(OrderId.create(), []);
+    order.cancel();
 
-        assert.throws(() => order.confirm(), /Cannot confirm cancelled order/);
-    });
+    assert.throws(() => order.confirm(), /Cannot confirm cancelled order/);
+  });
 });
 ```
 
@@ -992,23 +992,23 @@ describe('Order (Domain)', () => {
 ```typescript
 // tests/unit/libs/orders/application/create-order.test.ts
 describe('CreateOrderUseCase', () => {
-    let useCase: CreateOrderUseCase;
-    let mockOrderRepo: any;
+  let useCase: CreateOrderUseCase;
+  let mockOrderRepo: any;
 
-    beforeEach(() => {
-        mockOrderRepo = {
-            save: (order: any) => Promise.resolve(order),
-        };
-        useCase = new CreateOrderUseCase(mockOrderRepo);
-    });
+  beforeEach(() => {
+    mockOrderRepo = {
+      save: (order: any) => Promise.resolve(order),
+    };
+    useCase = new CreateOrderUseCase(mockOrderRepo);
+  });
 
-    it('should create order successfully', async () => {
-        const input = { userId: 'user-1', items: [] };
+  it('should create order successfully', async () => {
+    const input = { userId: 'user-1', items: [] };
 
-        const result = await useCase.execute(input);
+    const result = await useCase.execute(input);
 
-        assert.ok(result.orderId);
-    });
+    assert.ok(result.orderId);
+  });
 });
 ```
 
@@ -1021,22 +1021,22 @@ import { Tree } from '@nx/devkit';
 import generatorGenerator from './generator';
 
 describe('generator generator', () => {
-    let tree: Tree;
+  let tree: Tree;
 
-    beforeEach(() => {
-        tree = createTreeWithEmptyWorkspace();
-    });
+  beforeEach(() => {
+    tree = createTreeWithEmptyWorkspace();
+  });
 
-    it('should generate core files', async () => {
-        await generatorGenerator(tree, { name: 'test-gen' });
+  it('should generate core files', async () => {
+    await generatorGenerator(tree, { name: 'test-gen' });
 
-        expect(tree.exists('generators/test-gen/generator.ts')).toBeTruthy();
-        expect(tree.exists('generators/test-gen/schema.json')).toBeTruthy();
-    });
+    expect(tree.exists('generators/test-gen/generator.ts')).toBeTruthy();
+    expect(tree.exists('generators/test-gen/schema.json')).toBeTruthy();
+  });
 
-    it('should validate kebab-case name', async () => {
-        await expect(generatorGenerator(tree, { name: 'NotKebabCase' })).rejects.toThrow(/must be kebab-case/);
-    });
+  it('should validate kebab-case name', async () => {
+    await expect(generatorGenerator(tree, { name: 'NotKebabCase' })).rejects.toThrow(/must be kebab-case/);
+  });
 });
 ```
 
@@ -1071,23 +1071,23 @@ pytest --cov=. --cov-report=html
 
 1. **Query temporal_db** for existing patterns:
 
-    ```bash
-    just temporal-ai-query "patterns for <feature>"
-    ```
+   ```bash
+   just temporal-ai-query "patterns for <feature>"
+   ```
 
 2. **Check for existing generators**:
 
-    ```bash
-    pnpm exec nx list                    # All generators
-    pnpm exec nx list @vibepro           # Custom generators
-    ```
+   ```bash
+   pnpm exec nx list                    # All generators
+   pnpm exec nx list @vibepro           # Custom generators
+   ```
 
 3. **Scaffold using generators**:
 
-    ```bash
-    just ai-scaffold name=vibespro:service  # For services
-    just generator-new my-feature domain    # For new generators
-    ```
+   ```bash
+   just ai-scaffold name=vibespro:service  # For services
+   just generator-new my-feature domain    # For new generators
+   ```
 
 4. **Implement domain layer first** (pure business logic)
 
@@ -1100,9 +1100,9 @@ pytest --cov=. --cov-report=html
 8. **Write tests** at each layer
 
 9. **Run validation**:
-    ```bash
-    just ai-validate
-    ```
+   ```bash
+   just ai-validate
+   ```
 
 ### 9.2 Common Pitfalls to Avoid
 

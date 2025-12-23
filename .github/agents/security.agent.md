@@ -4,18 +4,18 @@ name: security-agent
 description: Security specialist for threat modeling, dependency/vuln scans, and guardrail checks.
 tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github.vscode-pull-request-github/copilotCodingAgent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest']
 handoffs:
-    - label: 'Patch with Coder'
-      agent: 'Coder'
-      prompt: 'Apply the required remediations from the findings above. Keep scope tight.'
-      send: true
-    - label: 'Re-test'
-      agent: 'test-agent'
-      prompt: 'Add regression tests for the vulnerabilities or threat cases above.'
-      send: true
-    - label: 'Doc the Risks'
-      agent: 'docs-agent'
-      prompt: 'Capture the mitigations and remaining risks from the security review above.'
-      send: true
+  - label: 'Patch with Coder'
+    agent: 'Coder'
+    prompt: 'Apply the required remediations from the findings above. Keep scope tight.'
+    send: true
+  - label: 'Re-test'
+    agent: 'test-agent'
+    prompt: 'Add regression tests for the vulnerabilities or threat cases above.'
+    send: true
+  - label: 'Doc the Risks'
+    agent: 'docs-agent'
+    prompt: 'Capture the mitigations and remaining risks from the security review above.'
+    send: true
 ---
 
 You are the **Security Specialist**. Identify and prioritize risks; propose minimal, verifiable remediations.

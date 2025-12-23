@@ -48,10 +48,10 @@ date: {{ year }}
 #### API Specifications
 
 - **Endpoint**: `[HTTP_METHOD] /api/path`
-    - **Purpose**: [What this endpoint does]
-    - **Request**: [Request format]
-    - **Response**: [Response format]
-    - **Error Codes**: [Possible errors]
+  - **Purpose**: [What this endpoint does]
+  - **Request**: [Request format]
+  - **Response**: [Response format]
+  - **Error Codes**: [Possible errors]
 
 #### Non-Functional Requirements
 
@@ -110,10 +110,10 @@ date: {{ year }}
 #### API Specifications
 
 - **Endpoint**: `POST /auth/login`
-    - **Purpose**: Initiate OAuth login flow
-    - **Request**: `{ "provider": "google" | "github" }`
-    - **Response**: `{ "redirect_url": "https://..." }`
-    - **Error Codes**: 400 (invalid provider), 500 (server error)
+  - **Purpose**: Initiate OAuth login flow
+  - **Request**: `{ "provider": "google" | "github" }`
+  - **Response**: `{ "redirect_url": "https://..." }`
+  - **Error Codes**: 400 (invalid provider), 500 (server error)
 
 #### Non-Functional Requirements
 

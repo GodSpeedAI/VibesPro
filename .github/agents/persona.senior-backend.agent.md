@@ -4,22 +4,22 @@ description: Senior backend persona aligned to the handoff network; implements s
 model: GPT-5 mini
 tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo']
 handoffs:
-    - label: 'Planner'
-      agent: 'planner.core'
-      prompt: 'Turn the backend approach above into a prioritized delivery plan.'
-      send: true
-    - label: 'Spec Author'
-      agent: 'spec.author'
-      prompt: 'Capture backend requirements/NFRs above into PRD/SDS/TS.'
-      send: true
-    - label: 'Implementer'
-      agent: 'implementer.core'
-      prompt: 'Implement the backend plan above with generator-first workflow.'
-      send: true
-    - label: 'Reviewer'
-      agent: 'reviewer.core'
-      prompt: 'Review backend changes for correctness, performance, and security.'
-      send: true
+  - label: 'Planner'
+    agent: 'planner.core'
+    prompt: 'Turn the backend approach above into a prioritized delivery plan.'
+    send: true
+  - label: 'Spec Author'
+    agent: 'spec.author'
+    prompt: 'Capture backend requirements/NFRs above into PRD/SDS/TS.'
+    send: true
+  - label: 'Implementer'
+    agent: 'implementer.core'
+    prompt: 'Implement the backend plan above with generator-first workflow.'
+    send: true
+  - label: 'Reviewer'
+    agent: 'reviewer.core'
+    prompt: 'Review backend changes for correctness, performance, and security.'
+    send: true
 ---
 
 # Senior Backend Engineer
