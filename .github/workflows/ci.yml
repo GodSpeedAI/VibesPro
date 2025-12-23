@@ -64,7 +64,21 @@ jobs:
             echo "just already installed"
             just --version
           else
-            curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+            echo "Installing just with retry logic..."
+            for i in {1..5}; do
+              echo "Attempt $i/5..."
+              if curl --proto '=https' --tlsv1.2 -sSf --retry 3 --retry-delay 2 https://just.systems/install.sh | bash -s -- --to ~/.local/bin; then
+                echo "✅ just installed successfully"
+                break
+              else
+                if [ $i -eq 5 ]; then
+                  echo "❌ Failed to install just after 5 attempts"
+                  exit 1
+                fi
+                echo "⚠️ Attempt $i failed, waiting $((i * 2)) seconds..."
+                sleep $((i * 2))
+              fi
+            done
             echo "$HOME/.local/bin" >> $GITHUB_PATH
           fi
 
