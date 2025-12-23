@@ -179,7 +179,7 @@ jobs:
           fetch-depth: 1
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@3b139cfc5fae8b618d3eae3571e89f4b7ec01de1 # v4.6.0
+        uses: actions/dependency-review-action@72eb03d02c14d7b88cf404e532bfeff7349c0bf8 # v4.6.0
         with:
           fail-on-severity: high
           deny-licenses: GPL-3.0, AGPL-3.0
