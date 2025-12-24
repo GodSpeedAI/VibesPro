@@ -7,7 +7,7 @@ set -euo pipefail
 # - Script runs in repo root
 # - devbox and git are installed in runner
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OVERLAY_PATH="${ROOT_DIR}/.devbox/overlays/supabase.nix"
 REPO="${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -e 's#.*/\(.*\)/\(.*\)\.git#\1/\2#')}"
 GITHUB_API="https://api.github.com/repos/${REPO}"
