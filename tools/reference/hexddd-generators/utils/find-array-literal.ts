@@ -10,6 +10,7 @@ export function findArrayLiteral(code: string, propName: string): number {
     return -1;
   }
   const node = nodes[0];
+  if (!node) return -1;
   const bracket = code.indexOf('[', node.pos);
   return bracket + 1;
 }
