@@ -115,9 +115,6 @@
     "appsDir": "apps",
     "libsDir": "libs"
   },
-  "affected": {
-    "defaultBase": "main"
-  },
   "release": {
     "version": {
       "preVersionCommand": "pnpm build"
