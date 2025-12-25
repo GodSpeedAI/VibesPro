@@ -14,3 +14,6 @@ tmp/copier-inspect-noai
 
 # Generator smoke test outputs
 tmp/generator-smoke-tests
+
+# Tools directory type config (not a project)
+tools/package.json
