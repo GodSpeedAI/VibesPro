@@ -91,7 +91,8 @@ exclude = [
   "target/.*",
   "scripts/",
   "libs/shared/types-py/.*",
-  "apps/copier-smoke-example/.*"
+  "apps/copier-smoke-example/.*",
+  "hooks/.*"
 ]
 
   [[tool.mypy.overrides]]
