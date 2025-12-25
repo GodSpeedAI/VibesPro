@@ -392,7 +392,10 @@ export async function webAppGenerator(tree: Tree, options: WebAppGeneratorSchema
     ensureSharedWeb(tree, options);
   }
 
-  await formatFiles(tree);
+  // Skip formatFiles in test mode to avoid Prettier dynamic import issues
+  if (!shouldStubGenerators) {
+    await formatFiles(tree);
+  }
 }
 
 export default webAppGenerator;

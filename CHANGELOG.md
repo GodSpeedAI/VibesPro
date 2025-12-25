@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [0.6.0] - 2025-12-25
+
+**Full Changelog**: https://github.com/GodSpeedAI/VibesPro/compare/v0.5.1...v0.6.0
+
 ## [Unreleased]
 
 - Initial project bootstrap for the HexDDD × VibePDK merger.
