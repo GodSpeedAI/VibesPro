@@ -1,0 +1,72 @@
+# Smoke Test Data File for Copier Template Validation
+# =====================================================
+# This file provides deterministic, minimal answers for smoke testing
+# the Copier template generation. It exercises representative paths
+# through the template while minimizing external dependencies.
+#
+# Invariants:
+#   - INV-01: copier.yml validates without errors
+#   - INV-03: Generated project passes pnpm install && nx run-many --target=build
+#   - INV-06: Template hooks exit cleanly (status 0)
+#
+# Usage:
+#   copier copy . ./test-output --data-file tests/fixtures/smoke-data.yml --trust --defaults --force
+#
+# Traceability: AI_ADR-001, AI_SDS-001
+
+# =============================================================================
+# SECTION 1: Basic Project Information
+# =============================================================================
+project_name: 'Copier Smoke Example'
+project_slug: 'copier-smoke-example'
+author_name: 'VibesPro CI'
+author_email: 'ci@vibespro.dev'
+
+# =============================================================================
+# SECTION 2: What Does Your Project Do?
+# =============================================================================
+project_purpose: 'Validates Copier template generation for VibesPro'
+
+# =============================================================================
+# SECTION 3: What Should Your App Be Called Internally?
+# =============================================================================
+domain_name: 'smoke-domain'
+domains: 'smoke-domain,core'
+primary_domains: 'smoke-domain'
+bounded_context: 'smoke-context'
+
+# =============================================================================
+# SECTION 4: Technology Choices
+# =============================================================================
+architecture_style: 'hexagonal'
+app_framework: 'next'
+app_name: 'smoke-app'
+app_router_style: 'app'
+backend_framework: 'fastapi'
+database_type: 'postgresql'
+include_supabase: false  # Disabled to minimize external dependencies
+tech_stack_summary: ''
+base_url: 'http://localhost:3000'
+
+# =============================================================================
+# SECTION 5: AI-Powered Development Features
+# =============================================================================
+include_ai_workflows: true
+enable_temporal_learning: false  # Disabled to skip heavy model downloads
+
+# =============================================================================
+# SECTION 6: Code Structure Options
+# =============================================================================
+include_domain_entities: true
+include_value_objects: true
+include_domain_events: true
+include_use_cases: true
+include_repositories: true
+app_domains: 'smoke-domain'
+include_api_client: true
+include_example_page: true
+
+# =============================================================================
+# SECTION 7: Security Features
+# =============================================================================
+enable_security_hardening: false

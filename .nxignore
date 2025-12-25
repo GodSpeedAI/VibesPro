@@ -1,1 +1,16 @@
-templates/
+# Directories containing nested Nx workspaces or generated test output
+# These would conflict with the main workspace project graph
+
+templates
+apps/copier-smoke-example
+tmp
+test-output
+home
+.tmp
+
+# Copier inspection directories
+tmp/copier-inspect
+tmp/copier-inspect-noai
+
+# Generator smoke test outputs
+tmp/generator-smoke-tests

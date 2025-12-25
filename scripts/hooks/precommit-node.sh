@@ -93,9 +93,9 @@ main() {
   else
     # Try version managers in order of preference
     debug "Node.js tools not in PATH, trying version managers..."
-    
+
     activate_mise || activate_fnm || activate_nvm || activate_devbox || true
-    
+
     # Final check
     if ! check_node; then
       error "Could not find Node.js/pnpm after trying all version managers"

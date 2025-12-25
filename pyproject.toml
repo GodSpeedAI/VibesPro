@@ -90,7 +90,8 @@ exclude = [
   "^.*\\{\\{.*\\}\\}.*$",
   "target/.*",
   "scripts/",
-  "libs/shared/types-py/.*"
+  "libs/shared/types-py/.*",
+  "apps/copier-smoke-example/.*"
 ]
 
   [[tool.mypy.overrides]]
@@ -109,7 +110,8 @@ norecursedirs = [
   "node_modules",
   ".venv",
   ".git",
-  "target"
+  "target",
+  "apps/copier-smoke-example"
 ]
 
 

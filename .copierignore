@@ -1,30 +1,120 @@
 # Copier ignore file - exclude non-template directories from processing
-VibePDK/
-VibePDK/**
-apps/
-libs/
-tools/type-generator/
-tools/ai/node_modules/
-tools/ai/dist/
-tests/
-tests/**
-coverage/
-htmlcov/
-target/
-src/
-mcp/
-hooks/__pycache__/
-architecture/
-domain/
-scripts/
+# This file follows .gitignore syntax but applies to Copier template copying
+# Updated: 2025-12-25
+
+# ============================================================================
+# Version Control & Git
+# ============================================================================
 .git/
+.gitignore
+
+# ============================================================================
+# IDE & Editor Configurations
+# ============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.*.sw?
+
+# ============================================================================
+# Node.js / JavaScript
+# ============================================================================
 node_modules/
-*.pyc
-__pycache__/
-.pytest_cache/
-.coverage
-.nyc_output/
 dist/
 build/
 .next/
-.vscode/
+.nx/
+.nyc_output/
+coverage/
+
+# ============================================================================
+# Python
+# ============================================================================
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+*.egg-info/
+
+# ============================================================================
+# Rust
+# ============================================================================
+target/
+Cargo.lock
+
+# ============================================================================
+# Project Directories (not templates)
+# ============================================================================
+apps/
+libs/
+tools/
+tests/
+scripts/
+architecture/
+domain/
+mcp/
+src/
+cli/
+crates/
+examples/
+generators/
+ops/
+supabase/
+temporal_db/
+docs/work/
+docs/audits/
+docs/sandbox/
+
+# ============================================================================
+# Temporary & Cache Directories
+# ============================================================================
+tmp/
+.tmp/
+.cache/
+.uv-cache/
+.aider*/
+test-output/
+
+# ============================================================================
+# Environment & Secrets
+# ============================================================================
+.env
+.env.*
+.secrets.*
+*.sops
+.envrc
+
+# ============================================================================
+# CI/CD & DevOps
+# ============================================================================
+.github/workflows/
+.github/actions/
+docker/
+Dockerfile
+
+# ============================================================================
+# Miscellaneous
+# ============================================================================
+*.log
+*.lock
+*.bak
+~*
+home/
+models/
+data/
+transcripts/
+tmpdocs/
+tmpdocs-html/
+vibespro/
+
+# ============================================================================
+# Hook internals (but keep hooks/ visible for task execution)
+# ============================================================================
+hooks/__pycache__/
+hooks/lib/__pycache__/
