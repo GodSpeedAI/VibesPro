@@ -79,21 +79,21 @@ if [[ -f "CHANGELOG.md" ]]; then
 
   if [[ -n "$FIRST_HEADING_LINE" ]]; then
     # Split file and insert new entry
-    head -n $((FIRST_HEADING_LINE - 1)) CHANGELOG.md > CHANGELOG.md.new
-    echo "" >> CHANGELOG.md.new
-    echo "$CHANGELOG_ENTRY" >> CHANGELOG.md.new
-    echo "" >> CHANGELOG.md.new
-    tail -n +$FIRST_HEADING_LINE CHANGELOG.md >> CHANGELOG.md.new
+    head -n $((FIRST_HEADING_LINE - 1)) CHANGELOG.md >CHANGELOG.md.new
+    echo "" >>CHANGELOG.md.new
+    echo "$CHANGELOG_ENTRY" >>CHANGELOG.md.new
+    echo "" >>CHANGELOG.md.new
+    tail -n +$FIRST_HEADING_LINE CHANGELOG.md >>CHANGELOG.md.new
     mv CHANGELOG.md.new CHANGELOG.md
   else
     # No existing entries, append after header
-    echo "" >> CHANGELOG.md
-    echo "$CHANGELOG_ENTRY" >> CHANGELOG.md
+    echo "" >>CHANGELOG.md
+    echo "$CHANGELOG_ENTRY" >>CHANGELOG.md
   fi
   echo "✅ Updated CHANGELOG.md"
 else
   # Create new CHANGELOG.md
-  cat > CHANGELOG.md <<EOF
+  cat >CHANGELOG.md <<EOF
 # Changelog
 
 All notable changes to this project will be documented in this file.

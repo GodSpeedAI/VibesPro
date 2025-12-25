@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # mypy: ignore-errors
-#!/usr/bin/env python3
 """Post-generation setup hook for Copier."""
 
 from __future__ import annotations

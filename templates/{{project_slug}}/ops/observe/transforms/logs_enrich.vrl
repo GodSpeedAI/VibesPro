@@ -1,0 +1,32 @@
+# Enrich with metadata from resource attributes or set defaults
+# Service name from resource or unknown
+if exists(.resource.attributes."service.name") {
+  .service = string!(.resource.attributes."service.name")
+} else if exists(.attributes.service) {
+  .service = string!(.attributes.service)
+} else {
+  .service = "unknown"
+}
+
+# Environment from resource or local
+if exists(.resource.attributes.environment) {
+  .environment = string!(.resource.attributes.environment)
+} else if exists(.attributes.environment) {
+  .environment = string!(.attributes.environment)
+} else {
+  .environment = "local"
+}
+
+# Application version from resource or dev
+if exists(.resource.attributes."service.version") {
+  .application_version = string!(.resource.attributes."service.version")
+} else if exists(.attributes.application_version) {
+  .application_version = string!(.attributes.application_version)
+} else {
+  .application_version = "dev"
+}
+
+# Ensure category field exists (default to "app")
+if !exists(.attributes.category) {
+  .attributes.category = "app"
+}

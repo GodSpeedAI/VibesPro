@@ -19,7 +19,7 @@ UPDATED=0
 
 # Update package.json
 if [[ -f "package.json" ]]; then
-  jq ".version = \"$NEW_VERSION\"" package.json > package.json.tmp
+  jq ".version = \"$NEW_VERSION\"" package.json >package.json.tmp
   mv package.json.tmp package.json
   echo "✅ Updated package.json"
   UPDATED=$((UPDATED + 1))

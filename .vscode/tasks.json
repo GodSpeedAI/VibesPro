@@ -1,0 +1,148 @@
+{
+  "version": "2.0.0",
+  "options": {
+    "env": {
+      "PATH": "${env:HOME}/.local/share/mise/shims:${env:HOME}/.local/share/mise/installs/node/20.11.1/bin:${env:HOME}/.local/bin:${workspaceFolder}/node_modules/.bin:${env:PATH}"
+    }
+  },
+  "tasks": [
+    {
+      "label": "Setup: Full Environment",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "setup"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup: Install Dependencies",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["pnpm", "install"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Nx: Show Project Graph",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["pnpm", "exec", "nx", "graph"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Nx: Build All",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["pnpm", "exec", "nx", "run-many", "--target=build", "--all"],
+      "group": "build",
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Nx: Test All",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["pnpm", "exec", "nx", "run-many", "--target=test", "--all"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Nx: Lint All",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["pnpm", "exec", "nx", "run-many", "--target=lint", "--all"],
+      "group": "build",
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Nx: Reset Cache",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["pnpm", "exec", "nx", "reset"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: Start All Servers",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "dev"],
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: Pre-commit Checks",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "pre-commit"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test: Python",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "test-python"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test: Node",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "test-node"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test: Template Generation",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "test-generation"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Copier: Validate Templates",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "copier-validate-templates"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Copier: Smoke Test",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "copier-smoke-test"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Doctor: Check Environment",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "doctor"],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Doctor: Verify Node Version",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["node", "--version"],
+      "problemMatcher": []
+    }
+  ]
+}
