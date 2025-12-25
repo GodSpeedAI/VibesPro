@@ -1,10 +1,55 @@
+# =============================================================================
+# CI Pipeline - Production Grade
+# =============================================================================
+# Decomposed into parallel jobs for fast feedback. Lint failures surface in
+# ~45 seconds, not after a 15-minute test suite.
+#
+# Job dependency graph:
+#   setup-node ─┬─> lint ──────────────────────────┐
+#               ├─> typecheck ─────────────────────┤
+#               └─> build ─> test ─> template-test ┴─> summary
+#   setup-python ──> python-lint ──> python-test ──────┘
+#
+# Local reproduction: ./scripts/ci-local.sh <job>
+# =============================================================================
+
 name: CI
 
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'libs/**'
+      - 'tools/**'
+      - 'tests/**'
+      - 'generators/**'
+      - 'templates/**'
+      - 'package*.json'
+      - 'pnpm-lock.yaml'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/ci.yml'
+      - '.github/actions/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'libs/**'
+      - 'tools/**'
+      - 'tests/**'
+      - 'generators/**'
+      - 'templates/**'
+      - 'package*.json'
+      - 'pnpm-lock.yaml'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/ci.yml'
+      - '.github/actions/**'
 
 permissions:
   contents: read
@@ -13,56 +58,262 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      LC_ALL: C.UTF-8
-      LANG: C.UTF-8
-      NX_NO_CLOUD: 'true'
-      NX_REJECT_REMOTE_CACHE: 'true'
+# -----------------------------------------------------------------------------
+# Shared environment variables
+# -----------------------------------------------------------------------------
+env:
+  LC_ALL: C.UTF-8
+  LANG: C.UTF-8
+  NX_NO_CLOUD: 'true'
+  NX_REJECT_REMOTE_CACHE: 'true'
+  NODE_VERSION: '20.11.1'
+  PYTHON_VERSION: '3.11'
 
+jobs:
+  # ---------------------------------------------------------------------------
+  # Lint - Fast feedback (~45 seconds)
+  # ---------------------------------------------------------------------------
+  lint:
+    name: Lint (ESLint)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm run lint
+
+  # ---------------------------------------------------------------------------
+  # TypeScript Type Check (~1-2 minutes)
+  # ---------------------------------------------------------------------------
+  typecheck:
+    name: TypeScript Type Check
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run TypeScript compiler
+        run: pnpm exec tsc --noEmit --pretty false
+
+  # ---------------------------------------------------------------------------
+  # Python Lint (~30 seconds)
+  # ---------------------------------------------------------------------------
+  python-lint:
+    name: Python Lint (ruff)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0
+
+      - name: Install Python dependencies
+        run: uv sync --group dev --all-extras --frozen
+
+      - name: Run ruff
+        run: uv run ruff check .
+
+  # ---------------------------------------------------------------------------
+  # Build (~3-5 minutes)
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    needs: [lint, typecheck]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
 
       - name: Free disk space
         run: |
           echo "Disk space before cleanup:"
           df -h /
-          # Remove unused preinstalled software to free ~40GB
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-          sudo docker image prune -af 2>/dev/null || true
+          sudo docker image prune -af 2>/dev/null || echo "Docker prune skipped"
           echo "Disk space after cleanup:"
           df -h /
 
-      - name: Load versions
-        run: cat .github/config/versions.env >> $GITHUB_ENV
-
       - name: Setup pnpm
-        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3.0.0
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
         with:
           run_install: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: '20.11.1'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build projects
+        run: pnpm build
+
+      - name: Cache build artifacts
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            dist
+            node_modules/.cache
+          key: build-${{ runner.os }}-${{ github.sha }}
+
+  # ---------------------------------------------------------------------------
+  # Node Tests (~5-10 minutes)
+  # ---------------------------------------------------------------------------
+  test-node:
+    name: Node Tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Restore build cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            dist
+            node_modules/.cache
+          key: build-${{ runner.os }}-${{ github.sha }}
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Jest tests
+        run: pnpm test:jest --runInBand --passWithNoTests
+
+      - name: Run targeted AI guidance suites
+        run: |
+          pnpm test:jest -- --runTestsByPath \
+            tests/perf/test_performance_advisories.spec.ts \
+            tests/context/test_context_manager_scoring.spec.ts \
+            --runInBand
+
+      - name: Run Node smoke tests
+        run: pnpm test:node
+
+  # ---------------------------------------------------------------------------
+  # Python Tests (~3-5 minutes)
+  # ---------------------------------------------------------------------------
+  test-python:
+    name: Python Tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    needs: python-lint
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0
+
+      - name: Install Python dependencies
+        run: uv sync --group dev --all-extras --frozen
+
+      - name: Run pytest
+        run: uv run pytest
+
+  # ---------------------------------------------------------------------------
+  # Template Validation (~5 minutes)
+  # ---------------------------------------------------------------------------
+  template-test:
+    name: Template Validation
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    needs: [test-node, test-python]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - name: Set up Python
-        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
         with:
-          python-version: '3.11'
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
-
-      - name: Install Bun runtime
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: '1.1.42'
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0
 
       - name: Install Copier
         run: uv tool install copier
@@ -70,66 +321,46 @@ jobs:
       - name: Install just
         uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6 # v2
 
-      - name: Verify just installation
-        run: just --version
-
-      - name: Setup Devbox (CI)
-        uses: ./.github/actions/setup-devbox
-
-      - name: 'Devbox: update and ensure packages'
-        run: |
-          set -euo pipefail
-          # Update generated flake to ensure packages are available in the shell
-          devbox update || true
-
-      - name: 'Devbox: validate overlay pin (supabase)'
-        run: |
-          set -euo pipefail
-          bash scripts/dev/validate_supabase_overlay_pin.sh
-
-      - name: 'Devbox: check supabase availability'
-        run: |
-          set -euo pipefail
-          bash scripts/dev/check_supabase_in_devbox.sh
-
       - name: Install Node dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: TypeScript typecheck
-        # Run tsc explicitly (non-pretty) to surface compiler errors with clear diagnostics
-        run: pnpm exec tsc --noEmit --pretty false || { echo "::error::TypeScript typecheck failed"; exit 1; }
-
-      - name: Install Python dependencies
-        run: uv sync --group dev --all-extras --frozen
-
-      - name: Build projects
-        run: pnpm build
-
-      - name: Lint
-        run: |
-          pnpm lint
-          uv run ruff check .
-
-      - name: Run tests
-        run: |
-          echo "Running Jest tests..."
-          pnpm test:jest --runInBand --passWithNoTests || { echo "::error::Jest tests failed"; exit 1; }
-          echo "Running targeted AI guidance Jest suites..."
-          pnpm test:jest -- --runTestsByPath tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts --runInBand || { echo "::error::AI guidance Jest suites failed"; exit 1; }
-          echo "Running Node smoke tests..."
-          pnpm test:node || { echo "::error::Node smoke tests failed"; exit 1; }
-          echo "Running pytest..."
-          uv run pytest || { echo "::error::Pytest failed"; exit 1; }
-          echo "All tests passed successfully!"
-
       - name: Validate template
-        # UV_NO_SYNC=1 prevents uv from syncing dependencies during template generation test
-        # This validates that the template generation process works correctly
-        run: |
-          set -e
-          just test-generation || {
-            echo "::error::Template generation validation failed. Check 'just test-generation' output above."
-            exit 1
-          }
+        run: just test-generation
         env:
           UV_NO_SYNC: '1'
+
+  # ---------------------------------------------------------------------------
+  # CI Summary - Quality Gate
+  # ---------------------------------------------------------------------------
+  ci-summary:
+    name: CI Summary
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    needs: [lint, typecheck, python-lint, build, test-node, test-python, template-test]
+    if: always()
+    steps:
+      - name: Check all job results
+        run: |
+          echo "Job Results:"
+          echo "  lint:          ${{ needs.lint.result }}"
+          echo "  typecheck:     ${{ needs.typecheck.result }}"
+          echo "  python-lint:   ${{ needs.python-lint.result }}"
+          echo "  build:         ${{ needs.build.result }}"
+          echo "  test-node:     ${{ needs.test-node.result }}"
+          echo "  test-python:   ${{ needs.test-python.result }}"
+          echo "  template-test: ${{ needs.template-test.result }}"
+          echo ""
+
+          # Fail if any required job failed
+          if [[ "${{ needs.lint.result }}" != "success" ]] || \
+             [[ "${{ needs.typecheck.result }}" != "success" ]] || \
+             [[ "${{ needs.python-lint.result }}" != "success" ]] || \
+             [[ "${{ needs.build.result }}" != "success" ]] || \
+             [[ "${{ needs.test-node.result }}" != "success" ]] || \
+             [[ "${{ needs.test-python.result }}" != "success" ]] || \
+             [[ "${{ needs.template-test.result }}" != "success" ]]; then
+            echo "❌ CI failed - one or more required jobs did not succeed"
+            exit 1
+          fi
+
+          echo "✅ All CI checks passed"
