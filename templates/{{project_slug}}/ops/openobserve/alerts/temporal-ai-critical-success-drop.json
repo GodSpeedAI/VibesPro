@@ -1,0 +1,25 @@
+{
+  "name": "Temporal AI - Critical Success Rate Drop",
+  "description": "Critical alert when pattern success rate drops below 30% - immediate attention required",
+  "stream": "temporal_ai_recommendations",
+  "query_type": "sql",
+  "query": "SELECT pattern_id, ROUND(success_rate * 100, 1) as success_pct, ROUND(error_rate * 100, 1) as error_pct, recommendation_count FROM temporal_ai_recommendations WHERE success_rate < 0.3 AND recommendation_count > 5",
+  "condition": {
+    "column": "pattern_id",
+    "operator": "IsNotNull",
+    "value": null,
+    "ignore_case": false
+  },
+  "duration": 5,
+  "frequency": 1,
+  "time_between_alerts": 15,
+  "destination": "temporal-ai-email",
+  "is_real_time": true,
+  "context_attributes": {
+    "severity": "critical",
+    "category": "performance",
+    "component": "temporal-ai",
+    "priority": "high"
+  },
+  "enabled": true
+}

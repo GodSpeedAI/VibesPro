@@ -1,0 +1,166 @@
+# Vector configuration for local observability pipeline.
+# Ingests OTLP traffic (gRPC + HTTP) and prints spans/logs to stdout for now.
+
+data_dir = "tmp/vector-data"
+
+[api]
+enabled = true
+address = "127.0.0.1:8686"
+
+[sources.otlp]
+type = "opentelemetry"
+use_otlp_decoding = true
+
+  [sources.otlp.acknowledgements]
+
+  [sources.otlp.grpc]
+  address = "0.0.0.0:4317"
+
+  [sources.otlp.http]
+  address = "0.0.0.0:4318"
+  headers = []
+
+  [sources.otlp.http.keepalive]
+  max_connection_age_secs = 300
+  max_connection_age_jitter_factor = 0.1
+
+[transforms.traces_sanitize]
+type = "remap"
+inputs = ["otlp.traces"]
+files = [
+  "tools/vector/macros.vrl",
+  "tools/vector/traces_sanitize.vrl",
+]
+
+[sinks.dev_console]
+inputs = ["traces_sanitize"]
+target = "stdout"
+type = "console"
+
+[sinks.dev_console.encoding]
+codec = "json"
+
+[sinks.trace_file]
+type = "file"
+inputs = ["traces_sanitize"]
+path = "tmp/vector-traces.log"
+
+[sinks.trace_file.encoding]
+codec = "json"
+
+# OpenObserve OTLP HTTP sink for production trace storage and analytics
+# Requires: OPENOBSERVE_URL and OPENOBSERVE_TOKEN environment variables
+[sinks.openobserve]
+type = "http"
+inputs = ["traces_sanitize"]
+uri = "${OPENOBSERVE_URL:-http://localhost:5080}/api/${OPENOBSERVE_ORG:-default}/v1/traces"
+method = "post"
+
+[sinks.openobserve.encoding]
+codec = "json"
+
+[sinks.openobserve.auth]
+strategy = "basic"
+user = "${OPENOBSERVE_USER:-root@example.com}"
+password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
+
+[sinks.openobserve.request]
+timeout_secs = 30
+retry_attempts = 3
+
+  [sinks.openobserve.request.headers]
+  "Content-Type" = "application/json"
+
+[sinks.null_metrics]
+inputs = ["otlp.metrics"]
+type = "blackhole"
+
+[transforms.metrics_logfire_extract]
+type = "remap"
+inputs = ["otlp.metrics"]
+file = "ops/vector/transforms/metrics_logfire_extract.vrl"
+
+[transforms.metrics_logfire_enrich]
+type = "remap"
+inputs = ["metrics_logfire_extract"]
+file = "ops/vector/transforms/metrics_logfire_enrich.vrl"
+
+[sinks.metrics_logfire_openobserve]
+type = "http"
+inputs = ["metrics_logfire_enrich"]
+uri = "${OPENOBSERVE_URL:-http://localhost:5080}/api/${OPENOBSERVE_ORG:-default}/v1/logfire_metrics"
+method = "post"
+
+[sinks.metrics_logfire_openobserve.encoding]
+codec = "json"
+
+[sinks.metrics_logfire_openobserve.auth]
+strategy = "basic"
+user = "${OPENOBSERVE_USER:-root@example.com}"
+password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
+
+[sinks.metrics_logfire_openobserve.request]
+timeout_secs = 30
+retry_attempts = 3
+
+  [sinks.metrics_logfire_openobserve.request.headers]
+  "Content-Type" = "application/json"
+
+# --- Logs Pipeline ---
+# Process OTLP logs with PII redaction, enrichment, and storage
+
+[transforms.logs_redact_pii]
+type = "remap"
+inputs = ["otlp.logs"]
+files = ["tools/vector/macros.vrl", "ops/vector/transforms/logs_redact_pii.vrl"]
+
+[transforms.logs_logfire_normalize]
+type = "remap"
+inputs = ["logs_redact_pii"]
+file = "ops/vector/transforms/logs_logfire_normalize.vrl"
+
+# logs_enrich ensures .service, .environment, and .application_version metadata
+[transforms.logs_enrich]
+type = "remap"
+inputs = ["logs_logfire_normalize"]
+file = "ops/vector/transforms/logs_enrich.vrl"
+
+# Console output for local debugging
+[sinks.logs_console]
+inputs = ["logs_enrich"]
+target = "stdout"
+type = "console"
+
+[sinks.logs_console.encoding]
+codec = "json"
+
+# File sink for local log persistence
+[sinks.logs_file]
+type = "file"
+inputs = ["logs_enrich"]
+path = "tmp/vector-logs.log"
+
+[sinks.logs_file.encoding]
+codec = "json"
+
+# OpenObserve OTLP HTTP sink for production log storage
+[sinks.logs_openobserve]
+type = "http"
+inputs = ["logs_enrich"]
+uri = "${OPENOBSERVE_URL:-http://localhost:5080}/api/${OPENOBSERVE_ORG:-default}/v1/logs"
+method = "post"
+
+[sinks.logs_openobserve.encoding]
+codec = "json"
+
+[sinks.logs_openobserve.auth]
+strategy = "basic"
+user = "${OPENOBSERVE_USER:-root@example.com}"
+password = "${OPENOBSERVE_TOKEN:-dummy-token-for-validation}"
+
+[sinks.logs_openobserve.request]
+timeout_secs = 30
+retry_attempts = 3
+
+  [sinks.logs_openobserve.request.headers]
+  "Content-Type" = "application/json"

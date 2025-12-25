@@ -5,7 +5,7 @@
 set -euo pipefail
 
 CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-CURRENT_VERSION=${CURRENT_VERSION#v}  # Strip 'v' prefix
+CURRENT_VERSION=${CURRENT_VERSION#v} # Strip 'v' prefix
 
 echo "📊 Analyzing commits since v$CURRENT_VERSION..."
 
@@ -52,7 +52,7 @@ fi
 echo ""
 
 # Calculate new version
-IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+IFS='.' read -r MAJOR MINOR PATCH <<<"$CURRENT_VERSION"
 # Handle edge case where version parts might be empty
 MAJOR=${MAJOR:-0}
 MINOR=${MINOR:-0}
@@ -77,8 +77,8 @@ NEW_VERSION="$MAJOR.$MINOR.$PATCH"
 
 # Store results for other scripts
 RELEASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-echo "$NEW_VERSION" > "$RELEASE_DIR/.next-version"
-echo "$BUMP_TYPE" > "$RELEASE_DIR/.bump-type"
+echo "$NEW_VERSION" >"$RELEASE_DIR/.next-version"
+echo "$BUMP_TYPE" >"$RELEASE_DIR/.bump-type"
 
 echo "✅ Version bump: $CURRENT_VERSION → $NEW_VERSION ($BUMP_TYPE)"
 echo ""

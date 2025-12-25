@@ -5,22 +5,49 @@
   "python.analysis.typeCheckingMode": "strict",
   "python.analysis.extraPaths": ["${workspaceFolder}"],
   "python.terminal.activateEnvironment": true,
+
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit"
   },
+
   "files.exclude": {
     "**/__pycache__": true,
     "**/.pytest_cache": true,
     "**/.nx": true,
     "**/node_modules": true,
-    "test-output": true
+    "test-output": true,
+    "apps/copier-smoke-example": true,
+    "tmp": true
   },
+
   "nxConsole.generateAiAgentRules": true,
+  "nxConsole.nxWorkspacePath": "${workspaceFolder}",
+  "nxConsole.enableTelemetry": false,
+
+  "terminal.integrated.env.osx": {
+    "PATH": "${env:HOME}/.local/share/mise/shims:${env:HOME}/.local/share/mise/installs/node/20.11.1/bin:${env:HOME}/.local/bin:${workspaceFolder}/node_modules/.bin:${env:PATH}",
+    "MISE_SHELL": "zsh",
+    "NX_DAEMON": "true"
+  },
+
   "terminal.integrated.env.linux": {
     "LC_ALL": "C.UTF-8",
     "LANG": "C.UTF-8",
-    "LANGUAGE": "C.UTF-8"
+    "LANGUAGE": "C.UTF-8",
+    "PATH": "${env:HOME}/.local/share/mise/shims:${env:HOME}/.local/share/mise/installs/node/20.11.1/bin:${env:HOME}/.local/bin:${workspaceFolder}/node_modules/.bin:${env:PATH}",
+    "MISE_SHELL": "zsh",
+    "NX_DAEMON": "true"
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/test-output": true,
+    "**/apps/copier-smoke-example": true,
+    "**/tmp": true,
+    "**/.nx": true
   }
 }

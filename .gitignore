@@ -47,6 +47,13 @@ Thumbs.db
 tmp/
 docs/tmp/
 
+# Test generated projects (copier smoke tests)
+apps/copier-smoke-example/
+apps/smoke-test-*/
+tests/.tmp-*/
+static/
+output.html
+
 # Database
 *.db
 *.sqlite
