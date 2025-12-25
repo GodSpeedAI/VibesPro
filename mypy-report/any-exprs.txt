@@ -1,7 +1,0 @@
-                        Name   Anys   Exprs   Coverage
-------------------------------------------------------
-                 libs.python      0       1    100.00%
-libs.python.logging_settings      0      40    100.00%
- libs.python.vibepro_logging      4      28     85.71%
-------------------------------------------------------
-                       Total      4      69     94.20%
