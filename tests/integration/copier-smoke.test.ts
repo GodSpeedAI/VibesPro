@@ -111,7 +111,10 @@ describe('Copier Smoke Test Infrastructure', () => {
 describe('Copier Smoke Example (if generated)', () => {
   const smokeExampleExists = existsSync(SMOKE_EXAMPLE);
 
-  describe.skipIf(!smokeExampleExists)('Nx Integration', () => {
+  // Use describe.skip if smoke example doesn't exist (type-safe standard Jest)
+  const describeNx = smokeExampleExists ? describe : describe.skip;
+
+  describeNx('Nx Integration', () => {
     it('should have project.json', () => {
       const projectPath = join(SMOKE_EXAMPLE, 'project.json');
       expect(existsSync(projectPath)).toBe(true);
