@@ -239,27 +239,27 @@ specs/
 
 ```typescript
 interface AIContextManager {
-    contextSources: {
-        specifications: SpecificationContext[];
-        codebase: CodebaseContext[];
-        patterns: ArchitecturalPattern[];
-        history: DecisionHistory[];
-        learning: LearnedPatterns[];
+  contextSources: {
+    specifications: SpecificationContext[];
+    codebase: CodebaseContext[];
+    patterns: ArchitecturalPattern[];
+    history: DecisionHistory[];
+    learning: LearnedPatterns[];
+  };
+  tokenBudget: {
+    total: number;
+    allocation: {
+      current_task: number;
+      architectural_context: number;
+      historical_patterns: number;
+      code_context: number;
     };
-    tokenBudget: {
-        total: number;
-        allocation: {
-            current_task: number;
-            architectural_context: number;
-            historical_patterns: number;
-            code_context: number;
-        };
-    };
-    optimization: {
-        prioritization: ContextPrioritization;
-        compression: ContextCompression;
-        caching: IntelligentCaching;
-    };
+  };
+  optimization: {
+    prioritization: ContextPrioritization;
+    compression: ContextCompression;
+    caching: IntelligentCaching;
+  };
 }
 ```
 

@@ -6,11 +6,11 @@ Thank you for helping build the Vibes Pro project. This project follows a spec-d
 
 1. **Set up the environment**
 
-    ```bash
-    uv sync --dev
-    pnpm install
-    just setup
-    ```
+   ```bash
+   uv sync --dev
+   pnpm install
+   just setup
+   ```
 
 ## Devbox note
 

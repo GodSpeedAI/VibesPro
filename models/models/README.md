@@ -1,6 +1,6 @@
 ---
 base_model:
-    - google/embeddinggemma-300M
+  - google/embeddinggemma-300M
 ---
 
 # embeddinggemma-300M GGUF

@@ -24,23 +24,23 @@ fi
 
 # Test 4: Workflow installs mise
 echo "  ✓ Checking for mise installation step..."
-if ! grep -q "mise install" .github/workflows/env-check.yml && \
-   ! grep -q "Install mise" .github/workflows/env-check.yml; then
+if ! grep -q "mise install" .github/workflows/env-check.yml &&
+  ! grep -q "Install mise" .github/workflows/env-check.yml; then
   echo "    ❌ CI workflow should install mise and runtimes"
   exit 1
 fi
 
 # Test 5: Workflow uses devbox (optional but recommended)
 echo "  ✓ Checking for devbox installation step..."
-if ! grep -q "devbox" .github/workflows/env-check.yml && \
-   ! grep -q "Install Devbox" .github/workflows/env-check.yml; then
+if ! grep -q "devbox" .github/workflows/env-check.yml &&
+  ! grep -q "Install Devbox" .github/workflows/env-check.yml; then
   echo "    ⚠️  Warning: CI workflow doesn't explicitly use devbox (optional)"
 fi
 
 # Test 6: Workflow runs environment tests
 echo "  ✓ Checking for test execution..."
-if ! grep -q "just test" .github/workflows/env-check.yml && \
-   ! grep -q "test-env" .github/workflows/env-check.yml; then
+if ! grep -q "just test" .github/workflows/env-check.yml &&
+  ! grep -q "test-env" .github/workflows/env-check.yml; then
   echo "    ⚠️  Warning: CI workflow should run tests"
 fi
 

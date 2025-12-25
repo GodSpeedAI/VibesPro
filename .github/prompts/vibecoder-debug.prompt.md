@@ -5,10 +5,10 @@ task: debug
 thread: vibecoder-debug
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search", "runTests"]
-description: "Vibecoder debugging workflow and troubleshooting guidance."
+tools: ['codebase', 'search', 'runTests']
+description: 'Vibecoder debugging workflow and troubleshooting guidance.'
 ---
 
 # Vibecoder Debug

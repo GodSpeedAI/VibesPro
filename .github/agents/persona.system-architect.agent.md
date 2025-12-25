@@ -2,28 +2,28 @@
 name: persona.system-architect
 description: System architect persona aligned to the handoff network; produces architecture blueprints from product goals.
 model: GPT-5 mini
-tools: ["runCommands", "runTasks", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "fetch", "githubRepo"]
+tools: ['runCommands', 'runTasks', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'fetch', 'githubRepo']
 handoffs:
-    - label: "Product Manager"
-      agent: "product.manager"
-      prompt: "Validate the architecture above against product goals, audience, and metrics."
-      send: true
-    - label: "Spec Author"
-      agent: "spec.author"
-      prompt: "Turn the architecture above into PRD/SDS/TS with acceptance criteria."
-      send: true
-    - label: "Planner"
-      agent: "planner.core"
-      prompt: "Plan delivery of the architecture above with generator-first steps."
-      send: true
-    - label: "Implementer"
-      agent: "implementer.core"
-      prompt: "Implement the architecture above using generator-first workflow."
-      send: true
-    - label: "Reviewer"
-      agent: "reviewer.core"
-      prompt: "Review for risks, traceability, and alignment to architecture."
-      send: true
+  - label: 'Product Manager'
+    agent: 'product.manager'
+    prompt: 'Validate the architecture above against product goals, audience, and metrics.'
+    send: true
+  - label: 'Spec Author'
+    agent: 'spec.author'
+    prompt: 'Turn the architecture above into PRD/SDS/TS with acceptance criteria.'
+    send: true
+  - label: 'Planner'
+    agent: 'planner.core'
+    prompt: 'Plan delivery of the architecture above with generator-first steps.'
+    send: true
+  - label: 'Implementer'
+    agent: 'implementer.core'
+    prompt: 'Implement the architecture above using generator-first workflow.'
+    send: true
+  - label: 'Reviewer'
+    agent: 'reviewer.core'
+    prompt: 'Review for risks, traceability, and alignment to architecture.'
+    send: true
 ---
 
 # System Architect Mode

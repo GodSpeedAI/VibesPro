@@ -1,11 +1,11 @@
 ---
 name: agent-name
-description: "[One-sentence description of what this agent does]"
-tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo", "github.vscode-pull-request-github/copilotCodingAgent", "github.vscode-pull-request-github/issue_fetch", "github.vscode-pull-request-github/suggest-fix", "github.vscode-pull-request-github/searchSyntax", "github.vscode-pull-request-github/doSearch", "github.vscode-pull-request-github/renderIssues", "github.vscode-pull-request-github/activePullRequest", "github.vscode-pull-request-github/openPullRequest"]
+description: '[One-sentence description of what this agent does]'
+tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github.vscode-pull-request-github/copilotCodingAgent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest']
 handoffs:
-    - label: "Example handoff"
-      agent: "target-agent-name"
-      prompt: "Carry the above context forward and perform the next phase."
+  - label: 'Example handoff'
+    agent: 'target-agent-name'
+    prompt: 'Carry the above context forward and perform the next phase.'
 ---
 
 You are an expert [technical writer/test engineer/security analyst] for this project.

@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -13,69 +16,30 @@ concurrency:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
-      SOPS_LOADED: "false"
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
 
-      - name: Install sops
-        run: |
-          set -euo pipefail
-          SOPS_VERSION="3.11.0"
-          SOPS_CHECKSUM="775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
-          SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
-          curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
-          echo "${SOPS_CHECKSUM}  sops" | sha256sum -c -
-          sudo mv sops /usr/local/bin/sops
-          sudo chmod +x /usr/local/bin/sops
-
-          # Verify installation
-          sops --version
-
-          # Ensure installed version matches expected
-          if ! sops --version | grep -q "${SOPS_VERSION}"; then
-            echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
-            sops --version || true
-            exit 1
-          fi
-
-      - name: Configure age key (skip gracefully if not set)
-        if: ${{ env.IS_FORK != 'true' }}
-        env:
-          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        run: |
-          # Don't fail the job if the secret isn't available (PRs/forks). Mark SOPS_LOADED in the env.
-          if [ -z "${SOPS_AGE_KEY:-}" ]; then
-            echo "SOPS_AGE_KEY is not set; skipping decrypt for this run (no repo secret available)"
-            echo "SOPS_LOADED=false" >> $GITHUB_ENV
-          else
-            KEY_PATH="$HOME/.config/sops/age-key.txt"
-            mkdir -p "$(dirname "$KEY_PATH")"
-            printf "%s" "${SOPS_AGE_KEY}" > "$KEY_PATH"
-            chmod 600 "$KEY_PATH"
-            echo "SOPS_AGE_KEY_FILE=$KEY_PATH" >> $GITHUB_ENV
-            echo "SOPS_LOADED=true" >> $GITHUB_ENV
-          fi
-
-      - name: Decrypt secrets
-        if: ${{ env.SOPS_LOADED == 'true' }}
-        run: |
-          set -euo pipefail
-          sops --input-type dotenv --output-type dotenv -d .secrets.env.sops > .secrets.env
-          chmod 600 .secrets.env
+      - name: Setup SOPS with decryption
+        uses: ./.github/actions/setup-sops
+        with:
+          sops-age-key: ${{ secrets.SOPS_AGE_KEY }}
+          is-fork: ${{ env.IS_FORK }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: "20.11.1"
+          node-version: '20.11.1'
 
       - name: Enable corepack (pnpm)
-        run: |
-          corepack enable
+        run: corepack enable
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -89,10 +53,10 @@ jobs:
       - name: Run tests
         run: |
           # If decrypted secrets file exists, load it into the environment for tests.
-          if [ -f .secrets.env ]; then
+          if [ -f /tmp/ci.env ]; then
             set -a
-            # shellcheck disable=SC1090
-            source .secrets.env || { echo "::error:: Failed to source .secrets.env"; exit 1; }
+            # shellcheck disable=SC1091
+            source /tmp/ci.env || { echo "::error:: Failed to source /tmp/ci.env"; exit 1; }
             set +a
           else
             echo "No decrypted secrets found; running tests without them"
@@ -101,4 +65,4 @@ jobs:
 
       - name: Cleanup decrypted secrets
         if: always()
-        run: shred -u .secrets.env || rm -f .secrets.env
+        run: shred -u /tmp/ci.env 2>/dev/null || rm -f /tmp/ci.env

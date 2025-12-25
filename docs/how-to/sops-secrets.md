@@ -57,19 +57,19 @@ Example (snippet):
 
 - name: Decrypt secrets
   env:
-      SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+    SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
   run: |
-      printf "%s" "$SOPS_AGE_KEY" > ~/.config/sops/age-key.txt
-      chmod 600 ~/.config/sops/age-key.txt
-      export SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt
-      sops -d .secrets.env.sops > .secrets.env
-      chmod 600 .secrets.env
+    printf "%s" "$SOPS_AGE_KEY" > ~/.config/sops/age-key.txt
+    chmod 600 ~/.config/sops/age-key.txt
+    export SOPS_AGE_KEY_FILE=~/.config/sops/age-key.txt
+    sops -d .secrets.env.sops > .secrets.env
+    chmod 600 .secrets.env
 
 - name: Run tests
   run: |
-      # do not echo the file; load it as needed
-      source .secrets.env
-      # run your commands that require secrets here
+    # do not echo the file; load it as needed
+    source .secrets.env
+    # run your commands that require secrets here
 
 - name: Cleanup
   if: always()

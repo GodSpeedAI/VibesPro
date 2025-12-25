@@ -47,9 +47,9 @@ def test_dashboard_defines_logfire_panels() -> None:
     data = _load_json(DASHBOARD_PATH)
     assert data.get("title") == "Logfire Overview", "Dashboard title should be Logfire Overview"
     panels = data.get("panels", [])
-    assert any(
-        _panel_contains_metric(panel, "logfire.span.duration") for panel in panels
-    ), "Dashboard must chart logfire.span.duration"
+    assert any(_panel_contains_metric(panel, "logfire.span.duration") for panel in panels), (
+        "Dashboard must chart logfire.span.duration"
+    )
 
 
 def test_schema_describes_logfire_metrics() -> None:
@@ -57,9 +57,9 @@ def test_schema_describes_logfire_metrics() -> None:
     schema = _load_json(SCHEMA_PATH)
     metrics = schema.get("metrics", {})
     assert "logfire.span.duration" in metrics, "logfire.span.duration metric not documented"
-    assert (
-        metrics["logfire.span.duration"]["unit"] == "ms"
-    ), "Duration metric should use milliseconds"
+    assert metrics["logfire.span.duration"]["unit"] == "ms", (
+        "Duration metric should use milliseconds"
+    )
 
 
 def test_vector_metrics_pipeline_wires_logfire_sink() -> None:
@@ -71,6 +71,6 @@ def test_vector_metrics_pipeline_wires_logfire_sink() -> None:
     openobserve = sinks.get("metrics_logfire_openobserve")
     assert openobserve is not None, "Logfire metrics OpenObserve sink missing"
     inputs = openobserve.get("inputs", [])
-    assert (
-        "metrics_logfire_enrich" in inputs
-    ), "Logfire metrics sink should depend on enrichment transform"
+    assert "metrics_logfire_enrich" in inputs, (
+        "Logfire metrics sink should depend on enrichment transform"
+    )

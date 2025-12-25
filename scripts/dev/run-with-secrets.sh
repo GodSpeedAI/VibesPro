@@ -22,7 +22,7 @@ tmpfile="$(mktemp --tmpdir .secrets.env.XXXXXX)"
 trap 'shred -u "${tmpfile}" >/dev/null 2>&1 || rm -f "${tmpfile}"' EXIT
 
 # Decrypt
-sops -d "${SECRETS_FILE}" > "${tmpfile}"
+sops -d "${SECRETS_FILE}" >"${tmpfile}"
 chmod 600 "${tmpfile}"
 
 # Source into a subshell and exec the command

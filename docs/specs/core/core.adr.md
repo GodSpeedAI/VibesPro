@@ -35,8 +35,8 @@ Decision: Formally adopt Hexagonal (Ports & Adapters) architecture.
 - **Core Logic:** The `domain` and `application` layers will contain the core business logic and will have no dependencies on external technologies.
 - **Ports:** The application's boundaries will be defined by `ports`, which are technology-agnostic interfaces (or `protocol` types in Python using abstract base classes only where necessary) located within the `application` layer. These ports define contracts for data persistence and other external interactions (e.g., `IUserRepository`).
 - **Adapters:** Concrete implementations of ports are called `adapters`.
-    - **Driven Adapters:** These implement ports for backend services. For example, a `SupabaseUserRepository` in the `infrastructure` layer will implement the `IUserRepository` port.
-    - **Driving Adapters:** These drive the application's core logic. For example, FastAPI controllers in the `api` layer or UI components in the `ui` layer will use application services via their ports.
+  - **Driven Adapters:** These implement ports for backend services. For example, a `SupabaseUserRepository` in the `infrastructure` layer will implement the `IUserRepository` port.
+  - **Driving Adapters:** These drive the application's core logic. For example, FastAPI controllers in the `api` layer or UI components in the `ui` layer will use application services via their ports.
 
 Rationale:
 

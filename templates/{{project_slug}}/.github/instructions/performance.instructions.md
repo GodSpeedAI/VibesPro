@@ -1,6 +1,6 @@
 ---
-description: "Performance and efficiency guidelines"
-applyTo: "**"
+description: 'Performance and efficiency guidelines'
+applyTo: '**'
 kind: instructions
 domain: performance
 precedence: 34

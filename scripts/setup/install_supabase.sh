@@ -25,29 +25,29 @@ OS="$(uname -s)"
 ARCH="$(uname -m)"
 
 case "${OS}" in
-    Linux)
-        PLATFORM="linux"
-        ;;
-    Darwin)
-        PLATFORM="darwin"
-        ;;
-    *)
-        echo "❌ Unsupported OS: ${OS}"
-        exit 1
-        ;;
+  Linux)
+    PLATFORM="linux"
+    ;;
+  Darwin)
+    PLATFORM="darwin"
+    ;;
+  *)
+    echo "❌ Unsupported OS: ${OS}"
+    exit 1
+    ;;
 esac
 
 case "${ARCH}" in
-    x86_64)
-        ARCH="amd64"
-        ;;
-    arm64|aarch64)
-        ARCH="arm64"
-        ;;
-    *)
-        echo "❌ Unsupported architecture: ${ARCH}"
-        exit 1
-        ;;
+  x86_64)
+    ARCH="amd64"
+    ;;
+  arm64 | aarch64)
+    ARCH="arm64"
+    ;;
+  *)
+    echo "❌ Unsupported architecture: ${ARCH}"
+    exit 1
+    ;;
 esac
 
 FILE_NAME="supabase_${PLATFORM}_${ARCH}.tar.gz"
@@ -58,8 +58,8 @@ tmpdir=$(mktemp -d)
 trap 'rm -rf "${tmpdir}"' EXIT
 
 if ! curl -fSL --retry 3 --retry-delay 2 -o "${tmpdir}/${FILE_NAME}" "${DOWNLOAD_URL}"; then
-    echo "❌ Failed to download supabase CLI"
-    exit 1
+  echo "❌ Failed to download supabase CLI"
+  exit 1
 fi
 
 tar -xzf "${tmpdir}/${FILE_NAME}" -C "${tmpdir}"

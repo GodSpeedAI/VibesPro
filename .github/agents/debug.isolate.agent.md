@@ -4,9 +4,9 @@ domain: debug
 task: isolate
 budget: M
 model: ${ default_model }
-name: "Debug Isolate Mode"
+name: 'Debug Isolate Mode'
 description: Debug isolate mode for narrowing down issues to minimal reproducible cases
-tools: ["codebase", "search", "runInTerminal", "runTests"]
+tools: ['codebase', 'search', 'runInTerminal', 'runTests']
 ---
 
 # Debug Isolate Mode
@@ -50,24 +50,24 @@ Run isolate mode when:
 ## Steps to Reproduce and Roll Back to Minimal Repro
 
 1. **Create Isolated Environment**
-    - Create a new temporary directory for isolation
-    - Copy only the essential files needed to reproduce the issue
-    - Remove all non-essential dependencies and configurations
+   - Create a new temporary directory for isolation
+   - Copy only the essential files needed to reproduce the issue
+   - Remove all non-essential dependencies and configurations
 
 2. **Incremental Reduction**
-    - Start with a working version of the code
-    - Gradually remove components while maintaining the bug
-    - Document each step that still reproduces the issue
+   - Start with a working version of the code
+   - Gradually remove components while maintaining the bug
+   - Document each step that still reproduces the issue
 
 3. **Dependency Elimination**
-    - Replace external services with mocks or in-memory alternatives
-    - Use minimal configuration files
-    - Strip down templates to bare essentials
+   - Replace external services with mocks or in-memory alternatives
+   - Use minimal configuration files
+   - Strip down templates to bare essentials
 
 4. **Validation**
-    - Confirm the minimal repro still exhibits the same behavior
-    - Ensure the repro is self-contained and portable
-    - Verify that removing any additional element makes the bug disappear
+   - Confirm the minimal repro still exhibits the same behavior
+   - Ensure the repro is self-contained and portable
+   - Verify that removing any additional element makes the bug disappear
 
 ## Hand-off Instructions for Engineers Fixing the Issue
 

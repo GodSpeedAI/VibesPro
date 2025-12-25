@@ -42,17 +42,17 @@ pub fn record_metric(key: &str, value: f64);
 ```
 
 - Config (env flags):
-    - VIBEPRO_OBSERVE=1
-    - OTLP_ENDPOINT=http://127.0.0.1:4317
+  - VIBEPRO_OBSERVE=1
+  - OTLP_ENDPOINT=http://127.0.0.1:4317
 - Behavior:
-    - If VIBEPRO_OBSERVE=1 → install OTLP exporter (OTLP/gRPC).
-    - Otherwise → default to fmt::Subscriber with JSON stdout.
+  - If VIBEPRO_OBSERVE=1 → install OTLP exporter (OTLP/gRPC).
+  - Otherwise → default to fmt::Subscriber with JSON stdout.
 
 2. Data pipeline layer (Vector)
 
 - Deployment:
-    - Install via Devbox/mise (vector binary) or package manager.
-    - Run locally: `just observe-start` (Just target).
+  - Install via Devbox/mise (vector binary) or package manager.
+  - Run locally: `just observe-start` (Just target).
 - Config path: `ops/vector/vector.toml`
 - Example vector.toml (snippets)
 
@@ -82,8 +82,8 @@ auth     = { strategy = "bearer", token = "${OPENOBSERVE_TOKEN}" }
 ```
 
 - Purpose:
-    - Local buffering, sampling, PII redaction, enrichment (app version, host, region).
-    - Enforce opt‑in (env var) and host-level controls.
+  - Local buffering, sampling, PII redaction, enrichment (app version, host, region).
+  - Enforce opt‑in (env var) and host-level controls.
 
 3. Storage & analytics (OpenObserve)
 
@@ -128,18 +128,18 @@ GROUP BY service.name;
 - Secrets: `.secrets.env.sops`
 - CI validation: `.github/workflows/env-check.yml` (vector validate)
 - Tests:
-    - `tests/ops/test_vector_config.sh` (Phase 2)
-    - `tests/ops/test_tracing_vector.sh` (Phase 3)
-    - `tests/ops/test_openobserve_sink.sh` (Phase 4)
-    - `tests/ops/test_ci_observability.sh` (Phase 5)
-    - `tests/ops/test_observe_flag.sh` (Phase 6)
+  - `tests/ops/test_vector_config.sh` (Phase 2)
+  - `tests/ops/test_tracing_vector.sh` (Phase 3)
+  - `tests/ops/test_openobserve_sink.sh` (Phase 4)
+  - `tests/ops/test_ci_observability.sh` (Phase 5)
+  - `tests/ops/test_observe_flag.sh` (Phase 6)
 - Implementation notes:
-    - `docs/work-summaries/observability-phase1-completion.md`
-    - `docs/work-summaries/observability-phase2-completion.md`
-    - `docs/work-summaries/observability-phase3-completion.md`
-    - `docs/work-summaries/observability-phase4-completion.md`
-    - `docs/work-summaries/observability-phase5-completion.md`
-    - `docs/work-summaries/observability-phase6-completion.md`
+  - `docs/work-summaries/observability-phase1-completion.md`
+  - `docs/work-summaries/observability-phase2-completion.md`
+  - `docs/work-summaries/observability-phase3-completion.md`
+  - `docs/work-summaries/observability-phase4-completion.md`
+  - `docs/work-summaries/observability-phase5-completion.md`
+  - `docs/work-summaries/observability-phase6-completion.md`
 
 **Implementation Status**: ✅ Complete (All 6 phases finished as of 2025-10-12)
 
@@ -225,15 +225,15 @@ Every log line MUST include:
 
 ```json
 {
-    "timestamp": "2025-10-12T16:00:00.000Z",
-    "level": "info",
-    "message": "request accepted",
-    "trace_id": "abc123def456...",
-    "span_id": "789ghi...",
-    "service": "user-api",
-    "environment": "staging",
-    "application_version": "v1.2.3",
-    "category": "app"
+  "timestamp": "2025-10-12T16:00:00.000Z",
+  "level": "info",
+  "message": "request accepted",
+  "trace_id": "abc123def456...",
+  "span_id": "789ghi...",
+  "service": "user-api",
+  "environment": "staging",
+  "application_version": "v1.2.3",
+  "category": "app"
 }
 ```
 
@@ -278,42 +278,42 @@ error!(category = "app", code = 500, "upstream timeout");
 Create `libs/node-logging/logger.ts`:
 
 ```typescript
-import pino from "pino";
+import pino from 'pino';
 
-export function logger(service = process.env.SERVICE_NAME || "vibepro-node") {
-    return pino({
-        base: {
-            service,
-            environment: process.env.APP_ENV || "local",
-            application_version: process.env.APP_VERSION || "dev",
-        },
-        messageKey: "message",
-        formatters: {
-            level(label) {
-                return { level: label };
-            },
-            log(obj) {
-                return {
-                    trace_id: obj.trace_id,
-                    span_id: obj.span_id,
-                    category: obj.category || "app",
-                    ...obj,
-                };
-            },
-        },
-    });
+export function logger(service = process.env.SERVICE_NAME || 'vibepro-node') {
+  return pino({
+    base: {
+      service,
+      environment: process.env.APP_ENV || 'local',
+      application_version: process.env.APP_VERSION || 'dev',
+    },
+    messageKey: 'message',
+    formatters: {
+      level(label) {
+        return { level: label };
+      },
+      log(obj) {
+        return {
+          trace_id: obj.trace_id,
+          span_id: obj.span_id,
+          category: obj.category || 'app',
+          ...obj,
+        };
+      },
+    },
+  });
 }
 ```
 
 **Usage:**
 
 ```typescript
-import { logger } from "@vibepro/node-logging/logger";
+import { logger } from '@vibepro/node-logging/logger';
 const log = logger();
 
-log.info({ user_id_hash: "abc123", category: "app" }, "request accepted");
-log.warn({ category: "security", action: "rate_limit" }, "client throttled");
-log.error({ category: "app", code: 500 }, "upstream timeout");
+log.info({ user_id_hash: 'abc123', category: 'app' }, 'request accepted');
+log.warn({ category: 'security', action: 'rate_limit' }, 'client throttled');
+log.error({ category: 'app', code: 500 }, 'upstream timeout');
 ```
 
 **Trace context:** Injected via middleware/headers (OpenTelemetry context propagation)
@@ -546,17 +546,17 @@ echo "✅ Log-trace correlation valid"
 #### Node (`tools/logging/test_pino.js`)
 
 ```javascript
-const { logger } = require("../../libs/node-logging/logger");
-const log = logger("test-service");
+const { logger } = require('../../libs/node-logging/logger');
+const log = logger('test-service');
 
 log.info(
-    {
-        trace_id: "abc123def456",
-        span_id: "789ghi",
-        category: "app",
-        user_email: "test@example.com", // Should be redacted
-    },
-    "test log message",
+  {
+    trace_id: 'abc123def456',
+    span_id: '789ghi',
+    category: 'app',
+    user_email: 'test@example.com', // Should be redacted
+  },
+  'test log message',
 );
 ```
 
@@ -607,15 +607,15 @@ log.info(
 - Python Logfire bootstrap: `libs/python/vibepro_logging.py` (to be refactored)
 - Vector config: `ops/vector/vector.toml` (logs section to be added)
 - Tests:
-    - `tests/ops/test_vector_logs_config.sh`
-    - `tests/ops/test_log_redaction.sh`
-    - `tests/ops/test_log_trace_correlation.sh`
+  - `tests/ops/test_vector_logs_config.sh`
+  - `tests/ops/test_log_redaction.sh`
+  - `tests/ops/test_log_trace_correlation.sh`
 - Quick-start tools:
-    - `tools/logging/test_pino.js`
-    - `tools/logging/test_logfire.py`
+  - `tools/logging/test_pino.js`
+  - `tools/logging/test_logfire.py`
 - Docs:
-    - `docs/ENVIRONMENT.md` §9 — Logging Policy
-    - `docs/observability/README.md` §11 — Governance & Cost Controls
+  - `docs/ENVIRONMENT.md` §9 — Logging Policy
+  - `docs/observability/README.md` §11 — Governance & Cost Controls
 
 ---
 

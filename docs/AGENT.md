@@ -138,7 +138,7 @@ ADR → SDS/Technical Specs → PRD → DEV-* specs
 ```typescript
 // DEV-PRD-042, DEV-SDS-015: OAuth2 authentication flow
 export class AuthService {
-    // Implementation...
+  // Implementation...
 }
 ```
 
@@ -165,10 +165,10 @@ When specifications conflict:
 
 ```yaml
 ---
-title: "Feature Name"
+title: 'Feature Name'
 matrix_ids:
-    - DEV-PRD-042
-    - DEV-SDS-015
+  - DEV-PRD-042
+  - DEV-SDS-015
 date: 2025-10-13
 status: draft|approved|implemented
 ---
@@ -205,7 +205,7 @@ status: draft|approved|implemented
 ```markdown
 ---
 matrix_ids:
-    - DEV-ADR-001
+  - DEV-ADR-001
 date: 2025-10-13
 status: approved
 ---
@@ -245,17 +245,17 @@ We will use Hexagonal Architecture (Ports & Adapters) because...
 1. Read relevant spec: `dev_prd.md` or `specs/features/auth.spec.md`
 2. Check spec ID: e.g., `DEV-PRD-042`
 3. Implement with traceability comment:
-    ```typescript
-    // DEV-PRD-042: User authentication via OAuth2
-    ```
+   ```typescript
+   // DEV-PRD-042: User authentication via OAuth2
+   ```
 4. Update traceability matrix:
-    ```markdown
-    | DEV-PRD-042 | User OAuth2 Auth | `libs/auth/domain/auth-service.ts` | Implemented |
-    ```
+   ```markdown
+   | DEV-PRD-042 | User OAuth2 Auth | `libs/auth/domain/auth-service.ts` | Implemented |
+   ```
 5. Commit with spec ID:
-    ```
-    feat(auth): add OAuth2 authentication [DEV-PRD-042]
-    ```
+   ```
+   feat(auth): add OAuth2 authentication [DEV-PRD-042]
+   ```
 
 ### Example 3: Resolving Spec Conflict
 
@@ -274,14 +274,14 @@ We will use Hexagonal Architecture (Ports & Adapters) because...
 **Options:**
 
 1. Use JWT with short expiry (5 min) + refresh tokens
-    - Pro: Satisfies both specs partially
-    - Con: Added complexity
+   - Pro: Satisfies both specs partially
+   - Con: Added complexity
 2. Update PRD to use stateful sessions
-    - Pro: Aligns with ADR
-    - Con: Requires client changes
+   - Pro: Aligns with ADR
+   - Con: Requires client changes
 3. Update ADR to allow JWT for specific use cases
-    - Pro: Flexible approach
-    - Con: Weakens architectural principle
+   - Pro: Flexible approach
+   - Con: Weakens architectural principle
 
 **Decision Needed**: Option [TBD]
 ```
@@ -293,10 +293,10 @@ After a development session, save summary in `docs/work-summaries/`:
 ```markdown
 ---
 date: 2025-10-13
-session: "Feature X Implementation"
+session: 'Feature X Implementation'
 specs:
-    - DEV-PRD-042
-    - DEV-SDS-015
+  - DEV-PRD-042
+  - DEV-SDS-015
 ---
 
 # Work Summary: Feature X Implementation

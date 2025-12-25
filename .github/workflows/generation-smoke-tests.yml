@@ -18,9 +18,10 @@ concurrency:
 jobs:
   smoke-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
@@ -33,20 +34,20 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: "20.11.1"
-          cache: "pnpm"
+          node-version: '20.11.1'
+          cache: 'pnpm'
 
       - name: Set up Python
         uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
       - name: Install uv
         uses: astral-sh/setup-uv@6dfebec6ddbcd197e02256fbdf54deb334fb7f06 # v2
 
       - name: Render template to temporary dir
         env:
-          COPIER_SKIP_PROJECT_SETUP: "1"
+          COPIER_SKIP_PROJECT_SETUP: '1'
         run: |
           TARGET_DIR=$(mktemp -d)
           echo "Rendering into $TARGET_DIR"

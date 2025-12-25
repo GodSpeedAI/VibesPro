@@ -5,11 +5,11 @@ module.exports = {
   roots: ['<rootDir>/src'],
   testMatch: ['**/*.{test,spec}.ts'],
   transform: {
-    '^.+\\.ts$': ['ts-jest', { useESM: true }]
+    '^.+\\.ts$': ['ts-jest', { useESM: true }],
   },
   moduleNameMapper: {
-    '^(\\..*)\\.js$': '$1'
+    '^(\\..*)\\.js$': '$1',
   },
   clearMocks: true,
-  restoreMocks: true
+  restoreMocks: true,
 };

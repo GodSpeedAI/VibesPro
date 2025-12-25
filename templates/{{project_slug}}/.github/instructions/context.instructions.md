@@ -1,6 +1,6 @@
 ---
-description: "Context management guidelines"
-applyTo: "**"
+description: 'Context management guidelines'
+applyTo: '**'
 kind: instructions
 domain: context
 precedence: 25

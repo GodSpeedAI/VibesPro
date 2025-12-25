@@ -7,7 +7,7 @@ set -euo pipefail
 # - Script runs in repo root
 # - devbox and git are installed in runner
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OVERLAY_PATH="${ROOT_DIR}/.devbox/overlays/supabase.nix"
 REPO="${GITHUB_REPOSITORY:-$(git config --get remote.origin.url | sed -e 's#.*/\(.*\)/\(.*\)\.git#\1/\2#')}"
 GITHUB_API="https://api.github.com/repos/${REPO}"
@@ -32,7 +32,7 @@ echo "Candidate commit: ${commit_sha} (${short_sha})"
 
 # Check if overlay already has this commit
 if grep -q "${commit_sha}" "${OVERLAY_PATH}"; then
-  echo "No bump necessary; overlay already pinned to ${commit_sha}";
+  echo "No bump necessary; overlay already pinned to ${commit_sha}"
   exit 0
 fi
 
@@ -94,7 +94,7 @@ fi
 create_pr_response=$(curl -sSf -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token ${GITHUB_TOKEN}" -d "{\"title\": \"${pr_title}\", \"head\": \"${branch_name}\", \"base\": \"${BRANCH_BASE}\", \"body\": \"${pr_body}\"}" "${GITHUB_API}/pulls")
 pr_url=$(jq -r '.html_url' <<<"${create_pr_response}")
 pr_number=$(jq -r '.number' <<<"${create_pr_response}")
-echo "PR_NUMBER=${pr_number}" > .autobump_pr_number
+echo "PR_NUMBER=${pr_number}" >.autobump_pr_number
 if [[ -n "${pr_url}" && "${pr_url}" != "null" ]]; then
   echo "✅ PR created: ${pr_url}"
   exit 0

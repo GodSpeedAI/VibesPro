@@ -20,7 +20,9 @@ assert_cmd_succeeds() {
 }
 
 assert_equal() {
-  local a="$1"; local b="$2"; local msg="${3:-values differ}"
+  local a="$1"
+  local b="$2"
+  local msg="${3:-values differ}"
   if [ "$a" != "$b" ]; then
     echo "❌ $msg: expected '$b' but got '$a'" >&2
     exit 1

@@ -5,10 +5,10 @@ task: implement
 thread: spec-implement
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search", "runTests"]
-description: "Implement a feature per PRD/ADR/SDS/TS with tests and traceability."
+tools: ['codebase', 'search', 'runTests']
+description: 'Implement a feature per PRD/ADR/SDS/TS with tests and traceability.'
 ---
 
 # Implement Feature (Spec- & DX-Driven)

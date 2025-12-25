@@ -8,7 +8,7 @@ fi
 # Devbox boot script - displays banner and basic diagnostics
 # Called when entering devbox shell
 
-cat << 'EOF'
+cat <<'EOF'
 ╔════════════════════════════════════════════════════════════╗
 ║                   🎯 Devbox Environment                    ║
 ║                  OS Toolchain Activated                    ║

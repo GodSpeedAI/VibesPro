@@ -119,16 +119,16 @@ Example `.vscode/mcp.json` fragment:
 
 ```jsonc
 {
-    "mcpServers": {
-        "smithery-memory": {
-            "command": "npx",
-            "args": ["-y", "@modelcontextprotocol/cli", "http"],
-            "env": {
-                "SMITHERY_API_KEY": "${env:SMITHERY_API_KEY}",
-                "SMITHERY_PROFILE": "married-shark-xX2c39",
-            },
-        },
+  "mcpServers": {
+    "smithery-memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/cli", "http"],
+      "env": {
+        "SMITHERY_API_KEY": "${env:SMITHERY_API_KEY}",
+        "SMITHERY_PROFILE": "married-shark-xX2c39",
+      },
     },
+  },
 }
 ```
 

@@ -83,7 +83,9 @@ const agentsDir = path.join(repoRoot, '.github', 'agents');
 
 // Check if agents directory exists (migrated from chatmodes)
 if (!fs.existsSync(agentsDir)) {
-  console.error('[FAIL] .github/agents directory not found. Expected after migration from chatmodes.');
+  console.error(
+    '[FAIL] .github/agents directory not found. Expected after migration from chatmodes.',
+  );
   process.exit(1);
 }
 

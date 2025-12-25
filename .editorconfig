@@ -1,68 +1,340 @@
-# Top-level EditorConfig
-# Aligned with pyproject.toml (Black: line-length=88, Ruff: line-length=88, indent-width=4)
+# .editorconfig
+# VibesPro Monorepo - Consistent Coding Styles Across Editors
+# Documentation: https://editorconfig.org
+#
+# This configuration ensures consistent formatting across all editors and IDEs.
+# Aligned with project tooling: Prettier, ESLint, Ruff, Black, rustfmt.
+# Last updated: 2025-12-22
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ROOT DIRECTIVE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Stop EditorConfig search at this directory
 root = true
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL DEFAULTS (applies to ALL files unless overridden)
+# ═══════════════════════════════════════════════════════════════════════════════
+
 [*]
+# Character encoding - UTF-8 is the universal standard
 charset = utf-8
+
+# Line endings - LF (Unix-style) for cross-platform consistency
 end_of_line = lf
+
+# Indentation - spaces as requested by user
 indent_style = space
-indent_size = 4
-tab_width = 4
-insert_final_newline = true
+indent_size = 2
+tab_width = 2
+
+# Whitespace handling - keeps code clean, reduces diff noise
 trim_trailing_whitespace = true
+
+# POSIX compliance - ensures every file ends with a newline
+insert_final_newline = true
+
+# Line length guidance (soft limit, not enforced by all editors)
 max_line_length = 100
 
-# Ensure consistent newline at EOF
-insert_final_newline = true
+# ═══════════════════════════════════════════════════════════════════════════════
+# JAVASCRIPT / TYPESCRIPT / JSX / TSX
+# Primary frontend and tooling language
+# ═══════════════════════════════════════════════════════════════════════════════
 
-# Markdown / text files
-[*.md]
-trim_trailing_whitespace = false
-max_line_length = off
-
-# YAML / JSON config files
-[*.{yml,yaml,json}]
-indent_size = 2
-
-# JavaScript / TypeScript
-[*.{js,jsx,ts,tsx,cjs,mjs}]
+[*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}]
 indent_size = 2
 quote_type = single
 max_line_length = 100
 
-# Python - follow Black & Ruff settings from pyproject.toml
+# ═══════════════════════════════════════════════════════════════════════════════
+# VUE.JS COMPONENTS
+# Single-file components with embedded HTML/JS/CSS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.vue]
+indent_size = 2
+max_line_length = 100
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PYTHON
+# ⚠️ EXCEPTION: 4-space indentation per PEP 8 and Black/Ruff tooling
+# Matches pyproject.toml: Black line-length=88, Ruff line-length=88, indent-width=4
+# ═══════════════════════════════════════════════════════════════════════════════
+
 [*.py]
 indent_style = space
 indent_size = 4
 tab_width = 4
-max_line_length = 88  # matches Black and Ruff
+max_line_length = 88
+charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
-charset = utf-8
 
-# Shell scripts
+[*.pyi]
+indent_size = 4
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# RUST
+# Following rustfmt conventions (4-space indentation is Rust standard)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.rs]
+indent_size = 4
+tab_width = 4
+max_line_length = 100
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GO
+# Following gofmt conventions (tabs are Go standard, but maps to spaces here)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.go]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# JSON / JSONC / JSON5
+# Configuration files - compact 2-space indentation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.{json,jsonc,json5}]
+indent_size = 2
+insert_final_newline = true
+
+# Package manifests
+[{package.json,package-lock.json,tsconfig*.json,nx.json,project.json}]
+indent_size = 2
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# YAML
+# Configuration and CI/CD files
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.{yml,yaml}]
+indent_size = 2
+trim_trailing_whitespace = true
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TOML
+# Cargo.toml, pyproject.toml, and other configs
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.toml]
+indent_size = 2
+max_line_length = 88
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MARKDOWN
+# Documentation files - special whitespace handling
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.md]
+# Trailing whitespace is significant in Markdown (hard line breaks)
+trim_trailing_whitespace = false
+# No line length limit for prose
+max_line_length = off
+indent_size = 2
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# HTML / CSS / SCSS / LESS
+# Web markup and styling
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.{html,htm,xhtml}]
+indent_size = 2
+
+[*.{css,scss,sass,less}]
+indent_size = 2
+max_line_length = 100
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# JINJA2 / TEMPLATE FILES
+# Copier templates and generated content
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.j2]
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.{jinja,jinja2}]
+indent_size = 2
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SHELL SCRIPTS
+# Bash, Zsh, and POSIX shell scripts
+# ═══════════════════════════════════════════════════════════════════════════════
+
 [*.sh]
 indent_style = space
 indent_size = 2
 end_of_line = lf
+shell_variant = bash
 
-# HTML / CSS / SCSS
-[*.{html,css,scss}]
+[*.{bash,zsh}]
 indent_size = 2
+end_of_line = lf
 
-# TOML files (including pyproject.toml)
-[*.toml]
-indent_size = 2
-max_line_length = 88  # keep pyproject.toml readable per project Python settings
+# ═══════════════════════════════════════════════════════════════════════════════
+# JUSTFILE
+# Just command runner - tabs are conventional
+# ═══════════════════════════════════════════════════════════════════════════════
 
-# Justfile - prefer tabs
+[justfile]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
 [Justfile]
 indent_style = tab
+indent_size = 4
+tab_width = 4
 
-# Optional extras
-[*.{bat,cmd,ps1}]
-end_of_line = crlf
+[*.just]
+indent_style = tab
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MAKEFILE
+# GNU Make requires tabs for recipe indentation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[Makefile]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+[*.mk]
+indent_style = tab
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DOCKER
+# Container configuration files
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[Dockerfile*]
+indent_size = 2
+
+[docker-compose*.yml]
+indent_size = 2
+
+[*.dockerfile]
+indent_size = 2
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROTOCOL BUFFERS / GRPC
+# Schema definition files
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.proto]
+indent_size = 2
+max_line_length = 80
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SQL
+# Database schema and query files
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.sql]
+indent_size = 2
+max_line_length = 120
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GRAPHQL
+# API schema files
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.{graphql,gql}]
+indent_size = 2
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ENVIRONMENT FILES
+# Security-sensitive - preserve formatting as-is
+# ═══════════════════════════════════════════════════════════════════════════════
 
 [*.env]
 insert_final_newline = false
 trim_trailing_whitespace = false
+
+[.env*]
+insert_final_newline = false
+trim_trailing_whitespace = false
+
+[*.env.example]
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SOPS ENCRYPTED FILES
+# Encrypted secrets - preserve exact formatting
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.sops]
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+[*.sops.yaml]
+trim_trailing_whitespace = false
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# XML / SVG
+# Markup files
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.{xml,svg}]
+indent_size = 2
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# WINDOWS-SPECIFIC FILES
+# Batch scripts and PowerShell require CRLF line endings
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.{bat,cmd}]
+end_of_line = crlf
+indent_size = 2
+
+[*.{ps1,psm1,psd1}]
+end_of_line = crlf
+indent_size = 2
+charset = utf-8-bom
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LOCK FILES / GENERATED FILES
+# Do not modify - read-only
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[*.lock]
+indent_size = unset
+trim_trailing_whitespace = false
+insert_final_newline = unset
+
+[pnpm-lock.yaml]
+indent_size = unset
+trim_trailing_whitespace = false
+
+[Cargo.lock]
+indent_size = unset
+
+[uv.lock]
+indent_size = unset
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONFIGURATION FILE OVERRIDES
+# Specific tool configuration files
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[.gitattributes]
+indent_size = unset
+
+[.gitignore]
+indent_size = unset
+
+[.prettierrc]
+indent_size = 2
+
+[.eslintrc*]
+indent_size = 2
+
+[.editorconfig]
+indent_size = 2

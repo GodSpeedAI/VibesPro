@@ -336,35 +336,35 @@ Include AI tools?
 ### Included Free Services
 
 - **Supabase** (if you chose it):
-    - User login/signup
-    - Database hosting
-    - Real-time updates
-    - File storage
-    - Free tier available!
+  - User login/signup
+  - Database hosting
+  - Real-time updates
+  - File storage
+  - Free tier available!
 
 - **GitHub Copilot** (if you chose AI):
-    - Smart code suggestions
-    - Chat with AI about your code
-    - Automatic best practices
-    - Documentation generation
+  - Smart code suggestions
+  - Chat with AI about your code
+  - Automatic best practices
+  - Documentation generation
 
 ### What to Build Next
 
 1. **Customize the example pages**
-    - Look in `apps/your-app-name/`
-    - Modify the sample components
-    - Add your own pages
+   - Look in `apps/your-app-name/`
+   - Modify the sample components
+   - Add your own pages
 
 2. **Add your business logic**
-    - Create entities in `libs/your-domain/domain/`
-    - Add use cases in `libs/your-domain/application/`
-    - Implement adapters in `libs/your-domain/infrastructure/`
+   - Create entities in `libs/your-domain/domain/`
+   - Add use cases in `libs/your-domain/application/`
+   - Implement adapters in `libs/your-domain/infrastructure/`
 
 3. **Use the AI assistant**
-    - Ask it to generate components
-    - Request new features
-    - Get code reviews
-    - Learn best practices
+   - Ask it to generate components
+   - Request new features
+   - Get code reviews
+   - Learn best practices
 
 ## Tips for Success
 

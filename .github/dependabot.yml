@@ -1,0 +1,85 @@
+version: 2
+updates:
+  # GitHub Actions - update action versions automatically
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'America/New_York'
+    open-pull-requests-limit: 5
+    groups:
+      # Group all action updates together for easier review
+      actions:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: 'ci'
+      include: 'scope'
+    labels:
+      - 'dependencies'
+      - 'ci'
+    reviewers:
+      - 'GodSpeedAI/core-team'
+
+  # npm dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'tuesday'
+      time: '09:00'
+      timezone: 'America/New_York'
+    open-pull-requests-limit: 10
+    groups:
+      # Development dependencies
+      dev-dependencies:
+        dependency-type: 'development'
+        patterns:
+          - '*'
+      # Production dependencies (review individually)
+    commit-message:
+      prefix: 'deps'
+      include: 'scope'
+    labels:
+      - 'dependencies'
+      - 'npm'
+    ignore:
+      # Ignore major version updates for core packages - require manual review
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'next'
+        update-types: ['version-update:semver-major']
+
+  # Python dependencies (pip/uv)
+  - package-ecosystem: 'pip'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'wednesday'
+      time: '09:00'
+      timezone: 'America/New_York'
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'deps(python)'
+      include: 'scope'
+    labels:
+      - 'dependencies'
+      - 'python'
+
+  # Rust dependencies (Cargo)
+  - package-ecosystem: 'cargo'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'thursday'
+      time: '09:00'
+      timezone: 'America/New_York'
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'deps(rust)'
+      include: 'scope'
+    labels:
+      - 'dependencies'
+      - 'rust'

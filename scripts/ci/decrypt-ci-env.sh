@@ -13,11 +13,10 @@ fi
 
 while IFS= read -r line || [[ -n "${line}" ]]; do
   case "${line}" in
-    ''|'#'*)
+    '' | '#'*)
       continue
       ;;
-    *)
-      ;; # fallthrough to processing
+    *) ;; # fallthrough to processing
   esac
 
   # Support lines that start with `export ` by stripping it
@@ -50,8 +49,8 @@ while IFS= read -r line || [[ -n "${line}" ]]; do
     echo "${key}<<${delim}"
     echo "${value}"
     echo "${delim}"
-  } >> "${target_env}"
+  } >>"${target_env}"
 
-done < "${CI_ENV_PATH}"
+done <"${CI_ENV_PATH}"
 
 echo "Decrypted env loaded from ${CI_ENV_PATH}"

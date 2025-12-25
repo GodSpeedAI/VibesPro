@@ -9,8 +9,11 @@ MACRO_FILE="${ROOT_DIR}/tools/vector/macros.vrl"
 LOGFIRE_NORMALIZER_PATH=""
 LOGFIRE_NORMALIZE_FILE="${ROOT_DIR}/ops/vector/transforms/logs_logfire_normalize.vrl"
 
-log()  { printf "==> %s\n" "$*"; }
-die()  { printf "❌ %s\n" "$*" >&2; exit 1; }
+log() { printf "==> %s\n" "$*"; }
+die() {
+  printf "❌ %s\n" "$*" >&2
+  exit 1
+}
 have() { command -v "$1" >/dev/null 2>&1; }
 
 ensure_tools() {
@@ -72,7 +75,7 @@ test_trace_id_variants() {
     payload=$(jq -n --arg key "${key}" '{attributes: {($key): "ABCDEF12"}}')
     output=$(normalize_payload "${payload}") || die "Vector normalization failed for key=${key}"
 
-    echo "${output}" | jq -e '.trace_id == "abcdef12"' >/dev/null || \
+    echo "${output}" | jq -e '.trace_id == "abcdef12"' >/dev/null ||
       die "trace_id not normalized for ${key}"
   done
 }
@@ -86,7 +89,7 @@ test_span_id_variants() {
     payload=$(jq -n --arg key "${key}" '{attributes: {($key): "ABC12345"}}')
     output=$(normalize_payload "${payload}") || die "Vector normalization failed for key=${key}"
 
-    echo "${output}" | jq -e '.span_id == "abc12345"' >/dev/null || \
+    echo "${output}" | jq -e '.span_id == "abc12345"' >/dev/null ||
       die "span_id not normalized for ${key}"
   done
 }
@@ -103,9 +106,9 @@ test_metadata_passthrough() {
 
   output=$(normalize_payload "${payload}") || die "Vector normalization failed for metadata passthrough"
 
-  echo "${output}" | jq -e '.span_name == "payment_flow"' >/dev/null || \
+  echo "${output}" | jq -e '.span_name == "payment_flow"' >/dev/null ||
     die "span_name not propagated"
-  echo "${output}" | jq -e '.observation_id == "OBS-123"' >/dev/null || \
+  echo "${output}" | jq -e '.observation_id == "OBS-123"' >/dev/null ||
     die "observation_id not propagated"
 }
 
@@ -116,17 +119,17 @@ test_missing_attributes() {
   payload='{"message":"no special attributes"}'
   output=$(normalize_payload "${payload}") || die "Vector normalization failed for missing attributes case"
 
-  echo "${output}" | jq -e 'has("trace_id") | not' >/dev/null || \
+  echo "${output}" | jq -e 'has("trace_id") | not' >/dev/null ||
     die "trace_id should not be set when attributes are missing"
-  echo "${output}" | jq -e 'has("span_id") | not' >/dev/null || \
+  echo "${output}" | jq -e 'has("span_id") | not' >/dev/null ||
     die "span_id should not be set when attributes are missing"
 
   payload=$(jq -n '{attributes: {"trace_id": "", "span_id": ""}}')
   output=$(normalize_payload "${payload}") || die "Vector normalization failed for empty attribute case"
 
-  echo "${output}" | jq -e 'has("trace_id") | not' >/dev/null || \
+  echo "${output}" | jq -e 'has("trace_id") | not' >/dev/null ||
     die "trace_id should not be set when attribute is empty"
-  echo "${output}" | jq -e 'has("span_id") | not' >/dev/null || \
+  echo "${output}" | jq -e 'has("span_id") | not' >/dev/null ||
     die "span_id should not be set when attribute is empty"
 }
 
@@ -137,13 +140,13 @@ test_severity_fallback() {
   payload='{"level":"WARN"}'
   output=$(normalize_payload "${payload}") || die "Vector normalization failed for severity fallback"
 
-  echo "${output}" | jq -e '.severity_text == "WARN"' >/dev/null || \
+  echo "${output}" | jq -e '.severity_text == "WARN"' >/dev/null ||
     die "severity_text not derived from level when missing"
 
   payload='{"severity_text":"INFO","level":"ERROR"}'
   output=$(normalize_payload "${payload}") || die "Vector normalization failed for severity preservation"
 
-  echo "${output}" | jq -e '.severity_text == "INFO"' >/dev/null || \
+  echo "${output}" | jq -e '.severity_text == "INFO"' >/dev/null ||
     die "severity_text should remain unchanged when already present"
 }
 

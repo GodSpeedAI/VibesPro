@@ -1,26 +1,26 @@
-project_name: "Test Project"
-project_slug: "test-project"
-app_name: "test-app"
-author_name: "Test Author"
-author_email: "test@example.com"
-repo_url: "https://github.com/test/test-project"
-architecture_style: "hexagonal"
+project_name: 'Test Project'
+project_slug: 'test-project'
+app_name: 'test-app'
+author_name: 'Test Author'
+author_email: 'test@example.com'
+repo_url: 'https://github.com/test/test-project'
+architecture_style: 'hexagonal'
 include_ai_workflows: true
 enable_temporal_learning: true
-app_framework: "next"
-backend_framework: "fastapi"
-database_type: "postgresql"
+app_framework: 'next'
+backend_framework: 'fastapi'
+database_type: 'postgresql'
 include_supabase: true
-domain_name: "test-domain"
-bounded_context: "test-domain"
-domains: "test-domain"
-base_url: "http://localhost:8000"
+domain_name: 'test-domain'
+bounded_context: 'test-domain'
+domains: 'test-domain'
+base_url: 'http://localhost:8000'
 include_domain_entities: true
 include_value_objects: true
 include_domain_events: true
 include_use_cases: true
 include_repositories: true
-app_domains: "test-domain"
+app_domains: 'test-domain'
 include_api_client: true
 include_example_page: true
-app_router_style: "app"
+app_router_style: 'app'
