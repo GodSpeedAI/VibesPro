@@ -1,0 +1,232 @@
+# =============================================================================
+# CI Configuration Validation
+# =============================================================================
+# Validates CI configuration quality to prevent technical debt accumulation.
+# This is "CI for CI" - ensuring our workflows follow best practices.
+# =============================================================================
+
+name: CI Configuration Lint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+      - '.github/config/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+      - '.github/config/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-workflows:
+    name: Validate Workflow Configuration
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Validate YAML syntax
+        run: |
+          set -euo pipefail
+          echo "Validating YAML syntax..."
+
+          ERRORS=0
+          for workflow in .github/workflows/*.yml; do
+            if ! python3 -c "import yaml; yaml.safe_load(open('$workflow'))" 2>/dev/null; then
+              echo "❌ Invalid YAML: $workflow"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          if [ $ERRORS -gt 0 ]; then
+            echo "::error::$ERRORS workflow(s) have invalid YAML"
+            exit 1
+          fi
+          echo "✅ All workflows have valid YAML"
+
+      - name: Check for unpinned actions (version tags)
+        run: |
+          set -euo pipefail
+          echo "Checking for unpinned actions..."
+
+          # Find actions using version tags (e.g., @v3, @v4) instead of SHA
+          if grep -rE 'uses:\s+[^@]+@v[0-9]+(\.[0-9]+)*\s*$' .github/workflows/*.yml; then
+            echo ""
+            echo "::error::Found actions pinned to version tags. Pin to SHA for security."
+            echo "See: https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-third-party-actions"
+            exit 1
+          fi
+
+          echo "✅ All actions appear to be SHA-pinned"
+
+      - name: Check for floating ubuntu-latest
+        run: |
+          set -euo pipefail
+          echo "Checking for floating runner versions..."
+
+          # Check for ubuntu-latest (should use ubuntu-22.04)
+          # Exclude matrix definitions and template files
+          if grep -l 'runs-on:.*ubuntu-latest' .github/workflows/*.yml 2>/dev/null | grep -v '.j2$'; then
+            echo ""
+            echo "::error::Found 'ubuntu-latest' which can cause non-deterministic builds."
+            echo "Use 'ubuntu-22.04' instead for reproducibility."
+            exit 1
+          fi
+
+          echo "✅ All runners use pinned OS versions"
+
+      - name: Check for || true suppressions
+        run: |
+          set -euo pipefail
+          echo "Checking for error suppressions..."
+
+          # Look for || true that might be hiding failures
+          # Some legitimate uses exist, so we check patterns
+          SUPPRESSIONS=$(grep -rn '\|\| true' .github/workflows/*.yml | \
+            grep -v '# safe:' | \
+            grep -v 'docker.*prune' | \
+            grep -v 'echo.*||' || true)
+
+          if [ -n "$SUPPRESSIONS" ]; then
+            echo "Found potential error suppressions:"
+            echo "$SUPPRESSIONS"
+            echo ""
+            echo "::warning::Review these '|| true' patterns. If intentional, add '# safe: <reason>' comment."
+          fi
+
+          echo "✅ Error suppression check complete"
+
+      - name: Check for hardcoded secrets
+        run: |
+          set -euo pipefail
+          echo "Checking for hardcoded secrets..."
+
+          # Look for potential hardcoded secrets (long alphanumeric strings in suspicious contexts)
+          if grep -rE '(password|secret|token|key)\s*[:=]\s*["\047][A-Za-z0-9+/]{20,}["\047]' .github/workflows/*.yml; then
+            echo ""
+            echo "::error::Potential hardcoded secret found. Use GitHub Secrets instead."
+            exit 1
+          fi
+
+          echo "✅ No obvious hardcoded secrets found"
+
+      - name: Verify local mirror script exists
+        run: |
+          set -euo pipefail
+          echo "Checking for local CI mirror..."
+
+          if [ ! -x scripts/ci-local.sh ]; then
+            echo "::error::scripts/ci-local.sh not found or not executable"
+            echo "Local CI reproduction is required for debugging."
+            exit 1
+          fi
+
+          # Check it has the basic structure
+          if ! grep -q 'docker run' scripts/ci-local.sh; then
+            echo "::warning::ci-local.sh should include Docker mode for full CI parity"
+          fi
+
+          echo "✅ Local CI mirror exists"
+
+      - name: Check for timeout-minutes on all jobs
+        run: |
+          set -euo pipefail
+          echo "Checking for job timeouts..."
+
+          # Parse workflows and check for timeout-minutes in jobs
+          MISSING_TIMEOUTS=""
+          for workflow in .github/workflows/*.yml; do
+            # Skip templates
+            [[ "$workflow" == *.j2 ]] && continue
+
+            # Simple check: if file has 'jobs:' it should have 'timeout-minutes'
+            if grep -q '^jobs:' "$workflow" && ! grep -q 'timeout-minutes:' "$workflow"; then
+              MISSING_TIMEOUTS="$MISSING_TIMEOUTS\n  - $workflow"
+            fi
+          done
+
+          if [ -n "$MISSING_TIMEOUTS" ]; then
+            echo "::warning::Some workflows may be missing timeout-minutes:$MISSING_TIMEOUTS"
+          fi
+
+          echo "✅ Timeout check complete"
+
+      - name: Verify permissions are explicit
+        run: |
+          set -euo pipefail
+          echo "Checking for explicit permissions..."
+
+          for workflow in .github/workflows/*.yml; do
+            [[ "$workflow" == *.j2 ]] && continue
+
+            if ! grep -q '^permissions:' "$workflow"; then
+              echo "::warning::$workflow may be missing top-level permissions block"
+            fi
+          done
+
+          echo "✅ Permissions check complete"
+
+  validate-versions:
+    name: Validate Version Consistency
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Check versions.env exists
+        run: |
+          set -euo pipefail
+
+          if [ ! -f .github/config/versions.env ]; then
+            echo "::error::.github/config/versions.env not found"
+            exit 1
+          fi
+
+          # Validate it's sourceable
+          # shellcheck source=/dev/null
+          source .github/config/versions.env
+
+          echo "✅ versions.env is valid"
+
+      - name: Verify .mise.toml consistency
+        run: |
+          set -euo pipefail
+
+          # Source versions
+          source .github/config/versions.env
+
+          # Check Node version matches
+          MISE_NODE=$(grep '^node\s*=' .mise.toml | cut -d'"' -f2)
+          if [ "$MISE_NODE" != "$NODE_VERSION" ]; then
+            echo "::warning::Node version mismatch: .mise.toml=$MISE_NODE, versions.env=$NODE_VERSION"
+          fi
+
+          # Check Python version matches (major.minor)
+          MISE_PYTHON=$(grep '^python\s*=' .mise.toml | cut -d'"' -f2)
+          MISE_PYTHON_MAJOR_MINOR="${MISE_PYTHON%.*}"
+          VERSIONS_PYTHON_MAJOR_MINOR="${PYTHON_VERSION%.*}"
+
+          if [ "${MISE_PYTHON_MAJOR_MINOR:-}" != "${VERSIONS_PYTHON_MAJOR_MINOR:-}" ]; then
+            echo "::warning::Python version mismatch: .mise.toml=${MISE_PYTHON_MAJOR_MINOR}, versions.env=${VERSIONS_PYTHON_MAJOR_MINOR}"
+          fi
+
+          echo "✅ Version consistency check complete"

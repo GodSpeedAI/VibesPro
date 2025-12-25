@@ -12,7 +12,7 @@ fn test_cargo_audit_passes() {
 
     // Check if cargo-audit is available
     let check_output = std::process::Command::new("cargo")
-        .args(&["audit", "--version"])
+        .args(["audit", "--version"])
         .current_dir("libs/security")
         .output();
 
@@ -20,7 +20,7 @@ fn test_cargo_audit_passes() {
         Ok(output) if output.status.success() => {
             // cargo-audit is installed, run the actual audit
             let audit_output = std::process::Command::new("cargo")
-                .args(&["audit"])
+                .args(["audit"])
                 .current_dir("libs/security")
                 .output()
                 .expect("Failed to run cargo audit");

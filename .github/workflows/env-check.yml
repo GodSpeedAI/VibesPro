@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   env-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     env:
       MISE_NONINTERACTIVE: '1'
@@ -86,7 +86,7 @@ jobs:
 
       - name: Cache Vector binary
         if: env.SKIP_HEAVY_SETUP != 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /usr/local/bin/vector
           key: vector-${{ runner.os }}-${{ hashFiles('ops/vector/vector.toml') }}
@@ -94,7 +94,7 @@ jobs:
             vector-${{ runner.os }}-
 
       - name: Cache mise runtimes
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
             ~/.local/share/mise
@@ -110,8 +110,8 @@ jobs:
         if: env.SKIP_HEAVY_SETUP != 'true'
         run: |
           set -euo pipefail
-          # Ensure generated flake is up to date in CI so 'devbox run' will contain packages
-          devbox update || true
+          # Ensure generated flake is up to date in CI
+          devbox update
 
       - name: 'Devbox: validate overlay pin (supabase)'
         if: env.SKIP_HEAVY_SETUP != 'true'
@@ -131,7 +131,10 @@ jobs:
           set -euo pipefail
           if ! command -v rustup >/dev/null 2>&1; then
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-            source "$HOME/.cargo/env" || true
+            # Source cargo env if available
+            if [[ -f "$HOME/.cargo/env" ]]; then
+              source "$HOME/.cargo/env"
+            fi
           fi
           rustup toolchain install nightly-2024-11-01 --no-self-update
           rustup override set nightly-2024-11-01
@@ -164,7 +167,7 @@ jobs:
 
       - name: Cache pnpm store (optional)
         if: hashFiles('pnpm-lock.yaml') != ''
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.pnpm-store
           key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
@@ -237,7 +240,7 @@ jobs:
         # Adjust to your project (pnpm, uv, poetry, cargo, etc.)
         run: |
           if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; fi
-          if [ -f uv.lock ] || [ -f pyproject.toml ]; then uv sync --frozen || true; fi
+          if [ -f uv.lock ] || [ -f pyproject.toml ]; then uv sync --frozen; fi
 
       - name: Build
         run: just build

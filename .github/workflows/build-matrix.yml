@@ -17,7 +17,7 @@ concurrency:
 jobs:
   # ---------- Prepare: cache keys & versions (Ubuntu) ----------
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -69,11 +69,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-22.04, macos-14]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             pkg_mgr: apt
-          - os: macos-latest
+          - os: macos-14
             pkg_mgr: brew
     runs-on: ${{ matrix.os }}
     env:
@@ -114,32 +114,34 @@ jobs:
       - name: Install just
         shell: bash
         run: |
-          # Try to install just via mise first (preferred approach)
+          set -euo pipefail
+          # Check if just is already available (e.g., via mise or pre-installed)
           if command -v just >/dev/null 2>&1; then
-            echo "just already available via mise"
-          else
-            # Fallback to OS-specific installation
-            if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
-              set -euo pipefail
-              if curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin; then
-                sudo chmod +x /usr/local/bin/just
-              else
-                echo "just installer failed; attempting apt fallback"
-                sudo apt-get update || true
-                sudo apt-get install -y just || echo "could not install just; continuing without just"
-              fi
-            else
-              brew install just || true
-            fi
+            echo "✅ just already available"
+            just --version
+            exit 0
           fi
-          just --version || true
+
+          # Install based on OS
+          if [ "${{ matrix.pkg_mgr }}" = "apt" ]; then
+            echo "Installing just via official installer..."
+            curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+            sudo chmod +x /usr/local/bin/just
+          else
+            echo "Installing just via Homebrew..."
+            brew install just
+          fi
+
+          # Verify installation succeeded
+          just --version
+
 
       # ---- Install SOPS ----
       - name: Install SOPS
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+          if [ "${{ matrix.os }}" = "ubuntu-22.04" ]; then
             SOPS_FILE="sops-v${SOPS_VERSION}.linux.amd64"
             # Fetch via curl and write to a temp file avoiding pipes to sudo.
             curl -fSL -o sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/${SOPS_FILE}"
@@ -151,7 +153,7 @@ jobs:
           sops --version
           if ! sops --version | grep -q "${SOPS_VERSION}"; then
             echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
-            sops --version || true
+            sops --version
             exit 1
           fi
 
@@ -172,7 +174,7 @@ jobs:
       - name: Trust mise config
         run: mise trust --yes .mise.toml
       - name: Cache mise runtimes
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
             ~/.local/share/mise
@@ -191,10 +193,14 @@ jobs:
           # Install rustup if missing
           if ! command -v rustup >/dev/null 2>&1; then
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-            source "$HOME/.cargo/env" || true
+            # Source cargo env - this is expected to fail in some shells
+            if [[ -f "$HOME/.cargo/env" ]]; then
+              source "$HOME/.cargo/env"
+            fi
           fi
-          rustup toolchain install nightly-2025-11-01 --no-self-update || true
-          rustup override set nightly-2025-11-01 || true
+          # Install the nightly toolchain - fail if this fails
+          rustup toolchain install nightly-2025-11-01 --no-self-update
+          rustup override set nightly-2025-11-01
 
       # ---- Node package manager (optional; respects Corepack) ----
       - name: Enable corepack (optional)
@@ -202,7 +208,7 @@ jobs:
 
       - name: Cache pnpm store (optional)
         if: hashFiles('pnpm-lock.yaml') != ''
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
             ~/.pnpm-store
@@ -293,9 +299,37 @@ jobs:
       # ---- Build / Lint / Test ----
       - name: Lint
         run: |
-          if [ -f package.json ]; then pnpm run lint || pnpm run lint:ci || true; fi
-          if [ -f pyproject.toml ]; then just lint-python || true; fi
-          if [ -f Cargo.toml ]; then cargo clippy --all-targets -- -D warnings || true; fi
+          set -euo pipefail
+          LINT_FAILED=false
+
+          if [ -f package.json ]; then
+            echo "Running ESLint..."
+            if ! pnpm run lint; then
+              echo "::error::ESLint failed"
+              LINT_FAILED=true
+            fi
+          fi
+
+          if [ -f pyproject.toml ]; then
+            echo "Running Python linters..."
+            if ! just lint-python; then
+              echo "::error::Python lint failed"
+              LINT_FAILED=true
+            fi
+          fi
+
+          if [ -f Cargo.toml ]; then
+            echo "Running Clippy..."
+            if ! cargo clippy --all-targets -- -D warnings; then
+              echo "::error::Clippy failed"
+              LINT_FAILED=true
+            fi
+          fi
+
+          if [ "$LINT_FAILED" = "true" ]; then
+            echo "::error::One or more lint checks failed"
+            exit 1
+          fi
 
       - name: Build
         run: just build
@@ -314,7 +348,7 @@ jobs:
 
       - name: Upload artifacts (logs/coverage/build)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: build-${{ matrix.os }}-${{ github.sha }}
           path: |
@@ -332,7 +366,7 @@ jobs:
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [prepare, build-test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     env:
       MISE_NONINTERACTIVE: '1'
@@ -365,7 +399,7 @@ jobs:
           sops --version
           if ! sops --version | grep -q "${SOPS_VERSION}"; then
             echo "::error::Installed sops version does not match expected ${SOPS_VERSION}"
-            sops --version || true
+            sops --version
             exit 1
           fi
 

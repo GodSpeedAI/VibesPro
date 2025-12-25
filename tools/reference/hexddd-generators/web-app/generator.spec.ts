@@ -1,5 +1,8 @@
-import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
+// Set environment to skip real NX generators before any modules are loaded
+process.env.SKIP_REAL_NX_GENERATORS = 'true';
+
 import { Tree } from '@nx/devkit';
+import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import { webAppGenerator } from './generator';
 
 describe('web-app generator', () => {
@@ -28,10 +31,9 @@ describe('web-app generator', () => {
         apiClient: true,
       });
 
-      if (tree.exists('apps/test-next/app/page.tsx')) {
-        const content = tree.read('apps/test-next/app/page.tsx', 'utf-8');
-        expect(content).toContain('@shared/web');
-      }
+      expect(tree.exists('apps/test-next/app/page.tsx')).toBe(true);
+      const content = tree.read('apps/test-next/app/page.tsx', 'utf-8');
+      expect(content).toContain('@shared/web');
     });
 
     it('should create api-client helper for App Router', async () => {
@@ -58,16 +60,25 @@ describe('web-app generator', () => {
     it('should be idempotent (double-run produces same output)', async () => {
       const options = { name: 'test-app', framework: 'next' as const, routerStyle: 'app' as const };
 
+      // First run on a tree
       await webAppGenerator(tree, options);
-      const firstRunChanges = tree.listChanges().map((c) => ({ path: c.path, type: c.type }));
+      const firstRunFiles = tree
+        .listChanges()
+        .filter((c) => c.type === 'CREATE')
+        .map((c) => c.path)
+        .sort();
 
-      const tree2 = createTreeWithEmptyWorkspace();
-      await webAppGenerator(tree2, options);
-      await webAppGenerator(tree2, options);
-      const secondRunChanges = tree2.listChanges().map((c) => ({ path: c.path, type: c.type }));
+      // Run again on the SAME tree (true idempotency test)
+      await webAppGenerator(tree, options);
+      const secondRunFiles = tree
+        .listChanges()
+        .filter((c) => c.type === 'CREATE')
+        .map((c) => c.path)
+        .sort();
 
-      expect(firstRunChanges.length).toBeGreaterThan(0);
-      expect(secondRunChanges.length).toBe(firstRunChanges.length);
+      expect(firstRunFiles.length).toBeGreaterThan(0);
+      // After double-run on same tree, should have same files (idempotent)
+      expect(secondRunFiles).toEqual(firstRunFiles);
     });
   });
 
@@ -88,11 +99,10 @@ describe('web-app generator', () => {
         apiClient: true,
       });
 
-      if (tree.exists('apps/test-remix/app/routes/_index.tsx')) {
-        const content = tree.read('apps/test-remix/app/routes/_index.tsx', 'utf-8');
-        expect(content).toContain('@shared/web');
-        expect(content).toContain('loader');
-      }
+      expect(tree.exists('apps/test-remix/app/routes/_index.tsx')).toBe(true);
+      const content = tree.read('apps/test-remix/app/routes/_index.tsx', 'utf-8');
+      expect(content).toContain('@shared/web');
+      expect(content).toContain('loader');
     });
 
     it('should create api-client helper', async () => {
@@ -129,11 +139,10 @@ describe('web-app generator', () => {
         ? 'apps/test-expo/src/app/App.tsx'
         : 'apps/test-expo/App.tsx';
 
-      if (tree.exists(appPath)) {
-        const content = tree.read(appPath, 'utf-8');
-        expect(content).toContain('@shared/web');
-        expect(content).toContain('react-native');
-      }
+      expect(tree.exists(appPath)).toBe(true);
+      const content = tree.read(appPath, 'utf-8');
+      expect(content).toContain('@shared/web');
+      expect(content).toContain('react-native');
     });
 
     it('should create api-client helper', async () => {
