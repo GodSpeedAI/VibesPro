@@ -1,66 +1,76 @@
 name: AI Guidance Fabric
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
       - main
     paths:
-      - "temporal_db/**"
-      - "tools/performance/**"
-      - "tools/ai/**"
-      - "tests/**"
-      - "justfile"
-      - ".github/workflows/ai-guidance.yml"
-      - "docs/dev_tdd_ai_guidance.md"
+      - 'temporal_db/**'
+      - 'tools/performance/**'
+      - 'tools/ai/**'
+      - 'tests/**'
+      - 'justfile'
+      - '.github/workflows/ai-guidance.yml'
+      - 'docs/dev_tdd_ai_guidance.md'
   pull_request:
     paths:
-      - "temporal_db/**"
-      - "tools/performance/**"
-      - "tools/ai/**"
-      - "tests/**"
-      - "justfile"
-      - ".github/workflows/ai-guidance.yml"
-      - "docs/dev_tdd_ai_guidance.md"
+      - 'temporal_db/**'
+      - 'tools/performance/**'
+      - 'tools/ai/**'
+      - 'tests/**'
+      - 'justfile'
+      - '.github/workflows/ai-guidance.yml'
+      - 'docs/dev_tdd_ai_guidance.md'
+
+concurrency:
+  group: ai-guidance-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ai-guidance:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     env:
       LC_ALL: C.UTF-8
       LANG: C.UTF-8
-      NX_NO_CLOUD: "true"
-      NX_REJECT_REMOTE_CACHE: "true"
+      NX_NO_CLOUD: 'true'
+      NX_REJECT_REMOTE_CACHE: 'true'
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          python-version: "3.11"
+          fetch-depth: 1
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: '3.11'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
         with:
           run_install: false
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: "20.11.1"
-          cache: "pnpm"
+          node-version: '20.11.1'
+          cache: 'pnpm'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0
+
+      - name: Install just
+        uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6 # v2.0.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Python dependencies
-        shell: bash
+      - name: Sync Python dependencies
         run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install uv pytest
-
-      - name: Run pytest suite
-        run: |
-          SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck \
-          COPIER_SKIP_PROJECT_SETUP=1 \
-          # Ensure uv synchronizes project dependencies declared in pyproject.toml with retry
           max_attempts=3
           attempt=1
           while [ $attempt -le $max_attempts ]; do
@@ -80,123 +90,15 @@ jobs:
             fi
             attempt=$((attempt + 1))
           done
-          uv run pytest
+
+      - name: Run pytest suite
+        run: uv run pytest
 
       - name: AI guidance Jest suites
         run: pnpm test:jest -- --runTestsByPath tests/perf/test_performance_advisories.spec.ts tests/context/test_context_manager_scoring.spec.ts --runInBand
 
       - name: CLI guidance smoke
         run: bash tests/cli/test_ai_advice_command.sh
-
-      - name: Install just (robust)
-        if: ${{ runner.os == 'Linux' || runner.os == 'Windows' || runner.os == 'macOS' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if command -v just >/dev/null 2>&1; then
-            echo "just already installed: $(command -v just)"
-            exit 0
-          fi
-
-          mkdir -p "${HOME}/.local/bin"
-          export PATH="${HOME}/.local/bin:${PATH}"
-
-          os_name="$(uname -s)"
-
-          if [ "${os_name}" = "Linux" ]; then
-            sudo apt-get update -y || true
-            if sudo apt-get install -y just; then
-              echo "Installed just via apt-get"
-              echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-              exit 0
-            fi
-          elif [ "${os_name}" = "Darwin" ]; then
-            if command -v brew >/dev/null 2>&1 && brew install just; then
-              echo "Installed just via Homebrew"
-              echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-              exit 0
-            fi
-          elif expr "${os_name}" : 'MINGW' >/dev/null 2>&1 || expr "${os_name}" : 'MSYS' >/dev/null 2>&1 || expr "${os_name}" : 'CYGWIN' >/dev/null 2>&1; then
-            if command -v choco >/dev/null 2>&1 && choco install just -y; then
-              echo "Installed just via Chocolatey"
-              echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-              exit 0
-            fi
-            if command -v winget >/dev/null 2>&1 && winget install --id=Casey.Just -e --accept-package-agreements --accept-source-agreements; then
-              echo "Installed just via winget"
-              echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-              exit 0
-            fi
-          fi
-
-          VERSION="1.27.0"
-          arch="$(uname -m)"
-          archive=""
-
-          case "${os_name}" in
-            Linux)
-              case "${arch}" in
-                x86_64|amd64) archive="just-v${VERSION}-x86_64-unknown-linux-musl.tar.gz" ;;
-                aarch64|arm64) archive="just-v${VERSION}-aarch64-unknown-linux-musl.tar.gz" ;;
-                *) echo "Unsupported Linux architecture: ${arch}" >&2; exit 1 ;;
-              esac
-              ;;
-            Darwin)
-              case "${arch}" in
-                x86_64) archive="just-v${VERSION}-x86_64-apple-darwin.tar.gz" ;;
-                aarch64|arm64) archive="just-v${VERSION}-aarch64-apple-darwin.tar.gz" ;;
-                *) echo "Unsupported macOS architecture: ${arch}" >&2; exit 1 ;;
-              esac
-              ;;
-            MINGW*|MSYS*|CYGWIN*)
-              case "${arch}" in
-                x86_64|amd64) archive="just-v${VERSION}-x86_64-pc-windows-msvc.zip" ;;
-                aarch64|arm64) archive="just-v${VERSION}-aarch64-pc-windows-msvc.zip" ;;
-                *) echo "Unsupported Windows architecture: ${arch}" >&2; exit 1 ;;
-              esac
-              ;;
-            *)
-              echo "Unsupported operating system: ${os_name}" >&2
-              exit 1
-              ;;
-          esac
-
-          base_url="https://github.com/casey/just/releases/download/v${VERSION}"
-          archive_path="/tmp/${archive}"
-          echo "Downloading just from ${base_url}/${archive}"
-          curl -fsSL --fail "${base_url}/${archive}" -o "${archive_path}"
-          http_status=$?
-          if [ $http_status -ne 0 ]; then
-            echo "Download failed with HTTP status: $http_status" >&2
-            echo "URL: ${base_url}/${archive}" >&2
-            exit 1
-          fi
-
-          if [[ "${archive}" == *.tar.gz ]]; then
-            tar -xzf "${archive_path}" -C /tmp
-            binary="$(find /tmp -maxdepth 2 -type f -name 'just' | head -n1)"
-            if [ -z "${binary}" ]; then
-              echo "Unable to locate extracted just binary" >&2
-              exit 1
-            fi
-            cp "${binary}" "${HOME}/.local/bin/just"
-            chmod 0755 "${HOME}/.local/bin/just"
-          elif [[ "${archive}" == *.zip ]]; then
-            unzip -q "${archive_path}" -d /tmp/just-release
-            binary="$(find /tmp/just-release -type f -name 'just.exe' | head -n1)"
-            if [ -z "${binary}" ]; then
-              echo "Unable to locate extracted just.exe binary" >&2
-              exit 1
-            fi
-            cp "${binary}" "${HOME}/.local/bin/just.exe"
-          else
-            echo "Unsupported archive format: ${archive}" >&2
-            exit 1
-          fi
-
-          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
-          echo "Installed just to ${HOME}/.local/bin"
 
       - name: Run AI validation
         run: just ai-validate

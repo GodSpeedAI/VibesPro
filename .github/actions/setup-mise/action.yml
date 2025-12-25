@@ -1,11 +1,11 @@
-name: "Setup mise"
-description: "Install mise and cache runtimes"
+name: 'Setup mise'
+description: 'Install mise and cache runtimes'
 outputs:
   cache-hit:
-    description: "Whether cache was hit"
+    description: 'Whether cache was hit'
     value: ${{ steps.cache.outputs.cache-hit }}
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Install mise
       shell: bash

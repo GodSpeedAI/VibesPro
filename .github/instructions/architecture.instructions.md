@@ -1,6 +1,6 @@
 ---
-description: "Architecture guardrails (hexagonal, generator-first, typed boundaries)"
-applyTo: "**"
+description: 'Architecture guardrails (hexagonal, generator-first, typed boundaries)'
+applyTo: '**'
 kind: instructions
 domain: architecture
 precedence: 18

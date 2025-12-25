@@ -39,13 +39,13 @@ tmpdir=$(mktempdir)
 trap "rm -rf '$tmpdir'" EXIT
 
 # Create test fixtures
-cat > "$tmpdir/.mise.toml" << 'EOF'
+cat >"$tmpdir/.mise.toml" <<'EOF'
 [tools]
 node = "20.11.1"
 python = "3.12.5"
 EOF
 
-cat > "$tmpdir/package.json" << 'EOF'
+cat >"$tmpdir/package.json" <<'EOF'
 {
   "name": "test",
   "volta": {
@@ -70,12 +70,12 @@ echo "  ✓ Testing version match detection..."
 tmpdir2=$(mktempdir)
 trap "rm -rf '$tmpdir2'" EXIT
 
-cat > "$tmpdir2/.mise.toml" << 'EOF'
+cat >"$tmpdir2/.mise.toml" <<'EOF'
 [tools]
 node = "20.11.1"
 EOF
 
-cat > "$tmpdir2/package.json" << 'EOF'
+cat >"$tmpdir2/package.json" <<'EOF'
 {
   "name": "test",
   "volta": {
@@ -97,12 +97,12 @@ echo "  ✓ Testing mise-only scenario..."
 tmpdir3=$(mktempdir)
 trap "rm -rf '$tmpdir3'" EXIT
 
-cat > "$tmpdir3/.mise.toml" << 'EOF'
+cat >"$tmpdir3/.mise.toml" <<'EOF'
 [tools]
 node = "20.11.1"
 EOF
 
-cat > "$tmpdir3/package.json" << 'EOF'
+cat >"$tmpdir3/package.json" <<'EOF'
 {
   "name": "test",
   "version": "1.0.0"

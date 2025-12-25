@@ -4,9 +4,9 @@ domain: product
 task: problem-statement
 budget: S
 description: Define and refine the core problem your software project aims to solve.
-tools: ["search", "githubRepo"]
+tools: ['search', 'githubRepo']
 model: GPT-5
-name: "Product Problem Statement"
+name: 'Product Problem Statement'
 ---
 
 # Problem Statement Mode

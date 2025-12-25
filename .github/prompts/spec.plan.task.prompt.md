@@ -5,10 +5,10 @@ task: plan-task
 thread: spec-plan-task
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating Task plans from technical specifications and implementation requirements."
+tools: ['codebase', 'search']
+description: 'Template for generating Task plans from technical specifications and implementation requirements.'
 ---
 
 # Task Plan Template
@@ -53,25 +53,25 @@ description: "Template for generating Task plans from technical specifications a
 #### Main Activities
 
 1. **Activity 1:** [Description]
-    - Sub-tasks:
-        - [ ] [Sub-task 1]
-        - [ ] [Sub-task 2]
-    - Estimated effort: [Time estimate]
-    - Dependencies: [Related tasks]
+   - Sub-tasks:
+     - [ ] [Sub-task 1]
+     - [ ] [Sub-task 2]
+   - Estimated effort: [Time estimate]
+   - Dependencies: [Related tasks]
 
 2. **Activity 2:** [Description]
-    - Sub-tasks:
-        - [ ] [Sub-task 1]
-        - [ ] [Sub-task 2]
-    - Estimated effort: [Time estimate]
-    - Dependencies: [Related tasks]
+   - Sub-tasks:
+     - [ ] [Sub-task 1]
+     - [ ] [Sub-task 2]
+   - Estimated effort: [Time estimate]
+   - Dependencies: [Related tasks]
 
 3. **Activity 3:** [Description]
-    - Sub-tasks:
-        - [ ] [Sub-task 1]
-        - [ ] [Sub-task 2]
-    - Estimated effort: [Time estimate]
-    - Dependencies: [Related tasks]
+   - Sub-tasks:
+     - [ ] [Sub-task 1]
+     - [ ] [Sub-task 2]
+   - Estimated effort: [Time estimate]
+   - Dependencies: [Related tasks]
 
 ### 4. Technical Requirements
 

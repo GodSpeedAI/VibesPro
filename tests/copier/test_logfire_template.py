@@ -57,6 +57,6 @@ def test_logfire_env_vars_are_rendered(copier: Any, tmp_path: Path) -> None:
     ]
 
     for placeholder in required_placeholders:
-        assert (
-            placeholder in contents
-        ), f"Expected '{placeholder}' placeholder in rendered .env file"
+        assert placeholder in contents, (
+            f"Expected '{placeholder}' placeholder in rendered .env file"
+        )

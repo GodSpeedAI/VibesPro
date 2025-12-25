@@ -1,6 +1,6 @@
 ---
-description: "Guardrails for Logfire + Vector logging pipeline"
-applyTo: "**"
+description: 'Guardrails for Logfire + Vector logging pipeline'
+applyTo: '**'
 kind: instructions
 domain: logging
 precedence: 40

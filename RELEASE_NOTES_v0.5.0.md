@@ -22,9 +22,9 @@ Major CI/CD infrastructure overhaul improving reliability, performance, and main
 ### Script Organization
 
 - Reorganized 20 scripts into logical directories:
-    - `scripts/ci/` - CI/CD-specific scripts
-    - `scripts/setup/` - Environment setup scripts
-    - `scripts/dev/` - Development utilities
+  - `scripts/ci/` - CI/CD-specific scripts
+  - `scripts/setup/` - Environment setup scripts
+  - `scripts/dev/` - Development utilities
 - Added comprehensive `scripts/README.md` documentation
 
 ---

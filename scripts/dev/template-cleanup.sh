@@ -15,33 +15,33 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+  echo -e "${GREEN}[INFO]${NC} $1"
 }
 
 warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+  echo -e "${YELLOW}[WARN]${NC} $1"
 }
 
 error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+  echo -e "${RED}[ERROR]${NC} $1"
 }
 
 # Check if template directory exists
 if [[ ! -d "${TEMPLATE_DIR}" ]]; then
-    error "Template directory not found: ${TEMPLATE_DIR}"
-    exit 1
+  error "Template directory not found: ${TEMPLATE_DIR}"
+  exit 1
 fi
 
 if [[ -z "${1}" ]]; then
-    echo "usage: $0 <target-dir>"
-    exit 1
+  echo "usage: $0 <target-dir>"
+  exit 1
 fi
 TARGET="$1"
 if [[ -d "${TARGET}" ]]; then
-    find "${TARGET}" -type f -name '*.j2' -delete
-    echo "cleaned templates in ${TARGET}"
+  find "${TARGET}" -type f -name '*.j2' -delete
+  echo "cleaned templates in ${TARGET}"
 else
-    echo "no such directory: ${TARGET}"
+  echo "no such directory: ${TARGET}"
 fi
 
 info "Starting template cleanup..."
@@ -52,16 +52,16 @@ REMOVED_COUNT=0
 
 # Function to safely remove file or directory
 safe_remove() {
-    local path="$1"
-    local description="$2"
+  local path="$1"
+  local description="$2"
 
-    if [[ -e "${path}" ]]; then
-        info "Removing: ${description}"
-        rm -rf "${path}"
-        REMOVED_COUNT=$((REMOVED_COUNT + 1))
-    else
-        warn "Already removed: ${description}"
-    fi
+  if [[ -e "${path}" ]]; then
+    info "Removing: ${description}"
+    rm -rf "${path}"
+    REMOVED_COUNT=$((REMOVED_COUNT + 1))
+  else
+    warn "Already removed: ${description}"
+  fi
 }
 
 # Remove maintainer-specific docs files
@@ -99,48 +99,48 @@ info ""
 info "=== Replacing spec files with minimal starters ==="
 
 replace_spec_file() {
-    local old_file="$1"
-    local new_file="$2"
-    local description="$3"
+  local old_file="$1"
+  local new_file="$2"
+  local description="$3"
 
-    if [[ -f "${new_file}" ]]; then
-        if [[ -f "${old_file}" ]]; then
-            info "Replacing: ${description}"
-            mv "${new_file}" "${old_file}"
-            REMOVED_COUNT=$((REMOVED_COUNT + 1))
-        else
-            info "Creating new: ${description}"
-            mv "${new_file}" "${old_file}"
-            REMOVED_COUNT=$((REMOVED_COUNT + 1))
-        fi
+  if [[ -f "${new_file}" ]]; then
+    if [[ -f "${old_file}" ]]; then
+      info "Replacing: ${description}"
+      mv "${new_file}" "${old_file}"
+      REMOVED_COUNT=$((REMOVED_COUNT + 1))
     else
-    warn "New file not found: ${new_file}"
+      info "Creating new: ${description}"
+      mv "${new_file}" "${old_file}"
+      REMOVED_COUNT=$((REMOVED_COUNT + 1))
     fi
+  else
+    warn "New file not found: ${new_file}"
+  fi
 }
 
 replace_spec_file "${TEMPLATE_DIR}/docs/dev_adr.md.j2" \
-                  "${TEMPLATE_DIR}/docs/dev_adr.md.j2.new" \
-                  "dev_adr.md.j2 (minimal starter)"
+  "${TEMPLATE_DIR}/docs/dev_adr.md.j2.new" \
+  "dev_adr.md.j2 (minimal starter)"
 
 replace_spec_file "${TEMPLATE_DIR}/docs/dev_prd.md.j2" \
-                  "${TEMPLATE_DIR}/docs/dev_prd.md.j2.new" \
-                  "dev_prd.md.j2 (minimal starter)"
+  "${TEMPLATE_DIR}/docs/dev_prd.md.j2.new" \
+  "dev_prd.md.j2 (minimal starter)"
 
 replace_spec_file "${TEMPLATE_DIR}/docs/dev_sds.md.j2" \
-                  "${TEMPLATE_DIR}/docs/dev_sds.md.j2.new" \
-                  "dev_sds.md.j2 (minimal starter)"
+  "${TEMPLATE_DIR}/docs/dev_sds.md.j2.new" \
+  "dev_sds.md.j2 (minimal starter)"
 
 replace_spec_file "${TEMPLATE_DIR}/docs/dev_technical-specifications.md.j2" \
-                  "${TEMPLATE_DIR}/docs/dev_technical-specifications.md.j2.new" \
-                  "dev_technical-specifications.md.j2 (minimal starter)"
+  "${TEMPLATE_DIR}/docs/dev_technical-specifications.md.j2.new" \
+  "dev_technical-specifications.md.j2 (minimal starter)"
 
 replace_spec_file "${TEMPLATE_DIR}/docs/spec_index.md.j2" \
-                  "${TEMPLATE_DIR}/docs/spec_index.md.j2.new" \
-                  "spec_index.md.j2 (minimal starter)"
+  "${TEMPLATE_DIR}/docs/spec_index.md.j2.new" \
+  "spec_index.md.j2 (minimal starter)"
 
 replace_spec_file "${TEMPLATE_DIR}/docs/traceability_matrix.md.j2" \
-                  "${TEMPLATE_DIR}/docs/traceability_matrix.md.j2.new" \
-                  "traceability_matrix.md.j2 (minimal starter)"
+  "${TEMPLATE_DIR}/docs/traceability_matrix.md.j2.new" \
+  "traceability_matrix.md.j2 (minimal starter)"
 
 # Remove non-.j2 spec_index.md if it exists (shouldn't be in template)
 info ""

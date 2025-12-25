@@ -1,6 +1,6 @@
 ---
-description: "Front-end TypeScript/React style guidelines"
-applyTo: "**/*.ts,**/*.tsx,**/*.js"
+description: 'Front-end TypeScript/React style guidelines'
+applyTo: '**/*.ts,**/*.tsx,**/*.js'
 kind: instructions
 domain: style
 precedence: 33

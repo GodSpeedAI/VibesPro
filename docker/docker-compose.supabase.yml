@@ -9,12 +9,12 @@ services:
     container_name: vibespro-supabase-db
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
     ports:
-      - "${POSTGRES_PORT:-54322}:5432"
+      - '${POSTGRES_PORT:-54322}:5432'
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
@@ -33,7 +33,7 @@ services:
     container_name: vibespro-supabase-meta
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -58,9 +58,9 @@ services:
       PGRST_DB_SCHEMAS: public,storage,graphql_public
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${JWT_SECRET:-super-secret-jwt-token-with-at-least-32-characters}
-      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_DB_USE_LEGACY_GUCS: 'false'
     ports:
-      - "${REST_PORT:-54324}:3000"
+      - '${REST_PORT:-54324}:3000'
     depends_on:
       db:
         condition: service_healthy
@@ -71,12 +71,12 @@ services:
     container_name: vibespro-supabase-studio
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/profile"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/profile']
       interval: 10s
       timeout: 5s
       retries: 5
     ports:
-      - "${STUDIO_PORT:-54323}:3000"
+      - '${STUDIO_PORT:-54323}:3000'
     environment:
       STUDIO_PG_META_URL: http://meta:8080
       SUPABASE_URL: http://localhost:${REST_PORT:-54324}

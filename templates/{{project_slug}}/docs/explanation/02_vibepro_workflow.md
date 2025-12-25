@@ -15,10 +15,10 @@
 **What it produces**
 
 - A **multi-phase Test-Driven Development plan** following:
-    - VibePro’s _generator-first_ policy (no direct generator coding)
-    - Nx orchestration (`pnpm nx run-many ...`)
-    - `just` recipes (`just ai-context-bundle`, `just ai-validate`)
-    - Explicit **RED → GREEN → REFACTOR → REGRESSION** cycles per task
+  - VibePro’s _generator-first_ policy (no direct generator coding)
+  - Nx orchestration (`pnpm nx run-many ...`)
+  - `just` recipes (`just ai-context-bundle`, `just ai-validate`)
+  - Explicit **RED → GREEN → REFACTOR → REGRESSION** cycles per task
 
 - Each generator reference will output a **Generator Specification Plan**, not code.
 
@@ -48,9 +48,9 @@
 **What it produces**
 
 - A **spec-first document** classifying your intent into one of:
-    1. **feature-slice** — a domain library or feature module
-    2. **route-contract** — an HTTP route with tests and validators
-    3. **data-access** — a repository/adapter layer for persistence
+  1. **feature-slice** — a domain library or feature module
+  2. **route-contract** — an HTTP route with tests and validators
+  3. **data-access** — a repository/adapter layer for persistence
 
 - Fills out all sections: purpose, schema options, outputs, targets, acceptance tests, MCP guidance.
 
@@ -173,8 +173,8 @@ MCP usage is **advisory**, not automated — tools guide reasoning and provide c
 3. **Implement** according to the plan (manual or agent-driven).
 4. **Validate** using:
 
-    ```bash
-    just ai-validate
-    ```
+   ```bash
+   just ai-validate
+   ```
 
 5. **Commit** the spec and plan under version control for traceability.

@@ -149,9 +149,9 @@ just temporal-ai-refresh-metrics DAYS=7
 2. **OpenObserve stores** pattern recommendation events
 3. **Temporal AI queries** OpenObserve SQL API for performance data
 4. **Metrics are calculated**:
-    - `success_rate = 1.0 - error_rate`
-    - `avg_latency_ms` from response times
-    - `error_rate` from failed recommendations
+   - `success_rate = 1.0 - error_rate`
+   - `avg_latency_ms` from response times
+   - `error_rate` from failed recommendations
 5. **Rankings are updated** to include success rate (15% weight)
 
 ### Observability Modes

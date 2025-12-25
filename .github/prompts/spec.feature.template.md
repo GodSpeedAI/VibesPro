@@ -3,10 +3,10 @@ kind: prompt
 domain: spec
 task: feature-template
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Template for generating feature specifications with proper structure and traceability."
+tools: ['codebase', 'search']
+description: 'Template for generating feature specifications with proper structure and traceability.'
 ---
 
 # Feature Specification Template
@@ -72,11 +72,11 @@ description: "Template for generating feature specifications with proper structu
 ### 6. Risks & Assumptions
 
 - **Risks:**
-    - Risk 1 with mitigation
-    - Risk 2 with mitigation
+  - Risk 1 with mitigation
+  - Risk 2 with mitigation
 - **Assumptions:**
-    - Assumption 1
-    - Assumption 2
+  - Assumption 1
+  - Assumption 2
 
 ### 7. Success Metrics
 

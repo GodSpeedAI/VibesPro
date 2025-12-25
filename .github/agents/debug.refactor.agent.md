@@ -4,9 +4,9 @@ domain: debug
 task: refactor
 budget: S
 model: ${ default_model }
-name: "Debug Refactor Mode"
+name: 'Debug Refactor Mode'
 description: Minimal debug.refactor chatmode placeholder
-tools: ["codebase", "search"]
+tools: ['codebase', 'search']
 ---
 
 # Debug Refactor Mode

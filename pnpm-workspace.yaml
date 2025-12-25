@@ -1,9 +1,9 @@
 packages:
-  - "apps/*"
-  - "libs/*"
-  - "tools/*"
-  - "tests/*"
-  - "generators/*"
+  - 'apps/*'
+  - 'libs/*'
+  - 'tools/*'
+  - 'tests/*'
+  - 'generators/*'
 
 onlyBuiltDependencies:
   - esbuild

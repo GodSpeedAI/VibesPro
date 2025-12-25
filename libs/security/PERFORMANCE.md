@@ -153,24 +153,24 @@ The `chacha20poly1305` crate already uses hardware acceleration (AES-NI) when av
 
 1. **Call flush() before closing:** Ensures counter is persisted
 
-    ```rust
-    db.flush()?;
-    drop(db);
-    ```
+   ```rust
+   db.flush()?;
+   drop(db);
+   ```
 
 2. **Flush periodically for crash recovery:** Persist counter at checkpoints
 
-    ```rust
-    for chunk in data.chunks(10000) {
-        // ... process chunk ...
-        db.flush()?; // Persist counter every 10k ops
-    }
-    ```
+   ```rust
+   for chunk in data.chunks(10000) {
+       // ... process chunk ...
+       db.flush()?; // Persist counter every 10k ops
+   }
+   ```
 
 3. **Understand overhead scaling:** Overhead is **constant per operation**, not per byte
-    - For 5-byte values: ~8.4% overhead (~60ms per 1,000 ops)
-    - For 1KB values: ~3-4% overhead (encryption cost amortized)
-    - For 10KB values: ~1-2% overhead (negligible compared to I/O)
+   - For 5-byte values: ~8.4% overhead (~60ms per 1,000 ops)
+   - For 1KB values: ~3-4% overhead (encryption cost amortized)
+   - For 10KB values: ~1-2% overhead (negligible compared to I/O)
 
 ### For Library Developers
 

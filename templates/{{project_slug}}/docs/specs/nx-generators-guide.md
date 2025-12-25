@@ -295,33 +295,33 @@ Check `generators/*/schema.json` for available options.
 ## Best Practices
 
 1. **Always use generators for new projects/libraries**
-    - Ensures consistent structure
-    - Configures build/test automatically
-    - Sets up Nx project graph correctly
+   - Ensures consistent structure
+   - Configures build/test automatically
+   - Sets up Nx project graph correctly
 
 2. **Specify `--directory` for organization**
 
-    ```bash
-    # Good: organized by domain
-    pnpm exec nx g @nx/js:library user-service --directory=libs/domain/user
+   ```bash
+   # Good: organized by domain
+   pnpm exec nx g @nx/js:library user-service --directory=libs/domain/user
 
-    # Avoid: flat structure
-    pnpm exec nx g @nx/js:library user-service
-    ```
+   # Avoid: flat structure
+   pnpm exec nx g @nx/js:library user-service
+   ```
 
 3. **Use `--dry-run` to preview**
 
-    ```bash
-    pnpm exec nx g @nx/react:component Button --dry-run
-    ```
+   ```bash
+   pnpm exec nx g @nx/react:component Button --dry-run
+   ```
 
 4. **Customize after generation**
-    - Generators create scaffolds, not complete solutions
-    - Add your business logic, tests, documentation after
+   - Generators create scaffolds, not complete solutions
+   - Add your business logic, tests, documentation after
 
 5. **Don't fight the generator**
-    - Follow the structure it creates
-    - Use Nx's conventions (project.json, tsconfig.json, etc.)
+   - Follow the structure it creates
+   - Use Nx's conventions (project.json, tsconfig.json, etc.)
 
 ---
 

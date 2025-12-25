@@ -142,27 +142,27 @@ tests/                # Test suites
 **Always start every feature with**: _"Let me research the codebase and create a plan before implementing."_
 
 1. **Research** - Understand existing patterns and architecture
-    - Use semantic search, grep, and file reads to gather context
-    - Identify related specs, ADRs, and existing implementations
-    - Check `docs/nx-generators-guide.md` for available generators
+   - Use semantic search, grep, and file reads to gather context
+   - Identify related specs, ADRs, and existing implementations
+   - Check `docs/nx-generators-guide.md` for available generators
 
 2. **Plan** - Propose approach and verify with developer
-    - **Step 0**: Check if generator exists for this feature
-    - Present 2-3 options when uncertainty exists
-    - Reference spec IDs and architectural constraints (if using spec-driven development)
-    - Get explicit approval before proceeding
+   - **Step 0**: Check if generator exists for this feature
+   - Present 2-3 options when uncertainty exists
+   - Reference spec IDs and architectural constraints (if using spec-driven development)
+   - Get explicit approval before proceeding
 
 3. **Implement** - Build with tests and error handling
-    - Use generator first (if available)
-    - Follow established patterns from codebase
-    - Match testing approach to code complexity
-    - Include clear comments explaining business logic
+   - Use generator first (if available)
+   - Follow established patterns from codebase
+   - Match testing approach to code complexity
+   - Include clear comments explaining business logic
 
 4. **Validate** - ALWAYS run formatters, linters, and tests
-    - Execute `just ai-validate` (if available)
-    - Check for errors with get_errors tool
-    - Run relevant test suites
-    - Verify no security vulnerabilities introduced
+   - Execute `just ai-validate` (if available)
+   - Check for errors with get_errors tool
+   - Run relevant test suites
+   - Verify no security vulnerabilities introduced
 
 ---
 
@@ -215,27 +215,27 @@ tests/                # Test suites
 ```typescript
 // Domain Layer (libs/{domain}/domain/) - Pure business logic
 export class User {
-    constructor(
-        private readonly id: UserId,
-        private readonly email: Email,
-        private readonly profile: UserProfile,
-    ) {}
+  constructor(
+    private readonly id: UserId,
+    private readonly email: Email,
+    private readonly profile: UserProfile,
+  ) {}
 
-    // Domain methods - no infrastructure dependencies
+  // Domain methods - no infrastructure dependencies
 }
 
 // Application Layer (libs/{domain}/application/) - Use cases
 export class CreateUserUseCase {
-    constructor(private readonly userRepo: UserRepository) {} // Port
+  constructor(private readonly userRepo: UserRepository) {} // Port
 
-    async execute(input: CreateUserInput): Promise<User> {
-        // Orchestrate domain logic
-    }
+  async execute(input: CreateUserInput): Promise<User> {
+    // Orchestrate domain logic
+  }
 }
 
 // Infrastructure Layer (libs/{domain}/infrastructure/) - Adapters
 export class PostgresUserRepository implements UserRepository {
-    // Implement port with specific technology
+  // Implement port with specific technology
 }
 ```
 
@@ -255,32 +255,32 @@ export class PostgresUserRepository implements UserRepository {
 ### Critical Security Rules
 
 1. **NEVER modify VS Code configuration files without explicit user confirmation**
-    - `.vscode/settings.json`, `.vscode/tasks.json`
-    - Rationale: Malicious changes can enable auto-approval → Remote Code Execution
+   - `.vscode/settings.json`, `.vscode/tasks.json`
+   - Rationale: Malicious changes can enable auto-approval → Remote Code Execution
 
 2. **Always sanitize and validate ALL user inputs**
-    - Never interpolate untrusted data into shell commands
-    - Use prepared statements for SQL queries
-    - Validate file paths, URLs, and external data
+   - Never interpolate untrusted data into shell commands
+   - Use prepared statements for SQL queries
+   - Validate file paths, URLs, and external data
 
 3. **Respect VS Code workspace trust boundaries**
-    - Do not run tasks or execute code in untrusted folders
-    - Require user confirmation before executing external commands
+   - Do not run tasks or execute code in untrusted folders
+   - Require user confirmation before executing external commands
 
 4. **Secret Management**
-    - NEVER hardcode secrets in code or configuration
-    - Use environment variables or secret stores
-    - Never commit keys to version control
+   - NEVER hardcode secrets in code or configuration
+   - Use environment variables or secret stores
+   - Never commit keys to version control
 
 5. **Cryptographic Standards**
-    - Use `crypto/rand` for randomness (not Math.random)
-    - Use modern crypto libraries (libsodium, Web Crypto API)
-    - Follow current best practices for hashing, encryption
+   - Use `crypto/rand` for randomness (not Math.random)
+   - Use modern crypto libraries (libsodium, Web Crypto API)
+   - Follow current best practices for hashing, encryption
 
 6. **Input Validation**
-    - Validate all inputs at boundaries
-    - Use type guards and schema validation (Zod, io-ts, Yup)
-    - Fail securely with appropriate error messages
+   - Validate all inputs at boundaries
+   - Use type guards and schema validation (Zod, io-ts, Yup)
+   - Fail securely with appropriate error messages
 
 [CUSTOMIZE: Add compliance requirements]
 
@@ -497,14 +497,14 @@ ADR → SDS/Technical Specs → PRD
 ### Business Rules
 
 1. **Inventory Management**
-    - Products can't be oversold
-    - Reserve inventory on order creation
-    - Release on cancellation/timeout
+   - Products can't be oversold
+   - Reserve inventory on order creation
+   - Release on cancellation/timeout
 
 2. **Pricing**
-    - Dynamic pricing based on promotions
-    - Tax calculation by location
-    - Shipping cost calculation
+   - Dynamic pricing based on promotions
+   - Tax calculation by location
+   - Shipping cost calculation
 
 [CUSTOMIZE: Your domain concepts]
 

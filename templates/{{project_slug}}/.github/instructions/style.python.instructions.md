@@ -1,6 +1,6 @@
 ---
-description: "Python coding style guidelines"
-applyTo: "**/*.py"
+description: 'Python coding style guidelines'
+applyTo: '**/*.py'
 kind: instructions
 domain: style
 precedence: 33

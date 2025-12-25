@@ -1,6 +1,6 @@
 ---
-description: "Security-focused instructions for Copilot and chat responses"
-applyTo: "**"
+description: 'Security-focused instructions for Copilot and chat responses'
+applyTo: '**'
 kind: instructions
 domain: security
 precedence: 10

@@ -86,13 +86,13 @@ date: {{ year }}
 
 - **Architecture**: Middleware pattern with sliding window counter
 - **Data Structures**:
-    ```typescript
-    interface RateLimitConfig {
-        windowMs: number;
-        maxRequests: number;
-        keyGenerator: (req: Request) => string;
-    }
-    ```
+  ```typescript
+  interface RateLimitConfig {
+    windowMs: number;
+    maxRequests: number;
+    keyGenerator: (req: Request) => string;
+  }
+  ```
 - **Algorithms**: Sliding window counter using Redis INCR and EXPIRE (O(1) time complexity)
 
 #### Testing Strategy

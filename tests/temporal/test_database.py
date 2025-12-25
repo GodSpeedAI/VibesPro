@@ -350,9 +350,9 @@ class TestTemporalDatabasePerformance:
             memory_increase = final_memory - initial_memory
 
             # Memory increase should be reasonable (< 100MB for 100 specs)
-            assert (
-                memory_increase < 100 * 1024 * 1024
-            ), f"Memory increased by {memory_increase / 1024 / 1024:.1f}MB, expected < 100MB"
+            assert memory_increase < 100 * 1024 * 1024, (
+                f"Memory increased by {memory_increase / 1024 / 1024:.1f}MB, expected < 100MB"
+            )
 
         finally:
             await repo.close()

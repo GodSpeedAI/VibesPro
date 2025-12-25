@@ -4,9 +4,9 @@ domain: product
 task: usp
 budget: S
 description: Craft a unique selling proposition (USP) that differentiates your product.
-tools: ["search", "githubRepo"]
+tools: ['search', 'githubRepo']
 model: GPT-5
-name: "Product Usp"
+name: 'Product Usp'
 ---
 
 # Unique Selling Proposition Mode

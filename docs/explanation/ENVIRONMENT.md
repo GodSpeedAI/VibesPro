@@ -157,7 +157,7 @@ just check-types
 - Add `just check-types` to CI pipelines to ensure generated types have been committed and are fresh.
 - If you use a branch or PR pipeline, include `just check-types` as part of the verification stage.
 - Add a devbox runtime check to CI to ensure `supabase` is available for type generation and migrations:
-    - For example, add a step to run `just devbox-check` or `bash scripts/check_supabase_in_devbox.sh` after `devbox update` so CI fails when `supabase` is not resolvable.
+  - For example, add a step to run `just devbox-check` or `bash scripts/check_supabase_in_devbox.sh` after `devbox update` so CI fails when `supabase` is not resolvable.
 
 ### Auto-bump overlay job
 

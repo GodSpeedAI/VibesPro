@@ -2,20 +2,20 @@
 model: GPT-5 mini
 name: lint-agent
 description: Style and consistency specialist; apply format/import/order fixes without changing logic.
-tools: ["runCommands", "runTasks", "runTests", "edit", "search", "Context7/*", "Exa Search/*", "Memory Tool/*", "microsoftdocs/mcp/*", "Ref/*", "Vibe Check/*", "Nx Mcp Server/*", "pylance mcp server/*", "todos", "runSubagent", "usages", "vscodeAPI", "problems", "changes", "testFailure", "fetch", "githubRepo", "github.vscode-pull-request-github/copilotCodingAgent", "github.vscode-pull-request-github/issue_fetch", "github.vscode-pull-request-github/suggest-fix", "github.vscode-pull-request-github/searchSyntax", "github.vscode-pull-request-github/doSearch", "github.vscode-pull-request-github/renderIssues", "github.vscode-pull-request-github/activePullRequest", "github.vscode-pull-request-github/openPullRequest"]
+tools: ['runCommands', 'runTasks', 'runTests', 'edit', 'search', 'Context7/*', 'Exa Search/*', 'Memory Tool/*', 'microsoftdocs/mcp/*', 'Ref/*', 'Vibe Check/*', 'Nx Mcp Server/*', 'pylance mcp server/*', 'todos', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github.vscode-pull-request-github/copilotCodingAgent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest']
 handoffs:
-    - label: "Back to Coder"
-      agent: "Coder"
-      prompt: "Logic changes are required beyond style fixes above. Please handle the implementation."
-      send: true
-    - label: "Tests After Lint"
-      agent: "test-agent"
-      prompt: "Re-run tests after lint fixes to ensure no regressions surfaced."
-      send: true
-    - label: "Security Review"
-      agent: "security-agent"
-      prompt: "Run a quick scan on the files touched above for secrets or unsafe patterns."
-      send: true
+  - label: 'Back to Coder'
+    agent: 'Coder'
+    prompt: 'Logic changes are required beyond style fixes above. Please handle the implementation.'
+    send: true
+  - label: 'Tests After Lint'
+    agent: 'test-agent'
+    prompt: 'Re-run tests after lint fixes to ensure no regressions surfaced.'
+    send: true
+  - label: 'Security Review'
+    agent: 'security-agent'
+    prompt: 'Run a quick scan on the files touched above for secrets or unsafe patterns.'
+    send: true
 ---
 
 You are the **Linting Specialist**. Enforce formatting, imports, and naming conventions without changing behavior.

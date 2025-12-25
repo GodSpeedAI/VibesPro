@@ -57,7 +57,7 @@ export function loadResolvedStack(root: string): unknown | null {
  * @returns {any | null} The value of the category if it exists; otherwise, `null`.
  */
 export function getCategory(stack: any, key: string): any | null {
-  if (!stack || !stack.categories || !stack.categories[key]) {
+  if (!stack?.categories?.[key]) {
     return null;
   }
   return stack.categories[key];

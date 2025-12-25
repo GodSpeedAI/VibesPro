@@ -30,13 +30,39 @@ EOF
 # parse args
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dry-run) DRY_RUN=true; shift;;
-    --local) DELETE_LOCAL=true; DRY_RUN=false; shift;;
-    --remote) DELETE_REMOTE=true; DRY_RUN=false; shift;;
-    --all) DELETE_LOCAL=true; DELETE_REMOTE=true; DRY_RUN=false; shift;;
-    --force) FORCE=true; shift;;
-    -h|--help) usage; exit 0;;
-    *) echo "Unknown arg: $1"; usage; exit 2;;
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    --local)
+      DELETE_LOCAL=true
+      DRY_RUN=false
+      shift
+      ;;
+    --remote)
+      DELETE_REMOTE=true
+      DRY_RUN=false
+      shift
+      ;;
+    --all)
+      DELETE_LOCAL=true
+      DELETE_REMOTE=true
+      DRY_RUN=false
+      shift
+      ;;
+    --force)
+      FORCE=true
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown arg: $1"
+      usage
+      exit 2
+      ;;
   esac
 done
 
@@ -51,7 +77,10 @@ local_branches=()
 while IFS= read -r b; do
   skip=false
   for k in "${KEEP[@]}"; do
-    if [[ "${b}" == "${k}" ]]; then skip=true; break; fi
+    if [[ "${b}" == "${k}" ]]; then
+      skip=true
+      break
+    fi
   done
   if [[ "${b}" == "${current_branch}" ]]; then skip=true; fi
   if [[ "${skip}" == false ]]; then local_branches+=("${b}"); fi
@@ -66,7 +95,10 @@ while IFS= read -r r; do
   if [[ "${branch}" == "HEAD" ]]; then continue; fi
   skip=false
   for k in "${KEEP[@]}"; do
-    if [[ "${branch}" == "${k}" ]]; then skip=true; break; fi
+    if [[ "${branch}" == "${k}" ]]; then
+      skip=true
+      break
+    fi
   done
   if [[ "${skip}" == false ]]; then remote_branches+=("${branch}"); fi
 done < <(git for-each-ref --format='%(refname:short)' refs/remotes/origin/) || true
@@ -130,7 +162,7 @@ if [[ "${DELETE_REMOTE}" == true && ${#remote_branches[@]} -gt 0 ]]; then
   printf '\nDeleting remote branches on origin...\n'
   for b in "${remote_branches[@]}"; do
     printf 'Deleting remote branch: %s\n' "${b}"
-    git push origin --delete "${b}" || echo "Failed to delete remote branch: ${b}";
+    git push origin --delete "${b}" || echo "Failed to delete remote branch: ${b}"
   done
 else
   printf '\nSkipping remote deletions.\n'

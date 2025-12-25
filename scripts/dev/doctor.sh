@@ -54,10 +54,22 @@ OS-level tool versions:"
 for cmd in git jq uv corepack postgresql; do
   if command -v "${cmd}" >/dev/null 2>&1; then
     case "${cmd}" in
-      postgresql) echo -n "  ${cmd}: "; psql --version 2>/dev/null | head -1 || postgres --version 2>/dev/null | head -1 || echo "installed" ;;
-      uv) echo -n "  ${cmd}: "; uv --version || true ;;
-      corepack) echo -n "  ${cmd}: "; corepack --version || true ;;
-      *) echo -n "  ${cmd}: "; "${cmd}" --version 2>&1 | head -1 || echo "installed" ;;
+      postgresql)
+        echo -n "  ${cmd}: "
+        psql --version 2>/dev/null | head -1 || postgres --version 2>/dev/null | head -1 || echo "installed"
+        ;;
+      uv)
+        echo -n "  ${cmd}: "
+        uv --version || true
+        ;;
+      corepack)
+        echo -n "  ${cmd}: "
+        corepack --version || true
+        ;;
+      *)
+        echo -n "  ${cmd}: "
+        "${cmd}" --version 2>&1 | head -1 || echo "installed"
+        ;;
     esac
   else
     echo "  ${cmd}: (not found)"
@@ -75,13 +87,14 @@ check_and_print() {
     ver=$("${name}" --version 2>&1 || true)
     if [[ -n "${ver}" ]]; then
       # show first non-empty line
-      printf '  %s: ' "${name}"; echo "${ver}" | sed -n '1p'
+      printf '  %s: ' "${name}"
+      echo "${ver}" | sed -n '1p'
     else
       printf '  %s: available\n' "${name}"
     fi
   else
     printf '  %s: (not found)%s\n' "${name}" "${hint}"
-    failed=$((failed+1))
+    failed=$((failed + 1))
   fi
 }
 

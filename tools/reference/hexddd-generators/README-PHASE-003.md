@@ -62,31 +62,31 @@ All frontend apps receive:
 **Next.js App Router** (`app/page.tsx`):
 
 ```typescript
-import { fetchJson, ENV } from "@shared/web";
+import { fetchJson, ENV } from '@shared/web';
 // RSC-ready API calls
 ```
 
 **Next.js Pages Router** (`pages/index.tsx`):
 
 ```typescript
-import { fetchJson, ENV } from "@shared/web";
-import type { GetServerSideProps } from "next";
+import { fetchJson, ENV } from '@shared/web';
+import type { GetServerSideProps } from 'next';
 // getServerSideProps pattern
 ```
 
 **Remix** (`app/routes/_index.tsx`):
 
 ```typescript
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { fetchJson, ENV } from "@shared/web";
+import { json, type LoaderFunctionArgs } from '@remix-run/node';
+import { fetchJson, ENV } from '@shared/web';
 // Loader/action pattern
 ```
 
 **Expo** (`App.tsx`):
 
 ```typescript
-import { fetchJson, ENV } from "@shared/web";
-import { View, Text } from "react-native";
+import { fetchJson, ENV } from '@shared/web';
+import { View, Text } from 'react-native';
 // React Native compatible
 ```
 
@@ -96,37 +96,37 @@ FastAPI services receive:
 
 1. **Hexagonal Architecture** (default):
 
-    ```
-    apps/my-api/
-    ├── domain/
-    │   ├── entities/
-    │   └── value_objects/
-    ├── application/
-    │   ├── ports/
-    │   │   └── repository.py      # Protocol definitions
-    │   └── use_cases/
-    ├── infrastructure/
-    │   └── adapters/
-    │       ├── in_memory/          # Test adapters
-    │       └── supabase/           # Production adapters
-    ├── main.py                     # FastAPI app
-    ├── schemas.py                  # Pydantic models
-    └── tests/
-        └── test_main.py
-    ```
+   ```
+   apps/my-api/
+   ├── domain/
+   │   ├── entities/
+   │   └── value_objects/
+   ├── application/
+   │   ├── ports/
+   │   │   └── repository.py      # Protocol definitions
+   │   └── use_cases/
+   ├── infrastructure/
+   │   └── adapters/
+   │       ├── in_memory/          # Test adapters
+   │       └── supabase/           # Production adapters
+   ├── main.py                     # FastAPI app
+   ├── schemas.py                  # Pydantic models
+   └── tests/
+       └── test_main.py
+   ```
 
 2. **Logfire Instrumentation** (default):
-    - Automatic bootstrap in `main.py`
-    - Configured logger with categories
-    - Structured logging ready to use
+   - Automatic bootstrap in `main.py`
+   - Configured logger with categories
+   - Structured logging ready to use
 
 3. **Pydantic Type Sync**:
-    - `schemas.py` with `BaseSchema`
-    - Ready for auto-generation from Supabase (PHASE-004)
+   - `schemas.py` with `BaseSchema`
+   - Ready for auto-generation from Supabase (PHASE-004)
 
 4. **OpenAPI Export**:
-    - `/api/openapi.json` endpoint
-    - Enables frontend type generation
+   - `/api/openapi.json` endpoint
+   - Enables frontend type generation
 
 ## Shared Web Library
 
@@ -140,7 +140,7 @@ export async function fetchJson<T>(url: string): Promise<T>;
 export type AppError = ValidationError | NetworkError | UnexpectedError;
 
 // libs/shared/web/src/lib/env.ts
-export const ENV = { API_URL: process.env.NX_API_URL ?? "/api" };
+export const ENV = { API_URL: process.env.NX_API_URL ?? '/api' };
 
 // libs/shared/web/src/lib/schemas.ts
 // Zod schemas (to be expanded in PHASE-004)
@@ -194,16 +194,16 @@ This validates:
 
 ```typescript
 export async function webAppGenerator(tree: Tree, options: Schema) {
-    // 1. Delegate to official Nx generator
-    await tryGenerateNextApp(tree, options);
+  // 1. Delegate to official Nx generator
+  await tryGenerateNextApp(tree, options);
 
-    // 2. Apply VibesPro transformations
-    if (options.apiClient !== false) {
-        await injectSharedWebIntoNextApp(tree, options);
-    }
+  // 2. Apply VibesPro transformations
+  if (options.apiClient !== false) {
+    await injectSharedWebIntoNextApp(tree, options);
+  }
 
-    // 3. Ensure shared library exists
-    ensureSharedWeb(tree, options);
+  // 3. Ensure shared library exists
+  ensureSharedWeb(tree, options);
 }
 ```
 
@@ -218,8 +218,8 @@ export async function webAppGenerator(tree: Tree, options: Schema) {
 All transformations check before modifying:
 
 ```typescript
-if (content.includes("@shared/web")) {
-    return; // Already injected, skip
+if (content.includes('@shared/web')) {
+  return; // Already injected, skip
 }
 ```
 

@@ -5,10 +5,10 @@ task: traceability
 thread: spec-traceability-update
 matrix_ids: []
 budget: M
-mode: "agent"
+mode: 'agent'
 model: GPT-5 mini
-tools: ["codebase", "search"]
-description: "Build or update the traceability matrix, find gaps, propose tests."
+tools: ['codebase', 'search']
+description: 'Build or update the traceability matrix, find gaps, propose tests.'
 ---
 
 # Build/Update Traceability Matrix

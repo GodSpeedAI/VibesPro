@@ -4,10 +4,10 @@ domain: spec
 task: mode
 phase: lean
 budget: S
-description: "Lightweight spec mode for quick decisions and minimal documentation."
-tools: ["codebase", "editFiles", "search"]
+description: 'Lightweight spec mode for quick decisions and minimal documentation.'
+tools: ['codebase', 'editFiles', 'search']
 model: GPT-5 mini
-name: "Spec Lean"
+name: 'Spec Lean'
 ---
 
 # Mode Guidance
@@ -15,10 +15,10 @@ name: "Spec Lean"
 - Default mode for specification tasks requiring minimal documentation overhead.
 - Focus on capturing essential decisions and requirements only.
 - Escalate to Wide mode when you encounter:
-    - Complex architectural decisions requiring detailed ADRs
-    - 5+ interconnected requirements needing traceability matrix
-    - Multiple integration points requiring technical specifications
-    - User requests comprehensive documentation
+  - Complex architectural decisions requiring detailed ADRs
+  - 5+ interconnected requirements needing traceability matrix
+  - Multiple integration points requiring technical specifications
+  - User requests comprehensive documentation
 - Keep specs concise: decision + rationale + impact (no formal templates unless needed).
 
 ## Included Instructions

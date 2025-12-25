@@ -163,24 +163,24 @@ FROM rust:1.76
 ```yaml
 # Add these 3 variables to copier.yml
 enable_security_hardening:
-    type: bool
-    default: false # ← Defaults to OFF
-    help: "Enable TPM-backed encryption and security hardening features?"
+  type: bool
+  default: false # ← Defaults to OFF
+  help: 'Enable TPM-backed encryption and security hardening features?'
 
 encryption_backend:
-    type: str
-    default: "xchacha20poly1305"
-    choices:
-        - xchacha20poly1305
-        - aes256gcm
-    when: "{{ enable_security_hardening }}"
-    help: "AEAD cipher for encryption at rest"
+  type: str
+  default: 'xchacha20poly1305'
+  choices:
+    - xchacha20poly1305
+    - aes256gcm
+  when: '{{ enable_security_hardening }}'
+  help: 'AEAD cipher for encryption at rest'
 
 tpm_enabled:
-    type: bool
-    default: false
-    when: "{{ enable_security_hardening }}"
-    help: "Use TPM 2.0 for key sealing?"
+  type: bool
+  default: false
+  when: '{{ enable_security_hardening }}'
+  help: 'Use TPM 2.0 for key sealing?'
 ```
 
 ### Impact Analysis
@@ -320,46 +320,46 @@ echo "⚠️ Security hardening features are archived pending fixes" >> docs/aia
 
 1. **Add Copier Variables** (15 minutes)
 
-    ```bash
-    # Edit copier.yml, add 3 variables from Section "Feature Flag Strategy"
-    ```
+   ```bash
+   # Edit copier.yml, add 3 variables from Section "Feature Flag Strategy"
+   ```
 
 2. **Create Library Structure** (30 minutes)
 
-    ```bash
-    mkdir -p libs/security/{src,tests/unit}
-    touch libs/security/Cargo.toml
-    touch libs/security/src/{lib.rs,secure_db.rs}
-    ```
+   ```bash
+   mkdir -p libs/security/{src,tests/unit}
+   touch libs/security/Cargo.toml
+   touch libs/security/src/{lib.rs,secure_db.rs}
+   ```
 
 3. **Copy Test Cases** (1 hour)
 
-    ```bash
-    # Copy from AI_SECURITY_HARDENING.md Section 7.1
-    # Paste into libs/security/tests/unit/secure_db_test.rs
-    ```
+   ```bash
+   # Copy from AI_SECURITY_HARDENING.md Section 7.1
+   # Paste into libs/security/tests/unit/secure_db_test.rs
+   ```
 
 4. **Copy Implementation** (2 hours)
 
-    ```bash
-    # Copy from AI_SECURITY_HARDENING.md Section 5.2
-    # Paste into libs/security/src/secure_db.rs
-    # Run: cargo test
-    ```
+   ```bash
+   # Copy from AI_SECURITY_HARDENING.md Section 5.2
+   # Paste into libs/security/src/secure_db.rs
+   # Run: cargo test
+   ```
 
 5. **Create Templates** (4 hours)
 
-    ```bash
-    # Copy Dockerfile from Section 5.3
-    # Copy docker-compose.yml from Section 5.3
-    # Add .j2 extensions and Jinja2 conditionals
-    ```
+   ```bash
+   # Copy Dockerfile from Section 5.3
+   # Copy docker-compose.yml from Section 5.3
+   # Add .j2 extensions and Jinja2 conditionals
+   ```
 
 6. **Test Generation** (2 hours)
-    ```bash
-    copier copy . /tmp/test-secure --data enable_security_hardening=true
-    cd /tmp/test-secure && cargo build
-    ```
+   ```bash
+   copier copy . /tmp/test-secure --data enable_security_hardening=true
+   cd /tmp/test-secure && cargo build
+   ```
 
 ### Total Estimated Time: 20-26 hours (vs. 50+ hours writing from scratch)
 
