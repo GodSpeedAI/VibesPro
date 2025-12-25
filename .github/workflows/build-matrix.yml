@@ -135,7 +135,6 @@ jobs:
           # Verify installation succeeded
           just --version
 
-
       # ---- Install SOPS ----
       - name: Install SOPS
         shell: bash

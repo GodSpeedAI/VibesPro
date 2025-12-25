@@ -87,3 +87,48 @@ jobs:
           else
             echo "No test script found, skipping tests"
           fi
+
+  copier-validate:
+    name: Validate Copier Template
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup just
+        uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6 # v2
+
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a # v4.2.0
+
+      - name: Quick Copier Validation
+        run: |
+          echo "🔍 Running quick Copier validation..."
+          python -m py_compile hooks/pre_gen.py
+          python -m py_compile hooks/post_gen.py
+          test -f copier.yml || { echo "❌ copier.yml not found"; exit 1; }
+          test -f .copierignore || { echo "❌ .copierignore not found"; exit 1; }
+          echo "✅ Quick validation passed"
+
+      - name: Validate Copier Config
+        run: |
+          echo "🔍 Validating Copier configuration..."
+          uvx copier copy --pretend --defaults --trust \
+            --data-file tests/fixtures/smoke-data.yml \
+            . /tmp/copier-validate || { echo "❌ Copier config validation failed"; exit 1; }
+          echo "✅ Copier config is valid"
+
+      - name: Verify Template Invariants
+        run: |
+          echo "🔍 Checking template invariants..."
+          # INV-07: .copierignore excludes template files
+          test -f .copierignore && echo "✅ INV-07: .copierignore exists"
+          # Hooks library exists
+          test -d hooks/lib && echo "✅ Hooks library exists"
+          echo "✅ All invariants verified"

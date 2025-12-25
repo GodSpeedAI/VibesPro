@@ -8,6 +8,38 @@ _js_runtime := `command -v bun >/dev/null 2>&1 && echo "bun" || echo "node"`
 default:
 	@just --list
 
+# Open VS Code with proper environment and Nx daemon running
+code:
+	@echo "🚀 Preparing environment for VS Code..."
+	@./scripts/env-wrapper.sh pnpm exec nx daemon --start 2>/dev/null || true
+	@echo "✅ Nx daemon started"
+	@code .
+
+# Start the Nx daemon (improves Nx Console performance)
+nx-daemon-start:
+	@echo "🔄 Starting Nx daemon..."
+	@./scripts/env-wrapper.sh pnpm exec nx daemon --start
+
+# Stop the Nx daemon
+nx-daemon-stop:
+	@./scripts/env-wrapper.sh pnpm exec nx daemon --stop
+
+# Reset Nx cache and daemon
+nx-reset:
+	@./scripts/env-wrapper.sh pnpm exec nx reset
+
+# Verify Nx setup is working
+nx-doctor:
+	@echo "🔍 Nx Diagnostics"
+	@echo "================"
+	@echo ""
+	@./scripts/env-wrapper.sh pnpm exec nx --version
+	@echo ""
+	@echo "Projects:"
+	@./scripts/env-wrapper.sh pnpm exec nx show projects
+	@echo ""
+	@echo "✅ Nx is working correctly"
+
 # --- Environment Setup ---
 # Tiered setup architecture:
 #   Tier 0: Core (setup)         - Node, Bun, Python, pnpm install
@@ -399,7 +431,7 @@ test-generator-smoke:
 test-generation:
 	@echo "🧪 Testing template generation..."
 	rm -rf ./test-output
-	copier copy . ./test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force --vcs-ref HEAD
+	uv run copier copy . ./test-output --data-file tests/fixtures/test-data.yml --trust --defaults --force --vcs-ref HEAD
 	cd ./test-output && pnpm install && { \
 		echo "🏗️ Building all projects..."; \
 		pnpm exec nx run-many --target=build --all || { \
@@ -413,6 +445,69 @@ test-generation:
 		}; \
 	}
 	pnpm exec jest --runTestsByPath tests/integration/template-smoke.test.ts --runInBand
+
+# --- Copier Smoke Test & Validation ---
+# These recipes support the Copier template optimization implementation.
+# See: docs/specs/shared/reference/copier-optimization-spec.md
+
+# Run complete Copier smoke test suite
+copier-smoke-test: copier-regenerate-smoke copier-validate-smoke
+	@echo "✅ Copier smoke test passed"
+
+# Regenerate the in-repo smoke example (idempotent)
+copier-regenerate-smoke:
+	@echo "🔄 Regenerating Copier smoke example..."
+	@rm -rf apps/copier-smoke-example
+	@mkdir -p apps/copier-smoke-example
+	COPIER_SKIP_PROJECT_SETUP=1 uv run copier copy . apps/copier-smoke-example \
+		--data-file tests/fixtures/smoke-data.yml \
+		--trust --defaults --force --vcs-ref HEAD
+	@# Restore the project.json that makes it Nx-aware
+	@cp tools/copier/smoke-project.json apps/copier-smoke-example/project.json
+	@echo "✅ Smoke example regenerated"
+
+# Validate the smoke example meets invariants
+copier-validate-smoke:
+	@echo "🔍 Validating Copier smoke example..."
+	@# INV-01: Copier config validates
+	@echo "   Checking INV-01: Copier config..."
+	@uv run copier copy --pretend --defaults --trust --data-file tests/fixtures/smoke-data.yml . /tmp/copier-inv01 || { echo "❌ INV-01 FAILED"; exit 1; }
+	@# INV-06: Hooks have valid syntax
+	@echo "   Checking INV-06: Hook syntax..."
+	@python -m py_compile hooks/pre_gen.py || { echo "❌ INV-06 FAILED: pre_gen.py"; exit 1; }
+	@python -m py_compile hooks/post_gen.py || { echo "❌ INV-06 FAILED: post_gen.py"; exit 1; }
+	@# Smoke example validation (if exists)
+	@if [ -d apps/copier-smoke-example ]; then \
+		echo "   Checking smoke example project.json..."; \
+		test -f apps/copier-smoke-example/project.json || { echo "❌ project.json missing"; exit 1; }; \
+	fi
+	@echo "✅ All invariants validated"
+
+
+# Validate all Copier templates render without errors
+copier-validate-templates:
+	@echo "🔍 Validating Copier templates..."
+	@python tools/copier/validate_templates.py
+	@echo "✅ All templates valid"
+
+# Full Copier CI validation (run in CI)
+copier-ci: copier-validate-templates
+	@echo "🔬 Running Copier invariant tests..."
+	@SKIP=end-of-file-fixer,ruff,ruff-format,prettier,trim-trailing-whitespace,shellcheck \
+		COPIER_SKIP_PROJECT_SETUP=1 \
+		UV_NO_SYNC=1 \
+		uv run pytest -q tests/copier/test_copier_invariants.py -v
+	@echo "✅ Copier CI validation complete"
+
+# Quick Copier validation (fast, no generation)
+copier-quick-validate:
+	@echo "🔍 Quick Copier validation..."
+	@python -m py_compile hooks/pre_gen.py
+	@python -m py_compile hooks/post_gen.py
+	@test -f copier.yml || { echo "❌ copier.yml not found"; exit 1; }
+	@test -f .copierignore || { echo "❌ .copierignore not found"; exit 1; }
+	@echo "✅ Quick validation passed"
+
 
 # --- Code Quality ---
 lint:

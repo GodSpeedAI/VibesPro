@@ -1,0 +1,41 @@
+# Ensure trace correlation metadata is present for Logfire-generated logs
+if !exists(.trace_id) {
+  if exists(.attributes.trace_id) {
+    trace_candidate = to_string(.attributes.trace_id) ?? ""
+    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
+  } else if exists(.attributes."logfire.trace_id") {
+    trace_candidate = to_string(.attributes."logfire.trace_id") ?? ""
+    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
+  } else if exists(.attributes.logfire_trace_id) {
+    trace_candidate = to_string(.attributes.logfire_trace_id) ?? ""
+    if trace_candidate != "" { .trace_id = downcase(trace_candidate) }
+  }
+}
+
+if !exists(.span_id) {
+  if exists(.attributes.span_id) {
+    span_candidate = to_string(.attributes.span_id) ?? ""
+    if span_candidate != "" { .span_id = downcase(span_candidate) }
+  } else if exists(.attributes."logfire.span_id") {
+    span_candidate = to_string(.attributes."logfire.span_id") ?? ""
+    if span_candidate != "" { .span_id = downcase(span_candidate) }
+  } else if exists(.attributes.logfire_span_id) {
+    span_candidate = to_string(.attributes.logfire_span_id) ?? ""
+    if span_candidate != "" { .span_id = downcase(span_candidate) }
+  }
+}
+
+# Preserve span name context if supplied by Logfire
+if exists(.attributes."logfire.span_name") {
+  .span_name = to_string(.attributes."logfire.span_name") ?? ""
+}
+
+# Capture Logfire observation identifiers when present
+if exists(.attributes."logfire.observation_id") {
+  .observation_id = to_string(.attributes."logfire.observation_id") ?? ""
+}
+
+# Normalize severity defaults if missing
+if !exists(.severity_text) && exists(.level) {
+  .severity_text = to_string(.level) ?? "INFO"
+}
