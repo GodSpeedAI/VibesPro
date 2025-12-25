@@ -198,8 +198,8 @@ jobs:
               source "$HOME/.cargo/env"
             fi
           fi
-          # Install the nightly toolchain - fail if this fails
-          rustup toolchain install nightly-2025-11-01 --no-self-update
+          # Install the nightly toolchain with clippy and rustfmt components
+          rustup toolchain install nightly-2025-11-01 --no-self-update --component clippy rustfmt
           rustup override set nightly-2025-11-01
 
       # ---- Node package manager (optional; respects Corepack) ----
