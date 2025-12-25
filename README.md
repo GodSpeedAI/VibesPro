@@ -158,6 +158,20 @@ Once running, you'll interact conversationally. Describe what you need. Review p
 - **[Security Guidelines](.github/instructions/security.instructions.md)** — Policies and guardrails
 - **[Observability Stack](docs/observability/README.md)** — Monitoring and insights
 
+### CI/Development
+
+Run CI locally before pushing:
+
+```bash
+./scripts/ci-local.sh lint      # Quick lint check (~45s)
+./scripts/ci-local.sh typecheck # Type checking (~1-2m)
+./scripts/ci-local.sh test      # All tests (~5-10m)
+./scripts/ci-local.sh all       # Full CI suite
+./scripts/ci-local.sh docker    # Full CI parity with Docker
+```
+
+See [`.github/workflows/README.md`](.github/workflows/README.md) for full CI documentation.
+
 ---
 
 ## 🗺️ Where We're Heading

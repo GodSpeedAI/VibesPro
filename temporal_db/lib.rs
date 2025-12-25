@@ -18,7 +18,6 @@ pub async fn initialize_temporal_database(db_path: &str) -> Result<TemporalRepos
 mod tests {
     use super::*;
     use tempfile::TempDir;
-    use tokio;
 
     #[tokio::test]
     async fn test_database_initialization() {
