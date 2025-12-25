@@ -698,6 +698,51 @@ check-types:
 	echo "✅ Types are up to date"
 
 
+# --- Release Management ---
+# Full release workflow: preflight → version bump → execute → (PR merge) → finalize
+# See scripts/release/README.md for detailed documentation
+
+# Run complete release workflow (interactive)
+release:
+	@echo "🚀 Starting release workflow..."
+	@./scripts/release/release.sh
+
+# Run pre-release validation checks
+release-preflight:
+	@./scripts/release/release-preflight.sh
+
+# Determine version bump based on conventional commits
+release-bump:
+	@./scripts/release/determine-version-bump.sh
+
+# Execute release: create branch, update versions, create PR
+release-execute:
+	@./scripts/release/execute-release.sh
+
+# Finalize release after PR merge: tag, GitHub release, sync branches
+release-finalize:
+	@./scripts/release/finalize-release.sh
+
+# Update version in all manifest files (internal use)
+release-update-versions:
+	@./scripts/release/update-versions.sh
+
+# Generate changelog from conventional commits (internal use)
+release-changelog:
+	@./scripts/release/generate-changelog.sh
+
+# Quick version check: show current version info
+version:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	echo "📊 Version Information"
+	echo "━━━━━━━━━━━━━━━━━━━━━"
+	echo "   Git tag:       $(git describe --tags --abbrev=0 2>/dev/null || echo 'none')"
+	echo "   package.json:  $(jq -r '.version' package.json 2>/dev/null || echo 'N/A')"
+	echo "   pyproject.toml: $(grep -E '^version = ' pyproject.toml 2>/dev/null | sed 's/version = "\(.*\)"/\1/' || echo 'N/A')"
+	echo "   Git branch:    $(git branch --show-current)"
+	echo "   Git commit:    $(git rev-parse --short HEAD)"
+
 # --- Maintenance ---
 clean:
 	@echo "🧹 Cleaning build artifacts..."
