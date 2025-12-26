@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
 	prepare:
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 		outputs:
 			mise_cache_key: {% raw %}${{ steps.cache-key.outputs.mise_cache_key }}{% endraw %}
 			node_version: {% raw %}${{ steps.vers.outputs.node }}{% endraw %}
@@ -255,7 +255,7 @@ jobs:
 	release:
 		if: startsWith(github.ref, 'refs/tags/v')
 		needs: [prepare, build-test]
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 		env:
 			MISE_NONINTERACTIVE: "1"
 		steps:

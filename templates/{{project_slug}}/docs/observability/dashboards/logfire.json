@@ -1,0 +1,36 @@
+{
+  "title": "Logfire Overview",
+  "description": "Operational dashboard for Logfire span metrics (DEV-PRD-018 / DEV-SDS-018).",
+  "panels": [
+    {
+      "id": "logfire-span-duration",
+      "title": "Span Duration (p95)",
+      "type": "timeseries",
+      "query": {
+        "metric": "logfire.span.duration",
+        "aggregation": "p95",
+        "group_by": ["service", "environment"]
+      }
+    },
+    {
+      "id": "logfire-span-count",
+      "title": "Span Volume",
+      "type": "timeseries",
+      "query": {
+        "metric": "logfire.span.count",
+        "aggregation": "sum",
+        "group_by": ["service", "environment"]
+      }
+    },
+    {
+      "id": "logfire-error-rate",
+      "title": "Error Rate",
+      "type": "stat",
+      "query": {
+        "metric": "logfire.span.error_ratio",
+        "aggregation": "avg",
+        "group_by": ["service"]
+      }
+    }
+  ]
+}

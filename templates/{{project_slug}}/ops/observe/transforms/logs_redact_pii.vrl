@@ -1,0 +1,3 @@
+# PII redaction logic is defined in tools/vector/macros.vrl.
+# This file ensures the transform returns the mutated event after macros execute.
+.

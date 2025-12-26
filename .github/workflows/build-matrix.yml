@@ -60,7 +60,7 @@ jobs:
       - name: Compute mise cache key
         id: cache-key
         run: |
-          echo "mise_cache_key=mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}" >> $GITHUB_OUTPUT
+          echo "mise_cache_key=mise-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}" >> $GITHUB_OUTPUT
 
   # ---------- Build & Test Matrix ----------
   build-test:
@@ -135,7 +135,6 @@ jobs:
           # Verify installation succeeded
           just --version
 
-
       # ---- Install SOPS ----
       - name: Install SOPS
         shell: bash
@@ -181,30 +180,34 @@ jobs:
             ~/.cache/mise
           key: ${{ needs.prepare.outputs.mise_cache_key }}
           restore-keys: |
-            mise-${{ runner.os }}-
+            mise-v2-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Install runtimes (Node/Python/Rust via mise)
-        run: mise install
+        run: |
+          mise install
+          # Add mise shims to PATH for all subsequent steps
+          echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+          mise reshim
 
       - name: Ensure pinned Rust toolchain
         shell: bash
         run: |
           set -euo pipefail
           # Install rustup if missing
-          if ! command -v rustup >/dev/null 2>&1; then
+          if ! command -v rustup > /dev/null 2>&1; then
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
             # Source cargo env - this is expected to fail in some shells
             if [[ -f "$HOME/.cargo/env" ]]; then
               source "$HOME/.cargo/env"
             fi
           fi
-          # Install the nightly toolchain with clippy and rustfmt components
+          # Install clippy and rustfmt for the mise-managed stable toolchain
+          rustup component add clippy rustfmt
+          # Also install nightly for any nightly-specific needs
           rustup toolchain install nightly-2025-11-01 --no-self-update --component clippy,rustfmt
-          rustup override set nightly-2025-11-01
 
-      # ---- Node package manager (optional; respects Corepack) ----
-      - name: Enable corepack (optional)
-        run: corepack enable
+      # ---- Node package manager (pnpm managed by mise, skip corepack) ----
+      # pnpm is now installed via mise to avoid Node corruption issues
 
       - name: Cache pnpm store (optional)
         if: hashFiles('pnpm-lock.yaml') != ''
@@ -417,7 +420,11 @@ jobs:
           mise trust --yes .mise.toml
 
       - name: Setup runtimes
-        run: mise install
+        run: |
+          mise install
+          # Add mise shims to PATH for all subsequent steps
+          echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+          mise reshim
 
       - name: Decrypt release secrets (if provided)
         run: |

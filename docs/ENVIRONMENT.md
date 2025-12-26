@@ -226,6 +226,100 @@ Edit `tests/mocks/imposters/imposters.ejs` to add new mock responses.
 
 ---
 
+## Nx Monorepo Integration
+
+VibesPro uses [Nx](https://nx.dev) for monorepo management. Due to mise/devbox managing tool versions, special integration is required for GUI applications like VS Code.
+
+### Architecture
+
+```
+User Login
+    │
+    ├── [systemd] Reads ~/.config/environment.d/50-vibespro.conf
+    │   └── Sets PATH with mise shims
+    │
+    ├── [Shell] Sources .bashrc/.zshrc (optional)
+    │   └── scripts/shell-profile.sh adds mise hooks
+    │
+    └── [VS Code] Launched from desktop
+        ├── [systemd] Inherits PATH from user environment
+        ├── [Terminal] Uses .vscode/settings.json env overrides
+        └── [Tasks] Uses scripts/env-wrapper.sh
+```
+
+### Nx Commands
+
+| Command                | Purpose                         |
+| ---------------------- | ------------------------------- |
+| `just code`            | Open VS Code with Nx daemon     |
+| `just nx-daemon-start` | Start Nx daemon (speeds up ops) |
+| `just nx-daemon-stop`  | Stop Nx daemon                  |
+| `just nx-reset`        | Reset Nx cache and daemon       |
+| `just nx-doctor`       | Verify Nx setup is working      |
+
+### Environment Wrapper Scripts
+
+These scripts ensure mise/devbox are activated before running commands:
+
+| Script                           | Purpose                                    |
+| -------------------------------- | ------------------------------------------ |
+| `scripts/env-wrapper.sh`         | Wraps any command with environment setup   |
+| `scripts/nx-wrapper.sh`          | Nx-specific wrapper for Nx Console         |
+| `scripts/shell-profile.sh`       | Source from .bashrc/.zshrc for shell hooks |
+| `scripts/setup/gui-env-setup.sh` | Sets up PATH for GUI applications          |
+
+**Usage examples:**
+
+```bash
+# Run any command with environment activated
+./scripts/env-wrapper.sh pnpm exec nx build myapp
+./scripts/env-wrapper.sh just test
+
+# Use the Nx-specific wrapper
+./scripts/nx-wrapper.sh show projects
+./scripts/nx-wrapper.sh graph
+```
+
+### VS Code Integration
+
+The `.vscode/settings.json` configures:
+
+- Terminal PATH to include mise shims
+- Nx Console workspace path
+- File/search exclusions for generated content
+
+The `.vscode/tasks.json` provides VS Code tasks that use the env-wrapper:
+
+- `Nx: Show Project Graph`
+- `Nx: Build All`
+- `Nx: Test All`
+- `Doctor: Check Environment`
+
+### First-Time Setup (for GUI apps)
+
+If VS Code launched from the desktop shows "pnpm: not found" errors:
+
+```bash
+# One-time setup: create systemd user environment
+./scripts/setup/gui-env-setup.sh --install-systemd
+
+# Apply immediately (or log out/in)
+systemctl --user import-environment PATH
+
+# Verify
+./scripts/nx-wrapper.sh --version
+```
+
+### Nx Configuration Files
+
+| File             | Purpose                                       |
+| ---------------- | --------------------------------------------- |
+| `nx.json`        | Nx workspace configuration (caching, plugins) |
+| `.nxignore`      | Directories Nx should not process             |
+| `*.project.json` | Per-project Nx configuration                  |
+
+---
+
 ## Troubleshooting
 
 ### Secrets not loading
@@ -267,6 +361,63 @@ echo $OPENOBSERVE_URL
 echo $LOGFIRE_TOKEN
 ```
 
+### Nx Console shows "Project Graph Error"
+
+This is usually an environment PATH issue. Fix:
+
+```bash
+# Option 1: Open VS Code from terminal with env activated
+cd ~/projects/VibesPro
+source .envrc  # or: devbox shell
+code .
+
+# Option 2: Use the just recipe
+just code
+
+# Option 3: Setup systemd environment (one-time)
+./scripts/setup/gui-env-setup.sh --install-systemd
+systemctl --user import-environment PATH
+# Then restart VS Code
+```
+
+### Nx Console shows "pnpm: not found"
+
+The mise-managed tools aren't in VS Code's PATH:
+
+```bash
+# Verify mise shims are working
+which pnpm  # Should show ~/.local/share/mise/shims/pnpm
+
+# Install systemd user environment
+./scripts/setup/gui-env-setup.sh --install-systemd
+
+# Log out and back in, then reopen VS Code
+```
+
+### Nx daemon not responding
+
+```bash
+# Reset everything
+just nx-reset
+
+# Start fresh daemon
+just nx-daemon-start
+
+# Verify
+just nx-doctor
+```
+
+### Environment diagnostics
+
+```bash
+# Run full environment check
+just doctor
+
+# Or use the shell-profile diagnostics
+source ./scripts/shell-profile.sh
+vibespro-doctor
+```
+
 ---
 
 ## Related Documentation
@@ -274,3 +425,4 @@ echo $LOGFIRE_TOKEN
 - [Supabase Workflow Guide](guides/supabase-workflow.md)
 - [copilot-instructions.md](/.github/copilot-instructions.md)
 - [Architecture Overview](architecture/)
+- [Scripts AGENT.md](/scripts/AGENT.md) - Environment wrapper documentation

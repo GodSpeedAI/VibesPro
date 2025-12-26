@@ -30,5 +30,6 @@
     "apps/**/*.ts",
     "apps/**/*.tsx"
   ],
+  "exclude": ["node_modules", "dist", "coverage", "apps/copier-smoke-example", "apps/smoke-test-*"],
   "extends": "./tsconfig.base.json"
 }

@@ -1,10 +1,10 @@
 [tools]
 node = "20.11.1"
+pnpm = "9.15.4"
 bun = "1.1.42"
 python = "3.11.11"
-rust = "1.80.1"
+rust = "1.82.0"
 uv = "0.9.2"
-just = "1.43.0"
 
 [env]
 # optional shared ENV defaults
