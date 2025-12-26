@@ -81,7 +81,8 @@ jobs:
 
           # Check for ubuntu-latest (should use ubuntu-22.04)
           # Exclude matrix definitions and template files
-          if grep -l 'runs-on:.*ubuntu-latest' .github/workflows/*.yml 2>/dev/null | grep -v '.j2$'; then
+          # Only match actual runs-on directives, not in comments or strings
+          if grep -E '^\s+runs-on:\s+ubuntu-latest\s*$' .github/workflows/*.yml; then
             echo ""
             echo "::error::Found 'ubuntu-latest' which can cause non-deterministic builds."
             echo "Use 'ubuntu-22.04' instead for reproducibility."
