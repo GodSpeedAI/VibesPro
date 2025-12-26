@@ -1,0 +1,16 @@
+{
+  // Toolset for execution tasks
+  "toolsets": [
+    {
+      "id": "exec",
+      "title": "Execution Tools",
+      "description": "Tools used to run code or tasks.",
+      "tools": [
+        "container.exec",
+        "container.feed_chars",
+        "automations.create",
+        "automations.update"
+      ]
+    }
+  ]
+}

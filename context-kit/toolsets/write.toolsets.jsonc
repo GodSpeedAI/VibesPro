@@ -1,0 +1,15 @@
+{
+  // Toolset for writing and editing
+  "toolsets": [
+    {
+      "id": "write",
+      "title": "Write Tools",
+      "description": "Tools used for editing and creating files.",
+      "tools": [
+        "python_user_visible.exec",
+        "canmore.create_textdoc",
+        "canmore.update_textdoc"
+      ]
+    }
+  ]
+}

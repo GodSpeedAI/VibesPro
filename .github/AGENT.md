@@ -7,7 +7,7 @@
 
 ## 🔗 Parent Context
 
-See [root copilot-instructions.md](/.github/copilot-instructions.md) for comprehensive project guidance and [AGENT-MAP.md](/AGENT-MAP.md) for navigation across contexts.
+See [root copilot-instructions.md](/.github/copilot-instructions.md) for comprehensive project guidance and [AGENTS.md](/AGENTS.md) for navigation across contexts.
 
 ## 🎯 Local Scope
 
@@ -276,7 +276,7 @@ just ai-context-bundle
 - [ ] Run `just prompt-lint` to validate
 - [ ] Update cross-references in related files
 - [ ] Add entry to this AGENT.md if it's a new pattern
-- [ ] Update [AGENT-MAP.md](/AGENT-MAP.md) if needed
+- [ ] Update [AGENTS.md](/AGENTS.md) if needed
 - [ ] Document in commit message with spec IDs
 
 ## 🔍 Quick Reference
@@ -394,4 +394,4 @@ just ai-context-bundle
 ---
 
 _Last updated: 2025-10-13 | Maintained by: VibesPro Project Team_
-_Parent context: [copilot-instructions.md](/.github/copilot-instructions.md) | Navigation: [AGENT-MAP.md](/AGENT-MAP.md)_
+_Parent context: [copilot-instructions.md](/.github/copilot-instructions.md) | Navigation: [AGENTS.md](/AGENTS.md)_

@@ -20,6 +20,27 @@ VibesPro/
 
 **Hexagonal Flow**: Dependencies point inward only: `infrastructure → application → domain`. Domain is pure—no I/O, no frameworks. Use ports (interfaces) in application layer, adapters (implementations) in infrastructure. See `hexagonal-architecture.instructions.md` for patterns.
 
+## Context Engineering
+
+VibesPro uses the **Context Engineering SDK** for manifest-driven routing and AI orchestration:
+
+| File                                   | Purpose                                            |
+| -------------------------------------- | -------------------------------------------------- |
+| `ce.manifest.jsonc`                    | Single source of truth for all routable artifacts  |
+| `.github/ce/routing-rules.md`          | Routing algorithm documentation                    |
+| `.github/agents/orchestrator.agent.md` | Manifest-aware orchestrator                        |
+| `PRODUCT.md`                           | Product goals and constraints                      |
+| `ARCHITECTURE.md`                      | Architectural boundaries                           |
+| `toolsets/*.jsonc`                     | Permission-based tool groups (read/write/exec/mcp) |
+
+**Strict Mode**: Only artifacts registered in `ce.manifest.jsonc` participate in routing. Unregistered files are ignored. Run `Context Kit: Validate` task to check consistency.
+
+**Orchestrator Handoffs**:
+
+- Planning tasks → `planner.core.agent.md`
+- Review tasks → `reviewer.core.agent.md`
+- Implementation → Generator-first approach
+
 ## Instruction Index
 
 Match your task to the right instruction file in `.github/instructions/`:
@@ -39,7 +60,7 @@ Match your task to the right instruction file in `.github/instructions/`:
 | `style.python.instructions.md`              | —          | Python: mypy strict, ruff, type hints                   |
 | `style.frontend.instructions.md`            | —          | TypeScript: strict mode, no `any`                       |
 
-Check directory-specific `AGENT.md` files for local context (e.g., `libs/AGENT.md`, `generators/AGENT.md`). See `AGENT-MAP.md` for full navigation.
+Check directory-specific `AGENT.md` files for local context (e.g., `libs/AGENT.md`, `generators/AGENT.md`). See `ce.manifest.jsonc` for the artifact registry.
 
 ## Essential Commands
 
@@ -180,3 +201,4 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`. **CRITICAL: 
 - ❌ Domain layer importing infrastructure (violates hexagonal rules)
 - ❌ Not tracing changes to specs in `docs/specs/`
 - ❌ Manually creating configuration files that should be generated then modified accordingly
+- ❌ Adding agents/prompts/skills without registering in `ce.manifest.jsonc`

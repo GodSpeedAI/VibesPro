@@ -266,7 +266,7 @@ Check `AGENT.md` files in subdirectories for local context:
 | `temporal_db/` | ✓        | Rust temporal database                       |
 | `ops/`         | ✓        | Observability stack                          |
 
-See [AGENT-MAP.md](AGENT-MAP.md) for full navigation guide.
+See `ce.manifest.jsonc` for the complete artifact registry.
 
 ## Instruction Precedence
 

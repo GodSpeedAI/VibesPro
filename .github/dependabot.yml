@@ -20,8 +20,6 @@ updates:
     labels:
       - 'dependencies'
       - 'ci'
-    reviewers:
-      - 'GodSpeedAI/core-team'
 
   # npm dependencies
   - package-ecosystem: 'npm'
