@@ -1333,8 +1333,8 @@ def version():
                 try:
                     dt = datetime.fromisoformat(release_date.replace('Z', '+00:00'))
                     release_date = dt.strftime("%Y-%m-%d")
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"Warning: failed to parse GitHub release date '{release_date}': {e}", file=sys.stderr)
     except Exception:
         pass
 
