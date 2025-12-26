@@ -1,0 +1,13 @@
+{
+  // Toolset for MCP-based tools (extend as needed)
+  "toolsets": [
+    {
+      "id": "mcp",
+      "title": "MCP Tools",
+      "description": "Tools exposed via an MCP server.",
+      "tools": [
+        "my-custom-tool"
+      ]
+    }
+  ]
+}

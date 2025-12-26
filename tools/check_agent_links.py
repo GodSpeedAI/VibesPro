@@ -64,6 +64,9 @@ def check_local_links(agent_files: list[Path]) -> list[tuple[str, str, str]]:
     """
     errors: list[tuple[str, str, str]] = []
     for f in agent_files:
+        # Skip archived files
+        if "context-kit/archive" in str(f):
+            continue
         rel_path = f.relative_to(REPO_ROOT)
         text = f.read_text(encoding="utf-8")
         for match in link_re.finditer(text):
