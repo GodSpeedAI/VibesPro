@@ -1,6 +1,12 @@
 ---
-agent: 'agent'
-description: 'Create a detailed implementation plan from a set of requirements.'
+kind: prompt
+domain: planning
+task: create-plan
+thread: create-plan
+matrix_ids: []
+budget: M
+mode: agent
+description: Create a detailed implementation plan from a set of requirements.
 tools: ['toolset:read']
 metadata:
   id: ce.prompt.create-plan

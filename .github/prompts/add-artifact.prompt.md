@@ -1,6 +1,12 @@
 ---
-agent: 'agent'
-description: 'Add a new artifact to the context kit and register it in the manifest.'
+kind: prompt
+domain: artifact
+task: add-artifact
+thread: add-artifact
+matrix_ids: []
+budget: S
+mode: agent
+description: Add a new artifact to the context kit and register it in the manifest.
 tools: ['toolset:write']
 metadata:
   id: ce.prompt.add-artifact

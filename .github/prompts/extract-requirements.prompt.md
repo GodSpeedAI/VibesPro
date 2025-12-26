@@ -1,5 +1,11 @@
 ---
-agent: 'agent'
+kind: prompt
+domain: general
+task: extract-requirements
+thread: extract-requirements
+matrix_ids: []
+budget: M
+mode: agent
 description: 'Extract structured requirements from a user description.'
 tools: ['toolset:read']
 metadata:
@@ -20,6 +26,13 @@ metadata:
     artifacts: [ce.prompt.create-plan]
     files: [plan-template.md]
 ---
+
+kind: prompt
+domain: general
+task: extract-requirements
+thread: extract-requirements
+matrix_ids: []
+budget: M
 
 # Extract Requirements Prompt
 

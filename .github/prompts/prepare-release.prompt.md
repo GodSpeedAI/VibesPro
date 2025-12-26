@@ -1,5 +1,11 @@
 ---
-agent: 'agent'
+kind: prompt
+domain: general
+task: prepare-release
+thread: prepare-release
+matrix_ids: []
+budget: M
+mode: agent
 description: 'Prepare a release including versioning, changelog and deployment instructions.'
 tools: ['toolset:exec']
 metadata:
@@ -20,6 +26,13 @@ metadata:
     artifacts: []
     files: []
 ---
+
+kind: prompt
+domain: general
+task: prepare-release
+thread: prepare-release
+matrix_ids: []
+budget: M
 
 # Prepare Release Prompt
 
