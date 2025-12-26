@@ -1,5 +1,11 @@
 ---
-agent: 'agent'
+kind: prompt
+domain: general
+task: debug-routing
+thread: debug-routing
+matrix_ids: []
+budget: M
+mode: agent
 description: 'Explain why the context engineering routing loaded certain files or made particular decisions.'
 tools: ['toolset:read']
 metadata:
@@ -20,6 +26,13 @@ metadata:
     artifacts: [ce.prompt.add-artifact]
     files: []
 ---
+
+kind: prompt
+domain: general
+task: debug-routing
+thread: debug-routing
+matrix_ids: []
+budget: M
 
 # Debug Routing Prompt
 
