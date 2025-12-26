@@ -1,5 +1,11 @@
 ---
-agent: 'agent'
+kind: prompt
+domain: general
+task: write-tests
+thread: write-tests
+matrix_ids: []
+budget: M
+mode: agent
 description: 'Generate or update tests for a given feature or module.'
 tools: ['toolset:write']
 metadata:
@@ -20,6 +26,13 @@ metadata:
     artifacts: [ce.prompt.review-changes]
     files: []
 ---
+
+kind: prompt
+domain: general
+task: write-tests
+thread: write-tests
+matrix_ids: []
+budget: M
 
 # Write Tests Prompt
 
