@@ -1,9 +1,14 @@
 ---
-name: vibepro.adr
-description: Create an Architecture Decision Record using VibesPro format
+kind: prompt
+domain: spec
+task: create-adr
+thread: vibepro-adr
+matrix_ids: []
+budget: M
 mode: agent
 model: GPT-5 mini
 tools: ['codebase', 'search', 'runCommands']
+description: Create an Architecture Decision Record using VibesPro format
 ---
 
 # /vibepro.adr — Create Architecture Decision Record

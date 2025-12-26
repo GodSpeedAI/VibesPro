@@ -1,9 +1,14 @@
 ---
-name: vibepro.sds
-description: Create a Software Design Specification using VibesPro format
+kind: prompt
+domain: spec
+task: create-sds
+thread: vibepro-sds
+matrix_ids: []
+budget: M
 mode: agent
 model: GPT-5 mini
 tools: ['codebase', 'search', 'runCommands']
+description: Create a Software Design Specification using VibesPro format
 ---
 
 # /vibepro.sds — Create Software Design Specification
