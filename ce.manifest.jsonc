@@ -776,6 +776,78 @@
       }
     },
     {
+      "id": "ce.prompt.vibepro-prd",
+      "kind": "prompt",
+      "path": ".github/prompts/vibepro.prd.prompt.md",
+      "tags": ["planning", "product", "context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md", ".github/prompts/spec.plan.prd.prompt.md"],
+        "concepts": ["requirements", "user-stories"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["docs/specs/**/prd.md"],
+        "actions": ["create-prd"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.spec-kit-workflow"],
+        "files": [".github/instructions/sdd_constitution.instructions.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.vibepro-sds"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.vibepro-adr",
+      "kind": "prompt",
+      "path": ".github/prompts/vibepro.adr.prompt.md",
+      "tags": ["planning", "architecture", "context-min"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md", ".github/prompts/spec.plan.adr.prompt.md"],
+        "concepts": ["decisions", "tradeoffs"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["docs/specs/**/adr.md"],
+        "actions": ["create-adr"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.spec-kit-workflow"],
+        "files": [".github/instructions/sdd_constitution.instructions.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.propose-adr"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.vibepro-sds",
+      "kind": "prompt",
+      "path": ".github/prompts/vibepro.sds.prompt.md",
+      "tags": ["planning", "architecture", "context-min"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md", ".github/prompts/spec.plan.sds.prompt.md"],
+        "concepts": ["system-design", "components"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["docs/specs/**/sds.md"],
+        "actions": ["create-sds"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.spec-kit-workflow", "ce.prompt.vibepro-prd"],
+        "files": [".github/instructions/sdd_constitution.instructions.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.vibepro-prd"],
+        "files": []
+      }
+    },
+    {
       "id": "ce.instr.general",
       "kind": "instruction",
       "path": ".github/instructions/general.instructions.md",
@@ -1205,6 +1277,53 @@
       "related": {
         "artifacts": ["ce.prompt.prepare-release"],
         "files": []
+    },
+    {
+      "id": "ce.skill.spec-kit-workflow",
+      "kind": "skill",
+      "path": ".github/skills/spec-kit-workflow/skill.md",
+      "tags": ["planning", "product", "context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md", "libs/tools/spec-kit/templates/spec-template.md"],
+        "concepts": ["sdd", "specification"],
+        "tools": ["toolset:write", "toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": ["ce.instr.sdd-constitution"],
+        "files": ["docs/specs/**/spec.md", "docs/specs/**/plan.md", "docs/specs/**/tasks.md"],
+        "actions": ["create-spec", "create-plan", "create-tasks"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.instr.sdd-constitution"],
+        "files": [".github/instructions/sdd_constitution.instructions.md"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.planning-and-slicing", "ce.skill.requirements-analysis"],
+        "files": ["libs/tools/spec-kit/templates/commands/specify.md"]
+      }
+    },
+    {
+      "id": "ce.instr.sdd-constitution",
+      "kind": "instruction",
+      "path": ".github/instructions/sdd_constitution.instructions.md",
+      "tags": ["planning", "product", "context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md", "ARCHITECTURE.md"],
+        "concepts": ["sdd", "specification"],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["constrain-sdd-workflow"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.spec-kit-workflow"],
+        "files": ["libs/tools/spec-kit/spec-driven.md"]
       }
     }
   ]
