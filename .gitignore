@@ -18,6 +18,9 @@ build/
 coverage/
 .coverage
 htmlcov/
+output.html
+static/
+tests/.tmp-typegen/
 
 # Environment
 .env
