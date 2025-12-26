@@ -11,7 +11,6 @@
  */
 
 const fs = require('node:fs');
-const path = require('node:path');
 
 /**
  * Detect cycles in a directed graph using DFS.
