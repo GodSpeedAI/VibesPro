@@ -1,0 +1,19 @@
+# Extract Logfire metrics and enrich with service/environment metadata
+.metric_name = to_string(.name) ?? ""
+if !starts_with(.metric_name, "logfire.") {
+  abort
+}
+
+if exists(.resource) && exists(.resource.attributes."service.name") {
+  .service = to_string(.resource.attributes."service.name") ?? "unknown"
+} else {
+  .service = "unknown"
+}
+
+if exists(.resource) && exists(.resource.attributes.environment) {
+  .environment = to_string(.resource.attributes.environment) ?? "local"
+} else if exists(.attributes) && exists(.attributes.environment) {
+  .environment = to_string(.attributes.environment) ?? "local"
+} else {
+  .environment = "local"
+}

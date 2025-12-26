@@ -18,6 +18,9 @@ build/
 coverage/
 .coverage
 htmlcov/
+output.html
+static/
+tests/.tmp-typegen/
 
 # Environment
 .env
@@ -46,6 +49,13 @@ Thumbs.db
 .monitoring/
 tmp/
 docs/tmp/
+
+# Test generated projects (copier smoke tests)
+apps/copier-smoke-example/
+apps/smoke-test-*/
+tests/.tmp-*/
+static/
+output.html
 
 # Database
 *.db

@@ -1,7 +1,7 @@
 import { formatFiles, Tree } from '@nx/devkit';
 import { updateDepConst } from '../utils/update-dep-const';
 
-export default async function (tree: Tree, schema?: Record<string, unknown>) {
+export default async function (tree: Tree, _schema?: Record<string, unknown>) {
   updateDepConst(tree, (depConst) => {
     const jokerIndex = depConst.findIndex((entry) => {
       const e = entry as unknown;

@@ -1,0 +1,207 @@
+SEA_DSL:
+purpose: >
+Declarative semantic modeling language.
+Source-of-truth for validation and projection.
+Grammar-derived; keywords are case-insensitive.
+
+file:
+structure: - optional: file_annotations - optional: imports - repeated: declarations
+
+annotations:
+file_level: - "@namespace": string - "@version": string - "@owner": string - "@profile": string
+
+imports:
+syntax:
+named:
+pattern: 'import { A, B as C } from "module"'
+wildcard:
+pattern: 'import \* as Alias from "module"'
+
+export:
+allowed_on: any_declaration
+syntax: 'export <declaration>'
+
+declarations:
+Dimension:
+syntax: 'dimension "Name"'
+
+    Unit:
+      syntax: 'unit "Unit" of "Dimension" factor <number> base "BaseUnit"'
+
+    Entity:
+      syntax: 'entity "Name" [v <version>] [@replaces ...] [@changes [...]] [in <domain>]'
+      annotations:
+        - "@replaces": '"OldName" [v <version>]'
+        - "@changes": '[string, ...]'
+
+    Resource:
+      syntax: 'resource "Name" [Unit] [in <domain>]'
+      annotations:
+        - "@replaces"
+        - "@changes"
+      scope_resolution_order:
+        - '<unit> in <domain>'
+        - 'in <domain>'
+        - '<unit>'
+
+    Flow:
+      syntax: 'flow "Name" from "Source" to "Target" [quantity <number>]'
+      annotations:
+        - "@replaces"
+        - "@changes"
+
+    Pattern:
+      syntax: 'pattern "Name" matches "<regex>"'
+
+    Role:
+      syntax: 'role "Name" [in <domain>]'
+
+    Relation:
+      syntax: |
+        relation "Name"
+          subject: "Concept"
+          predicate: "verb phrase"
+          object: "Concept"
+          [via: flow "FlowName"]
+
+    Instance:
+      syntax: |
+        instance <id> of "Entity" {
+          field: <expression>,
+          ...
+        }
+      reference:
+        self: '@<id>'
+
+    Policy:
+      syntax: |
+        policy <name>
+          [per <Kind> <Modality> priority <number>]
+          [@rationale "..."]
+          [@tags [...]]
+          [v <version>]
+        as: <expression>
+      kinds:
+        - Constraint
+        - Derivation
+        - Obligation
+      modalities:
+        - Obligation
+        - Prohibition
+        - Permission
+
+    ConceptChange:
+      syntax: 'ConceptChange "Name" @from_version v X @to_version v Y'
+      annotations:
+        - "@from_version"
+        - "@to_version"
+        - "@migration_policy"
+        - "@breaking_change": boolean
+
+    Metric:
+      syntax: 'metric "Name" as: <expression>'
+      annotations:
+        - "@refresh_interval": '<number> "<unit>"'
+        - "@window": '<number> "<unit>"'
+        - "@threshold": number
+        - "@target": number
+        - "@unit": string
+        - "@severity": string
+
+    Mapping:
+      syntax: |
+        Mapping "Name" for <target> {
+          <Primitive> "Name" -> TargetType {
+            field: value,
+            ...
+          }
+        }
+      primitives:
+        - Entity
+        - Resource
+        - Flow
+        - Policy
+        - Instance
+      targets:
+        - calm
+        - kg
+        - sbvr
+        - protobuf
+        - proto
+
+    Projection:
+      syntax: |
+        Projection "Name" for <target> {
+          <Primitive> "Name" {
+            field: value,
+            props: { "a"->"b", ... }
+          }
+        }
+
+expressions:
+precedence_high_to_low: - parentheses - member_access - cast - unary - multiplicative - additive - comparison - not - and - or
+
+    operators:
+      arithmetic: ['+', '-', '*', '/']
+      comparison:
+        - '>'
+        - '<'
+        - '>='
+        - '<='
+        - '='
+        - '!='
+        - contains
+        - startswith
+        - endswith
+        - matches
+        - before
+        - after
+        - during
+        - has_role
+
+    collections:
+      - flows
+      - entities
+      - resources
+      - instances
+      - relations
+
+    quantifiers:
+      forall:
+        syntax: 'forall x in <collection>: (<expr>)'
+      exists:
+        syntax: 'exists x in <collection>: (<expr>)'
+
+    aggregations:
+      functions:
+        - count
+        - sum
+        - min
+        - max
+        - avg
+      comprehension:
+        syntax: |
+          fn(x in <collection> [over last N "unit"]
+             [where <expr>] :
+             <expr>)
+
+    group_by:
+      syntax: |
+        group_by(x in <collection> [where <expr>] : <key>)
+        { <expr> }
+
+literals:
+string: '"text"'
+multiline_string: '""" text """'
+number: '-?digits(.digits)?'
+boolean: ['true', 'false']
+quantity: '<number> "Unit"'
+interval: 'interval("start","end")'
+time: '"YYYY-MM-DDTHH:MM:SSZ"'
+array: '[ "a", "b", ... ]'
+
+identifiers:
+pattern: '\[A-Za-z\\_\]\[A-Za-z0-9_\]\\\*'
+reserved_keywords: - entity - resource - flow - pattern - role - relation - instance - policy - conceptchange - metric - mapping - projection - dimension - unit - import - export
+
+agent_rules: - Never invent keywords - Prefer quoted names for semantic concepts - Validate parse before projection - Expressions must be total (no free identifiers) - Versioned concepts require explicit @replaces/@changes

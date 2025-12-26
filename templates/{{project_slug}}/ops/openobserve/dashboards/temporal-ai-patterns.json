@@ -1,0 +1,172 @@
+{
+  "title": "Temporal AI - Pattern Analytics",
+  "description": "Performance metrics and analytics for Temporal AI pattern recommendations",
+  "version": "1.0.0",
+  "tags": ["temporal-ai", "patterns", "recommendations", "performance"],
+  "variables": [
+    {
+      "name": "time_range",
+      "type": "custom",
+      "label": "Time Range",
+      "default": "24h",
+      "options": ["1h", "6h", "24h", "7d", "30d"]
+    },
+    {
+      "name": "min_success_rate",
+      "type": "number",
+      "label": "Min Success Rate",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    }
+  ],
+  "panels": [
+    {
+      "id": "pattern_success_overview",
+      "title": "Pattern Success Rate Overview",
+      "type": "time-series",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
+      "query": {
+        "sql": "SELECT time_bucket('5m', timestamp) as time, AVG(success_rate) * 100 as avg_success_rate FROM temporal_ai_recommendations WHERE timestamp >= now() - interval '{{time_range}}' GROUP BY time ORDER BY time",
+        "stream": "temporal_ai_recommendations"
+      },
+      "visualization": {
+        "type": "line",
+        "yAxis": {
+          "label": "Success Rate (%)",
+          "min": 0,
+          "max": 100
+        },
+        "xAxis": {
+          "label": "Time"
+        },
+        "colors": ["#10b981"],
+        "fill": true,
+        "fillOpacity": 0.2
+      }
+    },
+    {
+      "id": "success_rate_distribution",
+      "title": "Success Rate Distribution",
+      "type": "bar",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "query": {
+        "sql": "SELECT FLOOR(success_rate * 10) / 10 as success_bucket, COUNT(*) as pattern_count FROM temporal_ai_recommendations WHERE timestamp >= now() - interval '{{time_range}}' GROUP BY success_bucket ORDER BY success_bucket",
+        "stream": "temporal_ai_recommendations"
+      },
+      "visualization": {
+        "type": "bar",
+        "xAxis": {
+          "label": "Success Rate"
+        },
+        "yAxis": {
+          "label": "Pattern Count"
+        },
+        "colors": ["#3b82f6"]
+      }
+    },
+    {
+      "id": "recommendation_volume",
+      "title": "Recommendation Volume",
+      "type": "time-series",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "query": {
+        "sql": "SELECT time_bucket('1h', timestamp) as time, SUM(recommendation_count) as total_recommendations FROM temporal_ai_recommendations WHERE timestamp >= now() - interval '{{time_range}}' GROUP BY time ORDER BY time",
+        "stream": "temporal_ai_recommendations"
+      },
+      "visualization": {
+        "type": "area",
+        "yAxis": {
+          "label": "Total Recommendations"
+        },
+        "xAxis": {
+          "label": "Time"
+        },
+        "colors": ["#8b5cf6"],
+        "fill": true,
+        "fillOpacity": 0.3
+      }
+    },
+    {
+      "id": "low_success_patterns",
+      "title": "Low Success Rate Patterns",
+      "type": "table",
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 10 },
+      "query": {
+        "sql": "SELECT pattern_id, ROUND(success_rate * 100, 1) as success_pct, ROUND(error_rate * 100, 1) as error_pct, ROUND(avg_latency_ms, 0) as latency_ms, recommendation_count FROM temporal_ai_recommendations WHERE timestamp >= now() - interval '{{time_range}}' AND success_rate < {{min_success_rate}} ORDER BY success_rate ASC LIMIT 20",
+        "stream": "temporal_ai_recommendations"
+      },
+      "visualization": {
+        "type": "table",
+        "columns": [
+          { "field": "pattern_id", "label": "Pattern ID", "width": "30%" },
+          { "field": "success_pct", "label": "Success %", "width": "15%", "align": "right" },
+          { "field": "error_pct", "label": "Error %", "width": "15%", "align": "right" },
+          { "field": "latency_ms", "label": "Latency (ms)", "width": "15%", "align": "right" },
+          { "field": "recommendation_count", "label": "Count", "width": "15%", "align": "right" }
+        ],
+        "rowHighlight": {
+          "field": "success_pct",
+          "conditions": [
+            { "value": 30, "operator": "<", "color": "#ef4444" },
+            { "value": 50, "operator": "<", "color": "#f59e0b" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "performance_by_latency",
+      "title": "Performance by Latency",
+      "type": "scatter",
+      "gridPos": { "x": 0, "y": 26, "w": 12, "h": 8 },
+      "query": {
+        "sql": "SELECT avg_latency_ms, success_rate * 100 as success_pct, pattern_id FROM temporal_ai_recommendations WHERE timestamp >= now() - interval '{{time_range}}' AND recommendation_count > 5",
+        "stream": "temporal_ai_recommendations"
+      },
+      "visualization": {
+        "type": "scatter",
+        "xAxis": {
+          "label": "Latency (ms)",
+          "field": "avg_latency_ms"
+        },
+        "yAxis": {
+          "label": "Success Rate (%)",
+          "field": "success_pct",
+          "min": 0,
+          "max": 100
+        },
+        "colors": ["#06b6d4"],
+        "pointSize": 6
+      }
+    },
+    {
+      "id": "error_rate_trends",
+      "title": "Error Rate Trends",
+      "type": "time-series",
+      "gridPos": { "x": 12, "y": 26, "w": 12, "h": 8 },
+      "query": {
+        "sql": "SELECT time_bucket('5m', timestamp) as time, AVG(error_rate) * 100 as avg_error_rate FROM temporal_ai_recommendations WHERE timestamp >= now() - interval '{{time_range}}' GROUP BY time ORDER BY time",
+        "stream": "temporal_ai_recommendations"
+      },
+      "visualization": {
+        "type": "line",
+        "yAxis": {
+          "label": "Error Rate (%)",
+          "min": 0,
+          "max": 100
+        },
+        "xAxis": {
+          "label": "Time"
+        },
+        "colors": ["#ef4444"],
+        "thresholds": [
+          { "value": 30, "color": "#f59e0b", "label": "Warning" },
+          { "value": 50, "color": "#ef4444", "label": "Critical" }
+        ]
+      }
+    }
+  ],
+  "refresh": "5m",
+  "timezone": "browser"
+}
