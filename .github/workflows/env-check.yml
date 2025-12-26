@@ -99,9 +99,9 @@ jobs:
           path: |
             ~/.local/share/mise
             ~/.cache/mise
-          key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+          key: mise-v2-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
           restore-keys: |
-            mise-${{ runner.os }}-
+            mise-v2-${{ runner.os }}-
 
       - name: Install runtimes (Node/Python/Rust via mise)
         run: |
@@ -167,6 +167,7 @@ jobs:
 
       # Optional: pnpm cache if you use pnpm (works with Node's Corepack)
       - name: Enable corepack (optional)
+        if: env.SKIP_HEAVY_SETUP != 'true'
         run: corepack enable
 
       - name: Cache pnpm store (optional)
