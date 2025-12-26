@@ -183,7 +183,11 @@ jobs:
             mise-${{ runner.os }}-
 
       - name: Install runtimes (Node/Python/Rust via mise)
-        run: mise install
+        run: |
+          mise install
+          # Add mise shims to PATH for all subsequent steps
+          echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+          mise reshim
 
       - name: Ensure pinned Rust toolchain
         shell: bash
@@ -416,7 +420,11 @@ jobs:
           mise trust --yes .mise.toml
 
       - name: Setup runtimes
-        run: mise install
+        run: |
+          mise install
+          # Add mise shims to PATH for all subsequent steps
+          echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+          mise reshim
 
       - name: Decrypt release secrets (if provided)
         run: |
