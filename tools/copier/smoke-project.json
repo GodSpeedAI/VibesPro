@@ -1,0 +1,37 @@
+{
+  "name": "copier-smoke-example",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/copier-smoke-example/src",
+  "projectType": "application",
+  "tags": ["scope:smoke-test", "type:app", "domain:test"],
+  "targets": {
+    "regenerate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "just copier-regenerate-smoke",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "validate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "echo 'Validating copier smoke example...'",
+          "test -f apps/copier-smoke-example/project.json",
+          "test -f apps/copier-smoke-example/README.md"
+        ],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "apps/copier-smoke-example/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
