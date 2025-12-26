@@ -14,7 +14,7 @@ concurrency:
 jobs:
 	project-generation:
 		name: Project Generation Tests
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 		strategy:
 			matrix:
 				architecture: [hexagonal, layered]
@@ -58,7 +58,7 @@ jobs:
 
 	end-to-end:
 		name: End-to-End Integration
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 		needs: project-generation
 
 		steps:
@@ -99,7 +99,7 @@ jobs:
 
 	performance-benchmarks:
 		name: Performance Benchmarks
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 
 		steps:
 			- name: Checkout repository
@@ -142,7 +142,7 @@ jobs:
 
 	ai-workflows:
 		name: AI Workflows Validation
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 
 		steps:
 			- name: Checkout repository
@@ -177,7 +177,7 @@ jobs:
 
 	integration-summary:
 		name: Integration Test Summary
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 		needs:
 			[project-generation, end-to-end, performance-benchmarks, ai-workflows]
 		if: always()

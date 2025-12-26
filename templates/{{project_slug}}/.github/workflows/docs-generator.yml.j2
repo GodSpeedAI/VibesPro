@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
 	test-docs-generator:
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 
 		strategy:
 			matrix:
@@ -78,7 +78,7 @@ jobs:
 
 	conversion-tests:
 		if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_conversion == 'true')
-		runs-on: ubuntu-latest
+		runs-on: ubuntu-22.04
 		needs: test-docs-generator
 
 		strategy:
