@@ -1,9 +1,14 @@
 ---
-name: vibepro.prd
-description: Create a Product Requirements Document using VibesPro format
+kind: prompt
+domain: spec
+task: create-prd
+thread: vibepro-prd
+matrix_ids: []
+budget: M
 mode: agent
 model: GPT-5 mini
 tools: ['codebase', 'search', 'runCommands']
+description: Create a Product Requirements Document using VibesPro format
 ---
 
 # /vibepro.prd — Create Product Requirements Document
