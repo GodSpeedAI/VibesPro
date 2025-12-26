@@ -143,6 +143,34 @@
       "command": "${workspaceFolder}/scripts/env-wrapper.sh",
       "args": ["node", "--version"],
       "problemMatcher": []
+    },
+    {
+      "label": "Context Kit: Validate",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["just", "ai-validate"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Context Kit: Check Agent Links",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["python3", "tools/check_agent_links.py"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Context Kit: Validate Agents",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/env-wrapper.sh",
+      "args": ["node", "scripts/check_all_agents.mjs"],
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }

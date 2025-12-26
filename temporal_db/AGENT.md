@@ -7,7 +7,7 @@
 
 ## 🔗 Parent Context
 
-See [root copilot-instructions.md](/.github/copilot-instructions.md) for comprehensive project guidance and [AGENT-MAP.md](/AGENT-MAP.md) for navigation across contexts.
+See [root copilot-instructions.md](/.github/copilot-instructions.md) for comprehensive project guidance and [AGENTS.md](/AGENTS.md) for navigation across contexts.
 
 ## 🎯 Local Scope
 
@@ -776,4 +776,4 @@ cargo run --manifest-path temporal_db/Cargo.toml --bin export -- --output backup
 ---
 
 _Last updated: 2025-10-13 | Maintained by: VibesPro Project Team_
-_Parent context: [copilot-instructions.md](/.github/copilot-instructions.md) | Navigation: [AGENT-MAP.md](/AGENT-MAP.md)_
+_Parent context: [copilot-instructions.md](/.github/copilot-instructions.md) | See also: [AGENTS.md](/AGENTS.md)_

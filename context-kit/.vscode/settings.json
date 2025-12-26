@@ -1,0 +1,17 @@
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.eol": "\n",
+  "editor.rulers": [80, 120],
+  "files.trimTrailingWhitespace": true,
+  "git.enableSmartCommit": true,
+  "github.copilot.enable": true,
+  "github.copilot.advanced": {
+    "enableEditorContext": true,
+    "contextWindow": 3000
+  },
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": false
+  }
+}
