@@ -6,7 +6,8 @@ echo "Testing harness discovery..."
 
 # Create a temp directory with test files
 tmpdir=$(mktempdir)
-trap "rm -rf '$tmpdir'" EXIT
+cleanup() { rm -rf "$tmpdir"; }
+trap cleanup EXIT
 
 # Setup minimal test structure
 mkdir -p "$tmpdir/tests/env"
