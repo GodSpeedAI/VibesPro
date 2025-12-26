@@ -1,0 +1,37 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "spec-kit",
+  "projectType": "library",
+  "sourceRoot": "libs/tools/spec-kit",
+  "tags": ["scope:tools", "type:util"],
+  "targets": {
+    "specify": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Use /vibepro.specify in VS Code Chat'",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "plan": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Use /vibepro.plan in VS Code Chat'",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "tasks": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'Use /vibepro.tasks in VS Code Chat'",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uvx --from git+https://github.com/github/spec-kit.git specify check",
+        "cwd": "{workspaceRoot}"
+      }
+    }
+  }
+}

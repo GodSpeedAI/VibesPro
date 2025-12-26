@@ -1,0 +1,1330 @@
+{
+  "version": "0.1.0",
+  "mode": "strict",
+
+  "defaults": {
+    "maxFilesToLoad": 6,
+    "prefer": [
+      "authoritative-docs-first",
+      "progressive-disclosure",
+      "dependency-closure"
+    ],
+    "validationTaskLabel": "Context Kit: Validate",
+    "ids": {
+      "doc": "ce.doc.*",
+      "agent": "ce.agent.*",
+      "prompt": "ce.prompt.*",
+      "instruction": "ce.instr.*",
+      "skill": "ce.skill.*",
+      "toolset": "ce.toolset.*",
+      "task": "ce.task.*"
+    }
+  },
+
+  "vocab": {
+    "kinds": [
+      "doc",
+      "agent",
+      "prompt",
+      "instruction",
+      "skill",
+      "toolset",
+      "task"
+    ],
+    "tags": [
+      "routing",
+      "planning",
+      "execution",
+      "review",
+      "product",
+      "architecture",
+      "contributing",
+      "validation",
+      "security",
+      "compliance",
+      "reliability",
+      "performance",
+      "testing",
+      "context-min",
+      "context-debug",
+      "glossary",
+      "tools",
+      "mcp",
+      "tasks"
+    ]
+  },
+
+  "artifacts": [
+    {
+      "id": "ce.doc.context-kit",
+      "kind": "doc",
+      "path": "CONTEXT-KIT.md",
+      "tags": ["routing","context-min"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["explain-system"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.agents"],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.context-routing"],
+        "files": [".github/ce/routing-rules.md"]
+      }
+    },
+    {
+      "id": "ce.doc.agents",
+      "kind": "doc",
+      "path": "AGENTS.md",
+      "tags": ["routing","context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": ["ce.agent.orchestrator","ce.agent.planner","ce.agent.reviewer"],
+        "files": [],
+        "actions": ["inform-routing"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.context-routing"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.product",
+      "kind": "doc",
+      "path": "PRODUCT.md",
+      "tags": ["product","context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["constrain-scope"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.prompt.extract-requirements","ce.prompt.create-plan"],
+        "files": ["plan-template.md"]
+      }
+    },
+    {
+      "id": "ce.doc.architecture",
+      "kind": "doc",
+      "path": "ARCHITECTURE.md",
+      "tags": ["architecture","context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["constrain-design"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.prompt.propose-adr","ce.prompt.review-changes"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.contributing",
+      "kind": "doc",
+      "path": "CONTRIBUTING.md",
+      "tags": ["contributing","validation","context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["enforce-quality-bar"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.review-and-quality"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.plan-template",
+      "kind": "doc",
+      "path": "plan-template.md",
+      "tags": ["planning","context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": ["ce.prompt.create-plan"],
+        "files": [],
+        "actions": ["structure-plans"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": ["PRODUCT.md"]
+      },
+      "related": {
+        "artifacts": ["ce.agent.planner"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.copilot-instructions",
+      "kind": "doc",
+      "path": "copilot_instructions.md",
+      "tags": ["routing","validation","context-min"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["govern-behavior"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.agents"],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.agent.orchestrator"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.vscode-settings",
+      "kind": "doc",
+      "path": ".vscode/settings.json",
+      "tags": ["validation","context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["configure-editor"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.task.validate"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.vscode-mcp",
+      "kind": "doc",
+      "path": ".vscode/mcp.json",
+      "tags": ["mcp","tools"],
+      "inputs": {
+        "files": [],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": ["ce.toolset.mcp"],
+        "files": [],
+        "actions": ["expose-tools"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.toolset.read","ce.toolset.exec"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.vscode-tasks",
+      "kind": "doc",
+      "path": ".vscode/tasks.json",
+      "tags": ["tasks","validation"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": ["ce.task.validate"],
+        "files": [],
+        "actions": ["run-gates"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.validation"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.toolset.read",
+      "kind": "toolset",
+      "path": "toolsets/read.toolsets.jsonc",
+      "tags": ["tools","context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["permit-read"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.agent.orchestrator"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.toolset.write",
+      "kind": "toolset",
+      "path": "toolsets/write.toolsets.jsonc",
+      "tags": ["tools","validation"],
+      "inputs": {
+        "files": [".vscode/tasks.json"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["permit-write"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.validation"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.toolset.exec",
+      "kind": "toolset",
+      "path": "toolsets/exec.toolsets.jsonc",
+      "tags": ["tools","tasks","validation"],
+      "inputs": {
+        "files": [".vscode/tasks.json"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["permit-exec"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.task.validate"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.toolset.mcp",
+      "kind": "toolset",
+      "path": "toolsets/mcp.toolsets.jsonc",
+      "tags": ["tools","mcp"],
+      "inputs": {
+        "files": [".vscode/mcp.json"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["permit-mcp"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": [".vscode/mcp.json"]
+      },
+      "related": {
+        "artifacts": ["ce.doc.vscode-mcp"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.task.validate",
+      "kind": "task",
+      "path": ".vscode/tasks.json#Context Kit: Validate",
+      "tags": ["validation","tasks"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["pass-fail-signal"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": [".vscode/tasks.json","ce.manifest.jsonc"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.validation","ce.skill.artifact-registry"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.vocab",
+      "kind": "doc",
+      "path": ".github/ce/vocab.md",
+      "tags": ["glossary","routing","context-min"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["define-vocab"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.context-routing","ce.skill.validation"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.routing-rules",
+      "kind": "doc",
+      "path": ".github/ce/routing-rules.md",
+      "tags": ["routing","context-debug"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.context-routing"],
+        "files": [],
+        "actions": ["route-deterministically"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.prompt.debug-routing"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.doc.manifest-schema",
+      "kind": "doc",
+      "path": ".github/ce/manifest-schema.md",
+      "tags": ["validation","context-debug"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.artifact-registry"],
+        "files": [],
+        "actions": ["explain-manifest"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.validation"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.agent.orchestrator",
+      "kind": "agent",
+      "path": ".github/agents/orchestrator.agent.md",
+      "tags": ["routing","tools","tasks"],
+      "inputs": {
+        "files": ["AGENTS.md","copilot_instructions.md","ce.manifest.jsonc"],
+        "concepts": ["semantic-routing","progressive-disclosure"],
+        "tools": ["toolset:read","toolset:write","toolset:exec","toolset:mcp"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["handoff","invoke-tool","run-task"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.agent.planner","ce.agent.reviewer","ce.skill.context-routing"],
+        "files": [".github/ce/routing-rules.md"]
+      }
+    },
+    {
+      "id": "ce.agent.planner",
+      "kind": "agent",
+      "path": ".github/agents/planner.agent.md",
+      "tags": ["planning","product","architecture"],
+      "inputs": {
+        "files": ["PRODUCT.md","ARCHITECTURE.md","plan-template.md","ce.manifest.jsonc"],
+        "concepts": ["requirements","acceptance-criteria"],
+        "tools": ["toolset:read","toolset:write"]
+      },
+      "outputs": {
+        "artifacts": ["ce.prompt.create-plan"],
+        "files": ["PLAN.md"],
+        "actions": ["produce-plan"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": ["plan-template.md"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.requirements-analysis","ce.skill.planning-and-slicing"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.agent.reviewer",
+      "kind": "agent",
+      "path": ".github/agents/reviewer.agent.md",
+      "tags": ["review","validation","security","testing"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md","CONTRIBUTING.md","ce.manifest.jsonc"],
+        "concepts": ["quality-bar","risk"],
+        "tools": ["toolset:read","toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": ["ce.prompt.review-changes"],
+        "files": [],
+        "actions": ["approve","request-changes"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.review-and-quality","ce.skill.validation"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.add-artifact",
+      "kind": "prompt",
+      "path": ".github/prompts/add-artifact.prompt.md",
+      "tags": ["routing","validation","context-min"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc",".github/ce/vocab.md"],
+        "concepts": ["id-conventions"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.artifact-registry"],
+        "files": [],
+        "actions": ["create-artifact"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.artifact-registry","ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.debug-routing"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.extract-requirements",
+      "kind": "prompt",
+      "path": ".github/prompts/extract-requirements.prompt.md",
+      "tags": ["planning","product","context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md"],
+        "concepts": ["requirements"],
+        "tools": ["toolset:read"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.requirements-analysis"],
+        "files": [],
+        "actions": ["extract-requirements"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.requirements-analysis"],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.prompt.create-plan"],
+        "files": ["plan-template.md"]
+      }
+    },
+    {
+      "id": "ce.prompt.create-plan",
+      "kind": "prompt",
+      "path": ".github/prompts/create-plan.prompt.md",
+      "tags": ["planning","product","architecture"],
+      "inputs": {
+        "files": ["PRODUCT.md","ARCHITECTURE.md","plan-template.md"],
+        "concepts": ["milestones"],
+        "tools": ["toolset:read"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.planning-and-slicing"],
+        "files": ["PLAN.md"],
+        "actions": ["produce-plan"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.planning-and-slicing"],
+        "files": ["plan-template.md"]
+      },
+      "related": {
+        "artifacts": ["ce.agent.planner"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.propose-adr",
+      "kind": "prompt",
+      "path": ".github/prompts/propose-adr.prompt.md",
+      "tags": ["architecture","planning","context-min"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md"],
+        "concepts": ["tradeoffs"],
+        "tools": ["toolset:read"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.architecture-decisioning"],
+        "files": [],
+        "actions": ["propose-decision"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.architecture-decisioning"],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.prompt.review-changes"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.implement-step",
+      "kind": "prompt",
+      "path": ".github/prompts/implement-step.prompt.md",
+      "tags": ["execution","testing","validation"],
+      "inputs": {
+        "files": ["PLAN.md","ARCHITECTURE.md","CONTRIBUTING.md"],
+        "concepts": ["small-diffs"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.implementation-guidance","ce.task.validate"],
+        "files": [],
+        "actions": ["apply-changes"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.write-tests","ce.prompt.review-changes"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.write-tests",
+      "kind": "prompt",
+      "path": ".github/prompts/write-tests.prompt.md",
+      "tags": ["testing","validation"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md","CONTRIBUTING.md"],
+        "concepts": ["test-pyramid"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.testing-strategy","ce.task.validate"],
+        "files": [],
+        "actions": ["apply-changes"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.review-changes"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.review-changes",
+      "kind": "prompt",
+      "path": ".github/prompts/review-changes.prompt.md",
+      "tags": ["review","validation","security"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md","CONTRIBUTING.md"],
+        "concepts": ["risk"],
+        "tools": ["toolset:read","toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.review-and-quality"],
+        "files": [],
+        "actions": ["request-changes","approve"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.agent.reviewer"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.prepare-release",
+      "kind": "prompt",
+      "path": ".github/prompts/prepare-release.prompt.md",
+      "tags": ["reliability","contributing","validation"],
+      "inputs": {
+        "files": ["CONTRIBUTING.md","ARCHITECTURE.md"],
+        "concepts": ["versioning"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.release-and-ops","ce.task.validate"],
+        "files": [],
+        "actions": ["run-task"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": [],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.debug-routing",
+      "kind": "prompt",
+      "path": ".github/prompts/debug-routing.prompt.md",
+      "tags": ["routing","context-debug"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc",".github/ce/routing-rules.md"],
+        "concepts": ["explainability"],
+        "tools": ["toolset:read"]
+      },
+      "outputs": {
+        "artifacts": ["ce.skill.context-routing"],
+        "files": [],
+        "actions": ["explain-route","suggest-fix"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.context-routing"],
+        "files": [".github/ce/routing-rules.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.add-artifact"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.vibepro-prd",
+      "kind": "prompt",
+      "path": ".github/prompts/vibepro.prd.prompt.md",
+      "tags": ["planning", "product", "context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md", ".github/prompts/spec.plan.prd.prompt.md"],
+        "concepts": ["requirements", "user-stories"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["docs/specs/**/prd.md"],
+        "actions": ["create-prd"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.spec-kit-workflow"],
+        "files": [".github/instructions/sdd_constitution.instructions.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.vibepro-sds"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.vibepro-adr",
+      "kind": "prompt",
+      "path": ".github/prompts/vibepro.adr.prompt.md",
+      "tags": ["planning", "architecture", "context-min"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md", ".github/prompts/spec.plan.adr.prompt.md"],
+        "concepts": ["decisions", "tradeoffs"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["docs/specs/**/adr.md"],
+        "actions": ["create-adr"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.spec-kit-workflow"],
+        "files": [".github/instructions/sdd_constitution.instructions.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.propose-adr"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.prompt.vibepro-sds",
+      "kind": "prompt",
+      "path": ".github/prompts/vibepro.sds.prompt.md",
+      "tags": ["planning", "architecture", "context-min"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md", ".github/prompts/spec.plan.sds.prompt.md"],
+        "concepts": ["system-design", "components"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["docs/specs/**/sds.md"],
+        "actions": ["create-sds"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.skill.spec-kit-workflow", "ce.prompt.vibepro-prd"],
+        "files": [".github/instructions/sdd_constitution.instructions.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.vibepro-prd"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.instr.general",
+      "kind": "instruction",
+      "path": ".github/instructions/general.instructions.md",
+      "tags": ["validation","context-min"],
+      "inputs": {
+        "files": ["copilot_instructions.md"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["constrain-writing"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": ["copilot_instructions.md"]
+      },
+      "related": {
+        "artifacts": [],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.instr.product",
+      "kind": "instruction",
+      "path": ".github/instructions/product.instructions.md",
+      "tags": ["product","planning"],
+      "inputs": {
+        "files": ["PRODUCT.md"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["align-to-product"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.product"],
+        "files": ["PRODUCT.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.extract-requirements","ce.prompt.create-plan"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.instr.architecture",
+      "kind": "instruction",
+      "path": ".github/instructions/architecture.instructions.md",
+      "tags": ["architecture","validation"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["prevent-arch-drift"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.architecture"],
+        "files": ["ARCHITECTURE.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.propose-adr","ce.prompt.review-changes"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.instr.contributing",
+      "kind": "instruction",
+      "path": ".github/instructions/contributing.instructions.md",
+      "tags": ["contributing","validation"],
+      "inputs": {
+        "files": ["CONTRIBUTING.md"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["enforce-process"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.contributing"],
+        "files": ["CONTRIBUTING.md"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.review-and-quality"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.instr.prompts",
+      "kind": "instruction",
+      "path": ".github/instructions/prompts.instructions.md",
+      "tags": ["validation","routing"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": ["frontmatter"],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["standardize-prompts"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": ["ce.manifest.jsonc"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.artifact-registry"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.instr.agents",
+      "kind": "instruction",
+      "path": ".github/instructions/agents.instructions.md",
+      "tags": ["validation","routing","tools"],
+      "inputs": {
+        "files": ["AGENTS.md","ce.manifest.jsonc"],
+        "concepts": ["handoff"],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["standardize-agents"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.agents"],
+        "files": ["AGENTS.md"]
+      },
+      "related": {
+        "artifacts": ["ce.agent.orchestrator"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.instr.skills",
+      "kind": "instruction",
+      "path": ".github/instructions/skills.instructions.md",
+      "tags": ["validation","routing","context-min"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc",".github/ce/vocab.md"],
+        "concepts": ["progressive-disclosure"],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["standardize-skills"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.vocab"],
+        "files": [".github/ce/vocab.md"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.validation"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.instr.coding-standards",
+      "kind": "instruction",
+      "path": ".github/instructions/coding-standards.instructions.md",
+      "tags": ["validation","testing","security"],
+      "inputs": {
+        "files": ["CONTRIBUTING.md"],
+        "concepts": [],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["constrain-code"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.contributing"],
+        "files": ["CONTRIBUTING.md"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.review-and-quality"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.artifact-registry",
+      "kind": "skill",
+      "path": ".github/skills/artifact-registry/SKILL.md",
+      "tags": ["routing","validation","tools"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc",".github/ce/vocab.md"],
+        "concepts": ["strict-mode"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["create-artifact","register-manifest","run-task"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.add-artifact"],
+        "files": [".github/skills/artifact-registry/scripts/register-artifact.py"]
+      }
+    },
+    {
+      "id": "ce.skill.context-routing",
+      "kind": "skill",
+      "path": ".github/skills/context-routing/SKILL.md",
+      "tags": ["routing","context-min","context-debug"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc",".github/ce/routing-rules.md"],
+        "concepts": ["least-context"],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["select-files","select-prompt","select-handoff"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": [".github/ce/routing-rules.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.debug-routing"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.validation",
+      "kind": "skill",
+      "path": ".github/skills/validation/SKILL.md",
+      "tags": ["validation","tasks"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": ["strict-mode"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": ["ce.task.validate"],
+        "files": [],
+        "actions": ["run-task"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.doc.manifest-schema"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.requirements-analysis",
+      "kind": "skill",
+      "path": ".github/skills/requirements-analysis/SKILL.md",
+      "tags": ["planning","product","context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md"],
+        "concepts": ["requirements"],
+        "tools": ["toolset:read"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["extract-requirements"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.product"],
+        "files": ["PRODUCT.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.extract-requirements"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.planning-and-slicing",
+      "kind": "skill",
+      "path": ".github/skills/planning-and-slicing/SKILL.md",
+      "tags": ["planning","architecture","context-min"],
+      "inputs": {
+        "files": ["plan-template.md","PRODUCT.md","ARCHITECTURE.md"],
+        "concepts": ["milestones"],
+        "tools": ["toolset:read"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["PLAN.md"],
+        "actions": ["produce-plan"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": ["plan-template.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.create-plan"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.architecture-decisioning",
+      "kind": "skill",
+      "path": ".github/skills/architecture-decisioning/SKILL.md",
+      "tags": ["architecture","planning","context-min"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md"],
+        "concepts": ["tradeoffs"],
+        "tools": ["toolset:read"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["propose-decision"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.doc.architecture"],
+        "files": ["ARCHITECTURE.md"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.propose-adr"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.implementation-guidance",
+      "kind": "skill",
+      "path": ".github/skills/implementation-guidance/SKILL.md",
+      "tags": ["execution","testing","validation"],
+      "inputs": {
+        "files": ["PLAN.md","ARCHITECTURE.md","CONTRIBUTING.md"],
+        "concepts": ["small-diffs"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": ["ce.task.validate"],
+        "files": [],
+        "actions": ["apply-changes"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.implement-step"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.testing-strategy",
+      "kind": "skill",
+      "path": ".github/skills/testing-strategy/SKILL.md",
+      "tags": ["testing","validation","performance"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md","CONTRIBUTING.md"],
+        "concepts": ["test-pyramid"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": ["ce.task.validate"],
+        "files": [],
+        "actions": ["apply-changes"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.write-tests"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.review-and-quality",
+      "kind": "skill",
+      "path": ".github/skills/review-and-quality/SKILL.md",
+      "tags": ["review","validation","security"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md","CONTRIBUTING.md"],
+        "concepts": ["risk"],
+        "tools": ["toolset:read","toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["approve","request-changes"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.review-changes","ce.agent.reviewer"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.release-and-ops",
+      "kind": "skill",
+      "path": ".github/skills/release-and-ops/SKILL.md",
+      "tags": ["reliability","contributing","validation"],
+      "inputs": {
+        "files": ["CONTRIBUTING.md","ARCHITECTURE.md"],
+        "concepts": ["versioning"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": ["ce.task.validate"],
+        "files": [],
+        "actions": ["run-task"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.task.validate"],
+        "files": [".vscode/tasks.json"]
+      },
+      "related": {
+        "artifacts": ["ce.prompt.prepare-release"],
+        "files": []
+    },
+    {
+      "id": "ce.skill.spec-kit-workflow",
+      "kind": "skill",
+      "path": ".github/skills/spec-kit-workflow/skill.md",
+      "tags": ["planning", "product", "context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md", "libs/tools/spec-kit/templates/spec-template.md"],
+        "concepts": ["sdd", "specification"],
+        "tools": ["toolset:write", "toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": ["ce.instr.sdd-constitution"],
+        "files": ["docs/specs/**/spec.md", "docs/specs/**/plan.md", "docs/specs/**/tasks.md"],
+        "actions": ["create-spec", "create-plan", "create-tasks"]
+      },
+      "dependsOn": {
+        "artifacts": ["ce.instr.sdd-constitution"],
+        "files": [".github/instructions/sdd_constitution.instructions.md"]
+      },
+      "related": {
+        "artifacts": ["ce.skill.planning-and-slicing", "ce.skill.requirements-analysis"],
+        "files": ["libs/tools/spec-kit/templates/commands/specify.md"]
+      }
+    },
+    {
+      "id": "ce.instr.sdd-constitution",
+      "kind": "instruction",
+      "path": ".github/instructions/sdd_constitution.instructions.md",
+      "tags": ["planning", "product", "context-min"],
+      "inputs": {
+        "files": ["PRODUCT.md", "ARCHITECTURE.md"],
+        "concepts": ["sdd", "specification"],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["constrain-sdd-workflow"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.spec-kit-workflow"],
+        "files": ["libs/tools/spec-kit/spec-driven.md"]
+      }
+    }
+  ]
+}

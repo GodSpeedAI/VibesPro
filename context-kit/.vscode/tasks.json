@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Context Kit: Validate",
+      "type": "shell",
+      "command": "python3",
+      "args": [".github/skills/validation/scripts/validate_manifest.py"],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

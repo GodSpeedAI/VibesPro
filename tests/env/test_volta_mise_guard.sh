@@ -36,7 +36,8 @@ fi
 # Test 5: Create temporary test scenario with mismatch
 echo "  ✓ Testing version mismatch detection..."
 tmpdir=$(mktempdir)
-trap "rm -rf '$tmpdir'" EXIT
+cleanup_tmpdir() { rm -rf "$tmpdir"; }
+trap cleanup_tmpdir EXIT
 
 # Create test fixtures
 cat >"$tmpdir/.mise.toml" <<'EOF'
@@ -68,7 +69,8 @@ cd "$OLDPWD"
 # Test 6: Test scenario with matching versions
 echo "  ✓ Testing version match detection..."
 tmpdir2=$(mktempdir)
-trap "rm -rf '$tmpdir2'" EXIT
+cleanup_tmpdir2() { rm -rf "$tmpdir2"; }
+trap cleanup_tmpdir2 EXIT
 
 cat >"$tmpdir2/.mise.toml" <<'EOF'
 [tools]
@@ -95,7 +97,8 @@ cd "$OLDPWD"
 # Test 7: Test scenario with only mise (no Volta)
 echo "  ✓ Testing mise-only scenario..."
 tmpdir3=$(mktempdir)
-trap "rm -rf '$tmpdir3'" EXIT
+cleanup_tmpdir3() { rm -rf "$tmpdir3"; }
+trap cleanup_tmpdir3 EXIT
 
 cat >"$tmpdir3/.mise.toml" <<'EOF'
 [tools]

@@ -1,0 +1,17 @@
+{
+  // Toolset for read-only operations
+  "toolsets": [
+    {
+      "id": "read",
+      "title": "Read-Only Tools",
+      "description": "Tools that do not modify state. Use for exploration and analysis.",
+      "tools": [
+        "browser.open",
+        "browser.search",
+        "browser.find",
+        "file_search.msearch",
+        "file_search.mclick"
+      ]
+    }
+  ]
+}
