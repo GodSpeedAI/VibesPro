@@ -105,7 +105,7 @@ impl TemporalRepository {
             // Check if key matches our prefix
             if key_str.starts_with(&spec_prefix) {
                 // Extract timestamp from key
-                if let Some(timestamp_str) = key_str.split(':').last() {
+                if let Some(timestamp_str) = key_str.split(':').next_back() {
                     if let Ok(timestamp) = timestamp_str.parse::<i64>() {
                         if timestamp > latest_timestamp {
                             let spec: SpecificationRecord = serde_json::from_slice(value.value())?;
