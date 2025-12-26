@@ -1,5 +1,11 @@
 ---
-agent: 'agent'
+kind: prompt
+domain: general
+task: propose-adr
+thread: propose-adr
+matrix_ids: []
+budget: M
+mode: agent
 description: 'Propose an architecture decision record (ADR) for a design question.'
 tools: ['toolset:read']
 metadata:
@@ -20,6 +26,13 @@ metadata:
     artifacts: [ce.prompt.review-changes]
     files: []
 ---
+
+kind: prompt
+domain: general
+task: propose-adr
+thread: propose-adr
+matrix_ids: []
+budget: M
 
 # Propose ADR Prompt
 

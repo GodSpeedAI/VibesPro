@@ -1,5 +1,11 @@
 ---
-agent: 'agent'
+kind: prompt
+domain: general
+task: implement-step
+thread: implement-step
+matrix_ids: []
+budget: M
+mode: agent
 description: 'Implement a single step from the plan and produce the corresponding code changes.'
 tools: ['toolset:write']
 metadata:
@@ -20,6 +26,13 @@ metadata:
     artifacts: [ce.prompt.write-tests, ce.prompt.review-changes]
     files: []
 ---
+
+kind: prompt
+domain: general
+task: implement-step
+thread: implement-step
+matrix_ids: []
+budget: M
 
 # Implement Step Prompt
 

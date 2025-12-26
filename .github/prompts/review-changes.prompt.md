@@ -1,5 +1,11 @@
 ---
-agent: 'agent'
+kind: prompt
+domain: general
+task: review-changes
+thread: review-changes
+matrix_ids: []
+budget: M
+mode: agent
 description: 'Review code changes or documents for quality and compliance.'
 tools: ['toolset:read', 'toolset:exec']
 metadata:
@@ -20,6 +26,13 @@ metadata:
     artifacts: [ce.agent.reviewer]
     files: []
 ---
+
+kind: prompt
+domain: general
+task: review-changes
+thread: review-changes
+matrix_ids: []
+budget: M
 
 # Review Changes Prompt
 

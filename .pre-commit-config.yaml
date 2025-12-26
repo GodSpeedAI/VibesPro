@@ -67,10 +67,10 @@ repos:
       - id: ruff
         name: ruff (lint)
         args: [--fix, --exit-non-zero-on-fix]
-        exclude: ^(.*\.j2|tests/fixtures/.*|tools/type-generator/test-fixtures/.*)$
+        exclude: ^(.*\.j2|tests/fixtures/.*|tools/type-generator/test-fixtures/.*|libs/tools/spec-kit/.*)$
       - id: ruff-format
         name: ruff (format)
-        exclude: ^(.*\.j2|tests/fixtures/.*)$
+        exclude: ^(.*\.j2|tests/fixtures/.*|libs/tools/spec-kit/.*)$
 
   # ===========================================================================
   # Stage 3: Python type checking (mypy - slower, but critical for type safety)
@@ -105,6 +105,8 @@ repos:
             tools/temporal_db/.*|
             scripts/.*|
             libs/shared/types-py/.*|
+            libs/tools/spec-kit/.*|
+            apps/smoke-test-service/.*|
             .*\{\{.*\}\}.*
           )$
 
@@ -117,7 +119,7 @@ repos:
       - id: markdownlint
         name: markdownlint
         args: ['--config', '.markdownlint.json', '--fix']
-        exclude: ^(docs/knowledgebase/archive/.*|docs/update/.*|docs/wiki/.*|pnpm-lock\.yaml)$
+        exclude: ^(docs/knowledgebase/archive/.*|docs/update/.*|docs/wiki/.*|pnpm-lock\.yaml|libs/tools/spec-kit/.*)$
 
   # ===========================================================================
   # Stage 5: Shell script linting and formatting
@@ -128,7 +130,7 @@ repos:
       - id: shellcheck
         name: shellcheck (lint)
         args: ['-S', 'warning', '-e', 'SC1091,SC2034'] # Relaxed for CI compatibility
-        exclude: ^(.*\.j2|tests/fixtures/.*|templates/.*)$
+        exclude: ^(.*\.j2|tests/fixtures/.*|templates/.*|libs/tools/spec-kit/.*)$
 
   # shfmt for formatting (local - requires shfmt installed)
   - repo: local
@@ -139,7 +141,7 @@ repos:
         args: ['-i', '2', '-ci', '-w']
         language: system
         types: [shell]
-        exclude: ^(.*\.j2|tests/fixtures/.*)$
+        exclude: ^(.*\.j2|tests/fixtures/.*|libs/tools/spec-kit/.*)$
 
   # ===========================================================================
   # Stage 6: JavaScript/TypeScript (uses wrapper for mise/fnm/nvm support)
@@ -152,7 +154,7 @@ repos:
         entry: ./scripts/hooks/precommit-node.sh prettier --write --ignore-unknown
         language: script
         types_or: [javascript, jsx, ts, tsx, json, yaml, markdown, css, scss]
-        exclude: ^(pnpm-lock\.yaml|.*\.j2|tests/fixtures/.*|dist/.*|node_modules/.*)$
+        exclude: ^(pnpm-lock\.yaml|.*\.j2|tests/fixtures/.*|dist/.*|node_modules/.*|libs/tools/spec-kit/.*)$
         require_serial: false
 
       # ESLint for TypeScript linting
