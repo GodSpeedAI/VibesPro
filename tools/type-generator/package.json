@@ -10,6 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "commander": "^11.0.0"
+    "commander": "^14.0.2"
   }
 }
