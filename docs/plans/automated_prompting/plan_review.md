@@ -88,61 +88,61 @@
 ### 5.1 Critical Patches
 
 1. **Patch: Allocate new spec IDs and update references**
-    - Location: “Specifications to Create/Update” section (Phase 0) and every later occurrence.
-    - Reason: Prevent traceability conflicts with existing DEV-PRD/ADR/SDS records.
-    - Required Change:
-        ```markdown
-        -##### 1. DEV-ADR-018 — VS Code Chat Participant Integration Architecture
-        +##### 1. DEV-ADR-023 — VS Code Chat Participant Integration Architecture
-        ...
-        -##### 2. DEV-PRD-019 — Automated Prompt Execution System
-        +##### 2. DEV-PRD-024 — Automated Prompt Execution System
-        ...
-        -##### 3. DEV-SDS-018 — Prompt Execution Extension Design
-        +##### 3. DEV-SDS-024 — Prompt Execution Extension Design
-        ...
-        -##### 4. DEV-SPEC-012 — Prompt Execution Operational Runbook
-        +##### 4. DEV-SPEC-013 — Prompt Execution Operational Runbook
-        ```
-    - Validation: Confirm all subsequent references in the plan, docs, and traceability updates use the new IDs.
+   - Location: “Specifications to Create/Update” section (Phase 0) and every later occurrence.
+   - Reason: Prevent traceability conflicts with existing DEV-PRD/ADR/SDS records.
+   - Required Change:
+     ```markdown
+     -##### 1. DEV-ADR-018 — VS Code Chat Participant Integration Architecture
+     +##### 1. DEV-ADR-023 — VS Code Chat Participant Integration Architecture
+     ...
+     -##### 2. DEV-PRD-019 — Automated Prompt Execution System
+     +##### 2. DEV-PRD-024 — Automated Prompt Execution System
+     ...
+     -##### 3. DEV-SDS-018 — Prompt Execution Extension Design
+     +##### 3. DEV-SDS-024 — Prompt Execution Extension Design
+     ...
+     -##### 4. DEV-SPEC-012 — Prompt Execution Operational Runbook
+     +##### 4. DEV-SPEC-013 — Prompt Execution Operational Runbook
+     ```
+   - Validation: Confirm all subsequent references in the plan, docs, and traceability updates use the new IDs.
 
 2. **Patch: Enforce generator-first scaffolding under templates**
-    - Location: Insert after “Analysis Complete ✅”.
-    - Reason: Align with generators-first.instructions.md and ensure generated workspaces receive the extension.
-    - Required Change:
+   - Location: Insert after “Analysis Complete ✅”.
+   - Reason: Align with generators-first.instructions.md and ensure generated workspaces receive the extension.
+   - Required Change:
 
-        ```markdown
-        #### Generator-First Scaffolding (MANDATORY)
+     ```markdown
+     #### Generator-First Scaffolding (MANDATORY)
 
-        1. Run `pnpm exec nx list` to confirm an existing generator is unavailable.
-        2. Execute `just ai-scaffold name=@nx/node:lib path=templates/{{project_slug}}/tools/prompt-exec name=prompt-exec-extension` to create the TypeScript library inside the template.
-        3. Add `templates/{{project_slug}}/tools/prompt-exec` to the root `package.json` workspaces array; update `nx.json` if a new project entry is required.
-        4. Commit scaffold before authoring custom logic (RED phase begins only after this baseline exists).
-        ```
+     1. Run `pnpm exec nx list` to confirm an existing generator is unavailable.
+     2. Execute `just ai-scaffold name=@nx/node:lib path=templates/{{project_slug}}/tools/prompt-exec name=prompt-exec-extension` to create the TypeScript library inside the template.
+     3. Add `templates/{{project_slug}}/tools/prompt-exec` to the root `package.json` workspaces array; update `nx.json` if a new project entry is required.
+     4. Commit scaffold before authoring custom logic (RED phase begins only after this baseline exists).
+     ```
 
-    - Validation: `pnpm install` runs without creating nested lockfiles; generated project contains the new library.
+   - Validation: `pnpm install` runs without creating nested lockfiles; generated project contains the new library.
 
 3. **Patch: Establish VS Code test harness prior to RED tests**
-    - Location: Prepend to “Phase 1: RED - Extension Scaffold & Failing Tests”.
-    - Reason: RED tests need the VS Code runtime to load.
-    - Required Change:
+   - Location: Prepend to “Phase 1: RED - Extension Scaffold & Failing Tests”.
+   - Reason: RED tests need the VS Code runtime to load.
+   - Required Change:
 
-        ```markdown
-        #### VS Code Test Harness Setup (Pre-RED)
+     ```markdown
+     #### VS Code Test Harness Setup (Pre-RED)
 
-        - Add `@vscode/test-electron` as a devDependency in `templates/{{project_slug}}/tools/prompt-exec/package.json`.
-        - Create `templates/{{project_slug}}/tools/prompt-exec/src/test/runWithVscode.ts` invoking the VS Code test runner.
-        - Register a Jest project entry (or Nx target) that shells out to the VS Code runner, ensuring RED tests execute inside the extension host.
-        ```
+     - Add `@vscode/test-electron` as a devDependency in `templates/{{project_slug}}/tools/prompt-exec/package.json`.
+     - Create `templates/{{project_slug}}/tools/prompt-exec/src/test/runWithVscode.ts` invoking the VS Code test runner.
+     - Register a Jest project entry (or Nx target) that shells out to the VS Code runner, ensuring RED tests execute inside the extension host.
+     ```
 
-    - Validation: Running the new harness yields the expected “module not found” failures instead of hard crashes.
+   - Validation: Running the new harness yields the expected “module not found” failures instead of hard crashes.
 
 ### 5.2 High-Priority Patches
 
 1. **Patch: Clarify interaction with run_prompt.sh**
-    - Replace the GREEN command handler snippet with a design note explaining the handler should invoke the shell script (via `child_process.spawn`) and stream outputs, keeping validation logic centralised.
+   - Replace the GREEN command handler snippet with a design note explaining the handler should invoke the shell script (via `child_process.spawn`) and stream outputs, keeping validation logic centralised.
 2. **Patch: Add packaging targets**
-    - Append a subsection defining `nx build prompt-exec-extension` using esbuild and `vsce package`, plus `just prompt-exec:package` for CI integration.
+   - Append a subsection defining `nx build prompt-exec-extension` using esbuild and `vsce package`, plus `just prompt-exec:package` for CI integration.
 3. **Patch: Update doc plan to touch spec_index.md, traceability_matrix.md, and `docs/templates/...` so specs stay coherent.**
 
 4. \*\*Patch: Update doc plan to touch spec_index.md, traceability_matrix.md, and `docs/templates/...` so specs stay coherent.
@@ -169,12 +169,12 @@
 
 - Current issues: RED/Green steps assume scaffolding exists; tests ignore harness; packaging/distribution absent.
 - Recommended structure:
-    1. Phase 0 — Spec alignment, generator scaffold, workspace wiring.
-    2. Phase 1 — Harness + failing activation tests.
-    3. Phase 2 — Minimal participant invoking run_prompt.sh.
-    4. Phase 3 — Validation/metrics integration through shared utilities.
-    5. Phase 4 — A/B testing and telemetry.
-    6. Phase 5 — Packaging, CI wiring, docs/traceability updates.
+  1. Phase 0 — Spec alignment, generator scaffold, workspace wiring.
+  2. Phase 1 — Harness + failing activation tests.
+  3. Phase 2 — Minimal participant invoking run_prompt.sh.
+  4. Phase 3 — Validation/metrics integration through shared utilities.
+  5. Phase 4 — A/B testing and telemetry.
+  6. Phase 5 — Packaging, CI wiring, docs/traceability updates.
 
 ## 6. Validation Checklist
 

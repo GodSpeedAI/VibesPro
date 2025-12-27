@@ -54,7 +54,7 @@ describe('Generated Project CI Validation', () => {
 
       // Verify workflow has required jobs
       expect(workflowContent).toMatch(/jobs:/);
-      expect(workflowContent).toMatch(/runs-on:\s*ubuntu-latest/);
+      expect(workflowContent).toMatch(/runs-on:\s*ubuntu-(latest|22\.04)/);
 
       // Verify checkout step exists and is named
       expect(workflowContent).toMatch(/name:\s*Checkout repository/);

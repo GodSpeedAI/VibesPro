@@ -50,6 +50,7 @@ export NX_NO_CLOUD=true
 export NX_REJECT_REMOTE_CACHE=true
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
+export CARGO_TARGET_DIR="${PROJECT_ROOT}/target/ci-local"
 
 # Colors for output
 RED='\033[0;31m'
@@ -260,10 +261,7 @@ job_test() {
   # Pytest
   if [[ -f "$PROJECT_ROOT/pyproject.toml" ]]; then
     log_info "Running pytest..."
-    # Ignore copier/template tests - they require special fixtures from pytest-copier
-    # that hang on session setup. They are tested separately via generation-smoke-tests.yml
-    # Also disable the copier plugin entirely as it causes session startup hangs
-    if ! uv run pytest -p no:copier --ignore=tests/copier --ignore=tests/template -q; then
+    if ! uv run pytest -q; then
       log_error "Pytest failed"
       failed=true
     else
