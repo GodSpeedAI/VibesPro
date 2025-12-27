@@ -45,9 +45,16 @@ CI_STATE=$(gh api "repos/{owner}/{repo}/commits/$LATEST_COMMIT/status" --jq '.st
 if [[ "$CI_STATE" == "success" ]]; then
   echo "✅ CI checks passed"
 elif [[ "$CI_STATE" == "pending" ]]; then
-  echo "⚠️  CI checks still running. Wait for completion or check status:"
-  echo "   gh run list --commit $LATEST_COMMIT"
-  exit 1
+  # Verify if there are actually running/queued jobs
+  RUNNING_COUNT=$(gh run list --commit "$LATEST_COMMIT" --json status --jq 'map(select(.status == "in_progress" or .status == "queued" or .status == "requested" or .status == "pending")) | length')
+  
+  if [[ "${RUNNING_COUNT:-0}" -gt 0 ]]; then
+    echo "⚠️  CI checks still running ($RUNNING_COUNT active runs). Wait for completion or check status:"
+    gh run list --commit "$LATEST_COMMIT"
+    exit 1
+  else
+    echo "⚠️  CI status is 'pending' but no active workflow runs found. Proceeding..."
+  fi
 elif [[ "$CI_STATE" == "failure" ]]; then
   echo "❌ CI checks failed on latest commit"
   gh run list --commit "$LATEST_COMMIT" --limit 5
