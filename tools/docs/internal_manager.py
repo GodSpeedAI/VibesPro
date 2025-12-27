@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import argparse
-import os
 import re
 import shutil
 import sys
@@ -67,35 +66,37 @@ def get_frontmatter_and_summary(content):
 def create_stub_content(original_path, internal_path, content):
     """
     Generates the content for the stub file.
+    Uses a 'Stealth' template to prevent information leakage.
     """
-    frontmatter, summary = get_frontmatter_and_summary(content)
+    frontmatter, _ = get_frontmatter_and_summary(content)
 
-    relative_internal = os.path.relpath(internal_path, os.path.dirname(original_path))
+    # Check if there is an explicit Public Summary in the internal file
+    # We look for a header specifically named "Summary (Public)"
+    public_summary = "Content not included in this distribution."
+    if "## Summary (Public)" in content:
+        # Extract the manual public summary if present
+        parts = content.split("## Summary (Public)")
+        if len(parts) > 1:
+            # take text until next header
+            summary_part = parts[1].split("\n#")[0].strip()
+            if summary_part:
+                public_summary = summary_part
 
     stub = f"""{frontmatter}
 
-# ⚠️ INTERNAL IP PROTECTED
+# Specification
 
-> **NOTICE**: This specification has been moved to a protected location to safeguard intellectual property.
+> **Note**: This document is reserved for the internal development environment.
 
-## Summary (Public)
+## Overview
 
-{summary if summary else "No public summary available."}
+{public_summary}
 
 {SPEC_GUARD_MARKER}
 
-## Full Specification
+## Reference
 
-The full specification is available for authorized developers at:
-
-`{relative_internal}`
-
-### Access Instructions
-
-If you are a maintainer or authorized developer:
-1. Ensure you have the full repository checkout.
-2. The file should exist at the path above.
-3. Use `just docs-sync` to update this stub if you modify the internal file.
+Available in the internal repository context.
 """
     return stub
 
