@@ -21,7 +21,7 @@
 
 - [🤔 What is Spec-Driven Development?](#-what-is-spec-driven-development)
 - [⚡ Get Started](#-get-started)
-- [📽️ Video Overview](#️-video-overview)
+- [📽️ Video Overview](#video-overview)
 - [🤖 Supported AI Agents](#-supported-ai-agents)
 - [🔧 Specify CLI Reference](#-specify-cli-reference)
 - [📚 Core Philosophy](#-core-philosophy)
@@ -133,6 +133,8 @@ Use **`/speckit.implement`** to execute all tasks and build your feature accordi
 ```
 
 For detailed step-by-step instructions, see our [comprehensive guide](./spec-driven.md).
+
+<a id="video-overview"></a>
 
 ## 📽️ Video Overview
 
