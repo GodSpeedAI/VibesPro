@@ -224,6 +224,30 @@
       }
     },
     {
+      "id": "ce.skill.frontend-design",
+      "kind": "skill",
+      "path": ".github/skills/frontend-design/SKILL.md",
+      "tags": ["design", "frontend", "context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": ["design-systems", "typography", "animation"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["design-interface", "implement-ui"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.implementation-guidance"],
+        "files": [".github/instructions/style.frontend.instructions.md"]
+      }
+    },
+    {
       "id": "ce.doc.contributing",
       "kind": "doc",
       "path": "CONTRIBUTING.md",
@@ -1349,6 +1373,7 @@
       "related": {
         "artifacts": ["ce.prompt.prepare-release"],
         "files": []
+      }
     },
     {
       "id": "ce.skill.spec-kit-workflow",

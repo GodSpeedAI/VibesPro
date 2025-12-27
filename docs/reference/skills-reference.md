@@ -49,3 +49,14 @@ This document provides a technical reference for the core skills in VibesPro.
 | :-------- | :-------- | :------------------------------------------------------------ |
 | `init`    | None      | `python tools/mocking/init.py` (checks deps, creates fixture) |
 | `example` | None      | `python tools/mocking/init.py` (idempotent creation)          |
+
+---
+
+## Frontend Design Skill (`ce.skill.frontend-design`)
+
+**ID**: `ce.skill.frontend-design`
+**Definition**: `SKILL.md` (Design guidelines & Creative direction)
+
+### Commands
+
+_This skill is directive/generative and does not expose CLI commands._
