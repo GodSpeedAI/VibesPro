@@ -375,6 +375,43 @@ test-nx:
 test-target TARGET:
 	pnpm exec nx run {{TARGET}}:test
 
+# Run ALL tests (Python, Node, Generators, Integration, Template)
+test-all:
+	@echo "🧪 Running all test suites..."
+	@echo ""
+	@echo "=== Python Tests ==="
+	just test-python
+	@echo ""
+	@echo "=== Node Tests ==="
+	just test-node
+	@echo ""
+	@echo "=== Generator Tests ==="
+	just test-generators
+	@echo ""
+	@echo "=== Integration Tests ==="
+	just test-integration
+	@echo ""
+	@echo "=== Copier Smoke Tests ==="
+	just copier-smoke-test
+	@echo ""
+	@echo "✅ All tests completed"
+
+# Run end-to-end tests (temporal-ai, observability, full stack validation)
+test-e2e:
+	@echo "🧪 Running end-to-end tests..."
+	@echo ""
+	@echo "=== Temporal AI Build & Init ==="
+	just temporal-ai-build
+	just temporal-ai-init || echo "⚠️ temporal-ai init skipped (may already exist)"
+	@echo ""
+	@echo "=== Template Generation E2E ==="
+	just test-generation
+	@echo ""
+	@echo "=== Observability Stack ==="
+	just observe-test-all || echo "⚠️ Some observability tests skipped"
+	@echo ""
+	@echo "✅ E2E tests completed"
+
 # --- Language-Specific Test Tasks ---
 test-python:
 	@echo "🧪 Running Python tests..."

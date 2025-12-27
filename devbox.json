@@ -11,7 +11,8 @@
     "fd",
     "uv",
     "git@latest",
-    "jdk"
+    "jdk",
+    "vector"
   ],
   "shell": {
     "init_hook": ["bash scripts/setup/devbox_boot.sh"]
