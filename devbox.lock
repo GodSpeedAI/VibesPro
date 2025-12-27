@@ -347,6 +347,10 @@
           ]
         }
       }
+    },
+    "vector": {
+      "resolved": "github:NixOS/nixpkgs/6f374686605df381de8541c072038472a5ea2e2d?narHash=sha256-AJHrsT7VoeQzErpBRlLJM1SODcaayp0joAoEA35yiwM%3D#vector",
+      "source": "nixpkg"
     }
   }
 }
