@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [0.7.0] - 2025-12-27
+
+**Full Changelog**: https://github.com/GodSpeedAI/VibesPro/compare/v0.6.0...v0.7.0
+
 ## [0.7.0] - 2025-12-27
 
 **Full Changelog**: https://github.com/GodSpeedAI/VibesPro/compare/v0.6.0...v0.7.0
