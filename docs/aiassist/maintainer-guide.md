@@ -6,16 +6,31 @@ traceability_matrix:
   - AI_TS-005
 ---
 
-# Specification
+# Maintainer Guide
 
-> **Note**: This document is reserved for the internal development environment.
+> **Note**: Full content is available in the internal development environment.
 
-## Overview
+## Core AI Governance Specifications
 
-Content not included in this distribution.
+Reference documents:
+
+- AI_ADR.md - Architecture Decision Records
+- AI_PRD.md - Product Requirements
+- AI_SDS.md - System Design Specifications
+- AI_TS.md - Technical Specifications
+
+## GitHub Guidance Resources
+
+See `.github/instructions` for development guidance including:
+
+- copilot-instructions.md
+- `.github/prompts` - Prompt templates
+- `.github/chatmodes` - Conversation patterns
 
 <!-- vibePDK-spec-guard:summary -->
 
-## Reference
+## Review Checklist
 
-Available in the internal repository context.
+- [ ] Verify governance specs are current
+- [ ] Validate traceability matrix references
+- [ ] Review .github instructions alignment

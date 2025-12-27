@@ -1,5 +1,3 @@
-
-
 # Specification
 
 > **Note**: This document is reserved for the internal development environment.
