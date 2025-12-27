@@ -340,7 +340,9 @@ jobs:
     if: always()
     steps:
       - name: Check all job results
+        shell: bash
         run: |
+          set -euo pipefail
           echo "Job Results:"
           echo "  lint:          ${{ needs.lint.result }}"
           echo "  typecheck:     ${{ needs.typecheck.result }}"
@@ -351,15 +353,16 @@ jobs:
           echo "  template-test: ${{ needs.template-test.result }}"
           echo ""
 
-          # Fail if any required job failed
-          if [[ "${{ needs.lint.result }}" != "success" ]] || \
-             [[ "${{ needs.typecheck.result }}" != "success" ]] || \
-             [[ "${{ needs.python-lint.result }}" != "success" ]] || \
-             [[ "${{ needs.build.result }}" != "success" ]] || \
-             [[ "${{ needs.test-node.result }}" != "success" ]] || \
-             [[ "${{ needs.test-python.result }}" != "success" ]] || \
-             [[ "${{ needs.template-test.result }}" != "success" ]]; then
-            echo "❌ CI failed - one or more required jobs did not succeed"
+          # Fail only on actual failures; allow cancelled/skipped which can occur
+          # when runs are superseded via concurrency cancellation.
+          if [[ "${{ needs.lint.result }}" == "failure" ]] || \
+             [[ "${{ needs.typecheck.result }}" == "failure" ]] || \
+             [[ "${{ needs.python-lint.result }}" == "failure" ]] || \
+             [[ "${{ needs.build.result }}" == "failure" ]] || \
+             [[ "${{ needs.test-node.result }}" == "failure" ]] || \
+             [[ "${{ needs.test-python.result }}" == "failure" ]] || \
+             [[ "${{ needs.template-test.result }}" == "failure" ]]; then
+            echo "❌ CI failed - one or more required jobs failed"
             exit 1
           fi
 

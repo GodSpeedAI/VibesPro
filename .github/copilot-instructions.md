@@ -1,204 +1,65 @@
 # AI Agent Instructions for VibesPro
 
-VibesPro is a **Generative Development Environment** that synthesizes production-ready Nx monorepos with hexagonal architecture. It uses Copier + Jinja2 to generate projects and maintains institutional memory via a Rust-based temporal database. Generate new projects with `copier copy gh:GodSpeedAI/VibesPro my-project`.
+VibesPro is a **Generative Development Environment** enforcing Hexagonal Architecture, Spec-Driven Development, and Institutional Memory.
 
-## Architecture Overview
+## 🧭 Context Navigation Protocol (Index First)
 
-```
-VibesPro/
-├── templates/{{project_slug}}/    # Copier templates (Jinja2) → generates complete projects
-├── generators/                    # Nx generators (TypeScript) → scaffolds libs/apps/components
-│   ├── generator/                 # Meta-generator: creates new generators
-│   └── service/                   # Service generator: hexagonal architecture
-├── libs/                          # Shared libraries (hexagonal layers: domain/application/infrastructure)
-├── tools/                         # Dev utilities (TypeScript + Python)
-├── tests/                         # Unit, integration, shell tests
-├── temporal_db/                   # Institutional memory (Rust + redb)
-├── supabase/                      # Database migrations and seeds
-└── ops/                           # Observability (Vector, OpenObserve, Logfire)
-```
+**PROTOCOL**: Minimizing context is critical. Follow this **Index-First** flow:
 
-**Hexagonal Flow**: Dependencies point inward only: `infrastructure → application → domain`. Domain is pure—no I/O, no frameworks. Use ports (interfaces) in application layer, adapters (implementations) in infrastructure. See `hexagonal-architecture.instructions.md` for patterns.
+1.  **Consult Index**: Find your task's **Active Domain** in the table below.
+2.  **Load Specific**: Read **ONLY** the designated `AGENT.md`. Do **NOT** read other contexts.
+3.  **Cross-Reference**: If you need deeper guidance, check the **Mapped Instructions** column.
+4.  **Fallback**: Use search (`find_by_name`/`grep_search`) **ONLY** if the index yields no match.
 
-## Context Engineering
+| Active Domain       | Context File (Index) | Mapped Instructions (Load ONLY if needed)                                              |
+| :------------------ | :------------------- | :------------------------------------------------------------------------------------- |
+| **Business Logic**  | `libs/AGENT.md`      | `hexagonal-architecture`, `style.*`, `coding-standards`, `refactoring`, `architecture` |
+| **Interfaces/Apps** | `apps/AGENT.md`      | `style.*`, `hexagonal-architecture`, `performance`, `src`                              |
+| **Testing/QA**      | `tests/AGENT.md`     | `testing`, `debugging`, `ci-workflow`                                                  |
+| **DevOps/Infra**    | `ops/AGENT.md`       | `environment`, `logging`, `security`, `performance`                                    |
+| **Specs/Docs**      | `docs/AGENT.md`      | `sdd_constitution`, `docs`, `documentation`, `commit-msg`, `general`                   |
+| **Tools/Scripts**   | `tools/AGENT.md`     | `nx`, `src`, `context`, `skills`, `temporal-db`                                        |
+| **Templating**      | `templates/AGENT.md` | `generators-first`, `docs`                                                             |
+| **AI/Prompts**      | `.github/AGENT.md`   | `agents`, `prompts`, `ai-workflows.*`, `context`                                       |
+| **Project Root**    | **N/A**              | `PRODUCT.md`, `ARCHITECTURE.md`, `docs/ENVIRONMENT.md`                                 |
 
-VibesPro uses the **Context Engineering SDK** for manifest-driven routing and AI orchestration:
+## 🧠 Strategic Principles (Universal Mandates)
 
-| File                                   | Purpose                                            |
-| -------------------------------------- | -------------------------------------------------- |
-| `ce.manifest.jsonc`                    | Single source of truth for all routable artifacts  |
-| `.github/ce/routing-rules.md`          | Routing algorithm documentation                    |
-| `.github/agents/orchestrator.agent.md` | Manifest-aware orchestrator                        |
-| `PRODUCT.md`                           | Product goals and constraints                      |
-| `ARCHITECTURE.md`                      | Architectural boundaries                           |
-| `toolsets/*.jsonc`                     | Permission-based tool groups (read/write/exec/mcp) |
+**These rules apply to ALL domains and override local instructions.**
 
-**Strict Mode**: Only artifacts registered in `ce.manifest.jsonc` participate in routing. Unregistered files are ignored. Run `Context Kit: Validate` task to check consistency.
+1.  **Safety First**:
+    - **Security**: Follow `.github/instructions/security.instructions.md` religiously. Secrets in `sops` only.
+    - **Traceability**: Every logical unit must trace to a Spec ID in `docs/specs/`.
+    - **Type Safety**: strict `mypy`, no `any`, exhaustive checking.
 
-**Orchestrator Handoffs**:
+2.  **Reliability & Idempotency**:
+    - **Generators**: Follow `.github/instructions/generators-first.instructions.md`. Never write boilerplate manually.
+    - **Re-runnable**: Scripts MUST be idempotent.
+    - **Hermetic**: Tests use `Testcontainers`/`Mountebank` for isolation.
 
-- Planning tasks → `planner.core.agent.md`
-- Review tasks → `reviewer.core.agent.md`
-- Implementation → Generator-first approach
+3.  **Isomorphism (Structure)**:
+    - **Domain Match**: File structure mirrors business domain (Bounded Contexts).
+    - **Manifest**: `ce.manifest.jsonc` is the Source of Truth.
 
-## Instruction Index
+## ⚡ Critical Workflows
 
-Match your task to the right instruction file in `.github/instructions/`:
+### 1. Spec-Driven Implementation
 
-| File                                        | Precedence | When to Use                                             |
-| ------------------------------------------- | ---------- | ------------------------------------------------------- |
-| `security.instructions.md`                  | **10**     | Auth, secrets, `.vscode/*.json`, SOPS — **ALWAYS WINS** |
-| `generators-first.instructions.md`          | 15         | Scaffolding new code — check for Nx generator first     |
-| `hexagonal-architecture.instructions.md`    | 16         | Domain entities, use cases, ports/adapters patterns     |
-| `architecture.instructions.md`              | 18         | System design, type contracts, environment parity       |
-| `ai-workflows.constitution.instructions.md` | 20         | TDD/debugging workflows, AI agent constitution          |
-| `temporal-db.instructions.md`               | 25         | Querying/recording patterns in institutional memory     |
-| `ci-workflow.instructions.md`               | 30         | Pre-commit, validation gates, CI/CD                     |
-| `testing.instructions.md`                   | 35         | Test strategies, ShellSpec, coverage targets            |
-| `general.instructions.md`                   | 50         | General conventions when no specific rule applies       |
-| `commit-msg.instructions.md`                | —          | Commit format: `type(scope): message [SPEC-ID]`         |
-| `style.python.instructions.md`              | —          | Python: mypy strict, ruff, type hints                   |
-| `style.frontend.instructions.md`            | —          | TypeScript: strict mode, no `any`                       |
+1.  **Query**: `just temporal-ai-query "topic"` (Consult memory).
+2.  **Plan**: Update `docs/specs/` (ADR -> PRD -> SDS). See `sdd_constitution`.
+3.  **Trace**: Comment code with Spec IDs: `// Implements [SDS-015]`.
+4.  **Verify**: `just spec-guard`.
 
-Check directory-specific `AGENT.md` files for local context (e.g., `libs/AGENT.md`, `generators/AGENT.md`). See `ce.manifest.jsonc` for the artifact registry.
+### 2. Validation Loop
 
-## Essential Commands
+- **Fast**: `just ai-validate` (Lint, Types, Links, Smoke).
+- **Deep**: `./scripts/ci-local.sh docker` (Bit-perfect CI).
+- **Debug**: `just debug-start` -> `repro` -> `fix`.
 
-| Task                | Command                     | Notes                                      |
-| ------------------- | --------------------------- | ------------------------------------------ |
-| **Setup**           | `just setup`                | Installs pnpm, uv, bun, creates `.venv`    |
-| **Validate**        | `just ai-validate`          | Lint + typecheck + tests + AGENT links     |
-| **Test all**        | `just test`                 | Node + Python + integration                |
-| **Template test**   | `just test-generation`      | Validates Copier output in `./test-output` |
-| **Scaffold**        | `just ai-scaffold name=...` | Runs Nx generator (e.g., `@nx/js:lib`)     |
-| **Dev servers**     | `just dev`                  | Starts all Nx serve targets                |
-| **Database**        | `just supabase-start`       | Postgres on 54322, Studio on 54323         |
-| **Type generation** | `just gen-types`            | TS + Python types from Supabase schema     |
-| **Pre-commit**      | `just pre-commit`           | Runs all formatting/lint hooks             |
-| **Health check**    | `just doctor`               | Diagnoses environment issues               |
+## 🛠️ Technical constraints
 
-## Generator-First Development
+- **Stack**: Node 20+ (pnpm), Python 3.11+ (uv), Rust (Temporal DB).
+- **Build**: `just` (Task runner), `nx` (Monorepo).
+- **Logs**: `vibepro_logging` (Logfire) only. No `console.log`.
 
-**Before writing ANY new code**, check for an Nx generator:
-
-```bash
-pnpm exec nx list                        # List all generators
-pnpm exec nx list @nx/js                 # Check specific plugin
-just ai-scaffold name=@nx/js:lib         # Run via just recipe
-just generator-new my-gen domain         # Create custom generator
-```
-
-Custom generators in `generators/` follow hexagonal patterns. Use the meta-generator to create new generators. See `generators/AGENT.md` for the full guide.
-
-## Temporal Database Workflow
-
-The temporal database captures institutional memory. **Query it before major decisions:**
-
-```bash
-just temporal-ai-query "patterns for order domain"   # Search existing patterns
-just temporal-ai-stats                               # View database stats
-just setup-ai                                        # Initialize/Repair DB & CLI
-```
-
-**Workflow:**
-
-1. **Query** temporal_db for relevant ADRs and patterns before implementing
-2. **Implement** following hexagonal architecture
-3. **Record** successful patterns for future reference
-4. **Learn** from anti-patterns to avoid repeating mistakes
-
-See `temporal-db.instructions.md` for integration details.
-
-## Template Development (Copier + Jinja2)
-
-Templates in `templates/{{project_slug}}/` use Jinja2 with `.j2` suffix:
-
-- **Variables** from `copier.yml`: `{{ project_name }}`, `{{ project_slug }}`, `{{ domain_name }}`
-- **Conditionals**: `{% if include_ai_workflows %}...{% endif %}`
-- **Raw blocks** for nested templates: `{% raw %}{{variable}}{% endraw %}`
-- **Test changes**: `just test-generation` (outputs to `./test-output`)
-
-Key files: `copier.yml` (questions/validation), `hooks/post_gen.py` (post-generation setup).
-
-## Type Sync (Multi-Language)
-
-TypeScript (`strict`), Python (`mypy --strict`), Rust. Keep types synchronized:
-
-```bash
-just gen-types-ts    # Supabase → libs/shared/types/src/database.types.ts
-just gen-types-py    # TS types → libs/shared/types-py/src/models.py
-just check-types     # Verify types are committed and up-to-date
-```
-
-## TDD Workflow
-
-```bash
-just tdd-red        # 🔴 Write failing test
-just tdd-green      # 🟢 Minimal implementation to pass
-just tdd-refactor   # ♻️ Improve code, keep tests green
-```
-
-Use corresponding VS Code chat modes: `tdd.red`, `tdd.green`, `tdd.refactor`.
-
-## Debug Workflow
-
-```bash
-just debug-start    # Normalize bug report
-just debug-repro    # Write failing test
-just debug-isolate  # Instrument and narrow root cause
-just debug-fix      # Apply minimal fix
-just debug-refactor # Clean up fix
-just debug-regress  # Run full regression
-```
-
-## CI/CD Validation
-
-```bash
-# Before committing
-just ai-validate           # Full validation suite
-just pre-commit            # Format + lint hooks
-
-# After template changes
-just test-generation       # Copier output validation
-
-# Spec documentation
-just spec-guard            # Traceability + prompt lint
-```
-
-## Observability Stack
-
-```
-App → OpenTelemetry SDK → Vector (PII redaction) → Logfire + OpenObserve
-```
-
-| Command                       | Purpose                       |
-| ----------------------------- | ----------------------------- |
-| `just observe-start`          | Start Vector pipeline         |
-| `just observe-openobserve-up` | Start OpenObserve (Docker)    |
-| `just observe-test-all`       | Full observability test suite |
-
-Set `VIBEPRO_OBSERVE=1` to enable OTLP export. Config: `ops/vector/vector.toml`.
-
-## Commit Format
-
-```
-type(scope): message [SPEC-ID]
-```
-
-Example: `feat(auth): add rate limiter [PRD-042]`
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`. **CRITICAL: Changes must trace to specs in `docs/specs/`.**
-
-## Anti-Patterns
-
-- ❌ Writing code without checking generators first
-- ❌ Modifying `.vscode/settings.json` or enabling `chat.tools.autoApprove`
-- ❌ Committing secrets (use SOPS: `sops exec-env .secrets.env.sops '<command>'`)
-- ❌ Running framework CLIs directly (use `nx run` or Just recipes)
-- ❌ Skipping `just test-generation` after template changes
-- ❌ Adding dependencies without ADR discussion
-- ❌ Not querying temporal_db before major architectural decisions
-- ❌ Domain layer importing infrastructure (violates hexagonal rules)
-- ❌ Not tracing changes to specs in `docs/specs/`
-- ❌ Manually creating configuration files that should be generated then modified accordingly
-- ❌ Adding agents/prompts/skills without registering in `ce.manifest.jsonc`
+**ANTI-PATTERNS**: Importing `infrastructure` in `domain`; Modifying generated files without understanding templates; Committing `.env`.

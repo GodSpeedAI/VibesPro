@@ -1,60 +1,44 @@
 ---
 name: context-routing
-description: 'Determines minimal context and routes tasks to the correct prompts, agents and tools.'
-metadata:
-  id: ce.skill.context-routing
-  tags: [routing, context-min, context-debug]
-  inputs:
-    files: [ce.manifest.jsonc, .github/ce/routing-rules.md]
-    concepts: [least-context]
-    tools: []
-  outputs:
-    artifacts: []
-    files: []
-    actions: [select-files, select-prompt, select-handoff]
-  dependsOn:
-    artifacts: []
-    files: [.github/ce/routing-rules.md]
-  related:
-    artifacts: [ce.prompt.debug-routing]
-    files: []
+description: Intelligently routes requests to the correct context instructions and documentation files. Use this skill to determine which AGENT.md, guide, or technical instruction file is most relevant for a user's request.
+license: Complete terms in LICENSE.txt
 ---
 
-# Context Routing Skill
+# Context Routing
 
-The context-routing skill applies deterministic rules to decide which files, prompts, skills and
-tools are necessary to answer a user request. Use this skill to minimise context loading and
-avoid hallucinations.
+This skill routes user requests to the most appropriate context instructions (`AGENT.md` files) and documentation.
 
-## Steps
+## Core Logic
 
-1. **Load the manifest.** Parse `ce.manifest.jsonc` to build an index of available artifacts,
-   their tags, inputs, outputs and dependencies. Validate that the manifest is well-formed.
+1. **Analyze Intent**: Determine if the request is about Business Logic, Interfaces, Testing, DevOps, Specs, Tools, or Templates.
+2. **Select Context**: Map the intent to the corresponding primary context file:
+   - Business Logic -> `libs/AGENT.md`
+   - Interfaces/Apps -> `apps/AGENT.md`
+   - Testing/QA -> `tests/AGENT.md`
+   - DevOps/Infra -> `ops/AGENT.md`
+   - Specs/Docs -> `docs/AGENT.md`
+   - Tools/Scripts -> `tools/AGENT.md`
+   - Templating -> `templates/AGENT.md`
+3. **Refine Mapping**: If the request is specific, identify granular instruction files (e.g., `security.instructions.md`).
 
-2. **Analyse signals.** Inspect the user’s request to detect intent, scope, risk and
-   actionability signals (e.g. planning, implementation, review, debug). Use the routing
-   rules documented in `.github/ce/routing-rules.md` to map signals to candidate targets.
+## Routing Table
 
-3. **Select authoritative documents.** Always include the core project documents
-   (`PRODUCT.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`) when relevant to the detected scope.
-   Use tags and dependencies to decide which docs are required.
+| Intent             | Primary Context  | Keywords                                    |
+| :----------------- | :--------------- | :------------------------------------------ |
+| **Domain Logic**   | `libs/AGENT.md`  | use case, entity, domain, business rule     |
+| **UI/API**         | `apps/AGENT.md`  | controller, view, react, cli, endpoint      |
+| **Testing**        | `tests/AGENT.md` | test, mock, tdd, e2e, unit                  |
+| **Deployment**     | `ops/AGENT.md`   | docker, k8s, terraform, logfire, monitoring |
+| **Specifications** | `docs/AGENT.md`  | prd, sds, adr, spec, requirement            |
+| **Tooling**        | `tools/AGENT.md` | script, automation, validation, generator   |
 
-4. **Pick the primary prompt or skill.** Based on the intent signal, select one prompt or
-   skill whose tags match the intent (e.g. `planning` → `create-plan.prompt.md`). Avoid
-   loading multiple prompts for a single request.
+## Usage
 
-5. **Resolve dependencies.** For each selected artifact, load its `dependsOn` files and
-   artifacts. Ensure no more than the maximum configured in the manifest defaults
-   (`maxFilesToLoad`) are included unless explicitly requested by the user.
+When a user asks "How do I add a new API endpoint?", route to:
 
-6. **Return the route plan.** Produce a list of target files, skills, prompts and tools to be
-   loaded, along with a brief justification for each selection. If the plan includes any
-   action that modifies files or executes commands, ensure that a validation task is also
-   included.
+- `apps/AGENT.md` (Primary)
+- `hexagonal-architecture.instructions.md` (Secondary)
 
-7. **Support debugging.** When invoked via the `debug-routing` prompt, explain why each
-   artefact was selected and suggest any metadata or tag updates that would improve future
-   routing.
+When a user asks "Where do I put this business rule?", route to:
 
-This skill makes routing decisions transparent and reproducible, enabling precise control over
-the AI’s context window and improving answer quality.
+- `libs/AGENT.md` (Primary)

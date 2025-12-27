@@ -14,6 +14,7 @@
     "/dist/",
     "/coverage/",
     "/tests/ci/",
+    "/apps/copier-smoke-example/",
     "tests/unit/spec_ids.test.js",
     "tests/unit/matrix.test.js"
   ],
@@ -43,7 +44,12 @@
   "coverageReporters": ["text", "lcov", "html"],
   "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
   "moduleFileExtensions": ["ts", "js", "json"],
-  "modulePathIgnorePatterns": ["<rootDir>/tools/type-generator/dist"],
+  "modulePathIgnorePatterns": [
+    "<rootDir>/tools/type-generator/dist",
+    "<rootDir>/.nx/cache",
+    "<rootDir>/tmp",
+    "<rootDir>/apps/copier-smoke-example"
+  ],
   "clearMocks": true,
   "restoreMocks": true
 }

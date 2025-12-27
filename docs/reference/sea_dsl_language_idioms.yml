@@ -285,4 +285,3 @@ copy_paste_scaffolds:
       @migration_policy mandatory
       @breaking_change true
 ---
-
