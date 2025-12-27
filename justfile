@@ -631,8 +631,8 @@ gen-types-ts:
 		echo "✅ TypeScript types generated successfully (via Supabase CLI)"; \
 	else \
 		echo "   Supabase CLI not found, using PostgreSQL introspection..."; \
-		PORT=$$(just _get_db_port); \
-		python3 tools/scripts/gen_ts_from_pg.py --port $$PORT --output libs/shared/types/src/database.types.ts; \
+		PORT=$(just _get_db_port); \
+		python3 tools/scripts/gen_ts_from_pg.py --port "$PORT" --output libs/shared/types/src/database.types.ts; \
 	fi
 
 gen-types-py:
@@ -759,12 +759,12 @@ db-migrate:
 	fi
 	@# Apply migrations using psql with dynamic port
 	@echo "📝 Applying migrations from supabase/migrations/..."
-	@PORT=$$(just _get_db_port); \
+	@PORT=$(just _get_db_port); \
 	for f in supabase/migrations/*.sql; do \
-		if [ -f "$$f" ]; then \
-			echo "   Applying: $$(basename $$f)"; \
-			PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres -f "$$f" -q 2>&1 || { \
-				echo "❌ Migration failed: $$f"; \
+		if [ -f "$f" ]; then \
+			echo "   Applying: $(basename "$f")"; \
+			PGPASSWORD=postgres psql -h localhost -p "$PORT" -U postgres -d postgres -f "$f" -q 2>&1 || { \
+				echo "❌ Migration failed: $f"; \
 				exit 1; \
 			}; \
 		fi; \
@@ -778,9 +778,9 @@ db-seed:
 		echo "❌ Supabase database not running. Run: just supabase-start"; \
 		exit 1; \
 	fi
-	@PORT=$$(just _get_db_port); \
+	@PORT=$(just _get_db_port); \
 	if [ -f supabase/seed.sql ]; then \
-		PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres -f supabase/seed.sql -q 2>&1 || { \
+		PGPASSWORD=postgres psql -h localhost -p "$PORT" -U postgres -d postgres -f supabase/seed.sql -q 2>&1 || { \
 			echo "❌ Seed failed"; \
 			exit 1; \
 		}; \
@@ -791,25 +791,25 @@ db-seed:
 
 db-migration-create NAME:
 	@echo "📝 Creating new migration: {{NAME}}"
-	@TIMESTAMP=$$(date +%Y%m%d%H%M%S); \
-	FILENAME="supabase/migrations/$${TIMESTAMP}_{{NAME}}.sql"; \
-	echo "-- Migration: {{NAME}}" > "$$FILENAME"; \
-	echo "-- Created: $$(date -Iseconds)" >> "$$FILENAME"; \
+	@TIMESTAMP=$(date +%Y%m%d%H%M%S); \
+	FILENAME="supabase/migrations/${TIMESTAMP}_{{NAME}}.sql"; \
+	echo "-- Migration: {{NAME}}" > "$FILENAME"; \
+	echo "-- Created: $(date -Iseconds)" >> "$FILENAME"; \
 	echo "" >> "$$FILENAME"; \
 	echo "-- Add your SQL statements here" >> "$$FILENAME"; \
-	echo "✅ Created: $$FILENAME"
+	echo "✅ Created: $FILENAME"
 
 db-psql:
 	@echo "🔌 Connecting to database..."
-	@PORT=$$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres
+	@PORT=$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p "$PORT" -U postgres -d postgres
 
 db-tables:
 	@echo "📋 Listing tables in public schema..."
-	@PORT=$$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres -c "\dt public.*"
+	@PORT=$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p "$PORT" -U postgres -d postgres -c "\dt public.*"
 
 db-describe TABLE:
 	@echo "📝 Describing table: {{TABLE}}"
-	@PORT=$$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p $$PORT -U postgres -d postgres -c "\d+ public.{{TABLE}}"
+	@PORT=$(just _get_db_port); PGPASSWORD=postgres psql -h localhost -p "$PORT" -U postgres -d postgres -c "\d+ public.{{TABLE}}"
 
 check-types:
 	@echo "🔍 Checking generated types are committed and up to date..."
@@ -1663,19 +1663,20 @@ generator-validate name:
 
 # List all available generators
 generator-list:
-    @echo "📋 Available generators:"
-    @echo ""
-    @echo "Official Nx Generators:"
-    @pnpm exec nx list 2>/dev/null | head -50 || echo "   Run 'pnpm exec nx list' for full list"
-    @echo ""
-    @echo "VibesPro Custom Generators:"
-    @for dir in generators/*/; do \
-        if [ -f "$${dir}generators.json" ]; then \
-            name=$$(basename "$$dir"); \
-            desc=$$(cat "$${dir}generators.json" | grep -o '"description": "[^"]*"' | head -1 | sed 's/"description": "//; s/"$$//'); \
-            echo "   @vibespro/$$name - $$desc"; \
-        fi; \
-    done
+	#!/usr/bin/env bash
+	echo "📋 Available generators:"
+	echo ""
+	echo "Official Nx Generators:"
+	pnpm exec nx list 2>/dev/null | head -50 || echo "   Run 'pnpm exec nx list' for full list"
+	echo ""
+	echo "VibesPro Custom Generators:"
+	for dir in generators/*/; do
+		if [ -f "${dir}generators.json" ]; then
+			name=$(basename "$dir")
+			desc=$(cat "${dir}generators.json" | grep -o '"description": "[^"]*"' | head -1 | sed 's/"description": "//; s/"$//')
+			echo "   @vibespro/$name - $desc"
+		fi
+	done
 
 # Run generator in dry-run mode to preview changes
 generator-dry-run name *ARGS:

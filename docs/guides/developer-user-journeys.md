@@ -1,7 +1,8 @@
 ---
-title: 'Developer & User Journeys (Intended Operation)'
+title: 'Developer & User Journeys (Validated Operation)'
 date: 2025-12-27
-status: draft
+status: validated
+validated_date: 2025-12-27
 matrix_ids: []
 ---
 
@@ -233,3 +234,23 @@ _(Runs `just gen-types-ts` then `just gen-types-py`)_
 | **Ops & Observability**      | `ops/vector/*` (Vector + VRL), `ops/openobserve/*` (OpenObserve)                            |
 | **Governance & AI Guidance** | `.github/instructions/*`, `.github/prompts/*`, `.github/agents/*`                           |
 | **Manifest**                 | `ce.manifest.jsonc` and `.mcp.json` (Nx MCP server)                                         |
+
+---
+
+## Validation Status (2025-12-27)
+
+| Journey                          | Status       | Notes                                                                                       |
+| :------------------------------- | :----------- | :------------------------------------------------------------------------------------------ |
+| **A: Template Consumer**         | ✅ Validated | `just setup`, `just ai-validate`, `just test` all pass                                      |
+| **B: Template Maintainer**       | ✅ Validated | `just copier-quick-validate`, `just copier-smoke-test`, `just test-generation` pass         |
+| **C: AI-Assisted Developer**     | ✅ Validated | Prompts, agents, instructions exist; `just generator-list` works                            |
+| **D: Operational/Observability** | ⚠️ Partial   | Config files exist; requires Docker for full stack; Temporal AI builds and runs             |
+| **E: Data Evolution**            | ⚠️ Partial   | Migrations, type generator, type files exist; requires Docker/Supabase for `just gen-types` |
+
+### Prerequisites for Full Validation
+
+1. **mise tools**: Ensure `~/.local/share/mise/shims` is in PATH (via `.envrc` or shell profile)
+2. **Docker**: Required for observability stack (`just observe-openobserve-up`)
+3. **Vector**: Install from https://vector.dev for `just observe-validate`
+
+_Last validated: 2025-12-27 by Phase 3 production readiness walkthrough_

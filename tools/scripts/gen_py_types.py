@@ -21,8 +21,10 @@ TS_TO_PY: dict[str, str] = {
 }
 
 INTERFACE_RE = re.compile(r"export interface\s+([A-Za-z0-9_]+)\s*{")
-FIELD_RE = re.compile(r"^\s*([A-Za-z0-9_?]+)\s*:\s*([^;]+);")
+FIELD_RE = re.compile(r"^\s*([A-Za-z0-9_?]+)\s*:\s*([^;]+?);?\s*$")
 ARRAY_RE = re.compile(r"^(.+)\[\]$")
+
+SUPABASE_DATABASE_RE = re.compile(r"export\s+type\s+Database\s*=\s*{")
 
 
 def map_ts_type_to_python(ts_type: str) -> str:
@@ -99,6 +101,133 @@ def parse_ts_file(path: Path) -> dict[str, dict[str, tuple[str, str]]]:
     return interfaces
 
 
+def _extract_braced_block(text: str, start: int) -> tuple[str, int]:
+    """Extract a '{...}' block where `start` is the index immediately after '{'.
+
+    Returns the block content (excluding the outer braces) and the index of the
+    closing brace.
+    """
+
+    brace_count = 1
+    pos = start
+    while pos < len(text) and brace_count > 0:
+        if text[pos] == "{":
+            brace_count += 1
+        elif text[pos] == "}":
+            brace_count -= 1
+        pos += 1
+
+    # `pos` is one past the closing brace when brace_count hits 0
+    end = pos - 1
+    return text[start:end], end
+
+
+def _extract_named_block(text: str, name: str, start_at: int = 0) -> tuple[str | None, int]:
+    """Extract a named block like 'Name: { ... }' from `text`.
+
+    Returns (block_content, end_index) or (None, start_at) if not found.
+    """
+
+    pattern = re.compile(rf"\b{re.escape(name)}\s*:\s*{{")
+    match = pattern.search(text, start_at)
+    if not match:
+        return None, start_at
+
+    block, end = _extract_braced_block(text, match.end())
+    return block, end
+
+
+def _pascal_case(name: str) -> str:
+    return "".join(part.capitalize() for part in name.strip().split("_") if part)
+
+
+def _parse_field_block(block: str) -> dict[str, tuple[str, str]]:
+    """Parse a simple TS object field block into python types.
+
+    Supports both interface-style fields ending with ';' and Supabase type-literal
+    fields without semicolons.
+    """
+
+    fields: dict[str, tuple[str, str]] = {}
+    for line in block.splitlines():
+        field_match = FIELD_RE.match(line.strip())
+        if not field_match:
+            continue
+
+        raw_name, raw_type = field_match.groups()
+        is_optional = raw_name.endswith("?") or "| undefined" in raw_type
+        name_clean = raw_name.rstrip("?")
+
+        py_type = map_ts_type_to_python(raw_type.strip())
+        if is_optional and not py_type.endswith(" | None"):
+            py_type = f"{py_type} | None"
+        default = " = None" if is_optional else ""
+        fields[name_clean] = (py_type, default)
+
+    return fields
+
+
+def parse_supabase_database_types(path: Path) -> dict[str, dict[str, tuple[str, str]]]:
+    """Parse Supabase-generated `export type Database = { ... }` tables into models.
+
+    Supabase's official TS types represent table shapes as nested type literals:
+
+      Database.public.Tables.<table>.Row / Insert / Update
+
+    We generate:
+      <TablePascal> (Row)
+      <TablePascal>Insert
+      <TablePascal>Update
+    """
+
+    text = path.read_text(encoding="utf-8")
+    match = SUPABASE_DATABASE_RE.search(text)
+    if not match:
+        return {}
+
+    db_block, _ = _extract_braced_block(text, match.end())
+    public_block, _ = _extract_named_block(db_block, "public")
+    if public_block is None:
+        return {}
+
+    tables_block, _ = _extract_named_block(public_block, "Tables")
+    if tables_block is None:
+        return {}
+
+    table_def_re = re.compile(r'^\s*(?:"([^"]+)"|([A-Za-z0-9_]+))\s*:\s*{', re.MULTILINE)
+    models: dict[str, dict[str, tuple[str, str]]] = {}
+    pos = 0
+    while True:
+        m = table_def_re.search(tables_block, pos)
+        if not m:
+            break
+
+        table_name = m.group(1) or m.group(2)
+        table_body, end = _extract_braced_block(tables_block, m.end())
+        pos = end
+
+        # Extract Row/Insert/Update blocks and parse fields
+        row_block, _ = _extract_named_block(table_body, "Row")
+        insert_block, _ = _extract_named_block(table_body, "Insert")
+        update_block, _ = _extract_named_block(table_body, "Update")
+
+        base_name = _pascal_case(table_name)
+        if row_block is not None:
+            row_fields = _parse_field_block(row_block)
+            if row_fields:
+                models[base_name] = row_fields
+        if insert_block is not None:
+            insert_fields = _parse_field_block(insert_block)
+            if insert_fields:
+                models[f"{base_name}Insert"] = insert_fields
+        if update_block is not None:
+            update_fields = _parse_field_block(update_block)
+            if update_fields:
+                models[f"{base_name}Update"] = update_fields
+
+    return models
+
+
 def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
     """Generate a consolidated models.py file from TS interface definitions."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -111,6 +240,9 @@ def generate_python_models(ts_dir: Path, out_dir: Path) -> Path:
 
     for path in sorted(ts_dir.glob("*.ts")):
         parsed = parse_ts_file(path)
+        # Also support Supabase's official 'export type Database = { ... }' output.
+        for model_name, fields in parse_supabase_database_types(path).items():
+            parsed.setdefault(model_name, fields)
         for class_name, fields in parsed.items():
             # Skip utility interfaces that don't represent tables
             if class_name in skip_classes:
