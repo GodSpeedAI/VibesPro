@@ -2,7 +2,6 @@
  * Tests for the meta-generator.
  * @traceability DEV-PRD-019
  */
-import '../setup/vitest.setup';
 
 import { Tree, readJson } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
