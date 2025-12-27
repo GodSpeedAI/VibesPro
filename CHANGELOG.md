@@ -2,6 +2,70 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2025-12-27
+
+**Full Changelog**: https://github.com/GodSpeedAI/VibesPro/compare/v0.6.0...v0.7.0
+
+### ✨ New Features
+
+- **Context Engineering SDK Integration**: Established the Context Engineering SDK as the foundational agent system, providing a robust framework for AI-powered development workflows.
+
+- **Spec-Kit SDD Workflow Tool**: Integrated spec-kit as a dedicated Specification-Driven Development workflow skill, enabling structured specification management.
+
+- **Expanded AI Skills Pack**: Added 6 new AI capabilities to the agent system:
+  - **Temporal AI**: Time-aware AI processing and reasoning
+  - **Observability Skills**: AI-assisted monitoring and debugging
+  - **API Mocking**: Intelligent API simulation for development
+  - **Context Routing**: Smart routing of context to appropriate agents
+  - **Architecture Decisioning**: AI-guided architectural choices
+  - **Doc Co-authoring**: Collaborative documentation with AI assistance
+
+- **Enhanced Template System**: Improved Copier template validation with observability infrastructure integration, ensuring generated projects meet quality standards.
+
+### 🔧 Improvements
+
+- **Unified Test Framework**: Removed Vitest in favor of Jest for consistent testing across the entire monorepo. Added `test-all` and `test-e2e` just recipes for comprehensive test execution.
+
+- **Rust Toolchain Upgrade**: Upgraded to Rust 1.83.0 for temporal-ai dependencies, ensuring compatibility with the latest language features.
+
+- **Tool Version Alignment**: Synchronized pnpm (9.15.4) and other tool versions across all environments for reproducible builds.
+
+- **CI/CD Stabilization**: Multiple improvements to pipeline reliability:
+  - OS and architecture-specific mise caching
+  - Reproducible builds with pinned Ubuntu 22.04
+  - Proper mise shim PATH configuration for tool availability
+  - Graceful handling of cancelled jobs in summaries
+
+- **SEA-DSL Documentation**: Reformatted SEA DSL reference documentation to YAML format for better LLM extraction and processing.
+
+### 🐛 Fixes
+
+- Fixed CI job failures caused by missing tools in PATH (uv, pnpm, clippy)
+- Resolved macOS ARM64 binary mismatch issues with mise-managed tools
+- Fixed TypeScript errors in tests and tools configurations
+- Corrected deprecated `affected.defaultBase` configuration in Nx
+- Fixed spec-kit video overview anchor in documentation
+- Addressed template environment/state leakage issues
+- Fixed generator integration tests for CI resilience
+- Removed ghost dependencies from uv.lock
+
+### 📚 Documentation
+
+- Added comprehensive test coverage baseline documentation
+- Added SEA-DSL language reference documentation
+- Updated agent instructions and skill registrations
+- Documented last-mile journeys and production readiness plan
+- Streamlined copilot-instructions.md for better AI context
+
+### 🏗️ Infrastructure
+
+- Added Vector observability tool to devbox environment
+- Configured proper Clippy component for Rust nightly toolchain
+- Improved gitignore for build artifacts and smoke test projects
+- Applied prettier formatting to configuration files
+
+---
+
 ## [0.6.0] - 2025-12-25
 
 **Full Changelog**: https://github.com/GodSpeedAI/VibesPro/compare/v0.5.1...v0.6.0
