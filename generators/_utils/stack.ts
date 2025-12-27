@@ -31,17 +31,25 @@ import { join } from 'node:path';
  */
 export function loadResolvedStack(root: string): unknown | null {
   const override = process.env.VIBEPDK_TECHSTACK_RESOLVED;
-  const p = override || join(root, 'tools', 'transformers', '.derived', 'techstack.resolved.json');
+  const p = override ?? join(root, 'tools', 'transformers', '.derived', 'techstack.resolved.json');
   if (!existsSync(p)) {
     return null;
   }
   try {
     const txt = readFileSync(p, 'utf8');
     return JSON.parse(txt);
-  } catch (_e) {
+  } catch {
     // Gracefully handle JSON parsing errors or other file read issues.
     return null;
   }
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  return value as Record<string, unknown>;
 }
 
 /**
@@ -51,16 +59,22 @@ export function loadResolvedStack(root: string): unknown | null {
  * property and the specific category key before attempting to access it, preventing
  * runtime errors.
  *
- * @param {any} stack - The parsed tech stack object, typically the return value from `loadResolvedStack`.
- *   It is of type `any` to accommodate the `unknown` return from the loader.
+ * @param {unknown} stack - The parsed tech stack object, typically the return value from `loadResolvedStack`.
  * @param {string} key - The key of the category to retrieve (e.g., 'frontend', 'backend').
- * @returns {any | null} The value of the category if it exists; otherwise, `null`.
+ * @returns {Record<string, unknown> | null} The category object if it exists; otherwise, `null`.
  */
-export function getCategory(stack: any, key: string): any | null {
-  if (!stack?.categories?.[key]) {
+export function getCategory(stack: unknown, key: string): Record<string, unknown> | null {
+  const stackRecord = asRecord(stack);
+  if (!stackRecord) {
     return null;
   }
-  return stack.categories[key];
+
+  const categories = asRecord(stackRecord['categories']);
+  if (!categories) {
+    return null;
+  }
+
+  return asRecord(categories[key]);
 }
 
 /**
