@@ -152,6 +152,78 @@
       }
     },
     {
+      "id": "ce.skill.temporal-ai",
+      "kind": "skill",
+      "path": ".github/skills/temporal-ai/skill.md",
+      "tags": ["tools", "context-min"],
+      "inputs": {
+        "files": ["docs/guides/temporal-ai-guide.md"],
+        "concepts": ["embeddings", "semantic-search"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["query-knowledge", "embed-content"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.observability"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.observability",
+      "kind": "skill",
+      "path": ".github/skills/observability/skill.md",
+      "tags": ["tools", "validation"],
+      "inputs": {
+        "files": ["docs/guides/observability-guide.md"],
+        "concepts": ["tracing", "metrics"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["monitor-stack", "verify-health"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.temporal-ai"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.api-mocking",
+      "kind": "skill",
+      "path": ".github/skills/api-mocking/skill.md",
+      "tags": ["tools", "testing"],
+      "inputs": {
+        "files": ["docs/guides/testing-with-mocks.md"],
+        "concepts": ["hermetic-testing", "service-virtualization"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["mock-service", "scaffold-test"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.testing-strategy"],
+        "files": []
+      }
+    },
+    {
       "id": "ce.doc.contributing",
       "kind": "doc",
       "path": "CONTRIBUTING.md",
