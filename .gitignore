@@ -134,7 +134,6 @@ data/*.redb
 archive/
 environment_report.md
 docs/reports/
-docs/plans/
 mypy-report/
 docs/work
 
