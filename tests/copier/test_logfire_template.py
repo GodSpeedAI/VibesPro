@@ -45,8 +45,8 @@ def test_logfire_env_vars_are_rendered(copier: Any, tmp_path: Path) -> None:
     """Generated projects must expose Logfire configuration placeholders."""
     project_path = _generate_template(copier, tmp_path)
 
-    env_file = project_path / ".env"
-    assert env_file.exists(), ".env file missing from generated template"
+    env_file = project_path / ".env.example"
+    assert env_file.exists(), ".env.example file missing from generated template"
 
     contents = env_file.read_text()
     required_placeholders = [
@@ -58,5 +58,5 @@ def test_logfire_env_vars_are_rendered(copier: Any, tmp_path: Path) -> None:
 
     for placeholder in required_placeholders:
         assert placeholder in contents, (
-            f"Expected '{placeholder}' placeholder in rendered .env file"
+            f"Expected '{placeholder}' placeholder in rendered .env.example file"
         )
