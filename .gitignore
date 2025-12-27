@@ -24,7 +24,6 @@ tests/.tmp-typegen/
 
 # Environment
 .env
-!templates/\{\{project_slug\}\}/.env
 .env.local
 .env.development.local
 .env.test.local
@@ -113,13 +112,12 @@ key.txt
 # Sensitive token seed files
 .token_seed
 *.token_seed
+.token_seed.lock
 
 # Docker Buildx generated files
-ops/openobserve/buildx/.buildNodeID
-ops/openobserve/buildx/.lock
-ops/openobserve/buildx/current
-ops/openobserve/buildx/activity/
-ops/openobserve/buildx/refs/
+ops/openobserve/buildx/
+ops/openobserve/.env.local
+ops/openobserve/.env.local.bak
 .aider*
 
 
