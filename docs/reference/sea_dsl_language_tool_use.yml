@@ -167,4 +167,3 @@ quickstart_examples:
       --buf-lint --buf-breaking --buf-generate
       ./models ./out/generated
 ---
-

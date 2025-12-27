@@ -252,4 +252,3 @@ agent_rules:
   - Expressions must be total (no free identifiers)
   - Versioned concepts require explicit @replaces/@changes
 ---
-

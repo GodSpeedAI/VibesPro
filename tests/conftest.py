@@ -52,6 +52,23 @@ def pytest_ignore_collect(collection_path: LEGACY_PATH, config: pytest.Config, *
 
 
 if PYTEST_COPIER_AVAILABLE:
+
+    @pytest.fixture(scope="session")
+    def copier_template_paths() -> list[str]:
+        """Limit the template tree copied into pytest-copier's temp git repo.
+
+        Copying the full repository (including `node_modules/`) is expensive and
+        can fail on pnpm's platform-specific placeholder directories.
+        """
+
+        return [
+            "copier.yml",
+            ".copierignore",
+            "hooks",
+            "templates",
+            "tests/fixtures",
+        ]
+
     _DEFAULT_TEMPLATE_SKIP = [
         "end-of-file-fixer",
         "ruff",

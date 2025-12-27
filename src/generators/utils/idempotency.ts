@@ -106,7 +106,7 @@ export function createIdempotentWrapper<T extends object>(
   },
 ) {
   return async (tree: Tree, genOptions: T): Promise<GeneratorCallback> => {
-    logger.info(options.message || 'Running idempotent generator...');
+    logger.info(options.message ?? 'Running idempotent generator...');
 
     const runStep = async (stepName: string, step: () => Promise<void> | void): Promise<void> => {
       try {
@@ -140,7 +140,7 @@ export function createIdempotentWrapper<T extends object>(
         if (callback) {
           await callback();
         }
-        logger.info(`Idempotent generator finished successfully: ${options.message || 'OK'}`);
+        logger.info(`Idempotent generator finished successfully: ${options.message ?? 'OK'}`);
       } catch (error) {
         const details =
           error instanceof Error ? (error.stack ?? error.message) : JSON.stringify(error);
@@ -160,7 +160,7 @@ export function createIdempotentWrapper<T extends object>(
  */
 export function withIdempotency<T extends object>(
   generator: (tree: Tree, options: T) => void | Promise<void | GeneratorCallback>,
-) {
+): (tree: Tree, options: T) => Promise<GeneratorCallback> {
   return createIdempotentWrapper(generator, {
     message: 'Running generator with idempotency...',
   });

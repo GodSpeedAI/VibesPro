@@ -48,7 +48,7 @@ repos:
         exclude: ^(.*\.j2|pnpm-lock\.yaml|\.github/copilot-instructions\.md)$
         args: ['--unsafe'] # Allow custom tags
       - id: check-json
-        exclude: ^(.*\.j2|tsconfig\..*\.json|templates/.*)$
+        exclude: ^(.*\.j2|tsconfig\..*\.json|templates/.*|.*\/\.devcontainer\/.*\.json)$
       - id: check-toml
 
       # Filesystem checks
@@ -163,7 +163,7 @@ repos:
         entry: ./scripts/hooks/precommit-node.sh eslint --fix --no-warn-ignored
         language: script
         types_or: [ts, tsx]
-        exclude: ^(node_modules/|\.nx/|dist/|coverage/|.*\.j2|tests/fixtures/|tools/reference/|templates/)$
+        exclude: ^(node_modules/|\.nx/|dist/|coverage/|.*\.j2|tests/fixtures/|tools/reference/|templates/|libs/tools/spec-kit/)
         require_serial: false
 
   # ===========================================================================
