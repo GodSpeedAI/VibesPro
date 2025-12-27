@@ -152,6 +152,174 @@
       }
     },
     {
+      "id": "ce.skill.temporal-ai",
+      "kind": "skill",
+      "path": ".github/skills/temporal-ai/skill.md",
+      "tags": ["tools", "context-min"],
+      "inputs": {
+        "files": ["docs/guides/temporal-ai-guide.md"],
+        "concepts": ["embeddings", "semantic-search"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["query-knowledge", "embed-content"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.observability"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.observability",
+      "kind": "skill",
+      "path": ".github/skills/observability/skill.md",
+      "tags": ["tools", "validation"],
+      "inputs": {
+        "files": ["docs/guides/observability-guide.md"],
+        "concepts": ["tracing", "metrics"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["monitor-stack", "verify-health"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.temporal-ai"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.api-mocking",
+      "kind": "skill",
+      "path": ".github/skills/api-mocking/skill.md",
+      "tags": ["tools", "testing"],
+      "inputs": {
+        "files": ["docs/guides/testing-with-mocks.md"],
+        "concepts": ["hermetic-testing", "service-virtualization"],
+        "tools": ["toolset:exec"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["mock-service", "scaffold-test"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.testing-strategy"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.frontend-design",
+      "kind": "skill",
+      "path": ".github/skills/frontend-design/SKILL.md",
+      "tags": ["design", "frontend", "context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": ["design-systems", "typography", "animation"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["design-interface", "implement-ui"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.implementation-guidance"],
+        "files": [".github/instructions/style.frontend.instructions.md"]
+      }
+    },
+    {
+      "id": "ce.skill.context-routing",
+      "kind": "skill",
+      "path": ".github/skills/context-routing/SKILL.md",
+      "tags": ["routing", "context-min"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": ["semantic-routing"],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["route-request"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.agent.orchestrator"],
+        "files": [".github/ce/routing-rules.md"]
+      }
+    },
+    {
+      "id": "ce.skill.architecture-decisioning",
+      "kind": "skill",
+      "path": ".github/skills/architecture-decisioning/SKILL.md",
+      "tags": ["architecture", "planning", "context-min"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md"],
+        "concepts": ["adr", "tradeoffs"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": ["ce.doc.adr"],
+        "files": ["docs/specs/shared/adr/*.md"],
+        "actions": ["propose-decision"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.prompt.propose-adr"],
+        "files": []
+      }
+    },
+    {
+      "id": "ce.skill.doc-coauthoring",
+      "kind": "skill",
+      "path": ".github/skills/doc-coauthoring/SKILL.md",
+      "tags": ["documentation", "planning", "context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": ["coauthoring", "context-gathering", "refinement"],
+        "tools": ["toolset:read", "toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["docs/specs/**/*.md"],
+        "actions": ["coauthor-doc"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.requirements-analysis"],
+        "files": []
+      }
+    },
+    {
       "id": "ce.doc.contributing",
       "kind": "doc",
       "path": "CONTRIBUTING.md",
@@ -1277,6 +1445,7 @@
       "related": {
         "artifacts": ["ce.prompt.prepare-release"],
         "files": []
+      }
     },
     {
       "id": "ce.skill.spec-kit-workflow",

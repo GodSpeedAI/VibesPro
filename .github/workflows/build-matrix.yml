@@ -23,7 +23,6 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AQUA_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
-      mise_cache_key: ${{ steps.cache-key.outputs.mise_cache_key }}
       node_version: ${{ steps.vers.outputs.node }}
       python_version: ${{ steps.vers.outputs.python }}
       rust_version: ${{ steps.vers.outputs.rust }}
@@ -56,11 +55,6 @@ jobs:
           echo "node=$(get_version node)"     >> $GITHUB_OUTPUT
           echo "python=$(get_version python)" >> $GITHUB_OUTPUT
           echo "rust=$(get_version rust)"     >> $GITHUB_OUTPUT
-
-      - name: Compute mise cache key
-        id: cache-key
-        run: |
-          echo "mise_cache_key=mise-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}" >> $GITHUB_OUTPUT
 
   # ---------- Build & Test Matrix ----------
   build-test:
@@ -178,7 +172,10 @@ jobs:
           path: |
             ~/.local/share/mise
             ~/.cache/mise
-          key: ${{ needs.prepare.outputs.mise_cache_key }}
+          # Key must be computed on the target runner OS/arch; using a key computed
+          # on Ubuntu can restore Linux binaries on macOS (e.g., pnpm) and fail
+          # with "cannot execute binary file" (exit 126).
+          key: mise-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}
           restore-keys: |
             mise-v2-${{ runner.os }}-${{ runner.arch }}-
 

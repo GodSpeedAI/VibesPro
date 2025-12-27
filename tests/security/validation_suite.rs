@@ -25,14 +25,27 @@ fn test_cargo_audit_passes() {
                 .output()
                 .expect("Failed to run cargo audit");
 
+            if audit_output.status.success() {
+                return;
+            }
+
             let stderr = String::from_utf8_lossy(&audit_output.stderr);
 
-            // Check for actual vulnerabilities (not just unmaintained warnings)
-            assert!(
-                !stderr.contains("error: ") || stderr.contains("denied warnings"),
-                "cargo audit found actual security vulnerabilities: {}",
-                stderr
-            );
+            // cargo-audit can fail for reasons unrelated to actual vulnerabilities, e.g. an
+            // advisory database schema update that the locally installed tool cannot parse.
+            // CI runs cargo-audit independently with a pinned install step; treat tool/db
+            // incompatibilities as non-fatal for this test suite.
+            let tool_db_incompatibility = stderr.contains("error loading advisory database")
+                || stderr.contains("unsupported CVSS version")
+                || stderr.contains("parse error:");
+
+            if tool_db_incompatibility {
+                eprintln!("⚠️  cargo-audit failed due to advisory DB/tool incompatibility; skipping");
+                eprintln!("{stderr}");
+                return;
+            }
+
+            panic!("cargo audit failed: {stderr}");
         }
         _ => {
             // cargo-audit not installed, skip test with a warning

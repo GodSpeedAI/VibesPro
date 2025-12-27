@@ -55,6 +55,14 @@ just build    # Build for production
 just test     # Run tests
 ```
 
+## Journeys
+
+- [Developer & User Journeys](guides/developer-user-journeys.md)
+
+## Plans
+
+- [Production Readiness Plan](plans/production-readiness/2025-12-27-production-readiness.md)
+
 ## License
 
 MIT License

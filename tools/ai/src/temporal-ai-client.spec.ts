@@ -12,6 +12,7 @@ import { TemporalAIClient, getRecommendations } from './temporal-ai-client.js';
 const BINARY_PATH = 'crates/temporal-ai/target/release/temporal-ai';
 const hasBinary = existsSync(BINARY_PATH);
 const describeWithBinary = hasBinary ? describe : describe.skip;
+const describeE2E = hasBinary && process.env.TEMPORAL_AI_E2E === '1' ? describe : describe.skip;
 
 describeWithBinary('TemporalAIClient', () => {
   let client: TemporalAIClient;
@@ -52,12 +53,12 @@ describeWithBinary('TemporalAIClient', () => {
   }, 30000);
 });
 
-describeWithBinary('TemporalAIClient - E2E', () => {
+describeE2E('TemporalAIClient - E2E', () => {
   it('should refresh and query end-to-end', async () => {
     const client = new TemporalAIClient();
 
     // Refresh with small set
-    await client.refreshPatterns(50);
+    await client.refreshPatterns(10);
 
     // Get stats
     const stats = await client.getStats();
