@@ -9,19 +9,7 @@ import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 describe('Maintainer documentation alignment', () => {
-  // The full content lives in .internal/ after the stub migration.
-  // Tests validate the internal (authoritative) version.
-  const internalDocPath = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    'docs',
-    'aiassist',
-    '.internal',
-    'maintainer-guide.md',
-  );
-
-  const publicDocPath = path.resolve(
+  const maintainerDocPath = path.resolve(
     __dirname,
     '..',
     '..',
@@ -31,14 +19,8 @@ describe('Maintainer documentation alignment', () => {
   );
 
   const readMaintainerDoc = async (): Promise<string> => {
-    // Prefer internal version (full content), fall back to public stub
-    try {
-      await access(internalDocPath);
-      return readFile(internalDocPath, 'utf8');
-    } catch {
-      await access(publicDocPath);
-      return readFile(publicDocPath, 'utf8');
-    }
+    await access(maintainerDocPath);
+    return readFile(maintainerDocPath, 'utf8');
   };
 
   it('mentions the core AI governance specs', async () => {
