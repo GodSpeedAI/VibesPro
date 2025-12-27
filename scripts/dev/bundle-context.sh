@@ -40,7 +40,14 @@ copy_md_with_prefix() {
     find "${src_dir}" -maxdepth 1 -type f -name '*.md' -print0 2>/dev/null | while IFS= read -r -d '' file; do
       local base
       base="$(basename "${file}")"
-      cp "${file}" "${OUTPUT_DIR}/${prefix}-${base}"
+
+      # Check for internal shadow file first (Shadow Stub Strategy)
+      local internal_file="${src_dir}/.internal/${base}"
+      if [[ -f "${internal_file}" ]]; then
+        cp "${internal_file}" "${OUTPUT_DIR}/${prefix}-${base}"
+      else
+        cp "${file}" "${OUTPUT_DIR}/${prefix}-${base}"
+      fi
     done
   fi
 }

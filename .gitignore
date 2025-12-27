@@ -159,3 +159,6 @@ cache/
 # Release temp files
 .next-version
 .bump-type
+
+# Internal Documentation (Shadow Stub Strategy)
+**/.internal/

@@ -1005,6 +1005,15 @@ docs-clean:
 	rm -rf docs/generated docs/temp
 	rm -rf docs/temp
 
+# Sync internal documentation stubs
+docs-sync:
+	@python3 tools/docs/internal_manager.py sync
+
+# Validate internal documentation integrity
+docs-validate-internal:
+	@python3 tools/docs/internal_manager.py validate
+
+
 # --- AI Workflow Recipes ---
 # Traceability: AI_ADR-004, AI_PRD-003, AI_SDS-003, AI_TS-004
 #
