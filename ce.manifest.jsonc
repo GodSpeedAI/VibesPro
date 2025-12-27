@@ -296,6 +296,30 @@
       }
     },
     {
+      "id": "ce.skill.doc-coauthoring",
+      "kind": "skill",
+      "path": ".github/skills/doc-coauthoring/SKILL.md",
+      "tags": ["documentation", "planning", "context-min"],
+      "inputs": {
+        "files": [],
+        "concepts": ["coauthoring", "context-gathering", "refinement"],
+        "tools": ["toolset:read", "toolset:write"]
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": ["docs/specs/**/*.md"],
+        "actions": ["coauthor-doc"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.skill.requirements-analysis"],
+        "files": []
+      }
+    },
+    {
       "id": "ce.doc.contributing",
       "kind": "doc",
       "path": "CONTRIBUTING.md",
