@@ -46,7 +46,10 @@ if [[ "$CI_STATE" == "success" ]]; then
   echo "✅ CI checks passed"
 elif [[ "$CI_STATE" == "pending" ]]; then
   # Verify if there are actually running/queued jobs
-  RUNNING_COUNT=$(gh run list --commit "$LATEST_COMMIT" --json status --jq 'map(select(.status == "in_progress" or .status == "queued" or .status == "requested" or .status == "pending")) | length')
+  RUNNING_COUNT=$(gh run list --commit "$LATEST_COMMIT" --json status --jq 'map(select(.status == "in_progress" or .status == "queued" or .status == "requested" or .status == "pending")) | length' 2>/dev/null || {
+    echo "WARN: gh run list failed; assuming 0 active CI runs" >&2
+    echo 0
+  })
 
   if [[ "${RUNNING_COUNT:-0}" -gt 0 ]]; then
     echo "⚠️  CI checks still running ($RUNNING_COUNT active runs). Wait for completion or check status:"
