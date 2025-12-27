@@ -47,7 +47,7 @@ if [[ "$CI_STATE" == "success" ]]; then
 elif [[ "$CI_STATE" == "pending" ]]; then
   # Verify if there are actually running/queued jobs
   RUNNING_COUNT=$(gh run list --commit "$LATEST_COMMIT" --json status --jq 'map(select(.status == "in_progress" or .status == "queued" or .status == "requested" or .status == "pending")) | length')
-  
+
   if [[ "${RUNNING_COUNT:-0}" -gt 0 ]]; then
     echo "⚠️  CI checks still running ($RUNNING_COUNT active runs). Wait for completion or check status:"
     gh run list --commit "$LATEST_COMMIT"
