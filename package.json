@@ -121,7 +121,7 @@
   },
   "dependencies": {
     "@expo/metro-config": "~0.20.14",
-    "@expo/metro-runtime": "~5.0.4",
+    "@expo/metro-runtime": "~6.1.2",
     "@remix-run/node": "^2.15.0",
     "@remix-run/react": "^2.15.0",
     "@remix-run/serve": "^2.15.0",
