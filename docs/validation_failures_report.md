@@ -76,3 +76,18 @@ The `tools/ai` project configuration (NodeNext + Vitest) seems unstable.
 - **Long term**: Reconfigure `tools/ai` to use standard `ESNext` modules for testing, or fix the `__vite_ssr_exportName__` shim to correctly populate module exports in this environment.
 
 For now, the critical fix was scoping `vitest.config.ts` to prevent it from running unrelated `libs/` tests (which caused 130+ failures).
+
+---
+
+## ✅ Fixes Applied (2025-12-27)
+
+The project has migrated away from Vitest completely. The following changes were made:
+
+1. **Removed Vitest dependency** from root `package.json`
+2. **Updated `tools/ai/package.json`** to use Jest instead of Vitest
+3. **Deleted `tests/setup/vitest.setup.ts`** (no longer needed)
+4. **Aligned pnpm version** to 9.15.4 across `.mise.toml` and `package.json`
+5. **Added `just test-all`** recipe to run all test suites
+6. **Added `just test-e2e`** recipe for end-to-end tests (temporal-ai, observability, template generation)
+
+**Status**: Jest is now the sole test runner. All Vitest references have been removed from the project source (transient files in `tmp/` are ignored).

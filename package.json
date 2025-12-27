@@ -95,7 +95,6 @@
     "tsx": "^4.16.2",
     "typescript": "~5.9.2",
     "vite": "^5.0.0",
-    "vitest": "^1.6.1",
     "yaml": "^2.8.1"
   },
   "engines": {
@@ -106,7 +105,7 @@
   "overrides": {
     "vite-node": "1.6.1"
   },
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@9.15.4",
   "pnpm": {
     "overrides": {
       "esbuild@<=0.24.2": ">=0.25.0",
