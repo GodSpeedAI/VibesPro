@@ -156,3 +156,6 @@ npm-debug.*
 *.orig.*
 web-build/
 cache/
+# Release temp files
+.next-version
+.bump-type
