@@ -1663,19 +1663,20 @@ generator-validate name:
 
 # List all available generators
 generator-list:
-    @echo "📋 Available generators:"
-    @echo ""
-    @echo "Official Nx Generators:"
-    @pnpm exec nx list 2>/dev/null | head -50 || echo "   Run 'pnpm exec nx list' for full list"
-    @echo ""
-    @echo "VibesPro Custom Generators:"
-    @for dir in generators/*/; do \
-        if [ -f "$${dir}generators.json" ]; then \
-            name=$$(basename "$$dir"); \
-            desc=$$(cat "$${dir}generators.json" | grep -o '"description": "[^"]*"' | head -1 | sed 's/"description": "//; s/"$$//'); \
-            echo "   @vibespro/$$name - $$desc"; \
-        fi; \
-    done
+	#!/usr/bin/env bash
+	echo "📋 Available generators:"
+	echo ""
+	echo "Official Nx Generators:"
+	pnpm exec nx list 2>/dev/null | head -50 || echo "   Run 'pnpm exec nx list' for full list"
+	echo ""
+	echo "VibesPro Custom Generators:"
+	for dir in generators/*/; do
+		if [ -f "${dir}generators.json" ]; then
+			name=$(basename "$dir")
+			desc=$(cat "${dir}generators.json" | grep -o '"description": "[^"]*"' | head -1 | sed 's/"description": "//; s/"$//')
+			echo "   @vibespro/$name - $desc"
+		fi
+	done
 
 # Run generator in dry-run mode to preview changes
 generator-dry-run name *ARGS:

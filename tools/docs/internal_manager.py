@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Manage internal documentation exclusion with stub generation."""
+
 import argparse
 import re
 import shutil
@@ -9,23 +11,19 @@ from pathlib import Path
 SPEC_GUARD_MARKER = "<!-- vibePDK-spec-guard:summary -->"
 
 
-def get_frontmatter_and_summary(content):
+def get_frontmatter_and_summary(content: str) -> tuple[str, str]:
     """
     Extracts frontmatter and a summary from the markdown content.
     Returns (frontmatter_block, summary_text)
     """
     lines = content.split("\n")
-    frontmatter = []
-    summary = []
+    frontmatter: list[str] = []
 
-    in_frontmatter = False
     if lines and lines[0].strip() == "---":
-        in_frontmatter = True
         frontmatter.append(lines[0])
         for line in lines[1:]:
             frontmatter.append(line)
             if line.strip() == "---":
-                in_frontmatter = False
                 break
 
     # Simple summary extraction: First non-empty lines after headers
@@ -34,7 +32,7 @@ def get_frontmatter_and_summary(content):
 
     # Try to find a "Summary" or "Context" header
     capture = False
-    captured_lines = []
+    captured_lines: list[str] = []
     for line in body:
         if re.match(r"^#+\s*(Summary|Context|Abstract|Overview)", line, re.IGNORECASE):
             capture = True
@@ -63,11 +61,15 @@ def get_frontmatter_and_summary(content):
     return "\n".join(frontmatter), summary_text
 
 
-def create_stub_content(original_path, internal_path, content):
+def create_stub_content(original_path: Path, internal_path: Path, content: str) -> str:
     """
     Generates the content for the stub file.
     Uses a 'Stealth' template to prevent information leakage.
     """
+    # Suppress unused parameter warnings - kept for API compatibility
+    _ = original_path
+    _ = internal_path
+
     frontmatter, _ = get_frontmatter_and_summary(content)
 
     # Check if there is an explicit Public Summary in the internal file
@@ -101,7 +103,7 @@ Available in the internal repository context.
     return stub
 
 
-def migrate_file(filepath):
+def migrate_file(filepath: str) -> bool:
     """
     Moves a file to .internal/ and creates a stub.
     """
@@ -138,7 +140,7 @@ def migrate_file(filepath):
     return True
 
 
-def restore_file(filepath):
+def restore_file(filepath: str) -> bool:
     """
     Restores an internal file to its original location (Undo migrate).
     filepath should be the STUB path or the INTERNAL path.
@@ -170,7 +172,7 @@ def restore_file(filepath):
     return True
 
 
-def sync_stubs(root_dir):
+def sync_stubs(root_dir: str) -> None:
     """
     Walks the directory tree, finds .internal files, and updates their corresponding stubs.
     """
@@ -197,12 +199,12 @@ def sync_stubs(root_dir):
     print(f"Synced {count} stubs.")
 
 
-def validate_integrity(root_dir):
+def validate_integrity(root_dir: str) -> None:
     """
     Checks for drift and broken links.
     """
     root = Path(root_dir)
-    errors = []
+    errors: list[str] = []
 
     for internal_file in root.glob("**/.internal/*.md"):
         stub_path = internal_file.parent.parent / internal_file.name
@@ -233,7 +235,8 @@ def validate_integrity(root_dir):
         print("All internal docs validated successfully.")
 
 
-def main():
+def main() -> None:
+    """CLI entrypoint for internal documentation management."""
     parser = argparse.ArgumentParser(description="Manage internal documentation exclusion.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -255,16 +258,21 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == "migrate":
-        for f in args.files:
-            migrate_file(f)
-    elif args.command == "restore":
-        for f in args.files:
-            restore_file(f)
-    elif args.command == "sync":
-        sync_stubs(args.root)
-    elif args.command == "validate":
-        validate_integrity(args.root)
+    command: str = str(args.command)  # type: ignore[misc]
+    if command == "migrate":
+        files: list[str] = [str(f) for f in args.files]  # type: ignore[misc]
+        for filepath in files:
+            migrate_file(filepath)
+    elif command == "restore":
+        files = [str(f) for f in args.files]  # type: ignore[misc]
+        for filepath in files:
+            restore_file(filepath)
+    elif command == "sync":
+        root: str = str(args.root)  # type: ignore[misc]
+        sync_stubs(root)
+    elif command == "validate":
+        root = str(args.root)  # type: ignore[misc]
+        validate_integrity(root)
 
 
 if __name__ == "__main__":
