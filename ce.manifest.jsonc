@@ -248,6 +248,54 @@
       }
     },
     {
+      "id": "ce.skill.context-routing",
+      "kind": "skill",
+      "path": ".github/skills/context-routing/SKILL.md",
+      "tags": ["routing", "context-min"],
+      "inputs": {
+        "files": ["ce.manifest.jsonc"],
+        "concepts": ["semantic-routing"],
+        "tools": []
+      },
+      "outputs": {
+        "artifacts": [],
+        "files": [],
+        "actions": ["route-request"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.agent.orchestrator"],
+        "files": [".github/ce/routing-rules.md"]
+      }
+    },
+    {
+      "id": "ce.skill.architecture-decisioning",
+      "kind": "skill",
+      "path": ".github/skills/architecture-decisioning/SKILL.md",
+      "tags": ["architecture", "planning", "context-min"],
+      "inputs": {
+        "files": ["ARCHITECTURE.md"],
+        "concepts": ["adr", "tradeoffs"],
+        "tools": ["toolset:write"]
+      },
+      "outputs": {
+        "artifacts": ["ce.doc.adr"],
+        "files": ["docs/specs/shared/adr/*.md"],
+        "actions": ["propose-decision"]
+      },
+      "dependsOn": {
+        "artifacts": [],
+        "files": []
+      },
+      "related": {
+        "artifacts": ["ce.prompt.propose-adr"],
+        "files": []
+      }
+    },
+    {
       "id": "ce.doc.contributing",
       "kind": "doc",
       "path": "CONTRIBUTING.md",
