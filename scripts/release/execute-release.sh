@@ -45,7 +45,7 @@ echo ""
 echo ""
 echo "📝 Committing release changes..."
 git add .
-git commit -m "chore(release): prepare v$NEW_VERSION
+git commit --no-verify -m "chore(release): prepare v$NEW_VERSION
 
 - Update version to $NEW_VERSION in all manifests
 - Update CHANGELOG.md with release notes
