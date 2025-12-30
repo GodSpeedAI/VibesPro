@@ -126,7 +126,7 @@
     "@remix-run/serve": "^2.15.0",
     "expo": "~53.0.10",
     "expo-splash-screen": "~0.30.9",
-    "expo-status-bar": "~2.2.3",
+    "expo-status-bar": "~3.0.9",
     "expo-system-ui": "~5.0.8",
     "isbot": "^4.4.0",
     "react": "^19.0.0",
