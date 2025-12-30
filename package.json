@@ -134,7 +134,7 @@
     "react-native": "0.79.3",
     "react-native-svg": "~15.11.2",
     "react-native-svg-transformer": "~1.5.1",
-    "react-native-web": "~0.20.0",
+    "react-native-web": "~0.21.2",
     "tslib": "^2.3.0",
     "zod": "^4.1.12"
   }
