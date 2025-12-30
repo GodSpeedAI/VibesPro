@@ -128,7 +128,7 @@
     "expo-splash-screen": "~0.30.9",
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.8",
-    "isbot": "^4.4.0",
+    "isbot": "^5.1.32",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-native": "0.79.3",
